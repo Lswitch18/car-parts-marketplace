@@ -11,6 +11,10 @@ import CreateListing from './pages/CreateListing'
 import Profile from './pages/Profile'
 import Favorites from './pages/Favorites'
 import Messages from './pages/Messages'
+import AdminDashboard from './pages/admin/Dashboard'
+import UserManagement from './pages/admin/UserManagement'
+import TransactionManagement from './pages/admin/TransactionManagement'
+import AdminRoute from './components/AdminRoute'
 
 function App() {
   return (
@@ -27,6 +31,11 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="messages" element={<Messages />} />
+          <Route path="admin" element={<AdminRoute />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="transactions" element={<TransactionManagement />} />
+          </Route>
         </Route>
       </Routes>
     </I18nProvider>

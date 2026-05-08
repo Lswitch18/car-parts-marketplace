@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import { Product } from '../types'
+import PurchaseFlow from '../components/PurchaseFlow'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -121,20 +122,33 @@ export default function ProductDetail() {
               R$ {product.price.toLocaleString('pt-BR')}
             </p>
 
-            <div className="flex gap-4 mb-8">
-              {user?.id !== product.seller_id && (
-                <Link
-                  to={`/messages?product=${product.id}`}
-                  className="flex-1 bg-[#ff3d00] hover:bg-[#dd2c00] text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  <span>Enviar Mensagem</span>
-                </Link>
-              )}
-              <button className="flex items-center justify-center space-x-2 bg-[#1a1a1a] border border-[#2a2a2a] px-4 py-3 rounded-lg text-white hover:border-[#ff3d00]">
-                <Share2 className="w-5 h-5" />
-              </button>
-            </div>
+<div className="flex gap-4 mb-8">
+               {user?.id !== product.seller_id && (
+                 <>
+                   <Link
+                     to={`/messages?product=${product.id}`}
+                     className="flex-1 bg-[#ff3d00] hover:bg-[#dd2c00] text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
+                   >
+                     <MessageCircle className="w-5 h-5" />
+                     <span>Enviar Mensagem</span>
+                   </Link>
+                   <button
+                     onClick={() => {
+                       // In a real app, we'd open a modal or navigate to purchase flow
+                       // For now, we'll simulate with an alert
+                       alert('Fluxo de compra seria aberto aqui - integração com pagamento necessária');
+                     }}
+                     className="flex-1 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
+                   >
+                     <span className="w-5 h-5">💳</span>
+                     <span>Comprar Agora</span>
+                   </button>
+                 </>
+               )}
+               <button className="flex items-center justify-center space-x-2 bg-[#1a1a1a] border border-[#2a2a2a] px-4 py-3 rounded-lg text-white hover:border-[#ff3d00]">
+                 <Share2 className="w-5 h-5" />
+               </button>
+             </div>
 
             <div className="card p-6 mb-6">
               <div className="flex items-center space-x-4 mb-4">
