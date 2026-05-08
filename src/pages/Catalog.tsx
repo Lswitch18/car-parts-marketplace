@@ -76,12 +76,12 @@ export default function Catalog() {
   const activeFiltersCount = Object.values(filters).filter(v => v).length
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="bg-[#0f0f0f] border-b border-[#2a2a2a] py-8">
+    <div className="min-h-screen bg-background">
+      <div className="bg-surface border-b border-border py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <h1 className="font-display text-4xl font-bold text-white mb-4">
-            Catálogo de Peças
-          </h1>
+<h1 className="font-display text-4xl font-bold text-text mb-4">
+          Catálogo de Peças
+        </h1>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -109,8 +109,8 @@ export default function Catalog() {
         </div>
       </div>
 
-      {showFilters && (
-        <div className="bg-[#0f0f0f] border-b border-[#2a2a2a] py-6">
+{showFilters && (
+  <div className="bg-surface border-b border-border py-6">
           <div className="max-w-7xl mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
@@ -136,7 +136,7 @@ export default function Catalog() {
                   <select
                     value={filters.model}
                     onChange={(e) => updateFilter('model', e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-2 text-white"
+className="w-full bg-background border border-border rounded-lg px-4 py-2 text-text"
                   >
                     <option value="">Todos os modelos</option>
                     {selectedBrand.models.map(model => (
@@ -226,19 +226,19 @@ export default function Catalog() {
             </div>
 
             <div className="flex justify-between items-center mt-6">
-              <button
-                onClick={clearFilters}
-                className="text-gray-400 hover:text-white flex items-center space-x-2"
-              >
-                <X className="w-4 h-4" />
-                <span>Limpar filtros</span>
-              </button>
-              <button
-                onClick={() => setShowFilters(false)}
-                className="bg-[#ff3d00] hover:bg-[#dd2c00] text-white px-6 py-2 rounded-lg"
-              >
-                Aplicar
-              </button>
+<button
+  onClick={clearFilters}
+  className="text-text-secondary hover:text-text flex items-center space-x-2"
+>
+  <X className="w-4 h-4" />
+  <span>Limpar filtros</span>
+</button>
+<button
+  onClick={() => setShowFilters(false)}
+  className="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg"
+>
+  Aplicar
+</button>
             </div>
           </div>
         </div>
@@ -246,9 +246,9 @@ export default function Catalog() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-400">
-            {products?.length || 0} peças encontradas
-          </p>
+<p className="text-text-secondary">
+          {products?.length || 0} peças encontradas
+        </p>
           <div className="flex items-center space-x-2">
             <span className="text-gray-400 text-sm">Ordenar por:</span>
             <select
@@ -264,13 +264,13 @@ export default function Catalog() {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin w-8 h-8 border-2 border-[#ff3d00] border-t-transparent rounded-full" />
-          </div>
+{isLoading ? (
+  <div className="flex items-center justify-center py-20">
+    <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+  </div>
         ) : products?.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">Nenhuma peça encontrada</p>
+            <p className="text-text-secondary text-lg">Nenhuma peça encontrada</p>
             <button
               onClick={clearFilters}
               className="text-[#ff3d00] hover:underline mt-2"
@@ -282,7 +282,7 @@ export default function Catalog() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products?.map((product) => (
               <div key={product.id} className="card overflow-hidden group">
-                <div className="aspect-square bg-[#1a1a1a] relative overflow-hidden">
+                <div className="aspect-square bg-background relative overflow-hidden">
                   {product.images?.[0] ? (
                     <img
                       src={product.images[0]}

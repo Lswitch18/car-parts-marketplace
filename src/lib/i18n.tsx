@@ -315,7 +315,17 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('pt')
+  const [language, setLanguage] = useState<Language>(() => {
+    // Detect browser language on initial render
+    if (typeof window !== 'undefined') {
+      const browserLang = navigator.language.split('-')[0] as Language
+      if (['pt', 'en', 'ja'].includes(browserLang)) {
+        return browserLang
+      }
+    }
+    // Default to Portuguese if browser language not supported
+    return 'pt'
+  })
 
   const t = (key: string): string => {
     return translations[language]?.[key] || key
