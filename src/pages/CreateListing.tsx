@@ -1,0 +1,298 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import { useAuthStore } from '../stores/authStore'
+import { supabase } from '../lib/supabase'
+import { BRANDS, CATEGORIES, CONDITIONS, YEARS } from '../lib/constants'
+import { Upload, X, Loader2 } from 'lucide-react'
+import { useI18n } from '../lib/i18n'
+
+export default function CreateListing() {
+  const { t } = useI18n()
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
+  const [images, setImages] = useState<string[]>([])
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [uploading, setUploading] = useState(false)
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    price: '',
+    brand: '',
+    model: '',
+    yearStart: '',
+    yearEnd: '',
+    category: '',
+    condition: ''
+  })
+
+  const createListing = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error('Must be logged in')
+      
+      setUploading(true)
+      let uploadedUrls: string[] = []
+
+      if (imageFiles.length > 0) {
+        for (const file of imageFiles) {
+          const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          const { error } = await supabase.storage
+            .from('parts-images')
+            .upload(fileName, file)
+          
+          if (error) throw error
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('parts-images')
+            .getPublicUrl(fileName)
+          
+          uploadedUrls.push(publicUrl)
+        }
+      }
+
+      const { error } = await supabase.from('parts').insert({
+        seller_id: user.id,
+        title: formData.title,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        brand: formData.brand,
+        model: formData.model,
+        year_start: parseInt(formData.yearStart),
+        year_end: parseInt(formData.yearEnd),
+        category: formData.category,
+        condition: formData.condition,
+        images: uploadedUrls,
+        status: 'active'
+      })
+
+      if (error) throw error
+    },
+    onSuccess: () => {
+      navigate('/dashboard')
+    },
+    onSettled: () => setUploading(false)
+  })
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files)
+      setImageFiles(prev => [...prev, ...files])
+      
+      files.forEach(file => {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setImages(prev => [...prev, e.target?.result as string])
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+  }
+
+  const removeImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index))
+    setImageFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const selectedBrand = BRANDS.find(b => b.id === formData.brand)
+
+  if (!user) {
+    navigate('/login')
+    return null
+  }
+
+  return (
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-3xl mx-auto px-4">
+        <h1 className="font-display text-3xl font-bold text-text mb-8">
+          {t('Nova Listagem')}
+        </h1>
+
+        <div className="card p-8">
+          <form onSubmit={(e) => { e.preventDefault(); createListing.mutate() }} className="space-y-6">
+            <div>
+              <label className="block text-text-secondary text-sm mb-2">{t('Fotos do produto')}</label>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                {images.map((img, i) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden border border-border">
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="absolute top-2 right-2 p-1 bg-error rounded-full text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                <label className="aspect-square border-2 border-dashed border-border rounded-lg flex items-center justify-center cursor-pointer hover:border-primary transition-colors">
+                  <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" />
+                  <Upload className="w-6 h-6 text-text-secondary" />
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-text-secondary text-sm mb-2">{t('Título')} *</label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                placeholder="Ex: Turbina Garrett GT35 para Nissan GT-R"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-text-secondary text-sm mb-2">{t('Descrição')} *</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text h-32"
+                placeholder="Descreva o estado, procedência, etc."
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-text-secondary text-sm mb-2">{t('Preço (R$)')} *</label>
+                <input
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                  placeholder="0,00"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-text-secondary text-sm mb-2">{t('Categoria')} *</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                  required
+                >
+                  <option value="">{t('Selecione')}</option>
+                  {CATEGORIES.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-text-secondary text-sm mb-2">{t('Marca')} *</label>
+                <select
+                  value={formData.brand}
+                  onChange={(e) => setFormData({ ...formData, brand: e.target.value, model: '' })}
+                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                  required
+                >
+                  <option value="">{t('Selecione')}</option>
+                  {BRANDS.map(brand => (
+                    <option key={brand.id} value={brand.id}>{brand.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {formData.brand && selectedBrand && (
+                <div>
+                  <label className="block text-text-secondary text-sm mb-2">{t('Modelo')} *</label>
+                  <select
+                    value={formData.model}
+                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                    required
+                  >
+                    <option value="">{t('Selecione')}</option>
+                    {selectedBrand.models.map(model => (
+                      <option key={model} value={model}>{model}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-text-secondary text-sm mb-2">{t('Ano Inicial')} *</label>
+                <select
+                  value={formData.yearStart}
+                  onChange={(e) => setFormData({ ...formData, yearStart: e.target.value })}
+                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                  required
+                >
+                  <option value="">{t('Selecione')}</option>
+                  {YEARS.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-text-secondary text-sm mb-2">{t('Ano Final')} *</label>
+                <select
+                  value={formData.yearEnd}
+                  onChange={(e) => setFormData({ ...formData, yearEnd: e.target.value })}
+                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                  required
+                >
+                  <option value="">{t('Selecione')}</option>
+                  {YEARS.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-text-secondary text-sm mb-2">{t('Condição')} *</label>
+              <div className="grid grid-cols-3 gap-4">
+                {CONDITIONS.map(cond => (
+                  <label
+                    key={cond.id}
+                    className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                      formData.condition === cond.id
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border bg-surface'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="condition"
+                      value={cond.id}
+                      checked={formData.condition === cond.id}
+                      onChange={(e) => setFormData({ ...formData, condition: e.target.value })}
+                      className="hidden"
+                    />
+                    <p className="text-text font-medium text-center">{cond.label}</p>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={createListing.isPending || uploading}
+              className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+            >
+              {createListing.isPending || uploading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>{t('Publicando...')}</span>
+                </>
+              ) : (
+                <span>{t('Publicar Anúncio')}</span>
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
