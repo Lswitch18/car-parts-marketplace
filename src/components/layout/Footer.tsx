@@ -16,8 +16,8 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-600 text-sm">
-              O maior marketplace de peças automotivas JDM do Brasil.
-              Encontre peças genuínas para seu carro japonês.
+              O maior marketplace de peças automotivas JDM do Japão.
+              Encontre peças genuínas para seu carro japonês com entrega em todo o Japão.
             </p>
             <div className="flex space-x-4 mt-4">
               <a href="#" className="text-gray-500 hover:text-[#ffd700] transition-colors">

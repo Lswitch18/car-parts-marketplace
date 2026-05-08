@@ -1,6 +1,13 @@
 # JAPANCAR PARTS
 
-Marketplace de peças de carros japoneses JDM.
+🇯🇵 **Marketplace JDM exclusivo para o Japão**
+
+O maior marketplace de peças automotivas JDM do Japão. Compre e venda peças genuínas para carros japoneses com entrega em todo o Japão.
+
+- 🌍 Cobertura: **Japão em sua totalidade**
+- 🚗 Foco: **Peças JDM (Japanese Domestic Market)**
+- ⚡ Rápido: **Entrega rápida em todo o Japão**
+- ✅ Seguro: **100% autenticado e verificado**
 
 ## Tech Stack
 

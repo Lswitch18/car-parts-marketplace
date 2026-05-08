@@ -7,10 +7,9 @@ export default function LanguageDetector() {
   const [showDropdown, setShowDropdown] = useState(false)
 
   const languages = [
-    { code: 'pt-BR', name: 'Português', flag: '🇧🇷' },
+    { code: 'pt', name: 'Português', flag: '🇧🇷' },
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
     { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
   ]
 
   const langCode = language.split('-')[0]
@@ -33,7 +32,7 @@ export default function LanguageDetector() {
             <button
               key={lang.code}
               onClick={() => {
-                setLanguage(lang.code)
+                setLanguage(lang.code as 'pt' | 'en' | 'ja')
                 setShowDropdown(false)
               }}
               className={`w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center space-x-3 first:rounded-t-lg last:rounded-b-lg ${

@@ -2,9 +2,11 @@
 
 ## 1. Conceito & Visão
 
-**JAPANCAR PARTS** é um marketplace C2C exclusivo para peças de carros japoneses de performance (JDM). A experiência transmite a energia das corridas japonesas — velocidade, precisão e paixão por motores. O usuário sente que está entrando em uma garage premium, onde cada peça tem uma história e cada compra é uma afirmação de estilo.
+**JAPANCAR PARTS** é um marketplace C2C exclusivo para peças de carros japoneses de performance (JDM) **operando no Japão com entrega para todo o Japão**. A experiência transmite a energia das corridas japonesas — velocidade, precisão e paixão por motores. O usuário sente que está entrando em uma garage premium, onde cada peça tem uma história e cada compra é uma afirmação de estilo.
 
-**Diferencial competitivo**: Catálogo completo e inteligente por modelo/ano, com suporte a vendas diretas e leilões em tempo real.
+**Diferencial competitivo**: Catálogo completo e inteligente por modelo/ano, com suporte a vendas diretas e leilões em tempo real, focado exclusivamente no mercado japonês.
+
+**Escopo Geográfico**: 🇯🇵 **Japão e entrega para todo o Japão**
 
 ---
 

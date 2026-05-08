@@ -18,8 +18,8 @@ const translations: { [lang: string]: Translation } = {
     'Buscar peças, marcas, modelos...': '部品、ブランド、モデルを検索...',
     'Encontre as melhores': '最高の',
     'para seu carro': 'お車の部品を見つけましょう',
-    'O maior marketplace de peças automotivas japonesas do Brasil': 'ブラジル最大の日本車部品マーケットプレイス',
-    'Qualidade garantida, entrega rápida e segurança total': '品質保証、迅速な配送、完全なセキュリティ',
+    'O maior marketplace de peças automotivas JDM do Japão': '日本最大のJDM自動車部品マーケットプレイス',
+    'Qualidade garantida, entrega rápida em todo o Japão e segurança total': '品質保証、日本全域への迅速な配送、完全なセキュリティ',
     'Explorar Catálogo': 'カタログを見る',
     'Vender Peças': '部品を出品',
     'Categorias': 'カテゴリー',
@@ -36,14 +36,14 @@ const translations: { [lang: string]: Translation } = {
     'Satisfação': '満足度',
     'Novo': '新品',
     'Usado': '中古',
-    'marketplace JDM #1 do Brasil': 'ブラジルNo.1 JDMマーケットプレイス',
+    'Marketplace JDM exclusivo do Japão': '日本専門のJDMマーケットプレイス',
     'Encontre exatamente o que precisa para seu projeto': 'プロジェクトに必要なものを正確に見つける',
     'As melhores marcas japonesas em um só lugar': '最高の日本ブランドが一箇所に',
     'Proteção total para suas compras com garantia de entrega e devolução': '配送と返品の保証付きで買い物を完全保護',
-    'Envio para todo Brasil com rastreamento em tempo real': 'ブラジル全土への追跡可能な配送',
+    'Envio para todo Japão com rastreamento em tempo real': '日本全域への追跡可能な配送',
     'Peças originais e de procedência com verificação de autenticidade': '真正性確認済みの正規部品',
     'Junte-se a milhares de vendedores e alcance milhões de compradores!': '何千もの出品者に参加して何百万もの買い手にリーチ！',
-    'O maior marketplace de peças automotivas JDM do Brasil. Encontre peças genuínas para seu carro japonês.': 'ブラジル最大のJDM自動車部品マーケットプレイス。日本車の真正な部品を見つけましょう。',
+    'O maior marketplace de peças automotivas JDM do Japão. Encontre peças genuínas para seu carro japonês.': '日本最大のJDM自動車部品マーケットプレイス。日本車の真正な部品を見つけましょう。',
     'Navegação': 'ナビゲーション',
     'Minha Conta': 'マイアカウント',
     'Marcas': 'ブランド',
@@ -53,7 +53,7 @@ const translations: { [lang: string]: Translation } = {
     'Cookies': 'クッキー',
     'Todos os direitos reservados.': '全著作権所有',
     'Criar Conta': 'アカウント作成',
-    'Junte-se ao maior marketplace JDM do Brasil': 'ブラジル最大のJDMマーケットプレイスに参加しましょう',
+    'Junte-se ao maior marketplace JDM do Japão': '日本最大のJDMマーケットプレイスに参加しましょう',
     'Nome completo': 'フルネーム',
     'Seu nome': 'お名前',
     'Email': 'メールアドレス',
@@ -90,6 +90,19 @@ const translations: { [lang: string]: Translation } = {
     'Salvar': '保存',
     'Nome não definido': '名前が未設定',
     'Ações Rápidas': 'クイックアクション',
+    'Publicando...': '出品中...',
+    'Publicar Anúncio': 'を出品',
+    'Fotos do produto': '商品写真',
+    'Título': 'タイトル',
+    'Descrição': '説明',
+    'Preço (R$)': '価格 (¥)',
+    'Categoria': 'カテゴリー',
+    'Marca': 'ブランド',
+    'Modelo': 'モデル',
+    'Selecione': '選択',
+    'Ano Inicial': '初期年',
+    'Ano Final': '最終年',
+    'Condição': '状態',
   },
   en: {
     'Catálogo': 'Catalog',
@@ -101,11 +114,11 @@ const translations: { [lang: string]: Translation } = {
     'Dashboard': 'Dashboard',
     'Perfil': 'Profile',
     'Sair': 'Logout',
-    'Buscar peças, marcas, modelo...': 'Search parts, brands, models...',
+    'Buscar peças, marcas, modelos...': 'Search parts, brands, models...',
     'Encontre as melhores': 'Find the best',
     'para seu carro': 'for your car',
-    'O maior marketplace': 'The largest marketplace',
-    'Qualidade garantida': 'Quality guaranteed',
+    'O maior marketplace de peças automotivas JDM do Japão': 'Japan\'s largest JDM automotive parts marketplace',
+    'Qualidade garantida, entrega rápida em todo o Japão e segurança total': 'Quality guaranteed, fast delivery across Japan and total security',
     'Explorar Catálogo': 'Browse Catalog',
     'Vender Peças': 'Sell Parts',
     'Categorias': 'Categories',
@@ -114,10 +127,11 @@ const translations: { [lang: string]: Translation } = {
     'Compra Segura': 'Secure Purchase',
     'Entrega Rápida': 'Fast Delivery',
     'Criar Conta': 'Create Account',
-    'Junte-se ao maior marketplace JDM do Brasil': 'Join the largest JDM marketplace in Brazil',
+    'Junte-se ao maior marketplace JDM do Japão': 'Join Japan\'s largest JDM marketplace',
     'Nome completo': 'Full name',
     'Seu nome': 'Your name',
     'Email': 'Email',
+    'Telefone (opcional)': 'Phone (optional)',
     'Senha': 'Password',
     'Confirmar senha': 'Confirm password',
     'Criando conta...': 'Creating account...',
@@ -128,7 +142,7 @@ const translations: { [lang: string]: Translation } = {
     'Lembrar-me': 'Remember me',
     'Esqueceu a senha?': 'Forgot password?',
     'Entrando...': 'Logging in...',
-    'Não tem conta?': "Don't have an account?",
+    'Não tem conta?': 'Don\'t have an account?',
     'Bem-vindo de volta': 'Welcome back',
     'Nova Listagem': 'New Listing',
     'Anúncios Ativos': 'Active Listings',
@@ -136,7 +150,7 @@ const translations: { [lang: string]: Translation } = {
     'Vendas Totais': 'Total Sales',
     'Meus Anúncios': 'My Listings',
     'Ver todos': 'See all',
-    'Você ainda não tem anúncios': "You don't have any listings yet",
+    'Você ainda não tem anúncios': 'You don\'t have any listings yet',
     'Criar primeiro anúncio': 'Create your first listing',
     'Meu Perfil': 'My Profile',
     'Editar': 'Edit',
@@ -150,39 +164,161 @@ const translations: { [lang: string]: Translation } = {
     'Salvar': 'Save',
     'Nome não definido': 'Name not set',
     'Ações Rápidas': 'Quick Actions',
+    'Qualidade Garantida': 'Quality Guaranteed',
+    'Últimas Novidades': 'Latest Updates',
+    'Pronto para vender suas peças?': 'Ready to sell your parts?',
+    'Começar a Vender': 'Start Selling',
+    'Peças à venda': 'Parts for sale',
+    'Vendedores': 'Sellers',
+    'Satisfação': 'Satisfaction',
+    'Novo': 'New',
+    'Usado': 'Used',
+    'Marketplace JDM exclusivo do Japão': 'Exclusive JDM Marketplace for Japan',
+    'Encontre exatamente o que precisa para seu projeto': 'Find exactly what you need for your project',
+    'As melhores marcas japonesas em um só lugar': 'The best Japanese brands in one place',
+    'Proteção total para suas compras com garantia de entrega e devolução': 'Total protection for your purchases with delivery and return guarantee',
+    'Envio para todo Japão com rastreamento em tempo real': 'Shipping throughout Japan with real-time tracking',
+    'Peças originais e de procedência com verificação de autenticidade': 'Original and genuine parts with authenticity verification',
+    'Junte-se a milhares de vendedores e alcance milhões de compradores!': 'Join thousands of sellers and reach millions of buyers!',
+    'O maior marketplace de peças automotivas JDM do Japão. Encontre peças genuínas para seu carro japonês.': 'Japan\'s largest JDM automotive parts marketplace. Find genuine parts for your Japanese car.',
+    'Navegação': 'Navigation',
+    'Minha Conta': 'My Account',
+    'Marcas': 'Brands',
+    'Contato': 'Contact',
+    'Termos de Uso': 'Terms of Use',
+    'Privacidade': 'Privacy',
+    'Cookies': 'Cookies',
+    'Todos os direitos reservados.': 'All rights reserved.',
+    'Publicando...': 'Publishing...',
+    'Publicar Anúncio': 'Publish Listing',
+    'Fotos do produto': 'Product Photos',
+    'Título': 'Title',
+    'Descrição': 'Description',
+    'Preço (R$)': 'Price (¥)',
+    'Categoria': 'Category',
+    'Marca': 'Brand',
+    'Modelo': 'Model',
+    'Selecione': 'Select',
+    'Ano Inicial': 'Start Year',
+    'Ano Final': 'End Year',
+    'Condição': 'Condition',
+  },
+  pt: {
+    'Catálogo': 'Catálogo',
+    'Entrar': 'Entrar',
+    'Cadastrar': 'Cadastrar',
+    'Vender': 'Vender',
+    'Favoritos': 'Favoritos',
+    'Mensagens': 'Mensagens',
+    'Dashboard': 'Dashboard',
+    'Perfil': 'Perfil',
+    'Sair': 'Sair',
+    'Buscar peças, marcas, modelos...': 'Buscar peças, marcas, modelos...',
+    'Encontre as melhores': 'Encontre as melhores',
+    'para seu carro': 'para seu carro',
+    'O maior marketplace de peças automotivas JDM do Japão': 'O maior marketplace de peças automotivas JDM do Japão',
+    'Qualidade garantida, entrega rápida em todo o Japão e segurança total': 'Qualidade garantida, entrega rápida em todo o Japão e segurança total',
+    'Explorar Catálogo': 'Explorar Catálogo',
+    'Vender Peças': 'Vender Peças',
+    'Categorias': 'Categorias',
+    'Marcas Disponíveis': 'Marcas Disponíveis',
+    'Últimas Novidades': 'Últimas Novidades',
+    'Ver todas': 'Ver todas',
+    'Compra Segura': 'Compra Segura',
+    'Entrega Rápida': 'Entrega Rápida',
+    'Qualidade Garantida': 'Qualidade Garantida',
+    'Pronto para vender suas peças?': 'Pronto para vender suas peças?',
+    'Começar a Vender': 'Começar a Vender',
+    'Peças à venda': 'Peças à venda',
+    'Vendedores': 'Vendedores',
+    'Satisfação': 'Satisfação',
+    'Novo': 'Novo',
+    'Usado': 'Usado',
+    'Marketplace JDM exclusivo do Japão': 'Marketplace JDM exclusivo do Japão',
+    'Encontre exatamente o que precisa para seu projeto': 'Encontre exatamente o que precisa para seu projeto',
+    'As melhores marcas japonesas em um só lugar': 'As melhores marcas japonesas em um só lugar',
+    'Proteção total para suas compras com garantia de entrega e devolução': 'Proteção total para suas compras com garantia de entrega e devolução',
+    'Envio para todo Japão com rastreamento em tempo real': 'Envio para todo Japão com rastreamento em tempo real',
+    'Peças originais e de procedência com verificação de autenticidade': 'Peças originais e de procedência com verificação de autenticidade',
+    'Junte-se a milhares de vendedores e alcance milhões de compradores!': 'Junte-se a milhares de vendedores e alcance milhões de compradores!',
+    'O maior marketplace de peças automotivas JDM do Japão. Encontre peças genuínas para seu carro japonês.': 'O maior marketplace de peças automotivas JDM do Japão. Encontre peças genuínas para seu carro japonês.',
+    'Navegação': 'Navegação',
+    'Minha Conta': 'Minha Conta',
+    'Marcas': 'Marcas',
+    'Contato': 'Contato',
+    'Termos de Uso': 'Termos de Uso',
+    'Privacidade': 'Privacidade',
+    'Cookies': 'Cookies',
+    'Todos os direitos reservados.': 'Todos os direitos reservados.',
+    'Criar Conta': 'Criar Conta',
+    'Junte-se ao maior marketplace JDM do Japão': 'Junte-se ao maior marketplace JDM do Japão',
+    'Nome completo': 'Nome completo',
+    'Seu nome': 'Seu nome',
+    'Email': 'Email',
+    'Telefone (opcional)': 'Telefone (opcional)',
+    'Senha': 'Senha',
+    'Confirmar senha': 'Confirmar senha',
+    'Criando conta...': 'Criando conta...',
+    'Já tem conta?': 'Já tem conta?',
+    'Acesse sua conta JAPANCAR PARTS': 'Acesse sua conta JAPANCAR PARTS',
+    'Continuar com Google': 'Continuar com Google',
+    'ou': 'ou',
+    'Lembrar-me': 'Lembrar-me',
+    'Esqueceu a senha?': 'Esqueceu a senha?',
+    'Entrando...': 'Entrando...',
+    'Não tem conta?': 'Não tem conta?',
+    'Bem-vindo de volta': 'Bem-vindo de volta',
+    'Nova Listagem': 'Nova Listagem',
+    'Anúncios Ativos': 'Anúncios Ativos',
+    'Total de Visualizações': 'Total de Visualizações',
+    'Vendas Totais': 'Vendas Totais',
+    'Meus Anúncios': 'Meus Anúncios',
+    'Ver todos': 'Ver todos',
+    'Você ainda não tem anúncios': 'Você ainda não tem anúncios',
+    'Criar primeiro anúncio': 'Criar primeiro anúncio',
+    'Meu Perfil': 'Meu Perfil',
+    'Editar': 'Editar',
+    'Cancelar': 'Cancelar',
+    'Nome': 'Nome',
+    'Endereço': 'Endereço',
+    'Cidade': 'Cidade',
+    'Estado': 'Estado',
+    'CEP': 'CEP',
+    'Salvando...': 'Salvando...',
+    'Salvar': 'Salvar',
+    'Nome não definido': 'Nome não definido',
+    'Ações Rápidas': 'Ações Rápidas',
+    'Publicando...': 'Publicando...',
+    'Publicar Anúncio': 'Publicar Anúncio',
+    'Fotos do produto': 'Fotos do produto',
+    'Título': 'Título',
+    'Descrição': 'Descrição',
+    'Preço (R$)': 'Preço (¥)',
+    'Categoria': 'Categoria',
+    'Marca': 'Marca',
+    'Modelo': 'Modelo',
+    'Selecione': 'Selecione',
+    'Ano Inicial': 'Ano Inicial',
+    'Ano Final': 'Ano Final',
+    'Condição': 'Condição',
   }
 }
 
+type Language = 'pt' | 'en' | 'ja'
+
 interface I18nContextType {
-  language: string
-  setLanguage: (lang: string) => void
+  language: Language
+  setLanguage: (lang: Language) => void
   t: (key: string) => string
 }
 
-const I18nContext = createContext<I18nContextType>({
-  language: 'pt-BR',
-  setLanguage: () => {},
-  t: (key) => key
-})
+const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState('pt-BR')
-
-  useState(() => {
-    const saved = localStorage.getItem('language')
-    if (saved) setLanguageState(saved)
-    else if (navigator.language.startsWith('ja')) setLanguageState('ja')
-    else if (navigator.language.startsWith('en')) setLanguageState('en')
-  })
-
-  const setLanguage = (lang: string) => {
-    setLanguageState(lang)
-    localStorage.setItem('language', lang)
-  }
+  const [language, setLanguage] = useState<Language>('pt')
 
   const t = (key: string): string => {
-    const lang = language.split('-')[0]
-    return translations[lang]?.[key] || translations['pt-BR']?.[key] || key
+    return translations[language]?.[key] || key
   }
 
   return (
@@ -192,4 +328,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export const useI18n = () => useContext(I18nContext)
+export function useI18n() {
+  const context = useContext(I18nContext)
+  if (!context) {
+    throw new Error('useI18n must be used within I18nProvider')
+  }
+  return context
+}
