@@ -97,7 +97,7 @@ export default function Favorites() {
                     {product.title}
                   </h3>
                   <p className="text-[#ff3d00] font-bold text-xl">
-                    R$ {product.price.toLocaleString('pt-BR')}
+                    ¥ {product.price.toLocaleString('ja-JP')}
                   </p>
                 </div>
               </Link>

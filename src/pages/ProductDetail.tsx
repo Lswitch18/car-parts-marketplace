@@ -119,7 +119,7 @@ export default function ProductDetail() {
             </div>
 
             <p className="text-4xl font-bold text-[#ff3d00] mb-6">
-              R$ {product.price.toLocaleString('pt-BR')}
+              ¥ {product.price.toLocaleString('ja-JP')}
             </p>
 
 <div className="flex gap-4 mb-8">

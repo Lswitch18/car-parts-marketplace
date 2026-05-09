@@ -214,7 +214,7 @@ export default function Home() {
                       {product.brand} {product.model}
                     </p>
                     <p className="text-[#ffd700] font-bold text-xl">
-                      R$ {product.price.toLocaleString('pt-BR')}
+                      ¥ {product.price.toLocaleString('ja-JP')}
                     </p>
                   </div>
                 </Link>

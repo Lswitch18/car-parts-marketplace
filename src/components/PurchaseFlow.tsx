@@ -133,7 +133,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
                 {t('Subtotal:')}
               </p>
               <p className="text-2xl font-bold text-text">
-                R$ {partPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ¥ {partPrice.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
 
@@ -142,7 +142,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
                 {t('Taxa da plataforma (10%):')}
               </p>
               <p className="text-lg font-semibold text-text">
-                R$ {fees.commission.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ¥ {fees.commission.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
 
@@ -151,7 +151,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
                 {t('Valor para o vendedor:')}
               </p>
               <p className="text-lg font-semibold text-success">
-                R$ {fees.sellerNet.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ¥ {fees.sellerNet.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
 
@@ -160,7 +160,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
                 {t('Total:')}
               </p>
               <p className="text-2xl font-bold text-primary">
-                R$ {fees.totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                ¥ {fees.totalAmount.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
           </div>

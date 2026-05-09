@@ -145,7 +145,7 @@ export default function Dashboard() {
             </div>
             <p className="text-text-secondary text-sm">{t('Vendas Totais')}</p>
             <p className="text-2xl font-bold text-text">
-              R$ {(stats?.totalSales || 0).toLocaleString('pt-BR')}
+              ¥ {(stats?.totalSales || 0).toLocaleString('ja-JP')}
             </p>
           </div>
 
@@ -191,7 +191,7 @@ export default function Dashboard() {
                       <div className="flex-1">
                         <h3 className="text-text font-medium">{product.title}</h3>
                         <p className="text-text-secondary text-sm">
-                          R$ {product.price.toLocaleString('pt-BR')} • {product.views || 0} visualizações
+                          ¥ {product.price.toLocaleString('ja-JP')} • {product.views || 0} visualizações
                         </p>
                       </div>
                       <span className={`badge ${product.status === 'active' ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>

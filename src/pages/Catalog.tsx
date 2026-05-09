@@ -204,7 +204,7 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
                 <label className="block text-gray-400 text-sm mb-2">Preço mín.</label>
                 <input
                   type="number"
-                  placeholder="R$ 0"
+                  placeholder="¥ 0"
                   value={filters.minPrice}
                   onChange={(e) => updateFilter('minPrice', e.target.value)}
                   className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-2 text-white"
@@ -215,7 +215,7 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
                 <label className="block text-gray-400 text-sm mb-2">Preço máx.</label>
                 <input
                   type="number"
-                  placeholder="R$ 999999"
+                  placeholder="¥ 999999"
                   value={filters.maxPrice}
                   onChange={(e) => updateFilter('maxPrice', e.target.value)}
                   className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-2 text-white"
@@ -321,7 +321,7 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
                   </p>
                   <div className="flex items-center justify-between">
                     <p className="text-[#ff3d00] font-bold text-xl">
-                      R$ {product.price.toLocaleString('pt-BR')}
+                      ¥ {product.price.toLocaleString('ja-JP')}
                     </p>
                   </div>
                 </div>
