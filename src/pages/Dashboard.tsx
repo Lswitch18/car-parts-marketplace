@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
+import SimulateSale from '../components/SimulateSale'
 
 export default function Dashboard() {
   const { t } = useI18n()
@@ -96,6 +97,8 @@ export default function Dashboard() {
     return null
   }
 
+  const isDemoUser = user.email?.includes('demo') || user.email?.includes('test')
+
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4">
@@ -158,6 +161,11 @@ export default function Dashboard() {
             <p className="text-text-secondary text-sm">{t('Mensagens')}</p>
             <p className="text-2xl font-bold text-text">{stats?.unreadMessages || 0}</p>
           </div>
+        </div>
+
+        <div className="card p-6 mb-8">
+          <h2 className="text-xl font-semibold text-text mb-4">Demonstração - Simular Vendas</h2>
+          <SimulateSale />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

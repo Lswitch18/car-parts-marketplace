@@ -11,12 +11,17 @@ import CreateListing from './pages/CreateListing'
 import Profile from './pages/Profile'
 import Favorites from './pages/Favorites'
 import Messages from './pages/Messages'
+import PaymentCheckout from './pages/PaymentCheckout'
 import AdminDashboard from './pages/admin/Dashboard'
 import UserManagement from './pages/admin/UserManagement'
 import TransactionManagement from './pages/admin/TransactionManagement'
 import AdminRoute from './components/AdminRoute'
+import ChatPopup from './components/ChatPopup'
+import { useAuthStore } from './stores/authStore'
 
 function App() {
+  const { user } = useAuthStore()
+
   return (
     <I18nProvider>
       <Routes>
@@ -31,6 +36,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="messages" element={<Messages />} />
+          <Route path="checkout/:id" element={<PaymentCheckout />} />
         </Route>
         <Route path="/admin" element={<AdminRoute />}>
           <Route index element={<AdminDashboard />} />
@@ -38,6 +44,7 @@ function App() {
           <Route path="transactions" element={<TransactionManagement />} />
         </Route>
       </Routes>
+      {user && <ChatPopup />}
     </I18nProvider>
   )
 }

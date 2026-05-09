@@ -1,0 +1,444 @@
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useQuery, useMutation } from '@tanstack/react-query'
+import { supabase } from '../lib/supabase'
+import { useAuthStore } from '../stores/authStore'
+import { api } from '../lib/api'
+import { 
+  CreditCard, Lock, ShieldCheck, Truck, Package, 
+  ArrowLeft, Check, AlertCircle, Loader2
+} from 'lucide-react'
+
+interface Part {
+  id: string
+  title: string
+  price: number
+  images: string[]
+  seller_id: string
+  status: string
+  brands?: { name: string }
+  categories?: { name: string }
+}
+
+interface Seller {
+  id: string
+  full_name: string
+  avatar_url: string
+  rating: number
+  is_verified: boolean
+  total_sales: number
+}
+
+export default function PaymentCheckout() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
+  
+  const [step, setStep] = useState<'details' | 'payment' | 'processing' | 'success' | 'error'>('details')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'pix'>('card')
+  const [shippingInfo, setShippingInfo] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+  })
+
+  const { data: part, isLoading } = useQuery({
+    queryKey: ['part', id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('parts')
+        .select('*, brands(name), categories(name)')
+        .eq('id', id)
+        .single()
+      return data as Part
+    }
+  })
+
+  const { data: seller } = useQuery({
+    queryKey: ['seller', part?.seller_id],
+    queryFn: async () => {
+      if (!part?.seller_id) return null
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url, rating, is_verified, total_sales')
+        .eq('id', part.seller_id)
+        .single()
+      return data as Seller
+    },
+    enabled: !!part?.seller_id
+  })
+
+  const createTransaction = useMutation({
+    mutationFn: async () => {
+      if (!user || !part) throw new Error('Usuário não autenticado')
+      
+      const response = await api.transactions.create({
+        part_id: part.id,
+        amount: finalPrice || part.price
+      }) as { id: string }
+      return response
+    },
+    onSuccess: async (transaction) => {
+      setStep('processing')
+      
+      try {
+        const checkoutResult = await api.stripe.createCheckout({
+          transaction_id: transaction.id,
+          part_id: part!.id,
+          buyer_id: user!.id,
+          seller_id: part!.seller_id,
+          amount: finalPrice || part!.price
+        }) as { url?: string }
+        
+        if (checkoutResult.url) {
+          window.location.href = checkoutResult.url
+        } else {
+          setStep('success')
+        }
+        
+      } catch (err: any) {
+        if (err.message.includes('demo') || err.message.includes('Stripe não configurado')) {
+          await supabase
+            .from('transactions')
+            .update({ payment_status: 'paid', paid_at: new Date().toISOString() })
+            .eq('id', transaction.id)
+          
+          await supabase
+            .from('parts')
+            .update({ status: 'sold' })
+            .eq('id', part!.id)
+          
+          setStep('success')
+        } else {
+          setErrorMessage(err.message)
+          setStep('error')
+        }
+      }
+    },
+    onError: (err: any) => {
+      setErrorMessage(err.message)
+      setStep('error')
+    }
+  })
+
+  const calculateFees = (amount: number) => {
+    const commissionRate = 0.10
+    const stripeRate = 0.029
+    const stripeFixed = 30
+    
+    const commission = amount * commissionRate
+    const stripeFee = (amount * stripeRate) + stripeFixed
+    const sellerNet = amount - commission - stripeFee
+    
+    return { commission, stripeFee, sellerNet, total: amount }
+  }
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const negotiatedPrice = urlParams.get('price')
+  const finalPrice = negotiatedPrice ? Number(negotiatedPrice) : part?.price
+
+  const fees = part ? calculateFees(finalPrice || part.price) : null
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login?redirect=/checkout/' + id)
+    }
+  }, [user, navigate, id])
+
+  if (isLoading || !part || !fees) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#ff3d00] animate-spin" />
+      </div>
+    )
+  }
+
+  if (part.status === 'sold') {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] p-6 flex items-center justify-center">
+        <div className="text-center">
+          <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-white mb-2">Produto Indisponível</h1>
+          <p className="text-gray-400 mb-6">Este produto já foi vendido.</p>
+          <Link to="/catalog" className="text-[#ff3d00] hover:underline">
+            Voltar ao catálogo
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (part.seller_id === user?.id) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] p-6 flex items-center justify-center">
+        <div className="text-center">
+          <AlertCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-white mb-2">Compra Inválida</h1>
+          <p className="text-gray-400 mb-6">Você não pode comprar seu próprio produto.</p>
+          <Link to={`/product/${id}`} className="text-[#ff3d00] hover:underline">
+            Voltar ao produto
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <button onClick={() => navigate(-1)} className="flex items-center text-gray-400 mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Voltar
+        </button>
+
+        <h1 className="text-2xl font-bold text-white mb-6">Finalizar Compra</h1>
+
+        {step === 'details' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="card p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Informações de Entrega</h2>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Nome completo"
+                    value={shippingInfo.name}
+                    onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })}
+                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  />
+                  <input
+                    type="email"
+                    placeholder="E-mail"
+                    value={shippingInfo.email}
+                    onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })}
+                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Telefone"
+                    value={shippingInfo.phone}
+                    onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })}
+                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Endereço"
+                    value={shippingInfo.address}
+                    onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
+                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Cidade"
+                      value={shippingInfo.city}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
+                      className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Estado"
+                      value={shippingInfo.state}
+                      onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })}
+                      className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="CEP"
+                    value={shippingInfo.zipCode}
+                    onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })}
+                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="card p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Forma de Pagamento</h2>
+                <div className="space-y-3">
+                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
+                    paymentMethod === 'card' ? 'border-[#ff3d00] bg-[#ff3d00]/10' : 'border-[#2a2a2a]'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === 'card'}
+                      onChange={() => setPaymentMethod('card')}
+                      className="hidden"
+                    />
+                    <CreditCard className="w-6 h-6 text-[#ff3d00] mr-3" />
+                    <div className="flex-1">
+                      <p className="text-white font-medium">Cartão de Crédito</p>
+                      <p className="text-gray-400 text-sm">Pagamento parcelado ou à vista</p>
+                    </div>
+                    {paymentMethod === 'card' && <Check className="w-5 h-5 text-[#ff3d00]" />}
+                  </label>
+                  
+                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
+                    paymentMethod === 'pix' ? 'border-[#ff3d00] bg-[#ff3d00]/10' : 'border-[#2a2a2a]'
+                  }`}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === 'pix'}
+                      onChange={() => setPaymentMethod('pix')}
+                      className="hidden"
+                    />
+                    <span className="text-2xl mr-3">📱</span>
+                    <div className="flex-1">
+                      <p className="text-white font-medium">PIX</p>
+                      <p className="text-gray-400 text-sm">Pagamento instantâneo</p>
+                    </div>
+                    {paymentMethod === 'pix' && <Check className="w-5 h-5 text-[#ff3d00]" />}
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="card p-6">
+                <h2 className="text-lg font-semibold text-white mb-4">Resumo do Pedido</h2>
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-20 h-20 bg-[#0a0a0a] rounded-lg flex items-center justify-center overflow-hidden">
+                    {part.images?.[0] ? (
+                      <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <Package className="w-10 h-10 text-gray-600" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-white font-medium">{part.title}</p>
+                    <p className="text-gray-400 text-sm">{part.brands?.name}</p>
+                  </div>
+                </div>
+                
+                <div className="border-t border-[#2a2a2a] pt-4 space-y-2">
+                  {negotiatedPrice && (
+                    <div className="flex justify-between text-green-400 text-sm">
+                      <span>Preço original</span>
+                      <span className="line-through">¥ {part.price.toLocaleString('ja-JP')}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-gray-400">
+                    <span>{negotiatedPrice ? 'Preço negotiado' : 'Subtotal'}</span>
+                    <span>¥ {finalPrice?.toLocaleString('ja-JP')}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-400">
+                    <span>Taxa plataforma (10%)</span>
+                    <span>-¥ {fees.commission.toLocaleString('ja-JP')}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-400">
+                    <span>Taxa pagamento</span>
+                    <span>-¥ {fees.stripeFee.toLocaleString('ja-JP')}</span>
+                  </div>
+                  <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-[#2a2a2a]">
+                    <span>Total</span>
+                    <span className="text-[#ff3d00]">¥ {fees.total.toLocaleString('ja-JP')}</span>
+                  </div>
+                </div>
+              </div>
+
+              {seller && (
+                <div className="card p-6">
+                  <h2 className="text-lg font-semibold text-white mb-4">Vendedor</h2>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+                      {seller.avatar_url ? (
+                        <img src={seller.avatar_url} alt="" className="w-full h-full rounded-full" />
+                      ) : (
+                        <span className="text-white font-bold">{seller.full_name?.[0]?.toUpperCase()}</span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium flex items-center">
+                        {seller.full_name}
+                        {seller.is_verified && <ShieldCheck className="w-4 h-4 text-[#00e5ff] ml-1" />}
+                      </p>
+                      <p className="text-gray-400 text-sm">{seller.total_sales || 0} vendas</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={() => createTransaction.mutate()}
+                disabled={createTransaction.isPending || !shippingInfo.name || !shippingInfo.email}
+                className="w-full bg-[#ff3d00] hover:bg-[#dd2c00] text-white py-4 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50"
+              >
+                {createTransaction.isPending ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    <Lock className="w-5 h-5 mr-2" />
+                    Pagar ¥ {fees.total.toLocaleString('ja-JP')}
+                  </>
+                )}
+              </button>
+
+              <p className="text-gray-500 text-sm text-center flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4 mr-1" />
+                Pagamento seguro com garantia
+              </p>
+            </div>
+          </div>
+        )}
+
+        {step === 'processing' && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-16 h-16 text-[#ff3d00] animate-spin mb-6" />
+            <h2 className="text-2xl font-bold text-white mb-2">Processando Pagamento</h2>
+            <p className="text-gray-400">Aguarde, estamos processando sua transação...</p>
+          </div>
+        )}
+
+        {step === 'success' && (
+          <div className="text-center py-20">
+            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">Pagamento Confirmado!</h2>
+            <p className="text-gray-400 mb-6">Sua compra foi processada com sucesso.</p>
+            
+            <div className="card p-6 max-w-md mx-auto mb-8 text-left">
+              <h3 className="text-white font-semibold mb-4">Próximos passos:</h3>
+              <ol className="list-decimal list-inside text-gray-400 space-y-2">
+                <li>Vendedor foi notificado e preparará a peça</li>
+                <li>Você receberá o código de rastreamento por e-mail</li>
+                <li>Acompanhe o envio pelo painel de compras</li>
+                <li>Confira o recebimento para liberar o pagamento ao vendedor</li>
+              </ol>
+            </div>
+
+            <div className="flex gap-4 justify-center">
+              <Link to="/dashboard" className="bg-[#ff3d00] px-6 py-3 rounded-lg text-white">
+                Ver minhas compras
+              </Link>
+              <Link to="/catalog" className="border border-[#2a2a2a] px-6 py-3 rounded-lg text-white hover:border-[#ff3d00]">
+                Continuar comprando
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {step === 'error' && (
+          <div className="text-center py-20">
+            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
+            <h2 className="text-2xl font-bold text-white mb-2">Erro no Pagamento</h2>
+            <p className="text-gray-400 mb-6">{errorMessage}</p>
+            <button
+              onClick={() => setStep('details')}
+              className="bg-[#ff3d00] px-6 py-3 rounded-lg text-white"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

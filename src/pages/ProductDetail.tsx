@@ -132,17 +132,13 @@ export default function ProductDetail() {
                      <MessageCircle className="w-5 h-5" />
                      <span>Enviar Mensagem</span>
                    </Link>
-                   <button
-                     onClick={() => {
-                       // In a real app, we'd open a modal or navigate to purchase flow
-                       // For now, we'll simulate with an alert
-                       alert('Fluxo de compra seria aberto aqui - integração com pagamento necessária');
-                     }}
-                     className="flex-1 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
-                   >
-                     <span className="w-5 h-5">💳</span>
-                     <span>Comprar Agora</span>
-                   </button>
+<Link
+                      to={`/checkout/${product.id}`}
+                      className="flex-1 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
+                    >
+                      <span className="w-5 h-5">💳</span>
+                      <span>Comprar Agora</span>
+                    </Link>
                  </>
                )}
                <button className="flex items-center justify-center space-x-2 bg-[#1a1a1a] border border-[#2a2a2a] px-4 py-3 rounded-lg text-white hover:border-[#ff3d00]">

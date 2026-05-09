@@ -1,9 +1,44 @@
 import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
-import { MessageCircle, Send, User, ArrowLeft } from 'lucide-react'
+import { MessageCircle, Send, User, ArrowRight, DollarSign, Check, ShoppingCart } from 'lucide-react'
+
+interface Message {
+  id: string
+  sender_id: string
+  receiver_id: string
+  content: string
+  message_type: string
+  proposed_price?: number
+  price_confirmed?: boolean
+  created_at: string
+  product_id?: string
+  parts?: {
+    id: string
+    title: string
+    price: number
+    images: string[]
+  }
+}
+
+interface Conversation {
+  oder_id: string
+  oder: {
+    id: string
+    full_name: string
+    avatar_url: string
+  }
+  part: {
+    id: string
+    title: string
+    price: number
+    images: string[]
+  }
+  lastMessage: Message
+  unreadCount: number
+}
 
 export default function Messages() {
   const navigate = useNavigate()
@@ -14,6 +49,8 @@ export default function Messages() {
     searchParams.get('product') || null
   )
   const [newMessage, setNewMessage] = useState('')
+  const [showPriceModal, setShowPriceModal] = useState(false)
+  const [proposedPrice, setProposedPrice] = useState('')
 
   const { data: conversations } = useQuery({
     queryKey: ['conversations', user?.id],
@@ -22,26 +59,39 @@ export default function Messages() {
       
       const { data: messages } = await supabase
         .from('messages')
-        .select('*, parts(title, images), sender:sender_id(full_name), receiver:receiver_id(full_name)')
+        .select('*, parts(id, title, price, images)')
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .order('created_at', { ascending: false })
 
-      const grouped = messages?.reduce((acc: any, msg: any) => {
-        const key = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id
+      const grouped = messages?.reduce((acc: Record<string, Conversation>, msg: any) => {
+        const key = `${msg.sender_id === user.id ? msg.receiver_id : msg.sender_id}-${msg.product_id || 'no-product'}`
         if (!acc[key]) {
           acc[key] = {
-            userId: key,
-            user: msg.sender_id === user.id ? msg.receiver : msg.sender,
-            product: msg.parts,
+            oder_id: msg.sender_id === user.id ? msg.receiver_id : msg.sender_id,
+            oder: { id: msg.sender_id === user.id ? msg.receiver_id : msg.sender_id, full_name: '', avatar_url: '' },
+            part: msg.parts || { id: '', title: 'Sem produto', price: 0, images: [] },
             lastMessage: msg,
-            messages: []
+            unreadCount: 0
           }
         }
-        acc[key].messages.push(msg)
+        if (msg.receiver_id === user.id && !msg.read_at) {
+          acc[key].unreadCount++
+        }
         return acc
       }, {})
 
-      return Object.values(grouped || [])
+      const convs = await Promise.all(
+        Object.values(grouped || {}).map(async (conv: any) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id, full_name, avatar_url')
+            .eq('id', conv.oder_id)
+            .single()
+          return { ...conv, oder: profile || conv.oder }
+        })
+      )
+
+      return convs
     },
     enabled: !!user
   })
@@ -53,7 +103,7 @@ export default function Messages() {
       
       const { data } = await supabase
         .from('messages')
-        .select('*, parts(title, images), sender:sender_id(full_name), receiver:receiver_id(full_name)')
+        .select('*, parts(id, title, price, images)')
         .or(`and(sender_id.eq.${user.id},receiver_id.eq.${selectedConversation}),and(sender_id.eq.${selectedConversation},receiver_id.eq.${user.id})`)
         .order('created_at', { ascending: true })
 
@@ -63,26 +113,66 @@ export default function Messages() {
   })
 
   const sendMessage = useMutation({
-    mutationFn: async () => {
-      if (!user || !selectedConversation || !newMessage.trim()) return
+    mutationFn: async (params: { type?: string; price?: number } = {}) => {
+      const { type = 'text', price } = params
+      if (!user || !selectedConversation || (!newMessage.trim() && type !== 'price_proposal')) return
 
+      const conversation = conversations?.find(c => c.oder_id === selectedConversation)
+      
       await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: selectedConversation,
-        product_id: searchParams.get('product') || null,
-        content: newMessage
+        product_id: conversation?.part.id || null,
+        content: type === 'price_proposal' ? `Proposta de preço: ¥${Number(price).toLocaleString('ja-JP')}` : newMessage.trim(),
+        message_type: type,
+        proposed_price: type === 'price_proposal' ? price : null,
+        price_confirmed: type === 'price_proposal' ? false : null
       })
     },
     onSuccess: () => {
       setNewMessage('')
+      setShowPriceModal(false)
+      setProposedPrice('')
       queryClient.invalidateQueries({ queryKey: ['messages', user?.id, selectedConversation] })
     }
   })
+
+  const confirmPrice = async (messageId: string, price: number) => {
+    if (!user || !selectedConversation) return
+
+    await supabase
+      .from('messages')
+      .update({ price_confirmed: true })
+      .eq('id', messageId)
+
+    await supabase.from('messages').insert({
+      sender_id: user.id,
+      receiver_id: selectedConversation,
+      product_id: conversations?.find(c => c.oder_id === selectedConversation)?.part.id,
+      content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
+      message_type: 'price_confirmed'
+    })
+
+    queryClient.invalidateQueries({ queryKey: ['messages', user?.id, selectedConversation] })
+  }
+
+  const getCurrentPrice = () => {
+    const priceProposal = selectedMessages?.find(m => 
+      m.message_type === 'price_proposal' && !m.price_confirmed
+    )
+    if (priceProposal?.price_confirmed) {
+      return priceProposal.proposed_price
+    }
+    return null
+  }
 
   if (!user) {
     navigate('/login')
     return null
   }
+
+  const currentPrice = getCurrentPrice()
+  const conversation = conversations?.find(c => c.oder_id === selectedConversation)
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] py-8">
@@ -99,24 +189,30 @@ export default function Messages() {
               {conversations && conversations.length > 0 ? (
                 conversations.map((conv: any) => (
                   <button
-                    key={conv.userId}
-                    onClick={() => setSelectedConversation(conv.userId)}
+                    key={`${conv.oder_id}-${conv.part.id}`}
+                    onClick={() => setSelectedConversation(conv.oder_id)}
                     className={`w-full p-4 text-left hover:bg-[#1a1a1a] transition-colors ${
-                      selectedConversation === conv.userId ? 'bg-[#1a1a1a]' : ''
+                      selectedConversation === conv.oder_id ? 'bg-[#1a1a1a]' : ''
                     }`}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
-                        <User className="w-5 h-5 text-white" />
+                      <div className="w-12 h-12 rounded-lg bg-[#2a2a2a] flex items-center justify-center overflow-hidden">
+                        {conv.part.images?.[0] ? (
+                          <img src={conv.part.images[0]} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <MessageCircle className="w-6 h-6 text-gray-500" />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium truncate">
-                          {conv.user?.name || 'Usuário'}
-                        </p>
-                        <p className="text-gray-400 text-sm truncate">
-                          {conv.lastMessage?.content}
-                        </p>
+                        <p className="text-white font-medium truncate">{conv.oder.full_name || 'Usuário'}</p>
+                        <p className="text-gray-400 text-sm truncate">{conv.part.title || 'Sem produto'}</p>
+                        <p className="text-[#ff3d00] text-xs">¥ {conv.part.price?.toLocaleString('ja-JP') || 0}</p>
                       </div>
+                      {conv.unreadCount > 0 && (
+                        <span className="bg-[#ff3d00] text-white text-xs px-2 py-1 rounded-full">
+                          {conv.unreadCount}
+                        </span>
+                      )}
                     </div>
                   </button>
                 ))
@@ -131,64 +227,142 @@ export default function Messages() {
             <div className="col-span-2 flex flex-col">
               {selectedConversation && selectedMessages ? (
                 <>
-                  <div className="p-4 border-b border-[#2a2a2a] flex items-center space-x-3">
-                    <button onClick={() => setSelectedConversation(null)} className="md:hidden">
-                      <ArrowLeft className="w-5 h-5 text-gray-400" />
-                    </button>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
-                      <User className="w-5 h-5 text-white" />
+                  <div className="p-4 border-b border-[#2a2a2a] flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <button onClick={() => setSelectedConversation(null)} className="md:hidden">
+                        <ArrowRight className="w-5 h-5 text-gray-400" />
+                      </button>
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+                        <User className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="text-white font-medium">
+                          {selectedMessages[0]?.sender_id === user.id 
+                            ? selectedMessages.find(m => m.sender_id !== user.id)?.parts?.title || 'Usuário'
+                            : selectedMessages[0]?.parts?.title || 'Usuário'}
+                        </span>
+                        <p className="text-gray-400 text-xs">
+                          ¥ {conversation?.part.price.toLocaleString('ja-JP')}
+                        </p>
+                      </div>
                     </div>
-                    <span className="text-white font-medium">
-                      {selectedMessages[0]?.sender?.name || selectedMessages[0]?.receiver?.name || 'Usuário'}
-                    </span>
+                    {conversation && (
+                      <Link
+                        to={`/product/${conversation.part.id}`}
+                        className="text-[#ff3d00] text-sm hover:underline"
+                      >
+                        Ver anúncio
+                      </Link>
+                    )}
                   </div>
 
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {selectedMessages.map((msg: any) => (
-                      <div
-                        key={msg.id}
-                        className={`flex ${msg.sender_id === user.id ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-xs px-4 py-2 rounded-lg ${
-                            msg.sender_id === user.id
-                              ? 'bg-[#ff3d00] text-white'
-                              : 'bg-[#1a1a1a] text-white'
-                          }`}
-                        >
-                          <p>{msg.content}</p>
-                          <p className="text-xs opacity-60 mt-1">
-                            {new Date(msg.created_at).toLocaleString('pt-BR')}
-                          </p>
+                    {selectedMessages.map((msg: any) => {
+                      const isMe = msg.sender_id === user.id
+                      const isPriceProposal = msg.message_type === 'price_proposal'
+                      const isPriceConfirmed = msg.message_type === 'price_confirmed' || msg.price_confirmed
+
+                      return (
+                        <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-xs px-4 py-3 rounded-2xl ${
+                            isMe 
+                              ? 'bg-[#ff3d00] text-white rounded-br-md' 
+                              : isPriceProposal
+                                ? 'bg-[#1a1a1a] border-2 border-green-500 text-white rounded-bl-md'
+                                : 'bg-[#1a1a1a] text-white rounded-bl-md'
+                          }`}>
+                            {isPriceProposal && (
+                              <div className="flex items-center space-x-2 mb-2">
+                                <DollarSign className="w-5 h-5 text-green-400" />
+                                <span className="font-bold text-green-400">
+                                  ¥ {msg.proposed_price?.toLocaleString('ja-JP')}
+                                </span>
+                              </div>
+                            )}
+                            <p>{msg.content}</p>
+                            <div className="flex items-center justify-between mt-2">
+                              <p className="text-xs opacity-60">
+                                {new Date(msg.created_at).toLocaleString('pt-BR')}
+                              </p>
+                              
+                              {isPriceProposal && !isPriceConfirmed && !isMe && (
+                                <button
+                                  onClick={() => confirmPrice(msg.id, msg.proposed_price!)}
+                                  className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 ml-2"
+                                >
+                                  <Check className="w-3 h-3" />
+                                  <span>Confirmar</span>
+                                </button>
+                              )}
+                              
+                              {isPriceConfirmed && (
+                                <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full ml-2">
+                                  ✓ Confirmado
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
 
-                  <div className="p-4 border-t border-[#2a2a2a]">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault()
-                        sendMessage.mutate()
-                      }}
-                      className="flex space-x-2"
-                    >
-                      <input
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Digite sua mensagem..."
-                        className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-2 text-white"
-                      />
-                      <button
-                        type="submit"
-                        disabled={!newMessage.trim() || sendMessage.isPending}
-                        className="bg-[#ff3d00] hover:bg-[#dd2c00] text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                  {currentPrice && (
+                    <div className="p-4 bg-green-500/20 border-t border-green-500">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Check className="w-5 h-5 text-green-500" />
+                          <span className="text-green-400 font-medium">
+                            Preço confirmado: ¥{currentPrice.toLocaleString('ja-JP')}
+                          </span>
+                        </div>
+                        <Link
+                          to={`/checkout/${conversation?.part.id}?price=${currentPrice}`}
+                          className="bg-[#ff3d00] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1"
+                        >
+                          <ShoppingCart className="w-4 h-4" />
+                          <span>Ir para Pagamento</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+
+                  {!currentPrice && (
+                    <div className="p-4 border-t border-[#2a2a2a]">
+                      <div className="flex space-x-2 mb-2">
+                        <button
+                          onClick={() => setShowPriceModal(true)}
+                          className="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-green-500/30"
+                        >
+                          <DollarSign className="w-4 h-4" />
+                          <span>Fazer Proposta</span>
+                        </button>
+                      </div>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault()
+                          sendMessage.mutate({})
+                        }}
+                        className="flex space-x-2"
                       >
-                        <Send className="w-5 h-5" />
-                      </button>
-                    </form>
-                  </div>
+                        <input
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder="Digite sua mensagem..."
+                          className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-2 text-white"
+                        />
+                        <button
+                          type="submit"
+                          disabled={!newMessage.trim() || sendMessage.isPending}
+                          className="bg-[#ff3d00] hover:bg-[#dd2c00] text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                        >
+                          <Send className="w-5 h-5" />
+                        </button>
+                      </form>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="flex-1 flex items-center justify-center">
@@ -202,6 +376,42 @@ export default function Messages() {
           </div>
         </div>
       </div>
+
+      {showPriceModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-white font-semibold mb-4 flex items-center">
+              <DollarSign className="w-5 h-5 mr-2 text-green-400" />
+              Fazer Proposta de Preço
+            </h3>
+            <p className="text-gray-400 text-sm mb-4">
+              Preço original: ¥ {conversation?.part.price.toLocaleString('ja-JP')}
+            </p>
+            <input
+              type="number"
+              value={proposedPrice}
+              onChange={(e) => setProposedPrice(e.target.value)}
+              placeholder="Digite seu preço proposto"
+              className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white mb-4"
+            />
+            <div className="flex space-x-3">
+              <button
+                onClick={() => { setShowPriceModal(false); setProposedPrice('') }}
+                className="flex-1 bg-[#2a2a2a] text-white py-2 rounded-lg"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => sendMessage.mutate({ type: 'price_proposal', price: Number(proposedPrice) })}
+                disabled={!proposedPrice || Number(proposedPrice) <= 0}
+                className="flex-1 bg-green-500 text-white py-2 rounded-lg disabled:opacity-50"
+              >
+                Enviar Proposta
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
