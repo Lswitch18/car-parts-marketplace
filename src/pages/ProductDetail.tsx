@@ -20,12 +20,12 @@ export default function ProductDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('parts')
-        .select('*, profiles(*)')
+        .select('*, brands(name), categories(name), profiles(full_name)')
         .eq('id', id)
         .single()
       
       if (error) throw error
-      return data as Product & { profiles: { name: string; avatar_url: string } }
+      return data
     }
   })
 

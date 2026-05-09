@@ -31,15 +31,13 @@ export default function Catalog() {
     queryFn: async () => {
       let query = supabase
         .from('parts')
-        .select('*, profiles(id, name, avatar_url)')
+        .select('*, brands(name), categories(name), profiles(full_name, avatar_url)')
         .eq('status', 'active')
 
-      if (filters.brand) query = query.eq('brand', filters.brand)
-      if (filters.model) query = query.eq('model', filters.model)
-      if (filters.category) query = query.eq('category', filters.category)
+      if (filters.brand) query = query.eq('brand_id', filters.brand)
+      if (filters.model) query = query.eq('model_id', filters.model)
+      if (filters.category) query = query.eq('category_id', filters.category)
       if (filters.condition) query = query.eq('condition', filters.condition)
-      if (filters.yearStart) query = query.gte('year_start', parseInt(filters.yearStart))
-      if (filters.yearEnd) query = query.lte('year_end', parseInt(filters.yearEnd))
       if (filters.minPrice) query = query.gte('price', parseFloat(filters.minPrice))
       if (filters.maxPrice) query = query.lte('price', parseFloat(filters.maxPrice))
       if (filters.search) query = query.ilike('title', `%${filters.search}%`)
@@ -49,7 +47,7 @@ export default function Catalog() {
       const { data, error } = await query.limit(50)
       
       if (error) throw error
-      return data as (Product & { profiles: { id: string; name: string; avatar_url: string } })[]
+      return data || []
     }
   })
 
@@ -313,13 +311,13 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
                 </div>
                 <div className="p-4">
                   <p className="text-[#ff3d00] text-sm mb-1">
-                    {BRANDS.find(b => b.id === product.brand)?.name} {product.model}
+                    {product.brands?.name || 'JDM'}
                   </p>
                   <h3 className="text-white font-semibold mb-2 truncate group-hover:text-[#ff3d00] transition-colors">
                     {product.title}
                   </h3>
                   <p className="text-gray-500 text-sm mb-3">
-                    {product.year_start} - {product.year_end}
+                    {product.categories?.name}
                   </p>
                   <div className="flex items-center justify-between">
                     <p className="text-[#ff3d00] font-bold text-xl">

@@ -14,7 +14,7 @@ export default function Favorites() {
       
       const { data, error } = await supabase
         .from('parts')
-        .select('*, profiles(name)')
+        .select('*, brands(name), categories(name)')
         .in('id', favorites)
         .eq('status', 'active')
       

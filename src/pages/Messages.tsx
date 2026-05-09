@@ -22,7 +22,7 @@ export default function Messages() {
       
       const { data: messages } = await supabase
         .from('messages')
-        .select('*, parts(title, images), sender:sender_id(name, avatar_url), receiver:receiver_id(name, avatar_url)')
+        .select('*, parts(title, images), sender:sender_id(full_name), receiver:receiver_id(full_name)')
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .order('created_at', { ascending: false })
 
@@ -53,7 +53,7 @@ export default function Messages() {
       
       const { data } = await supabase
         .from('messages')
-        .select('*, parts(*), sender:sender_id(name, avatar_url), receiver:receiver_id(name, avatar_url)')
+        .select('*, parts(title, images), sender:sender_id(full_name), receiver:receiver_id(full_name)')
         .or(`and(sender_id.eq.${user.id},receiver_id.eq.${selectedConversation}),and(sender_id.eq.${selectedConversation},receiver_id.eq.${user.id})`)
         .order('created_at', { ascending: true })
 

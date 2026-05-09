@@ -13,13 +13,13 @@ export default function Home() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('parts')
-        .select('*, profiles(name, avatar_url)')
+        .select('*, brands(name), categories(name), profiles(full_name)')
         .eq('status', 'active')
         .order('created_at', { ascending: false })
         .limit(8)
       
       if (error) throw error
-      return data as (Product & { profiles: { name: string; avatar_url: string } })[]
+      return data || []
     }
   })
 
