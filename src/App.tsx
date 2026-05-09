@@ -31,11 +31,11 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="messages" element={<Messages />} />
-          <Route path="admin" element={<AdminRoute />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="transactions" element={<TransactionManagement />} />
-          </Route>
+        </Route>
+        <Route path="/admin" element={<AdminRoute />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="transactions" element={<TransactionManagement />} />
         </Route>
       </Routes>
     </I18nProvider>

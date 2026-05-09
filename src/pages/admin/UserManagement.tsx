@@ -173,7 +173,7 @@ export default function UserManagement() {
                   <td className="px-6 py-4 text-center text-text-secondary">
                     {t('Nenhum usuário encontrado')}
                   </td>
-                  <td colSpan="5" className="px-6 py-4 text-center text-text-secondary"></td>
+                  <td colSpan={5} className="px-6 py-4 text-center text-text-secondary"></td>
                 </tr>
               ) : (
                 filteredUsers.map((user) => (

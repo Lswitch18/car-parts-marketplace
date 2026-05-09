@@ -4,10 +4,10 @@ import { useI18n } from '../../lib/i18n';
 
 export default function TransactionManagement() {
   const { t } = useI18n();
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
   const [statusFilter, setStatusFilter] = useState('all');
   const [fulfillmentFilter, setFulfillmentFilter] = useState('all');
 
@@ -192,7 +192,7 @@ export default function TransactionManagement() {
                   <td className="px-6 py-4 text-center text-text-secondary">
                     {t('Nenhuma transação encontrada')}
                   </td>
-                  <td colSpan="7" className="px-6 py-4 text-center text-text-secondary"></td>
+                  <td colSpan={7} className="px-6 py-4 text-center text-text-secondary"></td>
                 </tr>
               ) : (
                 filteredTransactions.map((t) => (

@@ -1,17 +1,12 @@
-import { Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useI18n } from '../lib/i18n';
 import { isAdmin, getCurrentUser } from '../lib/supabase';
 
-interface AdminRouteProps {
-  children: React.ReactNode;
-}
-
-export default function AdminRoute({ children }: AdminRouteProps) {
+export default function AdminRoute({ children }: { children?: React.ReactNode }) {
   const { t } = useI18n();
   const [isAdminUser, setIsAdminUser] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -55,12 +50,12 @@ export default function AdminRoute({ children }: AdminRouteProps) {
             {t('Você não tem permissão para acessar esta página.')}
           </p>
           <div className="flex items-center space-x-3">
-            <Navigate to="/" replace className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg">
+            <Link to="/" className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg">
               {t('Voltar para Home')}
-            </Navigate>
-            <Navigate to="/dashboard" replace className="bg-background border border-border px-4 py-2 rounded-lg text-text hover:border-primary">
+            </Link>
+            <Link to="/dashboard" className="bg-background border border-border px-4 py-2 rounded-lg text-text hover:border-primary">
               {t('Meu Dashboard')}
-            </Navigate>
+            </Link>
           </div>
         </div>
       </div>
