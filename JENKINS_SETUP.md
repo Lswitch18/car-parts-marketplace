@@ -1,77 +1,78 @@
 # Jenkins CI/CD Pipeline
 
-## Pré-requisitos
+## Docker Setup
 
-1. **Jenkins instalado** - ou usar Docker:
-   ```bash
-   docker-compose -f docker-compose.jenkins.yml up -d
-   ```
+### Build e Run
 
-2. **Plugins necessários:**
-   - Docker Pipeline
-   - Slack Notification
-   - Git
+```bash
+# Build da imagem
+docker-compose -f docker-compose.jenkins.yml build
 
-3. **Credenciais no Jenkins:**
-   - `supabase-access-token` - Token do Supabase (secret text)
-   - `vercel-token` - Token do Vercel (secret text)
+# Rodar o container
+docker-compose -f docker-compose.jenkins.yml up -d
 
-## Configuração
+# Acessar Jenkins
+# http://localhost:8081
+```
 
-### 1. Criar Credential do Supabase
+## Configuração no Jenkins
 
-1. Acesse Jenkins → Credentials → Add Credential
-2. Tipo: **Secret text**
-3. ID: `supabase-access-token`
-4. Secret: Cole o token do arquivo `.supabase-token`
+### 1. Credenciais (Manage Jenkins → Credentials)
 
-### 2. Criar Pipeline
+| ID | Tipo | Descrição |
+|----|------|-----------|
+| `supabase-access-token` | Secret text | Token do Supabase |
+| `vercel-token` | Secret text | Token do Vercel |
 
-1. Jenkins → New Item → Pipeline
+### 2. Pipeline
+
+1. **New Item** → **Pipeline**
 2. Nome: `japancar-parts-deploy`
-3. Configuração:
-   - GitHub project: URL do repositório
-   - Pipeline: Definition → Pipeline script from SCM
-   - SCM: Git
-   - Repository URL: seu-repositorio
-   - Branch: `*/main`
+3. **Pipeline** → **Definition**: Pipeline script from SCM
+4. **SCM**: Git
+5. **Repository URL**: seu-repositório
+6. **Branch**: `*/main`
+7. **Script Path**: `Jenkinsfile`
 
-### 3. Variáveis de Ambiente
+## Pipeline Stages
 
-Adicione no Jenkinsfile:
+| Stage | Ação |
+|-------|------|
+| Checkout | Clona repositório |
+| Install | `npm ci` |
+| Lint/TypeCheck | `npm run lint` + `npm run typecheck` |
+| Build | `npm run build` |
+| Deploy Supabase | Deploy Edge Functions |
+| Deploy Vercel | Deploy frontend (opcional) |
+
+## Variáveis de Ambiente
+
 - `SUPABASE_PROJECT_REF`: clqubcryhbrjlupkgeva
 
-## Stages do Pipeline
-
-| Stage | Descrição |
-|-------|-----------|
-| Checkout | Clona o repositório |
-| Install | Instala dependências npm |
-| Lint/TypeCheck | Verifica código |
-| Build | Faz build de produção |
-| Deploy Supabase | Deploy Edge Functions |
-| Deploy Vercel | Deploy frontend |
-| Tests | Executa testes |
-
-## Executar Manualmente
+## Comandos Úteis
 
 ```bash
-# Build local
-npm run build
+# Rebuild
+docker-compose -f docker-compose.jenkins.yml build --no-cache
 
-# Deploy functions ( requer token)
-export SUPABASE_ACCESS_TOKEN=$(cat .supabase-token)
-./deploy-functions.sh
+# Logs
+docker-compose -f docker-compose.jenkins.yml logs -f
+
+# Parar
+docker-compose -f docker-compose.jenkins.yml down
+
+# Acessar container
+docker exec -it jenkins-dind bash
 ```
 
-## Troubleshooting
+## Estrutura de Arquivos
 
-### Erro de versão Docker
-```bash
-# Atualizar CLI do Supabase
-curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz -o /tmp/supabase.tar.gz
-tar -xzf /tmp/supabase.tar.gz -C /tmp
 ```
-
-### Token não encontrado
-Verificar se a credential está com o nome correto: `supabase-access-token`
+├── Dockerfile.jenkins        # Imagen customizada Jenkins
+├── docker-compose.jenkins.yml # Orquestração
+├── Jenkinsfile              # Pipeline
+├── JENKINS_SETUP.md         # Este guia
+├── supabase/                # Edge Functions
+├── src/                     # Código frontend
+└── package.json             # Dependências
+```

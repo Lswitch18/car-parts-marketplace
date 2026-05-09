@@ -2,28 +2,28 @@ version: '3.8'
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    privileged: true
-    user: root
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jenkins-dind
     ports:
-      - "8080:8080"
-      - "50000:50000"
+      - "8081:8080"
+      - "50001:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./:/workspace
+      - ./supabase:/workspace/supabase
     environment:
+      - DOCKER_TLS_CERTDIR=
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
-
-  jenkins-agent:
-    image: jenkins/inbound-agent:latest
-    container_name: jenkins-agent
-    depends_on:
-      - jenkins
-    environment:
-      - JENKINS_URL=http://jenkins:8080
-      - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
+    privileged: true
+    user: root
+    command: >
+      bash -c "
+        groupadd -g 108 docker || true
+        usermod -aG docker jenkins || true
+        /usr/local/bin/jenkins.sh
+      "
 
 volumes:
   jenkins_home:

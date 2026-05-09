@@ -1,0 +1,13 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update || true && \
+    apt-get install -y maven nodejs npm docker.io --no-install-recommends || true && \
+    apt-get clean || true
+
+RUN if [ -f /usr/bin/docker ]; then ln -sf /usr/bin/docker /usr/bin/dockerd; fi || true
+
+RUN usermod -aG docker jenkins || true
+
+USER jenkins
