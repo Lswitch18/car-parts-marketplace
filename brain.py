@@ -75,9 +75,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 17440,
-        "modified": 1778403235.0924416,
-        "hash": "04af2c51797b08bb62ab9f800e62f80a"
+        "size": 17433,
+        "modified": 1778403827.5524437,
+        "hash": "1fdf6fd1696bac5e622545a18ec0c86f"
     },
     "vite.config.js": {
         "size": 196,
@@ -115,9 +115,9 @@ FILES = {
         "hash": "a0e9bf1e4033ea33783e3b9c594c9b63"
     },
     "PROJECT-STATUS.md": {
-        "size": 10335,
-        "modified": 1778331362.2944922,
-        "hash": "543973cec8db8b4d1a42c55cb62a0c09"
+        "size": 2948,
+        "modified": 1778403748.6444423,
+        "hash": "b416d0037a57f805636ab84b393d0179"
     },
     "setup-google-oauth.sh": {
         "size": 4216,
@@ -130,14 +130,14 @@ FILES = {
         "hash": "fd0fb864a3c8c5b5cb70ef8d10d107ff"
     },
     "index.html": {
-        "size": 870,
-        "modified": 1778257148.2285507,
-        "hash": "9fc5498ccb09349bea004b19681c4b3a"
+        "size": 846,
+        "modified": 1778403612.0084398,
+        "hash": "920f71c9d07c5a368874f56fba4c4afe"
     },
     "README.md": {
-        "size": 3018,
-        "modified": 1778257130.1565504,
-        "hash": "c2c077def6b978259e0fe577e1d971ad"
+        "size": 2022,
+        "modified": 1778403762.8084424,
+        "hash": "ee9617aff5c44aafac81fd7e07742018"
     },
     "tailwind.config.js": {
         "size": 679,
@@ -150,9 +150,9 @@ FILES = {
         "hash": "9fcf75521f4c43fd8b75300e0f63b867"
     },
     "BUILD-REPORT-2026-05-10.md": {
-        "size": 1851,
-        "modified": 1778403236.6244414,
-        "hash": "a8b69b24bbed8a0282b20fe8aa8c0965"
+        "size": 838,
+        "modified": 1778403591.39244,
+        "hash": "68a611a1df9360948049f2b130205532"
     },
     "ENVIRONMENT_SETUP.md": {
         "size": 2265,
@@ -160,9 +160,9 @@ FILES = {
         "hash": "33516d340df1a3617f00751af2121be0"
     },
     "NEXT-STEPS.md": {
-        "size": 2331,
-        "modified": 1778331468.5544941,
-        "hash": "e2747a6a8810f911644506ef1c87b5b2"
+        "size": 715,
+        "modified": 1778403796.5524428,
+        "hash": "bd545aac316095143527ac1ab87c8b41"
     },
     "PRODUCT-LAUNCH-PLAN.pdf": {
         "size": 81439,
@@ -175,14 +175,14 @@ FILES = {
         "hash": "a4c4acc46f6e759715fe4486ac9deabe"
     },
     "GITHUB-ACTIONS-SETUP.md": {
-        "size": 3774,
-        "modified": 1778388754.5604434,
-        "hash": "930ab348dc80a099306a3194a127a77f"
+        "size": 397,
+        "modified": 1778403825.5724435,
+        "hash": "b9aa76169ac5c80ad544c9c92eae75bf"
     },
     "PRODUCT-LAUNCH-PLAN.md": {
-        "size": 22595,
-        "modified": 1778330212.158492,
-        "hash": "ff97082e4a773a75ffb5a371f0b60f21"
+        "size": 579,
+        "modified": 1778403804.8244429,
+        "hash": "deabf8c643a5d3da583066e5001ceb85"
     },
     "Jenkinsfile": {
         "size": 2854,
@@ -190,9 +190,9 @@ FILES = {
         "hash": "d0e2bc054469ce96c79d5ab8aeb67ce3"
     },
     "rls-policies.sql": {
-        "size": 6974,
-        "modified": 1778331385.0744886,
-        "hash": "c3e838c346be584bca2311f0c7c700c6"
+        "size": 6964,
+        "modified": 1778403780.8724427,
+        "hash": "d2f2e3090dc52603b0429729c68959fe"
     },
     "monitor.py": {
         "size": 3153,
@@ -205,9 +205,9 @@ FILES = {
         "hash": "3ee0a35697494f2b702005ca8b6329ea"
     },
     "deploy-functions.sh": {
-        "size": 2984,
-        "modified": 1778337407.9224913,
-        "hash": "0e4388cbe054a43af9818c3f5122f88b"
+        "size": 2974,
+        "modified": 1778403788.1564429,
+        "hash": "ef529789673369bede21899f714f59b7"
     },
     "md2pdf_convert.py": {
         "size": 7620,
@@ -220,9 +220,9 @@ FILES = {
         "hash": "02bdce0f748c29cdd7799ba5d596bf2a"
     },
     "project-reports/BUILD-REPORT-2026-05-10.md": {
-        "size": 3031,
-        "modified": 1778403227.552442,
-        "hash": "87d8711f0ca1408fde7965202a4b0a7d"
+        "size": 1862,
+        "modified": 1778403583.49244,
+        "hash": "841e1ca7c78dd2481bc8c07c5ca93115"
     },
     "src/index.css": {
         "size": 2377,
@@ -255,14 +255,14 @@ FILES = {
         "hash": "534c5cbfc4d8d1a38a4637a7efe98f17"
     },
     "src/pages/Home.tsx": {
-        "size": 13030,
-        "modified": 1778299966.9628832,
-        "hash": "b41a1a473e1eb475ea7658185b39d352"
+        "size": 13045,
+        "modified": 1778403710.8684404,
+        "hash": "81fa2a98388135e74a1b1ee2bb241ca4"
     },
     "src/pages/Register.tsx": {
         "size": 8226,
-        "modified": 1778403050.2004466,
-        "hash": "de2f6407b4682931dcaf1a1020aa59c1"
+        "modified": 1778403717.7924407,
+        "hash": "69950be04ab4b8c7b32a2450cae080e9"
     },
     "src/pages/Dashboard.tsx": {
         "size": 17163,
@@ -281,8 +281,8 @@ FILES = {
     },
     "src/pages/ProductDetail.tsx": {
         "size": 7388,
-        "modified": 1778340474.1481752,
-        "hash": "6754e18598384a836761cd14a172bda4"
+        "modified": 1778403729.5364418,
+        "hash": "5b43ea5289fa444270b2f1dbc9a9dca3"
     },
     "src/pages/Catalog.tsx": {
         "size": 13732,
@@ -380,9 +380,9 @@ FILES = {
         "hash": "d41bc5575bfa63fa70c537a35faf58d9"
     },
     "src/components/layout/Footer.tsx": {
-        "size": 4671,
-        "modified": 1778257116.8365502,
-        "hash": "ff35db7c0b6dddaa125d841691571fe7"
+        "size": 4439,
+        "modified": 1778403686.9644396,
+        "hash": "1925093006afd42cd3b77d1d351811fb"
     },
     "src/components/layout/Layout.tsx": {
         "size": 505,
@@ -440,9 +440,9 @@ FILES = {
         "hash": "91da8ac6116cb569be106cc9c2efe849"
     },
     "src/lib/i18n.tsx": {
-        "size": 19409,
-        "modified": 1778395810.5884433,
-        "hash": "9edf9b941b5a9ddc603e1e084046febd"
+        "size": 19330,
+        "modified": 1778403633.5684395,
+        "hash": "4411ea1e2a49b62ad0b820aaf8f6282a"
     },
     "supabase/config.toml": {
         "size": 6014,

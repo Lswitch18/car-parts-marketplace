@@ -167,7 +167,7 @@ export default function ProductDetail() {
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
                 <Truck className="w-5 h-5 text-[#00e5ff]" />
-                <span>Envio para todo Brasil</span>
+                <span>Envio para todo Japão</span>
               </div>
             </div>
 

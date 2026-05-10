@@ -1,105 +1,52 @@
-# JAPANCAR PARTS
+# GAID - Plataforma de Vendas Automotivas
+🇯🇵 **A plataforma definitiva para compra e venda de peças no Japão**
 
-🇯🇵 **Marketplace JDM exclusivo para o Japão**
+GAID é um marketplace avançado focado no mercado automotivo japonês, oferecendo tecnologia de ponta para entusiastas e profissionais.
 
-O maior marketplace de peças automotivas JDM do Japão. Compre e venda peças genuínas para carros japoneses com entrega em todo o Japão.
-
-- 🌍 Cobertura: **Japão em sua totalidade**
-- 🚗 Foco: **Peças JDM (Japanese Domestic Market)**
-- ⚡ Rápido: **Entrega rápida em todo o Japão**
-- ✅ Seguro: **100% autenticado e verificado**
+- 🌍 Cobertura: **100% Território Japonês**
+- 🚗 Foco: **Peças Automotivas, Performance e Estilo**
+- ⚡ Velocidade: **Logística otimizada em todo o Japão**
+- ✅ Segurança: **RLS ativado e transações protegidas**
+- 🤖 IA: **Identificação inteligente de peças via Google Gemini**
 
 ## Tech Stack
 
-- **Vite** + **React** + **TypeScript**
-- **Tailwind CSS** (v4)
-- **Supabase** (Backend as a Service)
-- **TanStack Query** (Server State)
-- **Zustand** (Client State)
-- **React Router** (Routing)
+- **Frontend**: Vite + React 19 + TypeScript
+- **Styling**: Tailwind CSS v4 + Lucide Icons
+- **Backend**: Supabase (Auth, DB, Storage, Realtime, Edge Functions)
+- **IA**: Google Gemini 1.5 Flash (Visão Computacional)
+- **State Management**: TanStack Query + Zustand
 
 ## Setup
 
 ### 1. Instalar dependências
-
 ```bash
 npm install
 ```
 
-### 2. Configurar Supabase
-
-1. Crie um projeto no [Supabase](https://supabase.com)
-2. Copie o `.env.example` para `.env` e preencha com suas credenciais:
-
-```bash
-cp .env.example .env
+### 2. Configurar Variáveis de Ambiente
+Crie um arquivo `.env` com as seguintes chaves:
+```env
+VITE_SUPABASE_URL=https://<seu-projeto>.supabase.co
+VITE_SUPABASE_ANON_KEY=sb_publishable_...
 ```
 
-3. Execute o schema SQL no Supabase Dashboard:
-   - Vá em **SQL Editor**
-   - Cole o conteúdo de `supabase-schema.sql`
-   - Execute
-
 ### 3. Rodar em desenvolvimento
-
 ```bash
 npm run dev
 ```
 
-## Estrutura do Projeto
+## Funcionalidades Principais
 
-```
-src/
-├── components/
-│   └── layout/
-│       └── Header.tsx
-├── hooks/
-├── lib/
-│   ├── constants.ts      # Marcas, modelos, categorias
-│   ├── supabase.ts      # Cliente Supabase
-│   └── utils.ts         # Helpers
-├── pages/
-│   ├── Home.tsx
-│   ├── Catalog.tsx
-│   ├── Login.tsx
-│   ├── Register.tsx
-│   ├── Dashboard.tsx
-│   └── CreateListing.tsx
-├── stores/
-│   └── authStore.ts     # Zustand auth state
-├── types/
-│   └── index.ts
-├── App.tsx
-└── main.tsx
-```
+- [x] **Home Dinâmica**: Busca inteligente e categorias JDM.
+- [x] **Catálogo Avançado**: Filtros por marca, modelo e condição técnica.
+- [x] **IA Vision**: Cadastro de anúncios automático a partir de fotos.
+- [x] **Mensageria Realtime**: Chat integrado entre compradores e vendedores.
+- [x] **Dashboard de Analytics**: KPIs financeiros e gestão de vendas para Admins.
+- [x] **Checkout Seguro**: Fluxo de compra direta e escrow.
+- [ ] **Sistema de Leilões**: Lances em tempo real (Em desenvolvimento).
 
-## Funcionalidades
-
-- [x] Homepage com marcas e categorias
-- [x] Catálogo com filtros (marca, modelo, categoria, condição, preço)
-- [x] Cadastro de usuário (nome, email, telefone, endereço, CEP)
-- [x] Login
-- [x] Dashboard do vendedor
-- [x] Criar listagem de peças
-- [ ] Sistema de compras
-- [ ] Sistema de mensagens
-- [ ] Leilões
-
-## Database Schema
-
-O schema do banco está em `supabase-schema.sql` e inclui:
-
-- `profiles` - Perfis de usuário
-- `brands` - Marcas de carros
-- `car_models` - Modelos de carros
-- `categories` - Categorias de peças
-- `parts` - Peças para venda
-- `favorites` - Favoritos
-- `messages` - Mensagens
-- `transactions` - Transações
-- `reviews` - Avaliações
-
-## Marcasa Cadastradas
+## Marcas Atendidas
 
 - Nissan (GT-R, Skyline, Silvia, Fairlady Z...)
 - Toyota (Supra, AE86, GT86, GR86, MR2...)
@@ -107,31 +54,7 @@ O schema do banco está em `supabase-schema.sql` e inclui:
 - Mazda (RX-7, RX-8, MX-5...)
 - Subaru (WRX STI, BRZ, Impreza 22B...)
 - Mitsubishi (Lancer Evo, FTO, 3000GT...)
-- Lexus (LFA, RC F, GS F, IS F...)
-- Acura (NSX, Integra Type R...)
-- Infiniti (G35, G37, Q60...)
-
-## Categorias de Peças
-
-- Body Kits
-- Wings & Spoilers
-- Wheels & Rims
-- Brakes
-- Suspension
-- Engine
-- Exhaust
-- Interior
-- Lighting
-- Aero
-- Turbo & Boost
-- Cooling
-
-## Build
-
-```bash
-npm run build
-```
 
 ## Licença
 
-MIT
+MIT - Desenvolvido pela equipe GAID.

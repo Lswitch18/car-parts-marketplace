@@ -56,12 +56,12 @@ export default function Home() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center space-x-2 bg-[#ffd700]/20 border border-[#ffd700]/30 rounded-full px-4 py-2 mb-6">
               <Star className="w-4 h-4 text-[#ffd700]" />
-              <span className="text-[#b8860b] text-sm font-medium">{t('Marketplace JDM exclusivo do Japão')}</span>
+              <span className="text-[#b8860b] text-sm font-medium">{t('Gaid - A plataforma definitiva para compra e venda')}</span>
             </div>
             
             <h1 className="font-display text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
               {t('Encontre as melhores')} {' '}
-              <span className="text-gradient">peças JDM</span>
+              <span className="text-gradient">Gaid</span>
               <br />{t('para seu carro')}
             </h1>
             
@@ -242,7 +242,7 @@ export default function Home() {
               </div>
               <h3 className="text-gray-900 font-semibold text-lg mb-2">Entrega Rápida</h3>
               <p className="text-gray-600">
-                Envio para todo Brasil com rastreamento em tempo real.
+                {t('Envio para todo Japão com rastreamento em tempo real')}
               </p>
             </div>
             <div className="bg-white p-8 text-center rounded-xl shadow-md border-2 border-transparent hover:border-[#ffd700] transition-all">

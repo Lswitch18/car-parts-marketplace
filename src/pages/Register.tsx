@@ -99,7 +99,7 @@ export default function Register() {
             {t('Criar Conta')}
           </h1>
           <p className="text-text-secondary">
-            {t('Junte-se ao maior marketplace JDM do Brasil')}
+            {t('Junte-se ao maior marketplace JDM do Japão')}
           </p>
         </div>
 

@@ -4,7 +4,7 @@
 
 set -e
 
-echo "🚀 JAPANCAR PARTS - Deploy de Edge Functions"
+echo "🚀 GAID - Deploy de Edge Functions"
 echo "=============================================="
 
 # Cores para output

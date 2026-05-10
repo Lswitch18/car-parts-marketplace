@@ -1,5 +1,5 @@
 -- =============================================
--- JAPANCAR PARTS - POLÍTICAS RLS (Row Level Security)
+-- GAID - POLÍTICAS RLS (Row Level Security)
 -- Execute este script no SQL Editor do Supabase
 -- =============================================
 
