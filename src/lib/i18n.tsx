@@ -103,6 +103,29 @@ const translations: { [lang: string]: Translation } = {
     'Ano Inicial': '初期年',
     'Ano Final': '最終年',
     'Condição': '状態',
+    'analytics.dashboard': '分析',
+    'analytics.lastUpdate': '最終更新',
+    'analytics.refresh': '更新',
+    'analytics.errorLoading': '読み込みエラー',
+    'analytics.totalUsers': '総ユーザー数',
+    'analytics.activeListings': '有効な出品',
+    'analytics.totalRevenue': '総売上',
+    'analytics.todayRevenue': '本日の売上',
+    'analytics.revenueTitle': '売上推移',
+    'analytics.last7Days': '過去7日間',
+    'analytics.salesByCategory': 'カテゴリー別販売',
+    'analytics.topSellers': 'トップ出品者',
+    'analytics.userGrowth': 'ユーザー増加',
+    'analytics.last6Months': '過去6ヶ月',
+    'analytics.transactionStatus': '取引状況',
+    'analytics.recentTransactions': '最近の取引',
+    'analytics.noTransactions': '取引がありません',
+    'analytics.table.buyer': '买家',
+    'analytics.table.seller': '出品者',
+    'analytics.table.product': '商品',
+    'analytics.table.amount': '金額',
+    'analytics.table.status': '状況',
+    'analytics.table.date': '日付',
   },
   en: {
     'Catálogo': 'Catalog',
@@ -202,6 +225,29 @@ const translations: { [lang: string]: Translation } = {
     'Ano Inicial': 'Start Year',
     'Ano Final': 'End Year',
     'Condição': 'Condition',
+    'analytics.dashboard': 'Analytics',
+    'analytics.lastUpdate': 'Last update',
+    'analytics.refresh': 'Refresh',
+    'analytics.errorLoading': 'Error loading',
+    'analytics.totalUsers': 'Total Users',
+    'analytics.activeListings': 'Active Listings',
+    'analytics.totalRevenue': 'Total Revenue',
+    'analytics.todayRevenue': 'Today\'s Revenue',
+    'analytics.revenueTitle': 'Revenue',
+    'analytics.last7Days': 'Last 7 days',
+    'analytics.salesByCategory': 'Sales by Category',
+    'analytics.topSellers': 'Top Sellers',
+    'analytics.userGrowth': 'User Growth',
+    'analytics.last6Months': 'Last 6 months',
+    'analytics.transactionStatus': 'Transaction Status',
+    'analytics.recentTransactions': 'Recent Transactions',
+    'analytics.noTransactions': 'No transactions',
+    'analytics.table.buyer': 'Buyer',
+    'analytics.table.seller': 'Seller',
+    'analytics.table.product': 'Product',
+    'analytics.table.amount': 'Amount',
+    'analytics.table.status': 'Status',
+    'analytics.table.date': 'Date',
   },
   pt: {
     'Catálogo': 'Catálogo',
@@ -237,7 +283,7 @@ const translations: { [lang: string]: Translation } = {
     'Marketplace JDM exclusivo do Japão': 'Marketplace JDM exclusivo do Japão',
     'Encontre exatamente o que precisa para seu projeto': 'Encontre exatamente o que precisa para seu projeto',
     'As melhores marcas japonesas em um só lugar': 'As melhores marcas japonesas em um só lugar',
-    'Proteção total para suas compras com garantia de entrega e devolução': 'Proteção total para suas compras com garantia de entrega e devolução',
+    'Proteção total para suas compras com garantia de entrega e devolução': 'Proteção total para suas compras com garantia e devolução',
     'Envio para todo Japão com rastreamento em tempo real': 'Envio para todo Japão com rastreamento em tempo real',
     'Peças originais e de procedência com verificação de autenticidade': 'Peças originais e de procedência com verificação de autenticidade',
     'Junte-se a milhares de vendedores e alcance milhões de compradores!': 'Junte-se a milhares de vendedores e alcance milhões de compradores!',
@@ -301,6 +347,29 @@ const translations: { [lang: string]: Translation } = {
     'Ano Inicial': 'Ano Inicial',
     'Ano Final': 'Ano Final',
     'Condição': 'Condição',
+    'analytics.dashboard': 'Análises',
+    'analytics.lastUpdate': 'Última atualização',
+    'analytics.refresh': 'Atualizar',
+    'analytics.errorLoading': 'Erro ao carregar',
+    'analytics.totalUsers': 'Total de Usuários',
+    'analytics.activeListings': 'Anúncios Ativos',
+    'analytics.totalRevenue': 'Receita Total',
+    'analytics.todayRevenue': 'Receita de Hoje',
+    'analytics.revenueTitle': 'Receita',
+    'analytics.last7Days': 'Últimos 7 dias',
+    'analytics.salesByCategory': 'Vendas por Categoria',
+    'analytics.topSellers': 'Top Vendedores',
+    'analytics.userGrowth': 'Crescimento de Usuários',
+    'analytics.last6Months': 'Últimos 6 meses',
+    'analytics.transactionStatus': 'Status das Transações',
+    'analytics.recentTransactions': 'Transações Recentes',
+    'analytics.noTransactions': 'Sem transações',
+    'analytics.table.buyer': 'Comprador',
+    'analytics.table.seller': 'Vendedor',
+    'analytics.table.product': 'Produto',
+    'analytics.table.amount': 'Valor',
+    'analytics.table.status': 'Status',
+    'analytics.table.date': 'Data',
   }
 }
 
@@ -316,14 +385,12 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(() => {
-    // Detect browser language on initial render
     if (typeof window !== 'undefined') {
       const browserLang = navigator.language.split('-')[0] as Language
       if (['pt', 'en', 'ja'].includes(browserLang)) {
         return browserLang
       }
     }
-    // Default to Portuguese if browser language not supported
     return 'pt'
   })
 

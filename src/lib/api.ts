@@ -31,6 +31,18 @@ async function fetchApi<T>(endpoint: string, options: ApiOptions = {}): Promise<
 }
 
 export const api = {
+  analytics: {
+    all: () => fetchApi('/analytics/all'),
+    sales: (days = 7) => fetchApi(`/analytics/sales?days=${days}`),
+    sellers: (limit = 5) => fetchApi(`/analytics/sellers?limit=${limit}`),
+    categories: () => fetchApi('/analytics/categories'),
+    users: () => fetchApi('/analytics/users'),
+    brands: (limit = 5) => fetchApi(`/analytics/brands?limit=${limit}`),
+    status: () => fetchApi('/analytics/status'),
+    daily: () => fetchApi('/analytics/daily'),
+    recent: (limit = 10) => fetchApi(`/analytics/recent?limit=${limit}`),
+  },
+
   parts: {
     list: (params?: {
       page?: number;

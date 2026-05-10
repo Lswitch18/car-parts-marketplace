@@ -14,7 +14,7 @@ from datetime import datetime
 
 PROJECT_ROOT = Path(__file__).parent
 BRAIN_FILE = PROJECT_ROOT / "brain.py"
-IGNORE_EXTENSIONS = {'.pyc', '.pyo', '__pycache__', '.git'}
+IGNORE_EXTENSIONS = {'.pyc', '.pyo', '__pycache__', '.git', 'node_modules', '.venv', 'dist'}
 
 def get_file_hash(filepath):
     try:

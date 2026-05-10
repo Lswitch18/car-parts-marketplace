@@ -1,10 +1,6 @@
-version: '3.8'
-
 services:
   jenkins:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: jenkins/jenkins:lts
     container_name: jenkins-dind
     ports:
       - "8081:8080"
@@ -12,18 +8,10 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./supabase:/workspace/supabase
     environment:
       - DOCKER_TLS_CERTDIR=
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     privileged: true
-    user: root
-    command: >
-      bash -c "
-        groupadd -g 108 docker || true
-        usermod -aG docker jenkins || true
-        /usr/local/bin/jenkins.sh
-      "
 
 volumes:
   jenkins_home:
