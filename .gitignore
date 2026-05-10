@@ -33,3 +33,6 @@ dist-ssr
 .venv
 __pycache__
 *.pyc
+
+# Reports and Documentation
+project-reports/
