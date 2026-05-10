@@ -39,11 +39,6 @@ FILES = {
         "modified": 1778291597.8668823,
         "hash": "c41117ce9a6e0788fb0fe1cf18656bfb"
     },
-    "BUILD-REPORT-2026-05-10.pdf": {
-        "size": 27445,
-        "modified": 1778394945.640446,
-        "hash": "1983e2330c4f6d262a1666400363fbd2"
-    },
     "SPEC.md": {
         "size": 15548,
         "modified": 1778257140.6325505,
@@ -80,9 +75,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 17086,
-        "modified": 1778395000.6324432,
-        "hash": "4498f29e5a074a5b29ac0f99d8399d22"
+        "size": 17119,
+        "modified": 1778396074.0364447,
+        "hash": "476f3d019a59fcffedb456ee1a3b0279"
     },
     "vite.config.js": {
         "size": 196,
@@ -115,9 +110,9 @@ FILES = {
         "hash": "470cfd3ee10fbff840b377e769485f3e"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 1385,
-        "modified": 1778390032.3804414,
-        "hash": "02fe21c30e6f88f42fc57c1d781ca47a"
+        "size": 1417,
+        "modified": 1778396031.6204455,
+        "hash": "a0e9bf1e4033ea33783e3b9c594c9b63"
     },
     "PROJECT-STATUS.md": {
         "size": 10335,
@@ -153,11 +148,6 @@ FILES = {
         "size": 76,
         "modified": 1778244229.5445457,
         "hash": "9fcf75521f4c43fd8b75300e0f63b867"
-    },
-    "BUILD-REPORT-2026-05-10.md": {
-        "size": 4088,
-        "modified": 1778394932.4364507,
-        "hash": "c00bd091c899f749b00e3911a0ba3240"
     },
     "ENVIRONMENT_SETUP.md": {
         "size": 2265,
@@ -218,6 +208,16 @@ FILES = {
         "size": 7620,
         "modified": 1778210307.0892053,
         "hash": "296883d7caf9d86b1f798e82538ea03e"
+    },
+    "project-reports/BUILD-REPORT-2026-05-10.pdf": {
+        "size": 32196,
+        "modified": 1778395918.976441,
+        "hash": "f80bc03e58bf111a06eb2c9f0a87432c"
+    },
+    "project-reports/BUILD-REPORT-2026-05-10.md": {
+        "size": 4843,
+        "modified": 1778395901.276441,
+        "hash": "e6a02dbc8a034de27bd474d69e574388"
     },
     "src/index.css": {
         "size": 2377,
@@ -305,9 +305,9 @@ FILES = {
         "hash": "bb39aa47b1c50c381bb37cc5fa656e73"
     },
     "src/pages/admin/Dashboard.tsx": {
-        "size": 9436,
-        "modified": 1778354897.9121647,
-        "hash": "4c1fe723c378d265ba977cb1c16a37a8"
+        "size": 10683,
+        "modified": 1778395752.6524448,
+        "hash": "527d4957aab55f80895bdc83b2829216"
     },
     "src/pages/admin/TransactionManagement.tsx": {
         "size": 13027,
@@ -320,9 +320,9 @@ FILES = {
         "hash": "d477960b8c3203626c38166e3b4a1190"
     },
     "src/hooks/useAnalytics.ts": {
-        "size": 3573,
-        "modified": 1778354849.0361762,
-        "hash": "03a4d7692e642b618d4288d29def94f5"
+        "size": 3869,
+        "modified": 1778395740.7964454,
+        "hash": "206fb7eb105a3b009425e3e002727199"
     },
     "src/hooks/useTranslation.ts": {
         "size": 140,
@@ -430,9 +430,9 @@ FILES = {
         "hash": "91da8ac6116cb569be106cc9c2efe849"
     },
     "src/lib/i18n.tsx": {
-        "size": 18490,
-        "modified": 1778354192.7801692,
-        "hash": "d3ccc152bf06687590ffcda5e4262908"
+        "size": 19409,
+        "modified": 1778395810.5884433,
+        "hash": "9edf9b941b5a9ddc603e1e084046febd"
     },
     "supabase/config.toml": {
         "size": 6014,
@@ -465,9 +465,9 @@ FILES = {
         "hash": "db639ff2311a5396d3faaf336652f4fd"
     },
     "supabase/functions/analytics/index.ts": {
-        "size": 4699,
-        "modified": 1778354005.79217,
-        "hash": "a0140919d5ce559ca19a84d9c5778d73"
+        "size": 5104,
+        "modified": 1778395731.740446,
+        "hash": "a56882ef55edcf0e90fa464b37898314"
     },
     "supabase/functions/categories/index.ts": {
         "size": 4552,
@@ -535,9 +535,9 @@ FILES = {
         "hash": "c60d1c801526d1e246b908956aed53d7"
     },
     "supabase/migrations/analytics_functions.sql": {
-        "size": 6653,
-        "modified": 1778353988.9681742,
-        "hash": "b39edd304d4ac694ca89a5bb0e3613b6"
+        "size": 7939,
+        "modified": 1778395710.324444,
+        "hash": "90c9efcdbf7653df907258c27cd764f5"
     },
     "scripts/createUsers.ts": {
         "size": 1845,
