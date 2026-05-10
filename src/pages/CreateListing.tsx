@@ -4,8 +4,9 @@ import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS } from '../lib/constants'
-import { Upload, X, Loader2 } from 'lucide-react'
+import { Upload, X, Loader2, Sparkles } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
+import { api } from '../lib/api'
 
 export default function CreateListing() {
   const { t } = useI18n()
@@ -14,6 +15,7 @@ export default function CreateListing() {
   const [images, setImages] = useState<string[]>([])
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
+  const [analyzing, setAnalyzing] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -26,6 +28,30 @@ export default function CreateListing() {
     category: '',
     condition: ''
   })
+
+  const analyzeWithAI = async () => {
+    if (images.length === 0) return
+    
+    try {
+      setAnalyzing(true)
+      const data = await api.ai.analyzePart(images[0]) as any
+      
+      setFormData(prev => ({
+        ...prev,
+        title: data.title || prev.title,
+        description: data.description || prev.description,
+        price: data.estimated_price?.toString() || prev.price,
+        brand: data.brand || prev.brand,
+        model: data.model || prev.model,
+        category: data.category || prev.category,
+      }))
+    } catch (error) {
+      console.error('Erro na análise de IA:', error)
+      alert(t('Não foi possível analisar a imagem. Tente preencher manualmente.'))
+    } finally {
+      setAnalyzing(false)
+    }
+  }
 
   const createListing = useMutation({
     mutationFn: async () => {
@@ -130,6 +156,29 @@ export default function CreateListing() {
                   <Upload className="w-6 h-6 text-text-secondary" />
                 </label>
               </div>
+
+              {images.length > 0 && (
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={analyzeWithAI}
+                    disabled={analyzing}
+                    className="flex items-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-2 rounded-lg transition-all"
+                  >
+                    {analyzing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="text-sm font-medium">{t('IA Analisando...')}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        <span className="text-sm font-medium">{t('Preencher automaticamente com IA')}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
 
             <div>

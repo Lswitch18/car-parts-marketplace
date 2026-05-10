@@ -233,6 +233,10 @@ export const api = {
       metadata?: Record<string, unknown>;
     }) => fetchApi('/notifications', { method: 'POST', body: JSON.stringify(data) }),
   },
+
+  ai: {
+    analyzePart: (image: string) => fetchApi('/analyze-part', { method: 'POST', body: JSON.stringify({ image }) }),
+  },
 };
 
 export type ApiClient = typeof api;
