@@ -39,6 +39,11 @@ FILES = {
         "modified": 1778291597.8668823,
         "hash": "c41117ce9a6e0788fb0fe1cf18656bfb"
     },
+    "BUILD-REPORT-2026-05-10.pdf": {
+        "size": 27445,
+        "modified": 1778394945.640446,
+        "hash": "1983e2330c4f6d262a1666400363fbd2"
+    },
     "SPEC.md": {
         "size": 15548,
         "modified": 1778257140.6325505,
@@ -75,9 +80,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 16277,
-        "modified": 1778389342.384445,
-        "hash": "92d9f84791f0493dba02cc459c91360e"
+        "size": 17086,
+        "modified": 1778395000.6324432,
+        "hash": "4498f29e5a074a5b29ac0f99d8399d22"
     },
     "vite.config.js": {
         "size": 196,
@@ -111,7 +116,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1385,
-        "modified": 1778389266.2004418,
+        "modified": 1778390032.3804414,
         "hash": "02fe21c30e6f88f42fc57c1d781ca47a"
     },
     "PROJECT-STATUS.md": {
@@ -148,6 +153,11 @@ FILES = {
         "size": 76,
         "modified": 1778244229.5445457,
         "hash": "9fcf75521f4c43fd8b75300e0f63b867"
+    },
+    "BUILD-REPORT-2026-05-10.md": {
+        "size": 4088,
+        "modified": 1778394932.4364507,
+        "hash": "c00bd091c899f749b00e3911a0ba3240"
     },
     "ENVIRONMENT_SETUP.md": {
         "size": 2265,
@@ -275,9 +285,9 @@ FILES = {
         "hash": "eea332b48d74bf0538803e5ebce33c53"
     },
     "src/pages/CreateListing.tsx": {
-        "size": 11657,
-        "modified": 1778251592.1845503,
-        "hash": "af225f7900986abc13a9112bdfd0762e"
+        "size": 14596,
+        "modified": 1778391073.2364438,
+        "hash": "101b4982d5d01a8560c1c3d6f4446cc8"
     },
     "src/pages/Messages.tsx": {
         "size": 17857,
@@ -344,15 +354,20 @@ FILES = {
         "modified": 1778299622.2028801,
         "hash": "61ba9ad2ac786c9a9f946a614fdf5216"
     },
+    "src/components/GaidLogo.tsx": {
+        "size": 2826,
+        "modified": 1778394825.5444164,
+        "hash": "c844fa790acb6b1dd973f071cf8b6ce0"
+    },
     "src/components/SimulateSale.tsx": {
         "size": 6485,
         "modified": 1778341482.1561694,
         "hash": "2f178d0a09d6ab897b90b867521d2a32"
     },
     "src/components/layout/Header.tsx": {
-        "size": 8233,
-        "modified": 1778247894.9685478,
-        "hash": "d714101f1e7b2136a0f4e04d3927eeaa"
+        "size": 8927,
+        "modified": 1778394881.968452,
+        "hash": "76a56a18d20b38e677b96d2b45afdc2e"
     },
     "src/components/layout/Footer.tsx": {
         "size": 4671,
@@ -405,14 +420,14 @@ FILES = {
         "hash": "fee891a53a2c2eba069b98b7d2863fee"
     },
     "src/lib/supabase.ts": {
-        "size": 4733,
-        "modified": 1778267210.6868877,
-        "hash": "4860b1e3b9ab7493c038215a00341658"
+        "size": 4740,
+        "modified": 1778389503.4484437,
+        "hash": "09cfc1beb9bf3682a7e05881ecd2706c"
     },
     "src/lib/api.ts": {
-        "size": 7368,
-        "modified": 1778354026.116167,
-        "hash": "db00b6bac2d2295408cf17199d4e28c8"
+        "size": 7773,
+        "modified": 1778390840.0604486,
+        "hash": "91da8ac6116cb569be106cc9c2efe849"
     },
     "src/lib/i18n.tsx": {
         "size": 18490,
@@ -493,6 +508,16 @@ FILES = {
         "size": 10155,
         "modified": 1778327834.926492,
         "hash": "2c3fb6d3cb8ea865eec9f78a8e3791c2"
+    },
+    "supabase/functions/notifications/index.ts": {
+        "size": 1552,
+        "modified": 1778390195.744443,
+        "hash": "e24a7a5efd38c87b4783bf9e138d3f72"
+    },
+    "supabase/functions/analyze-part/index.ts": {
+        "size": 2828,
+        "modified": 1778390868.4684484,
+        "hash": "08f2f52f38ade01362a44b5a60b693ae"
     },
     "supabase/functions/brands/index.ts": {
         "size": 3314,
