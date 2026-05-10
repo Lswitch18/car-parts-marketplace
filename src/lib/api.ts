@@ -223,6 +223,16 @@ export const api = {
       return result;
     },
   },
+
+  notifications: {
+    send: (data: {
+      type: 'email' | 'push' | 'system';
+      to: string;
+      subject?: string;
+      body: string;
+      metadata?: Record<string, unknown>;
+    }) => fetchApi('/notifications', { method: 'POST', body: JSON.stringify(data) }),
+  },
 };
 
 export type ApiClient = typeof api;
