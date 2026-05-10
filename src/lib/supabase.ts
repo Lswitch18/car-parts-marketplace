@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://clqubcryhbrjlupkgeva.supabase.co'
-const supabaseAnonKey = 'sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt' // Lembre-se de trocar esta pela chave 'anon' do Supabase
+// Prioritiza variáveis de ambiente (Vercel/.env), mas mantém os valores fixos como fallback
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co'
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt'
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
