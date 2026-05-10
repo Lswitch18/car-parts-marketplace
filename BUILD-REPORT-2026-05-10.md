@@ -17,7 +17,10 @@ Este documento detalha as atualizações, correções e novas funcionalidades im
   - Sistema de Leilões em tempo real
   - Notificações do Sistema
 - **Banco de Dados:** Aplicação de migrações SQL para criação de tabelas de analytics e dados iniciais (seed).
-- **Segurança (RLS):** Configuração de políticas de Row Level Security para garantir que cada usuário acesse apenas seus próprios dados sensíveis.
+- **Segurança (RLS & RBAC):** 
+  - Configuração de políticas de Row Level Security.
+  - Estabilização da tabela `profiles` com a inclusão da coluna `role` para controle de acesso (RBAC).
+  - Atribuição de privilégios de Administrador ao usuário principal do sistema.
 
 ### 2.2 Sistema de Notificações e e-mail
 - **Novo Serviço de Notificação:** Criada Edge Function dedicada para processamento de alertas.
