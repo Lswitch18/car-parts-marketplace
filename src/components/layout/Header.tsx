@@ -1,9 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
-import { useState } from 'react'
-import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle, ArrowRight } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '../../lib/i18n'
+import { supabase } from '../../lib/supabase'
 import GaidLogo from '../GaidLogo'
 
 export default function Header() {
@@ -11,7 +12,44 @@ export default function Header() {
   const { t } = useI18n()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [messagesOpen, setMessagesOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  // Fetch unread messages count
+  const fetchUnreadCount = async () => {
+    if (!user) return
+    const { count, error } = await supabase
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('receiver_id', user.id)
+      .eq('read', false)
+    
+    if (!error) setUnreadCount(count || 0)
+  }
+
+  useEffect(() => {
+    if (user) {
+      fetchUnreadCount()
+      
+      // Inscrever em mudanças nas mensagens (Realtime)
+      const channel = supabase
+        .channel(`unread_messages_${user.id}`)
+        .on('postgres_changes', { 
+          event: '*', 
+          schema: 'public', 
+          table: 'messages',
+          filter: `receiver_id=eq.${user.id}`
+        }, () => {
+          fetchUnreadCount()
+        })
+        .subscribe()
+
+      return () => {
+        supabase.removeChannel(channel)
+      }
+    }
+  }, [user])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,12 +109,43 @@ export default function Header() {
                 >
                   <Heart className="w-5 h-5" />
                 </Link>
-                <Link
-                  to="/messages"
-                  className="text-gray-700 hover:text-[#ffd700] transition-colors p-2"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                </Link>
+                {/* Notification Dropdown para Mensagens */}
+                <div className="relative">
+                  <button
+                    onClick={() => setMessagesOpen(!messagesOpen)}
+                    onBlur={() => setTimeout(() => setMessagesOpen(false), 200)}
+                    className="text-gray-700 hover:text-primary transition-colors p-2 relative"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-1 right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-surface">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {messagesOpen && (
+                    <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
+                      <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+                        <h4 className="font-bold text-gray-900">{t('Mensagens')}</h4>
+                        <p className="text-xs text-gray-500">
+                          {unreadCount > 0 
+                            ? `Você tem ${unreadCount} mensagens pendentes` 
+                            : 'Nenhuma mensagem nova'}
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        <Link
+                          to="/messages"
+                          className="flex items-center justify-between w-full p-3 text-sm font-medium text-primary hover:bg-primary/5 rounded-lg transition-colors group"
+                        >
+                          <span>{t('Ir para Mensagens')}</span>
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <Link
                   to="/create-listing"
                   className="flex items-center space-x-1 bg-primary hover:bg-primary-dark text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors"
@@ -186,10 +255,15 @@ export default function Header() {
                 </Link>
                 <Link 
                   to="/messages" 
-                  className="block py-2 text-gray-700"
+                  className="py-2 text-gray-700 flex items-center justify-between"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {t('Mensagens')}
+                  <span>{t('Mensagens')}</span>
+                  {unreadCount > 0 && (
+                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Link>
                 <Link 
                   to="/create-listing" 
