@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '../../lib/i18n'
+import GaidLogo from '../GaidLogo'
 
 export default function Header() {
   const { user, signOut } = useAuthStore()
@@ -31,15 +32,10 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link 
             to="/" 
-            className="flex items-center space-x-2"
+            className="flex items-center"
             onClick={() => setMenuOpen(false)}
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-              <span className="text-white font-bold text-lg">J</span>
-            </div>
-            <span className="font-display font-bold text-xl text-text">
-              JAPANCAR<span className="text-primary">PARTS</span>
-            </span>
+            <GaidLogo size={40} className="-ml-8" />
           </Link>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-8">
