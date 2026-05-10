@@ -27,12 +27,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (get().initialized) return
     
     try {
-      console.log('Inicializando auth...')
       const { data: { user } } = await supabase.auth.getUser()
       
       if (user) {
-        console.log('Usuário encontrado:', user.id, user.email)
-        
         let { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -40,8 +37,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           .single()
         
         if (profileError) {
-          console.log('Erro ao buscar perfil, criando novo:', profileError.message)
-          
           // Criar perfil automaticamente se não existir
           const { data: newProfile, error: createError } = await supabase
             .from('profiles')
@@ -58,7 +53,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             .single()
           
           if (createError) {
-            console.error('Erro ao criar perfil:', createError.message)
             set({ user: null, loading: false, initialized: true })
             return
           }
@@ -67,19 +61,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
         
         if (profile) {
-          console.log('Perfil encontrado:', profile.full_name)
           // Mapear full_name para name
           set({ user: { ...profile, name: profile.full_name } as User, loading: false, initialized: true })
         } else {
-          console.log('Perfil nulo')
           set({ user: null, loading: false, initialized: true })
         }
       } else {
-        console.log('Nenhum usuário logado')
         set({ user: null, loading: false, initialized: true })
       }
     } catch (error) {
-      console.error('Auth initialization error:', error)
       set({ user: null, loading: false, initialized: true })
     }
   },

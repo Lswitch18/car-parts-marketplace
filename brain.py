@@ -75,9 +75,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 17119,
-        "modified": 1778396074.0364447,
-        "hash": "476f3d019a59fcffedb456ee1a3b0279"
+        "size": 17122,
+        "modified": 1778401724.364444,
+        "hash": "082a78f9ad1aa316f3b1fcf604ad8479"
     },
     "vite.config.js": {
         "size": 196,
@@ -210,14 +210,14 @@ FILES = {
         "hash": "296883d7caf9d86b1f798e82538ea03e"
     },
     "project-reports/BUILD-REPORT-2026-05-10.pdf": {
-        "size": 32196,
-        "modified": 1778395918.976441,
-        "hash": "f80bc03e58bf111a06eb2c9f0a87432c"
+        "size": 33576,
+        "modified": 1778399583.8124416,
+        "hash": "02bdce0f748c29cdd7799ba5d596bf2a"
     },
     "project-reports/BUILD-REPORT-2026-05-10.md": {
-        "size": 4843,
-        "modified": 1778395901.276441,
-        "hash": "e6a02dbc8a034de27bd474d69e574388"
+        "size": 5566,
+        "modified": 1778399570.4164448,
+        "hash": "52a37603af18a79a7e00d431dd33a409"
     },
     "src/index.css": {
         "size": 2377,
@@ -245,9 +245,9 @@ FILES = {
         "hash": "a3de439381b1694ffecd1cc7821c4ab9"
     },
     "src/stores/authStore.ts": {
-        "size": 3694,
-        "modified": 1778250603.8325503,
-        "hash": "a8a41f221fa8e513d1c4c151fe7979e6"
+        "size": 3207,
+        "modified": 1778401396.0564423,
+        "hash": "534c5cbfc4d8d1a38a4637a7efe98f17"
     },
     "src/pages/Home.tsx": {
         "size": 13030,
@@ -265,9 +265,9 @@ FILES = {
         "hash": "2e0d59df889e75fd757af40580982840"
     },
     "src/pages/Login.tsx": {
-        "size": 6866,
-        "modified": 1778249740.2445478,
-        "hash": "2015d7c87063c2f5c1b6288bb3c1d5e7"
+        "size": 7321,
+        "modified": 1778397057.9684439,
+        "hash": "856cd066346faa9c522171d88b4d1169"
     },
     "src/pages/Favorites.tsx": {
         "size": 4230,
@@ -365,9 +365,9 @@ FILES = {
         "hash": "2f178d0a09d6ab897b90b867521d2a32"
     },
     "src/components/layout/Header.tsx": {
-        "size": 8927,
-        "modified": 1778394881.968452,
-        "hash": "76a56a18d20b38e677b96d2b45afdc2e"
+        "size": 12119,
+        "modified": 1778399001.1844437,
+        "hash": "d41bc5575bfa63fa70c537a35faf58d9"
     },
     "src/components/layout/Footer.tsx": {
         "size": 4671,
@@ -420,9 +420,9 @@ FILES = {
         "hash": "fee891a53a2c2eba069b98b7d2863fee"
     },
     "src/lib/supabase.ts": {
-        "size": 4740,
-        "modified": 1778389503.4484437,
-        "hash": "09cfc1beb9bf3682a7e05881ecd2706c"
+        "size": 4845,
+        "modified": 1778401580.0404432,
+        "hash": "6967c04e3c0f105de0085146632845cf"
     },
     "src/lib/api.ts": {
         "size": 7773,
