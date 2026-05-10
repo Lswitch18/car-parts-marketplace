@@ -16,6 +16,7 @@ export default function Header() {
     e.preventDefault()
     if (searchQuery.trim()) {
       navigate(`/catalog?search=${encodeURIComponent(searchQuery)}`)
+      setMenuOpen(false)
     }
   }
 
@@ -160,33 +161,67 @@ export default function Header() {
             </div>
           </form>
           <nav className="space-y-2">
-            <Link to="/catalog" className="block py-2 text-gray-700 font-medium">
+            <Link 
+              to="/catalog" 
+              className="block py-2 text-gray-700 font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
               {t('Catálogo')}
             </Link>
             {user ? (
               <>
-                <Link to="/dashboard" className="block py-2 text-gray-700">
+                <Link 
+                  to="/dashboard" 
+                  className="block py-2 text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {t('Dashboard')}
                 </Link>
-                <Link to="/favorites" className="block py-2 text-gray-700">
+                <Link 
+                  to="/favorites" 
+                  className="block py-2 text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {t('Favoritos')}
                 </Link>
-                <Link to="/messages" className="block py-2 text-gray-700">
+                <Link 
+                  to="/messages" 
+                  className="block py-2 text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {t('Mensagens')}
                 </Link>
-                <Link to="/create-listing" className="block py-2 text-[#ffd700] font-medium">
+                <Link 
+                  to="/create-listing" 
+                  className="block py-2 text-[#ffd700] font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {t('Vender')}
                 </Link>
-                <button onClick={handleSignOut} className="block py-2 text-red-600">
+                <button 
+                  onClick={() => {
+                    handleSignOut();
+                    setMenuOpen(false);
+                  }} 
+                  className="block py-2 text-red-600"
+                >
                   {t('Sair')}
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="block py-2 text-gray-700">
+                <Link 
+                  to="/login" 
+                  className="block py-2 text-gray-700"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {t('Entrar')}
                 </Link>
-                <Link to="/register" className="block py-2 text-[#ffd700] font-medium">
+                <Link 
+                  to="/register" 
+                  className="block py-2 text-[#ffd700] font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
                   {t('Cadastrar')}
                 </Link>
               </>
