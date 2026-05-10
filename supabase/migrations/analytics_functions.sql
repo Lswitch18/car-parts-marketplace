@@ -234,3 +234,42 @@ BEGIN
   LIMIT limit_count;
 END;
 $$;
+-- =====================================================
+-- 9. Advanced Financial Stats
+-- =====================================================
+CREATE OR REPLACE FUNCTION get_advanced_financial_stats()
+RETURNS TABLE(
+  total_gmv NUMERIC,
+  completed_revenue NUMERIC,
+  retained_escrow NUMERIC,
+  current_month_revenue NUMERIC,
+  previous_month_revenue NUMERIC,
+  total_transactions_count INTEGER
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    COALESCE(SUM(t.amount), 0)::NUMERIC as total_gmv,
+    
+    COALESCE(SUM(t.amount) FILTER (WHERE t.payment_status = 'completed'), 0)::NUMERIC as completed_revenue,
+    
+    COALESCE(SUM(t.amount) FILTER (WHERE t.payment_status = 'pending'), 0)::NUMERIC as retained_escrow,
+    
+    COALESCE(SUM(t.amount) FILTER (
+      WHERE t.payment_status = 'completed' 
+      AND t.created_at >= DATE_TRUNC('month', CURRENT_DATE)
+    ), 0)::NUMERIC as current_month_revenue,
+
+    COALESCE(SUM(t.amount) FILTER (
+      WHERE t.payment_status = 'completed' 
+      AND t.created_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+      AND t.created_at < DATE_TRUNC('month', CURRENT_DATE)
+    ), 0)::NUMERIC as previous_month_revenue,
+
+    COUNT(*)::INTEGER as total_transactions_count
+  FROM transactions t;
+END;
+$$;

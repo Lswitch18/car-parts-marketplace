@@ -66,6 +66,15 @@ export interface DailyStats {
 
 export type DailyStatsData = DailyStats | null;
 
+export interface FinancialData {
+  total_gmv: string | number;
+  completed_revenue: string | number;
+  retained_escrow: string | number;
+  current_month_revenue: string | number;
+  previous_month_revenue: string | number;
+  total_transactions_count: number;
+}
+
 export interface AnalyticsData {
   sales: { sales: SalesData[]; period: number; total: number };
   sellers: { sellers: SellerData[] };
@@ -75,6 +84,7 @@ export interface AnalyticsData {
   status: { status: TransactionStatusData[] };
   daily: DailyStats | null;
   recent: { transactions: RecentTransaction[] };
+  financial: FinancialData | null;
 }
 
 export function useAnalytics() {

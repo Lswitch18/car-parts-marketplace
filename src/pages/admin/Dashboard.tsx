@@ -108,6 +108,43 @@ export default function AdminDashboard() {
         ) : (
           <>
             <StatCard
+              title={t('analytics.totalGMV')}
+              value={formatCurrency(data?.financial?.total_gmv)}
+              icon={DollarSign}
+              color="text-white"
+            />
+            <StatCard
+              title={t('analytics.completedRevenue')}
+              value={formatCurrency(data?.financial?.completed_revenue)}
+              icon={TrendingUp}
+              color="text-green-400"
+            />
+            <StatCard
+              title={t('analytics.retainedEscrow')}
+              value={formatCurrency(data?.financial?.retained_escrow)}
+              icon={ShoppingCart}
+              color="text-[#FFB800]"
+            />
+            <StatCard
+              title={t('analytics.monthlyRevenue')}
+              value={formatCurrency(data?.financial?.current_month_revenue)}
+              icon={DollarSign}
+              trend={data?.financial?.previous_month_revenue ? `vs ${formatCurrency(data.financial.previous_month_revenue)} last month` : undefined}
+              color="text-[#00D4FF]"
+            />
+          </>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {isLoading ? (
+          <>
+            <LoadingSkeleton className="h-24" />
+            <LoadingSkeleton className="h-24" />
+          </>
+        ) : (
+          <>
+            <StatCard
               title={t('analytics.totalUsers')}
               value={stats?.total_users ?? data?.users?.total ?? 0}
               icon={Users}
@@ -119,17 +156,16 @@ export default function AdminDashboard() {
               icon={ShoppingCart}
               color="text-[#00D4FF]"
             />
-            <StatCard
-              title={t('analytics.totalRevenue')}
-              value={formatCurrency(data?.sales?.total)}
-              icon={DollarSign}
-              color="text-[#FFB800]"
+             <StatCard
+              title={t('analytics.totalParts')}
+              value={stats?.total_parts ?? 0}
+              icon={ShoppingCart}
+              color="text-[#C0C0C0]"
             />
             <StatCard
-              title={t('analytics.todayRevenue')}
-              value={formatCurrency(stats?.today_revenue)}
-              icon={TrendingUp}
-              trend={stats?.yesterday_revenue ? `vs ¥${yesterdayRevenue} yesterday` : undefined}
+              title={t('analytics.todayTransactions')}
+              value={stats?.today_transactions ?? 0}
+              icon={RefreshCw}
               color="text-green-400"
             />
           </>

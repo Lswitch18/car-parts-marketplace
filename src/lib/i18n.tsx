@@ -126,6 +126,12 @@ const translations: { [lang: string]: Translation } = {
     'analytics.table.amount': '金額',
     'analytics.table.status': '状況',
     'analytics.table.date': '日付',
+    'analytics.totalGMV': '総取扱高 (GMV)',
+    'analytics.completedRevenue': '確定売上',
+    'analytics.retainedEscrow': '保留金 (エスクロー)',
+    'analytics.monthlyRevenue': '今月の売上',
+    'analytics.todayTransactions': '本日の取引数',
+    'analytics.totalParts': '総部品数',
   },
   en: {
     'Catálogo': 'Catalog',
@@ -248,6 +254,12 @@ const translations: { [lang: string]: Translation } = {
     'analytics.table.amount': 'Amount',
     'analytics.table.status': 'Status',
     'analytics.table.date': 'Date',
+    'analytics.totalGMV': 'Total GMV',
+    'analytics.completedRevenue': 'Completed Revenue',
+    'analytics.retainedEscrow': 'Retained (Escrow)',
+    'analytics.monthlyRevenue': 'Monthly Revenue',
+    'analytics.todayTransactions': 'Today Transactions',
+    'analytics.totalParts': 'Total Parts',
   },
   pt: {
     'Catálogo': 'Catálogo',
@@ -370,6 +382,12 @@ const translations: { [lang: string]: Translation } = {
     'analytics.table.amount': 'Valor',
     'analytics.table.status': 'Status',
     'analytics.table.date': 'Data',
+    'analytics.totalGMV': 'GMV Total',
+    'analytics.completedRevenue': 'Receita Concluída',
+    'analytics.retainedEscrow': 'Valor Retido (Escrow)',
+    'analytics.monthlyRevenue': 'Receita Mensal',
+    'analytics.todayTransactions': 'Transações de Hoje',
+    'analytics.totalParts': 'Total de Peças',
   }
 }
 

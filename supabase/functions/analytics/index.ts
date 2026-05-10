@@ -1,6 +1,6 @@
 import { supabase, successResponse, errorResponse, corsHeaders } from '../utils/base.ts';
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders() });
   }
@@ -55,7 +55,8 @@ Deno.serve(async (req) => {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify(errorResponse(err.message)), {
+    const errorMessage = err instanceof Error ? err.message : 'Erro interno no servidor';
+    return new Response(JSON.stringify(errorResponse(errorMessage)), {
       status: 500,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
@@ -166,8 +167,20 @@ async function getRecentTransactions(limit: number) {
   return { transactions: data || [] };
 }
 
+async function getFinancialStats() {
+  const { data, error } = await supabase
+    .rpc('get_advanced_financial_stats');
+
+  if (error) {
+    console.error('get_advanced_financial_stats error:', error);
+    return null;
+  }
+
+  return data?.[0] || null;
+}
+
 async function getAllAnalytics() {
-  const [sales, sellers, categories, users, brands, status, daily, recent] = await Promise.all([
+  const [sales, sellers, categories, users, brands, status, daily, recent, financial] = await Promise.all([
     getSalesByDate(7),
     getTopSellers(5),
     getPartsByCategory(),
@@ -176,6 +189,7 @@ async function getAllAnalytics() {
     getTransactionStatus(),
     getDailyStats(),
     getRecentTransactions(10),
+    getFinancialStats(),
   ]);
 
   return {
@@ -187,5 +201,6 @@ async function getAllAnalytics() {
     status,
     daily,
     recent,
+    financial,
   };
 }
