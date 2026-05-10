@@ -34,9 +34,30 @@ Este documento detalha as atualizações, correções e novas funcionalidades im
 - **Navegação Inteligente:** Correção no menu móvel que agora se fecha automaticamente ao selecionar qualquer opção (venda, catálogo, perfil), melhorando a fluidez em smartphones.
 - **Header Responsivo:** Ajustes de layout para garantir que a barra de ferramentas permaneça fixa e acessível em todas as resoluções.
 
-## 4. Estado Atual e Próximos Passos
+## 4. Integração de Inteligência Artificial (Beta)
 
-### Status: **Pronto para Homologação**
+### 4.1 Assistente de Cadastro Inteligente
+- **Funcionalidade:** Preenchimento automático de anúncios a partir de fotos das peças.
+- **Modelo Utilizado:** Google Gemini 1.5 Flash (Visão Computacional).
+- **Controle de Testes:** Implementado um *Toggle* (chave liga/desliga) na interface de criação de anúncios para habilitar ou desabilitar a IA durante a fase beta.
+
+### 4.2 Custos e Estimativas (Google Gemini API)
+| Modelo | Input (por 1M tokens) | Output (por 1M tokens) | Recomendação |
+| :--- | :--- | :--- | :--- |
+| **Gemini 1.5 Flash** | $0.35 | $1.05 | **Ideal:** Rápido e extremamente barato. |
+| **Gemini 1.5 Pro** | $3.50 | $10.50 | Para análises técnicas complexas. |
+
+*Nota: Atualmente a função opera em modo Mock (simulado) se a chave não for fornecida, permitindo testes de UI sem custo.*
+
+### 4.3 Alternativas Open Source (Auto-Hospedagem)
+Caso o cliente prefira não depender de APIs pagas ou deseje total privacidade dos dados:
+- **LLaVA (Large Language-and-Vision Assistant):** O padrão ouro para IA de visão open source. Requer servidor com GPU (ex: NVIDIA RTX 3090/4090).
+- **Moondream2:** Um modelo de visão minúsculo (1.6B parâmetros) que pode rodar até em CPUs comuns ou dispositivos móveis com boa performance.
+- **BakLLaVA:** Alternativa focada em eficiência baseada no Mistral.
+
+## 5. Estado Atual e Próximos Passos
+
+### Status: **Pronto para Homologação (Sprint 2)**
 
 **Próximas Prioridades:**
 1. Ativação de Webhooks do Stripe para processamento automático de vendas.
