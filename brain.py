@@ -75,9 +75,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 17122,
-        "modified": 1778401724.364444,
-        "hash": "082a78f9ad1aa316f3b1fcf604ad8479"
+        "size": 17442,
+        "modified": 1778403104.7684436,
+        "hash": "19dbda11779404615a3d9a3dcc351454"
     },
     "vite.config.js": {
         "size": 196,
@@ -149,6 +149,11 @@ FILES = {
         "modified": 1778244229.5445457,
         "hash": "9fcf75521f4c43fd8b75300e0f63b867"
     },
+    "BUILD-REPORT-2026-05-10.md": {
+        "size": 2567,
+        "modified": 1778403104.3324437,
+        "hash": "3e698c0ecf55a7dcecf01f600c860767"
+    },
     "ENVIRONMENT_SETUP.md": {
         "size": 2265,
         "modified": 1778256253.4725423,
@@ -215,9 +220,9 @@ FILES = {
         "hash": "02bdce0f748c29cdd7799ba5d596bf2a"
     },
     "project-reports/BUILD-REPORT-2026-05-10.md": {
-        "size": 5566,
-        "modified": 1778399570.4164448,
-        "hash": "52a37603af18a79a7e00d431dd33a409"
+        "size": 3167,
+        "modified": 1778403095.2604437,
+        "hash": "85d54363f2568b9f601fbec78924dafd"
     },
     "src/index.css": {
         "size": 2377,
@@ -235,9 +240,9 @@ FILES = {
         "hash": "16c5173f27fbb846bae733ed9ec9f4cb"
     },
     "src/App.tsx": {
-        "size": 2104,
-        "modified": 1778340463.892166,
-        "hash": "9f908aa19f5781d5bd41d94641d983c6"
+        "size": 2444,
+        "modified": 1778401966.4884453,
+        "hash": "e95f39abae38fcd82c0e2413a5811804"
     },
     "src/stores/favoriteStore.ts": {
         "size": 1205,
@@ -255,9 +260,9 @@ FILES = {
         "hash": "b41a1a473e1eb475ea7658185b39d352"
     },
     "src/pages/Register.tsx": {
-        "size": 8432,
-        "modified": 1778249529.2045481,
-        "hash": "f63032e8f8164946f060df5d8144e7a6"
+        "size": 8226,
+        "modified": 1778403050.2004466,
+        "hash": "de2f6407b4682931dcaf1a1020aa59c1"
     },
     "src/pages/Dashboard.tsx": {
         "size": 17163,
@@ -339,10 +344,15 @@ FILES = {
         "modified": 1778333027.422486,
         "hash": "87c60468311364603499b16714559933"
     },
+    "src/components/ProtectedRoute.tsx": {
+        "size": 732,
+        "modified": 1778401952.3204453,
+        "hash": "0344c204fc7ec6a09b449e9a03d93dd5"
+    },
     "src/components/ChatPopup.tsx": {
-        "size": 19558,
-        "modified": 1778341138.792175,
-        "hash": "3a4249db4d758692f16c5ee29fca5196"
+        "size": 20895,
+        "modified": 1778403004.1404467,
+        "hash": "929bdc6c83da7ce44bb1dd90dd5c4fe2"
     },
     "src/components/LanguageDetector.tsx": {
         "size": 1932,
@@ -420,9 +430,9 @@ FILES = {
         "hash": "fee891a53a2c2eba069b98b7d2863fee"
     },
     "src/lib/supabase.ts": {
-        "size": 4845,
-        "modified": 1778401580.0404432,
-        "hash": "6967c04e3c0f105de0085146632845cf"
+        "size": 4914,
+        "modified": 1778402828.404441,
+        "hash": "09a8b928e35961e3d7f723524c560458"
     },
     "src/lib/api.ts": {
         "size": 7773,

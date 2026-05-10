@@ -38,7 +38,6 @@ export default function Register() {
     }
 
     try {
-      console.log('Iniciando registro...')
       
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
@@ -51,7 +50,7 @@ export default function Register() {
         }
       })
 
-      console.log('Auth response:', { data, signUpError })
+
       
       if (signUpError) {
         if (isRateLimitError(signUpError)) {
@@ -64,7 +63,6 @@ export default function Register() {
       }
 
       if (data.user) {
-        console.log('Criando perfil para user:', data.user.id)
         const { error: profileError } = await supabase.from('profiles').insert({
           id: data.user.id,
           full_name: formData.name,
@@ -77,7 +75,7 @@ export default function Register() {
         }
       }
 
-      console.log('Inicializando auth...')
+
       await initialize()
       navigate('/dashboard')
     } catch (err: any) {

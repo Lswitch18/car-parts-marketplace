@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { MessageCircle, X, Send, User, Minimize2, Maximize2, Package, DollarSign, Check, ShoppingCart, ArrowRight } from 'lucide-react'
@@ -46,7 +47,7 @@ interface Conversation {
 
 export default function ChatPopup({ initialProductId, initialSellerId, onClose }: ChatPopupProps) {
   const { user } = useAuthStore()
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
@@ -238,13 +239,31 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   const conversation = conversations.find(c => c.oder_id === selectedConversation)
 
   if (!isOpen) {
+    const totalUnread = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)
+    
     return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 bg-[#ff3d00] text-white p-4 rounded-full shadow-lg hover:bg-[#dd2c00] transition-colors z-50"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </button>
+      <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+        {totalUnread > 0 && (
+          <Link
+            to="/messages"
+            className="bg-[#1a1a1a] text-white px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2a2a2a] shadow-lg flex items-center space-x-2 animate-bounce"
+          >
+            <span className="w-2 h-2 bg-[#ff3d00] rounded-full"></span>
+            <span>{totalUnread} novas mensagens</span>
+          </Link>
+        )}
+        <button
+          onClick={() => setIsOpen(true)}
+          className="bg-[#ff3d00] text-white p-4 rounded-full shadow-lg hover:bg-[#dd2c00] transition-colors relative"
+        >
+          <MessageCircle className="w-6 h-6" />
+          {totalUnread > 0 && (
+            <span className="absolute -top-1 -right-1 bg-white text-[#ff3d00] text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] border-2 border-[#ff3d00]">
+              {totalUnread > 99 ? '99+' : totalUnread}
+            </span>
+          )}
+        </button>
+      </div>
     )
   }
 
@@ -280,6 +299,12 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
           <div className="flex-1 overflow-y-auto">
             {!selectedConversation ? (
               <div className="p-4 space-y-2">
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">Recentes</span>
+                  <Link to="/messages" className="text-[#ff3d00] text-xs hover:underline flex items-center">
+                    Ver todas <ArrowRight className="w-3 h-3 ml-1" />
+                  </Link>
+                </div>
                 {conversations.length > 0 ? conversations.map((conv) => (
                   <button
                     key={`${conv.oder_id}-${conv.part.id}`}
