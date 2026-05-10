@@ -55,9 +55,16 @@ Caso o cliente prefira não depender de APIs pagas ou deseje total privacidade d
 - **Moondream2:** Um modelo de visão minúsculo (1.6B parâmetros) que pode rodar até em CPUs comuns ou dispositivos móveis com boa performance.
 - **BakLLaVA:** Alternativa focada em eficiência baseada no Mistral.
 
-## 5. Estado Atual e Próximos Passos
+## 5. Identidade Visual e Branding (GAID)
 
-### Status: **Pronto para Homologação (Sprint 2)**
+### 5.1 Novo Logo Animado
+- **Conceito:** Uma engrenagem técnica estilizada em formato de "G", representando engenharia e automação.
+- **Tecnologia:** Implementado em SVG nativo com animações CSS (Spin & Reveal).
+- **Integração:** Substituição da identidade temporária pela marca **GAID** em todo o Header do sistema.
+
+## 6. Estado Atual e Próximos Passos
+
+### Status: **Pronto para Homologação (Fase de Branding Concluída)**
 
 **Próximas Prioridades:**
 1. Ativação de Webhooks do Stripe para processamento automático de vendas.
