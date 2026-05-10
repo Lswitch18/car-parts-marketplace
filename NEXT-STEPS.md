@@ -13,6 +13,7 @@
 - [ ] **Fluxo de Compra e Venda**: Testar jornada completa desde a listagem da peça até a confirmação de recebimento.
 - [ ] **Dashboards**: Validar se os gráficos e KPIs (GMV, Receita, Transações) estão atualizando com valores reais após as vendas.
 - [ ] **Métodos de Pagamento**: Testar integração com Stripe, processamento de cartões e fluxo de checkout.
+- [ ] **IA Vision (Identificação)**: Testar a leitura de imagens para preenchimento automático de anúncios.
 
 ## 3. Próxima Fase: Expansão de Funcionalidades 📋
 - [ ] **Sistema de Escrow**: Refinar a retenção de valores para segurança entre as partes.
