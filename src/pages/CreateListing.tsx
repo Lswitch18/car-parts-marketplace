@@ -16,6 +16,7 @@ export default function CreateListing() {
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
+  const [aiEnabled, setAiEnabled] = useState(true)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -130,9 +131,29 @@ export default function CreateListing() {
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-3xl mx-auto px-4">
-        <h1 className="font-display text-3xl font-bold text-text mb-8">
-          {t('Nova Listagem')}
-        </h1>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-display text-3xl font-bold text-text">
+            {t('Nova Listagem')}
+          </h1>
+          
+          <div className="flex items-center space-x-3 bg-surface/50 border border-border px-4 py-2 rounded-full shadow-sm">
+            <Sparkles className={`w-4 h-4 ${aiEnabled ? 'text-primary' : 'text-text-secondary'}`} />
+            <span className="text-sm font-medium text-text">{t('Assistente de IA')}</span>
+            <button
+              type="button"
+              onClick={() => setAiEnabled(!aiEnabled)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                aiEnabled ? 'bg-primary' : 'bg-border'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  aiEnabled ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
 
         <div className="card p-8">
           <form onSubmit={(e) => { e.preventDefault(); createListing.mutate() }} className="space-y-6">
@@ -157,7 +178,7 @@ export default function CreateListing() {
                 </label>
               </div>
 
-              {images.length > 0 && (
+              {images.length > 0 && aiEnabled && (
                 <div className="mt-4">
                   <button
                     type="button"
