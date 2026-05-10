@@ -35,7 +35,24 @@ export default function Login() {
         }
         throw error
       }
-      navigate('/dashboard')
+
+      // Buscar perfil para decidir o redirecionamento
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+
+        if (profile?.role === 'admin') {
+          navigate('/admin/dashboard')
+        } else {
+          navigate('/dashboard')
+        }
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err: any) {
       const errorMsg = err.message || ''
       if (errorMsg.includes('Email not confirmed') || errorMsg.includes('email_not_confirmed')) {
