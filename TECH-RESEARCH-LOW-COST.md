@@ -63,10 +63,29 @@ Atualmente o **Gemini 1.5 Flash** é a melhor escolha (não existe "Gemini 3" ai
 
 ---
 
+## 6. Projeção de Escala: 10.000 Usuários (MAU)
+> **Cenário:** Crescimento para 10.000 usuários ativos mensais com fluxo real de vendas.
+
+### Estimativa de Custos Mensais (Plano Profissional)
+| Serviço | Recurso | Custo (USD) |
+| :--- | :--- | :--- |
+| **Supabase Pro** | DB, Auth, 100GB Storage | $25.00 |
+| **Vercel Pro** | Hosting Profissional | $20.00 |
+| **Amazon SES** | 25.000 E-mails transacionais | $2.50 |
+| **Google Gemini** | IA de Identificação de Peças | $5.00 |
+| **Domínio** | gaid.jp | $1.50 |
+| **TOTAL** | | **$54.00** |
+
+### Viabilidade Econômica
+- **Ponto de Equilíbrio:** Com apenas **27 vendas** por mês (ticket médio ¥15.000 e taxa de 2%), a plataforma já cobre 100% dos seus custos operacionais.
+- **Lucro em Escala:** Com 200 vendas/mês, a receita bruta estimada é de **$400.00**, gerando um lucro líquido de **$346.00** já descontando todos os custos de infraestrutura.
+
+---
+
 ## Próximos Passos Sugeridos:
 1. **Configurar Resend**: Para e-mails de boas-vindas e códigos.
 2. **Ativar Google OAuth**: No painel do Supabase.
 3. **Integrar Stripe Checkout**: Para o botão "Comprar Agora".
 
 ---
-*Documento gerado em 11 de Maio de 2026 para a plataforma GAID.*
+*Documento atualizado em 11 de Maio de 2026 para a plataforma GAID.*
