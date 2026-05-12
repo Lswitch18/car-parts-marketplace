@@ -31,10 +31,12 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           
+          {/* Páginas Públicas (sem login) */}
+          <Route path="catalog" element={<Catalog />} />
+          <Route path="product/:id" element={<ProductDetail />} />
+          
           {/* Rotas Protegidas (Exigem Login) */}
           <Route element={<ProtectedRoute />}>
-            <Route path="catalog" element={<Catalog />} />
-            <Route path="product/:id" element={<ProductDetail />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="create-listing" element={<CreateListing />} />
             <Route path="profile" element={<Profile />} />
