@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Filter, X, Search, Heart, Wrench } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { BRANDS, CATEGORIES, CONDITIONS, YEARS } from '../lib/constants'
+import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS } from '../lib/constants'
 import { Product } from '../types'
 import { useFavoriteStore } from '../stores/favoriteStore'
 
@@ -34,7 +34,10 @@ export default function Catalog() {
         .select('*, brands(name), categories(name), profiles(full_name, avatar_url)')
         .eq('status', 'active')
 
-      if (filters.brand) query = query.eq('brand_id', filters.brand)
+      if (filters.brand) {
+        const brandUuid = BRAND_UUIDS[filters.brand] || filters.brand
+        query = query.eq('brand_id', brandUuid)
+      }
       if (filters.model) query = query.eq('model_id', filters.model)
       if (filters.category) query = query.eq('category_id', filters.category)
       if (filters.condition) query = query.eq('condition', filters.condition)

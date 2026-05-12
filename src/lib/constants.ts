@@ -71,3 +71,19 @@ export const CONDITIONS = [
 ]
 
 export const YEARS = Array.from({ length: 35 }, (_, i) => 2024 - i)
+
+export const BRAND_UUIDS: Record<string, string> = {
+  nissan: '11111111-1111-1111-1111-111111111111',
+  toyota: '22222222-2222-2222-2222-222222222222',
+  honda: '33333333-3333-3333-3333-333333333333',
+  mazda: '44444444-4444-4444-4444-444444444444',
+  subaru: '55555555-5555-5555-5555-555555555555',
+  mitsubishi: '66666666-6666-6666-6666-666666666666',
+  lexus: '77777777-7777-7777-7777-777777777777',
+  acura: '88888888-8888-8888-8888-888888888888',
+  infiniti: '99999999-9999-9999-9999-999999999999',
+}
+
+export const UUID_TO_BRAND: Record<string, string> = Object.fromEntries(
+  Object.entries(BRAND_UUIDS).map(([slug, uuid]) => [uuid, slug])
+)
