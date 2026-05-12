@@ -34,40 +34,25 @@ FILES = {
         "modified": 1778299587.802882,
         "hash": "cee37d11245240fc77acac0975e29a5a"
     },
+    "BUILD-REPORT-GAID-2026-05-10.pdf": {
+        "size": 28895,
+        "modified": 1778404265.492443,
+        "hash": "bbbe36b59416696d97921cd0fff251df"
+    },
     "backup-full.sql": {
         "size": 6099,
         "modified": 1778291597.8668823,
         "hash": "c41117ce9a6e0788fb0fe1cf18656bfb"
-    },
-    "SPEC.md": {
-        "size": 15548,
-        "modified": 1778257140.6325505,
-        "hash": "01dacd4c46dcc25723112511392ed938"
     },
     "create-10-ads.sql": {
         "size": 5439,
         "modified": 1778298212.6508818,
         "hash": "e51bb3d52ada002c343d2705697d97ef"
     },
-    "INFRASTRUCTURE.md": {
-        "size": 23781,
-        "modified": 1778328067.8224897,
-        "hash": "0bbcf8d21421ab2ef095bf6e4db839ac"
-    },
-    "NEXT-STEPS.pdf": {
-        "size": 31047,
-        "modified": 1778331509.4144938,
-        "hash": "d6a0d063e7ae3590b90864074ef961c5"
-    },
     "docker-compose.jenkins.yml": {
         "size": 388,
         "modified": 1778344398.1961665,
         "hash": "d912f7ed728aeed7a71ad1bbb21448ab"
-    },
-    "JENKINS_SETUP.md": {
-        "size": 1815,
-        "modified": 1778343606.9361737,
-        "hash": "e6679996d1bf9863bbb813ebad6f2f5f"
     },
     "vite.config.ts": {
         "size": 179,
@@ -75,24 +60,29 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 17610,
-        "modified": 1778404120.0164378,
-        "hash": "e1fed5fe0ace0a72aea80a00c22d0bc3"
+        "size": 17983,
+        "modified": 1778545997.3924599,
+        "hash": "ed8c89e3dcce66577c60e9c792f45699"
     },
     "vite.config.js": {
         "size": 196,
         "modified": 1778244229.3365455,
         "hash": "8504b6d963f8dddfea545af4a9dbfa51"
     },
-    "GOOGLE-OAUTH-SETUP.md": {
-        "size": 2014,
-        "modified": 1778212271.7812095,
-        "hash": "b956184c08e404001ac36aaa8d0a61f0"
-    },
     "tsconfig.node.json": {
         "size": 212,
         "modified": 1778243533.6725483,
         "hash": "1c139bab5d1a90787cbb951073a5abde"
+    },
+    "ANALISE-GAID.md": {
+        "size": 21416,
+        "modified": 1778545632.438792,
+        "hash": "cd44fdf1f2b3971f3f6489271c75254e"
+    },
+    "TECH-RESEARCH-LOW-COST.md": {
+        "size": 3870,
+        "modified": 1778536769.1481504,
+        "hash": "df3ece7b7c91a3e428af91abffbcb0cd"
     },
     "clean_pdf.py": {
         "size": 5099,
@@ -111,7 +101,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1455,
-        "modified": 1778403872.5004447,
+        "modified": 1778545943.028254,
         "hash": "8c94a604bc7a950f920e8af7d6aff9fd"
     },
     "PROJECT-STATUS.md": {
@@ -154,45 +144,30 @@ FILES = {
         "modified": 1778403591.39244,
         "hash": "68a611a1df9360948049f2b130205532"
     },
-    "ENVIRONMENT_SETUP.md": {
-        "size": 2265,
-        "modified": 1778256253.4725423,
-        "hash": "33516d340df1a3617f00751af2121be0"
-    },
     "NEXT-STEPS.md": {
-        "size": 715,
-        "modified": 1778403796.5524428,
-        "hash": "bd545aac316095143527ac1ab87c8b41"
+        "size": 1663,
+        "modified": 1778537443.5011897,
+        "hash": "4cf5b4b9f4b4426acf70a3d8e23af8b7"
     },
-    "PRODUCT-LAUNCH-PLAN.pdf": {
-        "size": 81439,
-        "modified": 1778330247.6624923,
-        "hash": "981b2d7436256c10323b39d982a6da54"
+    "BUILD-REPORT-GAID-2026-05-10-PT.pdf": {
+        "size": 29584,
+        "modified": 1778404369.4324417,
+        "hash": "a282cba1050f614404b76e52df8294d7"
     },
     "update-ads-images.sql": {
         "size": 1690,
         "modified": 1778300106.6948752,
         "hash": "a4c4acc46f6e759715fe4486ac9deabe"
     },
-    "GITHUB-ACTIONS-SETUP.md": {
-        "size": 397,
-        "modified": 1778403825.5724435,
-        "hash": "b9aa76169ac5c80ad544c9c92eae75bf"
-    },
-    "PRODUCT-LAUNCH-PLAN.md": {
-        "size": 579,
-        "modified": 1778403804.8244429,
-        "hash": "deabf8c643a5d3da583066e5001ceb85"
-    },
     "Jenkinsfile": {
         "size": 2854,
         "modified": 1778343597.6681738,
         "hash": "d0e2bc054469ce96c79d5ab8aeb67ce3"
     },
-    "rls-policies.sql": {
-        "size": 6964,
-        "modified": 1778403780.8724427,
-        "hash": "d2f2e3090dc52603b0429729c68959fe"
+    "BUILD-REPORT-GAID-2026-05-10-JA.pdf": {
+        "size": 61724,
+        "modified": 1778404369.4484417,
+        "hash": "dd8f5d27a1444451ecead6bb0a5d69b3"
     },
     "monitor.py": {
         "size": 3153,
@@ -204,6 +179,11 @@ FILES = {
         "modified": 1778291578.4548821,
         "hash": "3ee0a35697494f2b702005ca8b6329ea"
     },
+    "COST-PROJECTION-10K-USERS.md": {
+        "size": 2660,
+        "modified": 1778536669.115136,
+        "hash": "74380210783530747edbcb27a2a074d2"
+    },
     "deploy-functions.sh": {
         "size": 2974,
         "modified": 1778403788.1564429,
@@ -213,6 +193,16 @@ FILES = {
         "size": 7620,
         "modified": 1778210307.0892053,
         "hash": "296883d7caf9d86b1f798e82538ea03e"
+    },
+    "project-reports/BUILD-REPORT-GAID-2026-05-10-JA.md": {
+        "size": 3173,
+        "modified": 1778404335.3084426,
+        "hash": "a994d0b599d370c00c2809d6ab5b006a"
+    },
+    "project-reports/BUILD-REPORT-GAID-2026-05-10.pdf": {
+        "size": 28895,
+        "modified": 1778404236.9364378,
+        "hash": "bbbe36b59416696d97921cd0fff251df"
     },
     "project-reports/BUILD-REPORT-GAID-2026-05-10.md": {
         "size": 2505,
@@ -224,10 +214,25 @@ FILES = {
         "modified": 1778399583.8124416,
         "hash": "02bdce0f748c29cdd7799ba5d596bf2a"
     },
+    "project-reports/BUILD-REPORT-GAID-2026-05-10-PT.md": {
+        "size": 2644,
+        "modified": 1778404324.9844427,
+        "hash": "4b6b5085e6d749ae8e1bf05d9af8aff4"
+    },
     "project-reports/BUILD-REPORT-2026-05-10.md": {
         "size": 1862,
         "modified": 1778403583.49244,
         "hash": "841e1ca7c78dd2481bc8c07c5ca93115"
+    },
+    "project-reports/BUILD-REPORT-GAID-2026-05-10-PT.pdf": {
+        "size": 29584,
+        "modified": 1778404345.8684425,
+        "hash": "a282cba1050f614404b76e52df8294d7"
+    },
+    "project-reports/BUILD-REPORT-GAID-2026-05-10-JA.pdf": {
+        "size": 61724,
+        "modified": 1778404349.4684427,
+        "hash": "dd8f5d27a1444451ecead6bb0a5d69b3"
     },
     "src/index.css": {
         "size": 2377,
@@ -571,4 +576,4 @@ FILES = {
     }
 }
 
-last_updated = "2026-05-10"
+last_updated = "2026-05-11"

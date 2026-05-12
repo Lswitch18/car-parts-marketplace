@@ -17,8 +17,13 @@
 
 ## 3. Próxima Fase: Expansão de Funcionalidades 📋
 - [ ] **Sistema de Escrow**: Refinar a retenção de valores para segurança entre as partes.
-- [ ] **Logística**: Integração básica para geração de etiquetas de envio no Japão.
+- [ ] **Logística**: AQUI É IMPORTANTE ~PEQUISAS EMPRESAS DE LOGOTICA E PTAFAORMA DE VENDA TIPO HOPEE OU TIKTOKPARA USAR A LOGISTICA  GARANTINDO MAIOR AGILIDADE DE ENTREGA Integração básica para geração de etiquetas de envio no Japão.
 - [ ] **MFA**: Ativação de autenticação em dois fatores para segurança das contas.
+
+- [ ] **Configurar Resend**: Para e-mails de boas-vindas e códigos.
+- [ ]  **Ativar Google OAuth**: No painel do Supabase.
+- [ ]  **Integrar Stripe Checkout**: Para o botão "Comprar Agora".
+
 
 ---
 *Projeto: GAID - Plataforma de Vendas*
