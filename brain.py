@@ -39,6 +39,11 @@ FILES = {
         "modified": 1778404265.492443,
         "hash": "bbbe36b59416696d97921cd0fff251df"
     },
+    "fix-parts-images.sql": {
+        "size": 2903,
+        "modified": 1778552985.323125,
+        "hash": "4df93db2d5a76911a1f7c0641809c380"
+    },
     "backup-full.sql": {
         "size": 6099,
         "modified": 1778291597.8668823,
@@ -60,14 +65,19 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 17983,
-        "modified": 1778545997.3924599,
-        "hash": "ed8c89e3dcce66577c60e9c792f45699"
+        "size": 18435,
+        "modified": 1778554194.6555178,
+        "hash": "dc436e7ad18fc0919a44eaf1444539ba"
     },
     "vite.config.js": {
         "size": 196,
         "modified": 1778244229.3365455,
         "hash": "8504b6d963f8dddfea545af4a9dbfa51"
+    },
+    "update-parts-images.sql": {
+        "size": 5338,
+        "modified": 1778552019.0146258,
+        "hash": "26220d680102c5be86614337fa9f974a"
     },
     "tsconfig.node.json": {
         "size": 212,
@@ -101,7 +111,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1455,
-        "modified": 1778545943.028254,
+        "modified": 1778554122.763496,
         "hash": "8c94a604bc7a950f920e8af7d6aff9fd"
     },
     "PROJECT-STATUS.md": {
@@ -143,6 +153,11 @@ FILES = {
         "size": 838,
         "modified": 1778403591.39244,
         "hash": "68a611a1df9360948049f2b130205532"
+    },
+    "fetch-car-images.py": {
+        "size": 11281,
+        "modified": 1778551956.5625997,
+        "hash": "ff7933b403e38f894a7bb8408f7906aa"
     },
     "NEXT-STEPS.md": {
         "size": 1663,
@@ -390,9 +405,9 @@ FILES = {
         "hash": "d41bc5575bfa63fa70c537a35faf58d9"
     },
     "src/components/layout/Footer.tsx": {
-        "size": 4439,
-        "modified": 1778403686.9644396,
-        "hash": "1925093006afd42cd3b77d1d351811fb"
+        "size": 4807,
+        "modified": 1778554057.3314762,
+        "hash": "018c16bd2272e557babdee0f2c14dc4c"
     },
     "src/components/layout/Layout.tsx": {
         "size": 505,
