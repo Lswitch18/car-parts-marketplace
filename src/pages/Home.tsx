@@ -59,8 +59,7 @@ export default function Home() {
             </div>
             
             <h1 className="font-display text-5xl md:text-7xl font-bold text-text mb-6 leading-tight">
-              {t('Encontre as melhores')} {' '}
-              <span className="neon-text">DAIG</span>
+              {t('Encontre com facilidade as melhores')} <span className="neon-text">peças</span>
               <br />{t('para seu carro')}
             </h1>
             
@@ -273,6 +272,32 @@ export default function Home() {
             Começar a Vender
           </Link>
         </div>
+      </section>
+
+      {/* Marquee de Marcas - Watermark Style */}
+      <section className="py-12 bg-background border-t border-border overflow-hidden relative">
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-background to-transparent z-10" />
+        
+        <div className="flex w-[200%] animate-marquee">
+          {[...BRANDS, ...BRANDS].map((brand, i) => (
+            <div key={`${brand.id}-${i}`} className="flex-1 flex justify-center items-center px-8 opacity-20 hover:opacity-50 transition-opacity grayscale">
+              <span className="font-display font-bold text-3xl md:text-5xl text-white tracking-widest uppercase whitespace-nowrap">
+                {brand.name}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-marquee {
+            animation: marquee 40s linear infinite;
+          }
+        `}</style>
       </section>
     </div>
   )

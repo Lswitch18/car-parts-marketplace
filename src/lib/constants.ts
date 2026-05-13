@@ -43,6 +43,21 @@ export const BRANDS = [
     id: 'infiniti',
     name: 'Infiniti',
     models: ['G35', 'G37', 'Q60', 'Q50', 'FX', 'QX']
+  },
+  {
+    id: 'porsche',
+    name: 'Porsche',
+    models: ['911', 'Cayman', 'Boxster', 'Panamera', 'Macan', 'Cayenne']
+  },
+  {
+    id: 'bmw',
+    name: 'BMW',
+    models: ['M3', 'M4', 'M5', '3 Series', '5 Series', 'X5', 'Z4']
+  },
+  {
+    id: 'audi',
+    name: 'Audi',
+    models: ['RS3', 'RS6', 'R8', 'A4', 'A6', 'Q5', 'TT']
   }
 ]
 
