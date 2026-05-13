@@ -61,13 +61,8 @@ export default function SimulateSale({ onComplete }: Props) {
           buyer_id: user.id,
           seller_id: part.seller_id,
           amount: part.price,
-          commission_rate: 0.10,
-          commission_amount: fees.commission,
-          platform_fee: fees.platformFee,
-          seller_net: fees.sellerNet,
           payment_status: 'paid',
-          fulfillment_status: 'pending',
-          paid_at: new Date().toISOString()
+          fulfillment_status: 'pending'
         })
         .select()
         .single()

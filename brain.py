@@ -90,9 +90,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 19847,
-        "modified": 1778644384.4299223,
-        "hash": "dcd2251ae5d1b0b80f545dd231e66f42"
+        "size": 19846,
+        "modified": 1778645545.4579237,
+        "hash": "ad8ed35a86a332f9782abbed59748413"
     },
     "vite.config.js": {
         "size": 196,
@@ -315,14 +315,14 @@ FILES = {
         "hash": "a3de439381b1694ffecd1cc7821c4ab9"
     },
     "src/stores/authStore.ts": {
-        "size": 4803,
-        "modified": 1778640806.7419243,
-        "hash": "8a1f430418545bebcd882a6c879246f2"
+        "size": 4802,
+        "modified": 1778645495.0419247,
+        "hash": "f4ce109bb213421ff1c37eb62776a3f1"
     },
     "src/pages/Home.tsx": {
-        "size": 13045,
-        "modified": 1778403710.8684404,
-        "hash": "81fa2a98388135e74a1b1ee2bb241ca4"
+        "size": 13756,
+        "modified": 1778645535.8619237,
+        "hash": "d7adb738cccb87ba5d2ed4e1cbed0a36"
     },
     "src/pages/Register.tsx": {
         "size": 8226,
@@ -335,9 +335,9 @@ FILES = {
         "hash": "9a53a25b1412dc3ce64b3ede0df3643a"
     },
     "src/pages/Login.tsx": {
-        "size": 7321,
-        "modified": 1778397057.9684439,
-        "hash": "856cd066346faa9c522171d88b4d1169"
+        "size": 7311,
+        "modified": 1778645537.9819236,
+        "hash": "4e5aed5265583c7f3d6d403a56f01275"
     },
     "src/pages/Favorites.tsx": {
         "size": 4230,
@@ -405,9 +405,9 @@ FILES = {
         "hash": "480c249ad18a55d1696f43397fe47710"
     },
     "src/components/PurchaseFlow.tsx": {
-        "size": 10137,
-        "modified": 1778333027.422486,
-        "hash": "87c60468311364603499b16714559933"
+        "size": 9884,
+        "modified": 1778644765.945924,
+        "hash": "e01805551feb3638e3fdcad1a85cbdb5"
     },
     "src/components/ProtectedRoute.tsx": {
         "size": 732,
@@ -430,14 +430,14 @@ FILES = {
         "hash": "61ba9ad2ac786c9a9f946a614fdf5216"
     },
     "src/components/GaidLogo.tsx": {
-        "size": 4971,
-        "modified": 1778643823.6819303,
-        "hash": "71f3211dd6215f0ed6404de1173969f3"
+        "size": 5048,
+        "modified": 1778644801.7899237,
+        "hash": "bf52a53f6a83c8dc09ec5592e38c02a2"
     },
     "src/components/SimulateSale.tsx": {
-        "size": 6485,
-        "modified": 1778341482.1561694,
-        "hash": "2f178d0a09d6ab897b90b867521d2a32"
+        "size": 6281,
+        "modified": 1778644725.7659202,
+        "hash": "6d46b7d1923bb57c34a72c9a56e0e5c9"
     },
     "src/components/layout/Header.tsx": {
         "size": 12122,

@@ -81,7 +81,7 @@ export default function Login() {
             {t('Entrar')}
           </h1>
           <p className="text-text-secondary">
-            {t('Acesse sua conta JAPANCAR PARTS')}
+            {t('Acesse sua conta DAIG')}
           </p>
         </div>
 

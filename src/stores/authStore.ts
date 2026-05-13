@@ -98,7 +98,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           set({ user: mapped, loading: false, initialized: true })
         }
       } else if (event === 'SIGNED_OUT') {
-        set({ user: null, loading: false, initialized: false })
+        set({ user: null, loading: false, initialized: true })
       } else if (event === 'INITIAL_SESSION') {
         if (session?.user && !get().user) {
           set({ loading: true })

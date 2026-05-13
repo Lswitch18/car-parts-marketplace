@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, Search, Shield, Truck, Star, Zap, Wrench, Gauge, Disc } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES } from '../lib/constants'
-import { Product } from '../types'
 import { useI18n } from '../lib/i18n'
 
 export default function Home() {
@@ -45,42 +44,42 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <section className="relative min-h-[90vh] flex items-center bg-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#ffd700]/10 via-transparent to-[#ff0000]/10" />
+    <div className="bg-background min-h-screen text-text">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-daig-blue/10 via-transparent to-daig-purple/10" />
         <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 0, 0, 0.1) 0%, transparent 50%)'
+          backgroundImage: 'radial-gradient(circle at 20% 80%, rgba(13, 117, 255, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(112, 0, 255, 0.1) 0%, transparent 50%)'
         }} />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center space-x-2 bg-[#ffd700]/20 border border-[#ffd700]/30 rounded-full px-4 py-2 mb-6">
-              <Star className="w-4 h-4 text-[#ffd700]" />
-              <span className="text-[#b8860b] text-sm font-medium">{t('Gaid - A plataforma definitiva para compra e venda')}</span>
+            <div className="inline-flex items-center space-x-2 bg-daig-blue/20 border border-daig-blue/30 rounded-full px-4 py-2 mb-6">
+              <Star className="w-4 h-4 text-daig-cyan" />
+              <span className="text-daig-cyan text-sm font-medium">{t('DAIG - A plataforma definitiva para compra e venda')}</span>
             </div>
             
-            <h1 className="font-display text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="font-display text-5xl md:text-7xl font-bold text-text mb-6 leading-tight">
               {t('Encontre as melhores')} {' '}
-              <span className="text-gradient">Gaid</span>
+              <span className="neon-text">DAIG</span>
               <br />{t('para seu carro')}
             </h1>
             
-            <p className="text-xl text-gray-600 mb-8 max-w-xl">
-              {t('O maior marketplace de peças automotivas JDM do Japão')}<br />
+            <p className="text-xl text-text-secondary mb-8 max-w-xl">
+              {t('O maior marketplace de peças automotivas do Japão')}<br />
               {t('Qualidade garantida, entrega rápida em todo o Japão e segurança total')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/catalog"
-                className="inline-flex items-center justify-center space-x-2 bg-[#ffd700] hover:bg-[#e6c200] text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105"
+                className="inline-flex items-center justify-center space-x-2 bg-daig-blue hover:bg-daig-blue/80 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:scale-105 shadow-[0_0_15px_rgba(13,117,255,0.5)]"
               >
                 <Search className="w-5 h-5" />
                 <span>{t('Explorar Catálogo')}</span>
               </Link>
               <Link
                 to="/create-listing"
-                className="inline-flex items-center justify-center space-x-2 bg-white border-2 border-[#ffd700] text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:bg-[#ffd700]"
+                className="inline-flex items-center justify-center space-x-2 bg-surface border-2 border-daig-blue text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all hover:bg-daig-blue/10"
               >
                 <span>{t('Vender Peças')}</span>
                 <ArrowRight className="w-5 h-5" />
@@ -89,28 +88,28 @@ export default function Home() {
 
             <div className="flex items-center space-x-8 mt-12">
               <div className="text-center">
-                <p className="text-3xl font-bold text-gray-900">5000+</p>
-                <p className="text-gray-600 text-sm">{t('Peças à venda')}</p>
+                <p className="text-3xl font-bold text-white">5000+</p>
+                <p className="text-text-secondary text-sm">{t('Peças à venda')}</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-gray-900">500+</p>
-                <p className="text-gray-600 text-sm">{t('Vendedores')}</p>
+                <p className="text-3xl font-bold text-white">500+</p>
+                <p className="text-text-secondary text-sm">{t('Vendedores')}</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-gray-900">98%</p>
-                <p className="text-gray-600 text-sm">{t('Satisfação')}</p>
+                <p className="text-3xl font-bold text-white">98%</p>
+                <p className="text-text-secondary text-sm">{t('Satisfação')}</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-surface border-y border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-bold text-gray-900 text-center mb-4">
+          <h2 className="font-display text-3xl font-bold text-white text-center mb-4">
             Categorias
           </h2>
-          <p className="text-gray-600 text-center mb-12">
+          <p className="text-text-secondary text-center mb-12">
             Encontre exatamente o que precisa para seu projeto
           </p>
           
@@ -119,25 +118,25 @@ export default function Home() {
               <Link
                 key={category.id}
                 to={`/catalog?category=${category.id}`}
-                className="bg-white p-6 text-center rounded-xl shadow-md hover:shadow-lg hover:border-[#ffd700] border-2 border-transparent transition-all"
+                className="bg-background p-6 text-center rounded-xl shadow-md hover:shadow-lg hover:border-daig-blue border border-border transition-all group"
               >
-                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-[#ffd700]/10 flex items-center justify-center text-[#ffd700] group-hover:bg-[#ffd700] group-hover:text-white transition-colors">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-daig-blue/10 flex items-center justify-center text-daig-blue group-hover:bg-daig-blue group-hover:text-white transition-colors shadow-[0_0_10px_rgba(13,117,255,0.2)]">
                   {getCategoryIcon(category.icon)}
                 </div>
-                <h3 className="text-gray-900 font-medium">{category.name}</h3>
+                <h3 className="text-white font-medium">{category.name}</h3>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-bold text-gray-900 text-center mb-4">
+          <h2 className="font-display text-3xl font-bold text-white text-center mb-4">
             Marcas Disponíveis
           </h2>
-          <p className="text-gray-600 text-center mb-12">
-            As melhores marcas japonesas em um só lugar
+          <p className="text-text-secondary text-center mb-12">
+            As melhores marcas automotivas em um só lugar
           </p>
           
           <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -145,15 +144,15 @@ export default function Home() {
               <Link
                 key={brand.id}
                 to={`/catalog?brand=${brand.id}`}
-                className="bg-white p-6 text-center rounded-xl shadow-md hover:shadow-lg hover:border-[#ffd700] border-2 border-transparent transition-all"
+                className="bg-surface p-6 text-center rounded-xl shadow-md hover:shadow-lg hover:border-daig-blue border border-border transition-all group"
               >
-                <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-gray-100 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gradient">{brand.name[0]}</span>
+                <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-background flex items-center justify-center border border-border/50 group-hover:border-daig-blue/50">
+                  <span className="text-2xl font-bold neon-text">{brand.name[0]}</span>
                 </div>
-                <h3 className="text-gray-900 font-medium hover:text-[#ffd700] transition-colors">
+                <h3 className="text-white font-medium hover:text-daig-blue transition-colors">
                   {brand.name}
                 </h3>
-                <p className="text-gray-500 text-xs mt-1">{brand.models.length} modelos</p>
+                <p className="text-text-secondary text-xs mt-1">{brand.models.length} modelos</p>
               </Link>
             ))}
           </div>
@@ -161,20 +160,20 @@ export default function Home() {
       </section>
 
       {products && products.length > 0 && (
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-surface border-y border-border/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h2 className="font-display text-3xl font-bold text-gray-900">
+                <h2 className="font-display text-3xl font-bold text-white">
                   Últimas Novidades
                 </h2>
-                <p className="text-gray-600 mt-2">
+                <p className="text-text-secondary mt-2">
                   As peças mais recentes adicionadas ao catálogo
                 </p>
               </div>
               <Link
                 to="/catalog"
-                className="text-[#ffd700] hover:text-[#e6c200] flex items-center space-x-2 transition-colors font-medium"
+                className="text-daig-blue hover:text-daig-cyan flex items-center space-x-2 transition-colors font-medium"
               >
                 <span>Ver todas</span>
                 <ArrowRight className="w-4 h-4" />
@@ -186,9 +185,9 @@ export default function Home() {
                 <Link
                   key={product.id}
                   to={`/product/${product.id}`}
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg hover:border-[#ffd700] border-2 border-transparent transition-all"
+                  className="bg-background rounded-xl shadow-md overflow-hidden hover:shadow-[0_0_15px_rgba(13,117,255,0.3)] border border-border hover:border-daig-blue transition-all group"
                 >
-                  <div className="aspect-square bg-gray-100 relative overflow-hidden">
+                  <div className="aspect-square bg-surface relative overflow-hidden">
                     {product.images && product.images[0] ? (
                       <img
                         src={product.images[0]}
@@ -196,24 +195,24 @@ export default function Home() {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <div className="w-full h-full flex items-center justify-center text-text-muted">
                         <Wrench className="w-12 h-12" />
                       </div>
                     )}
                     <div className="absolute top-3 left-3">
-                      <span className="badge">
+                      <span className="bg-daig-blue text-white text-xs font-bold px-2 py-1 rounded">
                         {product.condition === 'new' ? 'Novo' : product.condition === 'used' ? 'Usado' : 'Reformado'}
                       </span>
                     </div>
                   </div>
                   <div className="p-4">
-                    <h3 className="text-gray-900 font-semibold mb-2 truncate hover:text-[#ffd700] transition-colors">
+                    <h3 className="text-white font-semibold mb-2 truncate group-hover:text-daig-blue transition-colors">
                       {product.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-2">
+                    <p className="text-text-secondary text-sm mb-2">
                       {product.brand} {product.model}
                     </p>
-                    <p className="text-[#ffd700] font-bold text-xl">
+                    <p className="text-daig-cyan font-bold text-xl">
                       ¥ {product.price.toLocaleString('ja-JP')}
                     </p>
                   </div>
@@ -224,33 +223,33 @@ export default function Home() {
         </section>
       )}
 
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 text-center rounded-xl shadow-md border-2 border-transparent hover:border-[#ffd700] transition-all">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#ffd700]/20 flex items-center justify-center">
-                <Shield className="w-8 h-8 text-[#ffd700]" />
+            <div className="bg-surface p-8 text-center rounded-xl shadow-md border border-border hover:border-daig-purple transition-all group">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-daig-purple/20 flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(112,0,255,0.4)] transition-all">
+                <Shield className="w-8 h-8 text-daig-purple" />
               </div>
-              <h3 className="text-gray-900 font-semibold text-lg mb-2">Compra Segura</h3>
-              <p className="text-gray-600">
+              <h3 className="text-white font-semibold text-lg mb-2">Compra Segura</h3>
+              <p className="text-text-secondary">
                 Proteção total para suas compras com garantia de entrega e devolução.
               </p>
             </div>
-            <div className="bg-white p-8 text-center rounded-xl shadow-md border-2 border-transparent hover:border-[#ffd700] transition-all">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#ff0000]/20 flex items-center justify-center">
-                <Truck className="w-8 h-8 text-[#ff0000]" />
+            <div className="bg-surface p-8 text-center rounded-xl shadow-md border border-border hover:border-daig-cyan transition-all group">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-daig-cyan/20 flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all">
+                <Truck className="w-8 h-8 text-daig-cyan" />
               </div>
-              <h3 className="text-gray-900 font-semibold text-lg mb-2">Entrega Rápida</h3>
-              <p className="text-gray-600">
+              <h3 className="text-white font-semibold text-lg mb-2">Entrega Rápida</h3>
+              <p className="text-text-secondary">
                 {t('Envio para todo Japão com rastreamento em tempo real')}
               </p>
             </div>
-            <div className="bg-white p-8 text-center rounded-xl shadow-md border-2 border-transparent hover:border-[#ffd700] transition-all">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#ffd700]/20 flex items-center justify-center">
-                <Star className="w-8 h-8 text-[#ffd700]" />
+            <div className="bg-surface p-8 text-center rounded-xl shadow-md border border-border hover:border-daig-blue transition-all group">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-daig-blue/20 flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(13,117,255,0.4)] transition-all">
+                <Star className="w-8 h-8 text-daig-blue" />
               </div>
-              <h3 className="text-gray-900 font-semibold text-lg mb-2">Qualidade Garantida</h3>
-              <p className="text-gray-600">
+              <h3 className="text-white font-semibold text-lg mb-2">Qualidade Garantida</h3>
+              <p className="text-text-secondary">
                 Peças originais e de procedência com verificação de autenticidade.
               </p>
             </div>
@@ -258,17 +257,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-r from-[#ffd700] to-[#ff0000]">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+      <section className="py-20 relative overflow-hidden border-t border-border/50">
+        <div className="absolute inset-0 bg-gradient-to-r from-daig-blue/20 to-daig-purple/20" />
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <h2 className="font-display text-4xl font-bold text-white mb-6">
             Pronto para vender suas peças?
           </h2>
-          <p className="text-white/80 text-xl mb-8">
-            Junte-se a milhares de vendedores e alcance milhões de compradores!
+          <p className="text-text-secondary text-xl mb-8">
+            Junte-se a milhares de vendedores e alcance milhões de compradores na DAIG!
           </p>
           <Link
             to="/create-listing"
-            className="inline-block bg-white text-[#ffd700] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors"
+            className="inline-block bg-daig-blue text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-daig-blue/80 transition-colors shadow-[0_0_15px_rgba(13,117,255,0.5)]"
           >
             Começar a Vender
           </Link>

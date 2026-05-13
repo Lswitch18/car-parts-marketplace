@@ -71,10 +71,6 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
           buyer_id: buyerProfile.id,
           seller_id: sellerId,
           amount: partPrice,
-          commission_rate: 0.10,
-          commission_amount: fees.commission,
-          platform_fee: fees.platformFee,
-          seller_net: fees.sellerNet,
           payment_status: 'pending',
           fulfillment_status: 'pending',
         })
@@ -92,8 +88,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
         const { error: updateError } = await supabase
           .from('transactions')
           .update({
-            payment_status: 'paid',
-            paid_at: new Date().toISOString()
+            payment_status: 'paid'
           })
           .eq('id', transaction.id);
 
@@ -103,8 +98,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
         const { error: updateError } = await supabase
           .from('transactions')
           .update({
-            payment_status: 'paid',
-            paid_at: new Date().toISOString()
+            payment_status: 'paid'
           })
           .eq('id', transaction.id);
 
