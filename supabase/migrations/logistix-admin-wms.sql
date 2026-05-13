@@ -235,6 +235,32 @@ CREATE TABLE IF NOT EXISTS public.admin_auditoria (
 );
 
 -- =====================================================================
+-- 18. RASTREAMENTO (Tracking de pedidos)
+-- =====================================================================
+CREATE TABLE IF NOT EXISTS public.admin_rastreamento (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  pedido_id UUID NOT NULL REFERENCES public.admin_pedidos(id),
+  tipo TEXT NOT NULL,
+  descricao TEXT,
+  local TEXT,
+  status TEXT DEFAULT 'pendente',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =====================================================================
+-- 19. RECEBIMENTOS
+-- =====================================================================
+CREATE TABLE IF NOT EXISTS public.admin_recebimentos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  pedido_id UUID NOT NULL REFERENCES public.admin_pedidos(id),
+  armazem_id UUID REFERENCES public.admin_armazens(id),
+  status TEXT DEFAULT 'pendente',
+  observacoes TEXT,
+  recebido_em TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =====================================================================
 -- ÍNDICES
 -- =====================================================================
 CREATE INDEX IF NOT EXISTS idx_admin_pedidos_status ON public.admin_pedidos(status);
