@@ -246,6 +246,7 @@ export default function Dashboard() {
                   </Link>
                 </div>
               )}
+            </div>
             
             <div className="card p-6 mt-8 border-daig-purple">
               <h2 className="text-xl font-semibold text-text mb-6">Minhas Transações</h2>
