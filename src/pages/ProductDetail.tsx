@@ -31,18 +31,18 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-2 border-[#ff3d00] border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-daig-blue border-t-transparent rounded-full" />
       </div>
     )
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-400 text-xl mb-4">Produto não encontrado</p>
-          <button onClick={() => navigate('/catalog')} className="text-[#ff3d00]">
+          <button onClick={() => navigate('/catalog')} className="text-daig-blue">
             Voltar ao catálogo
           </button>
         </div>
@@ -51,7 +51,7 @@ export default function ProductDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4">
         <button
           onClick={() => navigate(-1)}
@@ -63,7 +63,7 @@ export default function ProductDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
-            <div className="aspect-square bg-[#1a1a1a] rounded-xl overflow-hidden mb-4">
+            <div className="aspect-square bg-surface rounded-xl overflow-hidden mb-4">
               {product.images?.[selectedImage] ? (
                 <img
                   src={product.images[selectedImage]}
@@ -83,7 +83,7 @@ export default function ProductDetail() {
                     key={i}
                     onClick={() => setSelectedImage(i)}
                     className={`w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                      selectedImage === i ? 'border-[#ff3d00]' : 'border-transparent'
+                      selectedImage === i ? 'border-daig-blue' : 'border-transparent'
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
@@ -96,7 +96,7 @@ export default function ProductDetail() {
           <div>
             <div className="flex items-start justify-between mb-4">
               <div>
-                <p className="text-[#ff3d00] font-medium mb-2">
+                <p className="text-daig-blue font-medium mb-2">
                   {product.brand} {product.model} • {product.year_start} - {product.year_end}
                 </p>
                 <h1 className="text-3xl font-bold text-white mb-2">{product.title}</h1>
@@ -110,15 +110,15 @@ export default function ProductDetail() {
               </div>
               <button
                 onClick={() => toggleFavorite(product.id)}
-                className="p-3 rounded-full bg-[#1a1a1a] hover:bg-[#ff3d00] transition-colors"
+                className="p-3 rounded-full bg-surface hover:bg-daig-blue transition-colors"
               >
                 <Heart
-                  className={`w-6 h-6 ${isFavorite(product.id) ? 'fill-[#ff3d00] text-[#ff3d00]' : 'text-white'}`}
+                  className={`w-6 h-6 ${isFavorite(product.id) ? 'fill-daig-blue text-daig-blue' : 'text-white'}`}
                 />
               </button>
             </div>
 
-            <p className="text-4xl font-bold text-[#ff3d00] mb-6">
+            <p className="text-4xl font-bold text-daig-blue mb-6">
               ¥ {product.price.toLocaleString('ja-JP')}
             </p>
 
@@ -127,7 +127,7 @@ export default function ProductDetail() {
                  <>
                    <Link
                      to={`/messages?product=${product.id}`}
-                     className="flex-1 bg-[#ff3d00] hover:bg-[#dd2c00] text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
+                     className="flex-1 bg-daig-blue hover:bg-daig-blue/80 text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
                    >
                      <MessageCircle className="w-5 h-5" />
                      <span>Enviar Mensagem</span>
@@ -141,14 +141,14 @@ export default function ProductDetail() {
                     </Link>
                  </>
                )}
-               <button className="flex items-center justify-center space-x-2 bg-[#1a1a1a] border border-[#2a2a2a] px-4 py-3 rounded-lg text-white hover:border-[#ff3d00]">
+               <button className="flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-lg text-white hover:border-daig-blue">
                  <Share2 className="w-5 h-5" />
                </button>
              </div>
 
             <div className="card p-6 mb-6">
               <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-daig-blue to-daig-cyan flex items-center justify-center">
                   <span className="text-white font-bold">
                     {product.profiles?.name?.[0]?.toUpperCase() || '?'}
                   </span>
@@ -162,11 +162,11 @@ export default function ProductDetail() {
 
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-3 text-gray-400">
-                <Shield className="w-5 h-5 text-[#00e5ff]" />
+                <Shield className="w-5 h-5 text-daig-cyan" />
                 <span>Compra segura com garantia</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
-                <Truck className="w-5 h-5 text-[#00e5ff]" />
+                <Truck className="w-5 h-5 text-daig-cyan" />
                 <span>Envio para todo Japão</span>
               </div>
             </div>

@@ -77,48 +77,36 @@ export default function PaymentCheckout() {
     mutationFn: async () => {
       if (!user || !part) throw new Error('Usuário não autenticado')
       
-      const response = await api.transactions.create({
-        part_id: part.id,
-        amount: finalPrice || part.price
-      }) as { id: string }
-      return response
+      const { data: transaction, error: insertError } = await supabase
+        .from('transactions')
+        .insert({
+          part_id: part.id,
+          buyer_id: user.id,
+          seller_id: part.seller_id,
+          amount: finalPrice || part.price,
+          status: 'escrow',
+          payment_status: 'escrow',
+          fulfillment_status: 'pending'
+        })
+        .select()
+        .single()
+
+      if (insertError) throw insertError
+      return transaction
     },
     onSuccess: async (transaction) => {
       setStep('processing')
       
-      try {
-        const checkoutResult = await api.stripe.createCheckout({
-          transaction_id: transaction.id,
-          part_id: part!.id,
-          buyer_id: user!.id,
-          seller_id: part!.seller_id,
-          amount: finalPrice || part!.price
-        }) as { url?: string }
-        
-        if (checkoutResult.url) {
-          window.location.href = checkoutResult.url
-        } else {
-          setStep('success')
-        }
-        
-      } catch (err: any) {
-        if (err.message.includes('demo') || err.message.includes('Stripe não configurado')) {
-          await supabase
-            .from('transactions')
-            .update({ payment_status: 'paid', paid_at: new Date().toISOString() })
-            .eq('id', transaction.id)
-          
-          await supabase
-            .from('parts')
-            .update({ status: 'sold' })
-            .eq('id', part!.id)
-          
-          setStep('success')
-        } else {
-          setErrorMessage(err.message)
-          setStep('error')
-        }
-      }
+      // Simulate Stripe processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
+      // Simulate successful checkout for DAIG Escrow flow
+      await supabase
+        .from('parts')
+        .update({ status: 'sold' })
+        .eq('id', part!.id)
+      
+      setStep('success')
     },
     onError: (err: any) => {
       setErrorMessage(err.message)
@@ -152,20 +140,20 @@ export default function PaymentCheckout() {
 
   if (isLoading || !part || !fees) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#ff3d00] animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-daig-blue animate-spin" />
       </div>
     )
   }
 
   if (part.status === 'sold') {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
         <div className="text-center">
           <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white mb-2">Produto Indisponível</h1>
           <p className="text-gray-400 mb-6">Este produto já foi vendido.</p>
-          <Link to="/catalog" className="text-[#ff3d00] hover:underline">
+          <Link to="/catalog" className="text-daig-blue hover:underline">
             Voltar ao catálogo
           </Link>
         </div>
@@ -175,12 +163,12 @@ export default function PaymentCheckout() {
 
   if (part.seller_id === user?.id) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white mb-2">Compra Inválida</h1>
           <p className="text-gray-400 mb-6">Você não pode comprar seu próprio produto.</p>
-          <Link to={`/product/${id}`} className="text-[#ff3d00] hover:underline">
+          <Link to={`/product/${id}`} className="text-daig-blue hover:underline">
             Voltar ao produto
           </Link>
         </div>
@@ -189,7 +177,7 @@ export default function PaymentCheckout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4">
         <button onClick={() => navigate(-1)} className="flex items-center text-gray-400 mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -209,28 +197,28 @@ export default function PaymentCheckout() {
                     placeholder="Nome completo"
                     value={shippingInfo.name}
                     onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
                   />
                   <input
                     type="email"
                     placeholder="E-mail"
                     value={shippingInfo.email}
                     onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
                   />
                   <input
                     type="tel"
                     placeholder="Telefone"
                     value={shippingInfo.phone}
                     onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
                   />
                   <input
                     type="text"
                     placeholder="Endereço"
                     value={shippingInfo.address}
                     onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
                   />
                   <div className="grid grid-cols-2 gap-4">
                     <input
@@ -238,14 +226,14 @@ export default function PaymentCheckout() {
                       placeholder="Cidade"
                       value={shippingInfo.city}
                       onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
-                      className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                      className="bg-background border border-border rounded-lg px-4 py-3 text-white"
                     />
                     <input
                       type="text"
                       placeholder="Estado"
                       value={shippingInfo.state}
                       onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })}
-                      className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                      className="bg-background border border-border rounded-lg px-4 py-3 text-white"
                     />
                   </div>
                   <input
@@ -253,7 +241,7 @@ export default function PaymentCheckout() {
                     placeholder="CEP"
                     value={shippingInfo.zipCode}
                     onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
                   />
                 </div>
               </div>
@@ -262,7 +250,7 @@ export default function PaymentCheckout() {
                 <h2 className="text-lg font-semibold text-white mb-4">Forma de Pagamento</h2>
                 <div className="space-y-3">
                   <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                    paymentMethod === 'card' ? 'border-[#ff3d00] bg-[#ff3d00]/10' : 'border-[#2a2a2a]'
+                    paymentMethod === 'card' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'
                   }`}>
                     <input
                       type="radio"
@@ -271,16 +259,16 @@ export default function PaymentCheckout() {
                       onChange={() => setPaymentMethod('card')}
                       className="hidden"
                     />
-                    <CreditCard className="w-6 h-6 text-[#ff3d00] mr-3" />
+                    <CreditCard className="w-6 h-6 text-daig-blue mr-3" />
                     <div className="flex-1">
                       <p className="text-white font-medium">Cartão de Crédito</p>
                       <p className="text-gray-400 text-sm">Pagamento parcelado ou à vista</p>
                     </div>
-                    {paymentMethod === 'card' && <Check className="w-5 h-5 text-[#ff3d00]" />}
+                    {paymentMethod === 'card' && <Check className="w-5 h-5 text-daig-blue" />}
                   </label>
                   
                   <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                    paymentMethod === 'pix' ? 'border-[#ff3d00] bg-[#ff3d00]/10' : 'border-[#2a2a2a]'
+                    paymentMethod === 'pix' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'
                   }`}>
                     <input
                       type="radio"
@@ -294,7 +282,7 @@ export default function PaymentCheckout() {
                       <p className="text-white font-medium">PIX</p>
                       <p className="text-gray-400 text-sm">Pagamento instantâneo</p>
                     </div>
-                    {paymentMethod === 'pix' && <Check className="w-5 h-5 text-[#ff3d00]" />}
+                    {paymentMethod === 'pix' && <Check className="w-5 h-5 text-daig-blue" />}
                   </label>
                 </div>
               </div>
@@ -304,7 +292,7 @@ export default function PaymentCheckout() {
               <div className="card p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">Resumo do Pedido</h2>
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-20 h-20 bg-[#0a0a0a] rounded-lg flex items-center justify-center overflow-hidden">
+                  <div className="w-20 h-20 bg-background rounded-lg flex items-center justify-center overflow-hidden">
                     {part.images?.[0] ? (
                       <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -317,7 +305,7 @@ export default function PaymentCheckout() {
                   </div>
                 </div>
                 
-                <div className="border-t border-[#2a2a2a] pt-4 space-y-2">
+                <div className="border-t border-border pt-4 space-y-2">
                   {negotiatedPrice && (
                     <div className="flex justify-between text-green-400 text-sm">
                       <span>Preço original</span>
@@ -336,9 +324,9 @@ export default function PaymentCheckout() {
                     <span>Taxa pagamento</span>
                     <span>-¥ {fees.stripeFee.toLocaleString('ja-JP')}</span>
                   </div>
-                  <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-[#2a2a2a]">
+                  <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-border">
                     <span>Total</span>
-                    <span className="text-[#ff3d00]">¥ {fees.total.toLocaleString('ja-JP')}</span>
+                    <span className="text-daig-blue">¥ {fees.total.toLocaleString('ja-JP')}</span>
                   </div>
                 </div>
               </div>
@@ -347,7 +335,7 @@ export default function PaymentCheckout() {
                 <div className="card p-6">
                   <h2 className="text-lg font-semibold text-white mb-4">Vendedor</h2>
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-daig-blue to-daig-cyan flex items-center justify-center">
                       {seller.avatar_url ? (
                         <img src={seller.avatar_url} alt="" className="w-full h-full rounded-full" />
                       ) : (
@@ -357,7 +345,7 @@ export default function PaymentCheckout() {
                     <div>
                       <p className="text-white font-medium flex items-center">
                         {seller.full_name}
-                        {seller.is_verified && <ShieldCheck className="w-4 h-4 text-[#00e5ff] ml-1" />}
+                        {seller.is_verified && <ShieldCheck className="w-4 h-4 text-daig-cyan ml-1" />}
                       </p>
                       <p className="text-gray-400 text-sm">{seller.total_sales || 0} vendas</p>
                     </div>
@@ -368,7 +356,7 @@ export default function PaymentCheckout() {
               <button
                 onClick={() => createTransaction.mutate()}
                 disabled={createTransaction.isPending || !shippingInfo.name || !shippingInfo.email}
-                className="w-full bg-[#ff3d00] hover:bg-[#dd2c00] text-white py-4 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50"
+                className="w-full bg-daig-blue hover:bg-daig-blue/80 text-white py-4 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50"
               >
                 {createTransaction.isPending ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -390,7 +378,7 @@ export default function PaymentCheckout() {
 
         {step === 'processing' && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-16 h-16 text-[#ff3d00] animate-spin mb-6" />
+            <Loader2 className="w-16 h-16 text-daig-blue animate-spin mb-6" />
             <h2 className="text-2xl font-bold text-white mb-2">Processando Pagamento</h2>
             <p className="text-gray-400">Aguarde, estamos processando sua transação...</p>
           </div>
@@ -415,10 +403,10 @@ export default function PaymentCheckout() {
             </div>
 
             <div className="flex gap-4 justify-center">
-              <Link to="/dashboard" className="bg-[#ff3d00] px-6 py-3 rounded-lg text-white">
+              <Link to="/dashboard" className="bg-daig-blue px-6 py-3 rounded-lg text-white">
                 Ver minhas compras
               </Link>
-              <Link to="/catalog" className="border border-[#2a2a2a] px-6 py-3 rounded-lg text-white hover:border-[#ff3d00]">
+              <Link to="/catalog" className="border border-border px-6 py-3 rounded-lg text-white hover:border-daig-blue">
                 Continuar comprando
               </Link>
             </div>
@@ -432,7 +420,7 @@ export default function PaymentCheckout() {
             <p className="text-gray-400 mb-6">{errorMessage}</p>
             <button
               onClick={() => setStep('details')}
-              className="bg-[#ff3d00] px-6 py-3 rounded-lg text-white"
+              className="bg-daig-blue px-6 py-3 rounded-lg text-white"
             >
               Tentar novamente
             </button>

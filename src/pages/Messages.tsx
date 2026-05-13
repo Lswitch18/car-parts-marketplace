@@ -175,7 +175,7 @@ export default function Messages() {
   const conversation = conversations?.find(c => c.oder_id === selectedConversation)
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-display text-3xl font-bold text-white">
@@ -185,18 +185,18 @@ export default function Messages() {
 
         <div className="card overflow-hidden" style={{ height: '600px' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
-            <div className="border-r border-[#2a2a2a] overflow-y-auto">
+            <div className="border-r border-border overflow-y-auto">
               {conversations && conversations.length > 0 ? (
                 conversations.map((conv: any) => (
                   <button
                     key={`${conv.oder_id}-${conv.part.id}`}
                     onClick={() => setSelectedConversation(conv.oder_id)}
-                    className={`w-full p-4 text-left hover:bg-[#1a1a1a] transition-colors ${
-                      selectedConversation === conv.oder_id ? 'bg-[#1a1a1a]' : ''
+                    className={`w-full p-4 text-left hover:bg-surface transition-colors ${
+                      selectedConversation === conv.oder_id ? 'bg-surface' : ''
                     }`}
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-lg bg-[#2a2a2a] flex items-center justify-center overflow-hidden">
+                      <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center overflow-hidden">
                         {conv.part.images?.[0] ? (
                           <img src={conv.part.images[0]} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -206,10 +206,10 @@ export default function Messages() {
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-medium truncate">{conv.oder.full_name || 'Usuário'}</p>
                         <p className="text-gray-400 text-sm truncate">{conv.part.title || 'Sem produto'}</p>
-                        <p className="text-[#ff3d00] text-xs">¥ {conv.part.price?.toLocaleString('ja-JP') || 0}</p>
+                        <p className="text-daig-blue text-xs">¥ {conv.part.price?.toLocaleString('ja-JP') || 0}</p>
                       </div>
                       {conv.unreadCount > 0 && (
-                        <span className="bg-[#ff3d00] text-white text-xs px-2 py-1 rounded-full">
+                        <span className="bg-daig-blue text-white text-xs px-2 py-1 rounded-full">
                           {conv.unreadCount}
                         </span>
                       )}
@@ -227,12 +227,12 @@ export default function Messages() {
             <div className="col-span-2 flex flex-col">
               {selectedConversation && selectedMessages ? (
                 <>
-                  <div className="p-4 border-b border-[#2a2a2a] flex items-center justify-between">
+                  <div className="p-4 border-b border-border flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <button onClick={() => setSelectedConversation(null)} className="md:hidden">
                         <ArrowRight className="w-5 h-5 text-gray-400" />
                       </button>
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-daig-blue to-daig-cyan flex items-center justify-center">
                         <User className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -249,7 +249,7 @@ export default function Messages() {
                     {conversation && (
                       <Link
                         to={`/product/${conversation.part.id}`}
-                        className="text-[#ff3d00] text-sm hover:underline"
+                        className="text-daig-blue text-sm hover:underline"
                       >
                         Ver anúncio
                       </Link>
@@ -266,10 +266,10 @@ export default function Messages() {
                         <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                           <div className={`max-w-xs px-4 py-3 rounded-2xl ${
                             isMe 
-                              ? 'bg-[#ff3d00] text-white rounded-br-md' 
+                              ? 'bg-daig-blue text-white rounded-br-md' 
                               : isPriceProposal
-                                ? 'bg-[#1a1a1a] border-2 border-green-500 text-white rounded-bl-md'
-                                : 'bg-[#1a1a1a] text-white rounded-bl-md'
+                                ? 'bg-surface border-2 border-green-500 text-white rounded-bl-md'
+                                : 'bg-surface text-white rounded-bl-md'
                           }`}>
                             {isPriceProposal && (
                               <div className="flex items-center space-x-2 mb-2">
@@ -318,7 +318,7 @@ export default function Messages() {
                         </div>
                         <Link
                           to={`/checkout/${conversation?.part.id}?price=${currentPrice}`}
-                          className="bg-[#ff3d00] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1"
+                          className="bg-daig-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1"
                         >
                           <ShoppingCart className="w-4 h-4" />
                           <span>Ir para Pagamento</span>
@@ -329,7 +329,7 @@ export default function Messages() {
                   )}
 
                   {!currentPrice && (
-                    <div className="p-4 border-t border-[#2a2a2a]">
+                    <div className="p-4 border-t border-border">
                       <div className="flex space-x-2 mb-2">
                         <button
                           onClick={() => setShowPriceModal(true)}
@@ -351,12 +351,12 @@ export default function Messages() {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="Digite sua mensagem..."
-                          className="flex-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-2 text-white"
+                          className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-white"
                         />
                         <button
                           type="submit"
                           disabled={!newMessage.trim() || sendMessage.isPending}
-                          className="bg-[#ff3d00] hover:bg-[#dd2c00] text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                          className="bg-daig-blue hover:bg-daig-blue/80 text-white px-4 py-2 rounded-lg disabled:opacity-50"
                         >
                           <Send className="w-5 h-5" />
                         </button>
@@ -379,7 +379,7 @@ export default function Messages() {
 
       {showPriceModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6 w-full max-w-md">
+          <div className="bg-surface border border-border rounded-lg p-6 w-full max-w-md">
             <h3 className="text-white font-semibold mb-4 flex items-center">
               <DollarSign className="w-5 h-5 mr-2 text-green-400" />
               Fazer Proposta de Preço
@@ -392,12 +392,12 @@ export default function Messages() {
               value={proposedPrice}
               onChange={(e) => setProposedPrice(e.target.value)}
               placeholder="Digite seu preço proposto"
-              className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white mb-4"
+              className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white mb-4"
             />
             <div className="flex space-x-3">
               <button
                 onClick={() => { setShowPriceModal(false); setProposedPrice('') }}
-                className="flex-1 bg-[#2a2a2a] text-white py-2 rounded-lg"
+                className="flex-1 bg-surface text-white py-2 rounded-lg"
               >
                 Cancelar
               </button>

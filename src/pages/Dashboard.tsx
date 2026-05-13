@@ -50,6 +50,32 @@ export default function Dashboard() {
     enabled: !!user
   })
 
+  const { data: transactions } = useQuery({
+    queryKey: ['my-transactions', user?.id],
+    queryFn: async () => {
+      if (!user) return []
+      const { data } = await supabase
+        .from('transactions')
+        .select('*, parts(title, images)')
+        .or(`seller_id.eq.${user.id},buyer_id.eq.${user.id}`)
+        .order('created_at', { ascending: false })
+      return data || []
+    },
+    enabled: !!user
+  })
+
+  const updateTransaction = useMutation({
+    mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
+      const { error } = await supabase.from('transactions').update(updates).eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['seller-stats'] })
+    }
+  })
+
+
   const { data: products } = useQuery({
     queryKey: ['seller-products', user?.id],
     queryFn: async () => {
@@ -220,7 +246,63 @@ export default function Dashboard() {
                   </Link>
                 </div>
               )}
+            
+            <div className="card p-6 mt-8 border-daig-purple">
+              <h2 className="text-xl font-semibold text-text mb-6">Minhas Transações</h2>
+              {transactions && transactions.length > 0 ? (
+                <div className="space-y-4">
+                  {transactions.map((t) => {
+                    const isBuyer = t.buyer_id === user.id;
+                    const roleText = isBuyer ? 'Compra' : 'Venda';
+                    return (
+                      <div key={t.id} className="p-4 bg-background rounded-lg border border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-surface rounded flex items-center justify-center overflow-hidden">
+                            {t.parts?.images?.[0] ? (
+                              <img src={t.parts.images[0]} alt="" className="w-full h-full object-cover" />
+                            ) : <Package className="w-6 h-6 text-text-secondary" />}
+                          </div>
+                          <div>
+                            <p className="text-white font-medium">{t.parts?.title || 'Produto'}</p>
+                            <p className="text-text-secondary text-sm">
+                              {roleText} • ¥ {t.amount?.toLocaleString('ja-JP')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <p className="text-sm font-medium text-white">Status: {t.fulfillment_status === 'pending' ? 'Pendente' : t.fulfillment_status === 'shipped' ? 'Enviado' : 'Concluído'}</p>
+                          </div>
+                          
+                          {!isBuyer && t.fulfillment_status === 'pending' && t.payment_status === 'escrow' && (
+                            <button 
+                              onClick={() => updateTransaction.mutate({ id: t.id, updates: { fulfillment_status: 'shipped' } })}
+                              className="bg-daig-blue hover:bg-daig-blue/80 text-white px-4 py-2 rounded text-sm font-medium"
+                            >
+                              Marcar Enviado
+                            </button>
+                          )}
+                          
+                          {isBuyer && t.fulfillment_status === 'shipped' && (
+                            <button 
+                              onClick={() => updateTransaction.mutate({ id: t.id, updates: { fulfillment_status: 'received', payment_status: 'completed' } })}
+                              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm font-medium"
+                            >
+                              Confirmar Recebimento
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-text-secondary">Nenhuma transação encontrada</p>
+                </div>
+              )}
             </div>
+
           </div>
 
           <div className="space-y-6">
