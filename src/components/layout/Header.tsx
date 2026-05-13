@@ -23,7 +23,7 @@ export default function Header() {
       .from('messages')
       .select('*', { count: 'exact', head: true })
       .eq('receiver_id', user.id)
-      .eq('read', false)
+      .eq('is_read', false)
     
     if (!error) setUnreadCount(count || 0)
   }

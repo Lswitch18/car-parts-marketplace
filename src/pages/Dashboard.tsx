@@ -35,7 +35,7 @@ export default function Dashboard() {
       
       const [productsRes, ordersRes, messagesRes] = await Promise.all([
         supabase.from('parts').select('id, views, status').eq('seller_id', user.id),
-        supabase.from('transactions').select('id, total').eq('seller_id', user.id),
+        supabase.from('transactions').select('id, amount').eq('seller_id', user.id),
         supabase.from('messages').select('id').eq('receiver_id', user.id)
       ])
 

@@ -19,6 +19,11 @@ FILES = {
         "modified": 1778355239.7881644,
         "hash": "81b2ffae26f2eeb21eca7c42c9e3f90f"
     },
+    "anota\u00e7\u00e3o": {
+        "size": 186,
+        "modified": 1778592566.5794954,
+        "hash": "d68bca54141737c644856e5e12591914"
+    },
     "Dockerfile.jenkins": {
         "size": 324,
         "modified": 1778343579.364174,
@@ -44,20 +49,40 @@ FILES = {
         "modified": 1778552985.323125,
         "hash": "4df93db2d5a76911a1f7c0641809c380"
     },
+    "SAGAWA-CONTRATO-GUIA.pdf": {
+        "size": 111404,
+        "modified": 1778596802.6554968,
+        "hash": "3348d53660f924b9ed60f15548b44d4a"
+    },
     "backup-full.sql": {
         "size": 6099,
         "modified": 1778291597.8668823,
         "hash": "c41117ce9a6e0788fb0fe1cf18656bfb"
+    },
+    "SPEC-SAGAWA.md": {
+        "size": 14733,
+        "modified": 1778596367.7674787,
+        "hash": "02d4a3fede86b7f89fd502ba50091bcd"
     },
     "create-10-ads.sql": {
         "size": 5439,
         "modified": 1778298212.6508818,
         "hash": "e51bb3d52ada002c343d2705697d97ef"
     },
+    "SPEC-SAGAWA.pdf": {
+        "size": 83058,
+        "modified": 1778596384.6394951,
+        "hash": "c877437e64814cb6afd94039de01eb3c"
+    },
     "docker-compose.jenkins.yml": {
         "size": 388,
         "modified": 1778344398.1961665,
         "hash": "d912f7ed728aeed7a71ad1bbb21448ab"
+    },
+    "PRESENTACAO-FASE1-PAGAMENTOS-LOGISTICA.pdf": {
+        "size": 48967,
+        "modified": 1778591469.351492,
+        "hash": "0c34aa3722f9b2ba7a4bb6dd8201223b"
     },
     "vite.config.ts": {
         "size": 179,
@@ -65,9 +90,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 18435,
-        "modified": 1778557944.8200896,
-        "hash": "80feae930c4c9717c3f7bda24ffb66a5"
+        "size": 19847,
+        "modified": 1778643918.6179137,
+        "hash": "09b0be447d90729bd6336ac33b7379da"
     },
     "vite.config.js": {
         "size": 196,
@@ -109,9 +134,14 @@ FILES = {
         "modified": 1778244136.1845484,
         "hash": "470cfd3ee10fbff840b377e769485f3e"
     },
+    "SAGAWA-CONTRATO-GUIA.md": {
+        "size": 18857,
+        "modified": 1778596790.8434935,
+        "hash": "ba8c6cd8430aa5519e74198aa1da188c"
+    },
     "tsconfig.tsbuildinfo": {
         "size": 1455,
-        "modified": 1778554939.5836573,
+        "modified": 1778642693.4939249,
         "hash": "8c94a604bc7a950f920e8af7d6aff9fd"
     },
     "PROJECT-STATUS.md": {
@@ -130,9 +160,9 @@ FILES = {
         "hash": "fd0fb864a3c8c5b5cb70ef8d10d107ff"
     },
     "index.html": {
-        "size": 846,
-        "modified": 1778403612.0084398,
-        "hash": "920f71c9d07c5a368874f56fba4c4afe"
+        "size": 1222,
+        "modified": 1778643655.4979262,
+        "hash": "5c81532e4d75aaf98c2b9130e2d31981"
     },
     "README.md": {
         "size": 2022,
@@ -199,10 +229,20 @@ FILES = {
         "modified": 1778536669.115136,
         "hash": "74380210783530747edbcb27a2a074d2"
     },
+    "PRESENTACAO-FASE1-PAGAMENTOS-LOGISTICA.md": {
+        "size": 11672,
+        "modified": 1778591006.6954935,
+        "hash": "27951b5ad2036e5462bf32da164e038f"
+    },
     "deploy-functions.sh": {
         "size": 2974,
         "modified": 1778403788.1564429,
         "hash": "ef529789673369bede21899f714f59b7"
+    },
+    "vercel.json": {
+        "size": 80,
+        "modified": 1778643657.5139263,
+        "hash": "6411d2fbb5f0e00aaff0ca0ded84e0b6"
     },
     "md2pdf_convert.py": {
         "size": 7620,
@@ -250,9 +290,9 @@ FILES = {
         "hash": "dd8f5d27a1444451ecead6bb0a5d69b3"
     },
     "src/index.css": {
-        "size": 2377,
-        "modified": 1778247869.164548,
-        "hash": "e12aa434629cbb2a05bfa1d84916e7d9"
+        "size": 10032,
+        "modified": 1778642797.4979236,
+        "hash": "7737e850d723bd210d78255d1ec9ddc7"
     },
     "src/main.tsx": {
         "size": 631,
@@ -275,9 +315,9 @@ FILES = {
         "hash": "a3de439381b1694ffecd1cc7821c4ab9"
     },
     "src/stores/authStore.ts": {
-        "size": 3207,
-        "modified": 1778401396.0564423,
-        "hash": "534c5cbfc4d8d1a38a4637a7efe98f17"
+        "size": 4803,
+        "modified": 1778640806.7419243,
+        "hash": "8a1f430418545bebcd882a6c879246f2"
     },
     "src/pages/Home.tsx": {
         "size": 13045,
@@ -290,9 +330,9 @@ FILES = {
         "hash": "69950be04ab4b8c7b32a2450cae080e9"
     },
     "src/pages/Dashboard.tsx": {
-        "size": 17163,
-        "modified": 1778340560.3401697,
-        "hash": "2e0d59df889e75fd757af40580982840"
+        "size": 17164,
+        "modified": 1778643821.6619308,
+        "hash": "375e752a184bbdbd926cd9121cfb6974"
     },
     "src/pages/Login.tsx": {
         "size": 7321,
@@ -335,9 +375,9 @@ FILES = {
         "hash": "bb39aa47b1c50c381bb37cc5fa656e73"
     },
     "src/pages/admin/Dashboard.tsx": {
-        "size": 10683,
-        "modified": 1778395752.6524448,
-        "hash": "527d4957aab55f80895bdc83b2829216"
+        "size": 22435,
+        "modified": 1778641407.2139273,
+        "hash": "9356d5ba39d3d2a38eef2fcdb385c693"
     },
     "src/pages/admin/TransactionManagement.tsx": {
         "size": 13027,
@@ -390,9 +430,9 @@ FILES = {
         "hash": "61ba9ad2ac786c9a9f946a614fdf5216"
     },
     "src/components/GaidLogo.tsx": {
-        "size": 2826,
-        "modified": 1778394825.5444164,
-        "hash": "c844fa790acb6b1dd973f071cf8b6ce0"
+        "size": 4971,
+        "modified": 1778643823.6819303,
+        "hash": "71f3211dd6215f0ed6404de1173969f3"
     },
     "src/components/SimulateSale.tsx": {
         "size": 6485,
@@ -400,9 +440,9 @@ FILES = {
         "hash": "2f178d0a09d6ab897b90b867521d2a32"
     },
     "src/components/layout/Header.tsx": {
-        "size": 12119,
-        "modified": 1778399001.1844437,
-        "hash": "d41bc5575bfa63fa70c537a35faf58d9"
+        "size": 12122,
+        "modified": 1778643723.5899224,
+        "hash": "a3a6f77eb92e1f6261412bcdffb29056"
     },
     "src/components/layout/Footer.tsx": {
         "size": 4807,
@@ -569,6 +609,11 @@ FILES = {
         "modified": 1778327850.9744914,
         "hash": "c60d1c801526d1e246b908956aed53d7"
     },
+    "supabase/migrations/daig-schema-fix-20260513.sql": {
+        "size": 9657,
+        "modified": 1778641723.8859255,
+        "hash": "4f4f60ea6dbe83a53c203a92ffc2ccc1"
+    },
     "supabase/migrations/analytics_functions.sql": {
         "size": 7939,
         "modified": 1778395710.324444,
@@ -591,4 +636,4 @@ FILES = {
     }
 }
 
-last_updated = "2026-05-12"
+last_updated = "2026-05-13"

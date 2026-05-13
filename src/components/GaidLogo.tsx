@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * DAIG Logo — Digital A.I. Garage
  * Engrenagem com letra G integrada + círculo neon azul luminoso
- * Conforme Brand Book DAIG v1.0 Maio/2024
+ * Tipografia: DAIG com A azul, subtítulo com A.I. azul.
  */
 const GaidLogo: React.FC<{
   size?: number;
@@ -13,7 +13,7 @@ const GaidLogo: React.FC<{
 }> = ({ size = 40, className = '', variant = 'horizontal', animated = true }) => {
   return (
     <div className={`daig-logo-wrap flex items-center ${variant === 'vertical' ? 'flex-col' : 'flex-row'} gap-3 ${className}`}>
-      {/* Ícone: Engrenagem G + Círculo Neon */}
+      {/* Ícone: Engrenagem G Branca + Círculo Neon */}
       <svg
         width={size}
         height={size}
@@ -23,31 +23,7 @@ const GaidLogo: React.FC<{
         style={{ flexShrink: 0 }}
       >
         <defs>
-          {/* Gradiente azul DAIG */}
-          <linearGradient id="daig-blue-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#1E90FF" />
-            <stop offset="100%" stopColor="#0D50CC" />
-          </linearGradient>
-
-          {/* Gradiente prata para engrenagem */}
-          <linearGradient id="gear-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#E5E8ED" />
-            <stop offset="50%" stopColor="#B0B8C8" />
-            <stop offset="100%" stopColor="#8892A4" />
-          </linearGradient>
-
-          {/* Filtro glow neon azul */}
-          <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          {/* Glow para o círculo externo */}
-          <filter id="ring-glow" x="-40%" y="-40%" width="180%" height="180%">
+          <filter id="neon-ring" x="-40%" y="-40%" width="180%" height="180%">
             <feGaussianBlur stdDeviation="3" result="blur1" />
             <feGaussianBlur stdDeviation="6" result="blur2" />
             <feMerge>
@@ -58,58 +34,53 @@ const GaidLogo: React.FC<{
           </filter>
         </defs>
 
-        {/* === Círculo externo neon === */}
+        {/* Círculo externo neon azul */}
         <circle
           cx="50"
           cy="50"
           r="44"
           stroke="#0D75FF"
-          strokeWidth="3.5"
+          strokeWidth="4"
           fill="none"
-          filter="url(#ring-glow)"
+          filter="url(#neon-ring)"
           style={animated ? {
             animation: 'daig-ring-pulse 3s ease-in-out infinite',
           } : {}}
         />
 
-        {/* Círculo interno (track) */}
-        <circle cx="50" cy="50" r="40" fill="rgba(13, 117, 255, 0.06)" />
+        {/* Círculo interno (base) */}
+        <circle cx="50" cy="50" r="40" fill="transparent" />
 
-        {/* === Engrenagem === */}
+        {/* === Engrenagem G Branca === */}
         <g
           style={animated ? {
             transformOrigin: '50px 50px',
             animation: 'daig-gear-spin 12s linear infinite',
           } : {}}
-          filter="url(#neon-glow)"
         >
           {/* Dentes da engrenagem (8 dentes) */}
           {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
             <rect
               key={deg}
-              x="46"
-              y="8"
-              width="8"
-              height="12"
-              rx="2"
-              fill="url(#gear-grad)"
+              x="45"
+              y="12"
+              width="10"
+              height="10"
+              rx="1"
+              fill="#FFFFFF"
               transform={`rotate(${deg}, 50, 50)`}
             />
           ))}
 
           {/* Corpo da engrenagem */}
-          <circle cx="50" cy="50" r="30" fill="#1A1E28" />
-          <circle cx="50" cy="50" r="30" stroke="url(#gear-grad)" strokeWidth="1.5" fill="none" />
+          <circle cx="50" cy="50" r="28" stroke="#FFFFFF" strokeWidth="8" fill="none" />
 
           {/* Letra G integrada */}
           <path
-            d="M58 32C55 30 52 29 50 29C40.6 29 33 36.6 33 46C33 55.4 40.6 63 50 63C55.2 63 59.8 60.8 63 57.2V46H50V52H57V55C55.4 56.2 52.8 57 50 57C44 57 39 52 39 46C39 40 44 35 50 35C52.8 35 55.4 36 57.4 38L58 32Z"
-            fill="url(#daig-blue-grad)"
+            d="M50 34C41.2 34 34 41.2 34 50C34 58.8 41.2 66 50 66C56 66 61 62 63.5 57H50V50H63.5C63.8 52 64 54 64 56V50H72C72 41.2 64.8 34 56 34H50Z"
+            fill="#FFFFFF"
           />
         </g>
-
-        {/* Ponto central */}
-        <circle cx="50" cy="50" r="4" fill="#0D75FF" filter="url(#neon-glow)" />
 
         <style>{`
           @keyframes daig-gear-spin {
@@ -117,43 +88,64 @@ const GaidLogo: React.FC<{
             to { transform: rotate(360deg); }
           }
           @keyframes daig-ring-pulse {
-            0%, 100% { opacity: 1; stroke-width: 3.5; }
-            50% { opacity: 0.7; stroke-width: 2.5; }
+            0%, 100% { opacity: 1; stroke-width: 4; }
+            50% { opacity: 0.8; stroke-width: 3; }
           }
         `}</style>
       </svg>
 
       {/* Texto DAIG */}
       {variant !== 'icon' && (
-        <div className="flex flex-col leading-none" style={{ fontFamily: "'Sora', sans-serif" }}>
-          <span
-            style={{
-              fontSize: size * 0.55,
-              fontWeight: 800,
-              letterSpacing: '0.12em',
-              background: 'linear-gradient(90deg, #FFFFFF 0%, #AACCFF 60%, #0D75FF 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              lineHeight: 1,
-            }}
-          >
-            DAIG
-          </span>
-          {variant === 'horizontal' && (
-            <span
-              style={{
-                fontSize: size * 0.17,
-                fontWeight: 400,
-                letterSpacing: '0.2em',
-                color: '#7B8497',
-                marginTop: 3,
-                fontFamily: "'Raleway', sans-serif",
-                textTransform: 'uppercase',
-              }}
-            >
-              Digital A.I. Garage
-            </span>
+        <div className={`flex flex-col ${variant === 'vertical' ? 'items-center' : 'items-start'} leading-none`} style={{ fontFamily: "'Sora', sans-serif" }}>
+          
+          {/* DAIG Principal */}
+          <div style={{
+            fontSize: size * 0.6,
+            fontWeight: 800,
+            letterSpacing: '0.15em',
+            lineHeight: 1,
+            color: '#FFFFFF',
+            display: 'flex'
+          }}>
+            <span>D</span>
+            <span style={{ color: '#0D75FF' }}>A</span>
+            <span>IG</span>
+          </div>
+          
+          {/* Subtítulo DIGITAL A.I. GARAGE */}
+          {variant === 'vertical' || variant === 'horizontal' ? (
+            <div style={{
+              fontSize: size * 0.15,
+              fontWeight: 500,
+              letterSpacing: '0.25em',
+              color: '#FFFFFF',
+              marginTop: size * 0.1,
+              fontFamily: "'Sora', sans-serif",
+              textTransform: 'uppercase',
+            }}>
+              <span>DIGITAL </span>
+              <span style={{ color: '#0D75FF' }}>A.I.</span>
+              <span> GARAGE</span>
+            </div>
+          ) : null}
+
+          {/* Subtítulo 2 - Ecosystem */}
+          {variant === 'vertical' && (
+            <div style={{
+              fontSize: size * 0.11,
+              fontWeight: 400,
+              letterSpacing: '0.15em',
+              color: '#8892A4',
+              marginTop: size * 0.08,
+              fontFamily: "'Sora', sans-serif",
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <span style={{ width: '12px', height: '2px', background: '#0D75FF', display: 'inline-block' }}></span>
+              SMART AUTOMOTIVE ECOSYSTEM
+            </div>
           )}
         </div>
       )}
