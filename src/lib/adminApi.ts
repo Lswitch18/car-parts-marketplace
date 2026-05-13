@@ -1,0 +1,138 @@
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const ADMIN_URL = `${SUPABASE_URL}/functions/v1/admin`;
+
+async function adminFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const token = localStorage.getItem('sb-access-token');
+  const res = await fetch(`${ADMIN_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'Admin API error');
+  return json.data as T;
+}
+
+export const adminApi = {
+  me: () => adminFetch<any>('/me'),
+
+  dashboard: {
+    kpis: () => adminFetch<DashboardKPIs>('/dashboard/kpis'),
+    statusEntregas: () => adminFetch<{status:string;count:number}[]>('/dashboard/status-entregas'),
+    performance: () => adminFetch<{data:string;no_prazo:number;atrasadas:number}[]>('/dashboard/performance'),
+    pedidosRecentes: () => adminFetch<any[]>('/dashboard/pedidos-recentes'),
+  },
+
+  setores: {
+    list: () => adminFetch<any[]>('/setores'),
+    get: (id: string) => adminFetch<any>(`/setores/${id}`),
+    create: (data: any) => adminFetch<any>('/setores', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/setores/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => adminFetch<any>(`/setores/${id}`, { method: 'DELETE' }),
+  },
+
+  cargos: {
+    list: () => adminFetch<any[]>('/cargos'),
+    get: (id: string) => adminFetch<any>(`/cargos/${id}`),
+    create: (data: any) => adminFetch<any>('/cargos', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/cargos/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => adminFetch<any>(`/cargos/${id}`, { method: 'DELETE' }),
+  },
+
+  permissoes: {
+    list: (setor_id?: string) => adminFetch<any[]>(`/permissoes${setor_id ? `?setor_id=${setor_id}` : ''}`),
+    create: (data: any) => adminFetch<any>('/permissoes', { method: 'POST', body: JSON.stringify(data) }),
+  },
+
+  usuarios: {
+    list: (search?: string) => adminFetch<any[]>(`/usuarios${search ? `?search=${search}` : ''}`),
+    get: (id: string) => adminFetch<any>(`/usuarios/${id}`),
+    update: (id: string, data: any) => adminFetch<any>(`/usuarios/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  },
+
+  armazens: {
+    list: () => adminFetch<any[]>('/armazens'),
+    get: (id: string) => adminFetch<any>(`/armazens/${id}`),
+    create: (data: any) => adminFetch<any>('/armazens', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/armazens/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => adminFetch<any>(`/armazens/${id}`, { method: 'DELETE' }),
+  },
+
+  clientes: {
+    list: (params?: { page?: number; limit?: number; search?: string }) => {
+      const q = new URLSearchParams();
+      if (params) Object.entries(params).forEach(([k, v]) => v && q.set(k, String(v)));
+      return adminFetch<any>(`/clientes?${q}`);
+    },
+    get: (id: string) => adminFetch<any>(`/clientes/${id}`),
+    create: (data: any) => adminFetch<any>('/clientes', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/clientes/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => adminFetch<any>(`/clientes/${id}`, { method: 'DELETE' }),
+  },
+
+  pedidos: {
+    list: (params?: { page?: number; limit?: number; search?: string; status?: string }) => {
+      const q = new URLSearchParams();
+      if (params) Object.entries(params).forEach(([k, v]) => v && q.set(k, String(v)));
+      return adminFetch<any>(`/pedidos?${q}`);
+    },
+    get: (id: string) => adminFetch<any>(`/pedidos/${id}`),
+    create: (data: any) => adminFetch<any>('/pedidos', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/pedidos/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => adminFetch<any>(`/pedidos/${id}`, { method: 'DELETE' }),
+  },
+
+  entregas: {
+    list: (params?: { page?: number; limit?: number; status?: string }) => {
+      const q = new URLSearchParams();
+      if (params) Object.entries(params).forEach(([k, v]) => v && q.set(k, String(v)));
+      return adminFetch<any>(`/entregas?${q}`);
+    },
+    create: (data: any) => adminFetch<any>('/entregas', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/entregas/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  },
+
+  transportes: {
+    list: (armazem_id?: string) => adminFetch<any[]>(`/transportes${armazem_id ? `?armazem_id=${armazem_id}` : ''}`),
+    create: (data: any) => adminFetch<any>('/transportes', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/transportes/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  },
+
+  estoque: {
+    list: (armazem_id?: string) => adminFetch<any[]>(`/estoque${armazem_id ? `?armazem_id=${armazem_id}` : ''}`),
+    create: (data: any) => adminFetch<any>('/estoque', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => adminFetch<any>(`/estoque/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  },
+
+  transferencias: {
+    list: () => adminFetch<any[]>('/transferencias'),
+    create: (data: any) => adminFetch<any>('/transferencias', { method: 'POST', body: JSON.stringify(data) }),
+  },
+
+  ocorrencias: {
+    list: (status?: string) => adminFetch<any[]>(`/ocorrencias${status ? `?status=${status}` : ''}`),
+    create: (data: any) => adminFetch<any>('/ocorrencias', { method: 'POST', body: JSON.stringify(data) }),
+  },
+
+  configuracoes: {
+    list: () => adminFetch<Record<string,string>>('/configuracoes'),
+    update: (chave: string, valor: string) => adminFetch<any>('/configuracoes', { method: 'PUT', body: JSON.stringify({ chave, valor }) }),
+  },
+
+  auditoria: {
+    list: (page = 1, limit = 50) => adminFetch<any[]>(`/auditoria?page=${page}&limit=${limit}`),
+  },
+};
+
+export interface DashboardKPIs {
+  total: number;
+  concluidas: number;
+  atrasos: number;
+  cancelados: number;
+  emTransito: number;
+  taxa: string;
+  custo: string;
+}

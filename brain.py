@@ -9,8 +9,29 @@ from datetime import datetime
 
 PROJECT_INFO = {
     "name": "car-parts-marketplce",
-    "type": "Marketplace de peças automotivas",
-    "tech_stack": ["Python", "HTML", "SQL", "Supabase", "Google OAuth"],
+    "type": "Marketplace de peças automotivas + Admin WMS Logistix",
+    "tech_stack": ["Python", "TypeScript", "React", "Vite", "Tailwind", "Supabase", "Google OAuth", "Stripe", "Recharts"],
+    "admin_wms": {
+        "name": "Logistix",
+        "description": "WMS Dashboard - Smart Logistics (admin interno)",
+        "frontend": "React + Tailwind + Recharts + Lucide",
+        "backend": "Supabase Edge Functions (Deno/TypeScript)",
+        "database": "PostgreSQL via Supabase (tabelas admin_*)",
+        "routes": {
+            "dashboard": "KPIs, donut chart, line chart, tabela de pedidos recentes",
+            "pedidos": "CRUD completo com paginação e filtros",
+            "clientes": "CRUD com busca",
+            "armazens": "Gestão de CDs (5 armazéns)",
+            "entregas": "Controle de entregas e transportes",
+            "estoque": "Inventário por armazém",
+            "ocorrencias": "Incidentes e tracking",
+            "configuracoes": "Chave-valor do sistema",
+            "auditoria": "Log de ações administrativas"
+        },
+        "auth": "Supabase Auth + role admin no profile",
+        "seed_login": "admin@logistix.com / adminadmin"
+    },
+    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"]
 }
 
 FILES = {
@@ -30,9 +51,9 @@ FILES = {
         "hash": "cc1d0e586a677b4d3ba4b90b6a578178"
     },
     "package-lock.json": {
-        "size": 122215,
-        "modified": 1778353972.9281747,
-        "hash": "981b3ceadb01846aa78b452406793168"
+        "size": 132001,
+        "modified": 1778697450.9944859,
+        "hash": "ec7f07bf2225547b02fed441c2bc11aa"
     },
     "tsconfig.json": {
         "size": 657,
@@ -58,6 +79,16 @@ FILES = {
         "size": 6099,
         "modified": 1778291597.8668823,
         "hash": "c41117ce9a6e0788fb0fe1cf18656bfb"
+    },
+    "build-output.log": {
+        "size": 727,
+        "modified": 1778687303.9864867,
+        "hash": "e6b44c9af638bd4c3ea6c55725f3bc12"
+    },
+    "kimi-api": {
+        "size": 74,
+        "modified": 1778686412.8664868,
+        "hash": "920ccd1ed128cd62e9f8157e146c7080"
     },
     "SPEC-SAGAWA.md": {
         "size": 14733,
@@ -90,9 +121,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 19846,
-        "modified": 1778645545.4579237,
-        "hash": "ad8ed35a86a332f9782abbed59748413"
+        "size": 21097,
+        "modified": 1778698889.878487,
+        "hash": "80ad02d4b8ebb8fb625b3df0914da2d8"
     },
     "vite.config.js": {
         "size": 196,
@@ -125,9 +156,9 @@ FILES = {
         "hash": "b7c6fb47f0b6a617956505fa59667254"
     },
     "package.json": {
-        "size": 767,
-        "modified": 1778353972.3801749,
-        "hash": "5bf5121f366db4bfe1b1732071fc219c"
+        "size": 791,
+        "modified": 1778697450.7544858,
+        "hash": "a312e3d8ddac7dff241ad528584f5b37"
     },
     "postcss.config.js": {
         "size": 79,
@@ -140,9 +171,9 @@ FILES = {
         "hash": "ba8c6cd8430aa5519e74198aa1da188c"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 1469,
-        "modified": 1778643936.8459113,
-        "hash": "3d3d7f799a38b404a24e2b8ee65a41a9"
+        "size": 1455,
+        "modified": 1778688048.5624855,
+        "hash": "8c94a604bc7a950f920e8af7d6aff9fd"
     },
     "PROJECT-STATUS.md": {
         "size": 2948,
@@ -168,6 +199,11 @@ FILES = {
         "size": 2022,
         "modified": 1778403762.8084424,
         "hash": "ee9617aff5c44aafac81fd7e07742018"
+    },
+    "implementa\u00e7\u00e3o de IA comesse projeto": {
+        "size": 0,
+        "modified": 1778690236.8024802,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "tailwind.config.js": {
         "size": 1171,
@@ -209,15 +245,20 @@ FILES = {
         "modified": 1778343597.6681738,
         "hash": "d0e2bc054469ce96c79d5ab8aeb67ce3"
     },
+    "test-kimi-env.js": {
+        "size": 3170,
+        "modified": 1778697386.938484,
+        "hash": "4a29bbdfabf749c2f16c0a1a24706300"
+    },
     "BUILD-REPORT-GAID-2026-05-10-JA.pdf": {
         "size": 61724,
         "modified": 1778404369.4484417,
         "hash": "dd8f5d27a1444451ecead6bb0a5d69b3"
     },
     "monitor.py": {
-        "size": 3153,
-        "modified": 1778388595.3764443,
-        "hash": "73892d940ad938c6e02f5d5cd8e7e579"
+        "size": 4645,
+        "modified": 1778698937.618479,
+        "hash": "0aad45b66db1d1340327459a1aae5e59"
     },
     "download-schema.sh": {
         "size": 1609,
@@ -305,9 +346,9 @@ FILES = {
         "hash": "16c5173f27fbb846bae733ed9ec9f4cb"
     },
     "src/App.tsx": {
-        "size": 2500,
-        "modified": 1778554893.6756496,
-        "hash": "5421aa2d0518dd9a06ccfa9131aa92cd"
+        "size": 2636,
+        "modified": 1778698765.938491,
+        "hash": "da4c21986810a6b38653fd9ab823b2d5"
     },
     "src/stores/favoriteStore.ts": {
         "size": 1205,
@@ -320,9 +361,9 @@ FILES = {
         "hash": "f4ce109bb213421ff1c37eb62776a3f1"
     },
     "src/pages/Home.tsx": {
-        "size": 13756,
-        "modified": 1778645535.8619237,
-        "hash": "d7adb738cccb87ba5d2ed4e1cbed0a36"
+        "size": 14919,
+        "modified": 1778646214.2339249,
+        "hash": "44a70603b5f4792df2985b1523776083"
     },
     "src/pages/Register.tsx": {
         "size": 8226,
@@ -330,9 +371,9 @@ FILES = {
         "hash": "69950be04ab4b8c7b32a2450cae080e9"
     },
     "src/pages/Dashboard.tsx": {
-        "size": 17165,
-        "modified": 1778644098.6099205,
-        "hash": "9a53a25b1412dc3ce64b3ede0df3643a"
+        "size": 21350,
+        "modified": 1778647617.0699282,
+        "hash": "761fa226a2150e4e1375bf888f682127"
     },
     "src/pages/Login.tsx": {
         "size": 7311,
@@ -345,14 +386,14 @@ FILES = {
         "hash": "60ed38e24963c9379470ec64e97cc4c3"
     },
     "src/pages/ProductDetail.tsx": {
-        "size": 7388,
-        "modified": 1778403729.5364418,
-        "hash": "5b43ea5289fa444270b2f1dbc9a9dca3"
+        "size": 7385,
+        "modified": 1778647229.8259249,
+        "hash": "99905fede54d1d5a719237cb56a1e4bc"
     },
     "src/pages/Catalog.tsx": {
-        "size": 13829,
-        "modified": 1778554378.143553,
-        "hash": "77d559c5304d6b5de50775b91fbc3a06"
+        "size": 13932,
+        "modified": 1778688002.8384864,
+        "hash": "5c6d8599ef89f4425485a069374cf44e"
     },
     "src/pages/CreateListing.tsx": {
         "size": 14596,
@@ -360,9 +401,9 @@ FILES = {
         "hash": "101b4982d5d01a8560c1c3d6f4446cc8"
     },
     "src/pages/Messages.tsx": {
-        "size": 17857,
-        "modified": 1778341423.29617,
-        "hash": "22074761455e45a6b31d992c28c79626"
+        "size": 17828,
+        "modified": 1778647229.913925,
+        "hash": "343067ef8bdb0c44e4f012d9956cd936"
     },
     "src/pages/Profile.tsx": {
         "size": 6232,
@@ -370,9 +411,9 @@ FILES = {
         "hash": "7f246d6a15b0627e0fea704977152eb3"
     },
     "src/pages/PaymentCheckout.tsx": {
-        "size": 18186,
-        "modified": 1778341442.000172,
-        "hash": "bb39aa47b1c50c381bb37cc5fa656e73"
+        "size": 17744,
+        "modified": 1778647229.877925,
+        "hash": "b11a9181c57d29843722cb9e89cf2dd5"
     },
     "src/pages/admin/Dashboard.tsx": {
         "size": 22435,
@@ -383,6 +424,11 @@ FILES = {
         "size": 13027,
         "modified": 1778299748.8508852,
         "hash": "654945951b110ea91e6cd1036176e65b"
+    },
+    "src/pages/admin/LogistixDashboard.tsx": {
+        "size": 16918,
+        "modified": 1778698724.1904898,
+        "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
@@ -440,9 +486,9 @@ FILES = {
         "hash": "6d46b7d1923bb57c34a72c9a56e0e5c9"
     },
     "src/components/layout/Header.tsx": {
-        "size": 12122,
-        "modified": 1778643723.5899224,
-        "hash": "a3a6f77eb92e1f6261412bcdffb29056"
+        "size": 12139,
+        "modified": 1778646499.6659224,
+        "hash": "b8496d2d3af34269bbd7e1a8c8cd29f8"
     },
     "src/components/layout/Footer.tsx": {
         "size": 4807,
@@ -450,9 +496,9 @@ FILES = {
         "hash": "018c16bd2272e557babdee0f2c14dc4c"
     },
     "src/components/layout/Layout.tsx": {
-        "size": 505,
-        "modified": 1778243602.7925215,
-        "hash": "30c575371dfb07e4c6c4139ec09a7b67"
+        "size": 514,
+        "modified": 1778646525.5539212,
+        "hash": "7d122b483f2db09e4ca9c56fe146e536"
     },
     "src/components/admin/analytics/RevenueChart.tsx": {
         "size": 3055,
@@ -485,9 +531,9 @@ FILES = {
         "hash": "0093b5d6432518096b867ed5ccc7285a"
     },
     "src/lib/constants.ts": {
-        "size": 3010,
-        "modified": 1778554339.1635442,
-        "hash": "e6f6b7c3bd14aba8676ec801796420f6"
+        "size": 3340,
+        "modified": 1778646191.3219247,
+        "hash": "051d5136aa8b17b5f18e93316c352de6"
     },
     "src/lib/supabaseErrorHandler.ts": {
         "size": 3089,
@@ -498,6 +544,11 @@ FILES = {
         "size": 4914,
         "modified": 1778402828.404441,
         "hash": "09a8b928e35961e3d7f723524c560458"
+    },
+    "src/lib/adminApi.ts": {
+        "size": 6405,
+        "modified": 1778698643.0984852,
+        "hash": "359c2870cca57cf5a9461b30b04a5e32"
     },
     "src/lib/api.ts": {
         "size": 7773,
@@ -604,10 +655,20 @@ FILES = {
         "modified": 1778340165.284175,
         "hash": "db639ff2311a5396d3faaf336652f4fd"
     },
+    "supabase/functions/admin/index.ts": {
+        "size": 23557,
+        "modified": 1778698629.0264852,
+        "hash": "7cbe68f1c53a6d487ffa0425748a129a"
+    },
     "supabase/functions/auctions/index.ts": {
         "size": 10214,
         "modified": 1778327850.9744914,
         "hash": "c60d1c801526d1e246b908956aed53d7"
+    },
+    "supabase/migrations/logistix-admin-wms.sql": {
+        "size": 25959,
+        "modified": 1778698555.686487,
+        "hash": "0d1dc9b184c8cb5960af340aa5b79a88"
     },
     "supabase/migrations/daig-schema-fix-20260513.sql": {
         "size": 9657,

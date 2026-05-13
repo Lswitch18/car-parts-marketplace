@@ -63,8 +63,29 @@ from datetime import datetime
 
 PROJECT_INFO = {{
     "name": "car-parts-marketplce",
-    "type": "Marketplace de peças automotivas",
-    "tech_stack": ["Python", "HTML", "SQL", "Supabase", "Google OAuth"],
+    "type": "Marketplace de peças automotivas + Admin WMS Logistix",
+    "tech_stack": ["Python", "TypeScript", "React", "Vite", "Tailwind", "Supabase", "Google OAuth", "Stripe", "Recharts"],
+    "admin_wms": {{
+        "name": "Logistix",
+        "description": "WMS Dashboard - Smart Logistics (admin interno)",
+        "frontend": "React + Tailwind + Recharts + Lucide",
+        "backend": "Supabase Edge Functions (Deno/TypeScript)",
+        "database": "PostgreSQL via Supabase (tabelas admin_*)",
+        "routes": {{
+            "dashboard": "KPIs, donut chart, line chart, tabela de pedidos recentes",
+            "pedidos": "CRUD completo com paginação e filtros",
+            "clientes": "CRUD com busca",
+            "armazens": "Gestão de CDs (5 armazéns)",
+            "entregas": "Controle de entregas e transportes",
+            "estoque": "Inventário por armazém",
+            "ocorrencias": "Incidentes e tracking",
+            "configuracoes": "Chave-valor do sistema",
+            "auditoria": "Log de ações administrativas"
+        }},
+        "auth": "Supabase Auth + role admin no profile",
+        "seed_login": "admin@logistix.com / adminadmin"
+    }},
+    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"]
 }}
 
 FILES = {json.dumps(files_info, indent=4)}
@@ -83,6 +104,10 @@ def main():
     
     last_state = scan_directory(PROJECT_ROOT)
     update_brain_file(last_state)
+    brain_path = str(PROJECT_ROOT / 'brain.py')
+    if os.path.exists(brain_path):
+        stat = os.stat(brain_path)
+        last_state['brain.py'] = {"size": stat.st_size, "modified": stat.st_mtime, "hash": get_file_hash(brain_path)}
     
     while True:
         time.sleep(5)
@@ -90,6 +115,8 @@ def main():
         
         changes = []
         for path, info in current_state.items():
+            if path == 'brain.py':
+                continue
             if path not in last_state:
                 changes.append(f"NOVO: {path}")
             elif last_state[path]['hash'] != info['hash']:
