@@ -42,7 +42,7 @@ export default function Dashboard() {
       const products = productsRes.data || []
       const totalViews = products.reduce((sum, p) => sum + (p.views || 0), 0)
       const activeProducts = products.filter(p => p.status === 'active').length
-      const totalSales = (ordersRes.data || []).reduce((sum, o) => sum + (o.total || 0), 0)
+      const totalSales = (ordersRes.data || []).reduce((sum, o) => sum + (o.amount || 0), 0)
       const unreadMessages = (messagesRes.data || []).length
 
       return { totalViews, activeProducts, totalSales, unreadMessages }
