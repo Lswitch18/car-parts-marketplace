@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Filter, X, Search, Heart, Wrench } from 'lucide-react'
 import { supabase } from '../lib/supabase'
@@ -282,7 +282,11 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products?.map((product) => (
-              <div key={product.id} className="card overflow-hidden group">
+              <Link 
+                key={product.id} 
+                to={`/product/${product.id}`}
+                className="card overflow-hidden group"
+              >
                 <div className="aspect-square bg-background relative overflow-hidden">
                   {product.images?.[0] ? (
                     <img
@@ -328,7 +332,7 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
                     </p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
