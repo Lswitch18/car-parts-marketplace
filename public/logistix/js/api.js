@@ -1,15 +1,31 @@
+const SUPABASE_URL = 'https://clqubcryhbrjlupkgeva.supabase.co';
+const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1/admin`;
+
 const API = {
   baseUrl: '/api',
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem('supabase_token'),
 
   async request(method, url, body = null) {
-    const headers = { 'Content-Type': 'application/json' };
-    if (this.token) headers['Authorization'] = `Bearer ${this.token}`;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      this.logout();
+      showLogin();
+      throw new Error('Sessão expirada');
+    }
+
+    const endpoint = url.replace('/api/', '');
+    const fullUrl = `${FUNCTIONS_URL}/${endpoint}`;
+    
+    const headers = { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${session.access_token}`,
+      'apikey': SUPABASE_URL + '/rest/v1/'
+    };
     
     const options = { method, headers };
     if (body) options.body = JSON.stringify(body);
 
-    const res = await fetch(this.baseUrl + url, options);
+    const res = await fetch(fullUrl, options);
     const data = await res.json();
 
     if (res.status === 401) {
@@ -18,8 +34,8 @@ const API = {
       throw new Error('Sessão expirada');
     }
 
-    if (!res.ok) throw new Error(data.error || 'Erro na requisição');
-    return data;
+    if (!res.ok) throw new Error(data.error || data.message || 'Erro na requisição');
+    return data.success ? data.data : data;
   },
 
   get(url) { return this.request('GET', url); },
@@ -28,33 +44,35 @@ const API = {
   del(url) { return this.request('DELETE', url); },
 
   async login(email, senha) {
-    const res = await fetch(this.baseUrl + '/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-    this.token = data.token;
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('usuario', JSON.stringify(data.usuario));
-    localStorage.setItem('armazens', JSON.stringify(data.armazens));
-    localStorage.setItem('permissoes', JSON.stringify(data.permissoes));
-    return data;
+    const { data, error } = await supabase.auth.signInWithPassword({ email, senha });
+    if (error) throw new Error(error.message);
+    
+    this.token = data.session.access_token;
+    localStorage.setItem('supabase_token', data.session.access_token);
+    localStorage.setItem('usuario', JSON.stringify(data.user));
+    localStorage.setItem('armazens', JSON.stringify([]));
+    localStorage.setItem('permissoes', JSON.stringify(['*']));
+    return { 
+      token: data.session.access_token,
+      usuario: {
+        id: data.user.id,
+        nome: data.user.email,
+        email: data.user.email,
+        cargo: 'Admin',
+        setor: 'Admin'
+      },
+      armazens: [],
+      permissoes: ['*']
+    };
   },
 
   logout() {
-    if (this.token) {
-      fetch(this.baseUrl + '/logout', { 
-        method: 'POST', 
-        headers: { 'Authorization': `Bearer ${this.token}` } 
-      }).catch(() => {});
-    }
     this.token = null;
-    localStorage.removeItem('token');
+    localStorage.removeItem('supabase_token');
     localStorage.removeItem('usuario');
     localStorage.removeItem('armazens');
     localStorage.removeItem('permissoes');
+    supabase.auth.signOut();
   },
 
   getUsuario() {
@@ -78,13 +96,8 @@ const API = {
   },
 
   async checkAuth() {
-    if (!this.token) return false;
-    try {
-      await this.get('/me');
-      return true;
-    } catch {
-      return false;
-    }
+    const { data: { session } } = await supabase.auth.getSession();
+    return !!session;
   }
 };
 
@@ -162,8 +175,8 @@ function updateUserInfo() {
   const userName = document.querySelector('.user-name');
   const userRole = document.querySelector('.user-role');
   if (user) {
-    if (userName) userName.textContent = user.nome;
-    if (userRole) userRole.textContent = user.cargo || user.setor;
+    if (userName) userName.textContent = user.nome || user.email;
+    if (userRole) userRole.textContent = user.cargo || 'Admin';
   }
 }
 
