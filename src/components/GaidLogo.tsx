@@ -72,12 +72,11 @@ const GaidLogo: React.FC<{
             />
           ))}
 
-          {/* Corpo da engrenagem */}
-          <circle cx="50" cy="50" r="28" stroke="#FFFFFF" strokeWidth="8" fill="none" />
-
-          {/* Letra G integrada */}
+          {/* Corpo da engrenagem com G vazado */}
           <path
-            d="M50 34C41.2 34 34 41.2 34 50C34 58.8 41.2 66 50 66C56 66 61 62 63.5 57H50V50H63.5C63.8 52 64 54 64 56V50H72C72 41.2 64.8 34 56 34H50Z"
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M50 22C34.5 22 22 34.5 22 50C22 65.5 34.5 78 50 78C65.5 78 78 65.5 78 50C78 34.5 65.5 22 50 22ZM50 70C39 70 30 61 30 50C30 39 39 30 50 30C58 30 65 35 68 42H58C56 38 53 36 50 36C42 36 36 42 36 50C36 58 42 64 50 64C56 64 61 60 63 55H50V48H70V50C70 61 61 70 50 70Z"
             fill="#FFFFFF"
           />
         </g>
