@@ -1,89 +1,162 @@
 import React from 'react';
 
 /**
- * Componente GaidLogo
- * Renderiza uma engrenagem em formato de 'G' que gira e revela a palavra 'AID'.
+ * DAIG Logo — Digital A.I. Garage
+ * Engrenagem com letra G integrada + círculo neon azul luminoso
+ * Conforme Brand Book DAIG v1.0 Maio/2024
  */
-const GaidLogo: React.FC<{ size?: number; className?: string }> = ({ size = 120, className = '' }) => {
+const GaidLogo: React.FC<{
+  size?: number;
+  className?: string;
+  variant?: 'horizontal' | 'icon' | 'vertical';
+  animated?: boolean;
+}> = ({ size = 40, className = '', variant = 'horizontal', animated = true }) => {
   return (
-    <div className={`gaid-logo-container flex items-center justify-center ${className}`}>
+    <div className={`daig-logo-wrap flex items-center ${variant === 'vertical' ? 'flex-col' : 'flex-row'} gap-3 ${className}`}>
+      {/* Ícone: Engrenagem G + Círculo Neon */}
       <svg
-        width={size * 3}
+        width={size}
         height={size}
-        viewBox="0 0 300 100"
+        viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="overflow-visible"
+        style={{ flexShrink: 0 }}
       >
         <defs>
-          <linearGradient id="gaid-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3498db" />
-            <stop offset="100%" stopColor="#2c3e50" />
+          {/* Gradiente azul DAIG */}
+          <linearGradient id="daig-blue-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1E90FF" />
+            <stop offset="100%" stopColor="#0D50CC" />
           </linearGradient>
-          
-          <style>
-            {`
-              .gear-g {
-                transform-origin: 50px 50px;
-                animation: spin-and-stop 2.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate;
-              }
-              
-              .aid-text {
-                opacity: 0;
-                transform: translateX(-20px);
-                animation: fade-in-slide 2.5s ease-out infinite alternate;
-              }
 
-              @keyframes spin-and-stop {
-                0% { transform: rotate(0deg); }
-                40% { transform: rotate(360deg); }
-                100% { transform: rotate(360deg); }
-              }
+          {/* Gradiente prata para engrenagem */}
+          <linearGradient id="gear-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#E5E8ED" />
+            <stop offset="50%" stopColor="#B0B8C8" />
+            <stop offset="100%" stopColor="#8892A4" />
+          </linearGradient>
 
-              @keyframes fade-in-slide {
-                0%, 40% { opacity: 0; transform: translateX(-20px); }
-                60%, 100% { opacity: 1; transform: translateX(0px); }
-              }
-            `}
-          </style>
+          {/* Filtro glow neon azul */}
+          <filter id="neon-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Glow para o círculo externo */}
+          <filter id="ring-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3" result="blur1" />
+            <feGaussianBlur stdDeviation="6" result="blur2" />
+            <feMerge>
+              <feMergeNode in="blur2" />
+              <feMergeNode in="blur1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
 
-        {/* Engrenagem em formato de G */}
-        <g className="gear-g">
-          <path
-            d="M50 20C33.4 20 20 33.4 20 50C20 66.6 33.4 80 50 80C58.3 80 65.8 76.6 71.2 71.2L60.6 60.6C57.9 63.3 54.1 65 50 65C41.7 65 35 58.3 35 50C35 41.7 41.7 35 50 35C58.3 35 65 41.7 65 50V55H50V65H80V50C80 33.4 66.6 20 50 20Z"
-            fill="url(#gaid-gradient)"
-          />
-          {/* Dentes da engrenagem */}
+        {/* === Círculo externo neon === */}
+        <circle
+          cx="50"
+          cy="50"
+          r="44"
+          stroke="#0D75FF"
+          strokeWidth="3.5"
+          fill="none"
+          filter="url(#ring-glow)"
+          style={animated ? {
+            animation: 'daig-ring-pulse 3s ease-in-out infinite',
+          } : {}}
+        />
+
+        {/* Círculo interno (track) */}
+        <circle cx="50" cy="50" r="40" fill="rgba(13, 117, 255, 0.06)" />
+
+        {/* === Engrenagem === */}
+        <g
+          style={animated ? {
+            transformOrigin: '50px 50px',
+            animation: 'daig-gear-spin 12s linear infinite',
+          } : {}}
+          filter="url(#neon-glow)"
+        >
+          {/* Dentes da engrenagem (8 dentes) */}
           {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
             <rect
               key={deg}
-              x="45"
-              y="10"
-              width="10"
-              height="10"
+              x="46"
+              y="8"
+              width="8"
+              height="12"
               rx="2"
-              fill="url(#gaid-gradient)"
+              fill="url(#gear-grad)"
               transform={`rotate(${deg}, 50, 50)`}
             />
           ))}
+
+          {/* Corpo da engrenagem */}
+          <circle cx="50" cy="50" r="30" fill="#1A1E28" />
+          <circle cx="50" cy="50" r="30" stroke="url(#gear-grad)" strokeWidth="1.5" fill="none" />
+
+          {/* Letra G integrada */}
+          <path
+            d="M58 32C55 30 52 29 50 29C40.6 29 33 36.6 33 46C33 55.4 40.6 63 50 63C55.2 63 59.8 60.8 63 57.2V46H50V52H57V55C55.4 56.2 52.8 57 50 57C44 57 39 52 39 46C39 40 44 35 50 35C52.8 35 55.4 36 57.4 38L58 32Z"
+            fill="url(#daig-blue-grad)"
+          />
         </g>
 
-        {/* Texto AID */}
-        <text
-          x="95"
-          y="68"
-          className="aid-text font-display"
-          style={{
-            fontSize: '55px',
-            fontWeight: 'bold',
-            fill: '#2c3e50',
-            fontFamily: 'system-ui, sans-serif'
-          }}
-        >
-          AID
-        </text>
+        {/* Ponto central */}
+        <circle cx="50" cy="50" r="4" fill="#0D75FF" filter="url(#neon-glow)" />
+
+        <style>{`
+          @keyframes daig-gear-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes daig-ring-pulse {
+            0%, 100% { opacity: 1; stroke-width: 3.5; }
+            50% { opacity: 0.7; stroke-width: 2.5; }
+          }
+        `}</style>
       </svg>
+
+      {/* Texto DAIG */}
+      {variant !== 'icon' && (
+        <div className="flex flex-col leading-none" style={{ fontFamily: "'Sora', sans-serif" }}>
+          <span
+            style={{
+              fontSize: size * 0.55,
+              fontWeight: 800,
+              letterSpacing: '0.12em',
+              background: 'linear-gradient(90deg, #FFFFFF 0%, #AACCFF 60%, #0D75FF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              lineHeight: 1,
+            }}
+          >
+            DAIG
+          </span>
+          {variant === 'horizontal' && (
+            <span
+              style={{
+                fontSize: size * 0.17,
+                fontWeight: 400,
+                letterSpacing: '0.2em',
+                color: '#7B8497',
+                marginTop: 3,
+                fontFamily: "'Raleway', sans-serif",
+                textTransform: 'uppercase',
+              }}
+            >
+              Digital A.I. Garage
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 };
