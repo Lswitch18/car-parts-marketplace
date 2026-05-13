@@ -1,0 +1,19 @@
+{
+  "providers": {
+    "moonshot": {
+      "type": "openai-compatible",
+      "name": "Kimi",
+      "baseUrl": "https://api.moonshot.cn/v1",
+      "apiKey": "{env:KIMI_API_KEY}",
+      "models": {
+        "kimi": {
+          "name": "Kimi"
+        }
+      }
+    }
+  },
+  "model": {
+    "provider": "moonshot",
+    "id": "kimi"
+  }
+}
