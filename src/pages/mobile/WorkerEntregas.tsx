@@ -11,11 +11,14 @@ export default function WorkerEntregas() {
   const [selected, setSelected] = useState<any>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['worker', 'entregas'],
     queryFn: () => mobileApi.entregas.list({ status: 'pendente' }),
     refetchInterval: 30000,
+    retry: 2,
   });
+
+  console.log('[WorkerEntregas]', { isLoading, error, rowsCount: Array.isArray(data) ? data.length : (data as any)?.rows?.length });
 
   const confirmMutation = useMutation({
     mutationFn: async () => {

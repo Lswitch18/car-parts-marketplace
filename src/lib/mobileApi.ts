@@ -3,19 +3,24 @@ import { supabase } from './supabase';
 const BASE = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin`;
 
 async function mobileFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  console.log(`[mobileApi] Fetching ${endpoint}...`);
+  const t0 = performance.now();
   await supabase.auth.getUser();
   const { data: { session } } = await supabase.auth.getSession();
   const token = session?.access_token;
+  console.log(`[mobileApi] Auth OK, token=${!!token} (${(performance.now() - t0).toFixed(0)}ms)`);
+  if (!token) throw new Error('Sem sessão ativa. Faça login novamente.');
   const res = await fetch(`${BASE}${endpoint}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      Authorization: `Bearer ${token}`,
       ...options.headers,
     },
   });
   const json = await res.json();
   if (!json.success) throw new Error(json.error?.error || json.error || 'Erro na API');
+  console.log(`[mobileApi] ${endpoint} OK (${(performance.now() - t0).toFixed(0)}ms)`);
   return json.data as T;
 }
 

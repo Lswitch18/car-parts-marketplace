@@ -9,14 +9,19 @@ export default function WorkerApp() {
   const [activeTab, setActiveTab] = useState('coletas');
   const [role, setRole] = useState<'coletor' | 'entregador' | 'admin'>('admin');
 
-  const { data: perfil } = useQuery({
+  const { data: perfil, isLoading, error } = useQuery({
     queryKey: ['worker', 'perfil'],
     queryFn: () => mobileApi.me(),
+    retry: 1,
+    retryDelay: 1000,
   });
+
+  console.log('[WorkerApp] render', { isLoading, error, perfil });
 
   useEffect(() => {
     if (perfil?.cargo?.nome) {
       const cargo = (perfil.cargo.nome as string).toLowerCase();
+      console.log('[WorkerApp] Cargo detectado:', cargo);
       if (cargo.includes('colet') || cargo.includes('coletor')) {
         setRole('coletor');
         setActiveTab('coletas');
@@ -26,6 +31,34 @@ export default function WorkerApp() {
       }
     }
   }, [perfil]);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-[#0B1220] text-white flex flex-col items-center justify-center p-8">
+        <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-lg font-semibold">Carregando...</p>
+        <p className="text-sm text-gray-400 mt-1">Verificando sua sessão</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen bg-[#0B1220] text-white flex flex-col items-center justify-center p-8">
+        <div className="w-16 h-16 bg-red-500/15 rounded-2xl flex items-center justify-center mb-4">
+          <span className="text-3xl">!</span>
+        </div>
+        <h2 className="text-xl font-bold mb-2">Erro ao carregar</h2>
+        <p className="text-sm text-gray-400 text-center mb-6 max-w-xs">
+          {(error as any)?.message || 'Não foi possível conectar ao servidor'}
+        </p>
+        <button onClick={() => window.location.reload()}
+          className="h-12 px-6 bg-blue-500 rounded-xl text-sm font-semibold">
+          Tentar novamente
+        </button>
+      </div>
+    );
+  }
 
   return (
     <WorkerLayout activeTab={activeTab} onTabChange={setActiveTab} role={role}>
