@@ -55,6 +55,11 @@ FILES = {
         "modified": 1778697450.9944859,
         "hash": "ec7f07bf2225547b02fed441c2bc11aa"
     },
+    "check-tables.sql": {
+        "size": 113,
+        "modified": 1778725956.6644,
+        "hash": "2e3027b758ce0de4e4a276eedb717066"
+    },
     "tsconfig.json": {
         "size": 657,
         "modified": 1778299587.802882,
@@ -126,9 +131,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 26684,
-        "modified": 1778725772.116428,
-        "hash": "448d78b81a798258d7f5249f3dabd48d"
+        "size": 26827,
+        "modified": 1778725958.6843965,
+        "hash": "fe0544df58f9eea104f23afe73ec80bd"
     },
     "vite.config.js": {
         "size": 196,
@@ -451,9 +456,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 15399,
-        "modified": 1778725770.7604277,
-        "hash": "aff9de32faa1ffdea9232da2045c4474"
+        "size": 16268,
+        "modified": 1778725971.9203742,
+        "hash": "a7b2fb7182ba146cad2838daa0214cc3"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
