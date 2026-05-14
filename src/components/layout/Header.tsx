@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useState, useEffect } from 'react'
-import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle, ArrowRight } from 'lucide-react'
+import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle, ArrowRight, Package } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '../../lib/i18n'
 import { supabase } from '../../lib/supabase'
@@ -15,6 +15,17 @@ export default function Header() {
   const [messagesOpen, setMessagesOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [unreadCount, setUnreadCount] = useState(0)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) return
+      const { data } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+      setIsAdmin(data?.role === 'admin')
+    }
+    checkAdmin()
+  }, [user])
 
   // Fetch unread messages count
   const fetchUnreadCount = async () => {
@@ -177,6 +188,15 @@ export default function Header() {
                       >
                         {t('Perfil')}
                       </Link>
+                      {isAdmin && (
+                        <Link
+                          to="/admin"
+                          className="block px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg flex items-center space-x-2 font-medium"
+                        >
+                          <Package className="w-4 h-4" />
+                          <span>Logistix WMS</span>
+                        </Link>
+                      )}
                       <button
                         onClick={handleSignOut}
                         className="w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100 rounded-lg flex items-center space-x-2"
