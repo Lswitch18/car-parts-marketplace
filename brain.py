@@ -131,9 +131,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 28343,
-        "modified": 1778731749.164429,
-        "hash": "f4046f34f07aad556ef9ea9cc6045165"
+        "size": 28293,
+        "modified": 1778731944.220426,
+        "hash": "94c63ea93e4548e518810335bc9c25db"
     },
     "vite.config.js": {
         "size": 196,
@@ -461,9 +461,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 13309,
-        "modified": 1778729975.4044259,
-        "hash": "2df6336613c785d3097258c7b7bb8989"
+        "size": 13333,
+        "modified": 1778731965.8044252,
+        "hash": "2d182c49123578f13f65e2f4ec3c3b1b"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
@@ -646,9 +646,9 @@ FILES = {
         "hash": "cb5344161a37e2f6afc2b2c9a3610409"
     },
     "src/components/logistix/LogistixSidebar.tsx": {
-        "size": 4241,
-        "modified": 1778729947.9164202,
-        "hash": "e3cf16bdd6ff8e53f0b973108a54ddcd"
+        "size": 6436,
+        "modified": 1778731940.4004261,
+        "hash": "d1d11e44a162fa48f0b92fbecf014e2f"
     },
     "src/components/logistix/LogisticsMap.tsx": {
         "size": 5404,

@@ -185,7 +185,7 @@ export default function LogistixPage() {
         userEmail={userEmail}
       />
 
-      <main className="ml-64 p-6">
+      <main className="md:ml-64 p-4 md:p-6 pt-16 md:pt-6">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
