@@ -8,30 +8,40 @@ import os
 from datetime import datetime
 
 PROJECT_INFO = {
-    "name": "car-parts-marketplce",
-    "type": "Marketplace de peças automotivas + Admin WMS Logistix",
-    "tech_stack": ["Python", "TypeScript", "React", "Vite", "Tailwind", "Supabase", "Google OAuth", "Stripe", "Recharts"],
-    "admin_wms": {
-        "name": "Logistix",
-        "description": "WMS Dashboard - Smart Logistics (admin interno)",
-        "frontend": "React + Tailwind + Recharts + Lucide",
-        "backend": "Supabase Edge Functions (Deno/TypeScript)",
-        "database": "PostgreSQL via Supabase (tabelas admin_*)",
-        "routes": {
-            "dashboard": "KPIs, donut chart, line chart, tabela de pedidos recentes",
-            "pedidos": "CRUD completo com paginação e filtros",
-            "clientes": "CRUD com busca",
-            "armazens": "Gestão de CDs (5 armazéns)",
-            "entregas": "Controle de entregas e transportes",
-            "estoque": "Inventário por armazém",
-            "ocorrencias": "Incidentes e tracking",
-            "configuracoes": "Chave-valor do sistema",
-            "auditoria": "Log de ações administrativas"
-        },
-        "auth": "Supabase Auth + role admin no profile",
-        "seed_login": "admin@logistix.com / adminadmin"
+    "name": "thedaig",
+    "display_name": "TheDAIG - The DAIG Marketplace",
+    "description": "Marketplace de peças automotivas japonesas + WMS Logistix + API B2B",
+    "tech_stack": ["TypeScript", "React", "Vite", "Tailwind", "Supabase", "Google OAuth", "Stripe", "Recharts", "Leaflet"],
+    "supabase": {
+        "project_ref": "clqubcryhbrjlupkgeva",
+        "url": "https://clqubcryhbrjlupkgeva.supabase.co",
+        "access_token_env": "SUPABASE_ACCESS_TOKEN",
+        "service_role_env": "SUPABASE_SERVICE_ROLE_KEY",
+        "anon_key_env": "VITE_SUPABASE_ANON_KEY"
     },
-    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"]
+    "b2b_api": {
+        "name": "Logistix B2B API",
+        "endpoint": "https://clqubcryhbrjlupkgeva.supabase.co/functions/v1/logistix-b2b",
+        "tables": ["b2b_api_keys", "b2b_webhooks", "b2b_request_logs"],
+        "endpoints": ["health", "auth/token", "orders", "shipments", "inventory", "webhooks"]
+    },
+    "design": {
+        "theme": "Dark + Neon",
+        "colors": {
+            "neon_cyan": "#00f5ff",
+            "neon_magenta": "#ff00ff",
+            "neon_green": "#00ff88",
+            "neon_yellow": "#ffee00",
+            "dark_bg": "#0a0a0f",
+            "dark_card": "#12121a"
+        },
+        "responsive": "Mobile hamburger menu"
+    },
+    "modules": ["Marketplace", "Admin WMS (Logistix)", "B2B API", "Pagamentos Stripe"],
+    "armazens": {
+        "brasil": ["CD São Paulo", "CD Rio de Janeiro", "CD Curitiba", "CD Belo Horizonte", "CD Salvador"],
+        "japao": ["東京センター (Tokyo)", "大阪センター (Osaka)", "名古屋センター (Nagoya)"]
+    }
 }
 
 FILES = {
