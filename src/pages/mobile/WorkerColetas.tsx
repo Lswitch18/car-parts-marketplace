@@ -61,6 +61,18 @@ export default function WorkerColetas() {
     },
   });
 
+  const batchMutation = useMutation({
+    mutationFn: async (coletaId: string) => {
+      const gps = await getCurrentPosition();
+      const payload: any = { status: 'coletado', data_coleta: new Date().toISOString() };
+      if (gps) { payload.latitude_coleta = gps.latitude; payload.longitude_coleta = gps.longitude; }
+      return mobileApi.coletas.update(coletaId, payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['worker', 'coletas'] });
+    },
+  });
+
   const rows = Array.isArray(data) ? data : (data as any)?.rows || [];
   const [sortedRows, setSortedRows] = useState<any[]>([]);
   const [userPos, setUserPos] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -355,8 +367,12 @@ export default function WorkerColetas() {
           onScan={(code) => {
             setScannedCode(code);
             if (batchMode) {
-              setBatchCount(c => c + 1);
-              setSelected(null);
+              const match = sortedRows.find((r: any) => r.pedido?.codigo === code);
+              if (match) {
+                batchMutation.mutate(match.id);
+                setBatchCount(c => c + 1);
+                try { navigator.vibrate?.(100); } catch {}
+              }
             } else {
               setShowScanner(false);
               setShowAction(true);
@@ -366,7 +382,7 @@ export default function WorkerColetas() {
           expectedCode={batchMode ? '' : (selected?.pedido?.codigo || '')}
           batchMode={batchMode}
           scannedCount={batchCount}
-          totalCount={hoje.filter(r => r.status === 'pendente').length}
+          totalCount={sortedRows.filter(r => r.status === 'pendente').length}
         />
       )}
 

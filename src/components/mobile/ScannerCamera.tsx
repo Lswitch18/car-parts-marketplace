@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { X, Camera, CameraOff } from 'lucide-react';
 
 interface Props {
   onScan: (code: string) => void;
@@ -13,28 +13,32 @@ interface Props {
 export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode, scannedCount, totalCount }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [cameraStarted, setCameraStarted] = useState(false);
+  const [cameraError, setCameraError] = useState('');
 
   useEffect(() => {
-    let active = true;
-    async function start() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        if (!active) { stream.getTracks().forEach(t => t.stop()); return; }
-        streamRef.current = stream;
-        if (videoRef.current) videoRef.current.srcObject = stream;
-      } catch (err) {
-        console.warn('[Scanner] Camera error:', err);
-      }
-    }
-    start();
-    return () => { active = false; stopCamera(); };
+    return () => { stopCamera(); };
   }, []);
+
+  async function startCamera() {
+    try {
+      setCameraError('');
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      streamRef.current = stream;
+      if (videoRef.current) videoRef.current.srcObject = stream;
+      setCameraStarted(true);
+    } catch (err: any) {
+      console.warn('[Scanner] Camera error:', err);
+      setCameraError(err.message || 'Erro ao acessar câmera');
+    }
+  }
 
   function stopCamera() {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(t => t.stop());
       streamRef.current = null;
     }
+    setCameraStarted(false);
   }
 
   function feedback() {
@@ -57,7 +61,7 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
     e.preventDefault();
     const input = (e.target as HTMLFormElement).codigo as HTMLInputElement;
     const code = input.value.trim();
-    if (code) { feedback(); stopCamera(); onScan(code); }
+    if (code) { feedback(); onScan(code); input.value = ''; input.focus(); }
   }
 
   return (
@@ -68,31 +72,66 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
             <X size={20} className="text-white" />
           </button>
           <span className="text-sm font-medium text-white bg-black/50 px-4 py-2 rounded-full">
-            {batchMode ? `Escaneie o pacote ${(scannedCount || 0) + 1} de ${totalCount || '?'}` : 'Escaneie o código'}
+            {batchMode
+              ? `📦 ${scannedCount || 0}/${totalCount || '?'} escaneados`
+              : 'Escaneie o código'}
           </span>
         </div>
 
-        <video ref={videoRef} autoPlay playsInline muted
-          className="flex-1 w-full object-cover" />
+        {/* Camera or start button */}
+        {!cameraStarted && !cameraError && (
+          <div className="flex-1 flex items-center justify-center bg-black"
+            onClick={startCamera}>
+            <button onClick={startCamera}
+              className="flex flex-col items-center gap-4 bg-[#1F2937] px-8 py-6 rounded-2xl border border-white/10 active:scale-95 transition-transform">
+              <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center">
+                <Camera size={32} className="text-white" />
+              </div>
+              <p className="text-white font-semibold text-base">Toque para abrir câmera</p>
+              <p className="text-gray-400 text-xs">Permissão necessária para escanear</p>
+            </button>
+          </div>
+        )}
 
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-64 h-64 border-2 border-blue-400 rounded-2xl opacity-60" />
-        </div>
+        {cameraError && (
+          <div className="flex-1 flex items-center justify-center bg-black">
+            <div className="text-center px-6">
+              <CameraOff size={40} className="mx-auto text-red-400 mb-3" />
+              <p className="text-red-400 text-sm font-medium mb-1">Câmera indisponível</p>
+              <p className="text-gray-500 text-xs mb-4">{cameraError}</p>
+              <button onClick={startCamera}
+                className="h-10 px-5 bg-blue-500 rounded-xl text-sm font-medium">
+                Tentar novamente
+              </button>
+            </div>
+          </div>
+        )}
+
+        {cameraStarted && (
+          <video ref={videoRef} autoPlay playsInline muted
+            className="flex-1 w-full object-cover" />
+        )}
+
+        {cameraStarted && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-64 h-64 border-2 border-blue-400 rounded-2xl opacity-60" />
+          </div>
+        )}
 
         <div className={`bg-[#1F2937] ${batchMode ? 'p-4' : 'p-5 rounded-t-3xl'}`}>
-          {batchMode && (
+          {batchMode && scannedCount && scannedCount > 0 && (
             <div className="flex items-center justify-between mb-3 px-1">
               <span className="text-sm font-medium text-green-400">
-                ✅ {scannedCount || 0} escaneado(s)
+                ✅ {scannedCount} coletado(s)
               </span>
               <button onClick={onClose}
                 className="px-4 h-8 bg-blue-500 rounded-lg text-xs font-medium">
-                Finalizar lote
+                Finalizar
               </button>
             </div>
           )}
           <form onSubmit={handleManualInput} className="flex gap-2">
-            <input name="codigo" placeholder={batchMode ? "Digite o próximo código..." : "Ou digite o código manualmente..."}
+            <input name="codigo" placeholder={batchMode ? "Digite o código..." : "Ou digite manualmente..."}
               className="flex-1 h-12 bg-[#111827] border border-white/10 rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500"
               autoComplete="off" autoFocus />
             <button type="submit"
@@ -100,7 +139,7 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
               OK
             </button>
           </form>
-          {expectedCode && !batchMode && (
+          {!batchMode && expectedCode && (
             <p className="text-xs text-gray-400 text-center mt-3">
               Código esperado: <span className="text-blue-400 font-mono">{expectedCode}</span>
             </p>
