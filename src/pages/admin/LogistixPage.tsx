@@ -17,7 +17,6 @@ interface Pedido {
   destino_cidade: string;
   destino_estado: string;
   previsao: string;
-  created_at: string;
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co';
@@ -25,7 +24,7 @@ const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1/admin`;
 
 async function apiCall(endpoint: string, options: RequestInit = {}) {
   const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error('Not authenticated');
+  if (!session) throw new Error('Sessão não encontrada. Faça login novamente.');
 
   const res = await fetch(`${FUNCTIONS_URL}/${endpoint}`, {
     ...options,
@@ -36,16 +35,20 @@ async function apiCall(endpoint: string, options: RequestInit = {}) {
     }
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Error');
+  if (!res.ok) {
+    console.error('API Error:', data);
+    throw new Error(data.error || data.message || 'Erro na requisição');
+  }
   return data.success ? data.data : data;
 }
 
 export default function LogistixPage() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     checkAuth();
@@ -53,41 +56,75 @@ export default function LogistixPage() {
 
   const checkAuth = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        setError('Erro ao verificar sessão');
+        setLoading(false);
+        return;
+      }
+      
       if (!session) {
+        console.log('No session found, redirecting to login');
         window.location.href = '/login';
         return;
       }
 
-      const { data: profile } = await supabase
+      setUser(session.user);
+
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', session.user.id)
         .single();
 
+      if (profileError) {
+        console.error('Profile error:', profileError);
+        setError('Erro ao verificar perfil');
+        setLoading(false);
+        return;
+      }
+
       if (profile?.role !== 'admin') {
+        console.log('User is not admin, role:', profile?.role);
         window.location.href = '/dashboard';
         return;
       }
 
       loadData();
-    } catch (err) {
-      setError('Erro ao verificar autenticação');
+    } catch (err: any) {
+      console.error('Auth check error:', err);
+      setError(err.message || 'Erro ao verificar autenticação');
       setLoading(false);
     }
   };
 
   const loadData = async () => {
     try {
+      console.log('Loading data from API...');
+      
       const [kpisData, pedidosData] = await Promise.all([
-        apiCall('dashboard/kpis'),
-        apiCall('pedidos?limit=10')
+        apiCall('dashboard/kpis').catch(e => {
+          console.error('KPIs API error:', e);
+          return { total: 0, concluidas: 0, atrasos: 0, emTransito: 0, taxa: '0', custo: '0' };
+        }),
+        apiCall('pedidos?limit=10').catch(e => {
+          console.error('Pedidos API error:', e);
+          return { rows: [] };
+        })
       ]);
+      
+      console.log('KPIs data:', kpisData);
+      console.log('Pedidos data:', pedidosData);
+      
       setKpis(kpisData);
       setPedidos(pedidosData.rows || []);
+      setError(null);
       setLoading(false);
-    } catch (err) {
-      setError('Erro ao carregar dados');
+    } catch (err: any) {
+      console.error('Load data error:', err);
+      setError(err.message || 'Erro ao carregar dados');
       setLoading(false);
     }
   };
@@ -106,7 +143,11 @@ export default function LogistixPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Carregando Logistix...</div>
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-white text-xl">Carregando Logistix...</div>
+          <div className="text-gray-400 text-sm mt-2">Verificando autenticação...</div>
+        </div>
       </div>
     );
   }
@@ -150,6 +191,14 @@ export default function LogistixPage() {
             </button>
           ))}
         </nav>
+
+        {/* User Info */}
+        {user && (
+          <div className="absolute bottom-4 left-4 right-4 p-4 bg-gray-700/50 rounded-lg">
+            <div className="text-sm text-gray-400">Usuário</div>
+            <div className="font-medium truncate">{user.email}</div>
+          </div>
+        )}
       </aside>
 
       {/* Main Content */}
@@ -161,12 +210,19 @@ export default function LogistixPage() {
 
         {error && (
           <div className="bg-red-500/20 border border-red-500 text-red-400 p-4 rounded-lg mb-6">
-            {error}
+            <div className="font-medium">Erro</div>
+            <div>{error}</div>
+            <button 
+              onClick={() => { setError(null); loadData(); }}
+              className="mt-2 text-sm text-red-300 underline"
+            >
+              Tentar novamente
+            </button>
           </div>
         )}
 
         {/* KPIs */}
-        <div className="grid grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="text-gray-400 text-sm">Pedidos Totais</div>
             <div className="text-3xl font-bold text-white">{kpis?.total || 0}</div>
@@ -198,56 +254,62 @@ export default function LogistixPage() {
           <div className="p-6 border-b border-gray-700">
             <h2 className="text-xl font-bold">Pedidos Recentes</h2>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-700/50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Código</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Status</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Destino</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Previsão</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-700">
-                {pedidos.map(pedido => (
-                  <tr key={pedido.id} className="hover:bg-gray-700/30">
-                    <td className="px-6 py-4 font-mono">{pedido.codigo}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${statusColor(pedido.status)}`}>
-                        {pedido.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">{pedido.destino_cidade} - {pedido.destino_estado}</td>
-                    <td className="px-6 py-4">{pedido.previsao || '-'}</td>
+          {pedidos.length === 0 ? (
+            <div className="p-6 text-center text-gray-400">
+              Nenhum pedido encontrado. Clique em "Novo Pedido" para criar o primeiro.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-700/50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Código</th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Status</th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Destino</th>
+                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Previsão</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-700">
+                  {pedidos.map(pedido => (
+                    <tr key={pedido.id} className="hover:bg-gray-700/30">
+                      <td className="px-6 py-4 font-mono">{pedido.codigo}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded-full text-xs ${statusColor(pedido.status)}`}>
+                          {pedido.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">{pedido.destino_cidade} - {pedido.destino_estado}</td>
+                      <td className="px-6 py-4">{pedido.previsao || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8 flex gap-4">
+        <div className="mt-8 flex gap-4 flex-wrap">
           <button 
-            onClick={() => alert('Funcionalidade de rastreamento em desenvolvimento')}
+            onClick={() => setActiveTab('rastreamento')}
             className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
           >
             <span>🔍</span>
             <span>Rastrear Pedido</span>
           </button>
           <button 
-            onClick={() => alert('Funcionalidade de envio em desenvolvimento')}
+            onClick={() => setActiveTab('pedidos')}
             className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
           >
-            <span>📤</span>
-            <span>Novo Envio</span>
+            <span>➕</span>
+            <span>Novo Pedido</span>
           </button>
           <button 
-            onClick={() => alert('Funcionalidade de recebimento em desenvolvimento')}
+            onClick={() => setActiveTab('armazens')}
             className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
           >
-            <span>📥</span>
-            <span>Recebimento</span>
+            <span>🏭</span>
+            <span>Gerenciar Armazéns</span>
           </button>
         </div>
       </main>
