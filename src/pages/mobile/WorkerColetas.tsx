@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mobileApi } from '../../lib/mobileApi';
 import { getCurrentPosition } from '../../lib/geo';
+import { getCityCoords, haversineKm } from '../../lib/distance';
 import ScannerCamera from '../../components/mobile/ScannerCamera';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, ArrowRight,
@@ -61,12 +62,39 @@ export default function WorkerColetas() {
   });
 
   const rows = Array.isArray(data) ? data : (data as any)?.rows || [];
-  const totalDoDia = rows.length;
-  const concluidas = rows.filter((r: any) => r.status === 'coletado' || r.status === 'entregue').length;
-  const pendentes = rows.filter((r: any) => r.status === 'pendente' || r.status === 'em_transito').length;
+  const [sortedRows, setSortedRows] = useState<any[]>([]);
+  const [userPos, setUserPos] = useState<{ latitude: number; longitude: number } | null>(null);
+
+  useEffect(() => {
+    getCurrentPosition().then(pos => {
+      if (pos) setUserPos({ latitude: pos.latitude, longitude: pos.longitude });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!rows.length) { setSortedRows([]); return; }
+    const items = rows.map((r: any) => ({
+      ...r,
+      destino_cidade: r.pedido?.destino_cidade,
+      destino_estado: r.pedido?.destino_estado,
+      _dist: 0,
+    }));
+    if (userPos) {
+      for (const item of items) {
+        const coords = getCityCoords(item.destino_cidade || '', item.destino_estado || '');
+        item._dist = haversineKm(userPos.latitude, userPos.longitude, coords.lat, coords.lng);
+      }
+      items.sort((a: any, b: any) => a._dist - b._dist);
+    }
+    setSortedRows(items);
+  }, [rows, userPos]);
+
+  const totalDoDia = sortedRows.length;
+  const concluidas = sortedRows.filter((r: any) => r.status === 'coletado' || r.status === 'entregue').length;
+  const pendentes = sortedRows.filter((r: any) => r.status === 'pendente' || r.status === 'em_transito').length;
   const progresso = totalDoDia > 0 ? Math.round(concluidas * 100 / totalDoDia) : 0;
 
-  const hoje = rows.filter((r: any) => {
+  const hoje = sortedRows.filter((r: any) => {
     if (!r.created_at) return true;
     return new Date(r.created_at).toDateString() === new Date().toDateString() || r.status === 'pendente';
   });
@@ -196,6 +224,11 @@ export default function WorkerColetas() {
                     {p.peso_kg && (
                       <p className="text-xs flex items-center gap-2 text-gray-500">
                         <Box size={12} /> {p.peso_kg}kg · ¥{p.valor?.toLocaleString?.() || p.valor}
+                      </p>
+                    )}
+                    {row._dist > 0 && (
+                      <p className="text-[10px] text-blue-400/60 font-mono">
+                        🚗 {row._dist < 1 ? `${(row._dist * 1000).toFixed(0)}m` : `${row._dist.toFixed(1)}km`}
                       </p>
                     )}
                     {row.data_coleta && (
