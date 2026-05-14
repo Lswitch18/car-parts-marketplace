@@ -1,263 +1,173 @@
-/**
- * Logistix Sync Utility
- * Sincroniza dados entre Marketplace e Logistix
- * 
- * Funcionalidades:
- * - Marketplace Transaction → Logistix Pedido
- * - Status sync (paid → processing → shipped → delivered)
- * - Inventory sync (opcional)
- */
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-const supabase = createClient(supabaseUrl, supabaseKey)
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+};
 
-export interface SyncResult {
-  success: boolean
-  logistix_pedido_id?: string
-  error?: string
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify({ success: true, data }), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 }
 
-export interface MarketplaceTransaction {
-  id: string
-  buyer_id: string
-  seller_id: string
-  part_id: string
-  amount: number
-  payment_status: string
-  fulfillment_status: string
-  created_at: string
+function error(msg: string, status = 400) {
+  return new Response(JSON.stringify({ success: false, error: msg }), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 }
 
-export interface LogistixPedido {
-  codigo: string
-  cliente_id: string
-  armazem_origem_id: string
-  destino_cidade: string
-  destino_estado: string
-  status: string
-  peso_kg: number
-  valor: number
-  previsao: string
-}
-
-/**
- * Gera código de pedido único
- */
 function generatePedidoCode(): string {
-  const timestamp = Date.now().toString(36).toUpperCase()
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase()
-  return `#PED-${timestamp}-${random}`
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `#PED-${timestamp}-${random}`;
 }
 
-/**
- * Sincroniza uma transação do marketplace para Logistix
- * Chamado quando payment_status = 'paid'
- */
-export async function syncTransactionToLogistix(
-  transaction: MarketplaceTransaction,
-  buyerEmail?: string,
-  shippingAddress?: { cidade: string; estado: string; cep?: string }
-): Promise<SyncResult> {
-  try {
-    console.log('[LogistixSync] Iniciando sincronização:', transaction.id)
+async function syncTransaction(transactionId: string) {
+  console.log('[LogistixSync] Iniciando sincronização:', transactionId);
 
-    // 1. Buscar cliente no Logistix pelo email
-    let clienteId: string | null = null
-    
-    if (buyerEmail) {
-      const { data: cliente } = await supabase
-        .from('admin_clientes')
-        .select('id')
-        .ilike('email', `%${buyerEmail}%`)
-        .limit(1)
-        .single()
-      
-      clienteId = cliente?.id || null
-    }
+  const { data: tx } = await supabase
+    .from('transactions')
+    .select('*, profiles!transactions_buyer_id_fkey(id, email, full_name)')
+    .eq('id', transactionId)
+    .single();
 
-    // Se não encontrar cliente, usar cliente padrão ou criar
-    if (!clienteId) {
-      const { data: defaultCliente } = await supabase
-        .from('admin_clientes')
-        .select('id')
-        .eq('nome', 'Marketplace')
-        .limit(1)
-        .single()
-      
-      clienteId = defaultCliente?.id || null
-    }
+  if (!tx) return { error: 'Transação não encontrada' };
 
-    if (!clienteId) {
-      // Criar cliente temporário
-      const { data: newCliente, error: clienteError } = await supabase
-        .from('admin_clientes')
-        .insert({
-          nome: buyerEmail || 'Cliente Marketplace',
-          email: buyerEmail || 'marketplace@logistix.com',
-          telefone: '',
-          cidade: shippingAddress?.cidade || 'São Paulo',
-          estado: shippingAddress?.estado || 'SP',
-          ativo: true
-        })
-        .select('id')
-        .single()
+  const buyerEmail = tx.profiles?.email;
+  const shippingAddress = {
+    cidade: tx.shipping_city || 'São Paulo',
+    estado: tx.shipping_state || 'SP',
+  };
 
-      if (clienteError) {
-        console.error('[LogistixSync] Erro ao criar cliente:', clienteError)
-        return { success: false, error: clienteError.message }
-      }
-      
-      clienteId = newCliente.id
-    }
+  let clienteId: string | null = null;
 
-    // 2. Buscar armazém de origem (CD padrão)
-    const { data: armazem } = await supabase
-      .from('admin_armazens')
+  if (buyerEmail) {
+    const { data: cliente } = await supabase
+      .from('admin_clientes')
       .select('id')
-      .eq('nome', 'CD São Paulo')
+      .ilike('email', `%${buyerEmail}%`)
       .limit(1)
-      .single()
+      .single();
+    clienteId = cliente?.id || null;
+  }
 
-    if (!armazem) {
-      return { success: false, error: 'Armazém padrão não encontrado' }
-    }
-
-    // 3. Criar pedido no Logistix
-    const previsao = new Date()
-    previsao.setDate(previsao.getDate() + 5) // 5 dias para entrega
-
-    const pedido: LogistixPedido = {
-      codigo: generatePedidoCode(),
-      cliente_id: clienteId,
-      armazem_origem_id: armazem.id,
-      destino_cidade: shippingAddress?.cidade || 'São Paulo',
-      destino_estado: shippingAddress?.estado || 'SP',
-      status: 'pendente',
-      peso_kg: Math.round(Math.random() * 50 + 1), // Placeholder - ajustar com dados reais
-      valor: transaction.amount,
-      previsao: previsao.toISOString()
-    }
-
-    const { data: novoPedido, error: pedidoError } = await supabase
-      .from('admin_pedidos')
-      .insert(pedido)
+  if (!clienteId) {
+    const { data: newCliente } = await supabase
+      .from('admin_clientes')
+      .insert({
+        nome: tx.profiles?.full_name || buyerEmail || 'Cliente Marketplace',
+        email: buyerEmail || 'marketplace@logistix.com',
+        telefone: '',
+        cidade: shippingAddress.cidade,
+        estado: shippingAddress.estado,
+        ativo: true,
+      })
       .select('id')
-      .single()
+      .single();
 
-    if (pedidoError) {
-      console.error('[LogistixSync] Erro ao criar pedido:', pedidoError)
-      return { success: false, error: pedidoError.message }
-    }
-
-    console.log('[LogistixSync] Pedido criado:', novoPedido.id)
-    
-    // 4. Registrar no rastreamento
-    await supabase
-      .from('admin_rastreamento')
-      .insert({
-        pedido_id: novoPedido.id,
-        tipo: 'CRIACAO',
-        descricao: 'Pedido criado via sincronização Marketplace',
-        local: 'CD São Paulo',
-        status: 'pendente'
-      })
-
-    return {
-      success: true,
-      logistix_pedido_id: novoPedido.id
-    }
-
-  } catch (error) {
-    console.error('[LogistixSync] Erro:', error)
-    return { success: false, error: String(error) }
+    if (newCliente) clienteId = newCliente.id;
   }
-}
 
-/**
- * Atualiza status do pedido no Logistix baseado no fulfillment_status
- */
-export async function updateLogistixOrderStatus(
-  transactionId: string,
-  fulfillmentStatus: string
-): Promise<SyncResult> {
-  try {
-    // Buscar pedido vinculado à transação (via código ou metadata)
-    const { data: pedido, error } = await supabase
-      .from('admin_pedidos')
-      .select('id, status')
-      .like('codigo', `%${transactionId.substring(0, 8)}%`)
-      .limit(1)
-      .single()
+  if (!clienteId) return { error: 'Não foi possível criar/obter cliente' };
 
-    if (error || !pedido) {
-      return { success: false, error: 'Pedido não encontrado' }
-    }
-
-    // Mapear status
-    const statusMap: Record<string, string> = {
-      'pending': 'pendente',
-      'processing': 'pendente',
-      'shipped': 'em_transito',
-      'delivered': 'entregue',
-      'cancelled': 'cancelado'
-    }
-
-    const novoStatus = statusMap[fulfillmentStatus] || pedido.status
-
-    // Atualizar status
-    const { error: updateError } = await supabase
-      .from('admin_pedidos')
-      .update({ status: novoStatus })
-      .eq('id', pedido.id)
-
-    if (updateError) {
-      return { success: false, error: updateError.message }
-    }
-
-    // Adicionar evento de rastreamento
-    await supabase
-      .from('admin_rastreamento')
-      .insert({
-        pedido_id: pedido.id,
-        tipo: 'ATUALIZACAO',
-        descricao: `Status atualizado: ${fulfillmentStatus}`,
-        local: 'Sistema',
-        status: novoStatus
-      })
-
-    return { success: true }
-
-  } catch (error) {
-    return { success: false, error: String(error) }
-  }
-}
-
-/**
- * Verifica se uma transação já foi sincronizada
- */
-export async function isTransactionSynced(transactionId: string): Promise<boolean> {
-  const { data } = await supabase
-    .from('admin_pedidos')
+  const { data: armazem } = await supabase
+    .from('admin_armazens')
     .select('id')
-    .like('codigo', `%${transactionId.substring(0, 8)}%`)
+    .eq('nome', 'CD São Paulo')
     .limit(1)
-  
-  return !!data && data.length > 0
-}
+    .single();
 
-/**
- * Lista pedidos syncados (para debugging)
- */
-export async function listSyncedOrders(): Promise<any[]> {
-  const { data, error } = await supabase
+  const armazemId = armazem?.id;
+
+  const previsao = new Date();
+  previsao.setDate(previsao.getDate() + 5);
+
+  const pedido = {
+    codigo: generatePedidoCode(),
+    cliente_id: clienteId,
+    armazem_origem_id: armazemId,
+    destino_cidade: shippingAddress.cidade,
+    destino_estado: shippingAddress.estado,
+    status: 'pendente',
+    peso_kg: Math.round(Math.random() * 50 + 1),
+    valor: tx.amount,
+    previsao: previsao.toISOString(),
+  };
+
+  const { data: novoPedido, error: pedidoError } = await supabase
     .from('admin_pedidos')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(50)
+    .insert(pedido)
+    .select('id')
+    .single();
 
-  if (error) throw error
-  return data || []
+  if (pedidoError) return { error: pedidoError.message };
+
+  await supabase.from('admin_rastreamento').insert({
+    pedido_id: novoPedido.id,
+    tipo: 'CRIACAO',
+    descricao: 'Pedido criado via Marketplace',
+    local: 'CD São Paulo',
+    status: 'pendente',
+  });
+
+  await supabase.from('messages').insert({
+    sender_id: tx.seller_id,
+    receiver_id: tx.buyer_id,
+    product_id: tx.part_id,
+    transaction_id: transactionId,
+    content: `Seu pedido #${pedido.codigo} foi criado na Logistix! Código de rastreamento em breve.`,
+    message_type: 'system',
+  });
+
+  console.log('[LogistixSync] Pedido criado:', novoPedido.id, pedido.codigo);
+  return { pedido_id: novoPedido.id, codigo: pedido.codigo };
 }
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+
+  try {
+    if (req.method === 'GET') {
+      const url = new URL(req.url);
+      const action = url.searchParams.get('action');
+
+      if (action === 'list') {
+        const { data } = await supabase
+          .from('admin_pedidos')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(50);
+        return json(data || []);
+      }
+
+      return json({ status: 'healthy', service: 'logistix-sync' });
+    }
+
+    if (req.method === 'POST') {
+      const body = await req.json();
+      const { transaction_id } = body;
+
+      if (!transaction_id) {
+        return error('transaction_id é obrigatório');
+      }
+
+      const result = await syncTransaction(transaction_id);
+      if (result.error) return error(result.error);
+
+      return json(result, 201);
+    }
+
+    return error('Método não permitido', 405);
+  } catch (err) {
+    console.error('[LogistixSync] Erro:', err);
+    return error(String(err), 500);
+  }
+});

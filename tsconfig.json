@@ -12,9 +12,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": false,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noUnusedParameters": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {

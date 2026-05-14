@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
+import { api } from '../lib/api'
+import { formatJPY } from '../lib/fees'
 import { ShoppingCart, Package, Check, X, DollarSign } from 'lucide-react'
 
 interface Part {
@@ -52,45 +54,53 @@ export default function SimulateSale({ onComplete }: Props) {
     setLoading(true)
 
     try {
-      const fees = calculateFees(part.price)
+      const tx: any = await api.transactions.create({
+        part_id: part.id,
+        amount: part.price,
+      })
 
-      const { data: transaction, error: transactionError } = await supabase
-        .from('transactions')
-        .insert({
-          part_id: part.id,
-          buyer_id: user.id,
-          seller_id: part.seller_id,
-          amount: part.price,
-          payment_status: 'paid',
-          fulfillment_status: 'pending'
-        })
-        .select()
-        .single()
-
-      if (transactionError) throw transactionError
+      const transaction = tx.transaction || tx
 
       await supabase
-        .from('parts')
-        .update({ status: 'sold', sold_at: new Date().toISOString() })
-        .eq('id', part.id)
+        .from('transactions')
+        .update({ payment_status: 'paid' })
+        .eq('id', transaction.id)
 
       await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: part.seller_id,
         product_id: part.id,
-        content: `Olá! Acabei de comprar "${part.title}" por ¥${part.price.toLocaleString('ja-JP')}. Por favor, prepare o envio!`
+        transaction_id: transaction.id,
+        content: `Olá! Acabei de comprar "${part.title}" por ${formatJPY(part.price)}. Por favor, prepare o envio!`
       })
 
       await supabase.from('messages').insert({
         sender_id: part.seller_id,
         receiver_id: user.id,
         product_id: part.id,
+        transaction_id: transaction.id,
         content: `Obrigado pela compra! Vou preparar a peça e enviar o código de rastreamento em breve. 🚚`
       })
 
+      try {
+        await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/logistix-sync`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('sb-access-token')}`,
+            },
+            body: JSON.stringify({ transaction_id: transaction.id }),
+          }
+        )
+      } catch (syncErr) {
+        console.error('Logistix sync error:', syncErr)
+      }
+
       setSaleResult({
         success: true,
-        message: `Compra simulada com sucesso! ¥${part.price.toLocaleString('ja-JP')} - Transação: ${transaction.id}`
+        message: `Compra simulada com sucesso! ${formatJPY(part.price)} - Transação: ${transaction.id}`
       })
 
       fetchActiveParts()
@@ -103,18 +113,6 @@ export default function SimulateSale({ onComplete }: Props) {
     } finally {
       setLoading(false)
     }
-  }
-
-  const calculateFees = (amount: number) => {
-    const commissionRate = 0.10
-    const stripeRate = 0.029
-    const stripeFixed = 30
-    
-    const commission = amount * commissionRate
-    const stripeFee = (amount * stripeRate) + stripeFixed
-    const sellerNet = amount - commission - stripeFee
-    
-    return { commission, stripeFee, platformFee: 0, sellerNet }
   }
 
   if (!user) {

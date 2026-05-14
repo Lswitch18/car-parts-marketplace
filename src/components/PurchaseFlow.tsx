@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { useI18n } from '../lib/i18n';
 import { useFavoriteStore } from '../stores/favoriteStore';
 
 interface PurchaseFlowProps {
@@ -11,7 +10,6 @@ interface PurchaseFlowProps {
 }
 
 export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }: PurchaseFlowProps) {
-  const { t } = useI18n();
   const [step, setStep] = useState<'payment' | 'processing' | 'confirmation'>('payment');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,8 +59,6 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
         return;
       }
 
-      const fees = calculateFees(partPrice);
-      
       // Create transaction record
       const { data: transaction, error: transactionError } = await supabase
         .from('transactions')

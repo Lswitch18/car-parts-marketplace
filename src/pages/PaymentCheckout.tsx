@@ -4,8 +4,9 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { api } from '../lib/api'
+import { calculateFees, formatJPY } from '../lib/fees'
 import { 
-  CreditCard, Lock, ShieldCheck, Truck, Package, 
+  CreditCard, Lock, ShieldCheck, Package, 
   ArrowLeft, Check, AlertCircle, Loader2
 } from 'lucide-react'
 
@@ -38,13 +39,7 @@ export default function PaymentCheckout() {
   const [errorMessage, setErrorMessage] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'pix'>('card')
   const [shippingInfo, setShippingInfo] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
+    name: '', email: '', phone: '', address: '', city: '', state: '', zipCode: '',
   })
 
   const { data: part, isLoading } = useQuery({
@@ -73,39 +68,44 @@ export default function PaymentCheckout() {
     enabled: !!part?.seller_id
   })
 
+  const urlParams = new URLSearchParams(window.location.search)
+  const negotiatedPrice = urlParams.get('price')
+  const finalPrice = negotiatedPrice ? Number(negotiatedPrice) : part?.price
+  const fees = part ? calculateFees(finalPrice || part.price) : null
+
   const createTransaction = useMutation({
     mutationFn: async () => {
       if (!user || !part) throw new Error('Usuário não autenticado')
-      
-      const { data: transaction, error: insertError } = await supabase
-        .from('transactions')
-        .insert({
-          part_id: part.id,
-          buyer_id: user.id,
-          seller_id: part.seller_id,
-          amount: finalPrice || part.price,
-          status: 'escrow',
-          payment_status: 'escrow',
-          fulfillment_status: 'pending'
-        })
-        .select()
-        .single()
 
-      if (insertError) throw insertError
-      return transaction
+      const tx: any = await api.transactions.create({
+        part_id: part.id,
+        amount: finalPrice || part.price,
+      })
+
+      return tx.transaction || tx
     },
     onSuccess: async (transaction) => {
       setStep('processing')
-      
-      // Simulate Stripe processing delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
 
-      // Simulate successful checkout for DAIG Escrow flow
-      await supabase
-        .from('parts')
-        .update({ status: 'sold' })
-        .eq('id', part!.id)
-      
+      const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+
+      if (stripePublicKey && stripePublicKey.startsWith('pk_')) {
+        const result = await api.stripe.createCheckout({
+          transaction_id: transaction.id,
+          part_id: part!.id,
+          buyer_id: user!.id,
+          seller_id: part!.seller_id,
+          amount: finalPrice || part!.price,
+        })
+
+        if (result.url) {
+          window.location.href = result.url
+          return
+        }
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
       setStep('success')
     },
     onError: (err: any) => {
@@ -113,24 +113,6 @@ export default function PaymentCheckout() {
       setStep('error')
     }
   })
-
-  const calculateFees = (amount: number) => {
-    const commissionRate = 0.10
-    const stripeRate = 0.029
-    const stripeFixed = 30
-    
-    const commission = amount * commissionRate
-    const stripeFee = (amount * stripeRate) + stripeFixed
-    const sellerNet = amount - commission - stripeFee
-    
-    return { commission, stripeFee, sellerNet, total: amount }
-  }
-
-  const urlParams = new URLSearchParams(window.location.search)
-  const negotiatedPrice = urlParams.get('price')
-  const finalPrice = negotiatedPrice ? Number(negotiatedPrice) : part?.price
-
-  const fees = part ? calculateFees(finalPrice || part.price) : null
 
   useEffect(() => {
     if (!user) {
@@ -153,9 +135,7 @@ export default function PaymentCheckout() {
           <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white mb-2">Produto Indisponível</h1>
           <p className="text-gray-400 mb-6">Este produto já foi vendido.</p>
-          <Link to="/catalog" className="text-daig-blue hover:underline">
-            Voltar ao catálogo
-          </Link>
+          <Link to="/catalog" className="text-daig-blue hover:underline">Voltar ao catálogo</Link>
         </div>
       </div>
     )
@@ -168,9 +148,7 @@ export default function PaymentCheckout() {
           <AlertCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white mb-2">Compra Inválida</h1>
           <p className="text-gray-400 mb-6">Você não pode comprar seu próprio produto.</p>
-          <Link to={`/product/${id}`} className="text-daig-blue hover:underline">
-            Voltar ao produto
-          </Link>
+          <Link to={`/product/${id}`} className="text-daig-blue hover:underline">Voltar ao produto</Link>
         </div>
       </div>
     )
@@ -180,8 +158,7 @@ export default function PaymentCheckout() {
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4">
         <button onClick={() => navigate(-1)} className="flex items-center text-gray-400 mb-6">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Voltar
+          <ArrowLeft className="w-4 h-4 mr-2" /> Voltar
         </button>
 
         <h1 className="text-2xl font-bold text-white mb-6">Finalizar Compra</h1>
@@ -192,96 +169,31 @@ export default function PaymentCheckout() {
               <div className="card p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">Informações de Entrega</h2>
                 <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Nome completo"
-                    value={shippingInfo.name}
-                    onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })}
-                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
-                  />
-                  <input
-                    type="email"
-                    placeholder="E-mail"
-                    value={shippingInfo.email}
-                    onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })}
-                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
-                  />
-                  <input
-                    type="tel"
-                    placeholder="Telefone"
-                    value={shippingInfo.phone}
-                    onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })}
-                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Endereço"
-                    value={shippingInfo.address}
-                    onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })}
-                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
-                  />
+                  <input type="text" placeholder="Nome completo" value={shippingInfo.name} onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  <input type="email" placeholder="E-mail" value={shippingInfo.email} onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  <input type="tel" placeholder="Telefone" value={shippingInfo.phone} onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  <input type="text" placeholder="Endereço" value={shippingInfo.address} onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   <div className="grid grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      placeholder="Cidade"
-                      value={shippingInfo.city}
-                      onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })}
-                      className="bg-background border border-border rounded-lg px-4 py-3 text-white"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Estado"
-                      value={shippingInfo.state}
-                      onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })}
-                      className="bg-background border border-border rounded-lg px-4 py-3 text-white"
-                    />
+                    <input type="text" placeholder="Cidade" value={shippingInfo.city} onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="Estado" value={shippingInfo.state} onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="CEP"
-                    value={shippingInfo.zipCode}
-                    onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })}
-                    className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white"
-                  />
+                  <input type="text" placeholder="CEP" value={shippingInfo.zipCode} onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                 </div>
               </div>
 
               <div className="card p-6">
                 <h2 className="text-lg font-semibold text-white mb-4">Forma de Pagamento</h2>
                 <div className="space-y-3">
-                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                    paymentMethod === 'card' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'
-                  }`}>
-                    <input
-                      type="radio"
-                      name="payment"
-                      checked={paymentMethod === 'card'}
-                      onChange={() => setPaymentMethod('card')}
-                      className="hidden"
-                    />
+                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'card' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'}`}>
+                    <input type="radio" name="payment" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="hidden" />
                     <CreditCard className="w-6 h-6 text-daig-blue mr-3" />
-                    <div className="flex-1">
-                      <p className="text-white font-medium">Cartão de Crédito</p>
-                      <p className="text-gray-400 text-sm">Pagamento parcelado ou à vista</p>
-                    </div>
+                    <div className="flex-1"><p className="text-white font-medium">Cartão de Crédito</p><p className="text-gray-400 text-sm">Pagamento parcelado ou à vista</p></div>
                     {paymentMethod === 'card' && <Check className="w-5 h-5 text-daig-blue" />}
                   </label>
-                  
-                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                    paymentMethod === 'pix' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'
-                  }`}>
-                    <input
-                      type="radio"
-                      name="payment"
-                      checked={paymentMethod === 'pix'}
-                      onChange={() => setPaymentMethod('pix')}
-                      className="hidden"
-                    />
+                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'pix' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'}`}>
+                    <input type="radio" name="payment" checked={paymentMethod === 'pix'} onChange={() => setPaymentMethod('pix')} className="hidden" />
                     <span className="text-2xl mr-3">📱</span>
-                    <div className="flex-1">
-                      <p className="text-white font-medium">PIX</p>
-                      <p className="text-gray-400 text-sm">Pagamento instantâneo</p>
-                    </div>
+                    <div className="flex-1"><p className="text-white font-medium">PIX</p><p className="text-gray-400 text-sm">Pagamento instantâneo</p></div>
                     {paymentMethod === 'pix' && <Check className="w-5 h-5 text-daig-blue" />}
                   </label>
                 </div>
@@ -293,40 +205,26 @@ export default function PaymentCheckout() {
                 <h2 className="text-lg font-semibold text-white mb-4">Resumo do Pedido</h2>
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="w-20 h-20 bg-background rounded-lg flex items-center justify-center overflow-hidden">
-                    {part.images?.[0] ? (
-                      <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <Package className="w-10 h-10 text-gray-600" />
-                    )}
+                    {part.images?.[0] ? <img src={part.images[0]} alt="" className="w-full h-full object-cover" /> : <Package className="w-10 h-10 text-gray-600" />}
                   </div>
-                  <div>
-                    <p className="text-white font-medium">{part.title}</p>
-                    <p className="text-gray-400 text-sm">{part.brands?.name}</p>
-                  </div>
+                  <div><p className="text-white font-medium">{part.title}</p><p className="text-gray-400 text-sm">{part.brands?.name}</p></div>
                 </div>
-                
                 <div className="border-t border-border pt-4 space-y-2">
                   {negotiatedPrice && (
                     <div className="flex justify-between text-green-400 text-sm">
                       <span>Preço original</span>
-                      <span className="line-through">¥ {part.price.toLocaleString('ja-JP')}</span>
+                      <span className="line-through">{formatJPY(part.price)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-gray-400">
-                    <span>{negotiatedPrice ? 'Preço negotiado' : 'Subtotal'}</span>
-                    <span>¥ {finalPrice?.toLocaleString('ja-JP')}</span>
+                    <span>{negotiatedPrice ? 'Preço negociado' : 'Subtotal'}</span>
+                    <span>{formatJPY(finalPrice || part.price)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-400">
-                    <span>Taxa plataforma (10%)</span>
-                    <span>-¥ {fees.commission.toLocaleString('ja-JP')}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-400">
-                    <span>Taxa pagamento</span>
-                    <span>-¥ {fees.stripeFee.toLocaleString('ja-JP')}</span>
-                  </div>
+                  <div className="flex justify-between text-gray-400"><span>Taxa plataforma (10%)</span><span>-{formatJPY(fees.commission_amount)}</span></div>
+                  <div className="flex justify-between text-gray-400"><span>Taxa pagamento</span><span>-{formatJPY(fees.stripe_fee)}</span></div>
                   <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-border">
                     <span>Total</span>
-                    <span className="text-daig-blue">¥ {fees.total.toLocaleString('ja-JP')}</span>
+                    <span className="text-daig-blue">{formatJPY(fees.gross_amount)}</span>
                   </div>
                 </div>
               </div>
@@ -336,42 +234,22 @@ export default function PaymentCheckout() {
                   <h2 className="text-lg font-semibold text-white mb-4">Vendedor</h2>
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-daig-blue to-daig-cyan flex items-center justify-center">
-                      {seller.avatar_url ? (
-                        <img src={seller.avatar_url} alt="" className="w-full h-full rounded-full" />
-                      ) : (
-                        <span className="text-white font-bold">{seller.full_name?.[0]?.toUpperCase()}</span>
-                      )}
+                      {seller.avatar_url ? <img src={seller.avatar_url} alt="" className="w-full h-full rounded-full" /> : <span className="text-white font-bold">{seller.full_name?.[0]?.toUpperCase()}</span>}
                     </div>
                     <div>
-                      <p className="text-white font-medium flex items-center">
-                        {seller.full_name}
-                        {seller.is_verified && <ShieldCheck className="w-4 h-4 text-daig-cyan ml-1" />}
-                      </p>
+                      <p className="text-white font-medium flex items-center">{seller.full_name}{seller.is_verified && <ShieldCheck className="w-4 h-4 text-daig-cyan ml-1" />}</p>
                       <p className="text-gray-400 text-sm">{seller.total_sales || 0} vendas</p>
                     </div>
                   </div>
                 </div>
               )}
 
-              <button
-                onClick={() => createTransaction.mutate()}
-                disabled={createTransaction.isPending || !shippingInfo.name || !shippingInfo.email}
-                className="w-full bg-daig-blue hover:bg-daig-blue/80 text-white py-4 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50"
-              >
-                {createTransaction.isPending ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    <Lock className="w-5 h-5 mr-2" />
-                    Pagar ¥ {fees.total.toLocaleString('ja-JP')}
-                  </>
-                )}
+              <button onClick={() => createTransaction.mutate()} disabled={createTransaction.isPending || !shippingInfo.name || !shippingInfo.email}
+                className="w-full bg-daig-blue hover:bg-daig-blue/80 text-white py-4 rounded-lg font-semibold flex items-center justify-center disabled:opacity-50">
+                {createTransaction.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Lock className="w-5 h-5 mr-2" /> Pagar {formatJPY(fees.gross_amount)}</>}
               </button>
 
-              <p className="text-gray-500 text-sm text-center flex items-center justify-center">
-                <ShieldCheck className="w-4 h-4 mr-1" />
-                Pagamento seguro com garantia
-              </p>
+              <p className="text-gray-500 text-sm text-center flex items-center justify-center"><ShieldCheck className="w-4 h-4 mr-1" /> Pagamento seguro com garantia</p>
             </div>
           </div>
         )}
@@ -386,29 +264,22 @@ export default function PaymentCheckout() {
 
         {step === 'success' && (
           <div className="text-center py-20">
-            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check className="w-10 h-10 text-white" />
-            </div>
+            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6"><Check className="w-10 h-10 text-white" /></div>
             <h2 className="text-2xl font-bold text-white mb-2">Pagamento Confirmado!</h2>
             <p className="text-gray-400 mb-6">Sua compra foi processada com sucesso.</p>
-            
             <div className="card p-6 max-w-md mx-auto mb-8 text-left">
               <h3 className="text-white font-semibold mb-4">Próximos passos:</h3>
               <ol className="list-decimal list-inside text-gray-400 space-y-2">
                 <li>Vendedor foi notificado e preparará a peça</li>
+                <li>Pedido será sincronizado com a Logistix para logística</li>
                 <li>Você receberá o código de rastreamento por e-mail</li>
                 <li>Acompanhe o envio pelo painel de compras</li>
                 <li>Confira o recebimento para liberar o pagamento ao vendedor</li>
               </ol>
             </div>
-
             <div className="flex gap-4 justify-center">
-              <Link to="/dashboard" className="bg-daig-blue px-6 py-3 rounded-lg text-white">
-                Ver minhas compras
-              </Link>
-              <Link to="/catalog" className="border border-border px-6 py-3 rounded-lg text-white hover:border-daig-blue">
-                Continuar comprando
-              </Link>
+              <Link to="/dashboard" className="bg-daig-blue px-6 py-3 rounded-lg text-white">Ver minhas compras</Link>
+              <Link to="/catalog" className="border border-border px-6 py-3 rounded-lg text-white hover:border-daig-blue">Continuar comprando</Link>
             </div>
           </div>
         )}
@@ -418,12 +289,7 @@ export default function PaymentCheckout() {
             <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
             <h2 className="text-2xl font-bold text-white mb-2">Erro no Pagamento</h2>
             <p className="text-gray-400 mb-6">{errorMessage}</p>
-            <button
-              onClick={() => setStep('details')}
-              className="bg-daig-blue px-6 py-3 rounded-lg text-white"
-            >
-              Tentar novamente
-            </button>
+            <button onClick={() => setStep('details')} className="bg-daig-blue px-6 py-3 rounded-lg text-white">Tentar novamente</button>
           </div>
         )}
       </div>

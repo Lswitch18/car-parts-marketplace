@@ -55,7 +55,6 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   const [newMessage, setNewMessage] = useState('')
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [proposedPrice, setProposedPrice] = useState('')
-  const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

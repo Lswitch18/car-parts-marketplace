@@ -123,8 +123,6 @@ export default function Dashboard() {
     return null
   }
 
-  const isDemoUser = user.email?.includes('demo') || user.email?.includes('test')
-
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-7xl mx-auto px-4">

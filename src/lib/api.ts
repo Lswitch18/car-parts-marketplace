@@ -1,5 +1,3 @@
-import { supabase } from '../lib/supabase';
-
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 

@@ -13,7 +13,7 @@ interface FavoriteState {
 export const useFavoriteStore = create<FavoriteState>()(
   persist(
     (set, get) => ({
-      favorites: [],
+      favorites: [] as string[],
 
       addFavorite: (productId) => {
         set((state) => ({

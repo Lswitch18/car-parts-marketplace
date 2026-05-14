@@ -285,7 +285,7 @@ export default function Messages() {
                                 {new Date(msg.created_at).toLocaleString('pt-BR')}
                               </p>
                               
-                              {isPriceProposal && !isPriceConfirmed && !isMe && (
+                                     {isPriceProposal && !isPriceConfirmed && !isMe && (
                                 <button
                                   onClick={() => confirmPrice(msg.id, msg.proposed_price!)}
                                   className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 ml-2"
@@ -294,11 +294,18 @@ export default function Messages() {
                                   <span>Confirmar</span>
                                 </button>
                               )}
-                              
                               {isPriceConfirmed && (
                                 <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full ml-2">
                                   ✓ Confirmado
                                 </span>
+                              )}
+                              {msg.transaction_id && (
+                                <a
+                                  href={`/admin/logistix`}
+                                  className="text-daig-cyan text-xs ml-2 hover:underline"
+                                >
+                                  🚚 Rastrear
+                                </a>
                               )}
                             </div>
                           </div>

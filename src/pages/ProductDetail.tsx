@@ -5,8 +5,6 @@ import { ArrowLeft, Heart, Share2, MessageCircle, Eye, Shield, Truck } from 'luc
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useFavoriteStore } from '../stores/favoriteStore'
-import { Product } from '../types'
-import PurchaseFlow from '../components/PurchaseFlow'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -78,7 +76,7 @@ export default function ProductDetail() {
             </div>
             {product.images && product.images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
-                {product.images.map((img, i) => (
+                {product.images.map((img: string, i: number) => (
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}

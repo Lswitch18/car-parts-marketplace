@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query'
 import { Filter, X, Search, Heart, Wrench } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS } from '../lib/constants'
-import { Product } from '../types'
 import { useFavoriteStore } from '../stores/favoriteStore'
 
 export default function Catalog() {

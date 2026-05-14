@@ -12,10 +12,9 @@ import Profile from './pages/Profile'
 import Favorites from './pages/Favorites'
 import Messages from './pages/Messages'
 import PaymentCheckout from './pages/PaymentCheckout'
-import AdminDashboard from './pages/admin/Dashboard'
 import UserManagement from './pages/admin/UserManagement'
 import TransactionManagement from './pages/admin/TransactionManagement'
-import LogistixPage from './pages/admin/LogistixPage'
+import LogistixDashboard from './pages/admin/LogistixDashboard'
 import AdminRoute from './components/AdminRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import ChatPopup from './components/ChatPopup'
@@ -48,9 +47,9 @@ function App() {
         </Route>
 
         <Route path="/admin" element={<AdminRoute />}>
-          <Route index element={<LogistixPage />} />
-          <Route path="dashboard" element={<LogistixPage />} />
-          <Route path="logistix" element={<LogistixPage />} />
+          <Route index element={<LogistixDashboard />} />
+          <Route path="dashboard" element={<LogistixDashboard />} />
+          <Route path="logistix" element={<LogistixDashboard />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="transactions" element={<TransactionManagement />} />
         </Route>

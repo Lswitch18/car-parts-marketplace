@@ -305,19 +305,48 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
   if (payment_status === 'paid') {
     const { data: tx } = await supabase
       .from('transactions')
-      .select('part_id, seller_id')
+      .select('part_id, seller_id, buyer_id')
       .eq('id', txId)
       .single();
 
-    await supabase
-      .from('parts')
-      .update({ status: 'sold' })
-      .eq('id', tx?.part_id);
+    if (tx) {
+      await supabase
+        .from('parts')
+        .update({ status: 'sold' })
+        .eq('id', tx.part_id);
 
-    await supabase
-      .from('profiles')
-      .update({ total_sales: supabase.raw('total_sales + 1') })
-      .eq('id', tx?.seller_id);
+      await supabase
+        .from('profiles')
+        .update({ total_sales: supabase.raw('total_sales + 1') })
+        .eq('id', tx.seller_id);
+
+      await supabase.from('messages').insert({
+        sender_id: tx.seller_id,
+        receiver_id: tx.buyer_id,
+        product_id: tx.part_id,
+        transaction_id: txId,
+        content: 'Pagamento confirmado! Pedido será processado em breve.',
+        message_type: 'system',
+      });
+
+      try {
+        const syncRes = await fetch(
+          `${Deno.env.get('SUPABASE_URL')}/functions/v1/logistix-sync`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+            },
+            body: JSON.stringify({ transaction_id: txId }),
+          }
+        );
+        const syncData = await syncRes.json();
+        console.log('[Transactions] Logistix sync result:', syncData);
+      } catch (err) {
+        console.error('[Transactions] Logistix sync error:', err);
+      }
+    }
   }
 
   return new Response(JSON.stringify(successResponse(data, 'Transação atualizada')), {

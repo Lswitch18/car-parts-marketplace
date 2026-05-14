@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
-import { useI18n } from '../lib/i18n';
 import { supabase } from '../lib/supabase';
 
 export default function AdminRoute() {
-  const { t } = useI18n();
   const navigate = useNavigate();
   const [isAdminUser, setIsAdminUser] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
