@@ -22,10 +22,13 @@ import MobileApp from './pages/mobile/MobileApp'
 import WorkerApp from './pages/mobile/WorkerApp'
 import QRInstallPage from './pages/mobile/QRInstallPage'
 import ChatPopup from './components/ChatPopup'
+import { useEffect } from 'react'
 import { useAuthStore } from './stores/authStore'
 
 function App() {
-  const { user } = useAuthStore()
+  const { user, initialize } = useAuthStore()
+
+  useEffect(() => { initialize() }, [initialize])
 
   return (
     <I18nProvider>
