@@ -103,16 +103,8 @@ export default function LogistixPage() {
 
       if (pedidosError) {
         console.error('Database error:', pedidosError);
-        // Table might not exist - show mock data for demo
-        const mockPedidos = [
-          { id: '1', codigo: 'PED-001', status: 'pendente', destino_cidade: 'São Paulo', destino_estado: 'SP', previsao: '2024-01-15' },
-          { id: '2', codigo: 'PED-002', status: 'em_transito', destino_cidade: 'Rio de Janeiro', destino_estado: 'RJ', previsao: '2024-01-14' },
-          { id: '3', codigo: 'PED-003', status: 'entregue', destino_cidade: 'Belo Horizonte', destino_estado: 'MG', previsao: '2024-01-12' },
-        ];
-        setKpis({ total: 3, concluidas: 1, atrasos: 0, emTransito: 1, taxa: '33', custo: '0' });
-        setPedidos(mockPedidos);
+        setError('Erro ao carregar pedidos: ' + pedidosError.message);
         setLoading(false);
-        setError('Tabelas do Logistix não encontradas. Execute a migração no Supabase.');
         return;
       }
 

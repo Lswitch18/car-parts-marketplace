@@ -55,11 +55,6 @@ FILES = {
         "modified": 1778697450.9944859,
         "hash": "ec7f07bf2225547b02fed441c2bc11aa"
     },
-    "check-tables.sql": {
-        "size": 113,
-        "modified": 1778725956.6644,
-        "hash": "2e3027b758ce0de4e4a276eedb717066"
-    },
     "tsconfig.json": {
         "size": 657,
         "modified": 1778299587.802882,
@@ -131,9 +126,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 26827,
-        "modified": 1778725958.6843965,
-        "hash": "fe0544df58f9eea104f23afe73ec80bd"
+        "size": 26165,
+        "modified": 1778726644.428425,
+        "hash": "6793d0de49adeb50a60b14e79f42383d"
     },
     "vite.config.js": {
         "size": 196,
@@ -182,7 +177,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1558,
-        "modified": 1778725809.3164148,
+        "modified": 1778726015.6803906,
         "hash": "790af3070e3fd5e2842aef4e25f8d4f0"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
@@ -456,9 +451,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 16268,
-        "modified": 1778725971.9203742,
-        "hash": "a7b2fb7182ba146cad2838daa0214cc3"
+        "size": 15591,
+        "modified": 1778726688.260427,
+        "hash": "260d1ff35accf8d4f851a04e74d58005"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
@@ -795,25 +790,10 @@ FILES = {
         "modified": 1778327850.9744914,
         "hash": "c60d1c801526d1e246b908956aed53d7"
     },
-    "supabase/migrations/logistix-admin-wms.sql": {
-        "size": 24582,
-        "modified": 1778710802.076425,
-        "hash": "47d9bb714991fc64b7b0df183f9b894a"
-    },
-    "supabase/migrations/logistix-rastreamento.sql": {
-        "size": 4534,
-        "modified": 1778712211.5204291,
-        "hash": "13f46749e72ec5e6387bc39242c40491"
-    },
-    "supabase/migrations/daig-schema-fix-20260513.sql": {
-        "size": 9657,
-        "modified": 1778641723.8859255,
-        "hash": "4f4f60ea6dbe83a53c203a92ffc2ccc1"
-    },
-    "supabase/migrations/analytics_functions.sql": {
-        "size": 7939,
-        "modified": 1778395710.324444,
-        "hash": "90c9efcdbf7653df907258c27cd764f5"
+    "supabase/migrations/logistix-schema-complete.sql": {
+        "size": 5593,
+        "modified": 1778726641.416425,
+        "hash": "b24149e16bc3e8d2db1f0082ed8818bc"
     },
     "scripts/createUsers.ts": {
         "size": 1845,
