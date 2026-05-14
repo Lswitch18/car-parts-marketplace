@@ -4,20 +4,21 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt'
 
+const STORAGE_KEY = 'sb-clqubcryhbrjlupkgeva-auth-token'
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,
-    storageKey: 'sb-clqubcryhbrjlupkgeva-auth-token',
+    storageKey: STORAGE_KEY,
     storage: {
       getItem: (key: string) => {
-        const cookie = document.cookie.split('; ').find(row => row.startsWith(key + '='))
-        return cookie ? cookie.split('=')[1] : null
+        return localStorage.getItem(key) || null
       },
       setItem: (key: string, value: string) => {
-        document.cookie = `${key}=${value}; path=/; max-age=31536000; SameSite=Lax`
+        localStorage.setItem(key, value)
       },
       removeItem: (key: string) => {
-        document.cookie = `${key}=; path=/; max-age=0`
+        localStorage.removeItem(key)
       }
     }
   }

@@ -1,8 +1,12 @@
+import { supabase } from './supabase';
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const ADMIN_URL = `${SUPABASE_URL}/functions/v1/admin`;
 
 async function adminFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = localStorage.getItem('sb-access-token');
+  await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
   const res = await fetch(`${ADMIN_URL}${endpoint}`, {
     ...options,
     headers: {

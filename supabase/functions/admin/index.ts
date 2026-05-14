@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders() });
 
   const url = new URL(req.url);
-  const path = url.pathname.replace(/^\/functions\/v1\/admin/, '').replace(/\/$/, '');
+  const path = url.pathname.replace(/^(\/functions\/v1)?\/admin/, '').replace(/\/$/, '');
   const body = req.method === 'GET' || req.method === 'DELETE' ? {} : await req.json().catch(() => ({}));
   const segments = path.split('/').filter(Boolean);
 

@@ -204,7 +204,7 @@ export default function LogistixDashboard() {
               <div className="grid grid-cols-3 gap-5">
                 <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
                   <h3 className="text-base font-medium mb-4">Status das Entregas</h3>
-                  <div className="relative h-[180px] flex items-center justify-center">
+                  <div className="relative h-[180px] flex items-center justify-center min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} dataKey="value" strokeWidth={0}>
@@ -231,7 +231,7 @@ export default function LogistixDashboard() {
 
                 <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
                   <h3 className="text-base font-medium mb-4">Performance de Entregas</h3>
-                  <div className="h-[180px]">
+                  <div className="h-[180px] min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={performance || []}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
