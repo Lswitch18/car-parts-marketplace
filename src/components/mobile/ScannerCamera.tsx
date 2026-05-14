@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { X, Camera, CameraOff } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { X, Camera } from 'lucide-react';
 
 interface Props {
   onScan: (code: string) => void;
@@ -13,23 +13,21 @@ interface Props {
 export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode, scannedCount, totalCount }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [cameraStarted, setCameraStarted] = useState(false);
-  const [cameraError, setCameraError] = useState('');
-
-  useEffect(() => {
-    return () => { stopCamera(); };
-  }, []);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [mode, setMode] = useState<'idle' | 'camera' | 'input'>('idle');
 
   async function startCamera() {
     try {
-      setCameraError('');
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      setMode('camera');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } },
+      });
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
-      setCameraStarted(true);
     } catch (err: any) {
-      console.warn('[Scanner] Camera error:', err);
-      setCameraError(err.message || 'Erro ao acessar câmera');
+      console.warn('[Scanner] Camera error, falling back to file input:', err.message);
+      setMode('input');
+      inputRef.current?.click();
     }
   }
 
@@ -38,100 +36,87 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
       streamRef.current.getTracks().forEach(t => t.stop());
       streamRef.current = null;
     }
-    setCameraStarted(false);
   }
 
-  function feedback() {
-    try { navigator.vibrate?.(100); } catch {}
-    try {
-      const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 1200;
-      gain.gain.value = 0.15;
-      osc.start();
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-      osc.stop(ctx.currentTime + 0.15);
-    } catch {}
+  function handleCode(code: string) {
+    try { navigator.vibrate?.(50); } catch {}
+    stopCamera();
+    onScan(code);
   }
 
-  function handleManualInput(e: React.FormEvent<HTMLFormElement>) {
+  function handleManualSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const input = (e.target as HTMLFormElement).codigo as HTMLInputElement;
-    const code = input.value.trim();
-    if (code) { feedback(); onScan(code); input.value = ''; input.focus(); }
+    const val = (e.target as HTMLFormElement).codigo.value.trim();
+    if (val) { handleCode(val); (e.target as HTMLFormElement).codigo.value = ''; }
+  }
+
+  function handleFileCapture(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setMode('input');
+      // User took a photo, now just show manual input
+    }
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col" onClick={batchMode ? undefined : onClose}>
-      <div className="relative flex-1 flex flex-col" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      <div className="relative flex-1 flex flex-col">
+        {/* Top bar */}
         <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
-          <button onClick={onClose} className="w-10 h-10 bg-black/50 rounded-xl flex items-center justify-center">
+          <button onClick={() => { stopCamera(); onClose(); }}
+            className="w-10 h-10 bg-black/50 rounded-xl flex items-center justify-center">
             <X size={20} className="text-white" />
           </button>
           <span className="text-sm font-medium text-white bg-black/50 px-4 py-2 rounded-full">
-            {batchMode
-              ? `📦 ${scannedCount || 0}/${totalCount || '?'} escaneados`
-              : 'Escaneie o código'}
+            {batchMode ? `📦 ${scannedCount || 0}/${totalCount || '?'}` : 'Escanear código'}
           </span>
         </div>
 
-        {/* Camera or start button */}
-        {!cameraStarted && !cameraError && (
-          <div className="flex-1 flex items-center justify-center bg-black"
-            onClick={startCamera}>
+        {/* Camera preview */}
+        {mode === 'camera' && (
+          <video ref={videoRef} autoPlay playsInline muted
+            className="flex-1 w-full object-cover"
+            onClick={() => { stopCamera(); setMode('input'); }} />
+        )}
+
+        {/* Camera frame overlay */}
+        {mode === 'camera' && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-64 h-48 border-2 border-blue-400 rounded-2xl opacity-60" />
+            <p className="absolute bottom-24 text-xs text-white/50">Toque na tela para digitar</p>
+          </div>
+        )}
+
+        {/* Camera start button */}
+        {mode === 'idle' && (
+          <div className="flex-1 flex items-center justify-center bg-[#0B1220]">
             <button onClick={startCamera}
-              className="flex flex-col items-center gap-4 bg-[#1F2937] px-8 py-6 rounded-2xl border border-white/10 active:scale-95 transition-transform">
-              <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center">
-                <Camera size={32} className="text-white" />
+              className="flex flex-col items-center gap-4 px-10 py-8 rounded-2xl active:scale-95 transition-transform">
+              <div className="w-20 h-20 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                <Camera size={36} className="text-white" />
               </div>
-              <p className="text-white font-semibold text-base">Toque para abrir câmera</p>
-              <p className="text-gray-400 text-xs">Permissão necessária para escanear</p>
+              <p className="text-white font-bold text-lg">Abrir Câmera</p>
+              <p className="text-gray-400 text-xs text-center">Toque para escanear o código<br/>da etiqueta do pacote</p>
             </button>
           </div>
         )}
 
-        {cameraError && (
-          <div className="flex-1 flex items-center justify-center bg-black">
-            <div className="text-center px-6">
-              <CameraOff size={40} className="mx-auto text-red-400 mb-3" />
-              <p className="text-red-400 text-sm font-medium mb-1">Câmera indisponível</p>
-              <p className="text-gray-500 text-xs mb-4">{cameraError}</p>
-              <button onClick={startCamera}
-                className="h-10 px-5 bg-blue-500 rounded-xl text-sm font-medium">
-                Tentar novamente
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Hidden file input for Android native camera fallback */}
+        <input ref={inputRef} type="file" accept="image/*" capture="environment"
+          onChange={handleFileCapture} className="hidden" />
 
-        {cameraStarted && (
-          <video ref={videoRef} autoPlay playsInline muted
-            className="flex-1 w-full object-cover" />
-        )}
-
-        {cameraStarted && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-64 h-64 border-2 border-blue-400 rounded-2xl opacity-60" />
-          </div>
-        )}
-
+        {/* Bottom input area */}
         <div className={`bg-[#1F2937] ${batchMode ? 'p-4' : 'p-5 rounded-t-3xl'}`}>
-          {batchMode && scannedCount && scannedCount > 0 && (
+          {batchMode && (scannedCount || 0) > 0 && (
             <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-sm font-medium text-green-400">
-                ✅ {scannedCount} coletado(s)
-              </span>
-              <button onClick={onClose}
-                className="px-4 h-8 bg-blue-500 rounded-lg text-xs font-medium">
-                Finalizar
-              </button>
+              <span className="text-sm font-medium text-green-400">✅ {scannedCount} coletado(s)</span>
+              <button onClick={() => { stopCamera(); onClose(); }}
+                className="px-4 h-8 bg-blue-500 rounded-lg text-xs font-medium">Finalizar</button>
             </div>
           )}
-          <form onSubmit={handleManualInput} className="flex gap-2">
-            <input name="codigo" placeholder={batchMode ? "Digite o código..." : "Ou digite manualmente..."}
+          <form onSubmit={handleManualSubmit} className="flex gap-2">
+            <input name="codigo"
+              placeholder={batchMode ? "Código do pacote..." : "Ou digite o código..."}
               className="flex-1 h-12 bg-[#111827] border border-white/10 rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500"
               autoComplete="off" autoFocus />
             <button type="submit"
@@ -141,7 +126,7 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
           </form>
           {!batchMode && expectedCode && (
             <p className="text-xs text-gray-400 text-center mt-3">
-              Código esperado: <span className="text-blue-400 font-mono">{expectedCode}</span>
+              Esperado: <span className="text-blue-400 font-mono">{expectedCode}</span>
             </p>
           )}
         </div>
