@@ -76,5 +76,11 @@ export const mobileApi = {
   rastreamento: {
     list: (codigo?: string) => mobileFetch<any[]>(`/rastreamento${codigo ? `?codigo=${codigo}` : ''}`),
     create: (data: any) => mobileFetch<any>('/rastreamento', { method: 'POST', body: JSON.stringify(data) }),
+    evento: (data: { pedido_id: string; tipo: string; descricao: string; local?: string; status?: string }) =>
+      mobileFetch<any>('/rastreamento/evento', { method: 'POST', body: JSON.stringify(data) }),
+  },
+
+  etiqueta: {
+    get: (pedidoId: string) => mobileFetch<any>(`/etiqueta/${pedidoId}`),
   },
 };

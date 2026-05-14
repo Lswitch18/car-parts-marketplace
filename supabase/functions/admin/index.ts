@@ -410,6 +410,30 @@ Deno.serve(async (req) => {
       if (req.method === 'DELETE' && segments[1]) return await deleteResource('admin_ocorrencias', req, segments[1]);
     }
 
+    // Etiqueta (label) - dados para impressão
+    if (segments[0] === 'etiqueta' && segments[1]) {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const { data: pedido } = await supabase.from('admin_pedidos')
+        .select('*, cliente:admin_clientes!cliente_id(*), armazem_origem:admin_armazens!armazem_origem_id(nome,cidade,estado), armazem_destino:admin_armazens!armazem_destino_id(nome,cidade,estado)')
+        .eq('id', segments[1]).single();
+      if (!pedido) return json({ error: 'Pedido não encontrado' }, 404);
+      return json(pedido);
+    }
+
+    // Rastreamento - adicionar evento
+    if (segments[0] === 'rastreamento' && segments[1] === 'evento' && req.method === 'POST') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const { pedido_id, tipo, descricao, local, status } = body as any;
+      if (!pedido_id || !tipo || !descricao) return json({ error: 'pedido_id, tipo e descricao obrigatórios' }, 400);
+      const evt: any = { pedido_id, tipo, descricao, local: local || 'Sistema', status: status || 'registrado' };
+      const { data, error } = await supabase.from('admin_rastreamento').insert(evt).select().single();
+      if (error) return json({ error: error.message }, 400);
+      auditLog(user.id, 'CREATE', 'rastreamento', data.id, `Evento: ${tipo} - ${descricao}`, null);
+      return json(data, 201);
+    }
+
     // Configuracoes
     if (segments[0] === 'configuracoes') {
       if (req.method === 'GET') {

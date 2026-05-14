@@ -130,6 +130,17 @@ export const adminApi = {
   auditoria: {
     list: (page = 1, limit = 50) => adminFetch<any[]>(`/auditoria?page=${page}&limit=${limit}`),
   },
+
+  rastreamento: {
+    list: (codigo?: string) => adminFetch<any[]>(`/rastreamento${codigo ? `?codigo=${codigo}` : ''}`),
+    create: (data: any) => adminFetch<any>('/rastreamento', { method: 'POST', body: JSON.stringify(data) }),
+    evento: (data: { pedido_id: string; tipo: string; descricao: string; local?: string; status?: string }) =>
+      adminFetch<any>('/rastreamento/evento', { method: 'POST', body: JSON.stringify(data) }),
+  },
+
+  etiqueta: {
+    get: (pedidoId: string) => adminFetch<any>(`/etiqueta/${pedidoId}`),
+  },
 };
 
 export interface DashboardKPIs {
