@@ -1,24 +1,19 @@
 /**
  * Logistix B2B API
  * API pública para integração com parceiros externos
- * 
- * Endpoints disponíveis:
- * - POST /b2b/auth/token - Gerar token de acesso
- * - GET /b2b/orders - Listar pedidos
- * - GET /b2b/orders/:id - Detalhar pedido
- * - GET /b2b/shipments - Listar remessas
- * - GET /b2b/shipments/:id - Detalhar remessa
- * - GET /b2b/inventory - Consultar estoque
- * - POST /b2b/webhooks - Registrar webhook
- * - GET /b2b/health - Health check
  */
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { hashSha256, generateRandomString } from 'https://esm.sh/@supabase/supabase-js@2/utils'
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-const supabase = createClient(supabaseUrl, supabaseKey)
+interface B2BApiKey {
+  id: string
+  partner_name: string
+  partner_email: string
+  api_key_prefix: string
+  scopes: string[]
+  is_active: boolean
+}
 
 function corsHeaders() {
   return {
@@ -39,49 +34,55 @@ function error(message: string, status = 400) {
   return json({ success: false, error: message }, status)
 }
 
-// ============================================================================
-// AUTHENTICATION
-// ============================================================================
+// Simple fetch wrapper for Supabase
+async function supabaseFetch(endpoint: string, options: any = {}) {
+  const url = `${SUPABASE_URL}/rest/v1/${endpoint}`
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      ...options.headers
+    }
+  })
+  const data = await response.json()
+  return { data, error: response.ok ? null : data, response }
+}
 
-/**
- * Valida API Key e retorna o parceiro
- */
-async function validateApiKey(req: Request): Promise<{ valid: boolean; apiKey?: any; error?: string }> {
-  const apiKey = req.headers.get('x-api-key')
-  
+async function validateApiKey(apiKey: string): Promise<{ valid: boolean; apiKey?: B2BApiKey; error?: string }> {
   if (!apiKey) {
     return { valid: false, error: 'API key não fornecida. Use header x-api-key' }
   }
 
-  // Buscar key no banco
-  const { data: keyData, error } = await supabase
-    .from('b2b_api_keys')
-    .select('*')
-    .eq('api_key_prefix', apiKey.substring(0, 8))
-    .eq('is_active', true)
-    .single()
+  const prefix = apiKey.substring(0, 8)
+  const { data, error: fetchError } = await supabaseFetch(
+    `b2b_api_keys?api_key_prefix=eq.${prefix}&is_active=eq.true&select=*`
+  )
 
-  if (error || !keyData) {
+  if (fetchError || !data || data.length === 0) {
     return { valid: false, error: 'API key inválida ou inativa' }
   }
 
-  // Verificar expiração
-  if (keyData.expires_at && new Date(keyData.expires_at) < new Date()) {
-    return { valid: false, error: 'API key expirada' }
-  }
-
-  // Atualizar último uso
-  await supabase
-    .from('b2b_api_keys')
-    .update({ last_used_at: new Date().toISOString() })
-    .eq('id', keyData.id)
-
-  return { valid: true, apiKey: keyData }
+  return { valid: true, apiKey: data[0] }
 }
 
-// ============================================================================
-// HEALTH CHECK
-// ============================================================================
+function generateApiKey(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = 'lk_'
+  for (let i = 0; i < 32; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
+
+async function hashString(str: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(str)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -90,10 +91,15 @@ Deno.serve(async (req) => {
 
   try {
     const url = new URL(req.url)
-    const path = url.pathname.replace('/functions/v1/logistix-b2b', '')
+    // Get path without the function prefix
+    const path = url.pathname.includes('/logistix-b2b') 
+      ? url.pathname.split('/logistix-b2b')[1] 
+      : url.pathname
 
-    // Health check sem autenticação
-    if (path === '/health' || path === '') {
+    console.log('Full pathname:', url.pathname, 'Extracted path:', path)
+
+    // Health check - PUBLIC (no auth required)
+    if (path === '/health' || path === '' || path === '/') {
       return json({
         status: 'healthy',
         service: 'Logistix B2B API',
@@ -102,38 +108,184 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Auth endpoints
+    // Auth endpoint - PUBLIC (no key required)
     if (path === '/auth/token') {
       if (req.method !== 'POST') {
         return error('Método não permitido', 405)
       }
-      return handleAuthToken(req)
+
+      const body = await req.json()
+      const { partner_name, partner_email } = body
+
+      if (!partner_name || !partner_email) {
+        return error('partner_name e partner_email são obrigatórios')
+      }
+
+      const apiKey = generateApiKey()
+      const prefix = apiKey.substring(0, 8)
+      const keyHash = await hashString(apiKey)
+
+      const insertResponse = await fetch(`${SUPABASE_URL}/rest/v1/b2b_api_keys`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          partner_name,
+          partner_email,
+          api_key_hash: keyHash,
+          api_key_prefix: prefix,
+          scopes: ['read'],
+          rate_limit: 100,
+          is_active: true
+        })
+      })
+
+      const insertData = await insertResponse.json()
+      console.log('Insert result:', { status: insertResponse.status, data: insertData })
+
+      if (!insertResponse.ok) {
+        return error('Erro ao criar API key: ' + JSON.stringify(insertData))
+      }
+
+      return json({
+        success: true,
+        api_key: apiKey,
+        prefix: prefix,
+        message: 'Guarde esta API key - não será possível recuperá-la'
+      })
     }
 
-    // Validar API Key para outras rotas
-    const auth = await validateApiKey(req)
+    // Validate API key for PROTECTED routes (orders, shipments, inventory, webhooks)
+    const apiKeyHeader = req.headers.get('x-api-key')
+    const auth = await validateApiKey(apiKeyHeader || '')
+    
     if (!auth.valid) {
       return error(auth.error || 'Unauthorized', 401)
     }
 
-    // Log request
-    await logRequest(auth.apiKey.id, path, req.method, 200, 0, req)
-
-    // Route handlers
+    // Orders endpoints (protected)
     if (path.startsWith('/orders')) {
-      return handleOrders(req, auth.apiKey)
+      const orderId = path.split('/').filter(Boolean)[1]
+
+      if (!orderId || req.method === 'GET') {
+        const page = parseInt(url.searchParams.get('page') || '1')
+        const limit = parseInt(url.searchParams.get('limit') || '20')
+        const status = url.searchParams.get('status')
+        const offset = (page - 1) * limit
+
+        let query = `admin_pedidos?order=created_at.desc&offset=${offset}&limit=${limit}`
+        if (status) {
+          query += `&status=eq.${status}`
+        }
+
+        const { data, error: fetchError } = await supabaseFetch(query)
+
+        if (fetchError) {
+          return error('Erro ao buscar pedidos: ' + JSON.stringify(fetchError))
+        }
+
+        return json({ success: true, data: data || [] })
+      }
+
+      // Get single order
+      const { data, error: fetchError } = await supabaseFetch(`admin_pedidos?id=eq.${orderId}`)
+      
+      if (fetchError || !data || data.length === 0) {
+        return error('Pedido não encontrado', 404)
+      }
+
+      // Get tracking
+      const { data: rastreamento } = await supabaseFetch(
+        `admin_rastreamento?pedido_id=eq.${orderId}&order=created_at.asc`
+      )
+
+      return json({ success: true, data: { ...data[0], rastreamento: rastreamento || [] } })
     }
-    
+
+    // Shipments
     if (path.startsWith('/shipments')) {
-      return handleShipments(req, auth.apiKey)
+      const { data } = await supabaseFetch(
+        'admin_pedidos?status=in.(em_transito,entregue)&order=created_at.desc&limit=20'
+      )
+      return json({ success: true, data: data || [] })
     }
-    
+
+    // Inventory
     if (path.startsWith('/inventory')) {
-      return handleInventory(req, auth.apiKey)
+      const warehouseId = url.searchParams.get('warehouse_id')
+      let query = 'admin_armazens?select=*'
+      if (warehouseId) {
+        query = `admin_armazens?id=eq.${warehouseId}&select=*`
+      }
+      
+      const { data } = await supabaseFetch(query)
+      
+      const enriched = (data || []).map((wh: any) => ({
+        id: wh.id,
+        nome: wh.nome,
+        cidade: wh.cidade,
+        estado: wh.estado,
+        capacidade: wh.capacidade,
+        ocupacao: wh.ocupacao,
+        ocupacao_percent: Math.round((wh.ocupacao / wh.capacidade) * 100)
+      }))
+
+      return json({ success: true, data: enriched })
     }
-    
+
+    // Webhooks
     if (path.startsWith('/webhooks')) {
-      return handleWebhooks(req, auth.apiKey)
+      if (req.method === 'GET') {
+        const { data } = await supabaseFetch(
+          `b2b_webhooks?api_key_id=eq.${auth.apiKey?.id}&is_active=eq.true`
+        )
+        return json({ success: true, data: data || [] })
+      }
+
+      if (req.method === 'POST') {
+        const body = await req.json()
+        const { webhook_url, events } = body
+
+        if (!webhook_url || !events || events.length === 0) {
+          return error('webhook_url e events são obrigatórios')
+        }
+
+        try {
+          new URL(webhook_url)
+        } catch {
+          return error('URL de webhook inválida')
+        }
+
+        const { data } = await supabaseFetch('b2b_webhooks', {
+          method: 'POST',
+          body: JSON.stringify({
+            api_key_id: auth.apiKey?.id,
+            webhook_url,
+            events,
+            is_active: true
+          })
+        })
+
+        return json({ success: true, data })
+      }
+
+      if (req.method === 'DELETE') {
+        const webhookId = url.searchParams.get('id')
+        if (!webhookId) {
+          return error('ID do webhook é obrigatório')
+        }
+
+        await supabaseFetch(`b2b_webhooks?id=eq.${webhookId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ is_active: false })
+        })
+
+        return json({ success: true, message: 'Webhook removido' })
+      }
     }
 
     return error('Endpoint não encontrado', 404)
@@ -143,333 +295,3 @@ Deno.serve(async (req) => {
     return error('Erro interno do servidor', 500)
   }
 })
-
-// ============================================================================
-// AUTH HANDLERS
-// ============================================================================
-
-async function handleAuthToken(req: Request) {
-  const body = await req.json()
-  const { partner_name, partner_email } = body
-
-  if (!partner_name || !partner_email) {
-    return error('partner_name e partner_email são obrigatórios')
-  }
-
-  // Gerar API key
-  const apiKey = `lk_${generateRandomString(32)}`
-  const prefix = apiKey.substring(0, 8)
-  
-  // Hash da key (armazenar apenas hash)
-  const encoder = new TextEncoder()
-  const keyData = encoder.encode(apiKey)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', keyData)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-
-  // Criar API key no banco
-  const { data, error: insertError } = await supabase
-    .from('b2b_api_keys')
-    .insert({
-      partner_name,
-      partner_email,
-      api_key_hash: keyHash,
-      api_key_prefix: prefix,
-      scopes: ['read'],
-      rate_limit: 100,
-      is_active: true
-    })
-    .select('id')
-    .single()
-
-  if (insertError) {
-    return error('Erro ao criar API key: ' + insertError.message)
-  }
-
-  return json({
-    success: true,
-    api_key: apiKey,
-    prefix: prefix,
-    message: 'Guarde esta API key - não será possível recuperá-la'
-  })
-}
-
-// ============================================================================
-// ORDERS HANDLERS
-// ============================================================================
-
-async function handleOrders(req: Request, apiKey: any) {
-  const url = new URL(req.url)
-  const pathParts = url.pathname.split('/').filter(Boolean)
-  const orderId = pathParts[pathParts.indexOf('orders') + 1]
-
-  // List orders
-  if (!orderId || req.method === 'GET') {
-    const page = parseInt(url.searchParams.get('page') || '1')
-    const limit = parseInt(url.searchParams.get('limit') || '20')
-    const status = url.searchParams.get('status')
-    const offset = (page - 1) * limit
-
-    let query = supabase
-      .from('admin_pedidos')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
-
-    if (status) {
-      query = query.eq('status', status)
-    }
-
-    const { data, count, error: queryError } = await query
-
-    if (queryError) {
-      return error('Erro ao buscar pedidos: ' + queryError.message)
-    }
-
-    return json({
-      success: true,
-      data: data || [],
-      pagination: {
-        page,
-        limit,
-        total: count || 0,
-        pages: Math.ceil((count || 0) / limit)
-      }
-    })
-  }
-
-  // Get single order
-  if (orderId) {
-    const { data, error: queryError } = await supabase
-      .from('admin_pedidos')
-      .select('*')
-      .eq('id', orderId)
-      .single()
-
-    if (queryError || !data) {
-      return error('Pedido não encontrado', 404)
-    }
-
-    // Get tracking events
-    const { data: rastreamento } = await supabase
-      .from('admin_rastreamento')
-      .select('*')
-      .eq('pedido_id', orderId)
-      .order('created_at', { ascending: true })
-
-    return json({
-      success: true,
-      data: {
-        ...data,
-        rastreamento: rastreamento || []
-      }
-    })
-  }
-
-  return error('Método não permitido', 405)
-}
-
-// ============================================================================
-// SHIPMENTS HANDLERS
-// ============================================================================
-
-async function handleShipments(req: Request, apiKey: any) {
-  const url = new URL(req.url)
-  const pathParts = url.pathname.split('/').filter(Boolean)
-  const shipmentId = pathParts[pathParts.indexOf('shipments') + 1]
-
-  if (req.method === 'GET' && !shipmentId) {
-    const page = parseInt(url.searchParams.get('page') || '1')
-    const limit = parseInt(url.searchParams.get('limit') || '20')
-    const offset = (page - 1) * limit
-
-    // Shipments são pedidos com status em_transito ou entregue
-    const { data, count, error } = await supabase
-      .from('admin_pedidos')
-      .select('*', { count: 'exact' })
-      .in('status', ['em_transito', 'entregue'])
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
-
-    if (error) {
-      return error('Erro ao buscar remessas: ' + error.message)
-    }
-
-    return json({
-      success: true,
-      data: data || [],
-      pagination: {
-        page,
-        limit,
-        total: count || 0,
-        pages: Math.ceil((count || 0) / limit)
-      }
-    })
-  }
-
-  if (shipmentId) {
-    const { data, error } = await supabase
-      .from('admin_pedidos')
-      .select('*')
-      .eq('id', shipmentId)
-      .single()
-
-    if (error || !data) {
-      return error('Remessa não encontrada', 404)
-    }
-
-    return json({ success: true, data })
-  }
-
-  return error('Método não permitido', 405)
-}
-
-// ============================================================================
-// INVENTORY HANDLERS
-// ============================================================================
-
-async function handleInventory(req: Request, apiKey: any) {
-  const url = new URL(req.url)
-  const warehouseId = url.searchParams.get('warehouse_id')
-
-  let query = supabase
-    .from('admin_armazens')
-    .select('*')
-
-  if (warehouseId) {
-    query = query.eq('id', warehouseId)
-  }
-
-  const { data, error } = await query
-
-  if (error) {
-    return error('Erro ao buscar estoque: ' + error.message)
-  }
-
-  // Enrich with occupation data
-  const enriched = data?.map((wh: any) => ({
-    id: wh.id,
-    nome: wh.nome,
-    cidade: wh.cidade,
-    estado: wh.estado,
-    capacidade: wh.capacidade,
-    ocupacao: wh.ocupacao,
-    ocupacao_percent: Math.round((wh.ocupacao / wh.capacidade) * 100)
-  }))
-
-  return json({
-    success: true,
-    data: enriched || []
-  })
-}
-
-// ============================================================================
-// WEBHOOKS HANDLERS
-// ============================================================================
-
-async function handleWebhooks(req: Request, apiKey: any) {
-  // List webhooks
-  if (req.method === 'GET') {
-    const { data, error } = await supabase
-      .from('b2b_webhooks')
-      .select('*')
-      .eq('api_key_id', apiKey.id)
-      .eq('is_active', true)
-
-    if (error) {
-      return error('Erro ao buscar webhooks: ' + error.message)
-    }
-
-    return json({
-      success: true,
-      data: data || []
-    })
-  }
-
-  // Create webhook
-  if (req.method === 'POST') {
-    const body = await req.json()
-    const { webhook_url, events } = body
-
-    if (!webhook_url || !events || events.length === 0) {
-      return error('webhook_url e events são obrigatórios')
-    }
-
-    // Validar URL
-    try {
-      new URL(webhook_url)
-    } catch {
-      return error('URL de webhook inválida')
-    }
-
-    const { data, error: insertError } = await supabase
-      .from('b2b_webhooks')
-      .insert({
-        api_key_id: apiKey.id,
-        webhook_url,
-        events,
-        is_active: true
-      })
-      .select()
-      .single()
-
-    if (insertError) {
-      return error('Erro ao criar webhook: ' + insertError.message)
-    }
-
-    return json({
-      success: true,
-      data
-    })
-  }
-
-  // Delete webhook
-  if (req.method === 'DELETE') {
-    const url = new URL(req.url)
-    const webhookId = url.searchParams.get('id')
-
-    if (!webhookId) {
-      return error('ID do webhook é obrigatório')
-    }
-
-    const { error: updateError } = await supabase
-      .from('b2b_webhooks')
-      .update({ is_active: false })
-      .eq('id', webhookId)
-      .eq('api_key_id', apiKey.id)
-
-    if (updateError) {
-      return error('Erro ao remover webhook: ' + updateError.message)
-    }
-
-    return json({ success: true, message: 'Webhook removido' })
-  }
-
-  return error('Método não permitido', 405)
-}
-
-// ============================================================================
-// HELPER: LOG REQUEST
-// ============================================================================
-
-async function logRequest(
-  apiKeyId: string, 
-  endpoint: string, 
-  method: string, 
-  statusCode: number, 
-  responseTimeMs: number,
-  req: Request
-) {
-  await supabase
-    .from('b2b_request_logs')
-    .insert({
-      api_key_id: apiKeyId,
-      endpoint,
-      method,
-      status_code: statusCode,
-      response_time_ms: responseTimeMs,
-      ip_address: req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip'),
-      user_agent: req.headers.get('user-agent')
-    })
-    .catch(console.error)
-}
