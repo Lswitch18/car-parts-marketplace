@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { LogistixSidebar } from '../../components/logistix/LogistixSidebar';
+import { NeonKPI, NeonKPIGrid } from '../../components/logistix/NeonKPI';
+import { NeonDonutChart, NeonLineChart, NeonBarChart, NeonLegend } from '../../components/logistix/NeonCharts';
+import { LogisticsMap, MapLegend } from '../../components/logistix/LogisticsMap';
 
 interface KPIs {
   total: number;
@@ -17,9 +21,32 @@ interface Pedido {
   destino_cidade: string;
   destino_estado: string;
   previsao: string;
+  valor: number;
 }
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co';
+interface Warehouse {
+  id: string;
+  nome: string;
+  cidade: string;
+  pais: string;
+  lat: number;
+  lng: number;
+  capacidade: number;
+  ocupacao: number;
+}
+
+const WAREHOUSES_DATA: Warehouse[] = [
+  // Brazil
+  { id: '1', nome: 'CD São Paulo', cidade: 'São Paulo', pais: 'BR', lat: -23.5505, lng: -46.6333, capacidade: 5000, ocupacao: 4250 },
+  { id: '2', nome: 'CD Rio de Janeiro', cidade: 'Rio de Janeiro', pais: 'BR', lat: -22.9068, lng: -43.1729, capacidade: 3000, ocupacao: 2280 },
+  { id: '3', nome: 'CD Curitiba', cidade: 'Curitiba', pais: 'BR', lat: -25.4284, lng: -49.2733, capacidade: 2500, ocupacao: 1450 },
+  { id: '4', nome: 'CD Belo Horizonte', cidade: 'Belo Horizonte', pais: 'BR', lat: -19.9167, lng: -43.9345, capacidade: 2000, ocupacao: 1240 },
+  { id: '5', nome: 'CD Salvador', cidade: 'Salvador', pais: 'BR', lat: -12.9714, lng: -38.5014, capacidade: 1500, ocupacao: 570 },
+  // Japan
+  { id: '6', nome: '東京センター', cidade: 'Tokyo', pais: 'JP', lat: 35.6762, lng: 139.6503, capacidade: 3500, ocupacao: 2800 },
+  { id: '7', nome: '大阪センター', cidade: 'Osaka', pais: 'JP', lat: 34.6937, lng: 135.5023, capacidade: 2800, ocupacao: 2100 },
+  { id: '8', nome: '名古屋センター', cidade: 'Nagoya', pais: 'JP', lat: 35.1815, lng: 136.9066, capacidade: 2200, ocupacao: 1650 },
+];
 
 export default function LogistixPage() {
   const [loading, setLoading] = useState(true);
@@ -28,58 +55,39 @@ export default function LogistixPage() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [userEmail, setUserEmail] = useState<string>('');
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
-    console.log('[LogistixPage] Componente mounted, carregando dados...');
+    console.log('[LogistixPage] Carregando dados...');
     loadData();
   }, []);
 
   const loadData = async () => {
     try {
-      console.log('[LogistixPage] loadData - Iniciando carregamento de dados...');
-      
-      // Get user email for display
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user?.email) {
         setUserEmail(session.user.email);
-        console.log('[LogistixPage] User email:', session.user.email);
       }
-      
-      console.log('[LogistixPage] loadData - Buscando pedidos...');
-      // Fetch data directly from Supabase
+
       const { data: pedidosRaw, error: pedidosError } = await supabase
         .from('admin_pedidos')
         .select('*')
-        .limit(10)
+        .limit(20)
         .order('created_at', { ascending: false });
 
-      console.log('[LogistixPage] loadData - Pedidos result:', { 
-        count: pedidosRaw?.length || 0,
-        error: pedidosError?.message 
-      });
-
-      if (pedidosError) {
-        console.error('[LogistixPage] loadData - Erro ao buscar pedidos:', pedidosError);
-        setError('Erro ao carregar pedidos: ' + pedidosError.message);
-        setLoading(false);
-        return;
-      }
+      if (pedidosError) throw pedidosError;
 
       const pedidosList = pedidosRaw || [];
-      console.log('[LogistixPage] loadData - Total pedidos:', pedidosList.length);
       
-      // Calculate KPIs from data
+      const totalValor = pedidosList.reduce((sum: number, p: any) => sum + (p.valor || 0), 0);
+      
       const kpisData = {
         total: pedidosList.length,
         concluidas: pedidosList.filter((p: any) => p.status === 'entregue').length,
         atrasos: pedidosList.filter((p: any) => p.status === 'atrasado').length,
         emTransito: pedidosList.filter((p: any) => p.status === 'em_transito').length,
         taxa: String(pedidosList.length > 0 ? Math.round((pedidosList.filter((p: any) => p.status === 'entregue').length / pedidosList.length) * 100) : 0),
-        custo: '0'
+        custo: totalValor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
       };
-
-      console.log('[LogistixPage] loadData - KPIs calculados:', kpisData);
 
       setKpis(kpisData);
       setPedidos(pedidosList.map((p: any) => ({
@@ -88,55 +96,71 @@ export default function LogistixPage() {
         status: p.status,
         destino_cidade: p.destino_cidade,
         destino_estado: p.destino_estado,
-        previsao: p.previsao
+        previsao: p.previsao,
+        valor: p.valor || 0
       })));
       setLoading(false);
       setError(null);
-      console.log('[LogistixPage] loadData - Dados carregados com sucesso!');
       
     } catch (err: any) {
-      console.error('[LogistixPage] loadData - Erro:', err);
+      console.error('[LogistixPage] Erro:', err);
       setError(err.message || 'Erro ao carregar dados');
       setLoading(false);
     }
   };
 
+  // Prepare chart data
+  const statusData = [
+    { name: 'Entregues', value: kpis?.concluidas || 0 },
+    { name: 'Em Trânsito', value: kpis?.emTransito || 0 },
+    { name: 'Atrasados', value: kpis?.atrasos || 0 },
+    { name: 'Pendentes', value: Math.max(0, (kpis?.total || 0) - (kpis?.concluidas || 0) - (kpis?.emTransito || 0) - (kpis?.atrasos || 0)) },
+  ];
+
+  const legendData = [
+    { name: 'Entregues', value: kpis?.concluidas || 0, color: '#00ff88' },
+    { name: 'Em Trânsito', value: kpis?.emTransito || 0, color: '#00f5ff' },
+    { name: 'Atrasados', value: kpis?.atrasos || 0, color: '#ff00ff' },
+    { name: 'Pendentes', value: Math.max(0, (kpis?.total || 0) - (kpis?.concluidas || 0) - (kpis?.emTransito || 0) - (kpis?.atrasos || 0)), color: '#ffee00' },
+  ];
+
+  const weeklyData = [
+    { name: 'Seg', value: 45 },
+    { name: 'Ter', value: 52 },
+    { name: 'Qua', value: 38 },
+    { name: 'Qui', value: 65 },
+    { name: 'Sex', value: 48 },
+    { name: 'Sáb', value: 72 },
+    { name: 'Dom', value: 35 },
+  ];
+
+  const regionData = [
+    { name: 'SP', value: 156 },
+    { name: 'RJ', value: 89 },
+    { name: 'MG', value: 67 },
+    { name: 'PR', value: 54 },
+    { name: 'BA', value: 42 },
+  ];
+
   const statusColor = (status: string) => {
     const colors: Record<string, string> = {
-      pendente: 'bg-yellow-500',
-      em_transito: 'bg-blue-500',
-      entregue: 'bg-green-500',
-      atrasado: 'bg-red-500',
-      cancelado: 'bg-gray-500'
+      pendente: 'text-neon-yellow bg-neon-yellow/10 border-neon-yellow/30',
+      em_transito: 'text-neon-cyan bg-neon-cyan/10 border-neon-cyan/30',
+      entregue: 'text-neon-green bg-neon-green/10 border-neon-green/30',
+      atrasado: 'text-neon-magenta bg-neon-magenta/10 border-neon-magenta/30',
+      cancelado: 'text-gray-400 bg-gray-400/10 border-gray-400/30',
     };
-    return colors[status] || 'bg-gray-500';
+    return colors[status] || 'text-gray-400';
   };
 
   // Show loading
   if (loading) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: '#111827', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        color: 'white'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ 
-            width: 64, 
-            height: 64, 
-            border: '4px solid #2563eb', 
-            borderTopColor: 'transparent', 
-            borderRadius: '50%', 
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 16px'
-          }} />
-          <div style={{ fontSize: 20 }}>Carregando Logistix...</div>
-          <div style={{ color: '#9ca3af', fontSize: 14, marginTop: 8 }}>{debugInfo}</div>
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-neon-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="text-neon-cyan text-xl font-mono">Carregando Logistix...</div>
         </div>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -144,253 +168,172 @@ export default function LogistixPage() {
   // Show error
   if (error) {
     return (
-      <div style={{ 
-        minHeight: '100vh', 
-        background: '#111827', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        padding: 20
-      }}>
-        <div style={{ 
-          background: '#7f1d1d', 
-          border: '1px solid #ef4444', 
-          borderRadius: 8, 
-          padding: 24, 
-          maxWidth: 500,
-          color: '#fecaca'
-        }}>
-          <div style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 12 }}>Erro</div>
-          <div style={{ marginBottom: 16 }}>{error}</div>
-          <div style={{ fontSize: 12, color: '#fca5a5', marginBottom: 16 }}>{debugInfo}</div>
-          <button 
-            onClick={() => window.location.href = '/login'}
-            style={{
-              background: '#2563eb',
-              color: 'white',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: 6,
-              cursor: 'pointer'
-            }}
-          >
-            Ir para Login
-          </button>
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4">
+        <div className="bg-dark-card border border-neon-red rounded-xl p-6 max-w-md">
+          <div className="text-neon-red font-bold text-xl mb-2">Erro</div>
+          <div className="text-gray-400">{error}</div>
         </div>
       </div>
     );
   }
 
-  // Main content
   return (
-    <div style={{ minHeight: '100vh', background: '#111827', color: 'white' }}>
-      {/* Sidebar */}
-      <aside style={{ 
-        position: 'fixed', 
-        left: 0, 
-        top: 0, 
-        height: '100vh', 
-        width: 256, 
-        background: '#1f2937', 
-        borderRight: '1px solid #374151',
-        padding: 16
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
-          <div style={{ 
-            width: 40, 
-            height: 40, 
-            background: '#2563eb', 
-            borderRadius: 8, 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center' 
-          }}>
-            <svg style={{ width: 24, height: 24 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
-          </div>
-          <div>
-            <div style={{ fontWeight: 'bold', fontSize: 18 }}>LOGISTIX</div>
-            <div style={{ fontSize: 12, color: '#9ca3af' }}>Smart Logistics</div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-dark-bg">
+      <LogistixSidebar 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+        userEmail={userEmail}
+      />
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {[
-            { id: 'dashboard', icon: '📊', label: 'Dashboard' },
-            { id: 'pedidos', icon: '📦', label: 'Pedidos' },
-            { id: 'clientes', icon: '👥', label: 'Clientes' },
-            { id: 'armazens', icon: '🏭', label: 'Armazéns' },
-            { id: 'transportes', icon: '🚚', label: 'Transportes' },
-            { id: 'entregas', icon: '📍', label: 'Entregas' },
-            { id: 'estoque', icon: '📋', label: 'Estoque' },
-            { id: 'rastreamento', icon: '🔍', label: 'Rastreamento' },
-          ].map(item => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '12px 16px',
-                borderRadius: 8,
-                border: 'none',
-                background: activeTab === item.id ? '#2563eb' : 'transparent',
-                color: activeTab === item.id ? 'white' : '#d1d5db',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontSize: 14
-              }}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
+      <main className="ml-64 p-6">
+        {/* Header */}
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            Logistix <span className="text-neon-cyan">WMS</span>
+          </h1>
+          <p className="text-gray-400">Painel de Gestão Logística - Brasil & Japão</p>
+        </header>
 
-        {userEmail && (
-          <div style={{ 
-            position: 'absolute', 
-            bottom: 16, 
-            left: 16, 
-            right: 16, 
-            padding: 16, 
-            background: 'rgba(55, 65, 81, 0.5)', 
-            borderRadius: 8 
-          }}>
-            <div style={{ fontSize: 12, color: '#9ca3af' }}>Usuário</div>
-            <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {userEmail}
+        {activeTab === 'dashboard' && (
+          <>
+            {/* KPIs Grid */}
+            <NeonKPIGrid>
+              <NeonKPI 
+                title="Pedidos Hoje" 
+                value={kpis?.total || 0} 
+                icon="package" 
+                color="cyan"
+                trend={12}
+              />
+              <NeonKPI 
+                title="Entregues" 
+                value={kpis?.concluidas || 0} 
+                icon="truck" 
+                color="green"
+                trend={8}
+              />
+              <NeonKPI 
+                title="Em Trânsito" 
+                value={kpis?.emTransito || 0} 
+                icon="truck" 
+                color="yellow"
+              />
+              <NeonKPI 
+                title="Atrasados" 
+                value={kpis?.atrasos || 0} 
+                icon="alert" 
+                color="magenta"
+                trend={-5}
+              />
+              <NeonKPI 
+                title="Taxa Entrega" 
+                value={`${kpis?.taxa || 0}%`} 
+                icon="trending" 
+                color="purple"
+                trend={3}
+              />
+              <NeonKPI 
+                title="Receita" 
+                value={`R$ ${kpis?.custo || '0'}`} 
+                icon="dollar" 
+                color="green"
+              />
+            </NeonKPIGrid>
+
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+              {/* Donut Chart */}
+              <div className="bg-dark-card border border-dark-border rounded-xl p-6">
+                <h3 className="text-white font-semibold mb-4">Status dos Pedidos</h3>
+                <NeonDonutChart data={statusData} size={180} />
+                <NeonLegend data={legendData} />
+              </div>
+
+              {/* Line Chart */}
+              <div className="bg-dark-card border border-dark-border rounded-xl p-6">
+                <h3 className="text-white font-semibold mb-4">Entregas Semanais</h3>
+                <NeonLineChart data={weeklyData} height={200} />
+              </div>
+
+              {/* Bar Chart */}
+              <div className="bg-dark-card border border-dark-border rounded-xl p-6">
+                <h3 className="text-white font-semibold mb-4">Por Região (Brasil)</h3>
+                <NeonBarChart data={regionData} height={200} />
+              </div>
+            </div>
+
+            {/* Map Section */}
+            <div className="mt-6">
+              <div className="bg-dark-card border border-dark-border rounded-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-white font-semibold">Mapa de Distribuição</h3>
+                  <MapLegend />
+                </div>
+                <LogisticsMap 
+                  warehouses={WAREHOUSES_DATA.map(w => ({
+                    id: w.id,
+                    name: w.nome,
+                    city: w.cidade,
+                    country: w.pais as 'BR' | 'JP',
+                    lat: w.lat,
+                    lng: w.lng,
+                    capacity: w.capacidade,
+                    occupation: w.ocupacao
+                  }))}
+                  height={400}
+                />
+              </div>
+            </div>
+
+            {/* Recent Orders Table */}
+            <div className="mt-6">
+              <div className="bg-dark-card border border-dark-border rounded-xl p-6">
+                <h3 className="text-white font-semibold mb-4">Pedidos Recentes</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-dark-border">
+                        <th className="text-left text-gray-400 text-sm py-3 px-4">Código</th>
+                        <th className="text-left text-gray-400 text-sm py-3 px-4">Status</th>
+                        <th className="text-left text-gray-400 text-sm py-3 px-4">Destino</th>
+                        <th className="text-left text-gray-400 text-sm py-3 px-4">Previsão</th>
+                        <th className="text-right text-gray-400 text-sm py-3 px-4">Valor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pedidos.slice(0, 8).map((pedido) => (
+                        <tr key={pedido.id} className="border-b border-dark-border/50 hover:bg-dark-cardHover transition-colors">
+                          <td className="py-3 px-4 font-mono text-neon-cyan">{pedido.codigo}</td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium border ${statusColor(pedido.status)}`}>
+                              {pedido.status.replace('_', ' ')}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-gray-300">{pedido.destino_cidade} - {pedido.destino_estado}</td>
+                          <td className="py-3 px-4 text-gray-400 font-mono text-sm">
+                            {pedido.previsao ? new Date(pedido.previsao).toLocaleDateString('pt-BR') : '-'}
+                          </td>
+                          <td className="py-3 px-4 text-right text-neon-green font-mono">
+                            R$ {pedido.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab !== 'dashboard' && (
+          <div className="flex items-center justify-center h-96">
+            <div className="text-center">
+              <div className="text-gray-400 text-xl mb-2">Em desenvolvimento</div>
+              <div className="text-gray-500 text-sm">Módulo: {activeTab}</div>
             </div>
           </div>
         )}
-      </aside>
-
-      {/* Main Content */}
-      <main style={{ marginLeft: 256, padding: 32 }}>
-        <header style={{ marginBottom: 32 }}>
-          <h1 style={{ fontSize: 30, fontWeight: 'bold' }}>Logistix WMS</h1>
-          <p style={{ color: '#9ca3af' }}>Painel de Gestão Logística</p>
-        </header>
-
-        {/* KPIs */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 16, marginBottom: 32 }}>
-          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
-            <div style={{ color: '#9ca3af', fontSize: 14 }}>Pedidos Totais</div>
-            <div style={{ fontSize: 30, fontWeight: 'bold' }}>{kpis?.total || 0}</div>
-          </div>
-          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
-            <div style={{ color: '#9ca3af', fontSize: 14 }}>Concluídos</div>
-            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#22c55e' }}>{kpis?.concluidas || 0}</div>
-          </div>
-          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
-            <div style={{ color: '#9ca3af', fontSize: 14 }}>Em Trânsito</div>
-            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#3b82f6' }}>{kpis?.emTransito || 0}</div>
-          </div>
-          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
-            <div style={{ color: '#9ca3af', fontSize: 14 }}>Atrasados</div>
-            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#ef4444' }}>{kpis?.atrasos || 0}</div>
-          </div>
-          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
-            <div style={{ color: '#9ca3af', fontSize: 14 }}>Taxa de Entrega</div>
-            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#eab308' }}>{kpis?.taxa || 0}%</div>
-          </div>
-          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
-            <div style={{ color: '#9ca3af', fontSize: 14 }}>Custo Logístico</div>
-            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#a855f7' }}>R$ {kpis?.custo || '0'}</div>
-          </div>
-        </div>
-
-        {/* Pedidos Recentes */}
-        <div style={{ background: '#1f2937', borderRadius: 12, border: '1px solid #374151' }}>
-          <div style={{ padding: 24, borderBottom: '1px solid #374151' }}>
-            <h2 style={{ fontSize: 20, fontWeight: 'bold' }}>Pedidos Recentes</h2>
-          </div>
-          {pedidos.length === 0 ? (
-            <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>
-              Nenhum pedido encontrado.
-            </div>
-          ) : (
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead style={{ background: 'rgba(55, 65, 81, 0.5)' }}>
-                  <tr>
-                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Código</th>
-                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Status</th>
-                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Destino</th>
-                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Previsão</th>
-                  </tr>
-                </thead>
-                <tbody style={{ borderTop: '1px solid #374151' }}>
-                  {pedidos.map(pedido => (
-                    <tr key={pedido.id} style={{ borderBottom: '1px solid #374151' }}>
-                      <td style={{ padding: '16px 24px', fontFamily: 'monospace' }}>{pedido.codigo}</td>
-                      <td style={{ padding: '16px 24px' }}>
-                        <span style={{ 
-                          padding: '4px 12px', 
-                          borderRadius: 9999, 
-                          fontSize: 12,
-                          background: statusColor(pedido.status).replace('bg-', '')
-                        }}>
-                          {pedido.status}
-                        </span>
-                      </td>
-                      <td style={{ padding: '16px 24px' }}>{pedido.destino_cidade} - {pedido.destino_estado}</td>
-                      <td style={{ padding: '16px 24px' }}>{pedido.previsao || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* Quick Actions */}
-        <div style={{ marginTop: 32, display: 'flex', gap: 16 }}>
-          <button style={{ 
-            background: '#2563eb', 
-            color: 'white', 
-            padding: '12px 24px', 
-            borderRadius: 8, 
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8
-          }}>
-            <span>🔍</span>
-            <span>Rastrear Pedido</span>
-          </button>
-          <button style={{ 
-            background: '#22c55e', 
-            color: 'white', 
-            padding: '12px 24px', 
-            borderRadius: 8, 
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8
-          }}>
-            <span>➕</span>
-            <span>Novo Pedido</span>
-          </button>
-          <button style={{ 
-            background: '#a855f7', 
-            color: 'white', 
-            padding: '12px 24px', 
-            borderRadius: 8, 
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8
-          }}>
-            <span>🏭</span>
-            <span>Gerenciar Armazéns</span>
-          </button>
-        </div>
       </main>
     </div>
   );

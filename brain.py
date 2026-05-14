@@ -51,9 +51,9 @@ FILES = {
         "hash": "cc1d0e586a677b4d3ba4b90b6a578178"
     },
     "package-lock.json": {
-        "size": 132001,
-        "modified": 1778697450.9944859,
-        "hash": "ec7f07bf2225547b02fed441c2bc11aa"
+        "size": 125176,
+        "modified": 1778730055.5164306,
+        "hash": "0878368413d1e8d6fa881173611a98d9"
     },
     "tsconfig.json": {
         "size": 657,
@@ -126,9 +126,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 26963,
-        "modified": 1778728494.3404274,
-        "hash": "a3cc6f055f58ab8c3b3f68ab51a819f8"
+        "size": 27479,
+        "modified": 1778730055.2964306,
+        "hash": "7652f36c75bf372db69589bf457c0ab3"
     },
     "vite.config.js": {
         "size": 196,
@@ -161,9 +161,9 @@ FILES = {
         "hash": "b7c6fb47f0b6a617956505fa59667254"
     },
     "package.json": {
-        "size": 791,
-        "modified": 1778697450.7544858,
-        "hash": "a312e3d8ddac7dff241ad528584f5b37"
+        "size": 906,
+        "modified": 1778730054.8204308,
+        "hash": "745c3510d0187793c699e053a4c15aca"
     },
     "postcss.config.js": {
         "size": 79,
@@ -176,9 +176,9 @@ FILES = {
         "hash": "ba8c6cd8430aa5519e74198aa1da188c"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 1558,
-        "modified": 1778728534.044422,
-        "hash": "790af3070e3fd5e2842aef4e25f8d4f0"
+        "size": 1734,
+        "modified": 1778730024.8484292,
+        "hash": "aa67a3bf96edf0c19c34f4aa48bdd787"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
         "size": 3492,
@@ -216,9 +216,9 @@ FILES = {
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "tailwind.config.js": {
-        "size": 1171,
-        "modified": 1778644379.9619224,
-        "hash": "831bee766981e610105383616a1975dd"
+        "size": 2471,
+        "modified": 1778729881.8804176,
+        "hash": "1318970a5ee764aab140fddeeeb4f4bb"
     },
     "vite.config.d.ts": {
         "size": 76,
@@ -376,9 +376,9 @@ FILES = {
         "hash": "a3de439381b1694ffecd1cc7821c4ab9"
     },
     "src/stores/authStore.ts": {
-        "size": 4802,
-        "modified": 1778645495.0419247,
-        "hash": "f4ce109bb213421ff1c37eb62776a3f1"
+        "size": 4835,
+        "modified": 1778728995.504428,
+        "hash": "3ce8566cba9b459c741053496f10bbb9"
     },
     "src/pages/Home.tsx": {
         "size": 14919,
@@ -451,9 +451,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 17749,
-        "modified": 1778728317.1124282,
-        "hash": "168c722f605089ecec42f04a7aca0a5b"
+        "size": 13309,
+        "modified": 1778729975.4044259,
+        "hash": "2df6336613c785d3097258c7b7bb8989"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
@@ -596,9 +596,9 @@ FILES = {
         "hash": "8a1c33483bd973cc024c8eaf43779ab5"
     },
     "src/components/AdminRoute.tsx": {
-        "size": 2130,
-        "modified": 1778299622.2028801,
-        "hash": "61ba9ad2ac786c9a9f946a614fdf5216"
+        "size": 3691,
+        "modified": 1778729390.2964218,
+        "hash": "be6e50ac8ae330a71a13ecbe85781ac4"
     },
     "src/components/GaidLogo.tsx": {
         "size": 5048,
@@ -624,6 +624,26 @@ FILES = {
         "size": 514,
         "modified": 1778646525.5539212,
         "hash": "7d122b483f2db09e4ca9c56fe146e536"
+    },
+    "src/components/logistix/NeonCharts.tsx": {
+        "size": 5618,
+        "modified": 1778729908.284417,
+        "hash": "f65a8135f4c7a0fc3890ad403c7920ac"
+    },
+    "src/components/logistix/NeonKPI.tsx": {
+        "size": 3141,
+        "modified": 1778729918.8244176,
+        "hash": "cb5344161a37e2f6afc2b2c9a3610409"
+    },
+    "src/components/logistix/LogistixSidebar.tsx": {
+        "size": 4241,
+        "modified": 1778729947.9164202,
+        "hash": "e3cf16bdd6ff8e53f0b973108a54ddcd"
+    },
+    "src/components/logistix/LogisticsMap.tsx": {
+        "size": 5404,
+        "modified": 1778729936.6764188,
+        "hash": "f0eab5127c04705a624c440f6895a2f1"
     },
     "src/components/admin/analytics/RevenueChart.tsx": {
         "size": 3055,
@@ -666,9 +686,9 @@ FILES = {
         "hash": "fee891a53a2c2eba069b98b7d2863fee"
     },
     "src/lib/supabase.ts": {
-        "size": 4914,
-        "modified": 1778402828.404441,
-        "hash": "09a8b928e35961e3d7f723524c560458"
+        "size": 5461,
+        "modified": 1778728920.736428,
+        "hash": "b58c8d13860d06f19631069434d7fb7a"
     },
     "src/lib/adminApi.ts": {
         "size": 6405,
@@ -684,11 +704,6 @@ FILES = {
         "size": 19330,
         "modified": 1778403633.5684395,
         "hash": "4411ea1e2a49b62ad0b820aaf8f6282a"
-    },
-    "src/__tests__/manual-tests.js": {
-        "size": 3766,
-        "modified": 1778728279.5244272,
-        "hash": "191f1e4975cb9788e86106d2a2ccd5c0"
     },
     "supabase/fix-profiles-rls.sql": {
         "size": 614,
