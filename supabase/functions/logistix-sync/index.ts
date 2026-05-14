@@ -81,7 +81,7 @@ async function syncTransaction(transactionId: string) {
   const { data: armazem } = await supabase
     .from('admin_armazens')
     .select('id')
-    .eq('nome', 'CD São Paulo')
+    .eq('nome', 'CD Yokohama - Porto')
     .limit(1)
     .single();
 
