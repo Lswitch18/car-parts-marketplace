@@ -126,9 +126,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 26165,
-        "modified": 1778726644.428425,
-        "hash": "6793d0de49adeb50a60b14e79f42383d"
+        "size": 26963,
+        "modified": 1778728494.3404274,
+        "hash": "a3cc6f055f58ab8c3b3f68ab51a819f8"
     },
     "vite.config.js": {
         "size": 196,
@@ -177,7 +177,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1558,
-        "modified": 1778726015.6803906,
+        "modified": 1778728534.044422,
         "hash": "790af3070e3fd5e2842aef4e25f8d4f0"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
@@ -451,9 +451,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 15591,
-        "modified": 1778726688.260427,
-        "hash": "260d1ff35accf8d4f851a04e74d58005"
+        "size": 17749,
+        "modified": 1778728317.1124282,
+        "hash": "168c722f605089ecec42f04a7aca0a5b"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
@@ -685,6 +685,16 @@ FILES = {
         "modified": 1778403633.5684395,
         "hash": "4411ea1e2a49b62ad0b820aaf8f6282a"
     },
+    "src/__tests__/manual-tests.js": {
+        "size": 3766,
+        "modified": 1778728279.5244272,
+        "hash": "191f1e4975cb9788e86106d2a2ccd5c0"
+    },
+    "supabase/fix-profiles-rls.sql": {
+        "size": 614,
+        "modified": 1778727960.944427,
+        "hash": "d8e9eaed4a9f3a3f5deae49a2907b5d1"
+    },
     "supabase/config.toml": {
         "size": 6014,
         "modified": 1778337494.1784892,
@@ -694,6 +704,16 @@ FILES = {
         "size": 0,
         "modified": 1778337494.1784892,
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "supabase/fix-profiles-rls-v2.sql": {
+        "size": 798,
+        "modified": 1778728032.4164243,
+        "hash": "4309bca43af04212f8e58ee9bdd66978"
+    },
+    "supabase/seed-logistix-data.sql": {
+        "size": 3482,
+        "modified": 1778727844.1084294,
+        "hash": "bb8e62c3227b0b3c6b2b33419d82abe3"
     },
     "supabase/config.json": {
         "size": 766,
@@ -795,6 +815,11 @@ FILES = {
         "modified": 1778726641.416425,
         "hash": "b24149e16bc3e8d2db1f0082ed8818bc"
     },
+    "supabase/migrations/fix-rls.sql": {
+        "size": 1955,
+        "modified": 1778726886.2044277,
+        "hash": "8ef4e17b455da783007f06f52aa12e28"
+    },
     "scripts/createUsers.ts": {
         "size": 1845,
         "modified": 1778249980.7885504,
@@ -812,4 +837,4 @@ FILES = {
     }
 }
 
-last_updated = "2026-05-13"
+last_updated = "2026-05-14"
