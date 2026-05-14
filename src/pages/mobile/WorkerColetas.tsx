@@ -45,8 +45,8 @@ export default function WorkerColetas() {
     mutationFn: async (novoStatus: string) => {
       const gps = await getCurrentPosition();
       const payload: any = { status: novoStatus };
-      if (novoStatus === 'coletado' || novoStatus === 'em_transito') {
-        payload[novoStatus === 'coletado' ? 'data_coleta' : 'data_saida'] = new Date().toISOString();
+      if (novoStatus === 'coletado') {
+        payload.data_coleta = new Date().toISOString();
       }
       if (gps) {
         payload[`latitude_${novoStatus}`] = gps.latitude;
