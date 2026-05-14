@@ -12,13 +12,13 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storageKey: STORAGE_KEY,
     storage: {
       getItem: (key: string) => {
-        return localStorage.getItem(key) || null
+        try { return localStorage.getItem(key) || null } catch { return null }
       },
       setItem: (key: string, value: string) => {
-        localStorage.setItem(key, value)
+        try { localStorage.setItem(key, value) } catch {}
       },
       removeItem: (key: string) => {
-        localStorage.removeItem(key)
+        try { localStorage.removeItem(key) } catch {}
       }
     }
   }
