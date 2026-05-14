@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mobileApi } from '../../lib/mobileApi';
+import { getCurrentPosition } from '../../lib/geo';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, User, Phone,
 } from 'lucide-react';
@@ -17,10 +18,15 @@ export default function WorkerEntregas() {
   });
 
   const confirmMutation = useMutation({
-    mutationFn: () => mobileApi.envio.updateStatus(selected.id, {
-      status: 'entregue',
-      data_entrega: new Date().toISOString(),
-    }),
+    mutationFn: async () => {
+      const gps = await getCurrentPosition();
+      return mobileApi.envio.updateStatus(selected.id, {
+        status: 'entregue',
+        data_entrega: new Date().toISOString(),
+        latitude_entrega: gps?.latitude,
+        longitude_entrega: gps?.longitude,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['worker', 'entregas'] });
       setShowConfirm(false);

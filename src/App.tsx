@@ -13,6 +13,7 @@ import Favorites from './pages/Favorites'
 import Messages from './pages/Messages'
 import PaymentCheckout from './pages/PaymentCheckout'
 import UserManagement from './pages/admin/UserManagement'
+import PWARegister from './components/PWARegister'
 import TransactionManagement from './pages/admin/TransactionManagement'
 import LogistixDashboard from './pages/admin/LogistixDashboard'
 import AdminRoute from './components/AdminRoute'
@@ -66,6 +67,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {user && <ChatPopup />}
+      <PWARegister />
     </I18nProvider>
   )
 }

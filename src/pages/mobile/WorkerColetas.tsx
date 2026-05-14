@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mobileApi } from '../../lib/mobileApi';
+import { getCurrentPosition } from '../../lib/geo';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box,
 } from 'lucide-react';
@@ -17,10 +18,15 @@ export default function WorkerColetas() {
   });
 
   const confirmMutation = useMutation({
-    mutationFn: () => mobileApi.coletas.update(selected.id, {
-      status: 'coletado',
-      data_coleta: new Date().toISOString(),
-    }),
+    mutationFn: async () => {
+      const gps = await getCurrentPosition();
+      return mobileApi.coletas.update(selected.id, {
+        status: 'coletado',
+        data_coleta: new Date().toISOString(),
+        latitude_coleta: gps?.latitude,
+        longitude_coleta: gps?.longitude,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['worker', 'coletas'] });
       setShowConfirm(false);
