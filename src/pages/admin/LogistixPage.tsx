@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 interface KPIs {
   total: number;
@@ -20,35 +21,16 @@ interface Pedido {
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co';
-const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1/admin`;
-
-async function apiCall(endpoint: string, options: RequestInit = {}) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) throw new Error('Sessão não encontrada. Faça login novamente.');
-
-  const res = await fetch(`${FUNCTIONS_URL}/${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.access_token}`,
-      'apikey': SUPABASE_URL + '/rest/v1/'
-    }
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    console.error('API Error:', data);
-    throw new Error(data.error || data.message || 'Erro na requisição');
-  }
-  return data.success ? data.data : data;
-}
 
 export default function LogistixPage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [user, setUser] = useState<any>(null);
+  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     checkAuth();
@@ -56,22 +38,25 @@ export default function LogistixPage() {
 
   const checkAuth = async () => {
     try {
+      setDebugInfo('Iniciando verificação...');
+      
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
+      setDebugInfo(`Sessão: ${session ? 'existe' : 'não existe'}`);
+      
       if (sessionError) {
-        console.error('Session error:', sessionError);
-        setError('Erro ao verificar sessão');
+        setError(`Erro de sessão: ${sessionError.message}`);
         setLoading(false);
         return;
       }
       
       if (!session) {
-        console.log('No session found, redirecting to login');
-        window.location.href = '/login';
+        navigate('/login', { replace: true });
         return;
       }
 
       setUser(session.user);
+      setDebugInfo(`Usuário: ${session.user.email}`);
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -80,48 +65,73 @@ export default function LogistixPage() {
         .single();
 
       if (profileError) {
-        console.error('Profile error:', profileError);
-        setError('Erro ao verificar perfil');
+        setDebugInfo(`Erro profile: ${profileError.message}`);
+        setError(`Erro ao buscar perfil: ${profileError.message}`);
         setLoading(false);
         return;
       }
 
       if (profile?.role !== 'admin') {
-        console.log('User is not admin, role:', profile?.role);
-        window.location.href = '/dashboard';
+        navigate('/dashboard', { replace: true });
         return;
       }
 
-      loadData();
+      setDebugInfo('Carregando dados...');
+      await loadData();
+      
     } catch (err: any) {
-      console.error('Auth check error:', err);
-      setError(err.message || 'Erro ao verificar autenticação');
+      console.error('Auth error:', err);
+      setError(err.message || 'Erro de autenticação');
       setLoading(false);
     }
   };
 
   const loadData = async () => {
     try {
-      console.log('Loading data from API...');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login', { replace: true });
+        return;
+      }
+
+      const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1/admin`;
       
-      const [kpisData, pedidosData] = await Promise.all([
-        apiCall('dashboard/kpis').catch(e => {
-          console.error('KPIs API error:', e);
-          return { total: 0, concluidas: 0, atrasos: 0, emTransito: 0, taxa: '0', custo: '0' };
-        }),
-        apiCall('pedidos?limit=10').catch(e => {
-          console.error('Pedidos API error:', e);
-          return { rows: [] };
-        })
-      ]);
+      // Fetch KPIs
+      const kpisRes = await fetch(`${FUNCTIONS_URL}/dashboard/kpis`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_URL + '/rest/v1/'
+        }
+      });
       
-      console.log('KPIs data:', kpisData);
-      console.log('Pedidos data:', pedidosData);
-      
+      // Fetch pedidos
+      const pedidosRes = await fetch(`${FUNCTIONS_URL}/pedidos?limit=10`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': SUPABASE_URL + '/rest/v1/'
+        }
+      });
+
+      let kpisData = { total: 0, concluidas: 0, atrasos: 0, emTransito: 0, taxa: '0', custo: '0' };
+      let pedidosData: any = { rows: [] };
+
+      if (kpisRes.ok) {
+        const kpisJson = await kpisRes.json();
+        kpisData = kpisJson.success ? kpisJson.data : kpisData;
+      }
+
+      if (pedidosRes.ok) {
+        const pedidosJson = await pedidosRes.json();
+        pedidosData = pedidosJson.success ? pedidosJson.data : pedidosData;
+      }
+
       setKpis(kpisData);
       setPedidos(pedidosData.rows || []);
-      setError(null);
       setLoading(false);
+      setError(null);
+      
     } catch (err: any) {
       console.error('Load data error:', err);
       setError(err.message || 'Erro ao carregar dados');
@@ -140,35 +150,110 @@ export default function LogistixPage() {
     return colors[status] || 'bg-gray-500';
   };
 
+  // Show loading
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <div className="text-white text-xl">Carregando Logistix...</div>
-          <div className="text-gray-400 text-sm mt-2">Verificando autenticação...</div>
+      <div style={{ 
+        minHeight: '100vh', 
+        background: '#111827', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        color: 'white'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ 
+            width: 64, 
+            height: 64, 
+            border: '4px solid #2563eb', 
+            borderTopColor: 'transparent', 
+            borderRadius: '50%', 
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px'
+          }} />
+          <div style={{ fontSize: 20 }}>Carregando Logistix...</div>
+          <div style={{ color: '#9ca3af', fontSize: 14, marginTop: 8 }}>{debugInfo}</div>
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  // Show error
+  if (error) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        background: '#111827', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        padding: 20
+      }}>
+        <div style={{ 
+          background: '#7f1d1d', 
+          border: '1px solid #ef4444', 
+          borderRadius: 8, 
+          padding: 24, 
+          maxWidth: 500,
+          color: '#fecaca'
+        }}>
+          <div style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 12 }}>Erro</div>
+          <div style={{ marginBottom: 16 }}>{error}</div>
+          <div style={{ fontSize: 12, color: '#fca5a5', marginBottom: 16 }}>{debugInfo}</div>
+          <button 
+            onClick={() => window.location.href = '/login'}
+            style={{
+              background: '#2563eb',
+              color: 'white',
+              padding: '8px 16px',
+              border: 'none',
+              borderRadius: 6,
+              cursor: 'pointer'
+            }}
+          >
+            Ir para Login
+          </button>
         </div>
       </div>
     );
   }
 
+  // Main content
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div style={{ minHeight: '100vh', background: '#111827', color: 'white' }}>
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-full w-64 bg-gray-800 border-r border-gray-700 p-4">
-        <div className="flex items-center space-x-3 mb-8">
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <aside style={{ 
+        position: 'fixed', 
+        left: 0, 
+        top: 0, 
+        height: '100vh', 
+        width: 256, 
+        background: '#1f2937', 
+        borderRight: '1px solid #374151',
+        padding: 16
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+          <div style={{ 
+            width: 40, 
+            height: 40, 
+            background: '#2563eb', 
+            borderRadius: 8, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center' 
+          }}>
+            <svg style={{ width: 24, height: 24 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
           <div>
-            <div className="font-bold text-lg">LOGISTIX</div>
-            <div className="text-xs text-gray-400">Smart Logistics</div>
+            <div style={{ fontWeight: 'bold', fontSize: 18 }}>LOGISTIX</div>
+            <div style={{ fontSize: 12, color: '#9ca3af' }}>Smart Logistics</div>
           </div>
         </div>
 
-        <nav className="space-y-2">
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {[
             { id: 'dashboard', icon: '📊', label: 'Dashboard' },
             { id: 'pedidos', icon: '📦', label: 'Pedidos' },
@@ -182,9 +267,19 @@ export default function LogistixPage() {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                activeTab === item.id ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
-              }`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '12px 16px',
+                borderRadius: 8,
+                border: 'none',
+                background: activeTab === item.id ? '#2563eb' : 'transparent',
+                color: activeTab === item.id ? 'white' : '#d1d5db',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontSize: 14
+              }}
             >
               <span>{item.icon}</span>
               <span>{item.label}</span>
@@ -192,94 +287,95 @@ export default function LogistixPage() {
           ))}
         </nav>
 
-        {/* User Info */}
         {user && (
-          <div className="absolute bottom-4 left-4 right-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="text-sm text-gray-400">Usuário</div>
-            <div className="font-medium truncate">{user.email}</div>
+          <div style={{ 
+            position: 'absolute', 
+            bottom: 16, 
+            left: 16, 
+            right: 16, 
+            padding: 16, 
+            background: 'rgba(55, 65, 81, 0.5)', 
+            borderRadius: 8 
+          }}>
+            <div style={{ fontSize: 12, color: '#9ca3af' }}>Usuário</div>
+            <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {user.email}
+            </div>
           </div>
         )}
       </aside>
 
       {/* Main Content */}
-      <main className="ml-64 p-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold">Logistix WMS</h1>
-          <p className="text-gray-400">Painel de Gestão Logística</p>
+      <main style={{ marginLeft: 256, padding: 32 }}>
+        <header style={{ marginBottom: 32 }}>
+          <h1 style={{ fontSize: 30, fontWeight: 'bold' }}>Logistix WMS</h1>
+          <p style={{ color: '#9ca3af' }}>Painel de Gestão Logística</p>
         </header>
 
-        {error && (
-          <div className="bg-red-500/20 border border-red-500 text-red-400 p-4 rounded-lg mb-6">
-            <div className="font-medium">Erro</div>
-            <div>{error}</div>
-            <button 
-              onClick={() => { setError(null); loadData(); }}
-              className="mt-2 text-sm text-red-300 underline"
-            >
-              Tentar novamente
-            </button>
-          </div>
-        )}
-
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm">Pedidos Totais</div>
-            <div className="text-3xl font-bold text-white">{kpis?.total || 0}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 16, marginBottom: 32 }}>
+          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
+            <div style={{ color: '#9ca3af', fontSize: 14 }}>Pedidos Totais</div>
+            <div style={{ fontSize: 30, fontWeight: 'bold' }}>{kpis?.total || 0}</div>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm">Concluídos</div>
-            <div className="text-3xl font-bold text-green-500">{kpis?.concluidas || 0}</div>
+          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
+            <div style={{ color: '#9ca3af', fontSize: 14 }}>Concluídos</div>
+            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#22c55e' }}>{kpis?.concluidas || 0}</div>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm">Em Trânsito</div>
-            <div className="text-3xl font-bold text-blue-500">{kpis?.emTransito || 0}</div>
+          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
+            <div style={{ color: '#9ca3af', fontSize: 14 }}>Em Trânsito</div>
+            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#3b82f6' }}>{kpis?.emTransito || 0}</div>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm">Atrasados</div>
-            <div className="text-3xl font-bold text-red-500">{kpis?.atrasos || 0}</div>
+          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
+            <div style={{ color: '#9ca3af', fontSize: 14 }}>Atrasados</div>
+            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#ef4444' }}>{kpis?.atrasos || 0}</div>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm">Taxa de Entrega</div>
-            <div className="text-3xl font-bold text-yellow-500">{kpis?.taxa || 0}%</div>
+          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
+            <div style={{ color: '#9ca3af', fontSize: 14 }}>Taxa de Entrega</div>
+            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#eab308' }}>{kpis?.taxa || 0}%</div>
           </div>
-          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm">Custo Logístico</div>
-            <div className="text-3xl font-bold text-purple-500">R$ {kpis?.custo || '0'}</div>
+          <div style={{ background: '#1f2937', borderRadius: 12, padding: 24, border: '1px solid #374151' }}>
+            <div style={{ color: '#9ca3af', fontSize: 14 }}>Custo Logístico</div>
+            <div style={{ fontSize: 30, fontWeight: 'bold', color: '#a855f7' }}>R$ {kpis?.custo || '0'}</div>
           </div>
         </div>
 
         {/* Pedidos Recentes */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700">
-          <div className="p-6 border-b border-gray-700">
-            <h2 className="text-xl font-bold">Pedidos Recentes</h2>
+        <div style={{ background: '#1f2937', borderRadius: 12, border: '1px solid #374151' }}>
+          <div style={{ padding: 24, borderBottom: '1px solid #374151' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 'bold' }}>Pedidos Recentes</h2>
           </div>
           {pedidos.length === 0 ? (
-            <div className="p-6 text-center text-gray-400">
-              Nenhum pedido encontrado. Clique em "Novo Pedido" para criar o primeiro.
+            <div style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>
+              Nenhum pedido encontrado.
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-700/50">
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead style={{ background: 'rgba(55, 65, 81, 0.5)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Código</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Status</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Destino</th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-400">Previsão</th>
+                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Código</th>
+                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Status</th>
+                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Destino</th>
+                    <th style={{ padding: '12px 24px', textAlign: 'left', fontSize: 14, fontWeight: 500, color: '#9ca3af' }}>Previsão</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-700">
+                <tbody style={{ borderTop: '1px solid #374151' }}>
                   {pedidos.map(pedido => (
-                    <tr key={pedido.id} className="hover:bg-gray-700/30">
-                      <td className="px-6 py-4 font-mono">{pedido.codigo}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs ${statusColor(pedido.status)}`}>
+                    <tr key={pedido.id} style={{ borderBottom: '1px solid #374151' }}>
+                      <td style={{ padding: '16px 24px', fontFamily: 'monospace' }}>{pedido.codigo}</td>
+                      <td style={{ padding: '16px 24px' }}>
+                        <span style={{ 
+                          padding: '4px 12px', 
+                          borderRadius: 9999, 
+                          fontSize: 12,
+                          background: statusColor(pedido.status).replace('bg-', '')
+                        }}>
                           {pedido.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4">{pedido.destino_cidade} - {pedido.destino_estado}</td>
-                      <td className="px-6 py-4">{pedido.previsao || '-'}</td>
+                      <td style={{ padding: '16px 24px' }}>{pedido.destino_cidade} - {pedido.destino_estado}</td>
+                      <td style={{ padding: '16px 24px' }}>{pedido.previsao || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -289,25 +385,46 @@ export default function LogistixPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8 flex gap-4 flex-wrap">
-          <button 
-            onClick={() => setActiveTab('rastreamento')}
-            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
-          >
+        <div style={{ marginTop: 32, display: 'flex', gap: 16 }}>
+          <button style={{ 
+            background: '#2563eb', 
+            color: 'white', 
+            padding: '12px 24px', 
+            borderRadius: 8, 
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8
+          }}>
             <span>🔍</span>
             <span>Rastrear Pedido</span>
           </button>
-          <button 
-            onClick={() => setActiveTab('pedidos')}
-            className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
-          >
+          <button style={{ 
+            background: '#22c55e', 
+            color: 'white', 
+            padding: '12px 24px', 
+            borderRadius: 8, 
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8
+          }}>
             <span>➕</span>
             <span>Novo Pedido</span>
           </button>
-          <button 
-            onClick={() => setActiveTab('armazens')}
-            className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
-          >
+          <button style={{ 
+            background: '#a855f7', 
+            color: 'white', 
+            padding: '12px 24px', 
+            borderRadius: 8, 
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8
+          }}>
             <span>🏭</span>
             <span>Gerenciar Armazéns</span>
           </button>

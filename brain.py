@@ -126,9 +126,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 26393,
-        "modified": 1778724547.1604264,
-        "hash": "78fbd03a67e3a8d1216f6f46f1dc6041"
+        "size": 26538,
+        "modified": 1778724904.1844258,
+        "hash": "56fa06a7d9ab7e9ce1d83ccef9b02545"
     },
     "vite.config.js": {
         "size": 196,
@@ -177,7 +177,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1558,
-        "modified": 1778724446.228428,
+        "modified": 1778724946.3844259,
         "hash": "790af3070e3fd5e2842aef4e25f8d4f0"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
@@ -234,6 +234,11 @@ FILES = {
         "size": 0,
         "modified": 1778724547.0004263,
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "deploy-logistix.sh": {
+        "size": 619,
+        "modified": 1778725157.6724253,
+        "hash": "3eff4715f74a3b25716fb464ba705f82"
     },
     "fetch-car-images.py": {
         "size": 11281,
@@ -446,9 +451,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 12013,
-        "modified": 1778724407.9284275,
-        "hash": "d05c71d83b6e82059f44813ee8726b0c"
+        "size": 15475,
+        "modified": 1778724903.0804257,
+        "hash": "8fd256cb3c31ba2aeb848b1d6d2ba3d8"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
