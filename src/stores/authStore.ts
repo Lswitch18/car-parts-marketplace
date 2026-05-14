@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { User } from '../types'
-import { supabase, signInWithGoogle, signOut as supabaseSignOut } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
+import { signInWithGoogle, signOut as supabaseSignOut } from '../lib/supabase'
 
 interface AuthState {
   user: User | null
