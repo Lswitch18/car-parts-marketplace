@@ -126,9 +126,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 27479,
-        "modified": 1778730055.2964306,
-        "hash": "7652f36c75bf372db69589bf457c0ab3"
+        "size": 27987,
+        "modified": 1778730656.200426,
+        "hash": "c99541788ebf0301909e856af7b5ad0a"
     },
     "vite.config.js": {
         "size": 196,
@@ -177,7 +177,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1734,
-        "modified": 1778730024.8484292,
+        "modified": 1778730096.5684285,
         "hash": "aa67a3bf96edf0c19c34f4aa48bdd787"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
@@ -231,9 +231,9 @@ FILES = {
         "hash": "68a611a1df9360948049f2b130205532"
     },
     "monitor.log": {
-        "size": 0,
-        "modified": 1778724547.0004263,
-        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+        "size": 8221,
+        "modified": 1778730620.8084261,
+        "hash": "41cc239216e167b85e9b9ae59159260e"
     },
     "deploy-logistix.sh": {
         "size": 619,
@@ -750,6 +750,11 @@ FILES = {
         "modified": 1778332114.0744827,
         "hash": "db639ff2311a5396d3faaf336652f4fd"
     },
+    "supabase/functions/logistix-sync/index.ts": {
+        "size": 7058,
+        "modified": 1778730557.5124266,
+        "hash": "0853728bd6892ff6a3e6ddbe6a149e3d"
+    },
     "supabase/functions/analytics/index.ts": {
         "size": 5104,
         "modified": 1778395731.740446,
@@ -769,6 +774,11 @@ FILES = {
         "size": 6843,
         "modified": 1778327814.514492,
         "hash": "18fd4823093eadba1ed0252b47a9140d"
+    },
+    "supabase/functions/logistix-b2b/index.ts": {
+        "size": 12785,
+        "modified": 1778730667.3764262,
+        "hash": "9011837705dc69ed74544505f2dbf9be"
     },
     "supabase/functions/stripe-checkout/index.ts": {
         "size": 8578,
@@ -834,6 +844,11 @@ FILES = {
         "size": 1955,
         "modified": 1778726886.2044277,
         "hash": "8ef4e17b455da783007f06f52aa12e28"
+    },
+    "supabase/migrations/b2b-tables.sql": {
+        "size": 2874,
+        "modified": 1778730580.2924263,
+        "hash": "040201af6f106e13a7dea2bded8136af"
     },
     "scripts/createUsers.ts": {
         "size": 1845,
