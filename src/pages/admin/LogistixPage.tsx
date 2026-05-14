@@ -31,6 +31,7 @@ export default function LogistixPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [user, setUser] = useState<any>(null);
   const [debugInfo, setDebugInfo] = useState<string>('');
+  const [authStep, setAuthStep] = useState<string>('');
 
   useEffect(() => {
     checkAuth();
@@ -38,62 +39,96 @@ export default function LogistixPage() {
 
   const checkAuth = async () => {
     try {
+      console.log('[LogistixPage] Iniciando verificação de autenticação...');
       setDebugInfo('Iniciando verificação...');
+      setAuthStep('inicio');
       
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
+      console.log('[LogistixPage] getSession result:', { 
+        hasSession: !!session, 
+        userEmail: session?.user?.email,
+        userId: session?.user?.id,
+        error: sessionError?.message 
+      });
+      
       setDebugInfo(`Sessão: ${session ? 'existe' : 'não existe'}`);
+      setAuthStep(session ? 'session_ok' : 'no_session');
       
       if (sessionError) {
+        console.error('[LogistixPage] Erro de sessão:', sessionError);
         setError(`Erro de sessão: ${sessionError.message}`);
         setLoading(false);
         return;
       }
       
       if (!session) {
+        console.log('[LogistixPage] Sem sessão, redirecionando para /login');
         navigate('/login', { replace: true });
         return;
       }
 
       setUser(session.user);
       setDebugInfo(`Usuário: ${session.user.email}`);
+      setAuthStep('user_loaded');
+      console.log('[LogistixPage] Usuário logado:', session.user.email, 'ID:', session.user.id);
 
+      console.log('[LogistixPage] Buscando profile para user ID:', session.user.id);
+      setAuthStep('fetching_profile');
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('role')
+        .select('*')
         .eq('id', session.user.id)
         .single();
 
+      console.log('[LogistixPage] Profile result:', { 
+        profile, 
+        error: profileError?.message 
+      });
+
       if (profileError) {
+        console.error('[LogistixPage] Erro ao buscar profile:', profileError);
         setDebugInfo(`Erro profile: ${profileError.message}`);
         setError(`Erro ao buscar perfil: ${profileError.message}`);
         setLoading(false);
         return;
       }
 
+      console.log('[LogistixPage] Profile role:', profile?.role);
+      setDebugInfo(`Role: ${profile?.role || 'não encontrada'}`);
+      setAuthStep(profile?.role === 'admin' ? 'is_admin' : 'not_admin');
+
       if (profile?.role !== 'admin') {
+        console.log('[LogistixPage] Não é admin, redirecionando para /dashboard');
         navigate('/dashboard', { replace: true });
         return;
       }
 
+      console.log('[LogistixPage] Usuário é admin, carregando dados...');
+      setAuthStep('loading_data');
       setDebugInfo('Carregando dados...');
       await loadData();
       
     } catch (err: any) {
-      console.error('Auth error:', err);
+      console.error('[LogistixPage] Auth error:', err);
       setError(err.message || 'Erro de autenticação');
+      setAuthStep('error');
       setLoading(false);
     }
   };
 
   const loadData = async () => {
     try {
+      console.log('[LogistixPage] loadData - Iniciando carregamento de dados...');
+      
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        console.log('[LogistixPage] loadData - Sem sessão');
         navigate('/login', { replace: true });
         return;
       }
 
+      console.log('[LogistixPage] loadData - Buscando pedidos...');
       // Fetch data directly from Supabase
       const { data: pedidosRaw, error: pedidosError } = await supabase
         .from('admin_pedidos')
@@ -101,14 +136,20 @@ export default function LogistixPage() {
         .limit(10)
         .order('created_at', { ascending: false });
 
+      console.log('[LogistixPage] loadData - Pedidos result:', { 
+        count: pedidosRaw?.length || 0,
+        error: pedidosError?.message 
+      });
+
       if (pedidosError) {
-        console.error('Database error:', pedidosError);
+        console.error('[LogistixPage] loadData - Erro ao buscar pedidos:', pedidosError);
         setError('Erro ao carregar pedidos: ' + pedidosError.message);
         setLoading(false);
         return;
       }
 
       const pedidosList = pedidosRaw || [];
+      console.log('[LogistixPage] loadData - Total pedidos:', pedidosList.length);
       
       // Calculate KPIs from data
       const kpisData = {
@@ -119,6 +160,8 @@ export default function LogistixPage() {
         taxa: String(pedidosList.length > 0 ? Math.round((pedidosList.filter((p: any) => p.status === 'entregue').length / pedidosList.length) * 100) : 0),
         custo: '0'
       };
+
+      console.log('[LogistixPage] loadData - KPIs calculados:', kpisData);
 
       setKpis(kpisData);
       setPedidos(pedidosList.map((p: any) => ({
@@ -131,9 +174,10 @@ export default function LogistixPage() {
       })));
       setLoading(false);
       setError(null);
+      console.log('[LogistixPage] loadData - Dados carregados com sucesso!');
       
     } catch (err: any) {
-      console.error('Load data error:', err);
+      console.error('[LogistixPage] loadData - Erro:', err);
       setError(err.message || 'Erro ao carregar dados');
       setLoading(false);
     }
