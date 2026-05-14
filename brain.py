@@ -126,9 +126,9 @@ FILES = {
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 26538,
-        "modified": 1778724904.1844258,
-        "hash": "56fa06a7d9ab7e9ce1d83ccef9b02545"
+        "size": 26684,
+        "modified": 1778725772.116428,
+        "hash": "448d78b81a798258d7f5249f3dabd48d"
     },
     "vite.config.js": {
         "size": 196,
@@ -177,7 +177,7 @@ FILES = {
     },
     "tsconfig.tsbuildinfo": {
         "size": 1558,
-        "modified": 1778724946.3844259,
+        "modified": 1778725809.3164148,
         "hash": "790af3070e3fd5e2842aef4e25f8d4f0"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
@@ -451,9 +451,9 @@ FILES = {
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
     "src/pages/admin/LogistixPage.tsx": {
-        "size": 15475,
-        "modified": 1778724903.0804257,
-        "hash": "8fd256cb3c31ba2aeb848b1d6d2ba3d8"
+        "size": 15399,
+        "modified": 1778725770.7604277,
+        "hash": "aff9de32faa1ffdea9232da2045c4474"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,

@@ -94,41 +94,34 @@ export default function LogistixPage() {
         return;
       }
 
-      const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1/admin`;
+      // Fetch data directly from Supabase (bypassing Edge Function for now)
+      const { data: pedidosRaw } = await supabase
+        .from('admin_pedidos')
+        .select('*')
+        .limit(10)
+        .order('created_at', { ascending: false });
+
+      const pedidosList = pedidosRaw || [];
       
-      // Fetch KPIs
-      const kpisRes = await fetch(`${FUNCTIONS_URL}/dashboard/kpis`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-          'apikey': SUPABASE_URL + '/rest/v1/'
-        }
-      });
-      
-      // Fetch pedidos
-      const pedidosRes = await fetch(`${FUNCTIONS_URL}/pedidos?limit=10`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-          'apikey': SUPABASE_URL + '/rest/v1/'
-        }
-      });
-
-      let kpisData = { total: 0, concluidas: 0, atrasos: 0, emTransito: 0, taxa: '0', custo: '0' };
-      let pedidosData: any = { rows: [] };
-
-      if (kpisRes.ok) {
-        const kpisJson = await kpisRes.json();
-        kpisData = kpisJson.success ? kpisJson.data : kpisData;
-      }
-
-      if (pedidosRes.ok) {
-        const pedidosJson = await pedidosRes.json();
-        pedidosData = pedidosJson.success ? pedidosJson.data : pedidosData;
-      }
+      // Calculate KPIs from data
+      const kpisData = {
+        total: pedidosList.length,
+        concluidas: pedidosList.filter((p: any) => p.status === 'entregue').length,
+        atrasos: pedidosList.filter((p: any) => p.status === 'atrasado').length,
+        emTransito: pedidosList.filter((p: any) => p.status === 'em_transito').length,
+        taxa: String(pedidosList.length > 0 ? Math.round((pedidosList.filter((p: any) => p.status === 'entregue').length / pedidosList.length) * 100) : 0),
+        custo: '0'
+      };
 
       setKpis(kpisData);
-      setPedidos(pedidosData.rows || []);
+      setPedidos(pedidosList.map((p: any) => ({
+        id: p.id,
+        codigo: p.codigo,
+        status: p.status,
+        destino_cidade: p.destino_cidade,
+        destino_estado: p.destino_estado,
+        previsao: p.previsao
+      })));
       setLoading(false);
       setError(null);
       
