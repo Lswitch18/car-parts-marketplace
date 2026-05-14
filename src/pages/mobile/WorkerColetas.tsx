@@ -29,6 +29,8 @@ export default function WorkerColetas() {
   const [showAction, setShowAction] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [scannedCode, setScannedCode] = useState('');
+  const [batchMode, setBatchMode] = useState(false);
+  const [batchCount, setBatchCount] = useState(0);
 
   const { data, isLoading, error, isRefetching } = useQuery({
     queryKey: ['worker', 'coletas', filtroStatus],
@@ -77,11 +79,31 @@ export default function WorkerColetas() {
             <h1 className="text-2xl font-bold">Coletas</h1>
             <p className="text-sm text-gray-400 mt-0.5">{hoje.length} tarefa(s)</p>
           </div>
-          <button onClick={() => queryClient.invalidateQueries({ queryKey: ['worker', 'coletas'] })}
-            className="w-9 h-9 bg-[#111827] rounded-xl flex items-center justify-center border border-white/5">
-            <RefreshCw size={16} className={`text-gray-400 ${isRefetching ? 'animate-spin' : ''}`} />
-          </button>
+          <div className="flex items-center gap-2">
+            {hoje.filter(r => r.status === 'pendente').length > 1 && (
+              <button onClick={() => { setShowScanner(true); setScannedCode(''); setBatchMode(true); setBatchCount(0); }}
+                className="h-9 px-3 bg-blue-500 rounded-xl text-xs font-semibold flex items-center gap-1.5 active:bg-blue-600">
+                <ScanLine size={14} /> Coletar em Lote
+              </button>
+            )}
+            <button onClick={() => queryClient.invalidateQueries({ queryKey: ['worker', 'coletas'] })}
+              className="w-9 h-9 bg-[#111827] rounded-xl flex items-center justify-center border border-white/5">
+              <RefreshCw size={16} className={`text-gray-400 ${isRefetching ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
         </div>
+
+        {/* Batch progress bar */}
+        {batchMode && batchCount > 0 && (
+          <div className="mt-3 bg-green-500/10 border border-green-500/30 rounded-xl p-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle size={16} className="text-green-400" />
+              <span className="text-sm font-medium text-green-400">{batchCount} pacote(s) coletado(s)</span>
+            </div>
+            <button onClick={() => setShowScanner(false)}
+              className="text-xs text-gray-400 underline">Fechar</button>
+          </div>
+        )}
 
         <div className="flex gap-2 overflow-x-auto mt-3 pb-1">
           {['pendente', 'em_transito', 'coletado', 'cancelado'].map(s => (
@@ -170,6 +192,7 @@ export default function WorkerColetas() {
                           className="flex-1 h-10 bg-blue-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-blue-600 disabled:opacity-50">
                           <ArrowRight size={14} /> Iniciar
                         </button>
+
                       </>
                     )}
                     {row.status === 'em_transito' && (
@@ -203,11 +226,23 @@ export default function WorkerColetas() {
         </div>
       )}
 
-      {showScanner && selected && (
+      {showScanner && (
         <ScannerCamera
-          onScan={(code) => { setScannedCode(code); setShowScanner(false); setShowAction(true); }}
-          onClose={() => { setShowScanner(false); setSelected(null); }}
-          expectedCode={selected.pedido?.codigo || ''}
+          onScan={(code) => {
+            setScannedCode(code);
+            if (batchMode) {
+              setBatchCount(c => c + 1);
+              setSelected(null);
+            } else {
+              setShowScanner(false);
+              setShowAction(true);
+            }
+          }}
+          onClose={() => { setShowScanner(false); setSelected(null); setBatchMode(false); setBatchCount(0); setScannedCode(''); }}
+          expectedCode={batchMode ? '' : (selected?.pedido?.codigo || '')}
+          batchMode={batchMode}
+          scannedCount={batchCount}
+          totalCount={hoje.filter(r => r.status === 'pendente').length}
         />
       )}
 
