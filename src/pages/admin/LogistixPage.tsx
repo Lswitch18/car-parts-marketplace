@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { useNavigate } from 'react-router-dom';
 
 interface KPIs {
   total: number;
@@ -23,111 +22,30 @@ interface Pedido {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co';
 
 export default function LogistixPage() {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [user, setUser] = useState<any>(null);
+  const [userEmail, setUserEmail] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<string>('');
-  const [authStep, setAuthStep] = useState<string>('');
 
   useEffect(() => {
-    checkAuth();
+    console.log('[LogistixPage] Componente mounted, carregando dados...');
+    loadData();
   }, []);
-
-  const checkAuth = async () => {
-    try {
-      console.log('[LogistixPage] Iniciando verificação de autenticação...');
-      setDebugInfo('Iniciando verificação...');
-      setAuthStep('inicio');
-      
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      console.log('[LogistixPage] getSession result:', { 
-        hasSession: !!session, 
-        userEmail: session?.user?.email,
-        userId: session?.user?.id,
-        error: sessionError?.message 
-      });
-      
-      setDebugInfo(`Sessão: ${session ? 'existe' : 'não existe'}`);
-      setAuthStep(session ? 'session_ok' : 'no_session');
-      
-      if (sessionError) {
-        console.error('[LogistixPage] Erro de sessão:', sessionError);
-        setError(`Erro de sessão: ${sessionError.message}`);
-        setLoading(false);
-        return;
-      }
-      
-      if (!session) {
-        console.log('[LogistixPage] Sem sessão, redirecionando para /login');
-        navigate('/login', { replace: true });
-        return;
-      }
-
-      setUser(session.user);
-      setDebugInfo(`Usuário: ${session.user.email}`);
-      setAuthStep('user_loaded');
-      console.log('[LogistixPage] Usuário logado:', session.user.email, 'ID:', session.user.id);
-
-      console.log('[LogistixPage] Buscando profile para user ID:', session.user.id);
-      setAuthStep('fetching_profile');
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      console.log('[LogistixPage] Profile result:', { 
-        profile, 
-        error: profileError?.message 
-      });
-
-      if (profileError) {
-        console.error('[LogistixPage] Erro ao buscar profile:', profileError);
-        setDebugInfo(`Erro profile: ${profileError.message}`);
-        setError(`Erro ao buscar perfil: ${profileError.message}`);
-        setLoading(false);
-        return;
-      }
-
-      console.log('[LogistixPage] Profile role:', profile?.role);
-      setDebugInfo(`Role: ${profile?.role || 'não encontrada'}`);
-      setAuthStep(profile?.role === 'admin' ? 'is_admin' : 'not_admin');
-
-      if (profile?.role !== 'admin') {
-        console.log('[LogistixPage] Não é admin, redirecionando para /dashboard');
-        navigate('/dashboard', { replace: true });
-        return;
-      }
-
-      console.log('[LogistixPage] Usuário é admin, carregando dados...');
-      setAuthStep('loading_data');
-      setDebugInfo('Carregando dados...');
-      await loadData();
-      
-    } catch (err: any) {
-      console.error('[LogistixPage] Auth error:', err);
-      setError(err.message || 'Erro de autenticação');
-      setAuthStep('error');
-      setLoading(false);
-    }
-  };
 
   const loadData = async () => {
     try {
       console.log('[LogistixPage] loadData - Iniciando carregamento de dados...');
       
+      // Get user email for display
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        console.log('[LogistixPage] loadData - Sem sessão');
-        navigate('/login', { replace: true });
-        return;
+      if (session?.user?.email) {
+        setUserEmail(session.user.email);
+        console.log('[LogistixPage] User email:', session.user.email);
       }
-
+      
       console.log('[LogistixPage] loadData - Buscando pedidos...');
       // Fetch data directly from Supabase
       const { data: pedidosRaw, error: pedidosError } = await supabase
@@ -331,7 +249,7 @@ export default function LogistixPage() {
           ))}
         </nav>
 
-        {user && (
+        {userEmail && (
           <div style={{ 
             position: 'absolute', 
             bottom: 16, 
@@ -343,7 +261,7 @@ export default function LogistixPage() {
           }}>
             <div style={{ fontSize: 12, color: '#9ca3af' }}>Usuário</div>
             <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {user.email}
+              {userEmail}
             </div>
           </div>
         )}

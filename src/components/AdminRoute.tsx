@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useI18n } from '../lib/i18n';
 import { supabase } from '../lib/supabase';
 
-export default function AdminRoute({ children }: { children?: React.ReactNode }) {
+export default function AdminRoute() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [isAdminUser, setIsAdminUser] = useState<boolean | null>(null);
@@ -50,6 +50,7 @@ export default function AdminRoute({ children }: { children?: React.ReactNode })
         console.log('[AdminRoute] É admin:', isAdmin);
         setIsAdminUser(isAdmin);
         setLoading(false);
+        console.log('[AdminRoute] Verificação concluída!');
       } catch (error) {
         console.error('[AdminRoute] Error checking admin status:', error);
         setDebugInfo(`Erro: ${error}`);
@@ -100,5 +101,5 @@ export default function AdminRoute({ children }: { children?: React.ReactNode })
     );
   }
 
-  return <>{children}</>;
+  return <Outlet />;
 }
