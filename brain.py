@@ -115,15 +115,20 @@ FILES = {
         "modified": 1778591469.351492,
         "hash": "0c34aa3722f9b2ba7a4bb6dd8201223b"
     },
+    "test-monitor.txt": {
+        "size": 5,
+        "modified": 1778724573.0444262,
+        "hash": "d8e8fca2dc0f896fd7cb4cb0031ba249"
+    },
     "vite.config.ts": {
         "size": 179,
         "modified": 1778243528.2685492,
         "hash": "9781fc548154773b168ea218d9bff4ee"
     },
     "brain.py": {
-        "size": 21097,
-        "modified": 1778698889.878487,
-        "hash": "80ad02d4b8ebb8fb625b3df0914da2d8"
+        "size": 26393,
+        "modified": 1778724547.1604264,
+        "hash": "78fbd03a67e3a8d1216f6f46f1dc6041"
     },
     "vite.config.js": {
         "size": 196,
@@ -171,9 +176,14 @@ FILES = {
         "hash": "ba8c6cd8430aa5519e74198aa1da188c"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 1455,
-        "modified": 1778688048.5624855,
-        "hash": "8c94a604bc7a950f920e8af7d6aff9fd"
+        "size": 1558,
+        "modified": 1778724446.228428,
+        "hash": "790af3070e3fd5e2842aef4e25f8d4f0"
+    },
+    "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
+        "size": 3492,
+        "modified": 1778724144.7244265,
+        "hash": "b5e3f7155a8c704dc7650532d6408f5e"
     },
     "PROJECT-STATUS.md": {
         "size": 2948,
@@ -219,6 +229,11 @@ FILES = {
         "size": 838,
         "modified": 1778403591.39244,
         "hash": "68a611a1df9360948049f2b130205532"
+    },
+    "monitor.log": {
+        "size": 0,
+        "modified": 1778724547.0004263,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "fetch-car-images.py": {
         "size": 11281,
@@ -346,9 +361,9 @@ FILES = {
         "hash": "16c5173f27fbb846bae733ed9ec9f4cb"
     },
     "src/App.tsx": {
-        "size": 2636,
-        "modified": 1778698765.938491,
-        "hash": "da4c21986810a6b38653fd9ab823b2d5"
+        "size": 2679,
+        "modified": 1778708771.3944898,
+        "hash": "193672adef833648312ad7e0b0959896"
     },
     "src/stores/favoriteStore.ts": {
         "size": 1205,
@@ -430,10 +445,115 @@ FILES = {
         "modified": 1778698724.1904898,
         "hash": "63acf8a73cfa789d62d950ff63386a58"
     },
+    "src/pages/admin/LogistixPage.tsx": {
+        "size": 12013,
+        "modified": 1778724407.9284275,
+        "hash": "d05c71d83b6e82059f44813ee8726b0c"
+    },
     "src/pages/admin/UserManagement.tsx": {
         "size": 9610,
         "modified": 1778299748.8548853,
         "hash": "d477960b8c3203626c38166e3b4a1190"
+    },
+    "src/pages/admin/logistix/index.html": {
+        "size": 6335,
+        "modified": 1778708307.6744852,
+        "hash": "a8417c11e5fd4ecbf223ae25acf294b8"
+    },
+    "src/pages/admin/logistix/js/app.js": {
+        "size": 4244,
+        "modified": 1778707057.4424891,
+        "hash": "4d9686b0876d0dc89bd370131e781e14"
+    },
+    "src/pages/admin/logistix/js/api.js": {
+        "size": 5532,
+        "modified": 1778709371.3964167,
+        "hash": "2364307b57f4a3127a100f4d0085d1d6"
+    },
+    "src/pages/admin/logistix/js/utils.js": {
+        "size": 3985,
+        "modified": 1778707057.4224892,
+        "hash": "f97bbc5270aad304849cd73c060b57b7"
+    },
+    "src/pages/admin/logistix/js/pages/usuarios.js": {
+        "size": 6984,
+        "modified": 1778707057.4224892,
+        "hash": "cf3730adead0933a290ce24ac41f0b54"
+    },
+    "src/pages/admin/logistix/js/pages/clientes.js": {
+        "size": 4177,
+        "modified": 1778707057.434489,
+        "hash": "ddd6c6d38c2d35b212d7e54d97a25ee8"
+    },
+    "src/pages/admin/logistix/js/pages/configuracoes.js": {
+        "size": 2725,
+        "modified": 1778707057.4424891,
+        "hash": "2c4c559f5f5ad6fd3d715ae3612d424b"
+    },
+    "src/pages/admin/logistix/js/pages/entregas.js": {
+        "size": 2509,
+        "modified": 1778707057.4424891,
+        "hash": "02ab2873d60137f5330611771c4f2904"
+    },
+    "src/pages/admin/logistix/js/pages/estoque.js": {
+        "size": 3168,
+        "modified": 1778707057.4424891,
+        "hash": "43f8ab3e8a79258f45a20970223c3b5d"
+    },
+    "src/pages/admin/logistix/js/pages/auditoria.js": {
+        "size": 1883,
+        "modified": 1778707057.434489,
+        "hash": "c80a4cab84a007d5faff18e667d18415"
+    },
+    "src/pages/admin/logistix/js/pages/pedidos.js": {
+        "size": 6558,
+        "modified": 1778707057.4424891,
+        "hash": "8d58023ba226eeedce3b7a7ddd8dd65b"
+    },
+    "src/pages/admin/logistix/js/pages/ocorrencias.js": {
+        "size": 2187,
+        "modified": 1778707057.4424891,
+        "hash": "b2163cb6ef8ec1ebc67c8b6c7ad9e20e"
+    },
+    "src/pages/admin/logistix/js/pages/relatorios.js": {
+        "size": 6879,
+        "modified": 1778707057.4424891,
+        "hash": "df5a44a34b0727104f62c0f80c96a534"
+    },
+    "src/pages/admin/logistix/js/pages/dashboard.js": {
+        "size": 12627,
+        "modified": 1778707057.434489,
+        "hash": "f9b0e2aeaf6b47bb7558c5c559de24e3"
+    },
+    "src/pages/admin/logistix/js/pages/armazens.js": {
+        "size": 4115,
+        "modified": 1778707057.4424891,
+        "hash": "678cea4b80f28a69ee73d0492d1bc1dd"
+    },
+    "src/pages/admin/logistix/js/pages/setores.js": {
+        "size": 3385,
+        "modified": 1778707057.426489,
+        "hash": "f0d67c18795bfb7550f099de565cf38a"
+    },
+    "src/pages/admin/logistix/js/pages/coletas.js": {
+        "size": 1006,
+        "modified": 1778707057.4424891,
+        "hash": "c86473aebeeb521953ce81c628194082"
+    },
+    "src/pages/admin/logistix/js/pages/transportes.js": {
+        "size": 4322,
+        "modified": 1778707057.4424891,
+        "hash": "6b79f5dcc89c1680b1d40ed5a497f30b"
+    },
+    "src/pages/admin/logistix/js/pages/transferencias.js": {
+        "size": 2680,
+        "modified": 1778707057.4424891,
+        "hash": "39ad22a46b4a5de8d2a104df42236e07"
+    },
+    "src/pages/admin/logistix/css/styles.css": {
+        "size": 18770,
+        "modified": 1778707057.414489,
+        "hash": "91c36a7a013308a6ba845a03150aafcd"
     },
     "src/hooks/useAnalytics.ts": {
         "size": 3869,
@@ -486,9 +606,9 @@ FILES = {
         "hash": "6d46b7d1923bb57c34a72c9a56e0e5c9"
     },
     "src/components/layout/Header.tsx": {
-        "size": 12139,
-        "modified": 1778646499.6659224,
-        "hash": "b8496d2d3af34269bbd7e1a8c8cd29f8"
+        "size": 12913,
+        "modified": 1778723936.6084278,
+        "hash": "c51d81d04cfee80d7a01877a9c85e7c5"
     },
     "src/components/layout/Footer.tsx": {
         "size": 4807,
@@ -656,9 +776,9 @@ FILES = {
         "hash": "db639ff2311a5396d3faaf336652f4fd"
     },
     "supabase/functions/admin/index.ts": {
-        "size": 23557,
-        "modified": 1778698629.0264852,
-        "hash": "7cbe68f1c53a6d487ffa0425748a129a"
+        "size": 31233,
+        "modified": 1778709828.7884307,
+        "hash": "9a3f1df470d32ec7354a86f840e26afd"
     },
     "supabase/functions/auctions/index.ts": {
         "size": 10214,
@@ -666,9 +786,14 @@ FILES = {
         "hash": "c60d1c801526d1e246b908956aed53d7"
     },
     "supabase/migrations/logistix-admin-wms.sql": {
-        "size": 25959,
-        "modified": 1778698555.686487,
-        "hash": "0d1dc9b184c8cb5960af340aa5b79a88"
+        "size": 24582,
+        "modified": 1778710802.076425,
+        "hash": "47d9bb714991fc64b7b0df183f9b894a"
+    },
+    "supabase/migrations/logistix-rastreamento.sql": {
+        "size": 4534,
+        "modified": 1778712211.5204291,
+        "hash": "13f46749e72ec5e6387bc39242c40491"
     },
     "supabase/migrations/daig-schema-fix-20260513.sql": {
         "size": 9657,
