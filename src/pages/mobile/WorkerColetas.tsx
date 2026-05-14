@@ -174,22 +174,24 @@ export default function WorkerColetas() {
                     )}
                   </div>
 
-                  <div className="flex gap-2">
+                      <div className="flex gap-2">
                     {row.status === 'pendente' && (
                       <>
                         <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(endereco)}`}
                           target="_blank" rel="noopener noreferrer"
-                          className="flex-1 h-10 bg-[#0B1220] border border-white/10 rounded-xl text-xs font-medium text-blue-400 flex items-center justify-center gap-1.5 active:bg-white/5">
-                          <Navigation size={14} /> Maps
+                          className="flex-[2] h-11 bg-blue-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-blue-600">
+                          <Navigation size={15} /> Ir
                         </a>
-                        <a href={`https://waze.com/ul?q=${encodeURIComponent(endereco)}&navigate=yes`}
-                          target="_blank" rel="noopener noreferrer"
-                          className="flex-1 h-10 bg-[#0B1220] border border-white/10 rounded-xl text-xs font-medium text-blue-400 flex items-center justify-center gap-1.5 active:bg-white/5">
-                          <Map size={14} /> Waze
-                        </a>
-                        <button onClick={() => { setSelected(row); updateMutation.mutate('em_transito'); }}
+                        <button onClick={async () => {
+                          try {
+                            setSelected(row);
+                            await updateMutation.mutateAsync('em_transito');
+                          } catch (err) {
+                            alert('Erro ao iniciar coleta: ' + (err as any)?.message);
+                          }
+                        }}
                           disabled={updateMutation.isPending}
-                          className="flex-1 h-10 bg-blue-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-blue-600 disabled:opacity-50">
+                          className="flex-[1] h-11 bg-[#111827] border border-white/10 rounded-xl text-xs font-medium text-gray-300 flex items-center justify-center gap-1.5 active:bg-white/5 disabled:opacity-50">
                           <ArrowRight size={14} /> Iniciar
                         </button>
 
@@ -199,12 +201,12 @@ export default function WorkerColetas() {
                       <>
                         <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(endereco)}`}
                           target="_blank" rel="noopener noreferrer"
-                          className="flex-1 h-10 bg-[#0B1220] border border-white/10 rounded-xl text-xs font-medium text-green-400 flex items-center justify-center gap-1.5 active:bg-white/5">
-                          <Navigation size={14} /> Navegar
+                          className="flex-[2] h-11 bg-green-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-green-600">
+                          <Navigation size={15} /> Ir
                         </a>
                         <button onClick={() => { setSelected(row); setShowScanner(true); }}
-                          className="flex-1 h-10 bg-green-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-green-600">
-                          <ScanLine size={14} /> Escanear
+                          className="flex-[1] h-11 bg-[#111827] border border-white/10 rounded-xl text-xs font-medium text-gray-300 flex items-center justify-center gap-1.5 active:bg-white/5">
+                          <ScanLine size={14} /> Scan
                         </button>
                       </>
                     )}
