@@ -31,6 +31,7 @@ export default function WorkerColetas() {
   const [scannedCode, setScannedCode] = useState('');
   const [batchMode, setBatchMode] = useState(false);
   const [batchCount, setBatchCount] = useState(0);
+  const [showLabel, setShowLabel] = useState(false);
 
   const { data, isLoading, error, isRefetching } = useQuery({
     queryKey: ['worker', 'coletas', filtroStatus],
@@ -142,8 +143,8 @@ export default function WorkerColetas() {
             const p = row.pedido || {};
             const endereco = makeAddress(row);
             return (
-              <div key={row.id}
-                className="bg-[#111827] rounded-2xl border border-white/5 overflow-hidden active:scale-[0.99] transition-transform">
+              <div key={row.id} onClick={() => { setSelected(row); setShowLabel(true); }}
+                className="bg-[#111827] rounded-2xl border border-white/5 overflow-hidden active:scale-[0.99] transition-transform cursor-pointer">
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1 min-w-0">
@@ -225,6 +226,64 @@ export default function WorkerColetas() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Label Preview Modal */}
+      {showLabel && selected && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70" onClick={() => setShowLabel(false)}>
+          <div className="bg-[#1F2937] rounded-t-3xl p-6 w-full max-w-md border border-white/10 max-h-[85vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}>
+            <div className="w-14 h-1.5 bg-gray-600 rounded-full mx-auto mb-5" />
+            <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <span className="text-3xl font-black">L</span>
+            </div>
+            <h2 className="text-xl font-bold text-center font-mono">{selected.pedido?.codigo || selected.id?.slice(0, 8)}</h2>
+            <p className="text-xs text-gray-500 text-center mt-1">{selected.id}</p>
+
+            <div className="bg-[#111827] rounded-xl p-4 my-4 space-y-3">
+              <div className="flex items-start gap-3">
+                <MapPin size={16} className="text-blue-400 mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-xs text-gray-400">Destino</p>
+                  <p className="text-sm font-medium">{makeAddress(selected)}</p>
+                </div>
+              </div>
+              {selected.pedido?.peso_kg && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Peso</span>
+                  <span className="font-medium">{selected.pedido.peso_kg}kg</span>
+                </div>
+              )}
+              {selected.pedido?.valor && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Valor</span>
+                  <span className="font-medium">¥{(selected.pedido.valor || 0).toLocaleString()}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between text-sm pt-2 border-t border-white/5">
+                <span className="text-gray-400">Status</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_CORES[selected.status] || ''}`}>
+                  {STATUS_LABEL[selected.status] || selected.status}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(makeAddress(selected))}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex-1 h-12 bg-blue-500 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 active:bg-blue-600">
+                <Navigation size={16} /> Ir
+              </a>
+              <button onClick={() => { setShowLabel(false); setShowScanner(true); }}
+                className="flex-1 h-12 bg-green-500 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 active:bg-green-600">
+                <ScanLine size={16} /> Escanear
+              </button>
+            </div>
+
+            <button onClick={() => setShowLabel(false)}
+              className="w-full h-12 mt-3 rounded-2xl text-sm text-gray-400 active:bg-white/5">Fechar</button>
+          </div>
         </div>
       )}
 
