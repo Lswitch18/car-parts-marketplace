@@ -21,6 +21,7 @@ import ColetasPage from './logistix/ColetasPage';
 import TransferenciasPage from './logistix/TransferenciasPage';
 import RelatoriosPage from './logistix/RelatoriosPage';
 import ConfigPage from './logistix/ConfigPage';
+import UsuariosPage from './logistix/UsuariosPage';
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/logistix', id: 'dashboard' },
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { icon: Warehouse, label: 'Centros de Distribuição', path: '/admin/logistix/armazens', id: 'armazens' },
   { icon: Truck, label: 'Transportes', path: '/admin/logistix/transportes', id: 'transportes' },
   { icon: AlertCircle, label: 'Ocorrências', path: '/admin/logistix/ocorrencias', id: 'ocorrencias' },
+  { icon: Users, label: 'Usuários', path: '/admin/logistix/usuarios', id: 'usuarios' },
   { icon: Users, label: 'Clientes', path: '/admin/logistix/clientes', id: 'clientes' },
   { icon: BarChart3, label: 'Relatórios', path: '/admin/logistix/relatorios', id: 'relatorios' },
   { icon: Settings, label: 'Configurações', path: '/admin/logistix/config', id: 'config' },
@@ -318,6 +320,7 @@ export default function LogistixDashboard() {
             {activeNav === 'transportes' && <TransportesPage />}
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}
             {activeNav === 'clientes' && <ClientesPage />}
+            {activeNav === 'usuarios' && <UsuariosPage />}
             {activeNav === 'relatorios' && <RelatoriosPage />}
             {activeNav === 'config' && <ConfigPage />}
           </div>

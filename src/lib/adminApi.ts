@@ -52,8 +52,9 @@ export const adminApi = {
   },
 
   usuarios: {
-    list: (search?: string) => adminFetch<any[]>(`/usuarios${search ? `?search=${search}` : ''}`),
+    list: (search?: string, semCargo?: boolean) => adminFetch<any[]>(`/usuarios?search=${search || ''}${semCargo ? '&sem_cargo=true' : ''}`),
     get: (id: string) => adminFetch<any>(`/usuarios/${id}`),
+    create: (data: any) => adminFetch<any>('/usuarios', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: any) => adminFetch<any>(`/usuarios/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   },
 

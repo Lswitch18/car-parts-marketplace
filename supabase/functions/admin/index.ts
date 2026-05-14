@@ -215,8 +215,10 @@ Deno.serve(async (req) => {
         const user = await requireAdmin(req);
         if (!user) return json({ error: 'Não autorizado' }, 401);
         const search = url.searchParams.get('search') || '';
+        const semCargo = url.searchParams.get('sem_cargo') === 'true';
         let q = supabase.from('profiles').select('*, cargo:admin_cargos!cargo_id(nome), setor:admin_setores!setor_id(nome)');
         if (search) q = q.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`);
+        if (semCargo) q = q.is('cargo_id', null);
         const { data } = await q.order('full_name');
         return json(data || []);
       }
@@ -227,6 +229,28 @@ Deno.serve(async (req) => {
         if (!profile) return json({ error: 'Não encontrado' }, 404);
         const { data: armazens } = await supabase.from('admin_usuarios_armazens').select('*, armazem:admin_armazens!armazem_id(*)').eq('usuario_id', segments[1]);
         return json({ ...profile, armazens: armazens || [] });
+      }
+      if (req.method === 'POST') {
+        const authUser = await requireAdmin(req);
+        if (!authUser) return json({ error: 'Não autorizado' }, 401);
+        const { usuario_id, cargo_id, setor_id, telefone, status, armazens } = body as any;
+        if (!usuario_id) return json({ error: 'usuario_id é obrigatório' }, 400);
+        const updates: Record<string, unknown> = {};
+        if (cargo_id) updates.cargo_id = cargo_id;
+        if (setor_id) updates.setor_id = setor_id;
+        if (telefone) updates.telefone = telefone;
+        if (status) updates.status = status;
+        updates.role = 'admin';
+        const { error } = await supabase.from('profiles').update(updates).eq('id', usuario_id);
+        if (error) return json({ error: error.message }, 400);
+        if (armazens && Array.isArray(armazens)) {
+          await supabase.from('admin_usuarios_armazens').delete().eq('usuario_id', usuario_id);
+          for (const a of armazens) {
+            await supabase.from('admin_usuarios_armazens').insert({ usuario_id, armazem_id: a.id || a.armazem_id, acesso_admin: a.acesso_admin || false });
+          }
+        }
+        auditLog(authUser.id, 'CREATE', 'usuarios', usuario_id, 'Vinculado ao Logistix', null);
+        return json({ ok: true }, 201);
       }
       if (req.method === 'PUT' && segments[1]) {
         const user = await requireAdmin(req);
