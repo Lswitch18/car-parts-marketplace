@@ -37,11 +37,27 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
     }
   }
 
+  function feedback() {
+    try { navigator.vibrate?.(100); } catch {}
+    try {
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 1200;
+      gain.gain.value = 0.15;
+      osc.start();
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.stop(ctx.currentTime + 0.15);
+    } catch {}
+  }
+
   function handleManualInput(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const input = (e.target as HTMLFormElement).codigo as HTMLInputElement;
     const code = input.value.trim();
-    if (code) { stopCamera(); onScan(code); }
+    if (code) { feedback(); stopCamera(); onScan(code); }
   }
 
   return (

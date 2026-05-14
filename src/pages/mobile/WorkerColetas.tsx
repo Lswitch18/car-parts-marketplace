@@ -5,7 +5,7 @@ import { getCurrentPosition } from '../../lib/geo';
 import ScannerCamera from '../../components/mobile/ScannerCamera';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, ArrowRight,
-  RefreshCw, Map, ScanLine,
+  RefreshCw, ScanLine,
 } from 'lucide-react';
 
 const STATUS_LABEL: Record<string, string> = {
@@ -61,6 +61,11 @@ export default function WorkerColetas() {
   });
 
   const rows = Array.isArray(data) ? data : (data as any)?.rows || [];
+  const totalDoDia = rows.length;
+  const concluidas = rows.filter((r: any) => r.status === 'coletado' || r.status === 'entregue').length;
+  const pendentes = rows.filter((r: any) => r.status === 'pendente' || r.status === 'em_transito').length;
+  const progresso = totalDoDia > 0 ? Math.round(concluidas * 100 / totalDoDia) : 0;
+
   const hoje = rows.filter((r: any) => {
     if (!r.created_at) return true;
     return new Date(r.created_at).toDateString() === new Date().toDateString() || r.status === 'pendente';
@@ -75,11 +80,36 @@ export default function WorkerColetas() {
   return (
     <div className="p-4 pb-24">
       <div className="mb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Coletas</h1>
-            <p className="text-sm text-gray-400 mt-0.5">{hoje.length} tarefa(s)</p>
+        {/* Stats bar */}
+        <div className="bg-[#111827] rounded-xl p-4 border border-white/5 mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-xl font-bold">Coletas</h1>
+            <span className="text-xs text-gray-500">{new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })}</span>
           </div>
+          <div className="flex items-center justify-between text-sm mb-3">
+            <div className="text-center flex-1">
+              <p className="text-2xl font-bold text-blue-400">{pendentes}</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">Pendentes</p>
+            </div>
+            <div className="text-center flex-1">
+              <p className="text-2xl font-bold text-green-400">{concluidas}</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">Concluídas</p>
+            </div>
+            <div className="text-center flex-1">
+              <p className="text-2xl font-bold text-white">{totalDoDia}</p>
+              <p className="text-[10px] text-gray-500 mt-0.5">Total</p>
+            </div>
+          </div>
+          {/* Progress bar */}
+          <div className="h-2 bg-[#0B1220] rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-500 to-green-400 rounded-full transition-all duration-500"
+              style={{ width: `${progresso}%` }} />
+          </div>
+          <p className="text-[10px] text-gray-500 text-right mt-1">{progresso}% concluído</p>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-400">{hoje.length} tarefa(s) hoje</p>
           <div className="flex items-center gap-2">
             {hoje.filter(r => r.status === 'pendente').length > 1 && (
               <button onClick={() => { setShowScanner(true); setScannedCode(''); setBatchMode(true); setBatchCount(0); }}
@@ -356,18 +386,11 @@ export default function WorkerColetas() {
               </button>
 
               {makeAddress(selected) && (
-                <div className="grid grid-cols-2 gap-2">
-                  <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(makeAddress(selected))}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="h-12 border border-white/10 rounded-2xl text-sm font-medium text-blue-400 flex items-center justify-center gap-2 active:bg-white/5">
-                    <Navigation size={16} /> Google Maps
-                  </a>
-                  <a href={`https://waze.com/ul?q=${encodeURIComponent(makeAddress(selected))}&navigate=yes`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="h-12 border border-white/10 rounded-2xl text-sm font-medium text-blue-400 flex items-center justify-center gap-2 active:bg-white/5">
-                    <Map size={16} /> Waze
-                  </a>
-                </div>
+                <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(makeAddress(selected))}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="w-full h-12 border border-white/10 rounded-2xl text-sm font-medium text-blue-400 flex items-center justify-center gap-2 active:bg-white/5">
+                  <Navigation size={16} /> Abrir no Google Maps
+                </a>
               )}
 
               <button onClick={() => setShowAction(false)}
