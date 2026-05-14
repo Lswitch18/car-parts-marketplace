@@ -19,13 +19,17 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
 
   async function startScanner() {
     setPermAsk(true);
+    setStatus('scanning');
+    // Give the DOM time to render the scanner div
+    await new Promise(r => setTimeout(r, 100));
+
     try {
       const { Html5Qrcode } = await import('html5-qrcode');
       const scanner = new Html5Qrcode('scanner-element');
       scannerRef.current = scanner;
 
       await scanner.start(
-        { facingMode: 'environment' },
+        { facingMode: { exact: 'environment' } },
         { fps: 10, qrbox: { width: 280, height: 180 } },
         (decodedText: string) => {
           try { navigator.vibrate?.(80); } catch {}
@@ -34,11 +38,27 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
         },
         () => {},
       );
-      setStatus('scanning');
     } catch (err: any) {
       console.error('[Scanner] Error:', err);
       setStatus('error');
       setErrorMsg(err.message || 'Erro ao acessar câmera');
+      // Try with user-facing camera as fallback
+      if (scannerRef.current && err.message?.includes('environment')) {
+        try {
+          await scannerRef.current.start(
+            { facingMode: 'user' },
+            { fps: 10, qrbox: { width: 280, height: 180 } },
+            (decodedText: string) => {
+              try { navigator.vibrate?.(80); } catch {}
+              scannerRef.current?.stop().catch(() => {});
+              onScan(decodedText);
+            },
+            () => {},
+          );
+          setStatus('scanning');
+          setErrorMsg('');
+        } catch {}
+      }
     }
   }
 
@@ -121,9 +141,10 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
               <p className="text-red-400 text-sm font-medium mb-1">Câmera indisponível</p>
               <p className="text-gray-500 text-xs mb-4">{errorMsg}</p>
               <button onClick={startScanner}
-                className="h-10 px-5 bg-blue-500 rounded-xl text-sm font-medium">
+                className="h-10 px-5 bg-blue-500 rounded-xl text-sm font-medium mb-2">
                 Tentar novamente
               </button>
+              <p className="text-xs text-gray-400">Use o campo abaixo para digitar<br/>o código manualmente</p>
             </div>
           </div>
         )}
