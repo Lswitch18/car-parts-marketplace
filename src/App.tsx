@@ -18,6 +18,7 @@ import LogistixDashboard from './pages/admin/LogistixDashboard'
 import AdminRoute from './components/AdminRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import MobileApp from './pages/mobile/MobileApp'
+import WorkerApp from './pages/mobile/WorkerApp'
 import ChatPopup from './components/ChatPopup'
 import { useAuthStore } from './stores/authStore'
 
@@ -58,6 +59,7 @@ function App() {
         {/* App Mobile Logistix */}
         <Route path="/app" element={<ProtectedRoute />}>
           <Route index element={<MobileApp />} />
+          <Route path="worker" element={<WorkerApp />} />
         </Route>
 
         {/* Redirecionamento para rotas inexistentes (404) */}
