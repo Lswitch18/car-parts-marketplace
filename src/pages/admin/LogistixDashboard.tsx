@@ -30,7 +30,7 @@ const NAV_ITEMS = [
   { icon: Truck, label: 'Coletas', path: '/admin/logistix/coletas', id: 'coletas' },
   { icon: ArrowLeftRight, label: 'Transferências', path: '/admin/logistix/transferencias', id: 'transferencias' },
   { icon: Boxes, label: 'Estoque', path: '/admin/logistix/estoque', id: 'estoque' },
-  { icon: Warehouse, label: 'Armazéns', path: '/admin/logistix/armazens', id: 'armazens' },
+  { icon: Warehouse, label: 'Centros de Distribuição', path: '/admin/logistix/armazens', id: 'armazens' },
   { icon: Truck, label: 'Transportes', path: '/admin/logistix/transportes', id: 'transportes' },
   { icon: AlertCircle, label: 'Ocorrências', path: '/admin/logistix/ocorrencias', id: 'ocorrencias' },
   { icon: Users, label: 'Clientes', path: '/admin/logistix/clientes', id: 'clientes' },
@@ -92,13 +92,16 @@ export default function LogistixDashboard() {
   const donutData = (statusData || []).map(d => ({ name: STATUS_LABEL[d.status] || d.status, value: d.count }));
   const totalPedidos = (donutData || []).reduce((s, d) => s + d.value, 0);
 
-  const armazens = [
-    { nome: 'CD São Paulo', pct: 85, cor: '#22C55E' },
-    { nome: 'CD Rio de Janeiro', pct: 76, cor: '#22C55E' },
-    { nome: 'CD Belo Horizonte', pct: 62, cor: '#FACC15' },
-    { nome: 'CD Curitiba', pct: 58, cor: '#FACC15' },
-    { nome: 'CD Salvador', pct: 38, cor: '#EF4444' },
-  ];
+  const { data: armazensList } = useQuery({
+    queryKey: ['admin', 'armazens-list'],
+    queryFn: () => adminApi.armazens.list(),
+  });
+
+  const armazens = (armazensList || []).slice(0, 8).map((a: any) => {
+    const pct = a.capacidade && a.capacidade > 0 ? Math.round((a.ocupacao / a.capacidade) * 100) : 0;
+    const cor = pct > 80 ? '#EF4444' : pct > 60 ? '#FACC15' : '#22C55E';
+    return { nome: a.nome, pct, cor };
+  });
 
   return (
     <div className="flex h-screen bg-[#0B1220] text-white font-sans overflow-hidden">
@@ -247,7 +250,7 @@ export default function LogistixDashboard() {
                 </div>
 
                 <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
-                  <h3 className="text-base font-medium mb-4">Estoque por Armazém</h3>
+                  <h3 className="text-base font-medium mb-4">Estoque por Centro de Distribuição</h3>
                   <div className="space-y-4">
                     {armazens.map(a => (
                       <div key={a.nome}>
