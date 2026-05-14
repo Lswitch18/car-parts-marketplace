@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '../../../lib/adminApi';
-import { Search, Plus, Edit3, Trash2, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Search, Plus, Edit3, Trash2, ChevronLeft, ChevronRight, X, MapPin } from 'lucide-react';
 
 const STATUS_OPTIONS = ['pendente', 'em_transito', 'entregue', 'atrasado', 'cancelado', 'recebido'];
 const STATUS_COLOR: Record<string, string> = {
@@ -161,6 +161,8 @@ export default function PedidosPage() {
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400 transition-colors" title="Editar"><Edit3 size={14} /></button>
+                      <button onClick={() => window.open(`/admin/logistix/rastreamento?codigo=${row.codigo}`, '_blank')}
+                        className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-green-400 transition-colors" title="Rastrear"><MapPin size={14} /></button>
                       <button onClick={() => setShowDelete(row.id)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-red-400 transition-colors" title="Excluir"><Trash2 size={14} /></button>
                     </div>
                   </td>

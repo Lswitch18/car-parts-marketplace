@@ -22,6 +22,7 @@ import TransferenciasPage from './logistix/TransferenciasPage';
 import RelatoriosPage from './logistix/RelatoriosPage';
 import ConfigPage from './logistix/ConfigPage';
 import UsuariosPage from './logistix/UsuariosPage';
+import TrackingPage from './logistix/TrackingPage';
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/logistix', id: 'dashboard' },
@@ -320,6 +321,7 @@ export default function LogistixDashboard() {
             {activeNav === 'transportes' && <TransportesPage />}
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}
             {activeNav === 'clientes' && <ClientesPage />}
+            {activeNav === 'rastreamento' && <TrackingPage />}
             {activeNav === 'usuarios' && <UsuariosPage />}
             {activeNav === 'relatorios' && <RelatoriosPage />}
             {activeNav === 'config' && <ConfigPage />}

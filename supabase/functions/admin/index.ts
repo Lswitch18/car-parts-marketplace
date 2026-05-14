@@ -42,6 +42,10 @@ function auditLog(usuario_id: string, acao: string, tabela: string, registro_id:
   supabase.from('admin_auditoria').insert({ usuario_id, acao, tabela, registro_id, detalhes, ip }).then().catch();
 }
 
+async function trackingEvent(pedido_id: string, tipo: string, descricao: string, local = 'Sistema', status = 'registrado') {
+  await supabase.from('admin_rastreamento').insert({ pedido_id, tipo, descricao, local, status }).then().catch();
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 async function listResource(table: string, req: Request, searchFields: string[] = []) {
@@ -333,7 +337,18 @@ Deno.serve(async (req) => {
       if (req.method === 'GET' && !segments[1]) return await listResource('admin_entregas', req);
       if (req.method === 'GET' && segments[1]) return await getResource('admin_entregas', req, segments[1]);
       if (req.method === 'POST') return await createResource('admin_entregas', req, body);
-      if (req.method === 'PUT' && segments[1]) return await updateResource('admin_entregas', req, segments[1], body);
+      if (req.method === 'PUT' && segments[1]) {
+        const r = await updateResource('admin_entregas', req, segments[1], body);
+        if (body.status === 'entregue') {
+          const { data: entrega } = await supabase.from('admin_entregas').select('*, pedido:admin_pedidos!pedido_id(codigo)').eq('id', segments[1]).single();
+          if (entrega?.pedido) await trackingEvent(entrega.pedido_id, 'ENTREGA', `Entrega confirmada - ${entrega.pedido.codigo}`, entrega.pedido.codigo, 'entregue');
+        }
+        if (body.status === 'em_transito') {
+          const { data: entrega } = await supabase.from('admin_entregas').select('*, pedido:admin_pedidos!pedido_id(codigo)').eq('id', segments[1]).single();
+          if (entrega?.pedido) await trackingEvent(entrega.pedido_id, 'ROTA', `Saiu para entrega - ${entrega.pedido.codigo}`, entrega.pedido.codigo, 'em_transito');
+        }
+        return r;
+      }
       if (req.method === 'DELETE' && segments[1]) return await deleteResource('admin_entregas', req, segments[1]);
     }
 
@@ -375,7 +390,18 @@ Deno.serve(async (req) => {
       if (req.method === 'GET' && !segments[1]) return await listResource('admin_coletas', req);
       if (req.method === 'GET' && segments[1]) return await getResource('admin_coletas', req, segments[1]);
       if (req.method === 'POST') return await createResource('admin_coletas', req, body);
-      if (req.method === 'PUT' && segments[1]) return await updateResource('admin_coletas', req, segments[1], body);
+      if (req.method === 'PUT' && segments[1]) {
+        const r = await updateResource('admin_coletas', req, segments[1], body);
+        if (body.status === 'coletado') {
+          const { data: coleta } = await supabase.from('admin_coletas').select('*, pedido:admin_pedidos!pedido_id(codigo)').eq('id', segments[1]).single();
+          if (coleta?.pedido) await trackingEvent(coleta.pedido_id, 'COLETA', `Coleta confirmada - ${coleta.pedido.codigo}`, coleta.pedido.codigo, 'coletado');
+        }
+        if (body.status === 'em_transito') {
+          const { data: coleta } = await supabase.from('admin_coletas').select('*, pedido:admin_pedidos!pedido_id(codigo)').eq('id', segments[1]).single();
+          if (coleta?.pedido) await trackingEvent(coleta.pedido_id, 'SAIDA', `Saiu para coleta - ${coleta.pedido.codigo}`, coleta.pedido.codigo, 'em_transito');
+        }
+        return r;
+      }
       if (req.method === 'DELETE' && segments[1]) return await deleteResource('admin_coletas', req, segments[1]);
     }
 
@@ -410,18 +436,22 @@ Deno.serve(async (req) => {
       if (req.method === 'DELETE' && segments[1]) return await deleteResource('admin_ocorrencias', req, segments[1]);
     }
 
-    // Etiqueta (label) - dados para impressão
-    if (segments[0] === 'etiqueta' && segments[1]) {
-      const user = await requireAdmin(req);
-      if (!user) return json({ error: 'Não autorizado' }, 401);
-      const { data: pedido } = await supabase.from('admin_pedidos')
-        .select('*, cliente:admin_clientes!cliente_id(*), armazem_origem:admin_armazens!armazem_origem_id(nome,cidade,estado), armazem_destino:admin_armazens!armazem_destino_id(nome,cidade,estado)')
-        .eq('id', segments[1]).single();
+    // Rastreamento - busca pública por código (não requer admin)
+    if (segments[0] === 'rastreamento' && !segments[1] && req.method === 'GET') {
+      const codigo = url.searchParams.get('codigo') || '';
+      if (!codigo) {
+        const user = await requireAdmin(req);
+        if (!user) return json({ error: 'Não autorizado' }, 401);
+        const { data } = await supabase.from('admin_rastreamento').select('*, pedido:admin_pedidos!pedido_id(codigo)').order('created_at', { ascending: false }).limit(50);
+        return json(data || []);
+      }
+      const { data: pedido } = await supabase.from('admin_pedidos').select('id, codigo, destino_cidade, destino_estado, status, peso_kg, valor, cliente:admin_clientes!cliente_id(nome)').eq('codigo', codigo).maybeSingle();
       if (!pedido) return json({ error: 'Pedido não encontrado' }, 404);
-      return json(pedido);
+      const { data: eventos } = await supabase.from('admin_rastreamento').select('*').eq('pedido_id', pedido.id).order('created_at', { ascending: false });
+      return json({ pedido, eventos: eventos || [] });
     }
 
-    // Rastreamento - adicionar evento
+    // Rastreamento - criar evento (requer admin)
     if (segments[0] === 'rastreamento' && segments[1] === 'evento' && req.method === 'POST') {
       const user = await requireAdmin(req);
       if (!user) return json({ error: 'Não autorizado' }, 401);
@@ -432,6 +462,17 @@ Deno.serve(async (req) => {
       if (error) return json({ error: error.message }, 400);
       auditLog(user.id, 'CREATE', 'rastreamento', data.id, `Evento: ${tipo} - ${descricao}`, null);
       return json(data, 201);
+    }
+
+    // Etiqueta (label) - dados para impressão
+    if (segments[0] === 'etiqueta' && segments[1]) {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const { data: pedido } = await supabase.from('admin_pedidos')
+        .select('*, cliente:admin_clientes!cliente_id(*), armazem_origem:admin_armazens!armazem_origem_id(nome,cidade,estado), armazem_destino:admin_armazens!armazem_destino_id(nome,cidade,estado)')
+        .eq('id', segments[1]).single();
+      if (!pedido) return json({ error: 'Pedido não encontrado' }, 404);
+      return json(pedido);
     }
 
     // Configuracoes
@@ -468,72 +509,6 @@ Deno.serve(async (req) => {
           .select('*, usuario:profiles!usuario_id(nome:full_name)')
           .order('id', { ascending: false }).range(offset, offset + limit - 1);
         return json(data || []);
-      }
-    }
-
-    // Rastreamento (Tracking)
-    if (segments[0] === 'rastreamento') {
-      const user = await requireAdmin(req);
-      if (!user) return json({ error: 'Não autorizado' }, 401);
-
-      // GET /rastreamento?codigo=PED123 - buscar rastreamento por código
-      if (req.method === 'GET') {
-        const codigo = url.searchParams.get('codigo');
-        
-        // Listar todos os rastreamentos (timeline completo)
-        if (!codigo) {
-          const { data } = await supabase.from('admin_rastreamento')
-            .select('*, pedido:admin_pedidos!pedido_id(codigo, destino_cidade, destino_estado)')
-            .order('created_at', { ascending: false })
-            .limit(100);
-          return json(data || []);
-        }
-
-        // Buscar rastreamento por código do pedido
-        const { data: pedido } = await supabase.from('admin_pedidos')
-          .select('id, codigo, destino_cidade, destino_estado, status')
-          .eq('codigo', codigo).single();
-
-        if (!pedido) return json({ error: 'Pedido não encontrado' }, 404);
-
-        const { data: eventos } = await supabase.from('admin_rastreamento')
-          .select('*')
-          .eq('pedido_id', pedido.id)
-          .order('created_at', { ascending: true });
-
-        return json({
-          pedido: { id: pedido.id, codigo: pedido.codigo, status: pedido.status },
-          destino: { cidade: pedido.destino_cidade, estado: pedido.destino_estado },
-          eventos: eventos || []
-        });
-      }
-
-      // POST /rastreamento - criar novo evento de rastreamento
-      if (req.method === 'POST') {
-        const { pedido_id, tipo, descricao, local, status } = body as any;
-        if (!pedido_id || !tipo) return json({ error: 'pedido_id e tipo são obrigatórios' }, 400);
-
-        const { data, error } = await supabase.from('admin_rastreamento')
-          .insert({
-            pedido_id,
-            tipo,
-            descricao: descricao || '',
-            local: local || '',
-            status: status || 'pendente',
-            created_at: new Date().toISOString()
-          })
-          .select()
-          .single();
-
-        if (error) return json({ error: error.message }, 400);
-        
-        // Atualizar status do pedido se necessário
-        if (status) {
-          await supabase.from('admin_pedidos').update({ status }).eq('id', pedido_id);
-        }
-
-        auditLog(user.id, 'CREATE', 'rastreamento', data.id, `${tipo}: ${descricao}`, null);
-        return json(data, 201);
       }
     }
 
