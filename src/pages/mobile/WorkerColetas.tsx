@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mobileApi } from '../../lib/mobileApi';
 import { getCurrentPosition } from '../../lib/geo';
+import ScannerCamera from '../../components/mobile/ScannerCamera';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, ArrowRight,
-  RefreshCw, Map,
+  RefreshCw, Map, ScanLine,
 } from 'lucide-react';
 
 const STATUS_LABEL: Record<string, string> = {
@@ -26,6 +27,8 @@ export default function WorkerColetas() {
   const [filtroStatus, setFiltroStatus] = useState('pendente');
   const [selected, setSelected] = useState<any>(null);
   const [showAction, setShowAction] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const [scannedCode, setScannedCode] = useState('');
 
   const { data, isLoading, error, isRefetching } = useQuery({
     queryKey: ['worker', 'coletas', filtroStatus],
@@ -59,11 +62,6 @@ export default function WorkerColetas() {
     if (!r.created_at) return true;
     return new Date(r.created_at).toDateString() === new Date().toDateString() || r.status === 'pendente';
   });
-
-  function openActions(row: any) {
-    setSelected(row);
-    setShowAction(true);
-  }
 
   function makeAddress(row: any) {
     const p = row.pedido || {};
@@ -181,9 +179,9 @@ export default function WorkerColetas() {
                           className="flex-1 h-10 bg-[#0B1220] border border-white/10 rounded-xl text-xs font-medium text-green-400 flex items-center justify-center gap-1.5 active:bg-white/5">
                           <Navigation size={14} /> Navegar
                         </a>
-                        <button onClick={() => openActions(row)}
+                        <button onClick={() => { setSelected(row); setShowScanner(true); }}
                           className="flex-1 h-10 bg-green-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-green-600">
-                          <CheckCircle size={14} /> Coletar
+                          <ScanLine size={14} /> Escanear
                         </button>
                       </>
                     )}
@@ -205,6 +203,14 @@ export default function WorkerColetas() {
         </div>
       )}
 
+      {showScanner && selected && (
+        <ScannerCamera
+          onScan={(code) => { setScannedCode(code); setShowScanner(false); setShowAction(true); }}
+          onClose={() => { setShowScanner(false); setSelected(null); }}
+          expectedCode={selected.pedido?.codigo || ''}
+        />
+      )}
+
       {showAction && selected && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70" onClick={() => setShowAction(false)}>
           <div className="bg-[#1F2937] rounded-t-3xl p-6 w-full max-w-md border border-white/10"
@@ -212,6 +218,19 @@ export default function WorkerColetas() {
             <div className="w-14 h-1.5 bg-gray-600 rounded-full mx-auto mb-5" />
             <h2 className="text-xl font-bold text-center mb-1">Confirmar Coleta</h2>
             <p className="text-sm text-gray-400 text-center mb-5">{selected.pedido?.codigo || selected.id?.slice(0, 8)}</p>
+
+            {scannedCode && (
+              <div className={`text-center mb-4 py-3 px-4 rounded-xl text-sm font-medium ${
+                scannedCode === selected.pedido?.codigo
+                  ? 'bg-green-500/15 text-green-400'
+                  : 'bg-red-500/15 text-red-400'
+              }`}>
+                {scannedCode === selected.pedido?.codigo
+                  ? <>✅ Código verificado: <span className="font-mono">{scannedCode}</span></>
+                  : <>❌ Código não confere: <span className="font-mono">{scannedCode}</span></>
+                }
+              </div>
+            )}
 
             <div className="bg-[#111827] rounded-xl p-4 mb-5 space-y-3">
               <p className="text-sm flex items-start gap-2.5">
@@ -224,13 +243,20 @@ export default function WorkerColetas() {
             </div>
 
             <div className="space-y-3">
-              <button onClick={() => updateMutation.mutate('coletado')} disabled={updateMutation.isPending}
+              <button onClick={() => updateMutation.mutate('coletado')} disabled={updateMutation.isPending || scannedCode !== selected.pedido?.codigo}
                 className="w-full h-14 bg-green-500 rounded-2xl text-base font-bold disabled:opacity-50 flex items-center justify-center gap-3 active:bg-green-600">
                 {updateMutation.isPending ? (
                   <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Confirmando...</>
+                ) : scannedCode !== selected.pedido?.codigo ? (
+                  <><ScanLine size={22} /> Escaneie o código primeiro</>
                 ) : (
                   <><CheckCircle size={22} /> CONFIRMAR COLETA</>
                 )}
+              </button>
+
+              <button onClick={() => { setShowScanner(true); setShowAction(false); }}
+                className="w-full h-12 border border-white/10 rounded-2xl text-sm font-medium text-blue-400 flex items-center justify-center gap-2 active:bg-white/5">
+                <ScanLine size={16} /> Escanear novamente
               </button>
 
               {makeAddress(selected) && (
