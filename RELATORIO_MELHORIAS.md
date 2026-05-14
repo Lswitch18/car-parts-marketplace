@@ -1,7 +1,7 @@
-# Relatório de Melhorias - Car Parts Marketplace + Logistix WMS
+# Relatório de Melhorias - TheDAIG + Logistix WMS
 
 **Data:** 14 de Maio de 2026  
-**Projeto:** Car Parts Marketplace + Logistix WMS + B2B API  
+**Projeto:** TheDAIG (The DAIG Marketplace) + Logistix WMS + B2B API  
 **Versão:** 1.0.0
 
 ---
@@ -93,6 +93,7 @@ Este relatório documenta as principais melhorias implementadas no sistema Car P
 
 ### 3.1 Stack Tecnológica
 
+- **Nome do Sistema:** TheDAIG (The DAIG Marketplace)
 - **Frontend:** React 18 + TypeScript + Vite
 - **Backend:** Supabase Edge Functions (Deno)
 - **Database:** PostgreSQL (Supabase)
