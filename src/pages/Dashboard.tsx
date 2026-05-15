@@ -197,48 +197,48 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="card p-6">
+          <Link to="/catalog" className="card p-6 hover:border-primary/50 transition-all block group">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
                 <Package className="w-6 h-6 text-primary" />
               </div>
               <TrendingUp className="w-5 h-5 text-green-500" />
             </div>
             <p className="text-text-secondary text-sm">{t('Anúncios Ativos')}</p>
-            <p className="text-2xl font-bold text-text">{stats?.activeProducts || 0}</p>
-          </div>
+            <p className="text-2xl font-bold text-text group-hover:text-primary transition-colors">{stats?.activeProducts || 0}</p>
+          </Link>
 
-          <div className="card p-6">
+          <Link to="/catalog" className="card p-6 hover:border-info/50 transition-all block group">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-info/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-info/20 flex items-center justify-center group-hover:bg-info/30 transition-colors">
                 <Eye className="w-6 h-6 text-info" />
               </div>
             </div>
             <p className="text-text-secondary text-sm">{t('Total de Visualizações')}</p>
-            <p className="text-2xl font-bold text-text">{stats?.totalViews || 0}</p>
-          </div>
+            <p className="text-2xl font-bold text-text group-hover:text-info transition-colors">{stats?.totalViews || 0}</p>
+          </Link>
 
-          <div className="card p-6">
+          <div className="card p-6 hover:border-green-500/50 transition-all group">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
                 <DollarSign className="w-6 h-6 text-green-500" />
               </div>
             </div>
             <p className="text-text-secondary text-sm">{t('Vendas Totais')}</p>
-            <p className="text-2xl font-bold text-text">
+            <p className="text-2xl font-bold text-text group-hover:text-green-500 transition-colors">
               ¥ {(stats?.totalSales || 0).toLocaleString('ja-JP')}
             </p>
           </div>
 
-          <div className="card p-6">
+          <Link to="/messages" className="card p-6 hover:border-purple-500/50 transition-all block group">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
                 <MessageCircle className="w-6 h-6 text-purple-500" />
               </div>
             </div>
             <p className="text-text-secondary text-sm">{t('Mensagens')}</p>
-            <p className="text-2xl font-bold text-text">{stats?.unreadMessages || 0}</p>
-          </div>
+            <p className="text-2xl font-bold text-text group-hover:text-purple-500 transition-colors">{stats?.unreadMessages || 0}</p>
+          </Link>
         </div>
 
         <div className="card p-6 mb-8">
@@ -259,11 +259,12 @@ export default function Dashboard() {
               {products && products.length > 0 ? (
                 <div className="space-y-4">
                   {products.map((product) => (
-                    <div
+                    <Link
                       key={product.id}
-                      className="flex items-center space-x-4 p-4 bg-background rounded-lg border border-border"
+                      to={`/product/${product.id}`}
+                      className="flex items-center space-x-4 p-4 bg-background rounded-lg border border-border hover:border-primary/30 transition-all group"
                     >
-                      <div className="w-16 h-16 bg-surface rounded-lg flex items-center justify-center">
+                      <div className="w-16 h-16 bg-surface rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
                         {product.images?.[0] ? (
                           <img
                             src={product.images[0]}
@@ -274,8 +275,8 @@ export default function Dashboard() {
                           <Package className="w-6 h-6 text-text-secondary" />
                         )}
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-text font-medium">{product.title}</h3>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-text font-medium group-hover:text-primary transition-colors truncate">{product.title}</h3>
                         <p className="text-text-secondary text-sm">
                           ¥ {product.price.toLocaleString('ja-JP')} • {product.views || 0} visualizações
                         </p>
@@ -283,7 +284,7 @@ export default function Dashboard() {
                       <span className={`badge ${product.status === 'active' ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
                         {product.status === 'active' ? 'Ativo' : product.status}
                       </span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -308,20 +309,20 @@ export default function Dashboard() {
                     const isBuyer = t.buyer_id === user.id;
                     const roleText = isBuyer ? 'Compra' : 'Venda';
                     return (
-                      <div key={t.id} className="p-4 bg-background rounded-lg border border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-surface rounded flex items-center justify-center overflow-hidden">
+                      <div key={t.id} className="p-4 bg-background rounded-lg border border-border hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group">
+                        <Link to={`/product/${t.part_id}`} className="flex items-center space-x-4 flex-1 min-w-0">
+                          <div className="w-12 h-12 bg-surface rounded flex items-center justify-center overflow-hidden flex-shrink-0">
                             {t.parts?.images?.[0] ? (
                               <img src={t.parts.images[0]} alt="" className="w-full h-full object-cover" />
                             ) : <Package className="w-6 h-6 text-text-secondary" />}
                           </div>
-                          <div>
-                            <p className="text-white font-medium">{t.parts?.title || 'Produto'}</p>
+                          <div className="min-w-0">
+                            <p className="text-text font-medium group-hover:text-primary transition-colors truncate">{t.parts?.title || 'Produto'}</p>
                             <p className="text-text-secondary text-sm">
                               {roleText} • ¥ {t.amount?.toLocaleString('ja-JP')}
                             </p>
                           </div>
-                        </div>
+                        </Link>
                         <div className="flex items-center space-x-4">
                           <div className="text-right">
                             <p className="text-sm font-medium text-white">Status: {t.fulfillment_status === 'pending' ? 'Pendente' : t.fulfillment_status === 'shipped' ? 'Enviado' : 'Concluído'}</p>
