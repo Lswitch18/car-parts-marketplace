@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Etiquetas de Teste - Logistix</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#e5e7eb;font-family:system-ui,-apple-system,sans-serif;padding:20px}
+.header{max-width:800px;margin:0 auto 20px;text-align:center}
+.header h1{font-size:20px;color:#111827;margin-bottom:4px}
+.header p{font-size:13px;color:#6B7280;margin-bottom:12px}
+.btn-print{padding:10px 28px;background:#3B82F6;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-print:hover{background:#2563EB}
+.labels{max-width:800px;margin:0 auto;display:grid;gap:12px}
+.label-card{background:white;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1);page-break-inside:avoid;break-inside:avoid}
+.label-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #111827}
+.label-header .logo{width:36px;height:36px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:20px}
+.label-header .title{font-size:14px;font-weight:700;color:#111827;letter-spacing:1px}
+.label-header .codigo{font-size:18px;font-weight:800;color:#3B82F6;font-family:monospace;letter-spacing:1px}
+.label-body{display:flex;gap:20px}
+.label-body .qr-section{flex-shrink:0;text-align:center}
+.label-body .qr-section #qr-canvas{margin-bottom:4px}
+.label-body .qr-section span{font-size:9px;color:#6B7280;display:block}
+.label-body .info-section{flex:1;min-width:0}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-item{padding:6px 8px;background:#F3F4F6;border-radius:6px}
+.info-item label{font-size:9px;color:#6B7280;display:block;margin-bottom:1px;font-weight:500}
+.info-item .value{font-size:12px;color:#111827;font-weight:600}
+.info-footer{margin-top:10px;padding-top:8px;border-top:1px solid #E5E7EB;display:flex;justify-content:space-between;font-size:9px;color:#9CA3AF}
+@media print{
+@page{margin:10mm}
+body{background:white;padding:10mm}
+.header{display:none}
+.labels{gap:16px}
+.label-card{box-shadow:none;border:1px solid #E5E7EB;page-break-inside:avoid}
+}
+@media(max-width:600px){
+.label-body{flex-direction:column;align-items:center}
+.info-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📦 Etiquetas de Teste — Logistix DAIG</h1>
+  <p>5 pacotes para escanear no fluxo de coleta · Dados reais do banco</p>
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+</div>
+<div class="labels" id="labels-container"></div>
+
+<script>
+const pacotes = [
+  {codigo:"#INU-001",peso:"1.5kg",valor:"¥2.500",cliente:"Apexi Co., Ltd.",cidade:"Inuyama",estado:"Aichi"}
+];
+
+// Load real data if available
+fetch('/labels-data.json').then(r=>r.json()).then(d=>{
+  if(d&&d.length) renderLabels(d);
+}).catch(()=>renderLabels(pacotes));
+
+function renderLabels(data){
+  const container = document.getElementById('labels-container');
+  container.innerHTML = '';
+  data.forEach((p,i)=>{
+    const card = document.createElement('div');
+    card.className = 'label-card';
+    card.innerHTML = \`
+      <div class="label-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="logo">L</div>
+          <div>
+            <div class="title">DAIG LOGISTIX</div>
+            <div style="font-size:10px;color:#6B7280">Smart Logistics · Teste</div>
+          </div>
+        </div>
+        <div class="codigo">\${p.codigo}</div>
+      </div>
+      <div class="label-body">
+        <div class="qr-section">
+          <div id="qr-\${i}"></div>
+          <span>Escaneie com o app</span>
+        </div>
+        <div class="info-section">
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Destinatário</label>
+              <div class="value">\${p.cliente}</div>
+            </div>
+            <div class="info-item">
+              <label>Destino</label>
+              <div class="value">\${p.cidade}, \${p.estado}</div>
+            </div>
+            <div class="info-item">
+              <label>Peso</label>
+              <div class="value">\${p.peso}</div>
+            </div>
+            <div class="info-item">
+              <label>Valor</label>
+              <div class="value">\${p.valor}</div>
+            </div>
+          </div>
+          <div class="info-footer">
+            <span>📅 \${new Date().toLocaleDateString('pt-BR')}</span>
+            <span>🔗 logistix.daig.jp/r/\${p.codigo}</span>
+            <span>📋 Lote de teste #\${i+1}</span>
+          </div>
+        </div>
+      </div>
+    \`;
+    container.appendChild(card);
+
+    // Generate QR after DOM
+    setTimeout(()=>{
+      new QRCode(document.getElementById('qr-'+i), {
+        text: p.codigo,
+        width: 110,
+        height: 110,
+        colorDark: '#111827',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }, 100);
+  });
+}
+</script>
+</body>
+</html>
