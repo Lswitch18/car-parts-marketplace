@@ -23,10 +23,12 @@ import RelatoriosPage from './logistix/RelatoriosPage';
 import ConfigPage from './logistix/ConfigPage';
 import UsuariosPage from './logistix/UsuariosPage';
 import TrackingPage from './logistix/TrackingPage';
+import EtiquetasPage from './logistix/EtiquetasPage';
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/logistix', id: 'dashboard' },
   { icon: Package, label: 'Pedidos', path: '/admin/logistix/pedidos', id: 'pedidos' },
+  { icon: Package, label: 'Etiquetas', path: '/admin/logistix/etiquetas', id: 'etiquetas' },
   { icon: MapPin, label: 'Rastreamento', path: '/admin/logistix/rastreamento', id: 'rastreamento' },
   { icon: Truck, label: 'Entregas', path: '/admin/logistix/entregas', id: 'entregas' },
   { icon: Truck, label: 'Coletas', path: '/admin/logistix/coletas', id: 'coletas' },
@@ -334,6 +336,7 @@ export default function LogistixDashboard() {
             {activeNav === 'transportes' && <TransportesPage />}
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}
             {activeNav === 'clientes' && <ClientesPage />}
+            {activeNav === 'etiquetas' && <EtiquetasPage />}
             {activeNav === 'rastreamento' && <TrackingPage />}
             {activeNav === 'usuarios' && <UsuariosPage />}
             {activeNav === 'relatorios' && <RelatoriosPage />}
