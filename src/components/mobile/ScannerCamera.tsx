@@ -16,6 +16,7 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
   const [errorMsg, setErrorMsg] = useState('');
   const [lastScan, setLastScan] = useState('');
   const [lastMatch, setLastMatch] = useState<boolean | null>(null);
+  const [flash, setFlash] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
 
   function beep() {
@@ -25,14 +26,19 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
       const gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.frequency.value = 1800;
+      osc.frequency.value = 2200;
       osc.type = 'square';
-      gain.gain.setValueAtTime(0.2, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
       osc.start();
-      osc.stop(ctx.currentTime + 0.2);
-      setTimeout(() => ctx.close(), 300);
+      osc.stop(ctx.currentTime + 0.25);
+      setTimeout(() => ctx.close(), 400);
     } catch {}
+  }
+
+  function flashGreen() {
+    setFlash(true);
+    setTimeout(() => setFlash(false), 300);
   }
 
   async function startScanner() {
@@ -45,16 +51,17 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
 
       await scanner.start(
         { facingMode: { exact: 'environment' } },
-        { fps: 8, qrbox: { width: 280, height: 160 } },
+        { fps: 10, qrbox: { width: 300, height: 200 } },
         (decodedText: string) => {
           beep();
-          try { navigator.vibrate?.(80); } catch {}
+          flashGreen();
+          try { navigator.vibrate?.(100); } catch {}
           setLastScan(decodedText);
           setLastMatch(!expectedCode || decodedText === expectedCode);
-          setHistory(h => [decodedText, ...h].slice(0, 20));
+          setHistory(h => [decodedText, ...h].slice(0, 30));
           if (!batchMode) {
             scanner.stop().catch(() => {});
-            setTimeout(() => onScan(decodedText), 400);
+            setTimeout(() => onScan(decodedText), 500);
           } else {
             onScan(decodedText);
           }
@@ -69,8 +76,8 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
         try {
           await scannerRef.current.start(
             { facingMode: 'user' },
-            { fps: 8, qrbox: { width: 280, height: 160 } },
-            (d: string) => { beep(); onScan(d); },
+            { fps: 10, qrbox: { width: 300, height: 200 } },
+            (d: string) => { beep(); flashGreen(); onScan(d); },
             () => {},
           );
           setErrorMsg('');
@@ -88,9 +95,10 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
     const val = (e.target as HTMLFormElement).codigo.value.trim();
     if (val) {
       beep();
+      flashGreen();
       try { navigator.vibrate?.(50); } catch {}
       setLastScan(val);
-      setHistory(h => [val, ...h].slice(0, 20));
+      setHistory(h => [val, ...h].slice(0, 30));
       (e.target as HTMLFormElement).codigo.value = '';
       if (batchMode) {
         onScan(val);
@@ -104,6 +112,9 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
   return (
     <div className="fixed inset-0 z-50 bg-black flex flex-col">
       <div className="relative flex-1 flex flex-col">
+        {/* Green flash overlay */}
+        {flash && <div className="absolute inset-0 z-20 bg-green-400/30 pointer-events-none" />}
+
         {/* Top bar */}
         <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
           <button onClick={() => { scannerRef.current?.stop().catch(() => {}); onClose(); }}
@@ -115,7 +126,7 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
           </span>
         </div>
 
-        {/* Scanner start */}
+        {/* Start button */}
         {status === 'start' && (
           <div className="flex-1 flex items-center justify-center bg-[#0B1220]">
             <button onClick={startScanner}
@@ -133,27 +144,45 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
         {status === 'scanning' && (
           <div className="flex-1 relative bg-black">
             <div id="scanner-element" className="w-full h-full" />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-72 h-48 border-2 border-blue-400 rounded-2xl opacity-40" />
+
+            {/* Scan frame - red border */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <div className="relative w-[320px] h-[220px]">
+                {/* Red border corners */}
+                <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-red-500 rounded-tl-xl" />
+                <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-red-500 rounded-tr-xl" />
+                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-red-500 rounded-bl-xl" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-red-500 rounded-br-xl" />
+
+                {/* Blue laser scanning line */}
+                <div className="absolute left-1 right-1 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-scan-line" />
+              </div>
             </div>
 
-            {/* Último código escaneado */}
+            {/* Scanned code badge */}
             {lastScan && (
-              <div className={`absolute top-16 left-4 right-4 z-10 px-4 py-3 rounded-xl shadow-lg ${
-                lastMatch === false ? 'bg-red-500/80' : 'bg-green-500/80'
-              }`}>
+              <div className={`absolute top-16 left-4 right-4 z-10 px-4 py-3 rounded-xl shadow-lg transition-all ${
+                flash ? 'scale-105' : ''
+              } ${lastMatch === false ? 'bg-red-500/80' : 'bg-green-500/80'}`}>
                 <div className="flex items-center gap-2">
                   {lastMatch === false
                     ? <AlertTriangle size={18} className="text-white shrink-0" />
                     : <CheckCircle size={18} className="text-white shrink-0" />
                   }
                   <div className="min-w-0">
-                    <p className="text-white text-xs font-medium">Código lido:</p>
+                    <p className="text-white text-xs font-medium">
+                      {lastMatch === false ? 'Código não confere!' : 'Código lido com sucesso!'}
+                    </p>
                     <p className="text-white text-base font-bold font-mono truncate">{lastScan}</p>
                   </div>
                 </div>
               </div>
             )}
+
+            {/* Hint text */}
+            <p className="absolute bottom-2 left-0 right-0 text-center text-[10px] text-white/30 pointer-events-none z-10">
+              Aproxime o código de barras da moldura vermelha
+            </p>
           </div>
         )}
 
@@ -168,7 +197,7 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
                 className="h-10 px-5 bg-blue-500 rounded-xl text-sm font-medium mb-2">
                 Tentar novamente
               </button>
-              <p className="text-xs text-gray-400">Ou digite o código manualmente abaixo</p>
+              <p className="text-xs text-gray-400">Ou digite o código manualmente</p>
             </div>
           </div>
         )}
@@ -176,12 +205,12 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
         {/* Input area */}
         <div className="bg-[#1F2937] p-4">
           {batchMode && history.length > 0 && (
-            <div className="mb-3 max-h-24 overflow-y-auto space-y-1">
-              <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Registro</p>
+            <div className="mb-3 max-h-20 overflow-y-auto space-y-0.5">
+              <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">📋 Registro</p>
               {history.map((h, i) => (
                 <div key={i} className="flex items-center gap-2 text-xs text-gray-300 font-mono">
                   <CheckCircle size={10} className="text-green-400 shrink-0" />
-                  {h}
+                  <span className="truncate">{h}</span>
                 </div>
               ))}
             </div>
@@ -201,8 +230,6 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
               Esperado: <span className="text-blue-400 font-mono">{expectedCode}</span>
             </p>
           )}
-
-          {/* Último código via input */}
           {!batchMode && lastScan && (
             <p className="text-xs text-gray-500 text-center mt-2">
               Último: <span className="text-green-400 font-mono">{lastScan}</span>
@@ -210,6 +237,17 @@ export default function ScannerCamera({ onScan, onClose, expectedCode, batchMode
           )}
         </div>
       </div>
+
+      {/* Scan line animation keyframes */}
+      <style>{`
+        @keyframes scan {
+          0%, 100% { top: 0; }
+          50% { top: calc(100% - 2px); }
+        }
+        .animate-scan-line {
+          animation: scan 2s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
