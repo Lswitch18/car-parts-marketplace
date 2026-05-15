@@ -74,9 +74,9 @@ const DONUT_COLORS = ['#22C55E', '#3B82F6', '#F97316', '#EF4444'];
 const STATUS_LABEL: Record<string, string> = { entregue: 'Entregue', em_transito: 'Em trânsito', atrasado: 'Atrasado', cancelado: 'Cancelado' };
 const STATUS_COLOR: Record<string, string> = { entregue: '#22C55E', em_transito: '#3B82F6', atrasado: '#F97316', cancelado: '#EF4444' };
 
-function KpiCard({ title, value, icon: Icon, color, trend }: { title: string; value: string | number; icon: any; color: string; trend?: string }) {
+function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: string; value: string | number; icon: any; color: string; trend?: string; onClick?: () => void }) {
   return (
-    <div className="bg-[#111827] rounded-xl p-5 border border-white/5 h-[130px] flex flex-col relative overflow-hidden group transition-all hover:border-white/10">
+    <button onClick={onClick} className="bg-[#111827] rounded-xl p-5 border border-white/5 h-[130px] flex flex-col relative overflow-hidden group transition-all hover:border-white/10 text-left w-full">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}22` }}>
@@ -92,7 +92,7 @@ function KpiCard({ title, value, icon: Icon, color, trend }: { title: string; va
         </p>
       )}
       <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-    </div>
+    </button>
   );
 }
 
@@ -358,11 +358,11 @@ export default function LogistixDashboard() {
                   <div key={i} className="bg-[#111827] rounded-xl p-5 h-[130px] animate-pulse" />
                 )) : (
                   <>
-                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="#3B82F6" trend="+18.2%" />
-                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#22C55E" trend="+22.7%" />
-                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#F97316" trend="-15.3%" />
-                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#8B5CF6" trend="+5.7%" />
-                    <KpiCard title="Custo Logístico" value={`R$ ${Number(kpis?.custo || 0).toLocaleString('pt-BR')}`} icon={DollarSign} color="#FACC15" trend="-8.6%" />
+                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="#3B82F6" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#22C55E" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
+                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#F97316" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#8B5CF6" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Custo Logístico" value={`R$ ${Number(kpis?.custo || 0).toLocaleString('pt-BR')}`} icon={DollarSign} color="#FACC15" trend="-8.6%" onClick={() => setActiveNav('relatorios')} />
                   </>
                 )}
               </div>
@@ -490,7 +490,7 @@ export default function LogistixDashboard() {
                   </table>
                 </div>
                 <div className="text-center mt-4">
-                  <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Ver todos os pedidos</a>
+                  <button onClick={() => setActiveNav('pedidos')} className="text-sm text-gray-400 hover:text-white transition-colors">Ver todos os pedidos</button>
                 </div>
               </div>
             </div>
