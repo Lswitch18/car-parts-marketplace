@@ -66,8 +66,8 @@ function App() {
         {/* App Mobile Logistix */}
         <Route path="/app" element={<ProtectedRoute />}>
           <Route index element={<MobileApp />} />
-          <Route path="worker" element={<QRInstallPage />} />
-          <Route path="worker/dashboard" element={<WorkerApp />} />
+          <Route path="worker" element={<WorkerApp />} />
+          <Route path="worker/install" element={<QRInstallPage />} />
           <Route path="agencia" element={<AgenciaPage />} />
         </Route>
 
