@@ -173,7 +173,7 @@ export default function LogistixDashboard() {
   const armazens = (armazensList || []).slice(0, 8).map((a: any) => {
     const pct = a.capacidade && a.capacidade > 0 ? Math.round((a.ocupacao / a.capacidade) * 100) : 0;
     const cor = pct > 80 ? '#EF4444' : pct > 60 ? '#FACC15' : '#22C55E';
-    return { nome: a.nome, pct, cor };
+    return { id: a.id, nome: a.nome, pct, cor, cidade: a.cidade };
   });
 
   const atividadeFeed = [
@@ -195,16 +195,22 @@ export default function LogistixDashboard() {
     return (
       <div className="flex flex-wrap gap-2">
         <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-500/20">
-          <Plus size={15} /> Nova Coleta
+          + Nova Coleta
         </button>
         <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg text-sm font-medium transition-colors border border-green-500/20">
-          <Plus size={15} /> Gerar Etiquetas
+          + Gerar Etiquetas
         </button>
         <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg text-sm font-medium transition-colors border border-purple-500/20">
-          <Plus size={15} /> Novo Pedido
+          + Novo Pedido
+        </button>
+        <button onClick={() => onNavigate('transferencias')} className="flex items-center gap-2 h-10 px-4 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg text-sm font-medium transition-colors border border-cyan-500/20">
+          + Transferência
         </button>
         <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 rounded-lg text-sm font-medium transition-colors border border-orange-500/20">
-          <Plus size={15} /> Registrar Ocorrência
+          + Ocorrência
+        </button>
+        <button onClick={() => onNavigate('armazem3d')} className="flex items-center gap-2 h-10 px-4 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-sm font-medium transition-colors border border-indigo-500/20">
+          ⊞ Armazém 3D
         </button>
       </div>
     );
@@ -413,18 +419,21 @@ export default function LogistixDashboard() {
                   <h3 className="text-base font-medium mb-4">Estoque por Centro de Distribuição</h3>
                   <div className="space-y-4">
                     {armazens.map(a => (
-                      <div key={a.nome}>
-                        <div className="flex justify-between text-[12px] text-gray-400 mb-1.5">
-                          <span>{a.nome}</span>
+                      <button key={a.nome} onClick={() => { setActiveNav('armazem3d'); }} className="w-full text-left group">
+                        <div className="flex justify-between text-[12px] text-gray-400 mb-1.5 group-hover:text-white transition-colors">
+                          <span className="flex items-center gap-1.5">
+                            <span className="text-gray-600 group-hover:text-blue-400 transition-colors">{'>'}</span>
+                            {a.nome}
+                          </span>
                           <span style={{ color: a.cor, fontWeight: 600 }}>{a.pct}%</span>
                         </div>
-                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden group-hover:bg-white/10 transition-colors">
                           <div className="h-full rounded-full transition-all duration-500" style={{ width: `${a.pct}%`, background: a.cor, boxShadow: `0 0 6px ${a.cor}66` }} />
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
-                  <button className="w-full mt-4 h-10 rounded-lg border border-white/10 text-gray-400 text-sm hover:bg-[#1F2937] hover:text-white transition-all">Ver todos os armazéns</button>
+                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-4 h-10 rounded-lg border border-white/10 text-gray-400 text-sm hover:bg-[#1F2937] hover:text-white transition-all">Ver armazéns em 3D</button>
                 </div>
               </div>
 
