@@ -119,12 +119,10 @@ async function createCheckoutSession(req: Request) {
   }
 
   if (shipping) {
-    lineItems['shipping[name]'] = shipping.name || '';
-    lineItems['shipping[address][line1]'] = shipping.address || '';
-    lineItems['shipping[address][city]'] = shipping.city || '';
-    lineItems['shipping[address][state]'] = shipping.state || '';
-    lineItems['shipping[address][postal_code]'] = shipping.zip || '';
-    lineItems['shipping[address][country]'] = 'JP';
+    lineItems['shipping_address_collection[allowed_countries][0]'] = 'JP';
+    Object.entries(shipping).forEach(([k, v]) => {
+      if (v) lineItems[`metadata[shipping_${k}]`] = String(v);
+    });
   }
 
   const session = await fetch('https://api.stripe.com/v1/checkout/sessions', {
