@@ -1,7 +1,24 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '../../../lib/supabase';
 import { adminApi } from '../../../lib/adminApi';
 import { Plus, Edit3, X, ChevronLeft, ChevronRight } from 'lucide-react';
+
+async function authFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'API error');
+  return json.data as T;
+}
 
 export default function ColetasPage() {
   const queryClient = useQueryClient();
@@ -14,19 +31,9 @@ export default function ColetasPage() {
     queryKey: ['admin', 'coletas', page],
     queryFn: () => {
       const params = new URLSearchParams({ page: String(page), limit: '15' });
-      return adminFetch<any>(`/coletas?${params}`);
+      return authFetch<any>(`/coletas?${params}`);
     },
   });
-
-  async function adminFetch<T>(endpoint: string, options: RequestInit = {}) {
-    const token = localStorage.getItem('sb-access-token');
-    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin${endpoint}`, {
-      ...options, headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers },
-    });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error || 'API error');
-    return json.data as T;
-  }
 
   const { data: pedidos } = useQuery({
     queryKey: ['admin', 'pedidos-dropdown'],
@@ -34,12 +41,12 @@ export default function ColetasPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: () => adminFetch('/coletas', { method: 'POST', body: JSON.stringify(form) }),
+    mutationFn: () => authFetch('/coletas', { method: 'POST', body: JSON.stringify(form) }),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin', 'coletas'] }); closeModal(); },
   });
 
   const updateMutation = useMutation({
-    mutationFn: () => { if (!editingId) throw new Error('No id'); return adminFetch(`/coletas/${editingId}`, { method: 'PUT', body: JSON.stringify(form) }); },
+    mutationFn: () => { if (!editingId) throw new Error('No id'); return authFetch(`/coletas/${editingId}`, { method: 'PUT', body: JSON.stringify(form) }); },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin', 'coletas'] }); closeModal(); },
   });
 
