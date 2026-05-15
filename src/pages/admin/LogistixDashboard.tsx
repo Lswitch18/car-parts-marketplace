@@ -29,6 +29,7 @@ import WMSPage from './logistix/WMSPage';
 import MapaPage from './logistix/MapaPage';
 import Armazem3DPage from './logistix/Armazem3DPage';
 import GlobalSearch from '../../components/logistix/GlobalSearch';
+import PedidoDetail from './logistix/PedidoDetail';
 
 interface NavGroup {
   icon: any;
@@ -108,6 +109,7 @@ export default function LogistixDashboard() {
   });
 
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+  const [detailPedidoId, setDetailPedidoId] = useState<string | undefined>();
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -453,7 +455,7 @@ export default function LogistixDashboard() {
                     </tr></thead>
                     <tbody>
                       {(recentOrders || []).slice(0, 5).map((row: any, i: number) => (
-                        <tr key={i} className="border-b border-white/5 hover:bg-white/[0.01] transition-colors">
+                        <tr key={i} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
                           <td className="py-3 pr-4 text-sm font-bold">{row.codigo}</td>
                           <td className="py-3 pr-4 text-sm text-gray-300">{row.cliente}</td>
                           <td className="py-3 pr-4 text-sm text-gray-400">{row.origem}</td>
@@ -482,7 +484,9 @@ export default function LogistixDashboard() {
           </>
         ) : (
           <div className="flex-1 overflow-y-auto">
-            {activeNav === 'pedidos' && <PedidosPage />}
+            {detailPedidoId ? (
+              <PedidoDetail pedidoId={detailPedidoId} onBack={() => setDetailPedidoId(undefined)} />
+            ) : activeNav === 'pedidos' && <PedidosPage />}
             {activeNav === 'rastreamento' && <RastreamentoPage />}
             {activeNav === 'entregas' && <EntregasPage />}
             {activeNav === 'coletas' && <ColetasPage />}
