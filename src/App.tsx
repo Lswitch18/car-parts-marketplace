@@ -21,6 +21,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import MobileApp from './pages/mobile/MobileApp'
 import WorkerApp from './pages/mobile/WorkerApp'
 import QRInstallPage from './pages/mobile/QRInstallPage'
+import AgenciaPage from './pages/mobile/AgenciaPage'
 import ChatPopup from './components/ChatPopup'
 import { useEffect } from 'react'
 import { useAuthStore } from './stores/authStore'
@@ -66,6 +67,7 @@ function App() {
           <Route index element={<MobileApp />} />
           <Route path="worker" element={<QRInstallPage />} />
           <Route path="worker/dashboard" element={<WorkerApp />} />
+          <Route path="agencia" element={<AgenciaPage />} />
         </Route>
 
         {/* Redirecionamento para rotas inexistentes (404) */}

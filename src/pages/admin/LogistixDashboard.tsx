@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Package, Truck, ArrowLeftRight, Boxes, Warehouse,
   MapPin, AlertCircle, Users, BarChart3, Settings,
   Bell, Search, ChevronDown, Plus, CheckCircle, AlertTriangle,
-  Percent, DollarSign, Calendar, LogOut, Moon,
+  Percent, DollarSign, Calendar, LogOut, Moon, Building,
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 import { useAuthStore } from '../../stores/authStore';
@@ -24,6 +24,7 @@ import ConfigPage from './logistix/ConfigPage';
 import UsuariosPage from './logistix/UsuariosPage';
 import TrackingPage from './logistix/TrackingPage';
 import EtiquetasPage from './logistix/EtiquetasPage';
+import DropoffPage from './logistix/DropoffPage';
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/logistix', id: 'dashboard' },
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
   { icon: Boxes, label: 'Estoque', path: '/admin/logistix/estoque', id: 'estoque' },
   { icon: Warehouse, label: 'Centros de Distribuição', path: '/admin/logistix/armazens', id: 'armazens' },
   { icon: Truck, label: 'Transportes', path: '/admin/logistix/transportes', id: 'transportes' },
+  { icon: Building, label: 'Drop-offs', path: '/admin/logistix/dropoffs', id: 'dropoffs' },
   { icon: AlertCircle, label: 'Ocorrências', path: '/admin/logistix/ocorrencias', id: 'ocorrencias' },
   { icon: Users, label: 'Usuários', path: '/admin/logistix/usuarios', id: 'usuarios' },
   { icon: Users, label: 'Clientes', path: '/admin/logistix/clientes', id: 'clientes' },
@@ -334,6 +336,7 @@ export default function LogistixDashboard() {
             {activeNav === 'estoque' && <EstoquePage />}
             {activeNav === 'armazens' && <ArmazensPage />}
             {activeNav === 'transportes' && <TransportesPage />}
+            {activeNav === 'dropoffs' && <DropoffPage />}
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}
             {activeNav === 'clientes' && <ClientesPage />}
             {activeNav === 'etiquetas' && <EtiquetasPage />}
