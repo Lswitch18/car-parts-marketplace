@@ -141,6 +141,15 @@ export const adminApi = {
   etiqueta: {
     get: (pedidoId: string) => adminFetch<any>(`/etiqueta/${pedidoId}`),
   },
+
+  custos: {
+    list: () => adminFetch<{ historico: any[]; parametros: any[] }>('/custos'),
+    calcular: () => adminFetch<{ success: boolean }>('/custos/calcular'),
+    parametros: {
+      list: () => adminFetch<any[]>('/custos-parametros'),
+      update: (id: string, data: any) => adminFetch<any>(`/custos-parametros/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    },
+  },
 };
 
 export interface DashboardKPIs {
