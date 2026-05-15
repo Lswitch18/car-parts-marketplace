@@ -22,13 +22,13 @@ import TransferenciasPage from './logistix/TransferenciasPage';
 import RelatoriosPage from './logistix/RelatoriosPage';
 import ConfigPage from './logistix/ConfigPage';
 import UsuariosPage from './logistix/UsuariosPage';
-import TrackingPage from './logistix/TrackingPage';
 import EtiquetasPage from './logistix/EtiquetasPage';
 import DropoffPage from './logistix/DropoffPage';
 import WMSPage from './logistix/WMSPage';
 import MapaPage from './logistix/MapaPage';
 import Armazem3DPage from './logistix/Armazem3DPage';
 import GlobalSearch from '../../components/logistix/GlobalSearch';
+import NotificationCenter from '../../components/logistix/NotificationCenter';
 import PedidoDetail from './logistix/PedidoDetail';
 
 interface NavGroup {
@@ -109,6 +109,7 @@ export default function LogistixDashboard() {
   });
 
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+  const [notificacaoOpen, setNotificacaoOpen] = useState(false);
   const [detailPedidoId, setDetailPedidoId] = useState<string | undefined>();
 
   useEffect(() => {
@@ -236,7 +237,7 @@ export default function LogistixDashboard() {
                   onClick={() => setActiveNav(group.id)}
                   className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm ${
                     activeNav === group.id
-                      ? 'bg-[#1F2937] text-blue-400'
+                      ? 'bg-[#1F2937] text-blue-400 shadow-[0_0_12px_-4px_rgba(59,130,246,0.3)]'
                       : 'text-gray-400 hover:bg-[#111827] hover:text-white'
                   }`}
                 >
@@ -266,7 +267,7 @@ export default function LogistixDashboard() {
                           onClick={() => setActiveNav(item.id)}
                           className={`w-full flex items-center gap-3 h-10 px-4 rounded-lg transition-all text-sm ${
                             activeNav === item.id
-                              ? 'bg-[#1F2937] text-blue-400'
+                              ? 'bg-[#1F2937] text-blue-400 shadow-[0_0_12px_-4px_rgba(59,130,246,0.3)]'
                               : 'text-gray-500 hover:bg-[#111827] hover:text-white'
                           }`}
                         >
@@ -314,14 +315,17 @@ export default function LogistixDashboard() {
                   <Search size={18} className="text-gray-400 mr-2" />
                   <input type="text" placeholder="Buscar (Ctrl + K)" className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
                 </div>
-                <button className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all relative flex-shrink-0">
-                  <Bell size={18} />
-                  {ocorrenciasAbertas > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#0B1220]">
-                      {ocorrenciasAbertas}
-                    </span>
-                  )}
-                </button>
+                <div className="relative flex-shrink-0">
+                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all relative">
+                    <Bell size={18} />
+                    {ocorrenciasAbertas > 0 && (
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#0B1220]">
+                        {ocorrenciasAbertas}
+                      </span>
+                    )}
+                  </button>
+                  <NotificationCenter open={notificacaoOpen} onClose={() => setNotificacaoOpen(false)} />
+                </div>
                 <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[#111827] border border-white/5 items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all">
                   <Moon size={18} />
                 </button>
