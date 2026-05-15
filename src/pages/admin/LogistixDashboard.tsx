@@ -70,6 +70,7 @@ function KpiCard({ title, value, icon: Icon, color, trend }: { title: string; va
 export default function LogistixDashboard() {
   const { user, signOut } = useAuthStore();
   const [activeNav, setActiveNav] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: kpis, isLoading: kpisLoading } = useQuery({
     queryKey: ['admin', 'kpis'],
@@ -108,8 +109,15 @@ export default function LogistixDashboard() {
 
   return (
     <div className="flex h-screen bg-[#0B1220] text-white font-sans overflow-hidden">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-[260px] bg-[#0B1220] border-r border-white/5 flex flex-col flex-shrink-0">
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-[#0B1220] border-r border-white/5 flex flex-col flex-shrink-0 transition-transform duration-200 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         <div className="h-[70px] flex items-center gap-3 px-6">
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
             <Package size={20} className="text-white" />
@@ -156,24 +164,29 @@ export default function LogistixDashboard() {
       <main className="flex-1 flex flex-col overflow-y-auto">
         {activeNav === 'dashboard' ? (
           <>
-            <header className="h-[70px] flex items-center justify-between px-6 flex-shrink-0">
-              <div>
-                <h2 className="text-2xl font-bold">Dashboard</h2>
-                <p className="text-sm text-gray-400 mt-1">Bem-vindo de volta, {user?.full_name?.split(' ')[0] || user?.name || 'Admin'} 👋</p>
+             <header className="h-[70px] flex items-center justify-between px-3 lg:px-6 flex-shrink-0 gap-2">
+              <div className="flex items-center gap-3 min-w-0">
+                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white flex-shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div className="min-w-0">
+                  <h2 className="text-lg lg:text-2xl font-bold truncate">{activeNav === 'dashboard' ? 'Dashboard' : NAV_ITEMS.find(n => n.id === activeNav)?.label || 'Logistix'}</h2>
+                  <p className="text-xs lg:text-sm text-gray-400 mt-0.5 truncate">Bem-vindo de volta, {user?.full_name?.split(' ')[0] || user?.name || 'Admin'} 👋</p>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center bg-[#111827] rounded-lg h-10 w-[300px] px-3 border border-white/5">
+              <div className="flex items-center gap-2 lg:gap-4">
+                <div className="hidden lg:flex items-center bg-[#111827] rounded-lg h-10 w-[300px] px-3 border border-white/5">
                   <Search size={18} className="text-gray-400 mr-2" />
                   <input type="text" placeholder="Buscar (Ctrl + K)" className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
                 </div>
-                <button className="w-10 h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all relative">
+                <button className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all relative flex-shrink-0">
                   <Bell size={18} />
                   <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-[#0B1220]">12</span>
                 </button>
-                <button className="w-10 h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all">
+                <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[#111827] border border-white/5 items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all">
                   <Moon size={18} />
                 </button>
-                <button className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 transition-colors text-sm">
+                <button className="hidden lg:flex h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium items-center gap-2 transition-colors text-sm">
                   <Plus size={16} />
                   Ações rápidas
                   <ChevronDown size={14} />
