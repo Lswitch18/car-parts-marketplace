@@ -171,7 +171,7 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  const { part_id, amount } = body;
+  const { part_id, amount, shipping } = body;
 
   if (!part_id || !amount) {
     return new Response(JSON.stringify(errorResponse('part_id e amount são obrigatórios')), {
@@ -202,20 +202,33 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
 
   const fees = calculateFees(Number(amount));
 
+  const insertData: Record<string, unknown> = {
+    part_id,
+    buyer_id: user.id,
+    seller_id: part.seller_id,
+    amount: Number(amount),
+    commission_rate: COMMISSION_RATE,
+    commission_amount: fees.commission_amount,
+    platform_fee: fees.platform_fee,
+    seller_net: fees.seller_net,
+    payment_status: 'pending',
+    fulfillment_status: 'pending',
+  };
+
+  if (shipping && typeof shipping === 'object') {
+    const s = shipping as Record<string, string>;
+    insertData.shipping_name = s.name || null;
+    insertData.shipping_email = s.email || null;
+    insertData.shipping_phone = s.phone || null;
+    insertData.shipping_address = s.address || null;
+    insertData.shipping_city = s.city || null;
+    insertData.shipping_state = s.state || null;
+    insertData.shipping_zip = s.zip || null;
+  }
+
   const { data, error } = await supabase
     .from('transactions')
-    .insert({
-      part_id,
-      buyer_id: user.id,
-      seller_id: part.seller_id,
-      amount: Number(amount),
-      commission_rate: COMMISSION_RATE,
-      commission_amount: fees.commission_amount,
-      platform_fee: fees.platform_fee,
-      seller_net: fees.seller_net,
-      payment_status: 'pending',
-      fulfillment_status: 'pending',
-    })
+    .insert(insertData)
     .select()
     .single();
 

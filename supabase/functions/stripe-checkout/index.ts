@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
 });
 
 async function createCheckoutSession(req: Request) {
-  const { transaction_id, part_id, buyer_id, seller_id, amount } = await req.json();
+  const { transaction_id, part_id, buyer_id, seller_id, amount, shipping } = await req.json();
 
   if (!transaction_id || !amount) {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -98,10 +98,33 @@ async function createCheckoutSession(req: Request) {
     'metadata[transaction_id]': transaction_id,
     'metadata[part_id]': part_id || '',
     'metadata[buyer_id]': buyer_id || '',
+    'metadata[seller_id]': seller_id || '',
   };
 
   if (part?.images?.[0]) {
     lineItems['line_items[0][price_data][product_data][images][0]'] = part.images[0];
+  }
+
+  if (seller_id) {
+    const { data: seller } = await supabase
+      .from('profiles')
+      .select('stripe_account_id')
+      .eq('id', seller_id)
+      .single();
+
+    if (seller?.stripe_account_id) {
+      lineItems['transfer_data[destination]'] = seller.stripe_account_id;
+      lineItems['application_fee_amount'] = String(applicationFeeAmount);
+    }
+  }
+
+  if (shipping) {
+    lineItems['shipping[name]'] = shipping.name || '';
+    lineItems['shipping[address][line1]'] = shipping.address || '';
+    lineItems['shipping[address][city]'] = shipping.city || '';
+    lineItems['shipping[address][state]'] = shipping.state || '';
+    lineItems['shipping[address][postal_code]'] = shipping.zip || '';
+    lineItems['shipping[address][country]'] = 'JP';
   }
 
   const session = await fetch('https://api.stripe.com/v1/checkout/sessions', {

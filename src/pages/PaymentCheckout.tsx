@@ -80,6 +80,7 @@ export default function PaymentCheckout() {
       const tx: any = await api.transactions.create({
         part_id: part.id,
         amount: finalPrice || part.price,
+        shipping: shippingInfo,
       })
 
       return tx.transaction || tx
@@ -96,6 +97,7 @@ export default function PaymentCheckout() {
           buyer_id: user!.id,
           seller_id: part!.seller_id,
           amount: finalPrice || part!.price,
+          shipping: shippingInfo,
         })
 
         if (result.url) {

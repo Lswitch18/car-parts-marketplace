@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Package, Truck, ArrowLeftRight, Boxes, Warehouse,
   MapPin, AlertCircle, Users, BarChart3, Settings,
   Bell, Search, ChevronDown, Plus, CheckCircle, AlertTriangle,
-  Percent, DollarSign, Calendar, LogOut, Moon, Building, Layers,
+  Percent, DollarSign, Calendar, LogOut, Moon, Building, Layers, Box,
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 import { useAuthStore } from '../../stores/authStore';
@@ -27,6 +27,7 @@ import EtiquetasPage from './logistix/EtiquetasPage';
 import DropoffPage from './logistix/DropoffPage';
 import WMSPage from './logistix/WMSPage';
 import MapaPage from './logistix/MapaPage';
+import Armazem3DPage from './logistix/Armazem3DPage';
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/logistix', id: 'dashboard' },
@@ -39,6 +40,7 @@ const NAV_ITEMS = [
   { icon: ArrowLeftRight, label: 'Transferências', path: '/admin/logistix/transferencias', id: 'transferencias' },
   { icon: Boxes, label: 'Estoque', path: '/admin/logistix/estoque', id: 'estoque' },
   { icon: Warehouse, label: 'Centros de Distribuição', path: '/admin/logistix/armazens', id: 'armazens' },
+  { icon: Box, label: 'Armazém 3D', path: '/admin/logistix/armazem3d', id: 'armazem3d' },
   { icon: Truck, label: 'Transportes', path: '/admin/logistix/transportes', id: 'transportes' },
   { icon: Building, label: 'Drop-offs', path: '/admin/logistix/dropoffs', id: 'dropoffs' },
   { icon: AlertCircle, label: 'Ocorrências', path: '/admin/logistix/ocorrencias', id: 'ocorrencias' },
@@ -339,6 +341,7 @@ export default function LogistixDashboard() {
             {activeNav === 'transferencias' && <TransferenciasPage />}
             {activeNav === 'estoque' && <EstoquePage />}
             {activeNav === 'armazens' && <ArmazensPage />}
+            {activeNav === 'armazem3d' && <Armazem3DPage />}
             {activeNav === 'transportes' && <TransportesPage />}
             {activeNav === 'dropoffs' && <DropoffPage />}
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}

@@ -112,5 +112,21 @@ export const logisticsApi = {
       if (armazem_id) q.set('armazem_id', armazem_id);
       return logisticsFetch<any[]>('/wms/zones?' + q);
     },
+    layout: (armazem_id: string) =>
+      logisticsFetch<{
+        armazem: {
+          id: string; nome: string; cidade: string; estado: string;
+          largura_m: number; comprimento_m: number; altura_m: number;
+          racks_linhas: number; racks_colunas: number;
+          capacidade: number; ocupacao: number;
+        };
+        zonas: Array<{
+          id: string; nome: string; tipo: string;
+          capacidade: number; ocupacao: number;
+          pos_x?: number; pos_y?: number;
+          tipo_visual?: string;
+        }>;
+        inventario: Array<{ zona_id: string; quantidade: number; produto: string; sku: string }>;
+      }>(`/wms/layout/${armazem_id}`),
   },
 };

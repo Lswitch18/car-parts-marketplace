@@ -557,6 +557,42 @@ Deno.serve(async (req) => {
       return json(data || []);
     }
 
+    // Layout 3D do armazém
+    if (path?.startsWith('/wms/layout/') && req.method === 'GET') {
+      const armId = path.replace('/wms/layout/', '');
+      if (!armId) return json({ error: 'armazem_id obrigatório' }, 400);
+
+      const { data: armazem } = await supabase.from('admin_armazens').select('*').eq('id', armId).single();
+      if (!armazem) return json({ error: 'Armazém não encontrado' }, 404);
+
+      const { data: zonas } = await supabase.from('admin_zonas').select('*').eq('armazem_id', armId).order('nome');
+
+      const { data: inventario } = await supabase.from('admin_inventario')
+        .select('zona_id, quantidade, produto, sku')
+        .eq('armazem_id', armId)
+        .gt('quantidade', 0);
+
+      const totalOcupacao = (inventario || []).reduce((acc: number, i: any) => acc + (i.quantidade || 0), 0);
+
+      return json({
+        armazem: {
+          id: armazem.id,
+          nome: armazem.nome,
+          cidade: armazem.cidade,
+          estado: armazem.estado,
+          largura_m: armazem.largura_m || 60,
+          comprimento_m: armazem.comprimento_m || 80,
+          altura_m: armazem.altura_m || 10,
+          racks_linhas: armazem.racks_linhas || 6,
+          racks_colunas: armazem.racks_colunas || 10,
+          capacidade: armazem.capacidade || 0,
+          ocupacao: totalOcupacao,
+        },
+        zonas: zonas || [],
+        inventario: inventario || [],
+      });
+    }
+
     // ─── GPS TRACKING ─────────────────────────────────────────────────────
     // POST /tracking/gps - receber posição do motorista (auth simples)
     if (path === '/tracking/gps' && req.method === 'POST') {

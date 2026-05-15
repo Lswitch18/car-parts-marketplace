@@ -128,6 +128,7 @@ export default function TransactionManagement() {
                 <option value="all">{t('Todos')}</option>
                 <option value="pending">{t('Pendente')}</option>
                 <option value="processing">{t('Processando')}</option>
+                <option value="escrow">{t('Em custódia')}</option>
                 <option value="paid">{t('Pago')}</option>
                 <option value="failed">{t('Falhou')}</option>
                 <option value="refunded">{t('Reembolsado')}</option>
@@ -215,13 +216,14 @@ export default function TransactionManagement() {
                         onChange={(e) => updateTransactionStatus(t.id, e.target.value, 'payment')}
                         className="bg-background border border-border rounded-lg px-2 py-1 text-text"
                       >
-                        <option value="pending">{t('Pendente')}</option>
-                        <option value="processing">{t('Processando')}</option>
-                        <option value="paid">{t('Pago')}</option>
-                        <option value="failed">{t('Falhou')}</option>
-                        <option value="refunded">{t('Reembolsado')}</option>
-                        <option value="cancelled">{t('Cancelado')}</option>
-                      </select>
+                <option value="pending">{t('Pendente')}</option>
+                <option value="processing">{t('Processando')}</option>
+                <option value="escrow">{t('Em custódia')}</option>
+                <option value="paid">{t('Pago')}</option>
+                <option value="failed">{t('Falhou')}</option>
+                <option value="refunded">{t('Reembolsado')}</option>
+                <option value="cancelled">{t('Cancelado')}</option>
+              </select>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <select
@@ -271,7 +273,7 @@ export default function TransactionManagement() {
             <div className="text-center">
               <p className="text-text-secondary">{t('Transações pagas:')}</p>
               <p className="text-2xl font-bold text-text">
-                {filteredTransactions.filter(t => t.payment_status === 'paid').length}
+                {filteredTransactions.filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow').length}
               </p>
             </div>
             <div className="text-center">

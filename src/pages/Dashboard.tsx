@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
-import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save } from 'lucide-react'
+import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save, CreditCard, ExternalLink } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
+import { api } from '../lib/api'
 import SimulateSale from '../components/SimulateSale'
 
 export default function Dashboard() {
@@ -109,6 +110,59 @@ export default function Dashboard() {
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     }
   })
+
+  const [stripeLoading, setStripeLoading] = useState(false)
+  const [stripeError, setStripeError] = useState<string | null>(null)
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile-stripe', user?.id],
+    queryFn: async () => {
+      if (!user) return null
+      const { data } = await supabase
+        .from('profiles')
+        .select('stripe_account_id, stripe_onboarding_complete')
+        .eq('id', user.id)
+        .single()
+      return data as { stripe_account_id: string | null; stripe_onboarding_complete: boolean }
+    },
+    enabled: !!user
+  })
+
+  const handleStripeConnect = async () => {
+    if (!user) return
+    setStripeLoading(true)
+    setStripeError(null)
+    try {
+      if (!profile?.stripe_account_id) {
+        const result = await api.stripe.createConnectedAccount(user.id, user.email)
+        if (result.account_id) {
+          const linkResult = await api.stripe.createAccountLink(result.account_id, user.id)
+          if (linkResult.url) window.location.href = linkResult.url
+        }
+      } else {
+        const linkResult = await api.stripe.createAccountLink(profile.stripe_account_id, user.id)
+        if (linkResult.url) window.location.href = linkResult.url
+      }
+    } catch (err: any) {
+      setStripeError(err.message)
+    } finally {
+      setStripeLoading(false)
+    }
+  }
+
+  const handleStripePortal = async () => {
+    if (!user) return
+    setStripeLoading(true)
+    setStripeError(null)
+    try {
+      const result = await api.stripe.createPortalSession(user.id)
+      if (result.url) window.location.href = result.url
+    } catch (err: any) {
+      setStripeError(err.message)
+    } finally {
+      setStripeLoading(false)
+    }
+  }
 
   if (authLoading) {
     return (
@@ -461,6 +515,42 @@ export default function Dashboard() {
                   <Package className="w-5 h-5 text-warning" />
                   <span className="text-text">{t('Favoritos')}</span>
                 </Link>
+              </div>
+            </div>
+
+            <div className="card p-6">
+              <h2 className="text-xl font-semibold text-text mb-4">{t('Recebimentos')}</h2>
+              <p className="text-text-secondary text-sm mb-4">
+                Configure sua conta para receber pagamentos das vendas diretamente na sua conta bancária.
+              </p>
+              {stripeError && (
+                <p className="text-red-500 text-sm mb-3">{stripeError}</p>
+              )}
+              <div className="space-y-3">
+                <button
+                  onClick={handleStripeConnect}
+                  disabled={stripeLoading}
+                  className="w-full flex items-center justify-center space-x-2 bg-primary hover:bg-primary-dark text-white px-4 py-3 rounded-lg font-medium disabled:opacity-50"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  <span>
+                    {stripeLoading
+                      ? t('Processando...')
+                      : profile?.stripe_account_id
+                        ? t('Completar cadastro Stripe')
+                        : t('Conectar conta Stripe')}
+                  </span>
+                </button>
+                {profile?.stripe_account_id && (
+                  <button
+                    onClick={handleStripePortal}
+                    disabled={stripeLoading}
+                    className="w-full flex items-center justify-center space-x-2 border border-border hover:border-primary text-text px-4 py-3 rounded-lg font-medium disabled:opacity-50"
+                  >
+                    <ExternalLink className="w-5 h-5" />
+                    <span>{t('Painel Stripe')}</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

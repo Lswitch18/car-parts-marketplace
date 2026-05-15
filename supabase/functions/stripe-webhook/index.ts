@@ -129,14 +129,14 @@ async function handleCheckoutCompleted(session: any) {
   const { transaction_id, part_id, buyer_id, seller_id } = session.metadata || {};
 
   if (transaction_id) {
-    await supabase
-      .from('transactions')
-      .update({
-        payment_status: 'paid',
-        stripe_payment_id: session.id,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', transaction_id);
+      await supabase
+        .from('transactions')
+        .update({
+          payment_status: 'escrow',
+          stripe_payment_id: session.id,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', transaction_id);
 
     if (part_id) {
       await supabase
@@ -233,6 +233,90 @@ async function handlePayoutPaid(payout: any) {
   console.log(`[Webhook] Payout paid: ${payout.id} amount: ${payout.amount}`);
 }
 
+async function verifyStripeSignature(
+  payload: string,
+  sigHeader: string,
+  secret: string
+): Promise<boolean> {
+  const parts = sigHeader.split(',');
+  let timestamp = '';
+  let sigValue = '';
+
+  for (const part of parts) {
+    const [key, value] = part.split('=');
+    if (key === 't') timestamp = value;
+    if (key === 'v1') sigValue = value;
+  }
+
+  if (!timestamp || !sigValue) return false;
+
+  const signedPayload = `${timestamp}.${payload}`;
+  const encoder = new TextEncoder();
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  const hmacResult = await crypto.subtle.sign('HMAC', key, encoder.encode(signedPayload));
+  const hmacHex = Array.from(new Uint8Array(hmacResult))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  const sigBuffer = hexToBytes(sigValue);
+  const hmacBuffer = new Uint8Array(hmacResult);
+
+  if (sigBuffer.length !== hmacBuffer.length) return false;
+
+  return constantTimeCompare(sigBuffer, hmacBuffer);
+}
+
+function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+function constantTimeCompare(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a[i] ^ b[i];
+  }
+  return result === 0;
+}
+
+async function handleEvent(event: StripeEvent) {
+  switch (event.type) {
+    case 'checkout.session.completed':
+      await handleCheckoutCompleted(event.data.object);
+      break;
+    case 'payment_intent.payment_failed':
+      await handlePaymentFailed(event.data.object);
+      break;
+    case 'charge.refunded':
+      await handleChargeRefunded(event.data.object);
+      break;
+    case 'charge.dispute.created':
+    case 'charge.dispute.updated':
+      await handleDisputeCreated(event.data.object);
+      break;
+    case 'transfer.created':
+      await handleTransferCreated(event.data.object);
+      break;
+    case 'payout.paid':
+      await handlePayoutPaid(event.data.object);
+      break;
+    default:
+      console.log(`[Webhook] Unhandled event type: ${event.type}`);
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -251,47 +335,11 @@ Deno.serve(async (req) => {
       console.log('[Webhook] DEMO MODE - skipping signature verification');
       console.log('[Webhook] Event received:', event.type);
 
-      switch (event.type) {
-        case 'checkout.session.completed':
-          await handleCheckoutCompleted(event.data.object);
-          break;
-        case 'payment_intent.payment_failed':
-          await handlePaymentFailed(event.data.object);
-          break;
-        case 'charge.refunded':
-          await handleChargeRefunded(event.data.object);
-          break;
-        case 'charge.dispute.created':
-        case 'charge.dispute.updated':
-          await handleDisputeCreated(event.data.object);
-          break;
-        case 'transfer.created':
-          await handleTransferCreated(event.data.object);
-          break;
-        case 'payout.paid':
-          await handlePayoutPaid(event.data.object);
-          break;
-        default:
-          console.log(`[Webhook] Unhandled event type: ${event.type}`);
-      }
-
+      await handleEvent(event);
       return successResponse({ received: true });
     }
 
-    const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(STRIPE_WEBHOOK_SECRET),
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['verify']
-    );
-    const sigParts = signature.split('=');
-    const sigValue = sigParts.length > 1 ? sigParts[1] : signature;
-    const payloadBytes = encoder.encode(payload);
-    const signatureBytes = encoder.encode(sigValue);
-    const isValid = await crypto.subtle.verify('HMAC', key, payloadBytes, signatureBytes);
-
+    const isValid = await verifyStripeSignature(payload, signature, STRIPE_WEBHOOK_SECRET);
     if (!isValid) {
       return errorResponse('Invalid Stripe signature', 400);
     }
@@ -299,29 +347,7 @@ Deno.serve(async (req) => {
     const event = JSON.parse(payload) as StripeEvent;
     console.log('[Webhook] Event received:', event.type);
 
-    switch (event.type) {
-      case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object);
-        break;
-      case 'payment_intent.payment_failed':
-        await handlePaymentFailed(event.data.object);
-        break;
-      case 'charge.refunded':
-        await handleChargeRefunded(event.data.object);
-        break;
-      case 'charge.dispute.created':
-      case 'charge.dispute.updated':
-        await handleDisputeCreated(event.data.object);
-        break;
-      case 'transfer.created':
-        await handleTransferCreated(event.data.object);
-        break;
-      case 'payout.paid':
-        await handlePayoutPaid(event.data.object);
-        break;
-      default:
-        console.log(`[Webhook] Unhandled event type: ${event.type}`);
-    }
+    await handleEvent(event);
 
     return successResponse({ received: true });
 

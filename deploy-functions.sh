@@ -68,8 +68,8 @@ FUNCTIONS=(
     "auctions:supabase/functions/auctions/index.ts"
     "categories:supabase/functions/categories/index.ts"
     "brands:supabase/functions/brands/index.ts"
-    "stripe-webhook:supabase/functions/stripe-webhook.ts"
-    "stripe-checkout:supabase/functions/stripe-checkout.ts"
+    "stripe-webhook:supabase/functions/stripe-webhook/index.ts"
+    "stripe-checkout:supabase/functions/stripe-checkout/index.ts"
 )
 
 echo ""

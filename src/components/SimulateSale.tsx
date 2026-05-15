@@ -63,7 +63,7 @@ export default function SimulateSale({ onComplete }: Props) {
 
       await supabase
         .from('transactions')
-        .update({ payment_status: 'paid' })
+        .update({ payment_status: 'escrow' })
         .eq('id', transaction.id)
 
       await supabase.from('messages').insert({
