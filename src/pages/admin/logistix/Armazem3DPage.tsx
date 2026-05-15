@@ -1,7 +1,10 @@
 import { useState, Suspense, lazy } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { logisticsApi } from '../../../lib/logisticsApi';
-import { Warehouse, Package, Percent, ChevronDown, Maximize2, Minimize2 } from 'lucide-react';
+import {
+  Warehouse, Package, Percent, ChevronDown, Maximize2, Minimize2,
+  RotateCcw, Search, AlertCircle, Boxes, MapPin,
+} from 'lucide-react';
 import ZoneBottomSheet from '../../../components/logistix/ZoneBottomSheet';
 import GestureHint from '../../../components/logistix/GestureHint';
 
@@ -15,14 +18,65 @@ interface Zone {
   ocupacao: number;
   pos_x?: number;
   pos_y?: number;
-  tipo_visual?: string;
 }
 
-function getOccupancyColor(pct: number): string {
+const ZONE_TYPE_LABEL: Record<string, string> = {
+  RECEBIMENTO: 'Azul',
+  PICKING: 'Verde',
+  SEPARACAO: 'Amarelo',
+  EXPEDICAO: 'Laranja',
+  ARMAZENAGEM: 'Roxo',
+};
+
+function getOccColor(pct: number): string {
   if (pct > 80) return '#EF4444';
   if (pct > 60) return '#FACC15';
   if (pct > 30) return '#22C55E';
   return '#166534';
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="flex-1 flex items-center justify-center bg-[#0a0a1a]">
+      <div className="text-center">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <Warehouse size={28} className="text-blue-400/50" />
+        </div>
+        <div className="w-32 h-3 bg-white/5 rounded-full mx-auto animate-pulse mb-2" />
+        <div className="w-24 h-2 bg-white/5 rounded-full mx-auto animate-pulse" />
+      </div>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center text-gray-500 bg-[#0a0a1a]">
+      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center mb-4">
+        <Boxes size={36} className="text-gray-600" />
+      </div>
+      <p className="text-sm text-gray-400 font-medium">Nenhuma zona encontrada</p>
+      <p className="text-xs text-gray-600 mt-1">Este armazém não possui zonas configuradas</p>
+    </div>
+  );
+}
+
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center bg-[#0a0a1a]">
+      <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
+        <AlertCircle size={28} className="text-red-400" />
+      </div>
+      <p className="text-sm text-gray-400 font-medium">Erro ao carregar</p>
+      <p className="text-xs text-gray-600 mt-1 mb-4 text-center px-8">{message}</p>
+      <button
+        onClick={onRetry}
+        className="h-9 px-4 bg-[#1F2937] hover:bg-[#2a3a4a] rounded-xl text-xs text-gray-300 font-medium transition-colors border border-white/5"
+      >
+        Tentar novamente
+      </button>
+    </div>
+  );
 }
 
 export default function Armazem3DPage() {
@@ -30,8 +84,14 @@ export default function Armazem3DPage() {
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
+  const [searchCD, setSearchCD] = useState('');
+  const [resetKey, setResetKey] = useState(0);
 
-  const { data: armazens } = useQuery({
+  const {
+    data: armazens,
+    isLoading: loadingArmazens,
+    isError: errorArmazens,
+  } = useQuery({
     queryKey: ['admin', 'armazens-list'],
     queryFn: async () => {
       const supabase = (await import('../../../lib/supabase')).supabase;
@@ -53,8 +113,15 @@ export default function Armazem3DPage() {
   });
 
   const armazemList = Array.isArray(armazens) ? armazens : [];
+  const filteredCDs = searchCD
+    ? armazemList.filter(
+        (a) =>
+          a.nome.toLowerCase().includes(searchCD.toLowerCase()) ||
+          a.cidade.toLowerCase().includes(searchCD.toLowerCase())
+      )
+    : armazemList;
 
-  const { data: layout, isLoading: layoutLoading } = useQuery({
+  const { data: layout, isLoading: layoutLoading, isError: layoutError, refetch: refetchLayout } = useQuery({
     queryKey: ['admin', 'armazem-3d', armazemId],
     queryFn: () => logisticsApi.wms.layout(armazemId),
     enabled: !!armazemId,
@@ -64,6 +131,7 @@ export default function Armazem3DPage() {
   const zonas = layout?.zonas || [];
   const inventario = layout?.inventario || [];
   const totalItens = inventario.reduce((s: number, i: any) => s + (i.quantidade || 0), 0);
+  const totalZonas = zonas.length;
 
   const armazem3d: {
     largura_m: number; comprimento_m: number; altura_m: number;
@@ -84,12 +152,19 @@ export default function Armazem3DPage() {
     ? Math.round((armazem3d.ocupacao / armazem3d.capacidade) * 100)
     : 0;
 
+  const handleRetry = () => {
+    refetchLayout();
+    setResetKey((k) => k + 1);
+  };
+
+  const showEmptyState = armazemId && !layoutLoading && !layoutError && zonas.length === 0;
+
   return (
-    <div className={`flex flex-col ${fullscreen ? 'fixed inset-0 z-50 bg-[#0B1220]' : ''}`}>
+    <div className={`flex flex-col ${fullscreen ? 'fixed inset-0 z-50 bg-[#0a0a1a]' : ''}`}>
       {/* Top Bar */}
-      <div className="flex items-center justify-between p-3 bg-[#0B1220] border-b border-white/5 flex-shrink-0 z-10">
+      <div className="flex items-center justify-between px-3 py-2.5 bg-[#0B1220] border-b border-white/5 flex-shrink-0 z-10">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <Warehouse size={18} className="text-blue-400 flex-shrink-0" />
+          <Warehouse size={16} className="text-blue-400 flex-shrink-0" />
           {selectedArmazem ? (
             <div className="min-w-0">
               <h2 className="text-sm font-bold truncate">{selectedArmazem.nome}</h2>
@@ -98,16 +173,26 @@ export default function Armazem3DPage() {
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-400">Selecione um armazém</p>
+            <p className="text-sm text-gray-500">Selecione um centro de distribuição</p>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {armazemId && (
+            <button
+              onClick={() => setResetKey((k) => k + 1)}
+              className="w-8 h-8 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+              title="Resetar visão"
+            >
+              <RotateCcw size={14} />
+            </button>
+          )}
           <button
             onClick={() => setFullscreen(!fullscreen)}
-            className="w-9 h-9 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white"
+            className="w-8 h-8 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+            title={fullscreen ? 'Sair da tela cheia' : 'Tela cheia'}
           >
-            {fullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            {fullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
         </div>
       </div>
@@ -115,109 +200,171 @@ export default function Armazem3DPage() {
       {/* CD Selector */}
       <div className="relative px-3 py-2 bg-[#0B1220] border-b border-white/5 flex-shrink-0">
         <button
-          onClick={() => setShowSelector(!showSelector)}
-          className="w-full h-10 bg-[#111827] border border-white/10 rounded-xl px-4 flex items-center justify-between text-sm text-white"
+          onClick={() => {
+            setShowSelector(!showSelector);
+            setSearchCD('');
+          }}
+          className="w-full h-10 bg-[#111827] border border-white/10 rounded-xl px-3.5 flex items-center justify-between text-sm text-white active:scale-[0.99] transition-transform"
         >
-          <span className={armazemId ? '' : 'text-gray-500'}>
-            {selectedArmazem?.nome || 'Escolher centro de distribuição...'}
-          </span>
-          <ChevronDown size={16} className="text-gray-400" />
+          <div className="flex items-center gap-2 min-w-0">
+            <Warehouse size={14} className="text-blue-400 flex-shrink-0" />
+            <span className={`truncate ${armazemId ? '' : 'text-gray-500'}`}>
+              {selectedArmazem?.nome || 'Escolher centro de distribuição...'}
+            </span>
+          </div>
+          <ChevronDown
+            size={14}
+            className={`text-gray-400 transition-transform flex-shrink-0 ${showSelector ? 'rotate-180' : ''}`}
+          />
         </button>
 
         {showSelector && (
           <>
             <div className="fixed inset-0 z-20" onClick={() => setShowSelector(false)} />
-            <div className="absolute left-3 right-3 top-full mt-1 z-30 bg-[#1F2937] border border-white/10 rounded-xl max-h-60 overflow-y-auto shadow-2xl">
-              {armazemList.map((a) => {
-                const pct = a.capacidade > 0
-                  ? Math.round((a.ocupacao / a.capacidade) * 100)
-                  : 0;
-                const cor = getOccupancyColor(pct);
-                return (
-                  <button
-                    key={a.id}
-                    onClick={() => {
-                      setArmazemId(a.id);
-                      setShowSelector(false);
-                      setSelectedZone(null);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/5 transition-colors ${
-                      a.id === armazemId ? 'bg-blue-500/10 border-l-2 border-blue-500' : ''
-                    }`}
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-[#111827] flex items-center justify-center flex-shrink-0">
-                      <Warehouse size={14} className="text-blue-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{a.nome}</p>
-                      <p className="text-[11px] text-gray-500">
-                        {a.cidade} · {a.estado}
-                      </p>
-                    </div>
-                    <span className="text-xs font-bold" style={{ color: cor }}>
-                      {pct}%
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="absolute left-3 right-3 top-full mt-1 z-30 bg-[#1a1a2e] border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+              <div className="flex items-center gap-2 px-3 h-10 border-b border-white/5">
+                <Search size={14} className="text-gray-500 flex-shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Buscar CD por nome ou cidade..."
+                  value={searchCD}
+                  onChange={(e) => setSearchCD(e.target.value)}
+                  className="bg-transparent border-none outline-none text-xs text-white w-full placeholder:text-gray-600"
+                  autoFocus
+                />
+              </div>
+              <div className="max-h-52 overflow-y-auto">
+                {loadingArmazens ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : errorArmazens ? (
+                  <div className="text-center py-6 text-xs text-red-400">
+                    Erro ao carregar armazéns
+                  </div>
+                ) : filteredCDs.length === 0 ? (
+                  <div className="text-center py-6 text-xs text-gray-500">
+                    Nenhum CD encontrado
+                  </div>
+                ) : (
+                  filteredCDs.map((a) => {
+                    const pct = a.capacidade > 0 ? Math.round((a.ocupacao / a.capacidade) * 100) : 0;
+                    const cor = getOccColor(pct);
+                    return (
+                      <button
+                        key={a.id}
+                        onClick={() => {
+                          setArmazemId(a.id);
+                          setShowSelector(false);
+                          setSelectedZone(null);
+                        }}
+                        className={`w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-white/5 transition-colors ${
+                          a.id === armazemId ? 'bg-blue-500/10 border-l-2 border-blue-500' : ''
+                        }`}
+                      >
+                        <div className="w-9 h-9 rounded-lg bg-[#111827] flex items-center justify-center flex-shrink-0">
+                          <Warehouse size={14} className="text-blue-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{a.nome}</p>
+                          <p className="text-[11px] text-gray-500 flex items-center gap-1">
+                            <MapPin size={10} /> {a.cidade}
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <span className="text-xs font-bold" style={{ color: cor }}>
+                            {pct}%
+                          </span>
+                          <p className="text-[10px] text-gray-600">ocupação</p>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
             </div>
           </>
         )}
       </div>
 
+      {/* Mini Stats Bar */}
+      {armazemId && !layoutLoading && !layoutError && zonas.length > 0 && (
+        <div className="flex items-center gap-3 px-3 py-1.5 bg-[#0B1220] border-b border-white/5 flex-shrink-0 overflow-x-auto">
+          <span className="flex items-center gap-1.5 text-[11px] text-gray-400 whitespace-nowrap">
+            <Boxes size={12} className="text-blue-400" />
+            {totalZonas} zonas
+          </span>
+          <span className="w-px h-3 bg-white/5" />
+          <span className="flex items-center gap-1.5 text-[11px] text-gray-400 whitespace-nowrap">
+            <Package size={12} className="text-cyan-400" />
+            {totalItens} itens
+          </span>
+          <span className="w-px h-3 bg-white/5" />
+          <span className="flex items-center gap-1.5 text-[11px] whitespace-nowrap" style={{ color: getOccColor(pctGeral) }}>
+            <Percent size={12} />
+            {pctGeral}% ocupado
+          </span>
+        </div>
+      )}
+
+      {/* Legend */}
+      {armazemId && !layoutLoading && zonas.length > 0 && (
+        <div className="flex items-center gap-3 px-3 py-1.5 bg-[#0B1220] border-b border-white/5 flex-shrink-0 overflow-x-auto">
+          <span className="text-[10px] text-gray-500 font-medium mr-1">Zonas:</span>
+          {Object.entries(ZONE_TYPE_LABEL).map(([tipo, label]) => {
+            const hasType = zonas.some((z) => z.tipo === tipo);
+            if (!hasType) return null;
+            const colors: Record<string, string> = {
+              RECEBIMENTO: '#3B82F6', PICKING: '#22C55E',
+              SEPARACAO: '#FACC15', EXPEDICAO: '#F97316',
+              ARMAZENAGEM: '#8B5CF6',
+            };
+            return (
+              <span key={tipo} className="flex items-center gap-1 text-[10px] text-gray-400 whitespace-nowrap">
+                <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ background: colors[tipo] || '#6B7280' }} />
+                {label}
+              </span>
+            );
+          })}
+        </div>
+      )}
+
       {/* 3D Canvas */}
-      <div className={`flex-1 relative ${fullscreen ? '' : 'min-h-[50vh]'}`}>
+      <div className={`flex-1 relative ${fullscreen ? '' : 'min-h-[55vh]'}`}>
         {!armazemId ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500 py-20">
-            <Warehouse size={48} className="mb-3 text-gray-600" />
-            <p className="text-sm">Selecione um centro de distribuição</p>
-            <p className="text-xs text-gray-600 mt-1">para visualizar o modelo 3D</p>
+          <div className="flex flex-col items-center justify-center h-full text-gray-500 py-24">
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center mb-4">
+              <Warehouse size={36} className="text-gray-600" />
+            </div>
+            <p className="text-sm font-medium">Selecione um centro de distribuição</p>
+            <p className="text-xs text-gray-600 mt-1">para visualizar o modelo 3D interativo</p>
           </div>
         ) : layoutLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <LoadingSkeleton />
+        ) : layoutError ? (
+          <ErrorState
+            message="Não foi possível carregar os dados do armazém. Verifique a conexão."
+            onRetry={handleRetry}
+          />
+        ) : showEmptyState ? (
+          <EmptyState />
         ) : (
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center h-full">
-                <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              </div>
-            }
-          >
-            <WarehouseScene
-              zonas={zonas}
-              armazem={armazem3d}
-              onZoneClick={(z) => setSelectedZone(z)}
-            />
+          <Suspense fallback={<LoadingSkeleton />}>
+            <WarehouseScene key={resetKey} zonas={zonas} armazem={armazem3d} onZoneClick={(z) => setSelectedZone(z)} />
             <GestureHint />
           </Suspense>
         )}
 
-        {/* Floating Stats */}
-        {armazemId && !layoutLoading && (
-          <div className="absolute top-3 left-3 flex items-center gap-2 text-xs bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/5 pointer-events-none">
-            <span className="flex items-center gap-1">
-              <Package size={12} className="text-blue-400" /> {totalItens}
-            </span>
-            <span className="text-gray-600">|</span>
-            <span className="flex items-center gap-1">
-              <Percent size={12} style={{ color: getOccupancyColor(pctGeral) }} />{' '}
-              <span style={{ color: getOccupancyColor(pctGeral) }}>{pctGeral}%</span>
-            </span>
-          </div>
-        )}
-
-        {/* Occupancy Legend */}
-        {armazemId && !layoutLoading && (
-          <div className="absolute bottom-3 left-3 flex items-center gap-3 text-[10px] bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/5 pointer-events-none">
-            <span className="flex items-center gap-1">
+        {/* Touch-friendly zone type reminder */}
+        {armazemId && zonas.length > 0 && !layoutLoading && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 text-[10px] bg-black/70 backdrop-blur-md rounded-xl px-4 py-2 border border-white/5 pointer-events-none shadow-lg">
+            <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-sm bg-[#22C55E]" /> Normal
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-sm bg-[#FACC15]" /> Alerta
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-sm bg-[#EF4444]" /> Crítico
             </span>
           </div>
