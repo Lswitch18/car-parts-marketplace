@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mobileApi } from '../../lib/mobileApi';
 import { getCurrentPosition } from '../../lib/geo';
 import { getCityCoords, haversineKm } from '../../lib/distance';
+import { useGpsTracking } from '../../lib/useGpsTracking';
 import ScannerCamera from '../../components/mobile/ScannerCamera';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, ArrowRight,
@@ -100,6 +101,13 @@ export default function WorkerColetas() {
     }
     setSortedRows(items);
   }, [rows, userPos]);
+
+  const { startTracking: startGps } = useGpsTracking({
+    motoristaId: 'a0000003-0000-0000-0000-000000000009',
+    interval: 30000,
+  });
+
+  useEffect(() => { startGps(); }, [startGps]);
 
   const totalDoDia = sortedRows.length;
   const concluidas = sortedRows.filter((r: any) => r.status === 'coletado' || r.status === 'entregue').length;

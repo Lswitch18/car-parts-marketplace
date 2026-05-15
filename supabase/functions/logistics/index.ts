@@ -5,12 +5,18 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function requireAdmin(req: Request) {
+async function getAuthUser(req: Request) {
   const authHeader = req.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) return null;
   const { data: { user }, error } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
   if (error || !user) return null;
-  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+  return user;
+}
+
+async function requireAdmin(req: Request) {
+  const user = await getAuthUser(req);
+  if (!user) return null;
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
   if (profile?.role !== 'admin') return null;
   return { ...user, profile };
 }
@@ -548,6 +554,60 @@ Deno.serve(async (req) => {
       let q = supabase.from('admin_zonas').select('*');
       if (arm) q = q.eq('armazem_id', arm);
       const { data } = await q.order('nome');
+      return json(data || []);
+    }
+
+    // ─── GPS TRACKING ─────────────────────────────────────────────────────
+    // POST /tracking/gps - receber posição do motorista (auth simples)
+    if (path === '/tracking/gps' && req.method === 'POST') {
+      const authUser = await getAuthUser(req);
+      if (!authUser) return json({ error: 'Não autorizado' }, 401);
+      const { motorista_id, latitude, longitude, precisao, velocidade, bateria } = body as any;
+      if (!motorista_id || latitude == null || longitude == null) return json({ error: 'motorista_id, latitude e longitude obrigatórios' }, 400);
+
+      const { error } = await supabase.from('admin_gps_log').insert({
+        motorista_id, usuario_id: user.id,
+        latitude, longitude, precisao, velocidade, bateria,
+      });
+      if (error) return json({ error: error.message }, 400);
+
+      await supabase.from('admin_motoristas').update({
+        latitude, longitude, ultima_atualizacao: new Date().toISOString(),
+      }).eq('id', motorista_id);
+
+      return json({ ok: true }, 201);
+    }
+
+    // GET /tracking/gps - listar posições atuais de todos motoristas
+    if (path === '/tracking/gps' && req.method === 'GET') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const url2 = new URL(req.url);
+      const motoristaId = url2.searchParams.get('motorista_id') || '';
+      const history = url2.searchParams.get('history') === 'true';
+
+      if (history && motoristaId) {
+        const since = url2.searchParams.get('since') || new Date(Date.now() - 86400000).toISOString();
+        const { data } = await supabase.from('admin_gps_log')
+          .select('latitude,longitude,created_at,velocidade')
+          .eq('motorista_id', motoristaId)
+          .gte('created_at', since)
+          .order('created_at', { ascending: true })
+          .limit(500);
+        return json(data || []);
+      }
+
+      if (motoristaId) {
+        const { data } = await supabase.from('admin_gps_log')
+          .select('*, motorista:admin_motoristas!motorista_id(nome,transportadora,veiculo_id)')
+          .eq('motorista_id', motoristaId)
+          .order('created_at', { ascending: false }).limit(1);
+        return json(data?.[0] || null);
+      }
+
+      const { data } = await supabase.from('admin_motoristas')
+        .select('id,nome,transportadora,latitude,longitude,ultima_atualizacao')
+        .not('latitude', 'is', null).eq('ativo', true).order('nome');
       return json(data || []);
     }
 

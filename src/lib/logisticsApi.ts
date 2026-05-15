@@ -83,8 +83,34 @@ export const logisticsApi = {
   // Tracking
   tracking: {
     get: (codigo: string) => logisticsFetch<any>(`/tracking/${encodeURIComponent(codigo)}`),
+    gps: (motorista_id: string, latitude: number, longitude: number, precisao?: number, velocidade?: number) =>
+      logisticsFetch<any>('/tracking/gps', { method: 'POST', body: JSON.stringify({ motorista_id, latitude, longitude, precisao, velocidade: velocidade || 0 }) }),
+    gpsList: () => logisticsFetch<any[]>('/tracking/gps'),
+    gpsHistory: (motorista_id: string, since?: string) =>
+      logisticsFetch<any[]>(`/tracking/gps?motorista_id=${motorista_id}&history=true${since ? `&since=${since}` : ''}`),
   },
 
   // Dashboard
   dashboard: () => logisticsFetch<any>('/dashboard'),
+
+  // WMS
+  wms: {
+    receive: (data: { codigo_barras: string; armazem_id: string; zona_id?: string }) =>
+      logisticsFetch<any>('/wms/receive', { method: 'POST', body: JSON.stringify(data) }),
+    sort: (data: { inventory_id: string; zona_id: string; rota_id?: string }) =>
+      logisticsFetch<any>('/wms/sort', { method: 'POST', body: JSON.stringify(data) }),
+    crossdock: (data: { inventory_id: string; armazem_destino_id: string; zona_destino_id?: string }) =>
+      logisticsFetch<any>('/wms/crossdock', { method: 'POST', body: JSON.stringify(data) }),
+    inventory: (armazem_id?: string, zona_id?: string) => {
+      const q = new URLSearchParams();
+      if (armazem_id) q.set('armazem_id', armazem_id);
+      if (zona_id) q.set('zona_id', zona_id);
+      return logisticsFetch<any[]>('/wms/inventory?' + q);
+    },
+    zones: (armazem_id?: string) => {
+      const q = new URLSearchParams();
+      if (armazem_id) q.set('armazem_id', armazem_id);
+      return logisticsFetch<any[]>('/wms/zones?' + q);
+    },
+  },
 };
