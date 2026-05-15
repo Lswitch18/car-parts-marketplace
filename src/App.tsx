@@ -18,6 +18,7 @@ import TransactionManagement from './pages/admin/TransactionManagement'
 import LogistixDashboard from './pages/admin/LogistixDashboard'
 import AdminRoute from './components/AdminRoute'
 import ProtectedRoute from './components/ProtectedRoute'
+import TrackingPublico from './pages/TrackingPublico'
 import MobileApp from './pages/mobile/MobileApp'
 import WorkerApp from './pages/mobile/WorkerApp'
 import QRInstallPage from './pages/mobile/QRInstallPage'
@@ -69,6 +70,9 @@ function App() {
           <Route path="worker/dashboard" element={<WorkerApp />} />
           <Route path="agencia" element={<AgenciaPage />} />
         </Route>
+
+        {/* Rastreamento público (sem login) */}
+        <Route path="rastreio" element={<TrackingPublico />} />
 
         {/* Redirecionamento para rotas inexistentes (404) */}
         <Route path="*" element={<Navigate to="/" replace />} />

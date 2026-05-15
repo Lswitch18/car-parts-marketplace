@@ -315,12 +315,54 @@ async function trackingPublico(codigo: string) {
   const { data: eventos } = await supabase.from('admin_rastreamento')
     .select('*').eq('pedido_id', shipment.pedido_id).order('created_at', { ascending: false });
 
+  // Delay prediction
+  const slaHoras = shipment.sla_horas || 72;
+  const prazo = shipment.data_prazo ? new Date(shipment.data_prazo) : new Date(Date.now() + slaHoras * 3600000);
+  const agora = new Date();
+  const horasRestantes = (prazo.getTime() - agora.getTime()) / 3600000;
+  const pctTempoGasto = shipment.data_coleta
+    ? ((agora.getTime() - new Date(shipment.data_coleta).getTime()) / (prazo.getTime() - new Date(shipment.data_coleta).getTime())) * 100
+    : 0;
+
+  let riscoAtraso: 'baixo' | 'medio' | 'alto' = 'baixo';
+  let motivoAtraso = '';
+
+  if (shipment.status === 'delivered') {
+    riscoAtraso = 'baixo';
+  } else if (horasRestantes < 0) {
+    riscoAtraso = 'alto';
+    motivoAtraso = 'Prazo de entreja excedido';
+  } else if (shipment.etapa === 'CREATED' || shipment.etapa === 'DROPOFF') {
+    if (horasRestantes < slaHoras * 0.3) {
+      riscoAtraso = 'alto';
+      motivoAtraso = 'Ainda nao saiu para coleta e o prazo esta proximo do fim';
+    } else if (horasRestantes < slaHoras * 0.5) {
+      riscoAtraso = 'medio';
+      motivoAtraso = 'Demora na coleta - risco de atraso no prazo final';
+    }
+  } else if (shipment.etapa === 'SORTING') {
+    if (horasRestantes < slaHoras * 0.2) {
+      riscoAtraso = 'alto';
+      motivoAtraso = 'Ainda em triagem e o prazo esta muito proximo';
+    } else if (horasRestantes < slaHoras * 0.4) {
+      riscoAtraso = 'medio';
+      motivoAtraso = 'Triagem lenta - monitorar rota de entrega';
+    }
+  } else if (shipment.etapa === 'LINE_HAUL' || shipment.etapa === 'LAST_MILE') {
+    if (horasRestantes < slaHoras * 0.1) {
+      riscoAtraso = 'alto';
+      motivoAtraso = 'Em rota mas prazo esta esgotando';
+    }
+  }
+
   return json({
     shipment: {
       codigo: shipment.codigo, etapa: shipment.etapa, status: shipment.status,
       data_prazo: shipment.data_prazo, data_coleta: shipment.data_coleta,
       data_entregue: shipment.data_entregue,
-      peso_kg: shipment.peso_kg,
+      peso_kg: shipment.peso_kg, sla_horas: slaHoras,
+      horas_restantes: Math.round(horasRestantes * 10) / 10,
+      risco_atraso: riscoAtraso, motivo_atraso: motivoAtraso,
     },
     cliente: shipment.cliente,
     pedido: shipment.pedido,
@@ -424,6 +466,89 @@ Deno.serve(async (req) => {
       const user = await requireAdmin(req);
       if (!user) return json({ error: 'Não autorizado' }, 401);
       return await atribuirMotorista(body, user.id);
+    }
+
+    // ─── WMS ──────────────────────────────────────────────────────────────
+    // Receber no CD
+    if (path === '/wms/receive' && req.method === 'POST') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const { codigo_barras, armazem_id, zona_id } = body as any;
+      if (!codigo_barras || !armazem_id) return json({ error: 'codigo_barras e armazem_id obrigatórios' }, 400);
+
+      const { data: package_rec } = await supabase.from('admin_packages').select('*, shipment:admin_shipments!shipment_id(*)').eq('codigo_barras', codigo_barras).maybeSingle();
+      if (!package_rec) return json({ error: 'Pacote não encontrado' }, 404);
+
+      await supabase.from('admin_shipments').update({ etapa: 'SORTING', status: 'in_transit' }).eq('id', package_rec.shipment_id);
+      await supabase.from('admin_inventario').insert({
+        armazem_id, zona_id: zona_id || null,
+        produto: package_rec.descricao || codigo_barras,
+        sku: codigo_barras, quantidade: 1,
+        lote: `REC-${new Date().toISOString().slice(0,10)}`,
+      });
+
+      await trackingEvent(package_rec.shipment.pedido_id, 'RECEBIDO_CD', `Recebido no CD - ${codigo_barras}`, 'CD');
+      auditLog(user.id, 'CREATE', 'admin_inventario', null, `receive: ${codigo_barras} em ${armazem_id}`);
+      return json({ ok: true }, 201);
+    }
+
+    // Separar por zona (sorting)
+    if (path === '/wms/sort' && req.method === 'POST') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const { inventory_id, zona_id, rota_id } = body as any;
+      if (!inventory_id || !zona_id) return json({ error: 'inventory_id e zona_id obrigatórios' }, 400);
+
+      await supabase.from('admin_inventario').update({ zona_id }).eq('id', inventory_id);
+      if (rota_id) await supabase.from('admin_shipments').update({ rota_id, etapa: 'SORTED' }).eq('id', rota_id);
+
+      auditLog(user.id, 'UPDATE', 'admin_inventario', inventory_id, `sorted to ${zona_id}`);
+      return json({ ok: true });
+    }
+
+    // Cross-docking
+    if (path === '/wms/crossdock' && req.method === 'POST') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const { inventory_id, armazem_destino_id, zona_destino_id } = body as any;
+      if (!inventory_id || !armazem_destino_id) return json({ error: 'inventory_id e armazem_destino_id obrigatórios' }, 400);
+
+      const { data: item } = await supabase.from('admin_inventario').select('*').eq('id', inventory_id).single();
+      if (!item) return json({ error: 'Item não encontrado' }, 404);
+
+      await supabase.from('admin_inventario').insert({
+        armazem_id: armazem_destino_id, zona_id: zona_destino_id || null,
+        produto: item.produto, sku: item.sku, quantidade: item.quantidade, lote: item.lote,
+      });
+      await supabase.from('admin_inventario').update({ quantidade: 0 }).eq('id', inventory_id);
+
+      auditLog(user.id, 'CREATE', 'admin_inventario', null, `crossdock: ${item.produto} → ${armazem_destino_id}`);
+      return json({ ok: true }, 201);
+    }
+
+    // Listar inventário
+    if (path === '/wms/inventory' && req.method === 'GET') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
+      const url2 = new URL(req.url);
+      const arm = url2.searchParams.get('armazem_id') || '';
+      const zn = url2.searchParams.get('zona_id') || '';
+
+      let q = supabase.from('admin_inventario').select('*, zona:admin_zonas!zona_id(nome,tipo), armazem:admin_armazens!armazem_id(nome)');
+      if (arm) q = q.eq('armazem_id', arm);
+      if (zn) q = q.eq('zona_id', zn);
+      const { data } = await q.order('created_at', { ascending: false }).limit(100);
+      return json(data || []);
+    }
+
+    // Listar zonas
+    if (path === '/wms/zones' && req.method === 'GET') {
+      const url2 = new URL(req.url);
+      const arm = url2.searchParams.get('armazem_id') || '';
+      let q = supabase.from('admin_zonas').select('*');
+      if (arm) q = q.eq('armazem_id', arm);
+      const { data } = await q.order('nome');
+      return json(data || []);
     }
 
     // Tracking público (sem auth)
