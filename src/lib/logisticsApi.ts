@@ -41,6 +41,22 @@ export const logisticsApi = {
   // OMS - Labels
   labels: {
     gerar: (shipmentIds: string[]) => logisticsFetch<any[]>(`/oms/labels?ids=${shipmentIds.join(',')}`),
+    zpl: (shipmentId: string) => logisticsFetch<string>(`/oms/labels/zpl/${shipmentId}`),
+    preview: (shipmentId: string) => logisticsFetch<any>(`/oms/labels/preview/${shipmentId}`),
+    async downloadZpl(shipmentId: string, filename?: string) {
+      const res = await fetch(`${BASE}/oms/labels/zpl/${shipmentId}`, { headers: { Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` } });
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename || `etiqueta.zpl`;
+      a.click(); URL.revokeObjectURL(url);
+    },
+    async downloadZplBatch(shipmentIds: string[]) {
+      for (const id of shipmentIds) {
+        const { data: s } = await supabase.from('admin_shipments').select('codigo').eq('id', id).single();
+        await logisticsApi.labels.downloadZpl(id, `etiqueta-${s?.codigo || id.slice(0, 8)}.zpl`);
+      }
+    },
   },
 
   // Dropoff

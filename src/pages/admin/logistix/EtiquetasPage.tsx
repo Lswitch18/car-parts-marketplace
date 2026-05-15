@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { adminApi } from '../../../lib/adminApi';
-import { Search, Package, CheckSquare, Square, Printer, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { logisticsApi } from '../../../lib/logisticsApi';
+import JsBarcode from 'jsbarcode';
+import QRCode from 'qrcode';
+import {
+  Search, Package, CheckSquare, Square, Printer, Download, X,
+} from 'lucide-react';
 
 export default function EtiquetasPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('pendente');
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [printMode, setPrintMode] = useState(false);
+  const [labels, setLabels] = useState<any[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
 
   const { data: pedidosData } = useQuery({
     queryKey: ['admin', 'pedidos', statusFilter, search, page],
@@ -17,12 +23,11 @@ export default function EtiquetasPage() {
 
   const rows = (pedidosData as any)?.rows || [];
   const total = (pedidosData as any)?.total || 0;
-  const pages = Math.ceil(total / 20);
 
   function toggleSelect(id: string) {
-    const newSel = new Set(selected);
-    if (newSel.has(id)) newSel.delete(id); else newSel.add(id);
-    setSelected(newSel);
+    const s = new Set(selected);
+    if (s.has(id)) s.delete(id); else s.add(id);
+    setSelected(s);
   }
 
   function toggleAll() {
@@ -30,52 +35,26 @@ export default function EtiquetasPage() {
     else setSelected(new Set(rows.map((r: any) => r.id)));
   }
 
-  if (printMode) {
-    return (
-      <div className="bg-white min-h-screen p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-between items-center mb-6 no-print">
-            <button onClick={() => setPrintMode(false)} className="px-4 py-2 bg-gray-200 rounded-lg text-sm">Voltar</button>
-            <button onClick={() => window.print()} className="px-6 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold flex items-center gap-2">
-              <Printer size={16} /> Imprimir
-            </button>
-          </div>
-          <div className="grid gap-4">
-            {rows.filter((r: any) => selected.has(r.id)).map((row: any, i: number) => (
-              <div key={row.id} className="border-2 border-gray-300 rounded-lg p-4">
-                <div className="flex justify-between items-start mb-3 pb-2 border-b-2 border-gray-800">
-                  <div>
-                    <p className="text-xs text-gray-500 font-bold">DAIG LOGISTIX</p>
-                    <p className="text-lg font-black tracking-tight">ETIQUETA DE ENVIO</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold font-mono">{row.codigo}</p>
-                    <p className="text-xs text-gray-400 mt-1">Lote #{i + 1}</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-3 text-sm">
-                  <div>
-                    <p className="text-xs text-gray-500 font-medium">Origem</p>
-                    <p className="font-semibold">CD Yokohama - Porto</p>
-                    <p className="text-xs text-gray-500">Yokohama, Kanagawa, Japão</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500 font-medium">Destino</p>
-                    <p className="font-semibold">{row.destino_cidade || '—'}</p>
-                    <p className="text-xs text-gray-500">{row.destino_estado || ''}</p>
-                  </div>
-                </div>
-                <div className="flex justify-between text-xs pt-2 border-t border-gray-200">
-                  <span>Peso: {row.peso_kg || '—'}kg</span>
-                  <span>{row.codigo}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <style>{`@media print { .no-print { display: none !important; } }`}</style>
-      </div>
-    );
+  async function handleGenerate() {
+    const results: any[] = [];
+    for (const id of selected) {
+      const pedido = rows.find((r: any) => r.id === id);
+      if (!pedido) continue;
+      try {
+        const shipment = await logisticsApi.shipments.create({
+          pedido_id: pedido.id, cliente_id: pedido.cliente_id,
+          armazem_origem_id: pedido.armazem_origem_id,
+          destino_cidade: pedido.destino_cidade, destino_estado: pedido.destino_estado,
+          peso_kg: pedido.peso_kg,
+        });
+        const preview = await logisticsApi.labels.preview(shipment.id);
+        results.push({ ...preview, shipmentId: shipment.id, pedidoCod: pedido.codigo });
+      } catch (e: any) {
+        console.error(`Erro no pedido ${pedido.codigo}:`, e.message);
+      }
+    }
+    setLabels(results);
+    setShowPreview(true);
   }
 
   return (
@@ -86,11 +65,12 @@ export default function EtiquetasPage() {
           <p className="text-sm text-gray-400 mt-1">{total} pedidos · {selected.size} selecionados</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={toggleAll} className="h-10 px-4 bg-[#111827] border border-white/10 rounded-lg text-sm text-gray-400 flex items-center gap-2">
+          <button onClick={toggleAll}
+            className="h-10 px-4 bg-[#111827] border border-white/10 rounded-lg text-sm text-gray-400 flex items-center gap-2">
             {selected.size === rows.length && rows.length > 0 ? <CheckSquare size={16} /> : <Square size={16} />}
-            Selecionar todos
+            Todos
           </button>
-          <button onClick={() => setPrintMode(true)} disabled={selected.size === 0}
+          <button onClick={handleGenerate} disabled={selected.size === 0}
             className="h-10 px-4 bg-blue-500 rounded-lg text-sm font-semibold flex items-center gap-2 disabled:opacity-50">
             <Package size={16} /> Gerar Etiquetas ({selected.size})
           </button>
@@ -109,58 +89,133 @@ export default function EtiquetasPage() {
           className="h-10 bg-[#111827] border border-white/10 rounded-lg px-3 text-sm text-white outline-none">
           <option value="pendente">Pendentes</option>
           <option value="">Todos</option>
-          <option value="em_transito">Em trânsito</option>
-          <option value="entregue">Entregues</option>
         </select>
       </div>
 
       <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                <th className="w-10 p-4">
-                  <input type="checkbox" checked={selected.size === rows.length && rows.length > 0} onChange={toggleAll} className="h-4 w-4 rounded" />
-                </th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Código</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Cliente</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Destino</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Status</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Peso</th>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-white/5">
+              <th className="w-10 p-4"><input type="checkbox" checked={selected.size === rows.length && rows.length > 0} onChange={toggleAll} className="h-4 w-4 rounded" /></th>
+              <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Código</th>
+              <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Cliente</th>
+              <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Destino</th>
+              <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Status</th>
+              <th className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase">Peso</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row: any) => (
+              <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                <td className="p-4"><input type="checkbox" checked={selected.has(row.id)} onChange={() => toggleSelect(row.id)} className="h-4 w-4 rounded" /></td>
+                <td className="p-4 text-sm font-mono font-medium">{row.codigo || '—'}</td>
+                <td className="p-4 text-sm text-gray-400 max-w-[150px] truncate">{(typeof row.cliente === 'object' ? row.cliente?.nome : row.cliente) || '—'}</td>
+                <td className="p-4 text-sm">{(row.destino_cidade && row.destino_estado) ? `${row.destino_cidade}/${row.destino_estado}` : '—'}</td>
+                <td className="p-4">
+                  <span className={`text-[11px] px-2 py-0.5 rounded-full ${row.status === 'pendente' ? 'bg-yellow-400/15 text-yellow-400' : row.status === 'em_transito' ? 'bg-blue-400/15 text-blue-400' : row.status === 'entregue' ? 'bg-green-400/15 text-green-400' : 'bg-gray-400/15 text-gray-400'}`}>{row.status || '—'}</span>
+                </td>
+                <td className="p-4 text-sm text-gray-400">{row.peso_kg ? `${row.peso_kg}kg` : '—'}</td>
               </tr>
-            </thead>
-            <tbody>
-              {rows.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-12 text-gray-500 text-sm">Nenhum pedido encontrado</td></tr>
-              ) : rows.map((row: any) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02]">
-                  <td className="p-4"><input type="checkbox" checked={selected.has(row.id)} onChange={() => toggleSelect(row.id)} className="h-4 w-4 rounded" /></td>
-                  <td className="p-4 text-sm font-mono font-medium">{row.codigo || '—'}</td>
-                  <td className="p-4 text-sm text-gray-400 max-w-[150px] truncate">{(typeof row.cliente === 'object' ? row.cliente?.nome : row.cliente) || '—'}</td>
-                  <td className="p-4 text-sm">{(row.destino_cidade && row.destino_estado) ? `${row.destino_cidade}/${row.destino_estado}` : '—'}</td>
-                  <td className="p-4">
-                    <span className={`text-[11px] px-2 py-0.5 rounded-full ${
-                      row.status === 'pendente' ? 'bg-yellow-400/15 text-yellow-400' :
-                      row.status === 'em_transito' ? 'bg-blue-400/15 text-blue-400' :
-                      row.status === 'entregue' ? 'bg-green-400/15 text-green-400' : 'bg-gray-400/15 text-gray-400'
-                    }`}>{row.status || '—'}</span>
-                  </td>
-                  <td className="p-4 text-sm text-gray-400">{row.peso_kg ? `${row.peso_kg}kg` : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {pages > 1 && (
-          <div className="flex items-center justify-between p-4 border-t border-white/5">
-            <span className="text-sm text-gray-400">Página {page} de {pages}</span>
-            <div className="flex gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30"><ChevronLeft size={16} className="text-gray-400" /></button>
-              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30"><ChevronRight size={16} className="text-gray-400" /></button>
-            </div>
-          </div>
-        )}
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      {/* Modal de Pré-visualização */}
+      {showPreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 overflow-y-auto py-6" onClick={() => setShowPreview(false)}>
+          <div className="w-full max-w-3xl mx-4 space-y-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between bg-[#1F2937] rounded-xl px-5 py-3 border border-white/10 sticky top-0 z-10">
+              <p className="text-sm font-medium">{labels.length} etiqueta(s) gerada(s)</p>
+              <div className="flex gap-2">
+                <button onClick={() => {
+                  for (const l of labels) logisticsApi.labels.downloadZpl(l.shipmentId, `etiqueta-${l.codigo}.zpl`);
+                }}
+                  className="h-10 px-4 bg-[#111827] border border-white/10 rounded-lg text-sm text-gray-300 flex items-center gap-2">
+                  <Download size={16} /> Baixar ZPL
+                </button>
+                <button onClick={() => window.print()}
+                  className="h-10 px-4 bg-blue-500 rounded-lg text-sm font-semibold flex items-center gap-2">
+                  <Printer size={16} /> Imprimir
+                </button>
+                <button onClick={() => setShowPreview(false)} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400">Fechar</button>
+              </div>
+            </div>
+
+            {labels.map((label, i) => (
+              <LabelCard key={label.shipmentId} label={label} index={i} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LabelCard({ label, index }: { label: any; index: number }) {
+  const barcodeRef = useRef<SVGSVGElement>(null);
+  const qrRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (barcodeRef.current) {
+      try {
+        JsBarcode(barcodeRef.current, label.codigo, { format: 'CODE128', width: 2, height: 60, displayValue: true, fontSize: 14, margin: 5 });
+      } catch {}
+    }
+    if (qrRef.current && label.codigo) {
+      QRCode.toDataURL(label.codigo, { width: 120, margin: 1, color: { dark: '#111827', light: '#ffffff' } })
+        .then(url => { if (qrRef.current) qrRef.current.src = url; });
+    }
+  }, [label.codigo]);
+
+  return (
+    <div className="bg-white text-black rounded-xl p-5 shadow-xl break-inside-avoid">
+      <div className="flex justify-between items-start mb-3 pb-3 border-b-2 border-gray-900">
+        <div>
+          <p className="text-[10px] text-gray-500 font-bold tracking-wider">DAIG LOGISTIX</p>
+          <p className="text-base font-black tracking-tight">ETIQUETA DE ENVIO</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-bold font-mono text-blue-600">{label.codigo}</p>
+          <p className="text-[10px] text-gray-400">#{index + 1} de {index + 1}</p>
+        </div>
+      </div>
+
+      <div className="flex gap-5 mb-3">
+        {/* QR Code */}
+        <div className="flex flex-col items-center">
+          <img ref={qrRef} width="110" height="110" alt="QR" className="mb-1" />
+          <span className="text-[8px] text-gray-400">Escanear</span>
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0 text-sm space-y-1.5">
+          <p><span className="text-gray-500">Destinatário:</span> <span className="font-semibold">{label.cliente}</span></p>
+          <p><span className="text-gray-500">Destino:</span> {label.destino}</p>
+          <p><span className="text-gray-500">Origem:</span> {label.origem}</p>
+          <div className="flex gap-4 text-xs">
+            <span><span className="text-gray-500">Peso:</span> {label.peso}</span>
+            <span><span className="text-gray-500">SLA:</span> {label.sla}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Barcode CODE128 */}
+      <div className="bg-gray-50 rounded-lg p-2 flex justify-center">
+        <svg ref={barcodeRef} className="max-w-full" />
+      </div>
+
+      <div className="flex justify-between text-[9px] text-gray-400 mt-2 pt-2 border-t border-gray-200">
+        <span>{label.data}</span>
+        <span className="font-mono">{label.codigo}</span>
+        <span>{label.peso}</span>
+      </div>
+
+      {/* ZPL code for download */}
+      <details className="mt-2 no-print">
+        <summary className="text-[10px] text-blue-600 cursor-pointer hover:text-blue-800">ZPL para impressora térmica</summary>
+        <pre className="text-[9px] text-gray-600 bg-gray-50 p-2 rounded mt-1 overflow-x-auto whitespace-pre-wrap">{label.zpl}</pre>
+      </details>
     </div>
   );
 }

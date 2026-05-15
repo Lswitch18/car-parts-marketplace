@@ -116,7 +116,85 @@ async function gerarEtiquetas(req: Request) {
     .select('*, pedido:admin_pedidos!pedido_id(*), cliente:admin_clientes!cliente_id(*), origem:admin_armazens!armazem_origem_id(*)')
     .in('id', idList);
 
-  return json(shipments || []);
+  return json(shipments || [], 200);
+}
+
+async function gerarZPL(shipment: any, index: number): Promise<string> {
+  const cod = shipment.codigo || `#DAIG-${Date.now()}`;
+  const cliente = shipment.cliente || {};
+  const pedido = shipment.pedido || {};
+  const destino = `${pedido.destino_cidade || ''}, ${pedido.destino_estado || ''}`.trim();
+  const peso = shipment.peso_kg || pedido.peso_kg || '0';
+  const data = new Date().toLocaleDateString('pt-BR');
+  const sla = shipment.sla_horas || '48';
+
+  return `^XA
+^LH10,10
+^FO0,0^GB600,400,2^FS
+
+^FO50,20^ADN,36,20^FDAIG LOGISTIX^FS
+^FO500,20^ADN,18,10^FDETIQUETA^FS
+
+^FO50,60^BY2^BCN,80,Y,N,N
+^FD${cod}^FS
+
+^FO50,160^BQN,2,8^FDQA,${cod}^FS
+
+^FO50,220^ADN,24,12^FD${(cliente.nome || 'Destinatario').substring(0, 35)}^FS
+^FO50,260^ADN,24,12^FD${destino || 'Japao'}^FS
+^FO50,300^ADN,24,12^FDPeso: ${peso}kg | SLA: ${sla}h^FS
+
+^FO50,360^ADN,18,10^FD${cod} | ${data}^FS
+^XZ`;
+}
+
+async function gerarLabelHTML(shipment: any, index: number): Promise<any> {
+  const cod = shipment.codigo || `#DAIG-${Date.now()}`;
+  const cliente = shipment.cliente || {};
+  const pedido = shipment.pedido || {};
+  const origem = shipment.origem || {};
+  const destino = `${pedido.destino_cidade || ''}, ${pedido.destino_estado || ''}`.trim();
+  const peso = shipment.peso_kg || pedido.peso_kg || '0';
+  const data = new Date().toLocaleDateString('pt-BR');
+
+  return {
+    codigo: cod,
+    cliente: cliente.nome || 'Destinatario',
+    destino: destino || 'Japao',
+    origem: origem.nome || 'CD DAIG',
+    peso: `${peso}kg`,
+    sla: `${shipment.sla_horas || '48'}h`,
+    data,
+    zpl: await gerarZPL(shipment, index),
+    labelId: index + 1,
+  };
+}
+
+async function handleLabelsZPL(req: Request, shipmentId: string) {
+  const { data: shipment } = await supabase.from('admin_shipments')
+    .select('*, pedido:admin_pedidos!pedido_id(*), cliente:admin_clientes!cliente_id(*), origem:admin_armazens!armazem_origem_id(*)')
+    .eq('id', shipmentId).single();
+
+  if (!shipment) return json({ error: 'Shipment não encontrado' }, 404);
+  const zpl = await gerarZPL(shipment, 0);
+
+  return new Response(zpl, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Content-Disposition': `attachment; filename="etiqueta-${shipment.codigo}.zpl"`,
+      'Access-Control-Allow-Origin': '*',
+    },
+  });
+}
+
+async function handleLabelsPreview(req: Request, shipmentId: string) {
+  const { data: shipment } = await supabase.from('admin_shipments')
+    .select('*, pedido:admin_pedidos!pedido_id(*), cliente:admin_clientes!cliente_id(*), origem:admin_armazens!armazem_origem_id(*)')
+    .eq('id', shipmentId).single();
+
+  if (!shipment) return json({ error: 'Shipment não encontrado' }, 404);
+  const label = await gerarLabelHTML(shipment, 0);
+  return json(label);
 }
 
 // ─── OMS: DROPOFF ──────────────────────────────────────────────────────────
@@ -302,6 +380,22 @@ Deno.serve(async (req) => {
     // OMS: labels
     if (path === '/oms/labels' && req.method === 'GET') {
       return await gerarEtiquetas(req);
+    }
+    if (segments[0] === 'oms' && segments[1] === 'labels' && segments[2] === 'zpl' && segments[3]) {
+      return await handleLabelsZPL(req, segments[3]);
+    }
+    if (segments[0] === 'oms' && segments[1] === 'labels' && segments[2] === 'preview' && segments[3]) {
+      return await handleLabelsPreview(req, segments[3]);
+    }
+    if (segments[0] === 'oms' && segments[1] === 'labels' && segments[2] === 'html' && segments[3]) {
+      const { data: shipment } = await supabase.from('admin_shipments')
+        .select('*, pedido:admin_pedidos!pedido_id(*), cliente:admin_clientes!cliente_id(*), origem:admin_armazens!armazem_origem_id(*)')
+        .eq('id', segments[3]).single();
+      if (!shipment) return json({ error: 'Shipment não encontrado' }, 404);
+      const label = await gerarZPL(shipment, 0);
+      return new Response(label, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Access-Control-Allow-Origin': '*' },
+      });
     }
 
     // DROPOFF
