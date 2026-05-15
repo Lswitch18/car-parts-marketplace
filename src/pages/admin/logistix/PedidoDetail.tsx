@@ -154,7 +154,7 @@ export default function PedidoDetail({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
               <h3 className="text-base font-medium mb-4">Timeline</h3>
-              <Timeline events={Array.isArray(tracking) ? tracking : tracking?.eventos || []} />
+              <Timeline events={(() => { if (!tracking) return []; if (Array.isArray(tracking)) return tracking; return (tracking as any).eventos || []; })()} />
             </div>
 
             <div className="space-y-4">

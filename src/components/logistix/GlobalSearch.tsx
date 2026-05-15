@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Package, Warehouse, Users, MapPin, X, Loader2 } from 'lucide-react';
+import { Search, Package, Warehouse, Users, X, Loader2 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 
 interface SearchResult {
@@ -38,9 +38,9 @@ export default function GlobalSearch({
 
     try {
       const [pedidos, clientes, armazens] = await Promise.all([
-        adminApi.dashboard.pedidosRecentes().catch(() => []),
-        adminApi.clientes.list().catch(() => []),
-        adminApi.armazens.list().catch(() => []),
+        adminApi.dashboard.pedidosRecentes().catch((): any[] => []),
+        adminApi.clientes.list().catch((): any[] => []),
+        adminApi.armazens.list().catch((): any[] => []),
       ]);
 
       const lower = q.toLowerCase();
