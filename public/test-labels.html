@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Etiquetas de Teste - Logistix</title>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<title>Etiquetas Logistix</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#e5e7eb;font-family:system-ui,-apple-system,sans-serif;padding:20px}
@@ -16,25 +15,26 @@ body{background:#e5e7eb;font-family:system-ui,-apple-system,sans-serif;padding:2
 .labels{max-width:800px;margin:0 auto;display:grid;gap:12px}
 .label-card{background:white;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.1);page-break-inside:avoid;break-inside:avoid}
 .label-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #111827}
-.label-header .logo{width:36px;height:36px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:20px}
-.label-header .title{font-size:14px;font-weight:700;color:#111827;letter-spacing:1px}
-.label-header .codigo{font-size:18px;font-weight:800;color:#3B82F6;font-family:monospace;letter-spacing:1px}
+.header-left{display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:20px}
+.title{font-size:14px;font-weight:700;color:#111827;letter-spacing:1px}
+.subtitle{font-size:10px;color:#6B7280}
+.codigo{font-size:18px;font-weight:800;color:#3B82F6;font-family:monospace;letter-spacing:1px}
 .label-body{display:flex;gap:20px}
-.label-body .qr-section{flex-shrink:0;text-align:center}
-.label-body .qr-section #qr-canvas{margin-bottom:4px}
-.label-body .qr-section span{font-size:9px;color:#6B7280;display:block}
-.label-body .info-section{flex:1;min-width:0}
+.qr-section{flex-shrink:0;text-align:center}
+.qr-section img{display:block;margin-bottom:4px}
+.qr-section span{font-size:9px;color:#6B7280;display:block}
+.info-section{flex:1;min-width:0}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .info-item{padding:6px 8px;background:#F3F4F6;border-radius:6px}
 .info-item label{font-size:9px;color:#6B7280;display:block;margin-bottom:1px;font-weight:500}
 .info-item .value{font-size:12px;color:#111827;font-weight:600}
 .info-footer{margin-top:10px;padding-top:8px;border-top:1px solid #E5E7EB;display:flex;justify-content:space-between;font-size:9px;color:#9CA3AF}
 @media print{
-@page{margin:10mm}
-body{background:white;padding:10mm}
+@page{margin:8mm}
+body{background:white;padding:0}
 .header{display:none}
-.labels{gap:16px}
-.label-card{box-shadow:none;border:1px solid #E5E7EB;page-break-inside:avoid}
+.label-card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;border-radius:4px}
 }
 @media(max-width:600px){
 .label-body{flex-direction:column;align-items:center}
@@ -45,85 +45,15 @@ body{background:white;padding:10mm}
 <body>
 <div class="header">
   <h1>📦 Etiquetas de Teste — Logistix DAIG</h1>
-  <p>5 pacotes para escanear no fluxo de coleta · Dados reais do banco</p>
+  <p>5 pacotes com QR code embedado · Pronto para imprimir como PDF</p>
   <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
 </div>
-<div class="labels" id="labels-container"></div>
-
-<script>
-const pacotes = [
-  {codigo:"#INU-001",peso:"1.5kg",valor:"¥2.500",cliente:"Apexi Co., Ltd.",cidade:"Inuyama",estado:"Aichi"}
-];
-
-// Load real data if available
-fetch('/labels-data.json').then(r=>r.json()).then(d=>{
-  if(d&&d.length) renderLabels(d);
-}).catch(()=>renderLabels(pacotes));
-
-function renderLabels(data){
-  const container = document.getElementById('labels-container');
-  container.innerHTML = '';
-  data.forEach((p,i)=>{
-    const card = document.createElement('div');
-    card.className = 'label-card';
-    card.innerHTML = \`
-      <div class="label-header">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="logo">L</div>
-          <div>
-            <div class="title">DAIG LOGISTIX</div>
-            <div style="font-size:10px;color:#6B7280">Smart Logistics · Teste</div>
-          </div>
-        </div>
-        <div class="codigo">\${p.codigo}</div>
-      </div>
-      <div class="label-body">
-        <div class="qr-section">
-          <div id="qr-\${i}"></div>
-          <span>Escaneie com o app</span>
-        </div>
-        <div class="info-section">
-          <div class="info-grid">
-            <div class="info-item">
-              <label>Destinatário</label>
-              <div class="value">\${p.cliente}</div>
-            </div>
-            <div class="info-item">
-              <label>Destino</label>
-              <div class="value">\${p.cidade}, \${p.estado}</div>
-            </div>
-            <div class="info-item">
-              <label>Peso</label>
-              <div class="value">\${p.peso}</div>
-            </div>
-            <div class="info-item">
-              <label>Valor</label>
-              <div class="value">\${p.valor}</div>
-            </div>
-          </div>
-          <div class="info-footer">
-            <span>📅 \${new Date().toLocaleDateString('pt-BR')}</span>
-            <span>🔗 logistix.daig.jp/r/\${p.codigo}</span>
-            <span>📋 Lote de teste #\${i+1}</span>
-          </div>
-        </div>
-      </div>
-    \`;
-    container.appendChild(card);
-
-    // Generate QR after DOM
-    setTimeout(()=>{
-      new QRCode(document.getElementById('qr-'+i), {
-        text: p.codigo,
-        width: 110,
-        height: 110,
-        colorDark: '#111827',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    }, 100);
-  });
-}
-</script>
+<div class="labels">
+<div class="label-card"><div class="label-header"><div class="header-left"><div class="logo">L</div><div><div class="title">DAIG LOGISTIX</div><div class="subtitle">Smart Logistics · Teste</div></div></div><div class="codigo">#INU-001</div></div><div class="label-body"><div class="qr-section"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAAAklEQVR4AewaftIAAAObSURBVO3BwW0YWw5FwWOiI+COGTD/aJgBd0zB35h1t4EnNCVrdKt+/f4DkZcZIgsMkQWGyAJDZIEhssAQWXDxFx7JdzRd3PFITk0XpzySJ9PFHY/kO5ou7hgiCwyRBYbIAkNkgSGywBBZcPFB08VX8khOTRenPJIn08VnmC6+kkdyyhBZYIgsMEQWGCILDJEFFy/zSN40XXwGj+TOdPHEI/lKHsmbpou3GCILDJEFhsgCQ2SBIbLAEFlw8YN4JG+aLuSeIbLAEFlgiCwwRBYYIgsu5MM8klPTxU9giCwwRBYYIgsMkQWGyAJDZMHFy6aL72i6ODVd3PFIPsN08a8yRBYYIgsMkQWGyAJDZMHFB3kkP4FH8mS6+AweyXdjiCwwRBYYIgsMkQWGyAJDZMGv33/wQ3gkT6YLeY8hssAQWWCILDBEFhgiCy7+wiN5Ml28xSN5Ml3c8Uje5JGcmi7ueCT/qunilEfyZLq4Y4gsMEQWGCILDJEFhsgCQ2TBxcs8kjd5JHemi1Meyanp4l81XZzySE5NF6cMkQWGyAJDZIEhssAQWXDxQR7JneniiUdyarq445Gcmi6eeCR3PJIn08Wp6eKUR3LHIzk1XXwGQ2SBIbLAEFlgiCwwRBYYIgsu/mK6eOKR3PFITk0XTzySO9PFE4/kjkfyZLo45ZH8P/FITk0XdwyRBYbIAkNkgSGywBBZcPFB08Udj+RN08Udj+TJdPEWj+TUdPHEIzk1XZzySL6SIbLAEFlgiCwwRBYYIgsMkQW/fv/BD+GRnJounngkp6aLf5VHcme6OGWILDBEFhgiCwyRBYbIgou/8Ei+o+ni1HRxxyM5NV2c8kjeNF3c8UieTBdvMUQWGCILDJEFhsgCQ2SBIbLg4oOmi6/kkZyaLp54JKemi1MeyVeaLp54JHemi1OGyAJDZIEhssAQWWCILLh4mUfypuniLR7Jk+niLR7Jm6aLt3gkpzySJ9PFHUNkgSGywBBZYIgsMEQWGCILLn6Q6eKUR/JkuvhKHsmT6eIrGSILDJEFhsgCQ2SBIbLgQv7HI/lK08Wp6eLUdPEZDJEFhsgCQ2SBIbLAEFlgiCy4eNl08R1NF6c8klPTxVs8kjdNF28xRBYYIgsMkQWGyAJDZMHFB3kk341H8mS6eMt0ccojedN08RaP5Ml0cccQWWCILDBEFhgiCwyRBYbIgl+//0DkZYbIAkNkgSGywBBZYIgs+A+/h/FGIASSnAAAAABJRU5ErkJggg==" width="130" height="130" alt="QR" /><span>Escaneie com o app</span></div><div class="info-section"><div class="info-grid"><div class="info-item"><label>Destinatario</label><div class="value">Apexi Co., Ltd.</div></div><div class="info-item"><label>Destino</label><div class="value">Inuyama, Aichi</div></div><div class="info-item"><label>Peso</label><div class="value">1.5kg</div></div><div class="info-item"><label>Valor</label><div class="value">¥2.500</div></div></div><div class="info-footer"><span>📅 14/05/2026</span><span>logistix/etiqueta/#INU-001</span><span>Lote #1</span></div></div></div></div>
+<div class="label-card"><div class="label-header"><div class="header-left"><div class="logo">L</div><div><div class="title">DAIG LOGISTIX</div><div class="subtitle">Smart Logistics · Teste</div></div></div><div class="codigo">#INU-002</div></div><div class="label-body"><div class="qr-section"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAAAklEQVR4AewaftIAAAP5SURBVO3By41cSQxFwSOiLOCOHtB/a+gBd3RBI8w6s4EnFPsD3Yhfv/9A5M0MkQWGyAJDZIEhssAQWWCILHjxAY/kJ5ounvJITqaLpzySm+nixCP5iaaLE0NkgSGywBBZYIgsMEQWGCILXvyl6eIreSRPeSQ308WJR/LUdPFO08VX8kieMkQWGCILDJEFhsgCQ2TBizfzSN5puniX6eLGIzmZLp7ySG6mi3fxSN5pungXQ2SBIbLAEFlgiCwwRBYYIgteyP+mi6c8EjkzRBYYIgsMkQWGyAJDZMGLf4hHIp/DEFlgiCwwRBYYIgsMkQWGyIIXbzZdfFfTxVMeyVPTxWeYLr4rQ2SBIbLAEFlgiCwwRBa8+EseyU/jkdxMF09NFyceyc108ZRH8tMYIgsMkQWGyAJDZIEhssAQWfDr9x+IvJkhssAQWWCILDBEFhgiC158wCO5mS5OPJKb6eLEI7mZLk48kpvp4l08kpvp4sQjuZku3sUjuZkunvJITqaLpwyRBYbIAkNkgSGywBBZYIgs+PX7Dz6JR3IyXXw1j+RkurjxSE6mixuP5GS6uPFI3mW6uPFInpouTgyRBYbIAkNkgSGywBBZ8OIDHsnNdHHikTzlkdxMFyceyU80XZx4JDfTxYlHcjNdnHgkN9PFiUfylCGywBBZYIgsMEQWGCILDJEFv37/wSfxSE6mi3fySE6mixuP5CtNFzceycl0ceORnEwXT3kkN9PFiSGywBBZYIgsMEQWGCILXnzAI7mZLp6aLt7FI7mZLk48ks8wXTzlkdxMFyceyXdliCwwRBYYIgsMkQWGyAJDZMGLD0wX39V08U7TxXflkZxMFzceyYlH8hkMkQWGyAJDZIEhssAQWfDiAx7JTzRdnEwXNx7JU9PFiUdyM12cTBdPeSRPTRdPeSRPGSILDJEFhsgCQ2SBIbLAEFnw4i9NF1/JI/kM08VT08VTHslT08VnmC6eMkQWGCILDJEFhsgCQ2TBizfzSN5pungXj+RmungXj+RmunhqujjxSG6mixOP5Ga6OPFIbqaLE0NkgSGywBBZYIgsMEQWGCILXvxDpounPJKnposbj+RkurjxSJ7ySE6mixuP5GS6eMoQWWCILDBEFhgiCwyRBS/+IR7JzXTxlTySp6aLG4/kxCO5mS5OPJKb6eLEEFlgiCwwRBYYIgsMkQWGyIIXbzZdfFfTxY1HcjJd3HgkJx7JU9PFV/NITqaLpwyRBYbIAkNkgSGywBBZ8OIveSQ/jUdyM128y3Rx45GceCRPTRc308VTHsmJR3IzXZwYIgsMkQWGyAJDZIEhssAQWfDr9x+IvJkhssAQWWCILDBEFhgiC/4DJ0kqqNtGzEgAAAAASUVORK5CYII=" width="130" height="130" alt="QR" /><span>Escaneie com o app</span></div><div class="info-section"><div class="info-grid"><div class="info-item"><label>Destinatario</label><div class="value">Blitz Co., Ltd.</div></div><div class="info-item"><label>Destino</label><div class="value">Inuyama, Aichi</div></div><div class="info-item"><label>Peso</label><div class="value">3.2kg</div></div><div class="info-item"><label>Valor</label><div class="value">¥11.000</div></div></div><div class="info-footer"><span>📅 14/05/2026</span><span>logistix/etiqueta/#INU-002</span><span>Lote #2</span></div></div></div></div>
+<div class="label-card"><div class="label-header"><div class="header-left"><div class="logo">L</div><div><div class="title">DAIG LOGISTIX</div><div class="subtitle">Smart Logistics · Teste</div></div></div><div class="codigo">#INU-003</div></div><div class="label-body"><div class="qr-section"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAAAklEQVR4AewaftIAAAOOSURBVO3BwW3cAAxFwRdCFfDGDth/NeyAN7aQBDlLBmSIu7H9Z379/guRhxkiCwyRBYbIAkNkgSGywBBZcPABj+Qrmi5ewSM5M13c5ZF8RdPFGUNkgSGywBBZYIgsMEQWGCILDj5pungnj+QVPJIr08UrTBfv5JHcZYgsMEQWGCILDJEFhsiCg4d5JE+aLp7ikXwnHsmTpounGCILDJEFhsgCQ2SBIbLAEFlwIP9MF2c8krs8kivTxU9giCwwRBYYIgsMkQWGyIID+ccjucsjkXOGyAJDZIEhssAQWWCILDBEFhw8bLr4iqaLp3gkrzBd/K8MkQWGyAJDZIEhssAQWXDwSR7JT+CRXJkuXsEj+WoMkQWGyAJDZIEhssAQWWCILDj4wHTx000XVzySp0wX34khssAQWWCILDBEFhgiCw4+4JFcmS7OeCTvNl2cmS6ueCR3TRdnPJK7PJJ3my6eYogsMEQWGCILDJEFhsgCQ2TBwSd5JK8wXdzlkZyZLu6aLl5hurjLI7kyXZzxSO7ySK5MF2cMkQWGyAJDZIEhssAQWXDwgeniLo/kFTySJ00Xd3kkZ6aLJ3kkZ6aLV5gu7jJEFhgiCwyRBYbIAkNkgSGy4OADHsmTpou7PJIz08UVj+QVpovvxCO5a7o4Y4gsMEQWGCILDJEFhsiCgw9MF3d5JHd5JFemizMeyZM8kjPTxRWP5Mx08W4eyZnp4hUMkQWGyAJDZIEhssAQWWCILPj1+y9+CI/kO5kuXsEjuTJdnDFEFhgiCwyRBYbIAkNkwcEHPJKvaLo4M11c8Ujumi7OeCRXposzHsmTPJIz08Vd08VdhsgCQ2SBIbLAEFlgiCwwRBYcfNJ08U4eyV0eyZXp4i6P5C6P5J08krumi7sMkQWGyAJDZIEhssAQWXDwMI/kSdPFO3kkV6aLMx7JleniLo/krunijEdyZbp4iiGywBBZYIgsMEQWGCILDJEFB/JleSRXpot3MkQWGCILDJEFhsgCQ2TBgXyaR3JmurjikZyZLq5MF2c8kiseyTsZIgsMkQWGyAJDZIEhssAQWXDwsOnifzVdXPFI7pou7pounjJd/K8MkQWGyAJDZIEhssAQWXDwSR7JV+OR3DVdXPFIzkwXVzySM9PFXR7JleniLo/kzHRxlyGywBBZYIgsMEQWGCILDJEFv37/hcjDDJEFhsgCQ2SBIbLAEFnwB/sk5POqhhuiAAAAAElFTkSuQmCC" width="130" height="130" alt="QR" /><span>Escaneie com o app</span></div><div class="info-section"><div class="info-grid"><div class="info-item"><label>Destinatario</label><div class="value">Bride (Bancos)</div></div><div class="info-item"><label>Destino</label><div class="value">Inuyama, Aichi</div></div><div class="info-item"><label>Peso</label><div class="value">4.9kg</div></div><div class="info-item"><label>Valor</label><div class="value">¥19.500</div></div></div><div class="info-footer"><span>📅 14/05/2026</span><span>logistix/etiqueta/#INU-003</span><span>Lote #3</span></div></div></div></div>
+<div class="label-card"><div class="label-header"><div class="header-left"><div class="logo">L</div><div><div class="title">DAIG LOGISTIX</div><div class="subtitle">Smart Logistics · Teste</div></div></div><div class="codigo">#INU-004</div></div><div class="label-body"><div class="qr-section"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAAAklEQVR4AewaftIAAAPOSURBVO3BwW3YWgxFwRNCFXDHDth/NeyAO7aQH/y1XgAZoh3Dd+bX7z8QeZkhssAQWWCILDBEFhgiCwyRBRd/4ZF8R9PFHY/kZLp4i0dyMl3c8Ui+o+nijiGywBBZYIgsMEQWGCILDJEFFx80XXwlj+Sp6eJNHslnmC6+kkfylCGywBBZYIgsMEQWGCILLl7mkbxpuniLR3IyXTw1XdzxSD6DR/Km6eIthsgCQ2SBIbLAEFlgiCwwRBZc/CDTxVMeyVPTxU9niCwwRBYYIgsMkQWGyIIL+Z9H8tR0cccjOZkufgJDZIEhssAQWWCILDBEFhgiCy5eNl38qzySk+niLdPFZ5gu/lWGyAJDZIEhssAQWWCILLj4II/kJ/BITqaLOx7JyXTxlEfy3RgiCwyRBYbIAkNkgSGywBBZ8Ov3H8iHeCR3poufzhBZYIgsMEQWGCILDJEFF3/hkZxMF3c8kpPp4i0eyVPTxYlHcme6eMojOZkunvJI7kwXT3kkJ9PFHY/kZLq4Y4gsMEQWGCILDJEFhsgCQ2TBxQd5JG/xSE6mizvTxWfwSE6mi88wXbxluvgMhsgCQ2SBIbLAEFlgiCy4+KDp4o5HcuKR3JkuTjySt0wXJ9PFHY/kTR7JU9PFHY/kX2WILDBEFhgiCwyRBYbIAkNkwcUHeSR3posTj+Sp6eIpj+SOR/LUdPGUR3IyXbxluniTR/IWQ2SBIbLAEFlgiCwwRBZcfNB08dR08RaP5GS6+ErTxYlH8hmmi69kiCwwRBYYIgsMkQWGyAJDZMHFX0wX/6rp4imP5Knp4sQjuTNdvGm6eItHcjJd3PFInjJEFhgiCwyRBYbIAkNkwcVfeCTf0XTx1HRxxyN5yiN5aro48Uiemi7uTBcnHslbDJEFhsgCQ2SBIbLAEFlgiCy4+KDp4it5JE9NFyceyZ3p4sQjuTNdnHgkdzySk+niKY/kznTx1HTxlCGywBBZYIgsMEQWGCILLl7mkbxpuvhuPJI3eSRv8Uie8khOpos7hsgCQ2SBIbLAEFlgiCwwRBZcyIdNF1/JIzmZLr6SIbLAEFlgiCwwRBYYIgsufhCP5GS6uOORnEwXb/FITqaLO9PFUx7Jm6aLO4bIAkNkgSGywBBZYIgsMEQWXLxsuvhXTRcnHslbPJKT6eLOdHHikdyZLt40XbzFEFlgiCwwRBYYIgsMkQUXH+SRfDceyVPTxVPTxVMeycl08ZRHcme6eMojOZku7hgiCwyRBYbIAkNkgSGywBBZ8Ov3H4i8zBBZYIgsMEQWGCILDJEF/wHfFBIXxtw2kwAAAABJRU5ErkJggg==" width="130" height="130" alt="QR" /><span>Escaneie com o app</span></div><div class="info-section"><div class="info-grid"><div class="info-item"><label>Destinatario</label><div class="value">Endless (Freios)</div></div><div class="info-item"><label>Destino</label><div class="value">Inuyama, Aichi</div></div><div class="info-item"><label>Peso</label><div class="value">6.6kg</div></div><div class="info-item"><label>Valor</label><div class="value">¥28.000</div></div></div><div class="info-footer"><span>📅 14/05/2026</span><span>logistix/etiqueta/#INU-004</span><span>Lote #4</span></div></div></div></div>
+<div class="label-card"><div class="label-header"><div class="header-left"><div class="logo">L</div><div><div class="title">DAIG LOGISTIX</div><div class="subtitle">Smart Logistics · Teste</div></div></div><div class="codigo">#INU-005</div></div><div class="label-body"><div class="qr-section"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAAAklEQVR4AewaftIAAAOsSURBVO3BwW0kWw5FwSOiLOCOHtB/a+gBd3RB05h1ZgNPSJZaXzfi4/MPRB5miCwwRBYYIgsMkQWGyAJDZMGLv/BIfqLp4opHcme6uOKRnJouTnkkP9F0ccUQWWCILDBEFhgiCwyRBYbIghdfNF18J4/kHaaLOx7JFY/kznRxarr4Th7JKUNkgSGywBBZYIgsMEQWvHiYR/Kk6eIdPJIr08Wp6eIdPJInTRdPMUQWGCILDJEFhsgCQ2SBIbLgxS8yXZzySOScIbLAEFlgiCwwRBYYIgte/CIeyZ3p4tR0ccUjuTNd/AaGyAJDZIEhssAQWWCILDBEFrx42HTxr5ouTk0XdzyS7zRd/KsMkQWGyAJDZIEhssAQWfDiizySn8YjuTNdXPFI7kwXVzySJ3kkP40hssAQWWCILDBEFhgiCwyRBR+ffyBf4pGcmi5+A0NkgSGywBBZYIgsMEQWvPgLj+TOdHHKI/kvmS6ueCR3PJIr08Upj+TOdHHFI3nSdHHFEFlgiCwwRBYYIgsMkQWGyIIXfzFd3PFITk0XVzySU9PFKY/k1HTxpOniikfy3aaLpxgiCwyRBYbIAkNkgSGy4MXDpotT08Udj+SKR3JnurgyXZzySO5MF1emiydNF6c8kqd4JHemiyuGyAJDZIEhssAQWWCILDBEFnx8/sEXeCSnposrHsmp6eKUR3JnujjlkVyZLt7BI/lu08UVQ2SBIbLAEFlgiCwwRBa8+KLp4pRHcmW6OOWRnJou7ngkV6aLO9PFKY/kHaaLUx7JUwyRBYbIAkNkgSGywBBZYIgsePFG08VTpotTHsmd6eKKR/Kk6eKnmS5OGSILDJEFhsgCQ2SBIbLgxV94JD/RdHHKI7kyXZzySO54JN9pungHQ2SBIbLAEFlgiCwwRBYYIgtefNF08Z08kidNF1c8kneYLk55JKc8klMeyZ3p4oohssAQWWCILDBEFhgiC148zCN50nTxXzJdXPFITk0XdzySU9PFFY/klCGywBBZYIgsMEQWGCILDJEFL+T/PJLvNF38q6aLU4bIAkNkgSGywBBZYIgsePGLTBd3PJIr08U7eCR3potT08UVj+SOR3JqurhiiCwwRBYYIgsMkQWGyAJDZMGLh00Xcs8jOeWRXJkuTk0XdzySpxgiCwyRBYbIAkNkgSGy4OPzD254JD/RdHHFI3mH6eK3M0QWGCILDJEFhsgCQ2SBIbLg4/MPRB5miCwwRBYYIgsMkQWGyIL/Ad2RBQnw3s0rAAAAAElFTkSuQmCC" width="130" height="130" alt="QR" /><span>Escaneie com o app</span></div><div class="info-section"><div class="info-grid"><div class="info-item"><label>Destinatario</label><div class="value">GReddy / Trust Co., Ltd.</div></div><div class="info-item"><label>Destino</label><div class="value">Inuyama, Aichi</div></div><div class="info-item"><label>Peso</label><div class="value">8.3kg</div></div><div class="info-item"><label>Valor</label><div class="value">¥36.500</div></div></div><div class="info-footer"><span>📅 14/05/2026</span><span>logistix/etiqueta/#INU-005</span><span>Lote #5</span></div></div></div></div>
+</div>
 </body>
 </html>
