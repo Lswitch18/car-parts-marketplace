@@ -2,24 +2,12 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { logisticsApi } from '../../../lib/logisticsApi';
 import { Circle } from 'lucide-react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
-// Fix Leaflet default icon
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-});
-
-const ICON_COLETOR = L.divIcon({ className: '', html: '<div style="width:24px;height:24px;background:#3B82F6;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>', iconSize: [24, 24], iconAnchor: [12, 12] });
-const ICON_ENTREGADOR = L.divIcon({ className: '', html: '<div style="width:24px;height:24px;background:#22C55E;border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.3)"></div>', iconSize: [24, 24], iconAnchor: [12, 12] });
-const ICON_CD = L.divIcon({ className: '', html: '<div style="width:28px;height:28px;background:#8B5CF6;border:3px solid white;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold">CD</div>', iconSize: [28, 28], iconAnchor: [14, 14] });
+let L: any = null;
 
 export default function MapaPage() {
-  const [map, setMap] = useState<L.Map | null>(null);
-  const [markers, setMarkers] = useState<L.Marker[]>([]);
+  const [map, setMap] = useState<any>(null);
+  const [markers, setMarkers] = useState<any[]>([]);
 
   const { data: motoristas } = useQuery({
     queryKey: ['admin', 'gps-motoristas'],
@@ -38,25 +26,39 @@ export default function MapaPage() {
 
   useEffect(() => {
     if (map) return;
-    const m = L.map('mapa-container').setView([35.68, 139.65], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap',
-    }).addTo(m);
-    setMap(m);
-    return () => { m.remove(); };
-  }, [map]);
+    (async () => {
+      const leaflet = await import('leaflet');
+      await import('leaflet/dist/leaflet.css');
+      L = leaflet.default || leaflet;
+
+      const m = L.map('mapa-container').setView([35.68, 139.65], 6);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap',
+      }).addTo(m);
+      setMap(m);
+    })();
+    return () => {
+      if (L && map) { map.remove(); }
+    };
+  }, []);
 
   useEffect(() => {
-    if (!map) return;
-    markers.forEach(m => m.remove());
+    if (!map || !L) return;
 
-    const novos: L.Marker[] = [];
+    // Clear old markers
+    markers.forEach((m: any) => m.remove());
+
+    const novos: any[] = [];
 
     (armazens || []).forEach((a: any) => {
       if (a.latitude && a.longitude) {
-        const m = L.marker([a.latitude, a.longitude], { icon: ICON_CD })
-          .addTo(map)
-          .bindPopup(`<b>${a.nome}</b><br/>${a.cidade}`);
+        const m = L.marker([a.latitude, a.longitude], {
+          icon: L.divIcon({
+            className: '',
+            html: '<div style="width:22px;height:22px;background:#8B5CF6;border:3px solid white;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold">CD</div>',
+            iconSize: [22, 22], iconAnchor: [11, 11],
+          }),
+        }).addTo(map).bindPopup(`<b>${a.nome}</b><br/>${a.cidade}`);
         novos.push(m);
       }
     });
@@ -64,9 +66,10 @@ export default function MapaPage() {
     const rows = Array.isArray(motoristas) ? motoristas : [];
     rows.forEach((m: any) => {
       if (m.latitude && m.longitude) {
-        const icon = m.transportadora?.includes('YAMATO') || m.transportadora?.includes('DAIG') ? ICON_COLETOR : ICON_ENTREGADOR;
-        const marker = L.marker([m.latitude, m.longitude], { icon })
-          .addTo(map)
+        const color = m.transportadora?.includes('YAMATO') || m.transportadora?.includes('DAIG') ? '#3B82F6' : '#22C55E';
+        const marker = L.circleMarker([m.latitude, m.longitude], {
+          radius: 8, fillColor: color, color: 'white', weight: 2, fillOpacity: 1,
+        }).addTo(map)
           .bindPopup(`<b>${m.nome}</b><br/>${m.transportadora || ''}<br/>🕐 ${m.ultima_atualizacao ? new Date(m.ultima_atualizacao).toLocaleTimeString('pt-BR') : '—'}`);
         novos.push(marker);
       }
