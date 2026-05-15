@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
-  LayoutDashboard, Package, Truck, ArrowLeftRight, Boxes, Warehouse,
-  MapPin, AlertCircle, Users, BarChart3, Settings,
+  LayoutDashboard, Package, Truck, Warehouse,
+  MapPin, BarChart3, Settings,
   Bell, Search, ChevronDown, Plus, CheckCircle, AlertTriangle,
-  Percent, DollarSign, Calendar, LogOut, Moon, Building, Layers, Box,
+  Percent, DollarSign, Calendar, LogOut, Moon, ChevronRight,
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 import { useAuthStore } from '../../stores/authStore';
@@ -29,26 +29,43 @@ import WMSPage from './logistix/WMSPage';
 import MapaPage from './logistix/MapaPage';
 import Armazem3DPage from './logistix/Armazem3DPage';
 
-const NAV_ITEMS = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/logistix', id: 'dashboard' },
-  { icon: Package, label: 'Pedidos', path: '/admin/logistix/pedidos', id: 'pedidos' },
-  { icon: Layers, label: 'WMS', path: '/admin/logistix/wms', id: 'wms' },
-  { icon: Package, label: 'Etiquetas', path: '/admin/logistix/etiquetas', id: 'etiquetas' },
-  { icon: MapPin, label: 'Rastreamento', path: '/admin/logistix/rastreamento', id: 'rastreamento' },
-  { icon: Truck, label: 'Entregas', path: '/admin/logistix/entregas', id: 'entregas' },
-  { icon: Truck, label: 'Coletas', path: '/admin/logistix/coletas', id: 'coletas' },
-  { icon: ArrowLeftRight, label: 'Transferências', path: '/admin/logistix/transferencias', id: 'transferencias' },
-  { icon: Boxes, label: 'Estoque', path: '/admin/logistix/estoque', id: 'estoque' },
-  { icon: Warehouse, label: 'Centros de Distribuição', path: '/admin/logistix/armazens', id: 'armazens' },
-  { icon: Box, label: 'Armazém 3D', path: '/admin/logistix/armazem3d', id: 'armazem3d' },
-  { icon: Truck, label: 'Transportes', path: '/admin/logistix/transportes', id: 'transportes' },
-  { icon: Building, label: 'Drop-offs', path: '/admin/logistix/dropoffs', id: 'dropoffs' },
-  { icon: AlertCircle, label: 'Ocorrências', path: '/admin/logistix/ocorrencias', id: 'ocorrencias' },
-  { icon: Users, label: 'Usuários', path: '/admin/logistix/usuarios', id: 'usuarios' },
-  { icon: Users, label: 'Clientes', path: '/admin/logistix/clientes', id: 'clientes' },
-  { icon: MapPin, label: 'Mapa', path: '/admin/logistix/mapa', id: 'mapa' },
-  { icon: BarChart3, label: 'Relatórios', path: '/admin/logistix/relatorios', id: 'relatorios' },
-  { icon: Settings, label: 'Configurações', path: '/admin/logistix/config', id: 'config' },
+interface NavGroup {
+  icon: any;
+  label: string;
+  id: string;
+  items: { id: string; label: string }[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', items: [] },
+  { icon: Package, label: 'Pedidos', id: 'grupo_pedidos', items: [
+    { id: 'pedidos', label: 'Pedidos' },
+    { id: 'entregas', label: 'Entregas' },
+    { id: 'coletas', label: 'Coletas' },
+    { id: 'transferencias', label: 'Transferências' },
+  ]},
+  { icon: Warehouse, label: 'Armazéns', id: 'grupo_armazens', items: [
+    { id: 'armazens', label: 'Centros de Distribuição' },
+    { id: 'estoque', label: 'Estoque' },
+    { id: 'wms', label: 'WMS' },
+    { id: 'armazem3d', label: 'Armazém 3D' },
+  ]},
+  { icon: MapPin, label: 'Rastreamento', id: 'grupo_rastreamento', items: [
+    { id: 'rastreamento', label: 'Rastreamento' },
+    { id: 'mapa', label: 'Mapa GPS' },
+  ]},
+  { icon: Truck, label: 'Operações', id: 'grupo_operacoes', items: [
+    { id: 'etiquetas', label: 'Etiquetas' },
+    { id: 'transportes', label: 'Transportes' },
+    { id: 'dropoffs', label: 'Drop-offs' },
+  ]},
+  { icon: BarChart3, label: 'Relatórios', id: 'relatorios', items: [] },
+  { icon: Settings, label: 'Administração', id: 'grupo_admin', items: [
+    { id: 'ocorrencias', label: 'Ocorrências' },
+    { id: 'usuarios', label: 'Usuários' },
+    { id: 'clientes', label: 'Clientes' },
+    { id: 'config', label: 'Configurações' },
+  ]},
 ];
 
 const DONUT_COLORS = ['#22C55E', '#3B82F6', '#F97316', '#EF4444'];
@@ -81,6 +98,17 @@ export default function LogistixDashboard() {
   const { user, signOut } = useAuthStore();
   const [activeNav, setActiveNav] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    grupo_pedidos: true,
+    grupo_armazens: false,
+    grupo_rastreamento: false,
+    grupo_operacoes: false,
+    grupo_admin: false,
+  });
+
+  const toggleGroup = (id: string) => {
+    setExpandedGroups(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const { data: kpis, isLoading: kpisLoading } = useQuery({
     queryKey: ['admin', 'kpis'],
@@ -119,12 +147,10 @@ export default function LogistixDashboard() {
 
   return (
     <div className="flex h-screen bg-[#0B1220] text-white font-sans overflow-hidden">
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-[#0B1220] border-r border-white/5 flex flex-col flex-shrink-0 transition-transform duration-200 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
@@ -139,19 +165,55 @@ export default function LogistixDashboard() {
         </div>
 
         <nav className="flex-1 px-4 py-2 overflow-y-auto space-y-0.5">
-          {NAV_ITEMS.map(item => (
-            <button
-              key={item.id}
-              onClick={() => setActiveNav(item.id)}
-              className={`w-full flex items-center gap-3 h-12 px-4 rounded-lg transition-all text-sm ${
-                activeNav === item.id
-                  ? 'bg-[#1F2937] text-blue-400'
-                  : 'text-gray-400 hover:bg-[#111827] hover:text-white'
-              }`}
-            >
-              <item.icon size={20} />
-              {item.label}
-            </button>
+          {NAV_GROUPS.map(group => (
+            <div key={group.id}>
+              {group.items.length === 0 ? (
+                <button
+                  onClick={() => setActiveNav(group.id)}
+                  className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm ${
+                    activeNav === group.id
+                      ? 'bg-[#1F2937] text-blue-400'
+                      : 'text-gray-400 hover:bg-[#111827] hover:text-white'
+                  }`}
+                >
+                  <group.icon size={20} />
+                  {group.label}
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => toggleGroup(group.id)}
+                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm text-gray-400 hover:bg-[#111827] hover:text-white ${
+                      expandedGroups[group.id] ? 'text-white' : ''
+                    }`}
+                  >
+                    <group.icon size={20} />
+                    <span className="flex-1 text-left">{group.label}</span>
+                    <ChevronRight
+                      size={14}
+                      className={`transition-transform ${expandedGroups[group.id] ? 'rotate-90' : ''}`}
+                    />
+                  </button>
+                  {expandedGroups[group.id] && (
+                    <div className="ml-3 space-y-0.5 border-l border-white/5 pl-3">
+                      {group.items.map(item => (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveNav(item.id)}
+                          className={`w-full flex items-center gap-3 h-10 px-4 rounded-lg transition-all text-sm ${
+                            activeNav === item.id
+                              ? 'bg-[#1F2937] text-blue-400'
+                              : 'text-gray-500 hover:bg-[#111827] hover:text-white'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           ))}
         </nav>
 
@@ -170,17 +232,16 @@ export default function LogistixDashboard() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-y-auto">
         {activeNav === 'dashboard' ? (
           <>
-             <header className="h-[70px] flex items-center justify-between px-3 lg:px-6 flex-shrink-0 gap-2">
+            <header className="h-[70px] flex items-center justify-between px-3 lg:px-6 flex-shrink-0 gap-2">
               <div className="flex items-center gap-3 min-w-0">
                 <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white flex-shrink-0">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <div className="min-w-0">
-                  <h2 className="text-lg lg:text-2xl font-bold truncate">{activeNav === 'dashboard' ? 'Dashboard' : NAV_ITEMS.find(n => n.id === activeNav)?.label || 'Logistix'}</h2>
+                  <h2 className="text-lg lg:text-2xl font-bold truncate">Dashboard</h2>
                   <p className="text-xs lg:text-sm text-gray-400 mt-0.5 truncate">Bem-vindo de volta, {user?.full_name?.split(' ')[0] || user?.name || 'Admin'} 👋</p>
                 </div>
               </div>
@@ -213,7 +274,7 @@ export default function LogistixDashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-5 gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
                 {kpisLoading ? Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="bg-[#111827] rounded-xl p-5 h-[130px] animate-pulse" />
                 )) : (
@@ -227,7 +288,7 @@ export default function LogistixDashboard() {
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
                   <h3 className="text-base font-medium mb-4">Status das Entregas</h3>
                   <div className="relative h-[180px] flex items-center justify-center min-w-0">
@@ -333,7 +394,7 @@ export default function LogistixDashboard() {
             </div>
           </>
         ) : (
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto">
             {activeNav === 'pedidos' && <PedidosPage />}
             {activeNav === 'rastreamento' && <RastreamentoPage />}
             {activeNav === 'entregas' && <EntregasPage />}
@@ -348,7 +409,6 @@ export default function LogistixDashboard() {
             {activeNav === 'clientes' && <ClientesPage />}
             {activeNav === 'wms' && <WMSPage />}
             {activeNav === 'etiquetas' && <EtiquetasPage />}
-            {activeNav === 'rastreamento' && <TrackingPage />}
             {activeNav === 'usuarios' && <UsuariosPage />}
             {activeNav === 'mapa' && <MapaPage />}
             {activeNav === 'relatorios' && <RelatoriosPage />}
