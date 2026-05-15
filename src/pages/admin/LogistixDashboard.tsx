@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
@@ -28,6 +28,7 @@ import DropoffPage from './logistix/DropoffPage';
 import WMSPage from './logistix/WMSPage';
 import MapaPage from './logistix/MapaPage';
 import Armazem3DPage from './logistix/Armazem3DPage';
+import GlobalSearch from '../../components/logistix/GlobalSearch';
 
 interface NavGroup {
   icon: any;
@@ -105,6 +106,22 @@ export default function LogistixDashboard() {
     grupo_operacoes: false,
     grupo_admin: false,
   });
+
+  const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setGlobalSearchOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setGlobalSearchOpen(false);
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const toggleGroup = (id: string) => {
     setExpandedGroups(prev => ({ ...prev, [id]: !prev[id] }));
@@ -486,6 +503,12 @@ export default function LogistixDashboard() {
           </div>
         )}
       </main>
+
+      <GlobalSearch
+        open={globalSearchOpen}
+        onClose={() => setGlobalSearchOpen(false)}
+        onNavigate={(id) => setActiveNav(id)}
+      />
     </div>
   );
 }
