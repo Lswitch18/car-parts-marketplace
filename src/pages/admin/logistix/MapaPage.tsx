@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { logisticsApi } from '../../../lib/logisticsApi';
 import { Circle } from 'lucide-react';
 
-let L: any = null;
-
 export default function MapaPage() {
   const [map, setMap] = useState<any>(null);
   const [markers, setMarkers] = useState<any[]>([]);
+  const LRef = useRef<any>(null);
 
   const { data: motoristas } = useQuery({
     queryKey: ['admin', 'gps-motoristas'],
@@ -27,9 +26,10 @@ export default function MapaPage() {
   useEffect(() => {
     if (map) return;
     (async () => {
-      const leaflet = await import('leaflet');
+      const leaf = await import('leaflet');
       await import('leaflet/dist/leaflet.css');
-      L = leaflet.default || leaflet;
+      const L = leaf.default || leaf;
+      LRef.current = L;
 
       const m = L.map('mapa-container').setView([35.68, 139.65], 6);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -37,28 +37,20 @@ export default function MapaPage() {
       }).addTo(m);
       setMap(m);
     })();
-    return () => {
-      if (L && map) { map.remove(); }
-    };
+    return () => { if (map) map.remove(); };
   }, []);
 
   useEffect(() => {
+    const L = LRef.current;
     if (!map || !L) return;
-
-    // Clear old markers
     markers.forEach((m: any) => m.remove());
-
     const novos: any[] = [];
 
     (armazens || []).forEach((a: any) => {
       if (a.latitude && a.longitude) {
-        const m = L.marker([a.latitude, a.longitude], {
-          icon: L.divIcon({
-            className: '',
-            html: '<div style="width:22px;height:22px;background:#8B5CF6;border:3px solid white;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold">CD</div>',
-            iconSize: [22, 22], iconAnchor: [11, 11],
-          }),
-        }).addTo(map).bindPopup(`<b>${a.nome}</b><br/>${a.cidade}`);
+        const m = L.circleMarker([a.latitude, a.longitude], {
+          radius: 10, fillColor: '#8B5CF6', color: 'white', weight: 2, fillOpacity: 1,
+        }).addTo(map).bindPopup(`<b>📦 ${a.nome}</b><br/>📍 ${a.cidade}`);
         novos.push(m);
       }
     });
