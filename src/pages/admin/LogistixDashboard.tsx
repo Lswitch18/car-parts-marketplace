@@ -362,7 +362,7 @@ export default function LogistixDashboard() {
                     <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#22C55E" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
                     <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#F97316" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
                     <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#8B5CF6" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Custo Logístico" value={`R$ ${Number(kpis?.custo || 0).toLocaleString('pt-BR')}`} icon={DollarSign} color="#FACC15" trend="-8.6%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Custo Logístico" value={`R$ ${Number(kpis?.custo || 0).toLocaleString('pt-BR')}`} icon={DollarSign} color="#FACC15" trend="-8.6%" onClick={() => setActiveNav('config')} />
                   </>
                 )}
               </div>
