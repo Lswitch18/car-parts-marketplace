@@ -131,6 +131,17 @@ export default function LogistixDashboard() {
     queryFn: () => adminApi.dashboard.pedidosRecentes(),
   });
 
+  const { data: ocorrencias } = useQuery({
+    queryKey: ['admin', 'ocorrencias-ativas'],
+    queryFn: () => adminApi.ocorrencias.list('aberto,em_andamento'),
+  });
+
+  const ocorrenciasAbertas = (ocorrencias || []).length;
+
+  const today = new Date();
+  const mesAtual = today.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' });
+  const dataLabel = `01/${mesAtual} - ${today.toLocaleDateString('pt-BR')}`;
+
   const donutData = (statusData || []).map(d => ({ name: STATUS_LABEL[d.status] || d.status, value: d.count }));
   const totalPedidos = (donutData || []).reduce((s, d) => s + d.value, 0);
 
@@ -144,6 +155,40 @@ export default function LogistixDashboard() {
     const cor = pct > 80 ? '#EF4444' : pct > 60 ? '#FACC15' : '#22C55E';
     return { nome: a.nome, pct, cor };
   });
+
+  const atividadeFeed = [
+    ...(recentOrders || []).slice(0, 3).map((o: any) => ({
+      tipo: 'pedido' as const,
+      label: `Pedido ${o.codigo}`,
+      desc: `${o.cliente} · ${o.status}`,
+      cor: STATUS_COLOR[o.status] || '#6B7280',
+      hora: o.previsao || '',
+    })),
+    ...(ocorrencias || []).slice(0, 2).map((o: any) => ({
+      tipo: 'ocorrencia' as const,
+      label: `Ocorrência: ${o.tipo}`,
+      desc: o.descricao?.slice(0, 40) || '',
+      cor: '#EF4444',
+      hora: o.created_at || '',
+    })),
+  ];  function QuickActions({ onNavigate }: { onNavigate: (id: string) => void }) {
+    return (
+      <div className="flex flex-wrap gap-2">
+        <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-500/20">
+          <Plus size={15} /> Nova Coleta
+        </button>
+        <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg text-sm font-medium transition-colors border border-green-500/20">
+          <Plus size={15} /> Gerar Etiquetas
+        </button>
+        <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg text-sm font-medium transition-colors border border-purple-500/20">
+          <Plus size={15} /> Novo Pedido
+        </button>
+        <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 rounded-lg text-sm font-medium transition-colors border border-orange-500/20">
+          <Plus size={15} /> Registrar Ocorrência
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[#0B1220] text-white font-sans overflow-hidden">
@@ -252,7 +297,11 @@ export default function LogistixDashboard() {
                 </div>
                 <button className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all relative flex-shrink-0">
                   <Bell size={18} />
-                  <span className="absolute -top-1 -right-1 w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-[#0B1220]">12</span>
+                  {ocorrenciasAbertas > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#0B1220]">
+                      {ocorrenciasAbertas}
+                    </span>
+                  )}
                 </button>
                 <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[#111827] border border-white/5 items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all">
                   <Moon size={18} />
@@ -266,10 +315,11 @@ export default function LogistixDashboard() {
             </header>
 
             <div className="px-6 pb-6 space-y-5">
-              <div className="flex justify-end">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                <QuickActions onNavigate={setActiveNav} />
                 <div className="flex items-center gap-2 text-gray-400 text-[13px] cursor-pointer">
                   <Calendar size={16} />
-                  <span>01/05/2026 - 31/05/2026</span>
+                  <span>{dataLabel}</span>
                   <ChevronDown size={14} />
                 </div>
               </div>
@@ -352,6 +402,26 @@ export default function LogistixDashboard() {
                     ))}
                   </div>
                   <button className="w-full mt-4 h-10 rounded-lg border border-white/10 text-gray-400 text-sm hover:bg-[#1F2937] hover:text-white transition-all">Ver todos os armazéns</button>
+                </div>
+              </div>
+
+              <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
+                <h3 className="text-base font-medium mb-4">Atividade Recente</h3>
+                <div className="space-y-1">
+                  {atividadeFeed.length === 0 ? (
+                    <p className="text-sm text-gray-500 py-4 text-center">Nenhuma atividade recente</p>
+                  ) : (
+                    atividadeFeed.map((item, i) => (
+                      <div key={i} className="flex items-center gap-3 py-2.5 border-b border-white/5 last:border-0">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.cor }} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{item.label}</p>
+                          <p className="text-[12px] text-gray-500 truncate">{item.desc}</p>
+                        </div>
+                        <span className="text-[11px] text-gray-600 flex-shrink-0">{item.hora}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
