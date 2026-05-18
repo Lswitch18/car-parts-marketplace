@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { 
-  ArrowRight, Search, Shield, Truck, Star, Zap, Wrench, Gauge, Disc,
+  ArrowRight, Search, Shield, Truck, Star, Wrench,
   Sliders, ShieldCheck, Play, Pause, RotateCcw, Compass, Layers, 
   Palette, Eye, Award
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { BRANDS, CATEGORIES } from '../lib/constants'
+import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
 import MotionFrameScene from '../components/MotionFrameScene'
 
@@ -65,27 +65,6 @@ export default function Home() {
     }
   })
 
-  const getCategoryIcon = (icon: string) => {
-    const icons: Record<string, React.ReactNode> = {
-      Car: <Wrench className="w-6 h-6" />,
-      Triangle: <ArrowRight className="w-6 h-6" />,
-      Circle: <Gauge className="w-6 h-6" />,
-      Disc: <Disc className="w-6 h-6" />,
-      ArrowUpDown: <ArrowRight className="w-6 h-6" rotate={90} />,
-      Cylinder: <Zap className="w-6 h-6" />,
-      Wind: <Zap className="w-6 h-6" />,
-      Armchair: <Wrench className="w-6 h-6" />,
-      Lightbulb: <Zap className="w-6 h-6" />,
-      Waves: <Zap className="w-6 h-6" />,
-      Zap: <Zap className="w-6 h-6" />,
-      Thermometer: <Zap className="w-6 h-6" />,
-      Cpu: <Zap className="w-6 h-6" />,
-      Gear: <Wrench className="w-6 h-6" />,
-      Fuel: <Zap className="w-6 h-6" />
-    }
-    return icons[icon] || <Wrench className="w-6 h-6" />
-  }
-
   return (
     <div className="bg-background min-h-screen text-text">
       <section className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -142,61 +121,6 @@ export default function Home() {
                 <p className="text-text-secondary text-sm">{t('Satisfação')}</p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-surface border-y border-border/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-bold text-white text-center mb-4">
-            Categorias
-          </h2>
-          <p className="text-text-secondary text-center mb-12">
-            Encontre exatamente o que precisa para seu projeto
-          </p>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {CATEGORIES.map((category) => (
-              <Link
-                key={category.id}
-                to={`/catalog?category=${category.id}`}
-                className="bg-background p-6 text-center rounded-xl shadow-md hover:shadow-lg hover:border-daig-blue border border-border transition-all group"
-              >
-                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-daig-blue/10 flex items-center justify-center text-daig-blue group-hover:bg-daig-blue group-hover:text-white transition-colors shadow-[0_0_10px_rgba(13,117,255,0.2)]">
-                  {getCategoryIcon(category.icon)}
-                </div>
-                <h3 className="text-white font-medium">{category.name}</h3>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-3xl font-bold text-white text-center mb-4">
-            Marcas Disponíveis
-          </h2>
-          <p className="text-text-secondary text-center mb-12">
-            As melhores marcas automotivas em um só lugar
-          </p>
-          
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {BRANDS.map((brand) => (
-              <Link
-                key={brand.id}
-                to={`/catalog?brand=${brand.id}`}
-                className="bg-surface p-6 text-center rounded-xl shadow-md hover:shadow-lg hover:border-daig-blue border border-border transition-all group"
-              >
-                <div className="w-16 h-16 mx-auto mb-3 rounded-xl bg-background flex items-center justify-center border border-border/50 group-hover:border-daig-blue/50">
-                  <span className="text-2xl font-bold neon-text">{brand.name[0]}</span>
-                </div>
-                <h3 className="text-white font-medium hover:text-daig-blue transition-colors">
-                  {brand.name}
-                </h3>
-                <p className="text-text-secondary text-xs mt-1">{brand.models.length} modelos</p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
@@ -361,6 +285,27 @@ export default function Home() {
                     {t(' fornecendo renderizações em tempo real e monitoramento volumétrico das zonas de armazenamento e prateleiras de peças.')}
                   </p>
                 </div>
+              </div>
+
+              {/* ActiveTheory Immersive Experience Banner */}
+              <div className="card p-6 border border-[#00E5FF]/35 bg-gradient-to-r from-[#00E5FF]/5 via-[#0D75FF]/5 to-transparent backdrop-blur-md rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_0_20px_rgba(0,229,255,0.1)]">
+                <div className="flex items-center gap-4">
+                  <div className="p-4 bg-gradient-to-br from-[#00E5FF]/20 to-[#0D75FF]/20 border border-[#00E5FF]/30 rounded-2xl flex-shrink-0 animate-pulse">
+                    <Compass className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-2">{t('Experiência Imersiva JDM')}</h3>
+                    <p className="text-gray-400 text-xs leading-relaxed max-w-sm">
+                      {t('Inspirado no ActiveTheory. Explore a física em tempo real, shaders cinematográficos GLSL e telemetria de cache Redis com um carro esportivo japonês em 3D.')}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  to="/immersive"
+                  className="px-5 py-3 bg-[#00E5FF] hover:bg-[#00D97E] text-black font-mono font-bold text-xs uppercase tracking-wider rounded-xl transition-all hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(0,229,255,0.4)] whitespace-nowrap self-stretch md:self-center text-center"
+                >
+                  {t('Iniciar Experiência 3D →')}
+                </Link>
               </div>
 
             </div>

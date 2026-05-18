@@ -24,6 +24,7 @@ import WorkerApp from './pages/mobile/WorkerApp'
 import QRInstallPage from './pages/mobile/QRInstallPage'
 import AgenciaPage from './pages/mobile/AgenciaPage'
 import MotionFramePage from './pages/MotionFramePage'
+import ImmersiveExperience from './pages/ImmersiveExperience'
 import ChatPopup from './components/ChatPopup'
 import { useEffect } from 'react'
 import { useAuthStore } from './stores/authStore'
@@ -75,6 +76,9 @@ function App() {
 
         {/* Rastreamento público (sem login) */}
         <Route path="rastreio" element={<TrackingPublico />} />
+
+        {/* Experiência Imersiva (Active Theory) */}
+        <Route path="immersive" element={<ImmersiveExperience />} />
 
         {/* Redirecionamento para rotas inexistentes (404) */}
         <Route path="*" element={<Navigate to="/" replace />} />
