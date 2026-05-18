@@ -23,6 +23,7 @@ import MobileApp from './pages/mobile/MobileApp'
 import WorkerApp from './pages/mobile/WorkerApp'
 import QRInstallPage from './pages/mobile/QRInstallPage'
 import AgenciaPage from './pages/mobile/AgenciaPage'
+import MotionFramePage from './pages/MotionFramePage'
 import ChatPopup from './components/ChatPopup'
 import { useEffect } from 'react'
 import { useAuthStore } from './stores/authStore'
@@ -52,6 +53,7 @@ function App() {
             <Route path="favorites" element={<Favorites />} />
             <Route path="messages" element={<Messages />} />
             <Route path="checkout/:id" element={<PaymentCheckout />} />
+            <Route path="motion-frame" element={<MotionFramePage />} />
           </Route>
         </Route>
 
