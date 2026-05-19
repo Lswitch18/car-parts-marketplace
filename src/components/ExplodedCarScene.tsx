@@ -81,7 +81,7 @@ export default function ExplodedCarScene({
     return positions;
   }, [clonedScene]);
 
-  // Handle wireframe toggle and neon material overrides
+  // Handle wireframe toggle and restore original materials
   useEffect(() => {
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
@@ -94,24 +94,17 @@ export default function ExplodedCarScene({
             opacity: 0.65,
           });
         } else {
-          // Restore original photorealistic materials from GLTF, but make them extra premium with modern specular parameters
-          const origMat = child.material as any;
-          if (origMat) {
-            origMat.roughness = Math.min(origMat.roughness || 0.5, 0.4);
-            origMat.metalness = Math.max(origMat.metalness || 0.0, 0.35);
-            
-            // Inject subtle neon cyber glow reflections if present in scan
-            if (origMat.emissive) {
-              origMat.emissive.set(colors.primary);
-              origMat.emissiveIntensity = 0.15;
-            }
+          // Restore original photorealistic materials completely untouched from original GLTF
+          const originalMesh = scene.getObjectByName(child.name) as THREE.Mesh;
+          if (originalMesh) {
+            child.material = originalMesh.material;
           }
         }
         child.castShadow = true;
         child.receiveShadow = true;
       }
     });
-  }, [clonedScene, colors, wireframe]);
+  }, [clonedScene, scene, colors, wireframe]);
 
   // Frame loop for camera, offsets, and rotations
   useFrame((state) => {
