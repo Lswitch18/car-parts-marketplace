@@ -1,6 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
-import { OBJLoader } from 'three-stdlib';
+import { useFrame } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface ExplodedCarSceneProps {
@@ -41,112 +41,77 @@ export default function ExplodedCarScene({
   const groupRef = useRef<THREE.Group>(null);
   const colors = useMemo(() => THEME_COLORS[colorTheme], [colorTheme]);
 
-  // Load the OBJ file from the public directory
-  const obj = useLoader(OBJLoader, '/engineering_car_exploded.obj');
+  // Load the high-fidelity photorealistic GLB scan
+  const { scene } = useGLTF('/car_engine_scan.glb');
 
-  // Clone the OBJ to avoid mutating shared cache
-  const clonedObj = useMemo(() => {
-    const cloned = obj.clone();
+  // Clone the scene to avoid mutating shared cache
+  const clonedScene = useMemo(() => {
+    const cloned = scene.clone();
     
-    // Scale and center the model
-    cloned.scale.set(0.6, 0.6, 0.6);
-    
-    // Compute bounding box to center it
+    // Compute bounding box to center and scale it perfectly in the 3D viewport
     const box = new THREE.Box3().setFromObject(cloned);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z);
+    
+    // Scale it to a normalized target dimension of 3.5 units
+    const scaleFactor = 3.5 / maxDim;
+    cloned.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    
+    // Recompute box with new scale and subtract center to center it
+    const scaledBox = new THREE.Box3().setFromObject(cloned);
     const center = new THREE.Vector3();
-    box.getCenter(center);
+    scaledBox.getCenter(center);
     cloned.position.sub(center);
-    cloned.position.y += 0.5; // Offset upwards slightly
+    
+    // Shift slightly upwards to float over the grid
+    cloned.position.y += 0.4;
     
     return cloned;
-  }, [obj]);
+  }, [scene]);
 
-  // Store original positions of each child mesh for precise explosion displacement
+  // Store original positions of each child mesh for organic explosion displacement
   const originalPositions = useMemo(() => {
     const positions: { [key: string]: THREE.Vector3 } = {};
-    clonedObj.traverse((child: THREE.Object3D) => {
+    clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         positions[child.name] = child.position.clone();
       }
     });
     return positions;
-  }, [clonedObj]);
+  }, [clonedScene]);
 
-  // Dynamically update materials and wireframe based on theme changes
+  // Handle wireframe toggle and neon material overrides
   useEffect(() => {
-    clonedObj.traverse((child: THREE.Object3D) => {
+    clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
-        let material: THREE.Material;
-
-        // Custom cyber-materials depending on the specific car component name
-        if (child.name.includes('chassis_frame')) {
-          material = new THREE.MeshPhysicalMaterial({
-            color: '#07070c',
-            metalness: 0.95,
-            roughness: 0.1,
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.05,
-            wireframe: wireframe,
-          });
-        } else if (child.name.includes('engine_block')) {
-          material = new THREE.MeshPhysicalMaterial({
+        if (wireframe) {
+          // Glow-in-the-dark wireframe cyber aesthetic
+          child.material = new THREE.MeshBasicMaterial({
             color: colors.primary,
-            emissive: colors.primary,
-            emissiveIntensity: 1.2,
-            metalness: 0.8,
-            roughness: 0.15,
-            clearcoat: 0.8,
-            wireframe: wireframe,
-          });
-        } else if (child.name.includes('intake') || child.name.includes('gearbox') || child.name.includes('driveshaft')) {
-          material = new THREE.MeshStandardMaterial({
-            color: '#d0d3d4',
-            metalness: 0.9,
-            roughness: 0.1,
-            wireframe: wireframe,
-          });
-        } else if (child.name.includes('suspension')) {
-          material = new THREE.MeshStandardMaterial({
-            color: colors.secondary,
-            emissive: colors.secondary,
-            emissiveIntensity: 0.6,
-            metalness: 0.95,
-            roughness: 0.15,
-            wireframe: wireframe,
-          });
-        } else if (child.name.includes('hood') || child.name.includes('roof') || child.name.includes('rear_panel')) {
-          material = new THREE.MeshPhysicalMaterial({
-            color: '#0a0a0f',
-            metalness: 0.9,
-            roughness: 0.08,
-            clearcoat: 1.0,
-            clearcoatRoughness: 0.05,
-            wireframe: wireframe,
-          });
-        } else if (child.name.includes('radiator')) {
-          material = new THREE.MeshStandardMaterial({
-            color: colors.primary,
-            emissive: colors.primary,
-            emissiveIntensity: 0.4,
-            metalness: 0.7,
-            roughness: 0.4,
-            wireframe: wireframe,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.65,
           });
         } else {
-          material = new THREE.MeshStandardMaterial({
-            color: '#1a1c1e',
-            metalness: 0.8,
-            roughness: 0.2,
-            wireframe: wireframe,
-          });
+          // Restore original photorealistic materials from GLTF, but make them extra premium with modern specular parameters
+          const origMat = child.material as any;
+          if (origMat) {
+            origMat.roughness = Math.min(origMat.roughness || 0.5, 0.4);
+            origMat.metalness = Math.max(origMat.metalness || 0.0, 0.35);
+            
+            // Inject subtle neon cyber glow reflections if present in scan
+            if (origMat.emissive) {
+              origMat.emissive.set(colors.primary);
+              origMat.emissiveIntensity = 0.15;
+            }
+          }
         }
-
-        child.material = material;
         child.castShadow = true;
         child.receiveShadow = true;
       }
     });
-  }, [clonedObj, colors, wireframe]);
+  }, [clonedScene, colors, wireframe]);
 
   // Frame loop for camera, offsets, and rotations
   useFrame((state) => {
@@ -155,41 +120,40 @@ export default function ExplodedCarScene({
     // Telemetry values driven by active interaction mode
     let activeExplosion = explosionFactor;
     let activeRotationY = 0;
-    let activeScale = 0.6;
-    let activePositionY = 0.5;
+    let activeScale = 1.0;
+    let activePositionY = 0.0;
 
     if (interactiveMode === 'scroll') {
       // 1. SCROLL MODE LERP VALUES
-      // Starts fully assembled at 0% scroll, begins to disassemble past 20% scroll
-      if (scrollPercent < 0.2) {
+      // Starts fully assembled at 0% scroll, begins to disassemble past 15% scroll
+      if (scrollPercent < 0.15) {
         activeExplosion = 0.0;
       } else if (scrollPercent > 0.85) {
         activeExplosion = 1.0;
       } else {
-        // Linearly map 0.2 to 0.85 scroll -> 0.0 to 1.0 explosionFactor
-        activeExplosion = (scrollPercent - 0.2) / 0.65;
+        // Linearly map 0.15 to 0.85 scroll -> 0.0 to 1.0 explosionFactor
+        activeExplosion = (scrollPercent - 0.15) / 0.70;
       }
 
       // 2. Camera zoom-in & scale changes
-      // Starts smaller/farther at 0.42, scales up to 0.75 as we scroll down
-      activeScale = 0.42 + scrollPercent * 0.33;
+      // Starts smaller/farther, scales up as we scroll down
+      activeScale = 0.85 + scrollPercent * 0.45;
 
       // 3. Rotation Y: starts perfectly horizontal (facing side), spins dynamically
-      // Starts at -Math.PI / 2 (90 deg side view) and rotates through ~360 deg
       activeRotationY = -Math.PI / 2.0 + scrollPercent * Math.PI * 2.2;
       
       // Floating motion is gentler in scroll mode to avoid interference with viewport alignment
-      activePositionY = 0.35 + Math.sin(time * 1.2) * 0.06;
+      activePositionY = Math.sin(time * 1.2) * 0.06;
     } else {
       // SANDBOX MODE LERP VALUES
       activeExplosion = explosionFactor;
-      activeScale = 0.6;
+      activeScale = 1.0;
       if (autoRotate) {
         activeRotationY = time * 0.18;
       } else {
         activeRotationY = groupRef.current ? groupRef.current.rotation.y : 0;
       }
-      activePositionY = 0.5 + Math.sin(time * 1.5) * 0.08;
+      activePositionY = Math.sin(time * 1.5) * 0.08;
     }
 
     // Smoothly apply parameters to main group
@@ -205,35 +169,24 @@ export default function ExplodedCarScene({
       groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, activePositionY, 0.08);
     }
 
-    // Apply the exploded offsets to each submesh smoothly based on activeExplosion
-    clonedObj.traverse((child: THREE.Object3D) => {
+    // Apply the exploded offsets to each submesh segment organically
+    clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         const orig = originalPositions[child.name] || new THREE.Vector3();
         const target = orig.clone();
 
-        // Multi-stage explosion coordinates to give maximum JDM engineering value
-        if (child.name.includes('engine_block')) {
-          target.add(new THREE.Vector3(0, 1.6 * activeExplosion, 1.2 * activeExplosion));
-        } else if (child.name.includes('intake')) {
-          target.add(new THREE.Vector3(0, 2.5 * activeExplosion, 1.5 * activeExplosion));
-        } else if (child.name.includes('radiator')) {
-          target.add(new THREE.Vector3(0, 1.0 * activeExplosion, 2.8 * activeExplosion));
-        } else if (child.name.includes('gearbox')) {
-          target.add(new THREE.Vector3(0, -1.2 * activeExplosion, 0.6 * activeExplosion));
-        } else if (child.name.includes('driveshaft')) {
-          target.add(new THREE.Vector3(0, -1.0 * activeExplosion, -1.8 * activeExplosion));
-        } else if (child.name.includes('suspension')) {
-          // Suspensions float further outward on X axis
-          let xOffset = child.name.includes('left') ? -2.4 : 2.4;
-          target.add(new THREE.Vector3(xOffset * activeExplosion, 0, 0));
-        } else if (child.name.includes('hood')) {
-          target.add(new THREE.Vector3(0, 2.8 * activeExplosion, 2.0 * activeExplosion));
-          // Rotate open beautifully as it disassembles
-          child.rotation.x = -activeExplosion * (Math.PI / 6);
-        } else if (child.name.includes('roof')) {
-          target.add(new THREE.Vector3(0, 3.2 * activeExplosion, -0.8 * activeExplosion));
-        } else if (child.name.includes('rear_panel')) {
-          target.add(new THREE.Vector3(0, -0.6 * activeExplosion, -3.0 * activeExplosion));
+        // Explode the scanned engine parts organically outwards depending on mesh names
+        // Sketchfab scanned meshes typically consist of multiple Object_X components
+        if (child.name.includes('Object_2')) {
+          target.add(new THREE.Vector3(0, 0.9 * activeExplosion, 0.5 * activeExplosion));
+        } else if (child.name.includes('Object_3')) {
+          target.add(new THREE.Vector3(0.6 * activeExplosion, -0.7 * activeExplosion, 0.3 * activeExplosion));
+        } else if (child.name.includes('Object_4')) {
+          target.add(new THREE.Vector3(-0.6 * activeExplosion, 0.7 * activeExplosion, -0.5 * activeExplosion));
+        } else if (child.name.includes('Object_5')) {
+          target.add(new THREE.Vector3(0, -0.9 * activeExplosion, -0.7 * activeExplosion));
+        } else if (child.name.includes('Object_6')) {
+          target.add(new THREE.Vector3(0.7 * activeExplosion, 0, 0.6 * activeExplosion));
         }
 
         // Smooth position transition
@@ -244,7 +197,9 @@ export default function ExplodedCarScene({
 
   return (
     <group ref={groupRef}>
-      <primitive object={clonedObj} />
+      <primitive object={clonedScene} />
     </group>
   );
 }
+
+useGLTF.preload('/car_engine_scan.glb');
