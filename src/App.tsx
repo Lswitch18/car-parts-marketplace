@@ -14,6 +14,7 @@ import Favorites from './pages/Favorites'
 import Messages from './pages/Messages'
 import PaymentCheckout from './pages/PaymentCheckout'
 import UserManagement from './pages/admin/UserManagement'
+import ImageTo3D from './pages/admin/ImageTo3D'
 import PWARegister from './components/PWARegister'
 import TransactionManagement from './pages/admin/TransactionManagement'
 import LogistixDashboard from './pages/admin/LogistixDashboard'
@@ -67,6 +68,7 @@ function App() {
           <Route path="logistix" element={<LogistixDashboard />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="transactions" element={<TransactionManagement />} />
+          <Route path="image-to-3d" element={<ImageTo3D />} />
         </Route>
 
         {/* App Mobile Logistix */}

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useState, useEffect } from 'react'
-import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle, ArrowRight, Package } from 'lucide-react'
+import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle, ArrowRight, Package, Sparkles } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '../../lib/i18n'
 import { supabase } from '../../lib/supabase'
@@ -200,13 +200,22 @@ export default function Header() {
                         {t('Perfil')}
                       </Link>
                       {isAdmin && (
-                        <Link
-                          to="/admin"
-                          className="block px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg flex items-center space-x-2 font-medium"
-                        >
-                          <Package className="w-4 h-4" />
-                          <span>Logistix WMS</span>
-                        </Link>
+                        <>
+                          <Link
+                            to="/admin"
+                            className="block px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg flex items-center space-x-2 font-medium"
+                          >
+                            <Package className="w-4 h-4" />
+                            <span>Logistix WMS</span>
+                          </Link>
+                          <Link
+                            to="/admin/image-to-3d"
+                            className="block px-3 py-2 text-purple-600 hover:bg-purple-50 rounded-lg flex items-center space-x-2 font-medium"
+                          >
+                            <Sparkles className="w-4 h-4" />
+                            <span>Gerador 3D AI</span>
+                          </Link>
+                        </>
                       )}
                       <button
                         onClick={handleSignOut}
