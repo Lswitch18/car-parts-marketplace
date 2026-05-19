@@ -159,5 +159,13 @@ export interface DashboardKPIs {
   cancelados: number;
   emTransito: number;
   taxa: string;
+  receita: string;
+  receita_mensal: string;
+  receita_anual: string;
   custo: string;
+  custo_mensal: string;
+  custo_anual: string;
+  lucro_mensal: string;
+  lucro_anual: string;
+  margem: string;
 }

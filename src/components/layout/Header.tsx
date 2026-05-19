@@ -112,6 +112,17 @@ export default function Header() {
               {t('Catálogo')}
             </Link>
 
+            <Link
+              to="/home"
+              className="text-text hover:text-primary transition-colors px-3 py-2 font-medium flex items-center gap-1.5"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E5FF] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E5FF]"></span>
+              </span>
+              <span>{t('Showroom 3D')}</span>
+            </Link>
+
             {user ? (
               <>
                 <Link
@@ -256,6 +267,15 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
             >
               {t('Catálogo')}
+            </Link>
+
+            <Link 
+              to="/home" 
+              className="py-2 text-[#00E5FF] font-medium flex items-center gap-2"
+              onClick={() => setMenuOpen(false)}
+            >
+              <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse" />
+              <span>{t('Showroom 3D')}</span>
             </Link>
             {user ? (
               <>

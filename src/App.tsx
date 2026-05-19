@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { I18nProvider } from './lib/i18n'
 import Layout from './components/layout/Layout'
 import Home from './pages/Home'
+import HomeLanding from './pages/HomeLanding'
 import Catalog from './pages/Catalog'
 import ProductDetail from './pages/ProductDetail'
 import Login from './pages/Login'
@@ -39,6 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="home" element={<HomeLanding />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           

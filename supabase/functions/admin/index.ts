@@ -157,6 +157,20 @@ async function handleDashboard(req: Request, path: string) {
     const { data: emTransito } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'em_transito');
     const totalCount = total?.count || 0;
 
+    // Receita total e do mês atual
+    const mesAtual = new Date().toISOString().slice(0, 7);
+    const anoAtual = mesAtual.slice(0, 4);
+    const { data: receitaTotal } = await supabase.from('admin_pedidos').select('valor');
+    const { data: receitaMes } = await supabase.from('admin_pedidos')
+      .select('valor').gte('created_at', `${mesAtual}-01`);
+    const { data: receitaAno } = await supabase.from('admin_pedidos')
+      .select('valor').gte('created_at', `${anoAtual}-01-01`);
+
+    const sumValor = (rows: any[]) => (rows || []).reduce((s, r: any) => s + Number(r.valor || 0), 0);
+    const receita = sumValor(receitaTotal);
+    const receita_mensal = sumValor(receitaMes);
+    const receita_anual = sumValor(receitaAno);
+
     // Custos logísticos reais
     const { data: custoLog } = await supabase.from('admin_custos_log')
       .select('*')
@@ -164,36 +178,35 @@ async function handleDashboard(req: Request, path: string) {
       .limit(1)
       .single();
 
+    let custo = 0, custo_mensal = 0, custo_anual = 0;
+
     if (custoLog) {
-      return json({
-        total: totalCount,
-        concluidas: concluidas?.count || 0,
-        atrasos: atrasos?.count || 0,
-        cancelados: cancelados?.count || 0,
-        emTransito: emTransito?.count || 0,
-        taxa: totalCount > 0 ? ((concluidas?.count || 0) / totalCount * 100).toFixed(1) : '0.0',
-        custo: custoLog.custo_total?.toFixed(2) || '0.00',
-      });
+      custo = Number(custoLog.custo_total) || 0;
+      const { data: custoMes } = await supabase.from('admin_custos_log')
+        .select('custo_total').eq('periodo', mesAtual).limit(1).single();
+      custo_mensal = Number(custoMes?.custo_total || 0);
+      const { data: custoAno } = await supabase.from('admin_custos_log')
+        .select('custo_total').gte('periodo', `${anoAtual}-01`).lte('periodo', `${anoAtual}-12`);
+      custo_anual = (custoAno || []).reduce((s, r: any) => s + Number(r.custo_total || 0), 0);
+    } else {
+      // Fallback
+      const { data: entregas } = await supabase.from('admin_entregas').select('id', { count: 'exact', head: true }).eq('status', 'entregue');
+      const { data: motoristas } = await supabase.from('admin_motoristas').select('id', { count: 'exact', head: true }).eq('ativo', true);
+      const { data: dropoffs } = await supabase.from('admin_dropoffs').select('id', { count: 'exact', head: true }).eq('status', 'recebido');
+      const { data: ativos } = await supabase.from('admin_armazens').select('id', { count: 'exact', head: true }).eq('ativo', true);
+      const { data: params } = await supabase.from('admin_custos_parametros').select('*');
+      const p = params && params.length > 0 ? params[0] : {};
+      custo = (entregas?.count || 0) * Number(p.custo_por_entrega || 25)
+            + (motoristas?.count || 0) * Number(p.custo_mensal_motorista || 2500)
+            + (dropoffs?.count || 0) * Number(p.custo_por_dropoff || 8)
+            + (ativos?.count || 0) * Number(p.custo_fixo_mensal_armazem || 50000);
+      custo_mensal = custo;
+      custo_anual = custo;
     }
 
-    // Fallback: calcular ao vivo
-    const { data: entregas } = await supabase.from('admin_entregas').select('id', { count: 'exact', head: true }).eq('status', 'entregue');
-    const { data: motoristas } = await supabase.from('admin_motoristas').select('id', { count: 'exact', head: true }).eq('ativo', true);
-    const { data: dropoffs } = await supabase.from('admin_dropoffs').select('id', { count: 'exact', head: true }).eq('status', 'recebido');
-    const { data: ativos } = await supabase.from('admin_armazens').select('id', { count: 'exact', head: true }).eq('ativo', true);
-    const { data: params } = await supabase.from('admin_custos_parametros').select('*');
-
-    const p = params && params.length > 0 ? params[0] : {};
-    const qtdEntregas = entregas?.count || 0;
-    const qtdMotoristas = motoristas?.count || 0;
-    const qtdDropoffs = dropoffs?.count || 0;
-    const qtdArmazens = ativos?.count || 0;
-
-    const custoEntregas = qtdEntregas * Number(p.custo_por_entrega || 25);
-    const custoMotoristas = qtdMotoristas * Number(p.custo_mensal_motorista || 2500);
-    const custoDropoffs = qtdDropoffs * Number(p.custo_por_dropoff || 8);
-    const custoFixo = qtdArmazens * Number(p.custo_fixo_mensal_armazem || 50000);
-    const custoTotal = custoEntregas + custoMotoristas + custoDropoffs + custoFixo;
+    const lucro_mensal = receita_mensal - custo_mensal;
+    const lucro_anual = receita_anual - custo_anual;
+    const margem = receita_mensal > 0 ? ((lucro_mensal / receita_mensal) * 100).toFixed(1) : '0.0';
 
     return json({
       total: totalCount,
@@ -202,7 +215,15 @@ async function handleDashboard(req: Request, path: string) {
       cancelados: cancelados?.count || 0,
       emTransito: emTransito?.count || 0,
       taxa: totalCount > 0 ? ((concluidas?.count || 0) / totalCount * 100).toFixed(1) : '0.0',
-      custo: custoTotal.toFixed(2),
+      receita: receita.toFixed(2),
+      receita_mensal: receita_mensal.toFixed(2),
+      receita_anual: receita_anual.toFixed(2),
+      custo: custo.toFixed(2),
+      custo_mensal: custo_mensal.toFixed(2),
+      custo_anual: custo_anual.toFixed(2),
+      lucro_mensal: lucro_mensal.toFixed(2),
+      lucro_anual: lucro_anual.toFixed(2),
+      margem,
     });
   }
 

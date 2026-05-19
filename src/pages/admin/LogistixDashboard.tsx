@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Package, Truck, Warehouse,
   MapPin, BarChart3, Settings,
   Bell, Search, ChevronDown, Plus, CheckCircle, AlertTriangle,
-  Percent, DollarSign, Calendar, LogOut, Moon, ChevronRight,
+  Percent, DollarSign, Calendar, LogOut, Moon, ChevronRight, TrendingUp,
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 import { useAuthStore } from '../../stores/authStore';
@@ -362,7 +362,8 @@ export default function LogistixDashboard() {
                     <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#22C55E" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
                     <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#F97316" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
                     <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#8B5CF6" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Custo Logístico" value={`R$ ${Number(kpis?.custo || 0).toLocaleString('pt-BR')}`} icon={DollarSign} color="#FACC15" trend="-8.6%" onClick={() => setActiveNav('config')} />
+                    <KpiCard title="Receita Mensal" value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="#22C55E" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Lucro Mensal" value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color={Number(kpis?.lucro_mensal || 0) >= 0 ? '#22C55E' : '#EF4444'} trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
                   </>
                 )}
               </div>
