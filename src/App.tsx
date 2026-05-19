@@ -39,8 +39,9 @@ function App() {
     <I18nProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<HomeLanding />} />
           <Route path="home" element={<HomeLanding />} />
+          <Route path="engineering" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           
