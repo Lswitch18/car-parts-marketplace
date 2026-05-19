@@ -175,6 +175,15 @@ export default function Header() {
                   <Plus className="w-4 h-4" />
                   <span>{t('Vender')}</span>
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin/image-to-3d"
+                    title="Gerador 3D AI"
+                    className="p-2 text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-full transition-all flex items-center justify-center shadow-sm"
+                  >
+                    <Sparkles className="w-5 h-5 animate-pulse" />
+                  </Link>
+                )}
                 <div className="relative group">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-[#ffd700] p-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
