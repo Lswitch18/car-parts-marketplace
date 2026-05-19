@@ -229,183 +229,78 @@ export default function HomeLanding() {
           </div>
         </div>
       )}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-6">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-[#00E5FF]">
-              <Award className="w-3.5 h-3.5" />
-              Exclusividade DAIG Garage
-            </div>
-            <h1 className="font-display text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Showroom <span className="neon-text">3D Explodido</span>
-            </h1>
-            <p className="text-gray-400 text-sm max-w-xl font-light">
-              Analise cada componente mecânico importado diretamente do Japão. Role a página para ver a desmontagem em tempo real com zoom e rotação sincronizados.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* 3. INTERACTIVE 3D PLATFORM VIEWPORT & CONTROLS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        
-        {/* NARRATIVE SCROLL LAYOUT (Split Screen) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="relative w-full h-[80vh] flex flex-col justify-between">
           
-          {/* Left Column: Storytelling cards (5 cols) */}
-          <div className="lg:col-span-5 space-y-12 pb-[10vh]">
-            
-            {/* Card 1: 0% - 20% */}
-            <div className={`p-8 bg-[#07070f] border rounded-3xl shadow-xl transition-all duration-300 ${
-              scrollPercent < 0.20 
-                ? 'border-[#00E5FF]/40 shadow-[0_0_30px_rgba(0,229,255,0.1)] scale-102 bg-[#090915]' 
-                : 'border-white/5 opacity-40'
-            }`}>
-              <div className="flex justify-between items-start mb-4">
-                <span className="px-2 py-0.5 bg-[#00E5FF]/10 text-[#00E5FF] font-mono text-[9px] uppercase font-bold rounded">Estágio 1</span>
-                <span className="text-[10px] text-gray-500 font-mono">SCROLL: 0% - 20%</span>
+          {/* Overlay details - Top Left (floating HUD) */}
+          <div className="absolute top-6 left-6 z-20 pointer-events-none">
+            <div className="bg-[#07070f]/80 backdrop-blur-md border border-white/5 p-4 rounded-xl shadow-2xl">
+              <div className="flex items-center gap-2 bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-[#00E5FF] w-fit mb-2">
+                <Award className="w-3 h-3" />
+                Exclusividade DAIG Garage
               </div>
-              <h3 className="text-xl font-bold font-display text-white mb-3">Engenharia Integrada JDM</h3>
-              <p className="text-xs text-gray-400 leading-relaxed font-light">
-                Inicie a experiência com o modelo automotivo totalmente montado e alinhado na horizontal. Observe a aerodinâmica activa e o chassi projetado no Japão.
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-[10px] text-[#00E5FF] font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
-                Visualização Horizontal Ativa
-              </div>
+              <h2 className="font-display text-xl font-extrabold text-white tracking-tight leading-none">
+                Showroom <span className="neon-text">3D Explodido</span>
+              </h2>
             </div>
-
-            {/* Card 2: 20% - 40% */}
-            <div className={`p-8 bg-[#07070f] border rounded-3xl shadow-xl transition-all duration-300 ${
-              scrollPercent >= 0.20 && scrollPercent < 0.40 
-                ? 'border-[#00E5FF]/40 shadow-[0_0_30px_rgba(0,229,255,0.1)] scale-102 bg-[#090915]' 
-                : 'border-white/5 opacity-40'
-            }`}>
-              <div className="flex justify-between items-start mb-4">
-                <span className="px-2 py-0.5 bg-[#00E5FF]/10 text-[#00E5FF] font-mono text-[9px] uppercase font-bold rounded">Estágio 2</span>
-                <span className="text-[10px] text-gray-500 font-mono">SCROLL: 20% - 40%</span>
-              </div>
-              <h3 className="text-xl font-bold font-display text-white mb-3">Suspensão de Alta Performance</h3>
-              <p className="text-xs text-gray-400 leading-relaxed font-light">
-                Ao rolar a página, as suspensões neomagnéticas e cubos de roda estendem-se para fora do chassi. Projetadas com 32 regulagens para estabilidade absoluta em curvas sob forças G severas.
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-[10px] text-green-400 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                Mapeando Coilovers Reguláveis
-              </div>
-            </div>
-
-            {/* Card 3: 40% - 60% */}
-            <div className={`p-8 bg-[#07070f] border rounded-3xl shadow-xl transition-all duration-300 ${
-              scrollPercent >= 0.40 && scrollPercent < 0.60 
-                ? 'border-[#00E5FF]/40 shadow-[0_0_30px_rgba(0,229,255,0.1)] scale-102 bg-[#090915]' 
-                : 'border-white/5 opacity-40'
-            }`}>
-              <div className="flex justify-between items-start mb-4">
-                <span className="px-2 py-0.5 bg-[#00E5FF]/10 text-[#00E5FF] font-mono text-[9px] uppercase font-bold rounded">Estágio 3</span>
-                <span className="text-[10px] text-gray-500 font-mono">SCROLL: 40% - 60%</span>
-              </div>
-              <h3 className="text-xl font-bold font-display text-white mb-3">Refrigeração & Indução</h3>
-              <p className="text-xs text-gray-400 leading-relaxed font-light">
-                A grade do radiador triplo e o coletor de admissão de alto fluxo sobem, permitindo uma inspeção visual completa da passagem de fluxo de ar. Garantia de motor sempre frio em pista.
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-[10px] text-[#00E5FF] font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
-                Inspeção de Radiador e Admissão
-              </div>
-            </div>
-
-            {/* Card 4: 60% - 80% */}
-            <div className={`p-8 bg-[#07070f] border rounded-3xl shadow-xl transition-all duration-300 ${
-              scrollPercent >= 0.60 && scrollPercent < 0.80 
-                ? 'border-[#00E5FF]/40 shadow-[0_0_30px_rgba(0,229,255,0.1)] scale-102 bg-[#090915]' 
-                : 'border-white/5 opacity-40'
-            }`}>
-              <div className="flex justify-between items-start mb-4">
-                <span className="px-2 py-0.5 bg-[#00E5FF]/10 text-[#00E5FF] font-mono text-[9px] uppercase font-bold rounded">Estágio 4</span>
-                <span className="text-[10px] text-gray-500 font-mono">SCROLL: 60% - 80%</span>
-              </div>
-              <h3 className="text-xl font-bold font-display text-white mb-3">Coração da Máquina: 2JZ-GTE</h3>
-              <p className="text-xs text-gray-400 leading-relaxed font-light">
-                O bloco do motor eleva-se verticalmente para fora do chassis frame. A peça é o motor japonês 2JZ-GTE com pistões forjados e cabeçotes preparados, o ícone de performance JDM.
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-[10px] text-pink-500 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-pink-500 animate-pulse" />
-                Módulo de Motor Destacado
-              </div>
-            </div>
-
-            {/* Card 5: 80% - 100% */}
-            <div className={`p-8 bg-[#07070f] border rounded-3xl shadow-xl transition-all duration-300 ${
-              scrollPercent >= 0.80 
-                ? 'border-[#00E5FF]/40 shadow-[0_0_30px_rgba(0,229,255,0.1)] scale-102 bg-[#090915]' 
-                : 'border-white/5 opacity-40'
-            }`}>
-              <div className="flex justify-between items-start mb-4">
-                <span className="px-2 py-0.5 bg-[#00E5FF]/10 text-[#00E5FF] font-mono text-[9px] uppercase font-bold rounded">Estágio 5</span>
-                <span className="text-[10px] text-gray-500 font-mono">SCROLL: 80% - 100%</span>
-              </div>
-              <h3 className="text-xl font-bold font-display text-white mb-3">Transmissão e Eixo Cardã</h3>
-              <p className="text-xs text-gray-400 leading-relaxed font-light">
-                Na fase de desmontagem final, a transmissão manual V160 de 6 marchas recua. Projetada para suportar torque brutal e transferir potência sem perdas para as rodas traseiras.
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-[10px] text-yellow-400 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
-                Câmbio V160 em Posição de Destaque
-              </div>
-            </div>
-
           </div>
 
-          {/* Right Column: Sticky Canvas rendering (7 cols) - MERGES SEAMLESSLY WITHOUT VIDEO FRAME */}
-          <div className="lg:col-span-7 sticky top-24 h-[75vh] w-full flex flex-col gap-4">
-            <div className="relative flex-1 w-full bg-transparent overflow-hidden">
-              
-              {/* WebGL Canvas */}
-              <Suspense fallback={
-                <div className="w-full h-full flex flex-col items-center justify-center space-y-4">
-                  <div className="w-10 h-10 border-4 border-t-transparent border-[#00E5FF] rounded-full animate-spin" />
-                  <span className="font-mono text-xs text-gray-400">CARREGANDO MUNDO JDM 3D...</span>
-                </div>
-              }>
-                <Canvas camera={{ position: [5, 2.5, 5], fov: 45 }} shadows gl={{ antialias: true }}>
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[10, 15, 10]} intensity={1.8} castShadow />
-                  <pointLight position={[-10, 10, -10]} intensity={0.8} />
+          {/* WebGL Canvas */}
+          <div className="relative flex-1 w-full bg-transparent overflow-hidden rounded-3xl">
+            <Suspense fallback={
+              <div className="w-full h-full flex flex-col items-center justify-center space-y-4">
+                <div className="w-10 h-10 border-4 border-t-transparent border-[#00E5FF] rounded-full animate-spin" />
+                <span className="font-mono text-xs text-gray-400">CARREGANDO MUNDO JDM 3D...</span>
+              </div>
+            }>
+              <Canvas camera={{ position: [5, 2.5, 5], fov: 45 }} shadows gl={{ antialias: true }}>
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[10, 15, 10]} intensity={1.8} castShadow />
+                <pointLight position={[-10, 10, -10]} intensity={0.8} />
 
-                  <gridHelper args={[35, 35, '#111122', '#06060c']} position={[0, -1.2, 0]} />
+                <gridHelper args={[35, 35, '#111122', '#06060c']} position={[0, -1.2, 0]} />
 
-                  <ExplodedCarScene 
-                    explosionFactor={scrollPercent}
-                    colorTheme="cyan"
-                    wireframe={false}
-                    autoRotate={false}
-                    scrollPercent={scrollPercent}
-                    interactiveMode="scroll"
-                  />
+                <ExplodedCarScene 
+                  explosionFactor={scrollPercent}
+                  colorTheme="cyan"
+                  wireframe={false}
+                  autoRotate={false}
+                  scrollPercent={scrollPercent}
+                  interactiveMode="scroll"
+                />
 
-                  <Sparkles 
-                    count={180} 
-                    scale={[12, 6, 12]} 
-                    size={2} 
-                    speed={0.4} 
-                    color="#00E5FF" 
-                  />
+                <Sparkles 
+                  count={180} 
+                  scale={[12, 6, 12]} 
+                  size={2} 
+                  speed={0.4} 
+                  color="#00E5FF" 
+                />
 
-                  <OrbitControls 
-                    enableDamping 
-                    dampingFactor={0.08}
-                    minDistance={3}
-                    maxDistance={12}
-                    maxPolarAngle={Math.PI / 1.6}
-                    minPolarAngle={Math.PI / 4}
-                  />
-                </Canvas>
-              </Suspense>
+                <OrbitControls 
+                  enableDamping 
+                  dampingFactor={0.08}
+                  minDistance={3}
+                  maxDistance={12}
+                  maxPolarAngle={Math.PI / 1.6}
+                  minPolarAngle={Math.PI / 4}
+                />
+              </Canvas>
+            </Suspense>
+          </div>
+
+          {/* Bottom HUD Bar (Active Component on the Right, Scroll status on the Left) */}
+          <div className="absolute bottom-6 left-6 right-6 z-20 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 pointer-events-none">
+            
+            {/* Scroll/Explosion Status (Left) */}
+            <div className="bg-[#07070f]/85 backdrop-blur-md border border-white/5 px-4 py-3 rounded-xl text-[10px] font-mono text-gray-400 shadow-2xl pointer-events-auto">
+              <span className="text-[#00E5FF] font-bold block uppercase tracking-wider mb-0.5">Explosão Ativa</span>
+              Gire com o mouse | Role para desmontar ({(scrollPercent * 100).toFixed(0)}%)
             </div>
 
-            {/* Premium, borderless floating component info */}
-            <div className="bg-[#07070f]/85 backdrop-blur-md border border-white/5 p-5 rounded-2xl flex items-center justify-between gap-4 shadow-2xl">
+            {/* Active Component Info (Right) */}
+            <div className="bg-[#07070f]/85 backdrop-blur-md border border-white/5 p-4 rounded-xl flex items-center justify-between gap-6 shadow-2xl pointer-events-auto min-w-[240px]">
               <div className="flex items-center gap-2.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] animate-pulse" />
                 <div className="text-[10px] font-mono">
@@ -422,7 +317,6 @@ export default function HomeLanding() {
           </div>
 
         </div>
-
       </section>
 
       {/* 4. HIGH-CONVERTING CLIENT ACQUISITION MARKETING SECTIONS */}
