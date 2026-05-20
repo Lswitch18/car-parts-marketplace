@@ -24,13 +24,28 @@ export default function Profile() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .update(formData)
+        .update({
+          full_name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          cep: formData.zip_code
+        })
         .eq('id', user?.id)
         .select()
         .single()
 
       if (error) throw error
-      setUser(data)
+      setUser({
+        ...user,
+        name: data.full_name,
+        phone: data.phone,
+        address: data.address,
+        city: data.city,
+        state: data.state,
+        zip_code: data.cep
+      })
       alert('Perfil atualizado com sucesso!')
     } catch (err) {
       console.error(err)

@@ -30,7 +30,7 @@ export default function Catalog() {
     queryFn: async () => {
       let query = supabase
         .from('parts')
-        .select('*, brands(name), categories(name), profiles(full_name, avatar_url)')
+        .select('*, brands(name), categories(name), profiles(full_name, avatar_url, rating, is_verified)')
         .eq('status', 'active')
 
       if (filters.brand) {
@@ -329,6 +329,17 @@ className="w-full bg-background border border-border rounded-lg px-4 py-2 text-t
                     <p className="text-[#ff3d00] font-bold text-xl">
                       ¥ {product.price.toLocaleString('ja-JP')}
                     </p>
+                    {product.profiles && (
+                      <div className="flex items-center space-x-1 text-xs text-gray-400 bg-background/50 px-1.5 py-0.5 rounded border border-border/20">
+                        <span className="text-[#ffd700]">★</span>
+                        <span className="font-bold text-gray-300">
+                          {product.profiles.rating ? product.profiles.rating.toFixed(1) : '5.0'}
+                        </span>
+                        {product.profiles.is_verified && (
+                          <span className="text-[#00e5ff] font-extrabold ml-0.5" title="Verificado">✓</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Link>

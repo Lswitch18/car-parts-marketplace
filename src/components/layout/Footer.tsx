@@ -51,6 +51,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Carros Compatíveis
+                  </Link>
+                </li>
+                <li>
                   <Link to="/favorites" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
                     Favoritos
                   </Link>
@@ -68,6 +73,7 @@ export default function Footer() {
                 <li><span className="text-gray-300">Mazda</span></li>
                 <li><span className="text-gray-300">Subaru</span></li>
                 <li><span className="text-gray-300">Mitsubishi</span></li>
+                <li><span className="text-gray-300">Tesla & BYD</span></li>
               </ul>
             </div>
 

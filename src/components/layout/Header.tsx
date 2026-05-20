@@ -113,6 +113,13 @@ export default function Header() {
             </Link>
 
             <Link
+              to="/cars"
+              className="text-text hover:text-primary transition-colors px-3 py-2 font-medium"
+            >
+              {t('Compatibilidade')}
+            </Link>
+
+            <Link
               to="/home"
               className="text-text hover:text-primary transition-colors px-3 py-2 font-medium flex items-center gap-1.5"
             >
@@ -285,6 +292,14 @@ export default function Header() {
               onClick={() => setMenuOpen(false)}
             >
               {t('Catálogo')}
+            </Link>
+
+            <Link 
+              to="/cars" 
+              className="block py-2 text-gray-700 font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              {t('Compatibilidade')}
             </Link>
 
             <Link 

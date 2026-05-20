@@ -51,6 +51,41 @@ export default function Messages() {
   const [newMessage, setNewMessage] = useState('')
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [proposedPrice, setProposedPrice] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+
+  const suggestAiResponse = async () => {
+    if (!selectedMessages || selectedMessages.length === 0) {
+      setNewMessage('Olá! Tenho interesse no seu produto.')
+      return
+    }
+    
+    setAiLoading(true)
+    const lastMsg = selectedMessages[selectedMessages.length - 1]
+    const isLastMe = lastMsg.sender_id === user?.id
+    
+    await new Promise(resolve => setTimeout(resolve, 850))
+    
+    let suggestion = ''
+    if (isLastMe) {
+      suggestion = 'Olá! Aguardo seu retorno para fecharmos.'
+    } else {
+      const content = lastMsg.content.toLowerCase()
+      if (content.includes('dispon') || content.includes('disponivel')) {
+        suggestion = 'Olá! Sim, está disponível. Gostaria de fazer uma proposta?'
+      } else if (content.includes('preço') || content.includes('valor') || content.includes('prop')) {
+        suggestion = 'Obrigado pela oferta. O preço já está no limite, mas posso fazer um pequeno desconto se fechar hoje.'
+      } else if (content.includes('envio') || content.includes('entreg')) {
+        suggestion = 'Consigo enviar amanhã mesmo via Yamato Transport com rastreamento completo.'
+      } else if (content.includes('confirm') || content.includes('pagar')) {
+        suggestion = 'Excelente! Acabei de confirmar a proposta de preço. Pode realizar o pagamento.'
+      } else {
+        suggestion = 'Perfeito. Como prefere seguir com a negociação?'
+      }
+    }
+    
+    setNewMessage(suggestion)
+    setAiLoading(false)
+  }
 
   const { data: conversations } = useQuery({
     queryKey: ['conversations', user?.id],
@@ -157,13 +192,10 @@ export default function Messages() {
   }
 
   const getCurrentPrice = () => {
-    const priceProposal = selectedMessages?.find(m => 
-      m.message_type === 'price_proposal' && !m.price_confirmed
+    const confirmedProposal = selectedMessages?.slice().reverse().find(m => 
+      m.message_type === 'price_proposal' && m.price_confirmed === true
     )
-    if (priceProposal?.price_confirmed) {
-      return priceProposal.proposed_price
-    }
-    return null
+    return confirmedProposal ? confirmedProposal.proposed_price : null
   }
 
   if (!user) {
@@ -337,13 +369,35 @@ export default function Messages() {
 
                   {!currentPrice && (
                     <div className="p-4 border-t border-border">
-                      <div className="flex space-x-2 mb-2">
+                      {/* Quick Reply Chips */}
+                      <div className="flex gap-1.5 overflow-x-auto pb-2 mb-2 scrollbar-none">
+                        {['Está disponível?', 'Qual o menor preço?', 'Faz entrega?', 'Aceita proposta?'].map((txt) => (
+                          <button
+                            key={txt}
+                            type="button"
+                            onClick={() => setNewMessage(txt)}
+                            className="flex-shrink-0 bg-surface hover:bg-border/30 text-gray-300 text-xs px-2.5 py-1 rounded-full border border-border transition-colors"
+                          >
+                            {txt}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="flex space-x-2 mb-3">
                         <button
                           onClick={() => setShowPriceModal(true)}
-                          className="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-green-500/30"
+                          className="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-green-500/30 transition-all"
                         >
                           <DollarSign className="w-4 h-4" />
                           <span>Fazer Proposta</span>
+                        </button>
+                        <button
+                          onClick={suggestAiResponse}
+                          disabled={aiLoading}
+                          className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all"
+                        >
+                          <span>✨</span>
+                          <span>{aiLoading ? 'Pensando...' : 'IA Sugerir'}</span>
                         </button>
                       </div>
                       <form
@@ -358,12 +412,12 @@ export default function Messages() {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="Digite sua mensagem..."
-                          className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-white"
+                          className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-white focus:border-[#ff3d00] focus:ring-1 focus:ring-[#ff3d00] outline-none"
                         />
                         <button
                           type="submit"
                           disabled={!newMessage.trim() || sendMessage.isPending}
-                          className="bg-daig-blue hover:bg-daig-blue/80 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+                          className="bg-daig-blue hover:bg-daig-blue/80 text-white px-4 py-2 rounded-lg disabled:opacity-50 transition-colors"
                         >
                           <Send className="w-5 h-5" />
                         </button>

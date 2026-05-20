@@ -47,15 +47,68 @@ interface Conversation {
 
 export default function ChatPopup({ initialProductId, initialSellerId, onClose }: ChatPopupProps) {
   const { user } = useAuthStore()
-  const [isOpen, setIsOpen] = useState(false)
-  const [isMinimized, setIsMinimized] = useState(false)
+  const [isOpen, setIsOpen] = useState(() => localStorage.getItem('chat_isOpen') === 'true')
+  const [isMinimized, setIsMinimized] = useState(() => localStorage.getItem('chat_isMinimized') === 'true')
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
+  const [selectedConversation, setSelectedConversation] = useState<string | null>(
+    () => localStorage.getItem('chat_selectedConversation') || null
+  )
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [proposedPrice, setProposedPrice] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    localStorage.setItem('chat_isOpen', isOpen.toString())
+  }, [isOpen])
+
+  useEffect(() => {
+    localStorage.setItem('chat_isMinimized', isMinimized.toString())
+  }, [isMinimized])
+
+  useEffect(() => {
+    if (selectedConversation) {
+      localStorage.setItem('chat_selectedConversation', selectedConversation)
+    } else {
+      localStorage.removeItem('chat_selectedConversation')
+    }
+  }, [selectedConversation])
+
+  const suggestAiResponse = async () => {
+    if (messages.length === 0) {
+      setNewMessage('Olá! Tenho interesse no seu produto.')
+      return
+    }
+    
+    setAiLoading(true)
+    const lastMsg = messages[messages.length - 1]
+    const isLastMe = lastMsg.sender_id === user?.id
+    
+    await new Promise(resolve => setTimeout(resolve, 850))
+    
+    let suggestion = ''
+    if (isLastMe) {
+      suggestion = 'Olá! Aguardo seu retorno para fecharmos.'
+    } else {
+      const content = lastMsg.content.toLowerCase()
+      if (content.includes('dispon') || content.includes('disponivel')) {
+        suggestion = 'Olá! Sim, está disponível. Gostaria de fazer uma proposta?'
+      } else if (content.includes('preço') || content.includes('valor') || content.includes('prop')) {
+        suggestion = 'Obrigado pela oferta. O preço já está no limite, mas posso fazer um pequeno desconto se fechar hoje.'
+      } else if (content.includes('envio') || content.includes('entreg')) {
+        suggestion = 'Consigo enviar amanhã mesmo via Yamato Transport com rastreamento completo.'
+      } else if (content.includes('confirm') || content.includes('pagar')) {
+        suggestion = 'Excelente! Acabei de confirmar a proposta de preço. Pode realizar o pagamento.'
+      } else {
+        suggestion = 'Perfeito. Como prefere seguir com a negociação?'
+      }
+    }
+    
+    setNewMessage(suggestion)
+    setAiLoading(false)
+  }
 
   useEffect(() => {
     if (initialProductId && initialSellerId) {
@@ -170,7 +223,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   }
 
   const sendMessage = async (type: string = 'text', price?: number) => {
-    if (!user || !newMessage.trim() || !selectedConversation) return
+    if (!user || !selectedConversation || (!newMessage.trim() && type !== 'price_proposal')) return
 
     const conversation = conversations.find(c => c.oder_id === selectedConversation)
     
@@ -214,13 +267,10 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   }
 
   const getCurrentPrice = () => {
-    const priceProposal = messages.find(m => 
-      m.message_type === 'price_proposal' && m.price_confirmed !== true
+    const confirmedProposal = messages.slice().reverse().find(m => 
+      m.message_type === 'price_proposal' && m.price_confirmed === true
     )
-    if (priceProposal?.price_confirmed) {
-      return priceProposal.proposed_price
-    }
-    return null
+    return confirmedProposal ? confirmedProposal.proposed_price : null
   }
 
   const formatTime = (dateStr: string) => {
@@ -440,13 +490,35 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
 
           {selectedConversation && !currentPrice && (
             <div className="p-3 border-t border-[#2a2a2a]">
+              {/* Quick Reply Chips */}
+              <div className="flex gap-1.5 overflow-x-auto pb-2 mb-1 scrollbar-none">
+                {['Está disponível?', 'Qual o menor preço?', 'Faz entrega?', 'Aceita proposta?'].map((txt) => (
+                  <button
+                    key={txt}
+                    type="button"
+                    onClick={() => setNewMessage(txt)}
+                    className="flex-shrink-0 bg-[#2a2a2a] hover:bg-[#3b3b3b] text-gray-300 text-xs px-2.5 py-1 rounded-full border border-[#3b3b3b] transition-colors"
+                  >
+                    {txt}
+                  </button>
+                ))}
+              </div>
+
               <div className="flex space-x-2 mb-2">
                 <button
                   onClick={() => setShowPriceModal(true)}
-                  className="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-green-500/30"
+                  className="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-green-500/30 transition-all"
                 >
                   <DollarSign className="w-4 h-4" />
                   <span>Fazer Proposta</span>
+                </button>
+                <button
+                  onClick={suggestAiResponse}
+                  disabled={aiLoading}
+                  className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all"
+                >
+                  <span>✨</span>
+                  <span>{aiLoading ? 'Pensando...' : 'IA Sugerir'}</span>
                 </button>
               </div>
               <form onSubmit={(e) => { e.preventDefault(); sendMessage() }} className="flex space-x-2">
@@ -455,12 +527,12 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Digite sua mensagem..."
-                  className="flex-1 bg-[#0a0a0a] border border-[#2a2a2a] rounded-full px-4 py-2 text-white text-sm"
+                  className="flex-1 bg-[#0a0a0a] border border-[#2a2a2a] rounded-full px-4 py-2 text-white text-sm focus:border-[#ff3d00] focus:ring-1 focus:ring-[#ff3d00] outline-none"
                 />
                 <button
                   type="submit"
                   disabled={!newMessage.trim()}
-                  className="bg-[#ff3d00] p-2 rounded-full text-white disabled:opacity-50"
+                  className="bg-[#ff3d00] p-2 rounded-full text-white disabled:opacity-50 hover:bg-[#dd2c00] transition-colors"
                 >
                   <Send className="w-5 h-5" />
                 </button>

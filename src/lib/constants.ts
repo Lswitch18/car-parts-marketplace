@@ -58,6 +58,26 @@ export const BRANDS = [
     id: 'audi',
     name: 'Audi',
     models: ['RS3', 'RS6', 'R8', 'A4', 'A6', 'Q5', 'TT']
+  },
+  {
+    id: 'tesla',
+    name: 'Tesla',
+    models: ['Model 3', 'Model Y', 'Model S', 'Model X', 'Cybertruck']
+  },
+  {
+    id: 'byd',
+    name: 'BYD',
+    models: ['Seal', 'Han', 'Tang', 'Atto 3', 'Dolphin', 'Yuan Plus']
+  },
+  {
+    id: 'zeekr',
+    name: 'Zeekr',
+    models: ['001', '009', 'X', '007']
+  },
+  {
+    id: 'nio',
+    name: 'NIO',
+    models: ['ET7', 'ES8', 'EC6', 'EP9']
   }
 ]
 
@@ -97,6 +117,10 @@ export const BRAND_UUIDS: Record<string, string> = {
   lexus: '77777777-7777-7777-7777-777777777777',
   acura: '88888888-8888-8888-8888-888888888888',
   infiniti: '99999999-9999-9999-9999-999999999999',
+  tesla: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+  byd: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+  zeekr: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+  nio: 'dddddddd-dddd-dddd-dddd-dddddddddddd',
 }
 
 export const UUID_TO_BRAND: Record<string, string> = Object.fromEntries(

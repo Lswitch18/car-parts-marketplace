@@ -97,7 +97,14 @@ export default function Dashboard() {
       if (!user) throw new Error('No user')
       const { data, error } = await supabase
         .from('profiles')
-        .update(profileForm)
+        .update({
+          full_name: profileForm.name,
+          phone: profileForm.phone,
+          address: profileForm.address,
+          city: profileForm.city,
+          state: profileForm.state,
+          cep: profileForm.zip_code
+        })
         .eq('id', user.id)
         .select()
         .single()
@@ -105,7 +112,17 @@ export default function Dashboard() {
       return data
     },
     onSuccess: (data) => {
-      setUser(data)
+      setUser({
+        ...user,
+        name: data.full_name,
+        role: data.role,
+        phone: data.phone,
+        address: data.address,
+        city: data.city,
+        state: data.state,
+        zip_code: data.cep,
+        avatar_url: data.avatar_url
+      })
       setEditingProfile(false)
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     }

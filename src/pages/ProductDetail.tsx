@@ -144,19 +144,50 @@ export default function ProductDetail() {
                </button>
              </div>
 
-            <div className="card p-6 mb-6">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-daig-blue to-daig-cyan flex items-center justify-center">
-                  <span className="text-white font-bold">
-                    {product.profiles?.name?.[0]?.toUpperCase() || '?'}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-white font-medium">{product.profiles?.name || 'Vendedor'}</p>
-                  <p className="text-gray-400 text-sm">Vendedor</p>
-                </div>
-              </div>
-            </div>
+             <div className="card p-6 mb-6">
+               <div className="flex items-center space-x-4 mb-4">
+                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-daig-blue to-daig-cyan flex items-center justify-center overflow-hidden">
+                   {product.profiles?.avatar_url ? (
+                     <img src={product.profiles.avatar_url} alt="" className="w-full h-full object-cover" />
+                   ) : (
+                     <span className="text-white font-bold">
+                       {product.profiles?.full_name?.[0]?.toUpperCase() || '?'}
+                     </span>
+                   )}
+                 </div>
+                 <div className="flex-1">
+                   <div className="flex items-center space-x-2">
+                     <p className="text-white font-medium">{product.profiles?.full_name || 'Vendedor'}</p>
+                     {product.profiles?.is_verified && (
+                       <span className="bg-[#00E5FF]/20 text-[#00E5FF] text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                         ✓ Verificado
+                       </span>
+                     )}
+                   </div>
+                   <p className="text-gray-400 text-xs">Membro GAID JDM</p>
+                 </div>
+               </div>
+
+               {/* Seller Reputation Details */}
+               <div className="border-t border-border pt-4 mt-2 grid grid-cols-2 gap-4">
+                 <div>
+                   <p className="text-gray-500 text-xs uppercase font-semibold">Reputação</p>
+                   <div className="flex items-center mt-1">
+                     <span className="text-[#ffd700] mr-1 text-sm">★</span>
+                     <span className="text-white font-bold text-sm">
+                       {product.profiles?.rating ? product.profiles.rating.toFixed(1) : '5.0'}
+                     </span>
+                     <span className="text-gray-500 text-xs ml-1">/ 5.0</span>
+                   </div>
+                 </div>
+                 <div>
+                   <p className="text-gray-500 text-xs uppercase font-semibold">Vendas</p>
+                   <p className="text-white font-bold text-sm mt-1">
+                     {product.profiles?.total_sales || 0} realizadas
+                   </p>
+                 </div>
+               </div>
+             </div>
 
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-3 text-gray-400">

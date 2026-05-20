@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import HomeLanding from './pages/HomeLanding'
 import Catalog from './pages/Catalog'
 import ProductDetail from './pages/ProductDetail'
+import CarList from './pages/CarList'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
@@ -49,6 +50,7 @@ function App() {
           {/* Páginas Públicas (sem login) */}
           <Route path="catalog" element={<Catalog />} />
           <Route path="product/:id" element={<ProductDetail />} />
+          <Route path="cars" element={<CarList />} />
           
           {/* Rotas Protegidas (Exigem Login) */}
           <Route element={<ProtectedRoute />}>

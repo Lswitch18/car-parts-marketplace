@@ -222,12 +222,15 @@ export default function PaymentCheckout() {
                     <span>{negotiatedPrice ? 'Preço negociado' : 'Subtotal'}</span>
                     <span>{formatJPY(finalPrice || part.price)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-400"><span>Taxa plataforma (10%)</span><span>-{formatJPY(fees.commission_amount)}</span></div>
-                  <div className="flex justify-between text-gray-400"><span>Taxa pagamento</span><span>-{formatJPY(fees.stripe_fee)}</span></div>
-                  <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-border">
-                    <span>Total</span>
-                    <span className="text-daig-blue">{formatJPY(fees.gross_amount)}</span>
+                  <div className="flex justify-between text-gray-400">
+                    <span>Envio (Yamato/Sagawa)</span>
+                    <span className="text-daig-cyan">Grátis</span>
                   </div>
+                  <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-border">
+                    <span>Total a Pagar</span>
+                    <span className="text-daig-blue font-display">{formatJPY(finalPrice || part.price)}</span>
+                  </div>
+                  <p className="text-gray-500 text-xs mt-2">* Taxas de serviço e processamento inclusas (cobertas pelo vendedor).</p>
                 </div>
               </div>
 
