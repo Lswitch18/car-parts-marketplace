@@ -1,7 +1,65 @@
-import { useRef, useMemo, useEffect } from 'react';
+import { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+
+// ── Available 3D Models Catalog ──────────────────────────────────────
+export const MODEL_CATALOG = [
+  {
+    id: 'engine_scan',
+    name: 'Motor JDM Scan',
+    path: '/car_engine_scan.glb',
+    description: 'Scan fotorrealístico de motor automotivo completo',
+    category: 'Motor',
+    size: '30 MB',
+    icon: '🔧',
+  },
+  {
+    id: 'toy_car',
+    name: 'Carro Engenharia (KhronosGroup)',
+    path: '/toy_car.glb',
+    description: 'Modelo de referência oficial glTF — carro com pintura metálica PBR',
+    category: 'Carro Completo',
+    size: '5.2 MB',
+    icon: '🚗',
+  },
+  {
+    id: 'lamborghini',
+    name: 'Lamborghini Aventador',
+    path: '/lamborghini_aventador.glb',
+    description: 'Supercar italiano com geometria detalhada',
+    category: 'Supercar',
+    size: '1.9 MB',
+    icon: '🏎️',
+  },
+  {
+    id: 'car_generic',
+    name: 'Carro Low-Poly',
+    path: '/car_model.glb',
+    description: 'Modelo leve ideal para carregamento rápido',
+    category: 'Low-Poly',
+    size: '424 KB',
+    icon: '🚙',
+  },
+  {
+    id: 'wheel_hydraulics',
+    name: 'Roda + Sistema Hidráulico',
+    path: '/wheel_hydraulics.glb',
+    description: 'Engenharia de suspensão e roda com hidráulica',
+    category: 'Suspensão',
+    size: '7.5 MB',
+    icon: '⚙️',
+  },
+  {
+    id: 'carbon_bike',
+    name: 'Bike Fibra de Carbono',
+    path: '/carbon_frame_bike.glb',
+    description: 'Bicicleta de engenharia — quadro de fibra de carbono com PBR',
+    category: 'Engenharia',
+    size: '3.3 MB',
+    icon: '🚲',
+  },
+];
 
 interface ExplodedCarSceneProps {
   explosionFactor: number; // 0.0 to 1.0 (0 = assembled, 1 = exploded)
@@ -10,6 +68,7 @@ interface ExplodedCarSceneProps {
   autoRotate: boolean;
   scrollPercent: number; // 0.0 to 1.0 based on screen scroll
   interactiveMode: 'scroll' | 'sandbox';
+  modelPath?: string; // path to GLB model (defaults to car_engine_scan.glb)
 }
 
 const THEME_COLORS = {
@@ -37,12 +96,14 @@ export default function ExplodedCarScene({
   autoRotate,
   scrollPercent,
   interactiveMode,
+  modelPath = '/car_engine_scan.glb',
 }: ExplodedCarSceneProps) {
   const groupRef = useRef<THREE.Group>(null);
   const colors = useMemo(() => THEME_COLORS[colorTheme], [colorTheme]);
+  const [modelReady, setModelReady] = useState(false);
 
-  // Load the high-fidelity photorealistic GLB scan
-  const { scene } = useGLTF('/car_engine_scan.glb');
+  // Load the GLB model dynamically
+  const { scene } = useGLTF(modelPath);
 
   // Clone the scene to avoid mutating shared cache
   const clonedScene = useMemo(() => {
@@ -55,7 +116,7 @@ export default function ExplodedCarScene({
     const maxDim = Math.max(size.x, size.y, size.z);
     
     // Scale it to a normalized target dimension of 3.5 units
-    const scaleFactor = 3.5 / maxDim;
+    const scaleFactor = maxDim > 0 ? 3.5 / maxDim : 1;
     cloned.scale.set(scaleFactor, scaleFactor, scaleFactor);
     
     // Recompute box with new scale and subtract center to center it
@@ -66,6 +127,8 @@ export default function ExplodedCarScene({
     
     // Shift slightly upwards to float over the grid
     cloned.position.y += 0.4;
+
+    setModelReady(true);
     
     return cloned;
   }, [scene]);
@@ -75,14 +138,53 @@ export default function ExplodedCarScene({
     const positions: { [key: string]: THREE.Vector3 } = {};
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
-        positions[child.name] = child.position.clone();
+        positions[child.uuid] = child.position.clone();
       }
     });
     return positions;
   }, [clonedScene]);
 
+  // Compute deterministic explosion directions for every mesh based on its position
+  const explosionDirections = useMemo(() => {
+    const dirs: { [key: string]: THREE.Vector3 } = {};
+    const sceneBBox = new THREE.Box3().setFromObject(clonedScene);
+    const sceneCenter = new THREE.Vector3();
+    sceneBBox.getCenter(sceneCenter);
+
+    let meshIndex = 0;
+    clonedScene.traverse((child: THREE.Object3D) => {
+      if (child instanceof THREE.Mesh) {
+        // Calculate direction from center of scene to center of mesh
+        const meshBox = new THREE.Box3().setFromObject(child);
+        const meshCenter = new THREE.Vector3();
+        meshBox.getCenter(meshCenter);
+        
+        const dir = meshCenter.clone().sub(sceneCenter);
+        
+        // If direction is zero (mesh is at center), use a pseudo-random direction
+        if (dir.length() < 0.001) {
+          const angle = (meshIndex * 137.508) * (Math.PI / 180); // golden angle
+          dir.set(Math.cos(angle), 0.5 * Math.sin(meshIndex * 0.7), Math.sin(angle));
+        }
+        
+        dir.normalize();
+        
+        // Scale the explosion distance — farther meshes go farther
+        const dist = meshCenter.distanceTo(sceneCenter);
+        const explosionMagnitude = 0.8 + dist * 0.5 + meshIndex * 0.05;
+        dir.multiplyScalar(explosionMagnitude);
+        
+        dirs[child.uuid] = dir;
+        meshIndex++;
+      }
+    });
+    return dirs;
+  }, [clonedScene]);
+
   // Handle wireframe toggle and restore original materials
   useEffect(() => {
+    if (!modelReady) return;
+
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         if (wireframe) {
@@ -104,7 +206,7 @@ export default function ExplodedCarScene({
         child.receiveShadow = true;
       }
     });
-  }, [clonedScene, scene, colors, wireframe]);
+  }, [clonedScene, scene, colors, wireframe, modelReady]);
 
   // Frame loop for camera, offsets, and rotations
   useFrame((state) => {
@@ -165,25 +267,14 @@ export default function ExplodedCarScene({
     // Apply the exploded offsets to each submesh segment organically
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
-        const orig = originalPositions[child.name] || new THREE.Vector3();
-        const target = orig.clone();
-
-        // Explode the scanned engine parts organically outwards depending on mesh names
-        // Sketchfab scanned meshes typically consist of multiple Object_X components
-        if (child.name.includes('Object_2')) {
-          target.add(new THREE.Vector3(0, 0.9 * activeExplosion, 0.5 * activeExplosion));
-        } else if (child.name.includes('Object_3')) {
-          target.add(new THREE.Vector3(0.6 * activeExplosion, -0.7 * activeExplosion, 0.3 * activeExplosion));
-        } else if (child.name.includes('Object_4')) {
-          target.add(new THREE.Vector3(-0.6 * activeExplosion, 0.7 * activeExplosion, -0.5 * activeExplosion));
-        } else if (child.name.includes('Object_5')) {
-          target.add(new THREE.Vector3(0, -0.9 * activeExplosion, -0.7 * activeExplosion));
-        } else if (child.name.includes('Object_6')) {
-          target.add(new THREE.Vector3(0.7 * activeExplosion, 0, 0.6 * activeExplosion));
+        const orig = originalPositions[child.uuid] || new THREE.Vector3();
+        const dir = explosionDirections[child.uuid];
+        
+        if (dir) {
+          const target = orig.clone().add(dir.clone().multiplyScalar(activeExplosion));
+          // Smooth position transition
+          child.position.lerp(target, 0.08);
         }
-
-        // Smooth position transition
-        child.position.lerp(target, 0.08);
       }
     });
   });
@@ -195,4 +286,5 @@ export default function ExplodedCarScene({
   );
 }
 
+// Preload default model
 useGLTF.preload('/car_engine_scan.glb');

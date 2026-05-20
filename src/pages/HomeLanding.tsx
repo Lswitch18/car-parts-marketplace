@@ -5,7 +5,8 @@ import { OrbitControls, Sparkles } from '@react-three/drei';
 import { 
   ArrowRight, Cpu, Award, Zap, Layers
 } from 'lucide-react';
-import ExplodedCarScene from '../components/ExplodedCarScene';
+import ExplodedCarScene, { MODEL_CATALOG } from '../components/ExplodedCarScene';
+import { ChevronDown } from 'lucide-react';
 
 
 // Highlight hotspots on the exploded model
@@ -77,6 +78,8 @@ export default function HomeLanding() {
   // Interactive 3D States
   const [scrollPercent, setScrollPercent] = useState(0);
   const [selectedPart, setSelectedPart] = useState(COMPONENT_DETAILS[0]);
+  const [selectedModel, setSelectedModel] = useState(MODEL_CATALOG[0]);
+  const [showModelPicker, setShowModelPicker] = useState(false);
 
   // Simulated cyber logs
   useEffect(() => {
@@ -246,6 +249,59 @@ export default function HomeLanding() {
             </div>
           </div>
 
+          {/* 3D Model Selector - Top Right */}
+          <div className="absolute top-6 right-6 z-20">
+            <div className="relative">
+              <button
+                onClick={() => setShowModelPicker(!showModelPicker)}
+                className="bg-[#07070f]/85 backdrop-blur-md border border-white/10 hover:border-[#00E5FF]/40 px-4 py-2.5 rounded-xl flex items-center gap-3 transition-all group cursor-pointer"
+              >
+                <span className="text-lg">{selectedModel.icon}</span>
+                <div className="text-left">
+                  <span className="text-[9px] text-gray-500 font-mono uppercase block">Modelo 3D Ativo</span>
+                  <span className="text-xs font-bold text-white block">{selectedModel.name}</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showModelPicker && (
+                <div className="absolute top-full right-0 mt-2 w-80 bg-[#07070f]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden">
+                  <div className="p-3 border-b border-white/5">
+                    <span className="text-[9px] text-[#00E5FF] font-mono uppercase tracking-widest font-bold">Galeria de Modelos 3D de Engenharia</span>
+                  </div>
+                  <div className="max-h-[340px] overflow-y-auto scrollbar-thin">
+                    {MODEL_CATALOG.map((model) => (
+                      <button
+                        key={model.id}
+                        onClick={() => {
+                          setSelectedModel(model);
+                          setShowModelPicker(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-all text-left border-b border-white/[0.03] last:border-0 ${
+                          selectedModel.id === model.id ? 'bg-[#00E5FF]/10 border-l-2 border-l-[#00E5FF]' : ''
+                        }`}
+                      >
+                        <span className="text-2xl flex-shrink-0">{model.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-xs font-bold text-white block truncate">{model.name}</span>
+                          <span className="text-[10px] text-gray-500 block truncate">{model.description}</span>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[9px] font-mono text-[#7000FF]">{model.category}</span>
+                            <span className="text-[9px] font-mono text-gray-600">•</span>
+                            <span className="text-[9px] font-mono text-gray-600">{model.size}</span>
+                          </div>
+                        </div>
+                        {selectedModel.id === model.id && (
+                          <div className="w-2 h-2 rounded-full bg-[#00E5FF] flex-shrink-0 animate-pulse" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* WebGL Canvas */}
           <div className="relative flex-1 w-full bg-transparent overflow-hidden rounded-3xl">
             <Suspense fallback={
@@ -268,6 +324,7 @@ export default function HomeLanding() {
                   autoRotate={false}
                   scrollPercent={scrollPercent}
                   interactiveMode="scroll"
+                  modelPath={selectedModel.path}
                 />
 
                 <Sparkles 
