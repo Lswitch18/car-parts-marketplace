@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useState } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -100,13 +100,16 @@ export default function ExplodedCarScene({
 }: ExplodedCarSceneProps) {
   const groupRef = useRef<THREE.Group>(null);
   const colors = useMemo(() => THEME_COLORS[colorTheme], [colorTheme]);
-  const [modelReady, setModelReady] = useState(false);
+  const originalMaterialsRef = useRef<Map<string, THREE.Material | THREE.Material[]>>(new Map());
+  const targetVec = useRef(new THREE.Vector3());
 
   // Load the GLB model dynamically
   const { scene } = useGLTF(modelPath);
 
   // Clone the scene to avoid mutating shared cache
   const clonedScene = useMemo(() => {
+    if (!scene) return null;
+
     const cloned = scene.clone();
     
     // Compute bounding box to center and scale it perfectly in the 3D viewport
@@ -128,13 +131,12 @@ export default function ExplodedCarScene({
     // Shift slightly upwards to float over the grid
     cloned.position.y += 0.4;
 
-    setModelReady(true);
-    
     return cloned;
   }, [scene]);
 
   // Store original positions of each child mesh for organic explosion displacement
   const originalPositions = useMemo(() => {
+    if (!clonedScene) return {};
     const positions: { [key: string]: THREE.Vector3 } = {};
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
@@ -146,6 +148,7 @@ export default function ExplodedCarScene({
 
   // Compute deterministic explosion directions for every mesh based on its position
   const explosionDirections = useMemo(() => {
+    if (!clonedScene) return {};
     const dirs: { [key: string]: THREE.Vector3 } = {};
     const sceneBBox = new THREE.Box3().setFromObject(clonedScene);
     const sceneCenter = new THREE.Vector3();
@@ -181,14 +184,16 @@ export default function ExplodedCarScene({
     return dirs;
   }, [clonedScene]);
 
-  // Handle wireframe toggle and restore original materials
+  // Handle wireframe toggle — store original materials in a ref on first toggle
   useEffect(() => {
-    if (!modelReady) return;
+    if (!clonedScene) return;
 
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
         if (wireframe) {
-          // Glow-in-the-dark wireframe cyber aesthetic
+          if (!originalMaterialsRef.current.has(child.uuid)) {
+            originalMaterialsRef.current.set(child.uuid, child.material);
+          }
           child.material = new THREE.MeshBasicMaterial({
             color: colors.primary,
             wireframe: true,
@@ -196,20 +201,21 @@ export default function ExplodedCarScene({
             opacity: 0.65,
           });
         } else {
-          // Restore original photorealistic materials completely untouched from original GLTF
-          const originalMesh = scene.getObjectByName(child.name) as THREE.Mesh;
-          if (originalMesh) {
-            child.material = originalMesh.material;
+          const original = originalMaterialsRef.current.get(child.uuid);
+          if (original) {
+            child.material = original;
           }
         }
         child.castShadow = true;
         child.receiveShadow = true;
       }
     });
-  }, [clonedScene, scene, colors, wireframe, modelReady]);
+  }, [clonedScene, colors, wireframe]);
 
   // Frame loop for camera, offsets, and rotations
   useFrame((state) => {
+    if (!clonedScene) return;
+
     const time = state.clock.getElapsedTime();
 
     // Telemetry values driven by active interaction mode
@@ -253,7 +259,8 @@ export default function ExplodedCarScene({
 
     // Smoothly apply parameters to main group
     if (groupRef.current) {
-      groupRef.current.scale.lerp(new THREE.Vector3(activeScale, activeScale, activeScale), 0.08);
+      targetVec.current.set(activeScale, activeScale, activeScale);
+      groupRef.current.scale.lerp(targetVec.current, 0.08);
       
       if (interactiveMode === 'scroll') {
         groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, activeRotationY, 0.08);
@@ -267,17 +274,19 @@ export default function ExplodedCarScene({
     // Apply the exploded offsets to each submesh segment organically
     clonedScene.traverse((child: THREE.Object3D) => {
       if (child instanceof THREE.Mesh) {
-        const orig = originalPositions[child.uuid] || new THREE.Vector3();
+        const orig = originalPositions[child.uuid];
         const dir = explosionDirections[child.uuid];
         
-        if (dir) {
-          const target = orig.clone().add(dir.clone().multiplyScalar(activeExplosion));
-          // Smooth position transition
+        if (orig && dir) {
+          const target = targetVec.current;
+          target.copy(dir).multiplyScalar(activeExplosion).add(orig);
           child.position.lerp(target, 0.08);
         }
       }
     });
   });
+
+  if (!clonedScene) return null;
 
   return (
     <group ref={groupRef}>
