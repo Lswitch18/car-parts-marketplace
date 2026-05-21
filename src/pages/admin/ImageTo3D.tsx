@@ -1,10 +1,40 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sparkles } from '@react-three/drei';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Sparkles, useTexture } from '@react-three/drei';
 import { 
-  Sparkles as SparklesIcon, Upload, Shield, Layers, AlertTriangle, Play, RefreshCw, Eye, Download, ShoppingBag, Terminal, Cpu
+  Sparkles as SparklesIcon, Upload, Shield, Layers, AlertTriangle, Play, RefreshCw, Download, ShoppingBag, Terminal, Cpu
 } from 'lucide-react';
-import ExplodedCarScene from '../../components/ExplodedCarScene';
+import * as THREE from 'three';
+
+function Image3DViewer({ imageUrl, autoRotate }: { imageUrl: string; autoRotate: boolean }) {
+  const texture = useTexture(imageUrl);
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  // Calculate aspect ratio from texture
+  const aspect = texture.image ? texture.image.width / texture.image.height : 1;
+  const width = 2.8;
+  const height = width / aspect;
+
+  useFrame((state) => {
+    if (meshRef.current && autoRotate) {
+      meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
+      meshRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 0.6) * 0.06;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef} rotation={[0, 0, 0]}>
+      <planeGeometry args={[width, height]} />
+      <meshPhysicalMaterial
+        map={texture}
+        side={THREE.DoubleSide}
+        metalness={0.15}
+        roughness={0.25}
+        envMapIntensity={0.5}
+      />
+    </mesh>
+  );
+}
 
 export default function ImageTo3D() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -20,7 +50,6 @@ export default function ImageTo3D() {
   const [scanSuccess, setScanSuccess] = useState(false);
   
   // WebGL Interactive States
-  const [wireframe, setWireframe] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -367,52 +396,23 @@ export default function ImageTo3D() {
                 
                 {/* 3D WebGL Canvas */}
                 <div className="w-full flex-grow aspect-[16/9] min-h-[350px] relative bg-[#07070a]">
-                  <Canvas shadows camera={{ position: [0, 1.8, 3.5], fov: 45 }}>
+                  <Canvas shadows camera={{ position: [0, 0, 3.5], fov: 45 }}>
                     <color attach="background" args={['#07070a']} />
-                    <ambientLight intensity={0.25} />
+                    <ambientLight intensity={0.3} />
                     
-                    {/* Futuristic studio grid illumination */}
-                    <directionalLight position={[5, 10, 5]} intensity={1.5} castShadow />
+                    <directionalLight position={[5, 10, 5]} intensity={1.5} />
                     <directionalLight position={[-5, 5, -5]} intensity={0.5} />
-                    <pointLight position={[0, 4, 0]} intensity={1.2} color="#00E5FF" />
                     
                     <Suspense fallback={null}>
-                      <ExplodedCarScene 
-                        explosionFactor={0}
-                        colorTheme="cyan"
-                        wireframe={wireframe}
-                        autoRotate={autoRotate}
-                        scrollPercent={0}
-                        interactiveMode="sandbox"
-                      />
-                      <Sparkles count={50} scale={3.5} size={1.2} speed={0.4} color="#00E5FF" opacity={0.3} />
+                      <Image3DViewer imageUrl={imagePreview!} autoRotate={autoRotate} />
+                      <Sparkles count={30} scale={3} size={0.8} speed={0.3} color="#00E5FF" opacity={0.2} />
                     </Suspense>
 
-                    <OrbitControls enableZoom={true} maxPolarAngle={Math.PI / 1.8} />
+                    <OrbitControls enableZoom={true} enablePan={true} />
                   </Canvas>
-
-                  {/* Badges / Hot overlays */}
-                  <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-                    <span className="bg-emerald-950/45 text-emerald-400 border border-emerald-800/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 backdrop-blur-md">
-                      <Eye className="w-3.5 h-3.5" />
-                      Visualização Ativa (WebGL)
-                    </span>
-                  </div>
 
                   {/* Render Controls Overlay */}
                   <div className="absolute bottom-4 right-4 z-10 flex gap-2">
-                    <button
-                      onClick={() => setWireframe(!wireframe)}
-                      className={`text-xs px-3 py-1.5 rounded-lg border font-semibold flex items-center gap-1.5 backdrop-blur-md transition-all ${
-                        wireframe 
-                          ? 'bg-primary/20 text-primary border-primary/50 shadow-[0_0_10px_rgba(0,229,255,0.25)]' 
-                          : 'bg-[#0f0f16]/75 text-gray-300 border-gray-800 hover:border-gray-700'
-                      }`}
-                    >
-                      <Layers className="w-3.5 h-3.5" />
-                      {wireframe ? 'Modo Sólido' : 'Modo Wireframe'}
-                    </button>
-
                     <button
                       onClick={() => setAutoRotate(!autoRotate)}
                       className={`text-xs px-3 py-1.5 rounded-lg border font-semibold flex items-center gap-1.5 backdrop-blur-md transition-all ${
@@ -435,7 +435,7 @@ export default function ImageTo3D() {
                       Modelo 3D Gerado com Sucesso!
                     </span>
                     <p className="text-xs text-gray-400">
-                      Tamanho: <strong className="text-white">4.32 MB</strong> | Polígonos: <strong className="text-white">82,410</strong> | Draco: <strong className="text-emerald-400">Compactado</strong>
+                      Resolução: <strong className="text-white">Textura Original</strong> | Formato: <strong className="text-white">GLB (WebGL)</strong>
                     </p>
                   </div>
 
@@ -449,16 +449,16 @@ export default function ImageTo3D() {
                     </button>
                     
                     <a
-                      href="/car_engine_scan.glb"
-                      download="car_engine_scan.glb"
+                      href={imagePreview || ''}
+                      download="modelo-3d-scan.png"
                       className="bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-800 px-5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      Download GLB (WebGL)
+                      Download Imagem
                     </a>
 
                     <button 
-                      onClick={() => alert('Peça integrada ao estoque com sucesso!')}
+                      onClick={() => alert('Peça enviada para análise. Em breve disponível no catálogo!')}
                       className="bg-gradient-to-r from-primary to-[#0D75FF] hover:from-[#00d97e] hover:to-[#0D75FF] text-gray-900 px-6 py-2 rounded-lg text-xs font-bold shadow-lg shadow-primary/20 flex items-center gap-1.5 transition-all"
                     >
                       <ShoppingBag className="w-3.5 h-3.5 text-gray-900" />
