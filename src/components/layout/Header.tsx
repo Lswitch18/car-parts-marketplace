@@ -345,6 +345,16 @@ export default function Header() {
                 >
                   {t('Vender')}
                 </Link>
+                {isAdmin && (
+                  <Link 
+                    to="/admin/image-to-3d" 
+                    className="block py-2 text-purple-600 font-medium flex items-center gap-2"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>Gerador 3D AI</span>
+                  </Link>
+                )}
                 <button 
                   onClick={() => {
                     handleSignOut();
