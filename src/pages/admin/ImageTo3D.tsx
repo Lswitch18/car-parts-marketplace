@@ -25,6 +25,7 @@ export default function ImageTo3D() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
+  const scanIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -67,18 +68,30 @@ export default function ImageTo3D() {
     ];
 
     let currentLogIndex = 0;
-    const interval = setInterval(() => {
+    scanIntervalRef.current = setInterval(() => {
       if (currentLogIndex < logMessages.length) {
         setScanLogs(prev => [...prev, logMessages[currentLogIndex]]);
         setScanProgress(Math.min(((currentLogIndex + 1) / logMessages.length) * 100, 100));
         currentLogIndex++;
       } else {
-        clearInterval(interval);
+        if (scanIntervalRef.current) {
+          clearInterval(scanIntervalRef.current);
+          scanIntervalRef.current = null;
+        }
         setIsScanning(false);
         setScanSuccess(true);
       }
     }, 900);
   };
+
+  useEffect(() => {
+    return () => {
+      if (scanIntervalRef.current) {
+        clearInterval(scanIntervalRef.current);
+        scanIntervalRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -471,12 +484,14 @@ export default function ImageTo3D() {
                   <p className="text-gray-600 italic">Aguardando comando de inicialização...</p>
                 ) : (
                   scanLogs.map((log, index) => (
-                    <div 
-                      key={index} 
-                      className={`${log.includes('Sucesso!') || log.includes('confirmada') ? 'text-emerald-400' : log.includes('Compactando') || log.includes('Otimizações') ? 'text-cyan-400' : ''}`}
-                    >
-                      {log}
-                    </div>
+                    log ? (
+                      <div 
+                        key={index} 
+                        className={`${log.includes('Sucesso!') || log.includes('confirmada') ? 'text-emerald-400' : log.includes('Compactando') || log.includes('Otimizações') ? 'text-cyan-400' : ''}`}
+                      >
+                        {log}
+                      </div>
+                    ) : null
                   ))
                 )}
                 <div ref={logsEndRef} />
