@@ -11,7 +11,8 @@ function Image3DViewer({ imageUrl, autoRotate }: { imageUrl: string; autoRotate:
   const meshRef = useRef<THREE.Mesh>(null);
 
   // Calculate aspect ratio from texture
-  const aspect = texture.image ? texture.image.width / texture.image.height : 1;
+  const img = texture.image as HTMLImageElement;
+  const aspect = img ? img.width / img.height : 1;
   const width = 2.8;
   const height = width / aspect;
 
