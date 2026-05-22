@@ -1,20 +1,15 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Sparkles, useTexture } from '@react-three/drei';
+import { OrbitControls, Sparkles, useGLTF } from '@react-three/drei';
 import { 
   Sparkles as SparklesIcon, Upload, Shield, Layers, AlertTriangle, Play, RefreshCw, Download, ShoppingBag, Terminal, Cpu
 } from 'lucide-react';
 import * as THREE from 'three';
+import { supabase } from '../../lib/supabase';
 
-function Image3DViewer({ imageUrl, autoRotate }: { imageUrl: string; autoRotate: boolean }) {
-  const texture = useTexture(imageUrl);
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  // Calculate aspect ratio from texture
-  const img = texture.image as HTMLImageElement;
-  const aspect = img ? img.width / img.height : 1;
-  const width = 2.8;
-  const height = width / aspect;
+function Model3DViewer({ modelUrl, autoRotate }: { modelUrl: string; autoRotate: boolean }) {
+  const gltf = useGLTF(modelUrl);
+  const meshRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     if (meshRef.current && autoRotate) {
@@ -23,18 +18,7 @@ function Image3DViewer({ imageUrl, autoRotate }: { imageUrl: string; autoRotate:
     }
   });
 
-  return (
-    <mesh ref={meshRef} rotation={[0, 0, 0]}>
-      <planeGeometry args={[width, height]} />
-      <meshPhysicalMaterial
-        map={texture}
-        side={THREE.DoubleSide}
-        metalness={0.15}
-        roughness={0.25}
-        envMapIntensity={0.5}
-      />
-    </mesh>
-  );
+  return <primitive ref={meshRef} object={gltf.scene} />;
 }
 
 export default function ImageTo3D() {
@@ -53,9 +37,16 @@ export default function ImageTo3D() {
   // WebGL Interactive States
   const [autoRotate, setAutoRotate] = useState(true);
 
+  // Real 3D Generation States
+  const [modelUrl, setModelUrl] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
   const scanIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const addLog = (msg: string) => {
+    setScanLogs(prev => [...prev, msg]);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -71,47 +62,112 @@ export default function ImageTo3D() {
     fileInputRef.current?.click();
   };
 
-  // Simulates high-fidelity AI generation console logs
-  const runGenerationSimulation = () => {
+  const runRealGeneration = async () => {
+    if (!imagePreview) return;
+
     setIsScanning(true);
     setScanProgress(0);
     setScanLogs([]);
     setScanSuccess(false);
+    setModelUrl(null);
 
-    const logMessages = [
-      '[SYSTEM] Inicializando pipeline do gerador AI...',
-      '[SUPABASE] Autenticação de privilégios de Admin confirmada.',
-      `[AI ENGINE] Utilizando modelo de aprendizado profundo: ${aiEngine.toUpperCase()} v2.1`,
-      '[GPU CLUSTER] Alocando unidade de processamento gráfico NVIDIA A100...',
-      '[IMAGE ANALYZER] Redimensionando imagem de entrada e removendo plano de fundo (Background Removal)...',
-      '[IMAGE ANALYZER] Imagem isolada com sucesso. Analisando orientação espacial e profundidade...',
-      `[${aiEngine.toUpperCase()}] Inicializando pipeline de difusão esparsa de nuvem de pontos (Sparse Point Cloud)...`,
-      `[${aiEngine.toUpperCase()}] Construindo malha poligonal base (Implicit Mesh Reconstruction)...`,
-      `[${aiEngine.toUpperCase()}] Gerando geometria detalhada das partes e quinas mecânicas (Dense Voxel Generation)...`,
-      '[TOPOLOGY] Resolvendo quinas, furos e reentrâncias da geometria 3D...',
-      '[UV UNWRAP] Mapeando coordenadas de textura UV...',
-      `[TEXTURE GENERATOR] Projetando mapas de textura realistas PBR com resolução de ${textureRes.toUpperCase()}...`,
-      useDraco ? '[DRACO COMPRESSION] Compactando malha 3D e índices WebGL (reduzindo tamanho em ~85%)...' : '[COMPRESSION] Pulando compressão Draco.',
-      '[WEBGL VERIFIER] Validando integridade geométrica da malha WebGL (0 erros de topologia encontrados).',
-      '[EXPORT] Gerando arquivo final otimizado no formato GLB binário...',
-      '[SYSTEM] Sucesso! Modelo 3D carregado na GPU para visualização interativa em tempo real.'
-    ];
+    addLog('[SYSTEM] Inicializando pipeline do gerador 3D...');
+    addLog('[STORAGE] Enviando imagem para o Supabase Storage...');
 
-    let currentLogIndex = 0;
-    scanIntervalRef.current = setInterval(() => {
-      if (currentLogIndex < logMessages.length) {
-        setScanLogs(prev => [...prev, logMessages[currentLogIndex]]);
-        setScanProgress(Math.min(((currentLogIndex + 1) / logMessages.length) * 100, 100));
-        currentLogIndex++;
-      } else {
-        if (scanIntervalRef.current) {
-          clearInterval(scanIntervalRef.current);
-          scanIntervalRef.current = null;
-        }
+    try {
+      const response = await fetch(imagePreview);
+      const blob = await response.blob();
+      const ext = blob.type === 'image/png' ? '.png' : '.jpg';
+      const fileName = `3d-scans/${Date.now()}-${Math.random().toString(36).substr(2, 9)}${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('parts-images')
+        .upload(fileName, blob);
+
+      if (uploadError) throw new Error(`Falha no upload: ${uploadError.message}`);
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('parts-images')
+        .getPublicUrl(fileName);
+
+      addLog('[UPLOAD] Imagem enviada com sucesso.');
+      setScanProgress(25);
+      addLog(`[AI ENGINE] Chamando ${aiEngine.toUpperCase()} via API...`);
+
+      const { data: startResp, error: startError } = await supabase.functions.invoke('generate-3d', {
+        body: { image: publicUrl },
+      });
+
+      if (startError) throw startError;
+
+      const startData = startResp?.data;
+      if (!startData) throw new Error('Resposta inválida do servidor');
+
+      if (startData.status === 'demo') {
+        addLog('[SYSTEM] Modo demonstração — configure REPLICATE_API_KEY');
+        addLog('[SYSTEM] Exibindo visualização 2D da imagem enviada.');
         setIsScanning(false);
         setScanSuccess(true);
+        return;
       }
-    }, 900);
+
+      addLog(`[REPLICATE] Predição iniciada: ${startData.id}`);
+      setScanProgress(40);
+
+      let attempts = 0;
+      const maxAttempts = 60;
+
+      const poll = async () => {
+        attempts++;
+        const { data: statusResp, error: statusError } = await supabase.functions.invoke('generate-3d', {
+          body: { id: startData.id },
+        });
+
+        if (statusError) {
+          addLog(`[ERROR] ${statusError.message}`);
+          return;
+        }
+
+        const s = statusResp?.data;
+        if (!s) return;
+
+        if (s.status === 'succeeded') {
+          const glbUrl = s.output;
+          setModelUrl(glbUrl);
+          setScanProgress(100);
+          addLog(`[SUCCESS] Modelo 3D gerado com sucesso!`);
+          addLog('[SYSTEM] Carregando malha WebGL na GPU...');
+          setTimeout(() => {
+            setIsScanning(false);
+            setScanSuccess(true);
+          }, 500);
+          return;
+        }
+
+        if (s.status === 'failed') {
+          addLog(`[ERROR] ${s.error || 'Falha na geração'}`);
+          setIsScanning(false);
+          return;
+        }
+
+        setScanProgress(Math.min(40 + (attempts / maxAttempts) * 55, 95));
+        addLog(`[PROGRESS] Reconstruindo geometria... (${attempts * 2}s)`);
+
+        if (attempts >= maxAttempts) {
+          addLog('[ERROR] Tempo limite excedido');
+          setIsScanning(false);
+          return;
+        }
+
+        setTimeout(poll, 2000);
+      };
+
+      setTimeout(poll, 2000);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      addLog(`[ERROR] ${msg}`);
+      setIsScanning(false);
+    }
   };
 
   useEffect(() => {
@@ -363,7 +419,7 @@ export default function ImageTo3D() {
                       Alterar Imagem
                     </button>
                     <button 
-                      onClick={runGenerationSimulation}
+                      onClick={runRealGeneration}
                       className="bg-gradient-to-r from-primary to-[#0D75FF] hover:from-[#00d97e] hover:to-[#0D75FF] text-gray-900 px-8 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-primary/25 flex items-center gap-2 transform active:scale-95 transition-all"
                     >
                       <Play className="w-4 h-4 fill-gray-900" />
@@ -405,7 +461,14 @@ export default function ImageTo3D() {
                     <directionalLight position={[-5, 5, -5]} intensity={0.5} />
                     
                     <Suspense fallback={null}>
-                      <Image3DViewer imageUrl={imagePreview!} autoRotate={autoRotate} />
+                      {modelUrl ? (
+                        <Model3DViewer modelUrl={modelUrl} autoRotate={autoRotate} />
+                      ) : (
+                        <mesh>
+                          <planeGeometry args={[2.8, 2.8]} />
+                          <meshPhysicalMaterial color="#1a1a2e" metalness={0.1} roughness={0.3} />
+                        </mesh>
+                      )}
                       <Sparkles count={30} scale={3} size={0.8} speed={0.3} color="#00E5FF" opacity={0.2} />
                     </Suspense>
 

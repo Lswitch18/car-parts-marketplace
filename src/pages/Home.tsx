@@ -1,54 +1,13 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { 
   ArrowRight, Search, Shield, Truck, Star, Wrench,
-  Sliders, ShieldCheck, Play, Pause, RotateCcw, Compass, Layers, 
-  Palette, Eye, Award
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
-import MotionFrameScene from '../components/MotionFrameScene'
-
 export default function Home() {
   const { t } = useI18n()
-
-  // 3D Motion Frame states
-  const [speed, setSpeed] = useState<number>(1.2);
-  const [distortion, setDistortion] = useState<number>(1.0);
-  const [glow, setGlow] = useState<number>(1.5);
-  const [colorTheme, setColorTheme] = useState<'blue' | 'purple' | 'cyan'>('purple');
-  const [wireframe, setWireframe] = useState<boolean>(false);
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-
-  const skills = [
-    { name: 'Modelagem 3D Avançada (Hard Surface & Organic)', level: 98, desc: 'Topologia limpa, otimização de malha e design de alta fidelidade para web.' },
-    { name: 'Motion Graphics & Dinâmicas de Fluidos', level: 95, desc: 'Animações fluidas de quadros, simulações físicas e interpolações complexas.' },
-    { name: 'WebGL, Three.js & Custom Shaders', level: 93, desc: 'Programação de Shaders GLSL, otimização de render e integração com React.' },
-    { name: 'Iluminação Realista & PBR Texturing', level: 96, desc: 'Mapas de textura PBR de alta resolução, iluminação de estúdio física e volumétrica.' }
-  ];
-
-  const handleReset3D = () => {
-    setSpeed(1.2);
-    setDistortion(1.0);
-    setGlow(1.5);
-    setColorTheme('purple');
-    setWireframe(false);
-    setIsPlaying(true);
-  };
-
-  const getThemeColorClass = () => {
-    if (colorTheme === 'blue') return 'from-[#0D75FF] to-[#00E5FF]';
-    if (colorTheme === 'purple') return 'from-[#7000FF] to-[#FF007A]';
-    return 'from-[#00E5FF] to-[#00D97E]';
-  };
-
-  const getThemeTextClass = () => {
-    if (colorTheme === 'blue') return 'text-[#0D75FF]';
-    if (colorTheme === 'purple') return 'text-[#7000FF]';
-    return 'text-[#00E5FF]';
-  };
 
   const { data: products } = useQuery({
     queryKey: ['products', 'latest'],
