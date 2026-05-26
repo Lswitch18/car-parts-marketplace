@@ -1,7 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useState, useEffect } from 'react'
-import { Menu, X, Search, Heart, User, LogOut, Plus, MessageCircle, ArrowRight, Package, Sparkles } from 'lucide-react'
+import {
+  Menu, X, Search, Heart, User, LogOut, Plus,
+  MessageCircle, ArrowRight, Package, Sparkles,
+} from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '../../lib/i18n'
 import { supabase } from '../../lib/supabase'
@@ -16,6 +19,14 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const [unreadCount, setUnreadCount] = useState(0)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Scroll shadow effect
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   // Check if user is admin
   useEffect(() => {
@@ -35,30 +46,22 @@ export default function Header() {
       .select('*', { count: 'exact', head: true })
       .eq('receiver_id', user.id)
       .eq('is_read', false)
-    
     if (!error) setUnreadCount(count || 0)
   }
 
   useEffect(() => {
     if (user) {
       fetchUnreadCount()
-      
-      // Inscrever em mudanças nas mensagens (Realtime)
       const channel = supabase
         .channel(`unread_messages_${user.id}`)
-        .on('postgres_changes', { 
-          event: '*', 
-          schema: 'public', 
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
           table: 'messages',
-          filter: `receiver_id=eq.${user.id}`
-        }, () => {
-          fetchUnreadCount()
-        })
+          filter: `receiver_id=eq.${user.id}`,
+        }, () => fetchUnreadCount())
         .subscribe()
-
-      return () => {
-        supabase.removeChannel(channel)
-      }
+      return () => { supabase.removeChannel(channel) }
     }
   }, [user])
 
@@ -75,186 +78,426 @@ export default function Header() {
     navigate('/')
   }
 
+  /* ── Shared nav-link style ── */
+  const navLinkBase: React.CSSProperties = {
+    color: '#B0B5C0',
+    fontFamily: "'Sora', sans-serif",
+    fontWeight: 500,
+    fontSize: '0.875rem',
+    padding: '6px 12px',
+    borderRadius: '8px',
+    transition: 'color 0.2s, background 0.2s',
+    textDecoration: 'none',
+  }
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-surface shadow-md">
+    <header
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        background: scrolled
+          ? 'rgba(5,5,8,0.92)'
+          : 'rgba(5,5,8,0.75)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: scrolled
+          ? '1px solid rgba(13,117,255,0.18)'
+          : '1px solid rgba(255,255,255,0.04)',
+        boxShadow: scrolled
+          ? '0 4px 32px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(13,117,255,0.12)'
+          : 'none',
+        transition: 'background 0.3s, border-color 0.3s, box-shadow 0.3s',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 md:h-24">
-          <Link 
-            to="/" 
-            className="flex items-center"
+        <div className="flex items-center justify-between h-[68px] md:h-[76px]">
+
+          {/* ── Logo ── */}
+          <Link
+            to="/"
+            className="flex items-center flex-shrink-0"
             onClick={() => setMenuOpen(false)}
           >
-            <GaidLogo size={60} className="-ml-4 md:-ml-8" />
+            <GaidLogo size={52} animated />
           </Link>
 
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-8">
+          {/* ── Search bar (desktop) ── */}
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-sm mx-6">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                style={{ color: '#4B5563' }}
+              />
               <input
+                id="header-search"
                 type="text"
                 placeholder={t('Buscar peças, marcas, modelos...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg text-text placeholder-text-secondary focus:border-primary focus:ring-1 focus:ring-primary"
+                style={{
+                  width: '100%',
+                  paddingLeft: '2.25rem',
+                  paddingRight: '1rem',
+                  paddingTop: '8px',
+                  paddingBottom: '8px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '10px',
+                  color: '#FFFFFF',
+                  fontFamily: "'Raleway', sans-serif",
+                  fontSize: '0.875rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s, box-shadow 0.2s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(13,117,255,0.5)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(13,117,255,0.12)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
               />
             </div>
           </form>
 
-          <div className="hidden md:flex items-center space-x-2">
+          {/* ── Desktop nav ── */}
+          <nav className="hidden md:flex items-center gap-1">
             <LanguageDetector />
-          </div>
 
-          <nav className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/catalog"
-              className="text-text hover:text-primary transition-colors px-3 py-2 font-medium"
-            >
-              {t('Catálogo')}
-            </Link>
+            {/* Nav links */}
+            {[
+              { to: '/catalog', label: t('Catálogo') },
+              { to: '/cars', label: t('Compatibilidade') },
+            ].map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                style={navLinkBase}
+                onMouseEnter={(e) => {
+                  ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                  ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                }}
+                onMouseLeave={(e) => {
+                  ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                  ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                }}
+              >
+                {label}
+              </Link>
+            ))}
 
-            <Link
-              to="/cars"
-              className="text-text hover:text-primary transition-colors px-3 py-2 font-medium"
-            >
-              {t('Compatibilidade')}
-            </Link>
-
+            {/* Showroom 3D — highlighted */}
             <Link
               to="/home"
-              className="text-text hover:text-primary transition-colors px-3 py-2 font-medium flex items-center gap-1.5"
+              className="flex items-center gap-1.5"
+              style={{ ...navLinkBase, color: '#00E5FF' }}
+              onMouseEnter={(e) => {
+                ;(e.currentTarget as HTMLElement).style.background = 'rgba(0,229,255,0.08)'
+              }}
+              onMouseLeave={(e) => {
+                ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+              }}
             >
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E5FF] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E5FF]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-daig-cyan opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-daig-cyan" />
               </span>
-              <span>{t('Showroom 3D')}</span>
+              {t('Showroom 3D')}
             </Link>
 
             {user ? (
               <>
+                {/* Favourites */}
                 <Link
                   to="/favorites"
-                  className="text-gray-700 hover:text-[#ffd700] transition-colors p-2"
+                  className="p-2 rounded-lg transition-all"
+                  title={t('Favoritos')}
+                  style={{ color: '#6B7280' }}
+                  onMouseEnter={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.color = '#FFB800'
+                    ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,184,0,0.08)'
+                  }}
+                  onMouseLeave={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.color = '#6B7280'
+                    ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                  }}
                 >
                   <Heart className="w-5 h-5" />
                 </Link>
-                {/* Notification Dropdown para Mensagens */}
+
+                {/* Messages dropdown */}
                 <div className="relative">
                   <button
+                    id="header-messages-btn"
                     onClick={() => setMessagesOpen(!messagesOpen)}
                     onBlur={() => setTimeout(() => setMessagesOpen(false), 200)}
-                    className="text-gray-700 hover:text-primary transition-colors p-2 relative"
+                    className="p-2 rounded-lg transition-all relative"
+                    style={{ color: '#6B7280' }}
+                    onMouseEnter={(e) => {
+                      ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                      ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                    }}
+                    onMouseLeave={(e) => {
+                      ;(e.currentTarget as HTMLElement).style.color = '#6B7280'
+                      ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                    }}
                   >
                     <MessageCircle className="w-5 h-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center border-2 border-surface">
+                      <span
+                        className="absolute top-1 right-1 text-[10px] font-bold min-w-[16px] text-center rounded-full"
+                        style={{
+                          background: '#FF4B4B',
+                          color: '#FFFFFF',
+                          padding: '1px 4px',
+                          border: '2px solid rgba(5,5,8,0.9)',
+                        }}
+                      >
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}
                   </button>
 
                   {messagesOpen && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2">
-                      <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                        <h4 className="font-bold text-gray-900">{t('Mensagens')}</h4>
-                        <p className="text-xs text-gray-500">
-                          {unreadCount > 0 
-                            ? `Você tem ${unreadCount} mensagens pendentes` 
+                    <div
+                      className="absolute right-0 mt-2 w-60 rounded-xl overflow-hidden"
+                      style={{
+                        background: 'rgba(10,10,15,0.95)',
+                        border: '1px solid rgba(13,117,255,0.2)',
+                        backdropFilter: 'blur(16px)',
+                        boxShadow: '0 16px 48px rgba(0,0,0,0.7)',
+                      }}
+                    >
+                      <div
+                        className="p-4"
+                        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                      >
+                        <h4 className="font-semibold text-white text-sm">{t('Mensagens')}</h4>
+                        <p className="text-xs mt-1" style={{ color: '#6B7280' }}>
+                          {unreadCount > 0
+                            ? `${unreadCount} mensagem${unreadCount > 1 ? 's' : ''} não lida${unreadCount > 1 ? 's' : ''}`
                             : 'Nenhuma mensagem nova'}
                         </p>
                       </div>
                       <div className="p-2">
                         <Link
                           to="/messages"
-                          className="flex items-center justify-between w-full p-3 text-sm font-medium text-primary hover:bg-primary/5 rounded-lg transition-colors group"
+                          className="flex items-center justify-between w-full p-3 rounded-lg text-sm font-medium transition-all group"
+                          style={{ color: '#0D75FF' }}
+                          onMouseEnter={(e) =>
+                            ((e.currentTarget as HTMLElement).style.background = 'rgba(13,117,255,0.1)')
+                          }
+                          onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLElement).style.background = 'transparent')
+                          }
                         >
                           <span>{t('Ir para Mensagens')}</span>
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </Link>
                       </div>
                     </div>
                   )}
                 </div>
+
+                {/* Sell button */}
                 <Link
                   to="/create-listing"
-                  className="flex items-center space-x-1 bg-primary hover:bg-primary-dark text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-sm transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
+                    color: '#FFFFFF',
+                    boxShadow: '0 0 16px rgba(13,117,255,0.35)',
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.transform = 'translateY(-1px)'
+                    el.style.boxShadow = '0 0 24px rgba(13,117,255,0.55)'
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.transform = ''
+                    el.style.boxShadow = '0 0 16px rgba(13,117,255,0.35)'
+                  }}
                 >
                   <Plus className="w-4 h-4" />
-                  <span>{t('Vender')}</span>
+                  {t('Vender')}
                 </Link>
+
+                {/* Admin shortcut */}
                 {isAdmin && (
                   <Link
                     to="/admin/image-to-3d"
                     title="Gerador 3D AI"
-                    className="p-2 text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-full transition-all flex items-center justify-center shadow-sm"
+                    className="p-2 rounded-full transition-all"
+                    style={{
+                      color: '#a855f7',
+                      background: 'rgba(168,85,247,0.1)',
+                      border: '1px solid rgba(168,85,247,0.2)',
+                    }}
+                    onMouseEnter={(e) => {
+                      ;(e.currentTarget as HTMLElement).style.background = 'rgba(168,85,247,0.18)'
+                    }}
+                    onMouseLeave={(e) => {
+                      ;(e.currentTarget as HTMLElement).style.background = 'rgba(168,85,247,0.1)'
+                    }}
                   >
-                    <Sparkles className="w-5 h-5 animate-pulse" />
+                    <Sparkles className="w-4 h-4 animate-pulse" />
                   </Link>
                 )}
+
+                {/* User avatar dropdown */}
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 text-gray-700 hover:text-[#ffd700] p-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
+                  <button
+                    className="flex items-center gap-2 p-1 rounded-lg transition-all"
+                    style={{ color: '#B0B5C0' }}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
+                      style={{
+                        background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+                        boxShadow: '0 0 10px rgba(13,117,255,0.4)',
+                      }}
+                    >
                       <User className="w-4 h-4 text-white" />
                     </div>
                   </button>
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                    <div className="p-3 border-b border-gray-200">
-                      <p className="text-gray-900 font-medium">{user.name || user.email}</p>
-                      <p className="text-gray-500 text-sm">{user.email}</p>
+
+                  {/* Dropdown */}
+                  <div
+                    className="absolute right-0 top-full mt-2 w-52 rounded-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+                    style={{
+                      background: 'rgba(10,10,15,0.97)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      backdropFilter: 'blur(16px)',
+                      boxShadow: '0 16px 48px rgba(0,0,0,0.8)',
+                    }}
+                  >
+                    <div
+                      className="p-4"
+                      style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                    >
+                      <p className="text-white font-semibold text-sm truncate">
+                        {user.name || user.email}
+                      </p>
+                      <p className="text-xs truncate" style={{ color: '#6B7280' }}>
+                        {user.email}
+                      </p>
                     </div>
+
                     <div className="p-2">
-                      <Link
-                        to="/dashboard"
-                        className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                      >
-                        {t('Dashboard')}
-                      </Link>
-                      <Link
-                        to="/profile"
-                        className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                      >
-                        {t('Perfil')}
-                      </Link>
+                      {[
+                        { to: '/dashboard', label: t('Dashboard') },
+                        { to: '/profile', label: t('Perfil') },
+                      ].map(({ to, label }) => (
+                        <Link
+                          key={to}
+                          to={to}
+                          className="block px-3 py-2 rounded-lg text-sm transition-all"
+                          style={{ color: '#B0B5C0' }}
+                          onMouseEnter={(e) => {
+                            ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                            ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                          }}
+                          onMouseLeave={(e) => {
+                            ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                            ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                          }}
+                        >
+                          {label}
+                        </Link>
+                      ))}
+
                       {isAdmin && (
                         <>
                           <Link
                             to="/admin"
-                            className="block px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg flex items-center space-x-2 font-medium"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                            style={{ color: '#0D75FF' }}
+                            onMouseEnter={(e) =>
+                              ((e.currentTarget as HTMLElement).style.background = 'rgba(13,117,255,0.1)')
+                            }
+                            onMouseLeave={(e) =>
+                              ((e.currentTarget as HTMLElement).style.background = 'transparent')
+                            }
                           >
                             <Package className="w-4 h-4" />
-                            <span>Logistix WMS</span>
+                            Logistix WMS
                           </Link>
                           <Link
                             to="/admin/image-to-3d"
-                            className="block px-3 py-2 text-purple-600 hover:bg-purple-50 rounded-lg flex items-center space-x-2 font-medium"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                            style={{ color: '#a855f7' }}
+                            onMouseEnter={(e) =>
+                              ((e.currentTarget as HTMLElement).style.background = 'rgba(168,85,247,0.1)')
+                            }
+                            onMouseLeave={(e) =>
+                              ((e.currentTarget as HTMLElement).style.background = 'transparent')
+                            }
                           >
                             <Sparkles className="w-4 h-4" />
-                            <span>Gerador 3D AI</span>
+                            Gerador 3D AI
                           </Link>
                         </>
                       )}
-                      <button
-                        onClick={handleSignOut}
-                        className="w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100 rounded-lg flex items-center space-x-2"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>{t('Sair')}</span>
-                      </button>
+
+                      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px', paddingTop: '4px' }}>
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all"
+                          style={{ color: '#FF4B4B' }}
+                          onMouseEnter={(e) =>
+                            ((e.currentTarget as HTMLElement).style.background = 'rgba(255,75,75,0.08)')
+                          }
+                          onMouseLeave={(e) =>
+                            ((e.currentTarget as HTMLElement).style.background = 'transparent')
+                          }
+                        >
+                          <LogOut className="w-4 h-4" />
+                          {t('Sair')}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="text-text hover:text-primary transition-colors px-3 py-2 font-medium"
+                  style={navLinkBase}
+                  onMouseEnter={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                    ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                  }}
+                  onMouseLeave={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                    ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                  }}
                 >
                   {t('Entrar')}
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-primary hover:bg-primary-dark text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors"
+                  className="px-4 py-2 rounded-lg font-semibold text-sm transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
+                    color: '#FFFFFF',
+                    boxShadow: '0 0 14px rgba(13,117,255,0.3)',
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.transform = 'translateY(-1px)'
+                    el.style.boxShadow = '0 0 22px rgba(13,117,255,0.5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.transform = ''
+                    el.style.boxShadow = '0 0 14px rgba(13,117,255,0.3)'
+                  }}
                 >
                   {t('Cadastrar')}
                 </Link>
@@ -262,128 +505,180 @@ export default function Header() {
             )}
           </nav>
 
+          {/* ── Mobile hamburger ── */}
           <button
-            className="md:hidden text-gray-700 p-2"
+            id="header-mobile-menu-btn"
+            className="md:hidden p-2 rounded-lg transition-all"
             onClick={() => setMenuOpen(!menuOpen)}
+            style={{ color: '#B0B5C0', background: 'rgba(255,255,255,0.04)' }}
           >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
+      {/* ── Mobile menu ── */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 p-4">
-          <form onSubmit={handleSearch} className="mb-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder={t('Buscar peças, marcas, modelos...')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-900"
-              />
-            </div>
-          </form>
-          <nav className="space-y-2">
-            <Link 
-              to="/catalog" 
-              className="block py-2 text-gray-700 font-medium"
+        <div
+          className="md:hidden"
+          style={{
+            background: 'rgba(5,5,8,0.97)',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(16px)',
+          }}
+        >
+          <div className="px-4 py-4 space-y-1">
+            {/* Mobile search */}
+            <form onSubmit={handleSearch} className="mb-4">
+              <div className="relative">
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                  style={{ color: '#4B5563' }}
+                />
+                <input
+                  id="header-mobile-search"
+                  type="text"
+                  placeholder={t('Buscar peças...')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{
+                    width: '100%',
+                    paddingLeft: '2.25rem',
+                    paddingRight: '1rem',
+                    paddingTop: '10px',
+                    paddingBottom: '10px',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '10px',
+                    color: '#FFFFFF',
+                    fontFamily: "'Raleway', sans-serif",
+                    fontSize: '0.875rem',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+            </form>
+
+            {/* Mobile nav items */}
+            {[
+              { to: '/catalog', label: t('Catálogo') },
+              { to: '/cars', label: t('Compatibilidade') },
+            ].map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className="block py-3 px-3 rounded-lg text-sm font-medium transition-all"
+                style={{ color: '#B0B5C0' }}
+                onClick={() => setMenuOpen(false)}
+                onMouseEnter={(e) =>
+                  ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)')
+                }
+                onMouseLeave={(e) =>
+                  ((e.currentTarget as HTMLElement).style.background = 'transparent')
+                }
+              >
+                {label}
+              </Link>
+            ))}
+
+            <Link
+              to="/home"
+              className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm font-medium"
+              style={{ color: '#00E5FF' }}
               onClick={() => setMenuOpen(false)}
             >
-              {t('Catálogo')}
+              <span className="w-2 h-2 rounded-full bg-daig-cyan animate-pulse" />
+              {t('Showroom 3D')}
             </Link>
 
-            <Link 
-              to="/cars" 
-              className="block py-2 text-gray-700 font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              {t('Compatibilidade')}
-            </Link>
-
-            <Link 
-              to="/home" 
-              className="py-2 text-[#00E5FF] font-medium flex items-center gap-2"
-              onClick={() => setMenuOpen(false)}
-            >
-              <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse" />
-              <span>{t('Showroom 3D')}</span>
-            </Link>
             {user ? (
               <>
-                <Link 
-                  to="/dashboard" 
-                  className="block py-2 text-gray-700"
+                {[
+                  { to: '/dashboard', label: t('Dashboard') },
+                  { to: '/favorites', label: t('Favoritos') },
+                  { to: '/messages', label: t('Mensagens'), badge: unreadCount },
+                ].map(({ to, label, badge }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className="flex items-center justify-between py-3 px-3 rounded-lg text-sm font-medium"
+                    style={{ color: '#B0B5C0' }}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span>{label}</span>
+                    {badge && badge > 0 && (
+                      <span
+                        className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: '#FF4B4B', color: '#FFFFFF' }}
+                      >
+                        {badge}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+
+                <Link
+                  to="/create-listing"
+                  className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm font-semibold"
+                  style={{ color: '#0D75FF' }}
                   onClick={() => setMenuOpen(false)}
                 >
-                  {t('Dashboard')}
-                </Link>
-                <Link 
-                  to="/favorites" 
-                  className="block py-2 text-gray-700"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {t('Favoritos')}
-                </Link>
-                <Link 
-                  to="/messages" 
-                  className="py-2 text-gray-700 flex items-center justify-between"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>{t('Mensagens')}</span>
-                  {unreadCount > 0 && (
-                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      {unreadCount}
-                    </span>
-                  )}
-                </Link>
-                <Link 
-                  to="/create-listing" 
-                  className="block py-2 text-[#ffd700] font-medium"
-                  onClick={() => setMenuOpen(false)}
-                >
+                  <Plus className="w-4 h-4" />
                   {t('Vender')}
                 </Link>
+
                 {isAdmin && (
-                  <Link 
-                    to="/admin/image-to-3d" 
-                    className="block py-2 text-purple-600 font-medium flex items-center gap-2"
+                  <Link
+                    to="/admin/image-to-3d"
+                    className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm font-medium"
+                    style={{ color: '#a855f7' }}
                     onClick={() => setMenuOpen(false)}
                   >
                     <Sparkles className="w-4 h-4" />
-                    <span>Gerador 3D AI</span>
+                    Gerador 3D AI
                   </Link>
                 )}
-                <button 
-                  onClick={() => {
-                    handleSignOut();
-                    setMenuOpen(false);
-                  }} 
-                  className="block py-2 text-red-600"
-                >
-                  {t('Sair')}
-                </button>
+
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
+                  <button
+                    onClick={() => { handleSignOut(); setMenuOpen(false) }}
+                    className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm w-full text-left"
+                    style={{ color: '#FF4B4B' }}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    {t('Sair')}
+                  </button>
+                </div>
               </>
             ) : (
-              <>
-                <Link 
-                  to="/login" 
-                  className="block py-2 text-gray-700"
+              <div className="pt-2 flex flex-col gap-2">
+                <Link
+                  to="/login"
+                  className="block text-center py-3 px-4 rounded-xl text-sm font-medium"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: '#B0B5C0',
+                  }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {t('Entrar')}
                 </Link>
-                <Link 
-                  to="/register" 
-                  className="block py-2 text-[#ffd700] font-medium"
+                <Link
+                  to="/register"
+                  className="block text-center py-3 px-4 rounded-xl text-sm font-semibold"
+                  style={{
+                    background: 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
+                    color: '#FFFFFF',
+                    boxShadow: '0 0 16px rgba(13,117,255,0.3)',
+                  }}
                   onClick={() => setMenuOpen(false)}
                 >
                   {t('Cadastrar')}
                 </Link>
-              </>
+              </div>
             )}
-          </nav>
+          </div>
         </div>
       )}
     </header>

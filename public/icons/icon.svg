@@ -1,11 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3B82F6"/>
-      <stop offset="100%" stop-color="#1D4ED8"/>
+    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1A1A28"/>
+      <stop offset="100%" stop-color="#050508"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#C8D4E8"/>
+      <stop offset="70%" stop-color="#90A0B8"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
     </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="b1"/>
+      <feGaussianBlur stdDeviation="9" result="b2"/>
+      <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <text x="256" y="300" text-anchor="middle" font-family="system-ui" font-weight="900" font-size="280" fill="white">L</text>
-  <text x="256" y="410" text-anchor="middle" font-family="system-ui" font-weight="700" font-size="56" fill="rgba(255,255,255,0.6)">DAIG</text>
+  <!-- Rounded background -->
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <!-- Gear + G centered in 192x192, scale 1.92x from 100-unit space -->
+  <g transform="translate(0,0) scale(1.92)">
+    <circle cx="50" cy="50" r="46" stroke="#0D75FF" stroke-width="2.5" fill="none" filter="url(#glow)"/>
+    <circle cx="50" cy="50" r="43.5" stroke="rgba(13,117,255,0.25)" stroke-width="0.8" fill="none"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(0,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(45,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(90,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(135,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(180,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(225,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(270,50,50)"/>
+    <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(315,50,50)"/>
+    <circle cx="50" cy="50" r="30" fill="url(#metal)"/>
+    <circle cx="50" cy="50" r="22" fill="url(#bg)"/>
+    <path d="M 50 29 A 21 21 0 1 0 71 50 L 71 45 L 56 45 L 56 51 L 65 51 A 15 15 0 1 1 50 35 Z" fill="url(#metal)"/>
+  </g>
 </svg>
