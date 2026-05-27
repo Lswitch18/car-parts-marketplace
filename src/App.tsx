@@ -29,12 +29,29 @@ import MotionFramePage from './pages/MotionFramePage'
 import ImmersiveExperience from './pages/ImmersiveExperience'
 import ChatPopup from './components/ChatPopup'
 import { useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 
 function App() {
-  const { user, initialize } = useAuthStore()
+  const { user, initialized, loading, initialize } = useAuthStore()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => { initialize() }, [initialize])
+
+  // Redirecionar baseado na role após login
+  useEffect(() => {
+    if (!initialized || loading || !user) return
+    if (location.pathname !== '/') return
+
+    if (user.role === 'admin') {
+      navigate('/admin/dashboard', { replace: true })
+    } else if (user.role === 'seller') {
+      navigate('/dashboard', { replace: true })
+    } else {
+      navigate('/catalog', { replace: true })
+    }
+  }, [user, initialized, loading, location.pathname, navigate])
 
   return (
     <I18nProvider>

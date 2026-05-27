@@ -62,33 +62,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
 
   initialize: async () => {
-    // Evita re-inicialização desnecessária
     if (get().initialized) return
 
-    try {
-      // CRITICAL FIX: usar getSession() em vez de getUser()
-      // getSession() lê o token do localStorage e funciona após redirect OAuth
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-
-      if (sessionError) {
-        console.error('[authStore] Session error:', sessionError)
-        set({ user: null, loading: false, initialized: true })
-        return
-      }
-
-      if (session?.user) {
-        const mapped = await fetchAndMapProfile(session.user.id)
-        set({ user: mapped, loading: false, initialized: true })
-      } else {
-        set({ user: null, loading: false, initialized: true })
-      }
-    } catch (error) {
-      console.error('[authStore] Init error:', error)
-      set({ user: null, loading: false, initialized: true })
-    }
-
-    // CRITICAL FIX: Escutar mudanças de estado auth em tempo real
-    // Isso captura o retorno do OAuth redirect e refresh de tokens
+    // Inscrever no onAuthStateChange ANTES de getSession()
+    // para não perder eventos de OAuth redirect
     supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('[authStore] Auth event:', event)
 
@@ -108,6 +85,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       }
     })
+
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+
+      if (sessionError) {
+        console.error('[authStore] Session error:', sessionError)
+        set({ user: null, loading: false, initialized: true })
+        return
+      }
+
+      if (session?.user && !get().user) {
+        const mapped = await fetchAndMapProfile(session.user.id)
+        set({ user: mapped, loading: false, initialized: true })
+      } else if (!session) {
+        set({ user: null, loading: false, initialized: true })
+      }
+    } catch (error) {
+      console.error('[authStore] Init error:', error)
+      set({ user: null, loading: false, initialized: true })
+    }
   },
 
   signInGoogle: async () => {

@@ -258,10 +258,12 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="card p-6 mb-8">
-          <h2 className="text-xl font-semibold text-text mb-4">Demonstração - Simular Vendas</h2>
-          <SimulateSale />
-        </div>
+        {user?.role === 'admin' && (
+          <div className="card p-6 mb-8">
+            <h2 className="text-xl font-semibold text-text mb-4">Demonstração - Simular Vendas</h2>
+            <SimulateSale />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">

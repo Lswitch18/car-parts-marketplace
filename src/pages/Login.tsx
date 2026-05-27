@@ -47,11 +47,13 @@ export default function Login() {
 
         if (profile?.role === 'admin') {
           navigate('/admin/dashboard')
-        } else {
+        } else if (profile?.role === 'seller') {
           navigate('/dashboard')
+        } else {
+          navigate('/catalog')
         }
       } else {
-        navigate('/dashboard')
+        navigate('/catalog')
       }
     } catch (err: any) {
       const errorMsg = err.message || ''
