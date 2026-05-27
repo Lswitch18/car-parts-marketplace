@@ -273,42 +273,42 @@ export default function Catalog() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {products?.map((product) => (
                   <Link 
                     key={product.id} 
                     to={`/product/${product.id}`}
                     className="card overflow-hidden group"
                   >
-                    <div className="aspect-square bg-background relative overflow-hidden">
+                    <div className="aspect-[4/3] bg-background relative overflow-hidden">
                       {product.images?.[0] ? (
                         <img src={product.images[0]} alt={product.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-600">
-                          <Wrench className="w-12 h-12" />
+                          <Wrench className="w-8 h-8" />
                         </div>
                       )}
                       <button
                         onClick={(e) => { e.preventDefault(); toggleFavorite(product.id) }}
-                        className="absolute top-3 right-3 p-2 rounded-full bg-[#0a0a0a]/80 hover:bg-[#ff3d00] transition-colors"
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-[#0a0a0a]/80 hover:bg-[#ff3d00] transition-colors"
                       >
-                        <Heart className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-[#ff3d00] text-[#ff3d00]' : 'text-white'}`} />
+                        <Heart className={`w-4 h-4 ${isFavorite(product.id) ? 'fill-[#ff3d00] text-[#ff3d00]' : 'text-white'}`} />
                       </button>
-                      <div className="absolute top-3 left-3">
+                      <div className="absolute top-2 left-2">
                         <span className="badge">
                           {product.condition === 'new' ? 'Novo' : product.condition === 'used' ? 'Usado' : 'Reformado'}
                         </span>
                       </div>
                     </div>
-                    <div className="p-4">
-                      <p className="text-[#ff3d00] text-sm mb-1">{product.brands?.name || 'JDM'}</p>
-                      <h3 className="text-white font-semibold mb-2 truncate group-hover:text-[#ff3d00] transition-colors">
+                    <div className="p-3">
+                      <p className="text-[#ff3d00] text-xs mb-0.5">{product.brands?.name || 'JDM'}</p>
+                      <h3 className="text-white font-medium text-sm mb-1 truncate group-hover:text-[#ff3d00] transition-colors">
                         {product.title}
                       </h3>
-                      <p className="text-gray-500 text-sm mb-3">{product.categories?.name}</p>
+                      <p className="text-gray-500 text-xs mb-2">{product.categories?.name}</p>
                       <div className="flex items-center justify-between">
-                        <p className="text-[#ff3d00] font-bold text-xl">
+                        <p className="text-[#ff3d00] font-bold text-base">
                           ¥ {product.price.toLocaleString('ja-JP')}
                         </p>
                         {product.profiles && (
