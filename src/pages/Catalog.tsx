@@ -23,6 +23,7 @@ export default function Catalog() {
   })
   
   const [expandedBrand, setExpandedBrand] = useState<string | null>(filters.brand || null)
+  const [showBrands, setShowBrands] = useState(true)
   const [sortBy, setSortBy] = useState('created_at')
 
   const { data: products, isLoading } = useQuery({
@@ -122,10 +123,13 @@ export default function Catalog() {
           {/* Sidebar - Marcas & Modelos */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="card p-4 sticky top-24">
-              <h3 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
+              <button onClick={() => setShowBrands(!showBrands)}
+                className="w-full text-white font-semibold text-sm mb-3 flex items-center gap-2">
                 <Filter className="w-4 h-4 text-[#ff3d00]" />
                 Marcas
-              </h3>
+                <ChevronRight className={`w-3.5 h-3.5 ml-auto transition-transform ${showBrands ? 'rotate-90' : ''}`} />
+              </button>
+              {showBrands && (
               <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-1 scrollbar-thin">
                 {BRANDS.map(brand => (
                   <div key={brand.id}>
@@ -170,6 +174,7 @@ export default function Catalog() {
                   </div>
                 ))}
               </div>
+              )}
 
               <div className="border-t border-[#2a2a2a] my-3" />
 
