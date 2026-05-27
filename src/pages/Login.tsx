@@ -22,7 +22,7 @@ export default function Login() {
     setError('')
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       })
@@ -36,22 +36,15 @@ export default function Login() {
         throw error
       }
 
-      // Buscar perfil para decidir o redirecionamento
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
+      // Redireciona baseado na role (via authStore já busca o perfil)
+      const userId = data?.user?.id
+      if (userId) {
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
-          .eq('id', user.id)
+          .eq('id', userId)
           .single()
-
-        if (profile?.role === 'admin') {
-          navigate('/admin/dashboard')
-        } else if (profile?.role === 'seller') {
-          navigate('/dashboard')
-        } else {
-          navigate('/catalog')
-        }
+        navigate(profile?.role === 'admin' ? '/admin/dashboard' : profile?.role === 'seller' ? '/dashboard' : '/catalog')
       } else {
         navigate('/catalog')
       }
