@@ -42,7 +42,8 @@ function App() {
   // Redirecionar baseado na role após login
   useEffect(() => {
     if (!initialized || loading || !user) return
-    if (location.pathname !== '/') return
+    const publicRoutes = ['/', '/login', '/register']
+    if (!publicRoutes.includes(location.pathname)) return
 
     if (user.role === 'admin') {
       navigate('/admin/dashboard', { replace: true })
