@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Filter, X, Search, Heart, Wrench, ChevronDown, ChevronRight, SlidersHorizontal } from 'lucide-react'
+import { Filter, X, Heart, Wrench, ChevronRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS } from '../lib/constants'
 import { useFavoriteStore } from '../stores/favoriteStore'
@@ -93,32 +93,9 @@ export default function Catalog() {
       <div className="bg-surface border-b border-border py-6">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="font-display text-4xl font-bold text-text mb-4">
-            Catálogo de Peças
+            Encontre sua Peça
           </h1>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Buscar peças..."
-                value={filters.search}
-                onChange={(e) => updateFilter('search', e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white placeholder-gray-500 focus:border-[#ff3d00]"
-              />
-            </div>
-            <button
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center justify-center space-x-2 bg-[#1a1a1a] border border-[#2a2a2a] px-6 py-3 rounded-lg text-white hover:border-[#ff3d00] transition-colors"
-            >
-              <SlidersHorizontal className="w-5 h-5" />
-              <span>Filtros Avançados</span>
-              {activeFiltersCount > 0 && (
-                <span className="bg-[#ff3d00] text-white text-xs px-2 py-0.5 rounded-full">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
-          </div>
+
 
           {activeFiltersCount > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
