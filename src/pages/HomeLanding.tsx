@@ -389,7 +389,7 @@ export default function HomeLanding() {
               A Plataforma Automotiva mais <span className="neon-text-purple">Avançada</span> do Mundo
             </h2>
             <p className="text-gray-400 text-lg font-light leading-relaxed">
-              Desenvolvida para colecionadores, oficinas de alta performance e revendedores autorizados no Japão. Unimos WebGL 3D, telemetria ultrarrápida com Redis e logística automatizada.
+              Desenvolvida para colecionadores, oficinas de alta performance e revendedores autorizados no Japão. Unimos WebGL 3D, cache inteligente e logística automatizada.
             </p>
           </div>
 
@@ -582,7 +582,7 @@ export default function HomeLanding() {
             </div>
             <div className="text-center">
               <span className="text-2xl font-bold font-mono text-white block">0.18ms</span>
-              <span className="text-[10px] text-gray-500 font-mono uppercase">Sincronização Redis</span>
+              <span className="text-[10px] text-gray-500 font-mono uppercase">Cache Inteligente</span>
             </div>
             <div className="text-center">
               <span className="text-2xl font-bold font-mono text-white block">Yamato</span>

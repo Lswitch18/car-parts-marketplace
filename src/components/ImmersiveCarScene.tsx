@@ -68,7 +68,7 @@ export default function ImmersiveCarScene({ scrollProgress, themeColor, telemetr
 
   const colors = useMemo(() => COLOR_MAP[themeColor], [themeColor]);
 
-  // Pre-compiled arrays for fast particles (simulating Redis pre-cache telemetry)
+  // Pre-compiled arrays for fast particles
   const particleCount = performanceMode ? 150 : 600;
   const particleData = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);

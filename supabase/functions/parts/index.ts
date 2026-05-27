@@ -1,4 +1,5 @@
 import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken } from '../utils/base.ts';
+import { redisGet, redisSet, cacheKey } from '../utils/redis.ts';
 
 interface PartFilters {
   brand_id?: string;
@@ -77,6 +78,15 @@ async function listParts(params: ListPartsParams) {
   const { page, limit, sort, order, filters } = params;
   const offset = (page - 1) * limit;
 
+  // Tenta cache Redis primeiro
+  const rkey = cacheKey({ ...filters, page: String(page), limit: String(limit), sort, order });
+  const cached = await redisGet<{ parts: unknown[]; pagination: Record<string, unknown> }>(rkey);
+  if (cached) {
+    return new Response(JSON.stringify(successResponse(cached)), {
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
   let query = supabase
     .from('parts')
     .select(`
@@ -113,7 +123,7 @@ async function listParts(params: ListPartsParams) {
     });
   }
 
-  return new Response(JSON.stringify(successResponse({
+  const result = {
     parts: data,
     pagination: {
       page,
@@ -121,7 +131,12 @@ async function listParts(params: ListPartsParams) {
       total: count || 0,
       totalPages: Math.ceil((count || 0) / limit),
     }
-  })), {
+  };
+
+  // Cache no Redis (assíncrono, não bloqueia a resposta)
+  redisSet(rkey, result);
+
+  return new Response(JSON.stringify(successResponse(result)), {
     headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
   });
 }

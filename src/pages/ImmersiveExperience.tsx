@@ -13,16 +13,9 @@ export default function ImmersiveExperience() {
   const [telemetryMode, setTelemetryMode] = useState<boolean>(true);
   const [performanceMode, setPerformanceMode] = useState<boolean>(false);
   
-  // Real-time telemetry simulated data (pre-cached via Redis simulation)
-  const [redisLatency, setRedisLatency] = useState<number>(0.24);
   const [fps, setFps] = useState<number>(60);
   const [turboPsi, setTurboPsi] = useState<number>(0.0);
   const [throttle, setThrottle] = useState<number>(0);
-  const [redisLogs, setRedisLogs] = useState<string[]>([
-    '[INIT] Redis 3D Pre-cache initialized.',
-    '[REDIS] Pre-compiled 600 physics vectors loaded successfully.',
-    '[VSYNC] WebGL Frame locked to V-Sync 60FPS.',
-  ]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -40,33 +33,14 @@ export default function ImmersiveExperience() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Simulation loop for latency, fps, turbo pressures, and Redis pre-cache log outputs
+  // Simulation loop for fps and turbo pressures
   useEffect(() => {
     const interval = setInterval(() => {
-      // Latency fluctuation (Redis is ultra-low latency < 0.5ms)
-      setRedisLatency(parseFloat((0.2 + Math.random() * 0.15).toFixed(3)));
-      
-      // FPS check
       setFps(Math.round(59 + Math.random() * 2.0));
-      
-      // Dynamic pressure based on throttle
       if (throttle > 0) {
         setTurboPsi(parseFloat((throttle * 2.2 + Math.random() * 0.4).toFixed(1)));
       } else {
         setTurboPsi(parseFloat((Math.random() * 0.1).toFixed(1)));
-      }
-
-      // Append mock Redis telemetry update logs periodically
-      if (Math.random() > 0.75) {
-        const events = [
-          `[REDIS] Pushed physics telemetry frame #${Math.round(Math.random() * 1000)} to Redis Cache.`,
-          `[WMS-REDIS] Synced 3D volumetric slot allocation vector.`,
-          `[PHYSICS] Calculated chassis drag index: ${0.28 + Math.random() * 0.02}Cd.`,
-          `[SHADERS] GLSL compilation hot-swap complete.`,
-          `[REDIS] Pre-calculated matrix cached in ${(0.05 + Math.random() * 0.1).toFixed(2)}ms.`,
-        ];
-        const randomEvent = events[Math.floor(Math.random() * events.length)];
-        setRedisLogs(prev => [randomEvent, ...prev.slice(0, 4)]);
       }
     }, 1500);
 
@@ -137,24 +111,20 @@ export default function ImmersiveExperience() {
         {/* Mid section HUD grid */}
         <div className="flex-1 grid grid-cols-12 gap-6 items-center my-6 overflow-hidden">
           
-          {/* Left Panel: Redis & WebGL Telemetry (Telemetry Mode Only) */}
+          {/* Left Panel: WebGL Telemetry (Telemetry Mode Only) */}
           {telemetryMode && (
             <div className="col-span-12 md:col-span-4 lg:col-span-3 pointer-events-auto self-start space-y-4">
               <div className="bg-black/60 backdrop-blur-xl border border-white/5 p-5 rounded-2xl shadow-2xl space-y-4">
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <div className="flex items-center space-x-2">
                     <Cpu className="w-4.5 h-4.5 text-[#00E5FF] animate-pulse" />
-                    <span className="text-xs font-mono font-bold tracking-wider uppercase text-gray-200">REDIS Telemetria</span>
+                    <span className="text-xs font-mono font-bold tracking-wider uppercase text-gray-200">Telemetria</span>
                   </div>
                   <span className="px-1.5 py-0.5 bg-green-500/10 border border-green-500/25 rounded text-[8px] font-mono text-green-400">ACTIVE</span>
                 </div>
 
                 {/* Stats grid */}
                 <div className="grid grid-cols-2 gap-3 font-mono">
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span className="text-[9px] text-gray-500 block uppercase">REDIS CACHE LATENCY</span>
-                    <span className="text-sm font-bold text-[#00E5FF]">{redisLatency} ms</span>
-                  </div>
                   <div className="bg-white/5 p-3 rounded-xl border border-white/5">
                     <span className="text-[9px] text-gray-500 block uppercase">WEBGL RENDER</span>
                     <span className="text-sm font-bold text-gray-200">{fps} FPS</span>
@@ -164,18 +134,12 @@ export default function ImmersiveExperience() {
                     <span className="text-sm font-bold text-pink-500">{turboPsi} PSI</span>
                   </div>
                   <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span className="text-[9px] text-gray-500 block uppercase">3D PRE-CACHE</span>
-                    <span className="text-sm font-bold text-green-400">600 VEIT</span>
+                    <span className="text-[9px] text-gray-500 block uppercase">3D VECTORS</span>
+                    <span className="text-sm font-bold text-green-400">600</span>
                   </div>
-                </div>
-
-                {/* Simulated Redis Cache Logs */}
-                <div className="space-y-1.5 border-t border-white/5 pt-3">
-                  <span className="text-[9px] text-gray-500 font-mono block uppercase">REDIS TRANSACTION QUEUE</span>
-                  <div className="bg-black/80 rounded-xl p-3 border border-white/5 font-mono text-[9px] text-[#00E5FF]/80 space-y-1.5 h-24 overflow-hidden select-none">
-                    {redisLogs.map((log, i) => (
-                      <div key={i} className="truncate">{log}</div>
-                    ))}
+                  <div className="bg-white/5 p-3 rounded-xl border border-white/5">
+                    <span className="text-[9px] text-gray-500 block uppercase">SCENE FPS</span>
+                    <span className="text-sm font-bold text-[#00E5FF]">{fps} FPS</span>
                   </div>
                 </div>
               </div>
@@ -335,7 +299,7 @@ export default function ImmersiveExperience() {
           <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-3 animate-pulse" />
           <h2 className="text-xl font-bold mb-2">Fim do Diagnóstico 3D</h2>
           <p className="text-xs text-gray-400 mb-4 leading-relaxed">
-            Todos os 600 vetores de física foram simulados e as transações de cache Redis foram armazenadas. Essa tecnologia garante carregamentos de milissegundos para modelos 3D volumétricos.
+            Todos os 600 vetores de física foram simulados e armazenados em cache. Essa tecnologia garante carregamentos rápidos para modelos 3D volumétricos.
           </p>
           <div className="flex items-center justify-center space-x-3">
             <button 

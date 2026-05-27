@@ -1,0 +1,53 @@
+const PARTS_API = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parts`;
+
+interface PartsFilters {
+  brand_id?: string;
+  category_id?: string;
+  model_id?: string;
+  condition?: string;
+  min_price?: number;
+  max_price?: number;
+  search?: string;
+}
+
+interface PartsParams {
+  page?: number;
+  limit?: number;
+  sort?: string;
+  order?: string;
+  filters?: PartsFilters;
+}
+
+export async function fetchParts(params: PartsParams = {}) {
+  const { page = 1, limit = 50, sort = 'created_at', order = 'desc', filters = {} } = params;
+
+  const searchParams = new URLSearchParams();
+  searchParams.set('page', String(page));
+  searchParams.set('limit', String(limit));
+  searchParams.set('sort', sort);
+  searchParams.set('order', order);
+  searchParams.set('status', 'active');
+
+  if (filters.brand_id) searchParams.set('brand_id', filters.brand_id);
+  if (filters.category_id) searchParams.set('category_id', filters.category_id);
+  if (filters.model_id) searchParams.set('model_id', filters.model_id);
+  if (filters.condition) searchParams.set('condition', filters.condition);
+  if (filters.min_price) searchParams.set('min_price', String(filters.min_price));
+  if (filters.max_price) searchParams.set('max_price', String(filters.max_price));
+  if (filters.search) searchParams.set('search', filters.search);
+
+  const res = await fetch(`${PARTS_API}/list?${searchParams}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('sb-access-token') || ''}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Erro ao buscar peças');
+  }
+
+  const json = await res.json();
+  return json.data;
+}
