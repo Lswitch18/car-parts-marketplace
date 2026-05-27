@@ -28,6 +28,8 @@ export default function Catalog() {
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['products', 'catalog', filters],
+    staleTime: 30_000,
+    gcTime: 60_000,
     queryFn: async () => {
       let query = supabase
         .from('parts')
