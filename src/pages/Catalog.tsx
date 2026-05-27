@@ -22,7 +22,6 @@ export default function Catalog() {
     search: searchParams.get('search') || ''
   })
   
-  const [showAdvanced, setShowAdvanced] = useState(false)
   const [expandedBrand, setExpandedBrand] = useState<string | null>(filters.brand || null)
   const [sortBy, setSortBy] = useState('created_at')
 
@@ -53,8 +52,6 @@ export default function Catalog() {
       return data || []
     }
   })
-
-  const selectedBrand = BRANDS.find(b => b.id === filters.brand)
 
   const updateFilter = (key: string, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }))
@@ -174,11 +171,66 @@ export default function Catalog() {
                 ))}
               </div>
 
+              <div className="border-t border-[#2a2a2a] my-3" />
+
+              <h3 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
+                <Filter className="w-4 h-4 text-[#ff3d00]" />
+                Filtros
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-gray-400 text-xs mb-1">Categoria</label>
+                  <select value={filters.category} onChange={(e) => updateFilter('category', e.target.value)}
+                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
+                    <option value="">Todas</option>
+                    {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-400 text-xs mb-1">Condição</label>
+                  <select value={filters.condition} onChange={(e) => updateFilter('condition', e.target.value)}
+                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
+                    <option value="">Todas</option>
+                    {CONDITIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-gray-400 text-xs mb-1">Ano</label>
+                    <select value={filters.yearStart} onChange={(e) => updateFilter('yearStart', e.target.value)}
+                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
+                      <option value="">De</option>
+                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 text-xs mb-1">&nbsp;</label>
+                    <select value={filters.yearEnd} onChange={(e) => updateFilter('yearEnd', e.target.value)}
+                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
+                      <option value="">Até</option>
+                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-gray-400 text-xs mb-1">Preço min</label>
+                    <input type="number" placeholder="¥ 0" value={filters.minPrice}
+                      onChange={(e) => updateFilter('minPrice', e.target.value)}
+                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 text-xs mb-1">Preço max</label>
+                    <input type="number" placeholder="¥ 999999" value={filters.maxPrice}
+                      onChange={(e) => updateFilter('maxPrice', e.target.value)}
+                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm" />
+                  </div>
+                </div>
+              </div>
+
               {(activeFiltersCount > 0) && (
-                <button
-                  onClick={clearFilters}
-                  className="w-full mt-3 text-xs text-gray-500 hover:text-white py-2 border-t border-[#2a2a2a] pt-3"
-                >
+                <button onClick={clearFilters}
+                  className="w-full mt-3 text-xs text-gray-500 hover:text-white py-2 border-t border-[#2a2a2a] pt-3">
                   Limpar filtros
                 </button>
               )}
@@ -187,93 +239,6 @@ export default function Catalog() {
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            {/* Advanced Filters Panel */}
-            {showAdvanced && (
-              <div className="card p-4 mb-6">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Marca</label>
-                    <select
-                      value={filters.brand}
-                      onChange={(e) => { updateFilter('brand', e.target.value); updateFilter('model', ''); setExpandedBrand(e.target.value || null); }}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
-                    >
-                      <option value="">Todas</option>
-                      {BRANDS.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-                    </select>
-                  </div>
-                  {filters.brand && selectedBrand && (
-                    <div>
-                      <label className="block text-gray-400 text-xs mb-1">Modelo</label>
-                      <select
-                        value={filters.model}
-                        onChange={(e) => updateFilter('model', e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
-                      >
-                        <option value="">Todos</option>
-                        {selectedBrand.models.map(m => <option key={m} value={m}>{m}</option>)}
-                      </select>
-                    </div>
-                  )}
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Categoria</label>
-                    <select
-                      value={filters.category}
-                      onChange={(e) => updateFilter('category', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
-                    >
-                      <option value="">Todas</option>
-                      {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Condição</label>
-                    <select
-                      value={filters.condition}
-                      onChange={(e) => updateFilter('condition', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
-                    >
-                      <option value="">Todas</option>
-                      {CONDITIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Ano início</label>
-                    <select
-                      value={filters.yearStart}
-                      onChange={(e) => updateFilter('yearStart', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
-                    >
-                      <option value="">Qualquer</option>
-                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Ano fim</label>
-                    <select
-                      value={filters.yearEnd}
-                      onChange={(e) => updateFilter('yearEnd', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
-                    >
-                      <option value="">Qualquer</option>
-                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Preço mín.</label>
-                    <input type="number" placeholder="¥ 0" value={filters.minPrice}
-                      onChange={(e) => updateFilter('minPrice', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Preço máx.</label>
-                    <input type="number" placeholder="¥ 999999" value={filters.maxPrice}
-                      onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm" />
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
