@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
-import { BRANDS, CATEGORIES, CONDITIONS, YEARS } from '../lib/constants'
+import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
 import { Upload, X, Loader2, Sparkles } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
 import { api } from '../lib/api'
@@ -83,11 +83,11 @@ export default function CreateListing() {
         title: formData.title,
         description: formData.description,
         price: parseFloat(formData.price),
-        brand: formData.brand,
-        model: formData.model,
+        brand_id: BRAND_UUIDS[formData.brand],
+        model_id: MODEL_UUIDS[formData.model],
         year_start: parseInt(formData.yearStart),
         year_end: parseInt(formData.yearEnd),
-        category: formData.category,
+        category_id: CATEGORY_UUIDS[formData.category],
         condition: formData.condition,
         images: uploadedUrls,
         status: 'active'
