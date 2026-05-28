@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Filter, X, Heart, Wrench, ChevronRight } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS } from '../lib/constants'
+import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import { fetchParts } from '../lib/partsApi'
 
@@ -39,8 +39,8 @@ export default function Catalog() {
           limit: 50,
           filters: {
             brand_id: filters.brand ? (BRAND_UUIDS[filters.brand] || filters.brand) : undefined,
-            model_id: filters.model || undefined,
-            category_id: filters.category || undefined,
+            model_id: filters.model ? (MODEL_UUIDS[filters.model] || filters.model) : undefined,
+            category_id: filters.category ? (CATEGORY_UUIDS[filters.category] || filters.category) : undefined,
             condition: filters.condition || undefined,
             min_price: filters.minPrice ? parseFloat(filters.minPrice) : undefined,
             max_price: filters.maxPrice ? parseFloat(filters.maxPrice) : undefined,
@@ -59,8 +59,14 @@ export default function Catalog() {
           const brandUuid = BRAND_UUIDS[filters.brand] || filters.brand
           query = query.eq('brand_id', brandUuid)
         }
-        if (filters.model) query = query.eq('model_id', filters.model)
-        if (filters.category) query = query.eq('category_id', filters.category)
+        if (filters.model) {
+          const modelUuid = MODEL_UUIDS[filters.model] || filters.model
+          query = query.eq('model_id', modelUuid)
+        }
+        if (filters.category) {
+          const catUuid = CATEGORY_UUIDS[filters.category] || filters.category
+          query = query.eq('category_id', catUuid)
+        }
         if (filters.condition) query = query.eq('condition', filters.condition)
         if (filters.minPrice) query = query.gte('price', parseFloat(filters.minPrice))
         if (filters.maxPrice) query = query.lte('price', parseFloat(filters.maxPrice))
