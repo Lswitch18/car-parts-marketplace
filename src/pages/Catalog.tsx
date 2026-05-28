@@ -1,16 +1,31 @@
 import { useState } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Filter, X, Heart, Wrench, ChevronRight } from 'lucide-react'
+import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import { fetchParts } from '../lib/partsApi'
 
+function SkeletonCard() {
+  return (
+    <div className="rounded-2xl overflow-hidden border border-white/5 bg-[#0A0A0F]">
+      <div className="aspect-[4/3] skeleton" />
+      <div className="p-4 space-y-2.5">
+        <div className="skeleton h-3 w-16 rounded-full" />
+        <div className="skeleton h-4 w-3/4 rounded-lg" />
+        <div className="skeleton h-3 w-1/2 rounded-full" />
+        <div className="skeleton h-5 w-24 rounded-lg mt-3" />
+      </div>
+    </div>
+  )
+}
+
 export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { toggleFavorite, isFavorite } = useFavoriteStore()
-  
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+
   const [filters, setFilters] = useState({
     brand: searchParams.get('brand') || '',
     model: searchParams.get('model') || '',
@@ -22,10 +37,11 @@ export default function Catalog() {
     maxPrice: searchParams.get('maxPrice') || '',
     search: searchParams.get('search') || ''
   })
-  
+
   const [expandedBrand, setExpandedBrand] = useState<string | null>(filters.brand || null)
   const [showBrands, setShowBrands] = useState(true)
   const [sortBy, setSortBy] = useState('created_at')
+  const [searchInput, setSearchInput] = useState(filters.search)
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['products', 'catalog', filters],
@@ -49,7 +65,6 @@ export default function Catalog() {
         })
         return result.parts
       } catch {
-        // Fallback: consulta direta ao Supabase
         let query = supabase
           .from('parts')
           .select('*, brands(name), categories(name), profiles(full_name, avatar_url, rating, is_verified)')
@@ -73,7 +88,7 @@ export default function Catalog() {
         if (filters.search) query = query.ilike('title', `%${filters.search}%`)
 
         query = query.order(sortBy, { ascending: false })
-        
+
         const { data, error } = await query.limit(50)
         if (error) throw error
         return data || []
@@ -109,35 +124,141 @@ export default function Catalog() {
     })
     setSearchParams({})
     setExpandedBrand(null)
+    setSearchInput('')
+  }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    updateFilter('search', searchInput)
   }
 
   const activeFiltersCount = Object.values(filters).filter(v => v).length
 
+  const conditionLabel = (c: string) => {
+    if (c === 'new') return 'Novo'
+    if (c === 'used') return 'Usado'
+    return 'Reformado'
+  }
+
+  const conditionColor = (c: string) => {
+    if (c === 'new') return { bg: 'rgba(0,217,126,0.15)', color: '#00D97E', border: 'rgba(0,217,126,0.3)' }
+    if (c === 'used') return { bg: 'rgba(255,184,0,0.15)', color: '#FFB800', border: 'rgba(255,184,0,0.3)' }
+    return { bg: 'rgba(13,117,255,0.15)', color: '#0D75FF', border: 'rgba(13,117,255,0.3)' }
+  }
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="bg-surface border-b border-border py-6">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="font-display text-4xl font-bold text-text mb-4">
-            Encontre sua Peça
-          </h1>
+    <div className="min-h-screen bg-[#050505]">
+      {/* ── Hero Header ── */}
+      <div
+        className="relative overflow-hidden border-b"
+        style={{ borderColor: 'rgba(13,117,255,0.12)', background: 'linear-gradient(180deg, #0A0A1A 0%, #050505 100%)' }}
+      >
+        {/* Background grid */}
+        <div className="absolute inset-0 grid-overlay opacity-40 pointer-events-none" />
+        {/* Glow accent */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(13,117,255,0.12) 0%, transparent 70%)' }}
+        />
 
+        <div className="relative max-w-7xl mx-auto px-4 pt-10 pb-8">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div
+                  className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  style={{ background: 'rgba(13,117,255,0.15)', border: '1px solid rgba(13,117,255,0.3)' }}
+                >
+                  <Zap className="w-3.5 h-3.5" style={{ color: '#0D75FF' }} />
+                </div>
+                <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#0D75FF' }}>
+                  Catálogo JDM
+                </span>
+              </div>
+              <h1 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
+                Encontre sua{' '}
+                <span
+                  style={{
+                    background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Peça Ideal
+                </span>
+              </h1>
+              {!isLoading && (
+                <p className="mt-2 text-sm" style={{ color: '#6B7280' }}>
+                  <span className="font-semibold" style={{ color: '#B0B5C0' }}>{products?.length || 0}</span> peças disponíveis no estoque
+                </p>
+              )}
+            </div>
 
+            {/* Search bar */}
+            <form onSubmit={handleSearch} className="flex-1 min-w-[280px] max-w-md">
+              <div
+                className="flex items-center gap-3 px-4 h-12 rounded-2xl transition-all"
+                style={{
+                  background: 'rgba(10,10,15,0.8)',
+                  border: '1px solid rgba(13,117,255,0.2)',
+                  boxShadow: '0 0 0 0 rgba(13,117,255,0)',
+                }}
+              >
+                <Search className="w-4 h-4 flex-shrink-0" style={{ color: '#6B7280' }} />
+                <input
+                  type="text"
+                  placeholder="Buscar peças, marcas..."
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                  className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-[#6B7280]"
+                />
+                {searchInput && (
+                  <button type="button" onClick={() => { setSearchInput(''); updateFilter('search', '') }}>
+                    <X className="w-4 h-4" style={{ color: '#6B7280' }} />
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+
+          {/* Active filter chips */}
           {activeFiltersCount > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
+            <div className="flex flex-wrap gap-2 mt-5">
               {Object.entries(filters).filter(([, v]) => v).map(([key, val]) => (
-                <span key={key} className="inline-flex items-center gap-1 bg-[#ff3d00]/10 text-[#ff3d00] text-xs px-3 py-1 rounded-full border border-[#ff3d00]/30">
-                  {key === 'brand' && 'Marca'}
-                  {key === 'model' && 'Modelo'}
-                  {key === 'category' && 'Categoria'}
-                  {key === 'condition' && 'Condição'}
-                  {key === 'minPrice' && 'Preço min'}
-                  {key === 'maxPrice' && 'Preço max'}
-                  {key === 'search' && 'Busca'}
-                  : {val}
-                  <button onClick={() => updateFilter(key, '')}><X className="w-3 h-3" /></button>
+                <span
+                  key={key}
+                  className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium transition-all"
+                  style={{
+                    background: 'rgba(13,117,255,0.1)',
+                    color: '#4d9cff',
+                    border: '1px solid rgba(13,117,255,0.25)',
+                  }}
+                >
+                  <span style={{ color: '#6B7280' }}>
+                    {key === 'brand' && 'Marca'}
+                    {key === 'model' && 'Modelo'}
+                    {key === 'category' && 'Categoria'}
+                    {key === 'condition' && 'Condição'}
+                    {key === 'minPrice' && 'Preço mín'}
+                    {key === 'maxPrice' && 'Preço máx'}
+                    {key === 'search' && 'Busca'}
+                    {key === 'yearStart' && 'Ano de'}
+                    {key === 'yearEnd' && 'Ano até'}
+                  </span>
+                  {val}
+                  <button
+                    onClick={() => updateFilter(key, '')}
+                    className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-white/10"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
                 </span>
               ))}
-              <button onClick={clearFilters} className="text-gray-500 text-xs hover:text-white px-2">
+              <button
+                onClick={clearFilters}
+                className="text-xs px-3 py-1.5 rounded-full transition-colors"
+                style={{ color: '#6B7280' }}
+              >
                 Limpar tudo
               </button>
             </div>
@@ -146,218 +267,469 @@ export default function Catalog() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar - Marcas & Modelos */}
+        <div className="flex gap-7">
+
+          {/* ── Sidebar ── */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="card p-4 sticky top-24">
-              <button onClick={() => setShowBrands(!showBrands)}
-                className="w-full text-white font-semibold text-sm mb-3 flex items-center gap-2">
-                <Filter className="w-4 h-4 text-[#ff3d00]" />
-                Marcas
-                <ChevronRight className={`w-3.5 h-3.5 ml-auto transition-transform ${showBrands ? 'rotate-90' : ''}`} />
-              </button>
-              {showBrands && (
-              <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-1 scrollbar-thin">
-                {BRANDS.map(brand => (
-                  <div key={brand.id}>
-                    <button
-                      onClick={() => setBrand(brand.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                        filters.brand === brand.id
-                          ? 'bg-[#ff3d00]/10 text-[#ff3d00] border border-[#ff3d00]/30'
-                          : 'text-gray-400 hover:text-white hover:bg-[#1a1a1a] border border-transparent'
-                      }`}
-                    >
-                      <span>{brand.name}</span>
-                      <ChevronRight className={`w-3.5 h-3.5 transition-transform ${
-                        expandedBrand === brand.id ? 'rotate-90' : ''
-                      }`} />
-                    </button>
-                    {expandedBrand === brand.id && (
-                      <div className="ml-3 mt-1 mb-1 space-y-0.5 border-l border-[#2a2a2a] pl-2">
-                        <button
-                          onClick={() => { setBrand(brand.id); updateFilter('model', ''); }}
-                          className={`w-full text-left px-3 py-1.5 rounded text-xs transition-colors ${
-                            !filters.model ? 'text-[#ff3d00]' : 'text-gray-500 hover:text-white'
-                          }`}
-                        >
-                          Todos os modelos
-                        </button>
-                        {brand.models.map(model => (
-                          <button
-                            key={model}
-                            onClick={() => { setBrand(brand.id); setModelFilter(model); }}
-                            className={`w-full text-left px-3 py-1.5 rounded text-xs transition-colors ${
-                              filters.model === model
-                                ? 'text-[#ff3d00] bg-[#ff3d00]/5'
-                                : 'text-gray-500 hover:text-white hover:bg-[#1a1a1a]'
-                            }`}
-                          >
-                            {model}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-              )}
-
-              <div className="border-t border-[#2a2a2a] my-3" />
-
-              <h3 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
-                <Filter className="w-4 h-4 text-[#ff3d00]" />
-                Filtros
-              </h3>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-gray-400 text-xs mb-1">Categoria</label>
-                  <select value={filters.category} onChange={(e) => updateFilter('category', e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
-                    <option value="">Todas</option>
-                    {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-400 text-xs mb-1">Condição</label>
-                  <select value={filters.condition} onChange={(e) => updateFilter('condition', e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
-                    <option value="">Todas</option>
-                    {CONDITIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
-                  </select>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Ano</label>
-                    <select value={filters.yearStart} onChange={(e) => updateFilter('yearStart', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
-                      <option value="">De</option>
-                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">&nbsp;</label>
-                    <select value={filters.yearEnd} onChange={(e) => updateFilter('yearEnd', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm">
-                      <option value="">Até</option>
-                      {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Preço min</label>
-                    <input type="number" placeholder="¥ 0" value={filters.minPrice}
-                      onChange={(e) => updateFilter('minPrice', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm" />
-                  </div>
-                  <div>
-                    <label className="block text-gray-400 text-xs mb-1">Preço max</label>
-                    <input type="number" placeholder="¥ 999999" value={filters.maxPrice}
-                      onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm" />
-                  </div>
-                </div>
+            <div
+              className="sticky top-24 rounded-2xl overflow-hidden"
+              style={{
+                background: 'rgba(10,10,15,0.9)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(12px)',
+              }}
+            >
+              {/* Sidebar header */}
+              <div
+                className="px-4 py-3 flex items-center gap-2"
+                style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+              >
+                <SlidersHorizontal className="w-4 h-4" style={{ color: '#0D75FF' }} />
+                <span className="text-sm font-semibold text-white">Filtros</span>
+                {activeFiltersCount > 0 && (
+                  <span
+                    className="ml-auto text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full"
+                    style={{ background: '#0D75FF', color: '#fff' }}
+                  >
+                    {activeFiltersCount}
+                  </span>
+                )}
               </div>
 
-              {(activeFiltersCount > 0) && (
-                <button onClick={clearFilters}
-                  className="w-full mt-3 text-xs text-gray-500 hover:text-white py-2 border-t border-[#2a2a2a] pt-3">
-                  Limpar filtros
+              <div className="p-3 space-y-1">
+                {/* Brands section */}
+                <button
+                  onClick={() => setShowBrands(!showBrands)}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors hover:bg-white/5"
+                >
+                  <Filter className="w-3.5 h-3.5" style={{ color: '#0D75FF' }} />
+                  Marcas
+                  <ChevronRight
+                    className="w-3.5 h-3.5 ml-auto transition-transform duration-200"
+                    style={{ transform: showBrands ? 'rotate(90deg)' : 'rotate(0deg)', color: '#6B7280' }}
+                  />
                 </button>
-              )}
+
+                {showBrands && (
+                  <div className="space-y-0.5 max-h-[40vh] overflow-y-auto pr-1 scrollbar-thin ml-1">
+                    {BRANDS.map(brand => (
+                      <div key={brand.id}>
+                        <button
+                          onClick={() => setBrand(brand.id)}
+                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-all"
+                          style={
+                            filters.brand === brand.id
+                              ? {
+                                  background: 'rgba(13,117,255,0.12)',
+                                  color: '#4d9cff',
+                                  border: '1px solid rgba(13,117,255,0.25)',
+                                }
+                              : {
+                                  color: '#6B7280',
+                                  border: '1px solid transparent',
+                                }
+                          }
+                        >
+                          <span>{brand.name}</span>
+                          <ChevronRight
+                            className="w-3.5 h-3.5 transition-transform duration-200"
+                            style={{
+                              transform: expandedBrand === brand.id ? 'rotate(90deg)' : 'rotate(0deg)',
+                              color: filters.brand === brand.id ? '#4d9cff' : '#4B5563',
+                            }}
+                          />
+                        </button>
+                        {expandedBrand === brand.id && (
+                          <div
+                            className="ml-4 mt-1 mb-1 space-y-0.5 pl-3"
+                            style={{ borderLeft: '1px solid rgba(13,117,255,0.15)' }}
+                          >
+                            <button
+                              onClick={() => { setBrand(brand.id); updateFilter('model', '') }}
+                              className="w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors"
+                              style={{ color: !filters.model ? '#4d9cff' : '#6B7280' }}
+                            >
+                              Todos os modelos
+                            </button>
+                            {brand.models.map(model => (
+                              <button
+                                key={model}
+                                onClick={() => { setBrand(brand.id); setModelFilter(model) }}
+                                className="w-full text-left px-3 py-1.5 rounded-lg text-xs transition-all"
+                                style={
+                                  filters.model === model
+                                    ? { color: '#4d9cff', background: 'rgba(13,117,255,0.08)' }
+                                    : { color: '#6B7280' }
+                                }
+                              >
+                                {model}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Divider */}
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', margin: '8px 0' }} />
+
+                {/* Filters */}
+                <div className="space-y-3 px-1">
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Categoria</label>
+                    <select
+                      value={filters.category}
+                      onChange={e => updateFilter('category', e.target.value)}
+                      className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all"
+                      style={{
+                        background: 'rgba(17,17,22,0.9)',
+                        border: '1px solid rgba(255,255,255,0.07)',
+                        color: filters.category ? '#fff' : '#6B7280',
+                      }}
+                    >
+                      <option value="">Todas</option>
+                      {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Condição</label>
+                    <select
+                      value={filters.condition}
+                      onChange={e => updateFilter('condition', e.target.value)}
+                      className="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all"
+                      style={{
+                        background: 'rgba(17,17,22,0.9)',
+                        border: '1px solid rgba(255,255,255,0.07)',
+                        color: filters.condition ? '#fff' : '#6B7280',
+                      }}
+                    >
+                      <option value="">Todas</option>
+                      {CONDITIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Ano</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <select
+                        value={filters.yearStart}
+                        onChange={e => updateFilter('yearStart', e.target.value)}
+                        className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                        style={{
+                          background: 'rgba(17,17,22,0.9)',
+                          border: '1px solid rgba(255,255,255,0.07)',
+                          color: filters.yearStart ? '#fff' : '#6B7280',
+                        }}
+                      >
+                        <option value="">De</option>
+                        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                      </select>
+                      <select
+                        value={filters.yearEnd}
+                        onChange={e => updateFilter('yearEnd', e.target.value)}
+                        className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                        style={{
+                          background: 'rgba(17,17,22,0.9)',
+                          border: '1px solid rgba(255,255,255,0.07)',
+                          color: filters.yearEnd ? '#fff' : '#6B7280',
+                        }}
+                      >
+                        <option value="">Até</option>
+                        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Faixa de Preço (¥)</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="number"
+                        placeholder="Mín"
+                        value={filters.minPrice}
+                        onChange={e => updateFilter('minPrice', e.target.value)}
+                        className="w-full rounded-xl px-3 py-2.5 text-sm outline-none text-white"
+                        style={{
+                          background: 'rgba(17,17,22,0.9)',
+                          border: '1px solid rgba(255,255,255,0.07)',
+                        }}
+                      />
+                      <input
+                        type="number"
+                        placeholder="Máx"
+                        value={filters.maxPrice}
+                        onChange={e => updateFilter('maxPrice', e.target.value)}
+                        className="w-full rounded-xl px-3 py-2.5 text-sm outline-none text-white"
+                        style={{
+                          background: 'rgba(17,17,22,0.9)',
+                          border: '1px solid rgba(255,255,255,0.07)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {activeFiltersCount > 0 && (
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', marginTop: '8px' }}>
+                    <button
+                      onClick={clearFilters}
+                      className="w-full py-2.5 rounded-xl text-xs font-semibold transition-all hover:bg-white/5"
+                      style={{ color: '#6B7280' }}
+                    >
+                      ✕ Limpar todos os filtros
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </aside>
 
-          {/* Main Content */}
+          {/* ── Main Content ── */}
           <div className="flex-1 min-w-0">
+            {/* Toolbar */}
+            <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+              <div className="flex items-center gap-3">
+                {!isLoading && (
+                  <p className="text-sm" style={{ color: '#6B7280' }}>
+                    <span className="font-semibold text-white">{products?.length || 0}</span> resultados
+                  </p>
+                )}
+                {/* View mode toggle */}
+                <div
+                  className="hidden sm:flex items-center p-1 rounded-xl gap-1"
+                  style={{ background: 'rgba(10,10,15,0.9)', border: '1px solid rgba(255,255,255,0.05)' }}
+                >
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className="p-1.5 rounded-lg transition-all"
+                    style={
+                      viewMode === 'grid'
+                        ? { background: 'rgba(13,117,255,0.15)', color: '#4d9cff' }
+                        : { color: '#6B7280' }
+                    }
+                  >
+                    <LayoutGrid className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className="p-1.5 rounded-lg transition-all"
+                    style={
+                      viewMode === 'list'
+                        ? { background: 'rgba(13,117,255,0.15)', color: '#4d9cff' }
+                        : { color: '#6B7280' }
+                    }
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
 
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-text-secondary text-sm">
-                {products?.length || 0} peças encontradas
-              </p>
               <div className="flex items-center gap-2">
-                <span className="text-gray-400 text-xs">Ordenar:</span>
+                <span className="text-xs" style={{ color: '#6B7280' }}>Ordenar:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-3 py-2 text-white text-sm"
+                  onChange={e => setSortBy(e.target.value)}
+                  className="rounded-xl px-3 py-2 text-sm outline-none text-white"
+                  style={{
+                    background: 'rgba(10,10,15,0.9)',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                  }}
                 >
                   <option value="created_at">Mais recentes</option>
                   <option value="price">Menor preço</option>
                   <option value="-price">Maior preço</option>
-                  <option value="views">Mais visualizados</option>
+                  <option value="views">Mais vistos</option>
                 </select>
               </div>
             </div>
 
             {/* Products Grid */}
             {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <div className="animate-spin w-8 h-8 border-2 border-[#ff3d00] border-t-transparent rounded-full" />
+              <div className={viewMode === 'grid'
+                ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                : 'flex flex-col gap-3'
+              }>
+                {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
               </div>
             ) : products?.length === 0 ? (
-              <div className="text-center py-20">
-                <p className="text-text-secondary text-lg">Nenhuma peça encontrada</p>
-                <button onClick={clearFilters} className="text-[#ff3d00] hover:underline mt-2 text-sm">
+              <div className="flex flex-col items-center justify-center py-24 text-center">
+                <div
+                  className="w-20 h-20 rounded-3xl flex items-center justify-center mb-5"
+                  style={{ background: 'rgba(10,10,15,0.8)', border: '1px solid rgba(255,255,255,0.05)' }}
+                >
+                  <Wrench className="w-9 h-9" style={{ color: '#6B7280' }} />
+                </div>
+                <p className="text-lg font-semibold text-white mb-1">Nenhuma peça encontrada</p>
+                <p className="text-sm mb-5" style={{ color: '#6B7280' }}>Tente ajustar os filtros ou a busca</p>
+                <button
+                  onClick={clearFilters}
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                  style={{ background: 'rgba(13,117,255,0.15)', color: '#4d9cff', border: '1px solid rgba(13,117,255,0.25)' }}
+                >
                   Limpar filtros
                 </button>
               </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {products?.map((product) => (
-                  <Link 
-                    key={product.id} 
-                    to={`/product/${product.id}`}
-                    className="card overflow-hidden group"
-                  >
-                    <div className="aspect-[4/3] bg-background relative overflow-hidden">
-                      {product.images?.[0] ? (
-                        <img src={product.images[0]} alt={product.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-600">
-                          <Wrench className="w-8 h-8" />
+            ) : viewMode === 'grid' ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {products?.map((product) => {
+                  const cond = conditionColor(product.condition)
+                  return (
+                    <Link
+                      key={product.id}
+                      to={`/product/${product.id}`}
+                      className="group block rounded-2xl overflow-hidden transition-all duration-300"
+                      style={{
+                        background: 'rgba(10,10,15,0.9)',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      {/* Image */}
+                      <div className="aspect-[4/3] bg-[#050505] relative overflow-hidden">
+                        {product.images?.[0] ? (
+                          <img
+                            src={product.images[0]}
+                            alt={product.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Wrench className="w-10 h-10" style={{ color: '#374151' }} />
+                          </div>
+                        )}
+                        {/* Gradient overlay */}
+                        <div
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                          style={{ background: 'linear-gradient(0deg, rgba(13,117,255,0.12) 0%, transparent 60%)' }}
+                        />
+                        {/* Favorite */}
+                        <button
+                          onClick={e => { e.preventDefault(); toggleFavorite(product.id) }}
+                          className="absolute top-2.5 right-2.5 p-2 rounded-xl transition-all"
+                          style={{
+                            background: 'rgba(0,0,0,0.6)',
+                            backdropFilter: 'blur(8px)',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                          }}
+                        >
+                          <Heart
+                            className="w-3.5 h-3.5 transition-colors"
+                            style={
+                              isFavorite(product.id)
+                                ? { fill: '#FF4B4B', color: '#FF4B4B' }
+                                : { color: '#fff' }
+                            }
+                          />
+                        </button>
+                        {/* Condition badge */}
+                        <div className="absolute top-2.5 left-2.5">
+                          <span
+                            className="text-[10px] font-bold px-2 py-1 rounded-lg"
+                            style={{ background: cond.bg, color: cond.color, border: `1px solid ${cond.border}` }}
+                          >
+                            {conditionLabel(product.condition)}
+                          </span>
                         </div>
-                      )}
-                      <button
-                        onClick={(e) => { e.preventDefault(); toggleFavorite(product.id) }}
-                        className="absolute top-2 right-2 p-1.5 rounded-full bg-[#0a0a0a]/80 hover:bg-[#ff3d00] transition-colors"
-                      >
-                        <Heart className={`w-4 h-4 ${isFavorite(product.id) ? 'fill-[#ff3d00] text-[#ff3d00]' : 'text-white'}`} />
-                      </button>
-                      <div className="absolute top-2 left-2">
-                        <span className="badge">
-                          {product.condition === 'new' ? 'Novo' : product.condition === 'used' ? 'Usado' : 'Reformado'}
-                        </span>
                       </div>
-                    </div>
-                    <div className="p-3">
-                      <p className="text-[#ff3d00] text-xs mb-0.5">{product.brands?.name || 'JDM'}</p>
-                      <h3 className="text-white font-medium text-sm mb-1 truncate group-hover:text-[#ff3d00] transition-colors">
-                        {product.title}
-                      </h3>
-                      <p className="text-gray-500 text-xs mb-2">{product.categories?.name}</p>
-                      <div className="flex items-center justify-between">
-                        <p className="text-[#ff3d00] font-bold text-base">
-                          ¥ {product.price.toLocaleString('ja-JP')}
+
+                      {/* Info */}
+                      <div className="p-3.5">
+                        <p className="text-[11px] font-semibold mb-0.5 uppercase tracking-wider" style={{ color: '#0D75FF' }}>
+                          {product.brands?.name || 'JDM'}
                         </p>
-                        {product.profiles && (
-                          <div className="flex items-center space-x-1 text-xs text-gray-400 bg-background/50 px-1.5 py-0.5 rounded border border-border/20">
-                            <span className="text-[#ffd700]">★</span>
-                            <span className="font-bold text-gray-300">
-                              {product.profiles.rating ? product.profiles.rating.toFixed(1) : '5.0'}
-                            </span>
-                            {product.profiles.is_verified && (
-                              <span className="text-[#00e5ff] font-extrabold ml-0.5" title="Verificado">✓</span>
-                            )}
+                        <h3
+                          className="text-sm font-semibold text-white mb-1 truncate transition-colors group-hover:text-[#4d9cff]"
+                        >
+                          {product.title}
+                        </h3>
+                        <p className="text-xs mb-3 truncate" style={{ color: '#6B7280' }}>
+                          {product.categories?.name}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-base font-bold" style={{ color: '#0D75FF' }}>
+                            ¥ {product.price.toLocaleString('ja-JP')}
+                          </p>
+                          {product.profiles && (
+                            <div
+                              className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs"
+                              style={{
+                                background: 'rgba(255,255,255,0.04)',
+                                border: '1px solid rgba(255,255,255,0.06)',
+                              }}
+                            >
+                              <Star className="w-3 h-3" style={{ fill: '#FFB800', color: '#FFB800' }} />
+                              <span className="font-semibold text-white">
+                                {product.profiles.rating ? product.profiles.rating.toFixed(1) : '5.0'}
+                              </span>
+                              {product.profiles.is_verified && (
+                                <BadgeCheck className="w-3 h-3 ml-0.5" style={{ color: '#0D75FF' }} />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            ) : (
+              /* List View */
+              <div className="flex flex-col gap-3">
+                {products?.map((product) => {
+                  const cond = conditionColor(product.condition)
+                  return (
+                    <Link
+                      key={product.id}
+                      to={`/product/${product.id}`}
+                      className="group flex gap-4 p-4 rounded-2xl transition-all duration-300"
+                      style={{
+                        background: 'rgba(10,10,15,0.9)',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      <div className="w-28 h-20 rounded-xl bg-[#050505] overflow-hidden flex-shrink-0 relative">
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Wrench className="w-6 h-6" style={{ color: '#374151' }} />
                           </div>
                         )}
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                      <div className="flex-1 min-w-0 flex flex-col justify-center">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#0D75FF' }}>
+                            {product.brands?.name || 'JDM'}
+                          </span>
+                          <span
+                            className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                            style={{ background: cond.bg, color: cond.color }}
+                          >
+                            {conditionLabel(product.condition)}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-semibold text-white truncate group-hover:text-[#4d9cff] transition-colors">
+                          {product.title}
+                        </h3>
+                        <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>{product.categories?.name}</p>
+                      </div>
+                      <div className="flex flex-col items-end justify-center gap-2 flex-shrink-0">
+                        <p className="text-lg font-bold" style={{ color: '#0D75FF' }}>
+                          ¥ {product.price.toLocaleString('ja-JP')}
+                        </p>
+                        <button
+                          onClick={e => { e.preventDefault(); toggleFavorite(product.id) }}
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ background: 'rgba(255,255,255,0.04)' }}
+                        >
+                          <Heart
+                            className="w-4 h-4"
+                            style={isFavorite(product.id) ? { fill: '#FF4B4B', color: '#FF4B4B' } : { color: '#6B7280' }}
+                          />
+                        </button>
+                      </div>
+                    </Link>
+                  )
+                })}
               </div>
             )}
           </div>

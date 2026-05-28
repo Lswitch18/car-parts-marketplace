@@ -126,6 +126,15 @@ export default function LogistixDashboard() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const handler = () => {
+      if (mq.matches) setSidebarOpen(false);
+    };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   const toggleGroup = (id: string) => {
     setExpandedGroups(prev => ({ ...prev, [id]: !prev[id] }));
   };
@@ -133,27 +142,33 @@ export default function LogistixDashboard() {
   const { data: kpis, isLoading: kpisLoading } = useQuery({
     queryKey: ['admin', 'kpis'],
     queryFn: () => adminApi.dashboard.kpis(),
+    staleTime: 30000,
     refetchInterval: 30000,
+    retry: 2,
   });
 
   const { data: statusData } = useQuery({
     queryKey: ['admin', 'status'],
     queryFn: () => adminApi.dashboard.statusEntregas(),
+    staleTime: 60000,
   });
 
   const { data: performance } = useQuery({
     queryKey: ['admin', 'performance'],
     queryFn: () => adminApi.dashboard.performance(),
+    staleTime: 60000,
   });
 
   const { data: recentOrders } = useQuery({
     queryKey: ['admin', 'recent-orders'],
     queryFn: () => adminApi.dashboard.pedidosRecentes(),
+    staleTime: 30000,
   });
 
   const { data: ocorrencias } = useQuery({
     queryKey: ['admin', 'ocorrencias-ativas'],
     queryFn: () => adminApi.ocorrencias.list('aberto,em_andamento'),
+    staleTime: 30000,
   });
 
   const ocorrenciasAbertas = (ocorrencias || []).length;
@@ -353,8 +368,8 @@ export default function LogistixDashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
-                {kpisLoading ? Array.from({ length: 5 }).map((_, i) => (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+                {kpisLoading ? Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="bg-[#111827] rounded-xl p-5 h-[130px] animate-pulse" />
                 )) : (
                   <>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Package, Warehouse, Users, X, Loader2 } from 'lucide-react';
+import { Search, Package, Warehouse, Users, X, Loader2, ArrowRight } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 
 interface SearchResult {
@@ -11,6 +11,13 @@ interface SearchResult {
   color: string;
   navId: string;
 }
+
+const TYPE_LABELS: Record<string, string> = {
+  pedido: 'Pedido',
+  cliente: 'Cliente',
+  armazem: 'Armazém',
+  usuario: 'Usuário',
+};
 
 export default function GlobalSearch({
   open,
@@ -53,7 +60,7 @@ export default function GlobalSearch({
             description: `${p.cliente || ''} · ${p.status || ''}`,
             type: 'pedido',
             icon: Package,
-            color: '#3B82F6',
+            color: '#0D75FF',
             navId: 'pedidos',
           });
         }
@@ -67,7 +74,7 @@ export default function GlobalSearch({
             description: `${c.email || ''} · ${c.cidade || ''}`,
             type: 'cliente',
             icon: Users,
-            color: '#8B5CF6',
+            color: '#7000FF',
             navId: 'clientes',
           });
         }
@@ -81,7 +88,7 @@ export default function GlobalSearch({
             description: `${a.cidade || ''} · ${a.estado || ''}`,
             type: 'armazem',
             icon: Warehouse,
-            color: '#22C55E',
+            color: '#00E5FF',
             navId: 'armazens',
           });
         }
@@ -126,73 +133,135 @@ export default function GlobalSearch({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="fixed top-[15%] left-1/2 -translate-x-1/2 w-full max-w-lg z-50 mx-4">
-        <div className="bg-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
-          <div className="flex items-center gap-3 px-4 h-14 border-b border-white/5">
-            <Search size={18} className="text-gray-500 flex-shrink-0" />
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-50 transition-all"
+        style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}
+        onClick={onClose}
+      />
+
+      {/* Search modal */}
+      <div className="fixed top-[12%] left-1/2 -translate-x-1/2 w-full max-w-xl z-50 px-4">
+        <div
+          className="rounded-2xl overflow-hidden shadow-2xl"
+          style={{
+            background: 'rgba(10,10,15,0.98)',
+            border: '1px solid rgba(13,117,255,0.2)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 32px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(13,117,255,0.1)',
+          }}
+        >
+          {/* Input row */}
+          <div
+            className="flex items-center gap-3 px-4 h-14"
+            style={{ borderBottom: results.length > 0 || query.length >= 2 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}
+          >
+            <Search size={18} style={{ color: '#0D75FF', flexShrink: 0 }} />
             <input
               ref={inputRef}
               type="text"
               placeholder="Buscar pedidos, clientes, armazéns..."
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="bg-transparent border-none outline-none text-sm text-white w-full placeholder:text-gray-600"
+              className="bg-transparent border-none outline-none text-sm text-white w-full"
+              style={{ caretColor: '#0D75FF' }}
             />
-            {loading && <Loader2 size={16} className="text-gray-500 animate-spin" />}
-            <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
-              <X size={18} />
-            </button>
+            {loading ? (
+              <Loader2 size={16} className="animate-spin flex-shrink-0" style={{ color: '#0D75FF' }} />
+            ) : query ? (
+              <button
+                onClick={() => setQuery('')}
+                className="p-1.5 rounded-lg transition-colors hover:bg-white/5 flex-shrink-0"
+                style={{ color: '#6B7280' }}
+              >
+                <X size={14} />
+              </button>
+            ) : null}
           </div>
 
+          {/* Results */}
           {results.length > 0 && (
             <div className="max-h-72 overflow-y-auto p-2">
               {results.map((r, i) => (
                 <button
                   key={`${r.type}-${r.id}`}
                   onClick={() => { onNavigate(r.navId); onClose(); }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors ${
-                    i === selectedIndex ? 'bg-blue-500/10 border border-blue-500/20' : 'hover:bg-white/5'
-                  }`}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all"
+                  style={
+                    i === selectedIndex
+                      ? {
+                          background: `${r.color}12`,
+                          border: `1px solid ${r.color}25`,
+                        }
+                      : {
+                          border: '1px solid transparent',
+                        }
+                  }
                 >
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${r.color}18` }}
+                    className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${r.color}15`, border: `1px solid ${r.color}20` }}
                   >
                     <r.icon size={15} style={{ color: r.color }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{r.label}</p>
-                    <p className="text-[11px] text-gray-500 truncate">{r.description}</p>
+                    <p className="text-sm font-semibold text-white truncate">{r.label}</p>
+                    <p className="text-[11px] mt-0.5 truncate" style={{ color: '#6B7280' }}>{r.description}</p>
                   </div>
-                  <span
-                    className="text-[10px] font-medium px-2 py-0.5 rounded-full flex-shrink-0"
-                    style={{ background: `${r.color}18`, color: r.color }}
-                  >
-                    {r.type}
-                  </span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: `${r.color}15`, color: r.color }}
+                    >
+                      {TYPE_LABELS[r.type] || r.type}
+                    </span>
+                    {i === selectedIndex && (
+                      <ArrowRight size={12} style={{ color: r.color }} />
+                    )}
+                  </div>
                 </button>
               ))}
             </div>
           )}
 
+          {/* No results */}
           {query.length >= 2 && !loading && results.length === 0 && (
-            <div className="py-8 text-center text-sm text-gray-500">
-              Nenhum resultado para "{query}"
+            <div className="py-10 text-center">
+              <p className="text-sm font-medium text-white mb-1">Nenhum resultado</p>
+              <p className="text-xs" style={{ color: '#6B7280' }}>para "{query}"</p>
             </div>
           )}
 
+          {/* Hint before typing */}
           {query.length < 2 && (
-            <div className="py-6 text-center text-[11px] text-gray-600">
-              Digite pelo menos 2 caracteres para buscar
+            <div className="py-5 text-center">
+              <p className="text-xs" style={{ color: '#4B5563' }}>
+                Digite pelo menos 2 caracteres para buscar
+              </p>
             </div>
           )}
 
-          <div className="flex items-center justify-between px-4 h-10 bg-black/20 text-[10px] text-gray-600">
-            <span>↵ para selecionar</span>
-            <span>↑↓ para navegar</span>
-            <span>ESC para fechar</span>
+          {/* Keyboard shortcuts bar */}
+          <div
+            className="flex items-center justify-between px-4 h-9"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.04)', background: 'rgba(0,0,0,0.3)' }}
+          >
+            {[
+              { key: '↵', label: 'selecionar' },
+              { key: '↑↓', label: 'navegar' },
+              { key: 'ESC', label: 'fechar' },
+            ].map(({ key, label }) => (
+              <span key={key} className="flex items-center gap-1.5 text-[10px]" style={{ color: '#4B5563' }}>
+                <kbd
+                  className="px-1.5 py-0.5 rounded text-[9px] font-bold"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', color: '#9CA3AF' }}
+                >
+                  {key}
+                </kbd>
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </div>

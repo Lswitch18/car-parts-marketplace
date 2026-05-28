@@ -303,3 +303,113 @@ h1, h2, h3, h4, h5, h6, .font-display {
 ::-webkit-scrollbar-track         { background: var(--bg-deep); }
 ::-webkit-scrollbar-thumb         { background: rgba(13,117,255,0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover   { background: rgba(13,117,255,0.5); }
+
+/* ============================================
+   Slide-up Animation (Bottom Sheets)
+   ============================================ */
+@keyframes slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ============================================
+   Fade-in Scale (Modals / Popovers)
+   ============================================ */
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ============================================
+   Pulse Glow (Status indicators)
+   ============================================ */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px currentColor; opacity: 1; }
+  50%       { box-shadow: 0 0 12px currentColor; opacity: 0.7; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   Select Dark Theme
+   ============================================ */
+select option {
+  background-color: #0A0A0F;
+  color: #ffffff;
+}
+
+/* ============================================
+   Badge utility
+   ============================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+  background: rgba(13,117,255,0.15);
+  color: #4d9cff;
+  border: 1px solid rgba(13,117,255,0.25);
+}
+
+/* ============================================
+   Neon button
+   ============================================ */
+.btn-neon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  background: linear-gradient(135deg, var(--daig-blue) 0%, var(--daig-purple) 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(13,117,255,0.35);
+}
+
+.btn-neon:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(13,117,255,0.5);
+}
+
+.btn-neon:active {
+  transform: scale(0.97);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  background: rgba(13,117,255,0.08);
+  color: #4d9cff;
+  border: 1px solid rgba(13,117,255,0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: rgba(13,117,255,0.15);
+  border-color: rgba(13,117,255,0.35);
+}

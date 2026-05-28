@@ -7,14 +7,18 @@ async function adminFetch<T>(endpoint: string, options: RequestInit = {}): Promi
   await supabase.auth.getUser();
   const { data: { session } } = await supabase.auth.getSession();
   const token = session?.access_token;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
   const res = await fetch(`${ADMIN_URL}${endpoint}`, {
     ...options,
+    signal: controller.signal,
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
+  clearTimeout(timeout);
   const json = await res.json();
   if (!json.success) throw new Error(json.error || 'Admin API error');
   return json.data as T;
