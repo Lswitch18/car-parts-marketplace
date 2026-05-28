@@ -111,6 +111,9 @@ PROJECT_INFO = {
         "entregas_pendentes": "~6",
         "motoristas": "10 (Yamato/Sagawa/SENIO/DAIG)",
     },
+    "pending_setup": [
+        "Criar Upstash Redis grátis e configurar UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN nas Edge Functions Secrets do Supabase (e Vercel). O código já está em supabase/functions/utils/redis.ts, fallback direto ao Supabase funciona sem.",
+    ],
     "features_entregues": {
         "1_sql_tables": "11 novas tabelas (shipments, packages, rotas, motoristas, dropoffs, sla, gps)",
         "2_edge_function_logistics": "28+ endpoints (OMS/TMS/WMS/Dropoff/Tracking/GPS)",
