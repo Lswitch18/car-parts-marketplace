@@ -29,27 +29,6 @@ const GaidLogo: React.FC<{
   variant?: 'horizontal' | 'icon' | 'vertical';
   animated?: boolean;
 }> = ({ size = 48, className = '', variant = 'horizontal', animated = true }) => {
-  const uid = React.useId().replace(/:/g, '');
-
-  /*
-   * Gear teeth — placed at screen-clockwise angles from 5° to 305°.
-   * Step ≈ 23.3° → 13 teeth distributed around the C-arc.
-   * No tooth in the gap area (305° → 360° → 5°).
-   */
-  const TEETH_ANGLES = [5, 28, 51, 75, 98, 121, 144, 167, 190, 213, 237, 260, 283];
-
-  /*
-   * G body path (filled area between outer arc, crossbar, and inner arc):
-   *
-   *   M 70 25           ← outer gap top  (screen 308°, r=32)
-   *   A 32 32 0 1 0 82 50   ← LARGE CCW outer arc → outer gap bottom (screen 0°)
-   *   L 82 60           ← crossbar right outer, going DOWN
-   *   L 70 60           ← crossbar bottom going LEFT (to inner radius)
-   *   L 70 50           ← crossbar inner left, going UP to inner arc start
-   *   A 20 20 0 0 0 62 34   ← SMALL CCW inner arc → inner gap top (screen 308°)
-   *   Z                 ← close: line from inner-top to outer-top (top rim of gap)
-   */
-  const G_PATH = 'M 70 25 A 32 32 0 1 0 82 50 L 82 60 L 70 60 L 70 50 A 20 20 0 0 0 62 34 Z';
 
   return (
     <div
@@ -60,109 +39,41 @@ const GaidLogo: React.FC<{
       {/* ══════════════════════════════════════
           Icon SVG — Gear-G
       ══════════════════════════════════════ */}
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ flexShrink: 0 }}
-        aria-hidden="true"
+      <div 
+        className="relative flex items-center justify-center rounded-full"
+        style={{
+          width: size,
+          height: size,
+          boxShadow: animated ? '0 0 12px rgba(13, 117, 255, 0.5), inset 0 0 8px rgba(13, 117, 255, 0.3)' : '0 0 8px rgba(13, 117, 255, 0.4)',
+          border: '1px solid rgba(13, 117, 255, 0.4)',
+          animation: animated ? 'daig-logo-pulse 2.5s ease-in-out infinite' : 'none',
+          overflow: 'hidden',
+          background: '#050508',
+          flexShrink: 0
+        }}
       >
-        <defs>
-          {/* Soft neon glow for the ring */}
-          <filter id={`glow-${uid}`} x="-45%" y="-45%" width="190%" height="190%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          {/* Blue → cyan → purple ring gradient */}
-          <linearGradient id={`ring-${uid}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stopColor="#0D75FF" />
-            <stop offset="48%"  stopColor="#00E5FF" />
-            <stop offset="100%" stopColor="#7000FF" />
-          </linearGradient>
-
-          {/* Metallic chrome gradient for G body + teeth */}
-          <linearGradient id={`metal-${uid}`} x1="15%" y1="0%" x2="85%" y2="100%">
-            <stop offset="0%"   stopColor="#FFFFFF"  stopOpacity="1" />
-            <stop offset="25%"  stopColor="#DCE8F8"  stopOpacity="1" />
-            <stop offset="58%"  stopColor="#9CAEC4"  stopOpacity="1" />
-            <stop offset="100%" stopColor="#EAF0FA"  stopOpacity="1" />
-          </linearGradient>
-
-          {/* Very subtle highlight on teeth */}
-          <linearGradient id={`tooth-${uid}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stopColor="#FFFFFF"  stopOpacity="0.9" />
-            <stop offset="40%"  stopColor="#C8D8EE"  stopOpacity="1"   />
-            <stop offset="100%" stopColor="#8AA0B8"  stopOpacity="1"   />
-          </linearGradient>
-
-          {/* Deep space background */}
-          <radialGradient id={`bg-${uid}`} cx="48%" cy="38%" r="70%">
-            <stop offset="0%"   stopColor="#16162A" />
-            <stop offset="100%" stopColor="#06060E" />
-          </radialGradient>
-        </defs>
-
-        {/* ── Dark background ── */}
-        <circle cx="50" cy="50" r="49.5" fill={`url(#bg-${uid})`} />
-
-        {/* ── Neon ring (animated pulse) ── */}
-        <circle
-          cx="50" cy="50" r="46"
-          stroke={`url(#ring-${uid})`}
-          strokeWidth="2.2"
-          fill="none"
-          filter={`url(#glow-${uid})`}
-          style={animated ? { animation: 'daig-ring-pulse 3.5s ease-in-out infinite' } : {}}
+        <img
+          src="/icons/icon.svg"
+          alt="DAIG"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
         />
-        {/* Inner subtle ring */}
-        <circle
-          cx="50" cy="50" r="43.5"
-          stroke="rgba(13,117,255,0.14)"
-          strokeWidth="0.5"
-          fill="none"
-        />
-
-        {/* ══════════════════════════════════════
-            GEAR TEETH  (only on the C-arc, no teeth in the G gap)
-            Each rect: base at r=31.5, tip at r=40.5, ±5px wide
-            transform: first rotate around origin, then translate to center
-        ══════════════════════════════════════ */}
-        {TEETH_ANGLES.map((deg) => (
-          <rect
-            key={deg}
-            x="31.5"
-            y="-5"
-            width="9"
-            height="10.5"
-            rx="2"
-            fill={`url(#tooth-${uid})`}
-            transform={`translate(50 50) rotate(${deg})`}
-          />
-        ))}
-
-        {/* ══════════════════════════════════════
-            G BODY
-            Thick arc (outer r=32, inner r=20) + crossbar
-        ══════════════════════════════════════ */}
-        <path
-          d={G_PATH}
-          fill={`url(#metal-${uid})`}
-        />
-
-        {/* Embedded keyframes */}
         <style>{`
-          @keyframes daig-ring-pulse {
-            0%, 100% { opacity: 1;    }
-            50%       { opacity: 0.5;  }
+          @keyframes daig-logo-pulse {
+            0%, 100% {
+              box-shadow: 0 0 12px rgba(13, 117, 255, 0.5), inset 0 0 8px rgba(13, 117, 255, 0.3);
+              border-color: rgba(13, 117, 255, 0.4);
+            }
+            50% {
+              box-shadow: 0 0 24px rgba(0, 229, 255, 0.9), inset 0 0 16px rgba(0, 229, 255, 0.6);
+              border-color: rgba(0, 229, 255, 0.8);
+            }
           }
         `}</style>
-      </svg>
+      </div>
 
       {/* ══════════════════════════════════════
           WORDMARK

@@ -27,6 +27,7 @@ import QRInstallPage from './pages/mobile/QRInstallPage'
 import AgenciaPage from './pages/mobile/AgenciaPage'
 import MotionFramePage from './pages/MotionFramePage'
 import ImmersiveExperience from './pages/ImmersiveExperience'
+import Auctions from './pages/Auctions'
 import ChatPopup from './components/ChatPopup'
 import { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -66,6 +67,7 @@ function App() {
           <Route path="catalog" element={<Catalog />} />
           <Route path="product/:id" element={<ProductDetail />} />
           <Route path="cars" element={<CarList />} />
+          <Route path="auctions" element={<Auctions />} />
           
           {/* Rotas Protegidas (Exigem Login) */}
           <Route element={<ProtectedRoute />}>

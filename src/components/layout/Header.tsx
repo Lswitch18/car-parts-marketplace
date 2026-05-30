@@ -172,6 +172,7 @@ export default function Header() {
             {[
               { to: '/catalog', label: t('Catálogo') },
               { to: '/cars', label: t('Compatibilidade') },
+              { to: '/auctions', label: t('Leilões') },
             ].map(({ to, label }) => (
               <Link
                 key={to}
@@ -563,6 +564,7 @@ export default function Header() {
             {[
               { to: '/catalog', label: t('Catálogo') },
               { to: '/cars', label: t('Compatibilidade') },
+              { to: '/auctions', label: t('Leilões 🔴') },
             ].map(({ to, label }) => (
               <Link
                 key={to}
