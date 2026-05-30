@@ -126,7 +126,7 @@ async function notifyBuyerAndSeller(tx: any) {
 }
 
 async function handleCheckoutCompleted(session: any) {
-  const { transaction_id, part_id, buyer_id, seller_id } = session.metadata || {};
+  const { transaction_id, part_id, buyer_id, seller_id, auction_id } = session.metadata || {};
 
   if (transaction_id) {
       await supabase
@@ -139,16 +139,27 @@ async function handleCheckoutCompleted(session: any) {
         .eq('id', transaction_id);
 
     if (part_id) {
+      // For auction payments, mark as 'sold' directly (winner already resolved)
+      // For regular and buy-now, mark as 'sold' as well
       await supabase
         .from('parts')
-        .update({ status: 'sold' })
+        .update({
+          status: 'sold',
+          ...(auction_id ? { winner_notified: true } : {}),
+        })
         .eq('id', part_id);
     }
 
     if (seller_id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('total_sales')
+        .eq('id', seller_id)
+        .single();
+
       await supabase
         .from('profiles')
-        .update({ total_sales: supabase.rpc('increment', { x: 1 }) })
+        .update({ total_sales: (profile?.total_sales || 0) + 1 })
         .eq('id', seller_id);
     }
 

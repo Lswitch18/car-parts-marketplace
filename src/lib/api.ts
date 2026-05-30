@@ -111,7 +111,9 @@ export const api = {
   auctions: {
     active: () => fetchApi('/auctions/active'),
     
-    list: (params?: { status?: 'active' | 'ended'; page?: number; limit?: number }) => {
+    ended: () => fetchApi('/auctions/ended'),
+
+    list: (params?: { status?: 'active' | 'ended' | 'sold'; page?: number; limit?: number }) => {
       const query = new URLSearchParams();
       if (params) Object.entries(params).forEach(([k, v]) => v && query.set(k, String(v)));
       return fetchApi(`/auctions/list?${query}`);
@@ -130,10 +132,23 @@ export const api = {
       category_id?: string;
       model_id?: string;
       images?: string[];
+      buy_now_enabled?: boolean;
     }) => fetchApi('/auctions/create', { method: 'POST', body: JSON.stringify(data) }),
 
     bid: (data: { auction_id: string; amount: number }) =>
       fetchApi('/auctions/bid', { method: 'POST', body: JSON.stringify(data) }),
+
+    buyNow: (data: { auction_id: string }) =>
+      fetchApi('/auctions/buy-now', { method: 'POST', body: JSON.stringify(data) }),
+
+    payWinner: (data: { transaction_id: string }) =>
+      fetchApi('/auctions/pay', { method: 'POST', body: JSON.stringify(data) }),
+
+    resolve: (data: { auction_id: string }) =>
+      fetchApi('/auctions/resolve', { method: 'POST', body: JSON.stringify(data) }),
+
+    resolveAll: () =>
+      fetchApi('/auctions/resolve-all', { method: 'POST', body: JSON.stringify({}) }),
   },
 
   categories: {
@@ -154,6 +169,8 @@ export const api = {
       seller_id: string;
       amount: number;
       shipping?: Record<string, string>;
+      auction_id?: string;
+      title?: string;
     }) => {
       const token = localStorage.getItem('sb-access-token');
       const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/create-checkout`, {

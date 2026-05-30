@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
 });
 
 async function createCheckoutSession(req: Request) {
-  const { transaction_id, part_id, buyer_id, seller_id, amount, shipping } = await req.json();
+  const { transaction_id, part_id, buyer_id, seller_id, amount, shipping, auction_id, title: customTitle } = await req.json();
 
   if (!transaction_id || !amount) {
     return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -86,11 +86,13 @@ async function createCheckoutSession(req: Request) {
     .eq('id', part_id)
     .single();
 
+  const productName = customTitle || part?.title || 'Peça automotiva';
+
   const lineItems: Record<string, string> = {
     'mode': 'payment',
     'payment_method_types[]': 'card',
     'line_items[0][price_data][currency]': 'jpy',
-    'line_items[0][price_data][product_data][name]': part?.title || 'Peça automotiva',
+    'line_items[0][price_data][product_data][name]': productName,
     'line_items[0][price_data][unit_amount]': String(Math.round(amount)),
     'line_items[0][quantity]': '1',
     'success_url': `${APP_URL}/dashboard?payment=success&transaction=${transaction_id}`,
@@ -100,6 +102,10 @@ async function createCheckoutSession(req: Request) {
     'metadata[buyer_id]': buyer_id || '',
     'metadata[seller_id]': seller_id || '',
   };
+
+  if (auction_id) {
+    lineItems['metadata[auction_id]'] = auction_id;
+  }
 
   if (part?.images?.[0]) {
     lineItems['line_items[0][price_data][product_data][images][0]'] = part.images[0];

@@ -5,8 +5,9 @@ import { api } from '../lib/api'
 import { useAuthStore } from '../stores/authStore'
 import { useI18n } from '../lib/i18n'
 import ParticleField from '../components/ParticleField'
+import { useNavigate } from 'react-router-dom'
 import {
-  Gavel, Clock, TrendingUp, User, AlertTriangle, ArrowRight, X, ChevronRight, Zap, Timer, Star, Award
+  Gavel, Clock, TrendingUp, User, AlertTriangle, ArrowRight, X, ChevronRight, Zap, Timer, Star, Award, ShoppingBag, CreditCard
 } from 'lucide-react'
 
 interface AuctionItem {
@@ -21,6 +22,8 @@ interface AuctionItem {
   auction_end: string
   bid_count: number
   time_remaining: number
+  status: string
+  winner_id: string | null
   brand?: { name: string; logo_url: string }
   category?: { name: string }
   seller?: { id: string; full_name: string; rating: number }
@@ -44,6 +47,7 @@ const CONDITION_COLORS: Record<string, string> = {
 export default function Auctions() {
   const { t } = useI18n()
   const { user } = useAuthStore()
+  const navigate = useNavigate()
   const [auctions, setAuctions] = useState<AuctionItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -167,6 +171,51 @@ export default function Auctions() {
       loadAuctionDetails(selectedAuction.id)
     } catch (err: any) { setBidError(err.message || 'Erro ao enviar lance.') }
     finally { setSubmittingBid(false) }
+  }
+
+  // ─── Buy Now ────────────────────────────────────────────────
+  const [buying, setBuying] = useState(false)
+  const handleBuyNow = async (auction: AuctionItem) => {
+    if (!user) { navigate('/login'); return }
+    setBuying(true)
+    try {
+      const result = await api.auctions.buyNow({ auction_id: auction.id }) as any
+      const tx = result.transaction
+      const checkout = await api.stripe.createCheckout({
+        transaction_id: tx.id,
+        part_id: auction.id,
+        buyer_id: user.id,
+        seller_id: auction.seller?.id || '',
+        amount: auction.buy_now_price!,
+        auction_id: auction.id,
+        title: `Comprar Agora - ${auction.title}`,
+      })
+      window.location.href = checkout.url
+    } catch (err: any) {
+      alert(err.message || 'Erro ao processar compra')
+    } finally { setBuying(false) }
+  }
+
+  // ─── Pay for won auction ───────────────────────────────────
+  const handlePayWinner = async (auction: AuctionItem) => {
+    if (!user) { navigate('/login'); return }
+    try {
+      const { data: transactions } = await api.transactions.list({ role: 'buyer', status: 'pending' }) as any
+      const tx = transactions?.find((t: any) => t.part_id === auction.id)
+      if (!tx) { alert('Transação não encontrada'); return }
+      const checkout = await api.stripe.createCheckout({
+        transaction_id: tx.id,
+        part_id: auction.id,
+        buyer_id: user.id,
+        seller_id: auction.seller?.id || '',
+        amount: auction.current_bid,
+        auction_id: auction.id,
+        title: `Pagamento - ${auction.title}`,
+      })
+      window.location.href = checkout.url
+    } catch (err: any) {
+      alert(err.message || 'Erro ao redirecionar para pagamento')
+    }
   }
 
   // ─── Formatters ───────────────────────────────────────────────
@@ -486,14 +535,19 @@ export default function Auctions() {
                     </div>
 
                     {/* Buy now */}
-                    {auction.buy_now_price && (
-                      <div
-                        className="mt-3 flex items-center justify-between px-3 py-2 rounded-lg"
+                    {auction.buy_now_price && auction.status === 'active' && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleBuyNow(auction) }}
+                        disabled={buying}
+                        className="mt-3 w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[rgba(0,217,126,0.12)] cursor-pointer"
                         style={{ background: 'rgba(0,217,126,0.06)', border: '1px solid rgba(0,217,126,0.15)' }}
                       >
-                        <span className="text-xs text-[#00D97E] font-semibold">Comprar Agora</span>
+                        <span className="flex items-center gap-1.5 text-xs text-[#00D97E] font-semibold">
+                          <ShoppingBag className="w-3 h-3" />
+                          {buying ? 'Processando...' : 'Comprar Agora'}
+                        </span>
                         <span className="text-xs text-white font-bold">¥{auction.buy_now_price.toLocaleString('ja-JP')}</span>
-                      </div>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -704,95 +758,150 @@ export default function Auctions() {
                 </div>
               </div>
 
-              {/* Input */}
-              {user ? (
-                <form onSubmit={handlePlaceBid} className="space-y-3">
-                  <div>
-                    <label className="block text-xs text-text-secondary font-semibold mb-2 uppercase tracking-wider">
-                      Seu Lance — Mín: ¥{Math.ceil(selectedAuction.current_bid * 1.05).toLocaleString('ja-JP')}
-                    </label>
-                    <div className="relative">
-                      <span
-                        className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-lg"
-                        style={{ color: '#0D75FF' }}
-                      >¥</span>
-                      <input
-                        ref={bidInputRef}
-                        type="number"
-                        required
-                        value={bidAmount}
-                        onChange={(e) => setBidAmount(e.target.value)}
-                        placeholder={Math.ceil(selectedAuction.current_bid * 1.05).toString()}
-                        className="w-full pl-10 pr-4 py-3.5 rounded-xl font-display font-bold text-xl text-white placeholder-[#333] focus:outline-none transition-all"
+              {/* Input — conditional: winner pay / ended / active bid / login */}
+              {(() => {
+                const isEnded = selectedAuction.status === 'ended' || selectedAuction.status === 'sold' || selectedAuction.time_remaining <= 0
+                const isWinner = user && selectedAuction.winner_id === user.id
+
+                // Winner needs to pay
+                if (user && isEnded && isWinner) {
+                  return (
+                    <div className="space-y-4">
+                      <div
+                        className="p-5 rounded-2xl text-center"
+                        style={{ background: 'rgba(0,229,255,0.06)', border: '1px solid rgba(0,229,255,0.2)' }}
+                      >
+                        <Award className="w-10 h-10 text-[#00E5FF] mx-auto mb-3" />
+                        <p className="font-display font-bold text-white text-lg mb-1">🎉 Você venceu!</p>
+                        <p className="text-text-secondary text-sm mb-5">
+                          Complete o pagamento de <span className="text-white font-bold">¥{selectedAuction.current_bid.toLocaleString('ja-JP')}</span> para garantir sua peça.
+                        </p>
+                        <button
+                          onClick={() => handlePayWinner(selectedAuction)}
+                          className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-display font-black text-lg transition-all duration-200"
+                          style={{
+                            background: 'linear-gradient(135deg, #00E5FF 0%, #0D75FF 100%)',
+                            color: '#fff',
+                            boxShadow: '0 0 24px rgba(0,229,255,0.4)',
+                          }}
+                        >
+                          <CreditCard className="w-5 h-5" />
+                          Pagar Agora
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )
+                }
+
+                // Ended no winner / ended with not-winner
+                if (isEnded) {
+                  return (
+                    <div
+                      className="p-6 rounded-2xl text-center"
+                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+                    >
+                      <Clock className="w-8 h-8 text-text-muted mx-auto mb-3" />
+                      <p className="text-text-secondary text-sm">Este leilão foi encerrado.</p>
+                    </div>
+                  )
+                }
+
+                // Active auction — bidding form
+                if (user) {
+                  return (
+                    <form onSubmit={handlePlaceBid} className="space-y-3">
+                      <div>
+                        <label className="block text-xs text-text-secondary font-semibold mb-2 uppercase tracking-wider">
+                          Seu Lance — Mín: ¥{Math.ceil(selectedAuction.current_bid * 1.05).toLocaleString('ja-JP')}
+                        </label>
+                        <div className="relative">
+                          <span
+                            className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-lg"
+                            style={{ color: '#0D75FF' }}
+                          >¥</span>
+                          <input
+                            ref={bidInputRef}
+                            type="number"
+                            required
+                            value={bidAmount}
+                            onChange={(e) => setBidAmount(e.target.value)}
+                            placeholder={Math.ceil(selectedAuction.current_bid * 1.05).toString()}
+                            className="w-full pl-10 pr-4 py-3.5 rounded-xl font-display font-bold text-xl text-white placeholder-[#333] focus:outline-none transition-all"
+                            style={{
+                              background: 'rgba(13,117,255,0.06)',
+                              border: '1px solid rgba(13,117,255,0.2)',
+                            }}
+                            onFocus={(e) => {
+                              e.currentTarget.style.borderColor = 'rgba(0,229,255,0.5)'
+                              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(13,117,255,0.12)'
+                            }}
+                            onBlur={(e) => {
+                              e.currentTarget.style.borderColor = 'rgba(13,117,255,0.2)'
+                              e.currentTarget.style.boxShadow = 'none'
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {bidError && (
+                        <div
+                          className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
+                          style={{ background: 'rgba(255,75,75,0.08)', border: '1px solid rgba(255,75,75,0.2)', color: '#FF4B4B' }}
+                        >
+                          <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                          {bidError}
+                        </div>
+                      )}
+
+                      {bidSuccess && (
+                        <div
+                          className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
+                          style={{ background: 'rgba(0,217,126,0.08)', border: '1px solid rgba(0,217,126,0.2)', color: '#00D97E' }}
+                        >
+                          {bidSuccess}
+                        </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={submittingBid}
+                        className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-display font-black text-lg transition-all duration-200"
                         style={{
-                          background: 'rgba(13,117,255,0.06)',
-                          border: '1px solid rgba(13,117,255,0.2)',
+                          background: submittingBid
+                            ? 'rgba(13,117,255,0.3)'
+                            : 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
+                          color: '#fff',
+                          boxShadow: submittingBid ? 'none' : '0 0 24px rgba(13,117,255,0.4)',
                         }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(0,229,255,0.5)'
-                          e.currentTarget.style.boxShadow = '0 0 0 3px rgba(13,117,255,0.12)'
+                        onMouseEnter={(e) => {
+                          if (!submittingBid) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 40px rgba(13,117,255,0.65)'
                         }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(13,117,255,0.2)'
-                          e.currentTarget.style.boxShadow = 'none'
+                        onMouseLeave={(e) => {
+                          if (!submittingBid) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(13,117,255,0.4)'
                         }}
-                      />
-                    </div>
-                  </div>
+                      >
+                        <Gavel className="w-5 h-5" />
+                        {submittingBid ? 'Registrando...' : 'Dar Lance Ao Vivo'}
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </form>
+                  )
+                }
 
-                  {bidError && (
-                    <div
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
-                      style={{ background: 'rgba(255,75,75,0.08)', border: '1px solid rgba(255,75,75,0.2)', color: '#FF4B4B' }}
-                    >
-                      <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                      {bidError}
-                    </div>
-                  )}
-
-                  {bidSuccess && (
-                    <div
-                      className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
-                      style={{ background: 'rgba(0,217,126,0.08)', border: '1px solid rgba(0,217,126,0.2)', color: '#00D97E' }}
-                    >
-                      {bidSuccess}
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={submittingBid}
-                    className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-display font-black text-lg transition-all duration-200"
-                    style={{
-                      background: submittingBid
-                        ? 'rgba(13,117,255,0.3)'
-                        : 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
-                      color: '#fff',
-                      boxShadow: submittingBid ? 'none' : '0 0 24px rgba(13,117,255,0.4)',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!submittingBid) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 40px rgba(13,117,255,0.65)'
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!submittingBid) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(13,117,255,0.4)'
-                    }}
+                // Not logged in
+                return (
+                  <div
+                    className="p-6 rounded-2xl text-center"
+                    style={{ background: 'rgba(13,117,255,0.05)', border: '1px solid rgba(13,117,255,0.15)' }}
                   >
-                    <Gavel className="w-5 h-5" />
-                    {submittingBid ? 'Registrando...' : 'Dar Lance Ao Vivo'}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </form>
-              ) : (
-                <div
-                  className="p-6 rounded-2xl text-center"
-                  style={{ background: 'rgba(13,117,255,0.05)', border: '1px solid rgba(13,117,255,0.15)' }}
-                >
-                  <p className="text-text-secondary text-sm mb-4">Faça login para dar lances no leilão ao vivo.</p>
-                  <Link to="/login" className="btn-neon w-full justify-center">
-                    Fazer Login
-                  </Link>
-                </div>
-              )}
+                    <p className="text-text-secondary text-sm mb-4">Faça login para dar lances no leilão ao vivo.</p>
+                    <Link to="/login" className="btn-neon w-full justify-center">
+                      Fazer Login
+                    </Link>
+                  </div>
+                )
+              })()}
             </div>
           </div>
         </div>
