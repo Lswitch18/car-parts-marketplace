@@ -22,6 +22,52 @@ interface AuthState {
   updateProfile: (updates: Partial<User>) => Promise<void>
 }
 
+async function fetchAndMapProfile(userId: string): Promise<User | null> {
+  let { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single()
+
+  if (profileError || !profile) {
+    const { data: authUser } = await supabase.auth.getUser()
+    const meta = authUser?.user?.user_metadata
+
+    const { data: newProfile, error: createError } = await supabase
+      .from('profiles')
+      .insert({
+        id: userId,
+        email: authUser?.user?.email ?? '',
+        full_name: meta?.full_name || meta?.name || authUser?.user?.email?.split('@')[0] || 'Usuário',
+        phone: meta?.phone || null,
+        avatar_url: meta?.avatar_url || meta?.picture || null,
+        rating: 0,
+        total_sales: 0,
+        is_verified: false,
+        role: 'buyer',
+      })
+      .select()
+      .single()
+
+    if (createError) {
+      if (createError.code === '23505') {
+        const { data: retry } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
+        if (retry) return { ...retry, name: retry.full_name } as User
+      }
+      console.error('[authStore] fetchAndMapProfile create error:', createError)
+      return null
+    }
+    if (!newProfile) return null
+    profile = newProfile
+  }
+
+  return { ...profile, name: profile.full_name } as User
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   loading: true,
