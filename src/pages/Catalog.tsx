@@ -6,6 +6,14 @@ import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import { fetchParts } from '../lib/partsApi'
+import { Product } from '../types'
+
+// Extend product with relational fields used in UI
+interface ProductUI extends Product {
+  brands?: { name?: string }
+  categories?: { name?: string }
+  profiles?: { rating?: number; is_verified?: boolean }
+}
 
 function SkeletonCard() {
   return (
@@ -43,7 +51,7 @@ export default function Catalog() {
   const [sortBy, setSortBy] = useState('created_at')
   const [searchInput, setSearchInput] = useState(filters.search)
 
-  const { data: products, isLoading } = useQuery({
+  const { data: products = [], isLoading } = useQuery<ProductUI[]>({
     queryKey: ['products', 'catalog', filters],
     staleTime: 30_000,
     gcTime: 60_000,
@@ -93,7 +101,7 @@ export default function Catalog() {
         if (error) throw error
         return data || []
       }
-    }
+    },
   })
 
   const updateFilter = (key: string, value: string) => {

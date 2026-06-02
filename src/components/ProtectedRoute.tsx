@@ -1,26 +1,20 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/authStore'
 
-interface ProtectedRouteProps {
-  requireAdmin?: boolean
-}
+export default function ProtectedRoute({ requireAdmin }: { requireAdmin?: boolean }) {
+  const { user, loading, initialized, isAdmin, ensureSession } = useAuthStore()
+  const [checking, setChecking] = useState(false)
 
-export default function ProtectedRoute({ requireAdmin }: ProtectedRouteProps) {
-  const { user, loading, initialized, isAdmin, refreshSession } = useAuthStore()
-  const [recovering, setRecovering] = useState(false)
-  const recovered = useRef(false)
-
+  // When store is initialized but user is missing, attempt to restore session
   useEffect(() => {
-    if (!user && !loading && !recovered.current) {
-      // Trigger recovery if we don't have a user yet, regardless of initialized flag
-      recovered.current = true
-      setRecovering(true)
-      refreshSession().finally(() => setRecovering(false))
+    if (initialized && !user && !loading && !checking) {
+      setChecking(true)
+      ensureSession().finally(() => setChecking(false))
     }
-  }, [user, loading, refreshSession])
+  }, [initialized, user, loading, checking, ensureSession])
 
-  if (!initialized || loading || recovering) {
+  if (!initialized || loading || checking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -36,18 +30,9 @@ export default function ProtectedRoute({ requireAdmin }: ProtectedRouteProps) {
     return (
       <div className="min-h-screen bg-gray-900 p-6 flex items-center justify-center">
         <div className="bg-gray-800 border-l-4 border-red-500 rounded-lg p-6 max-w-md">
-          <h2 className="font-bold text-xl text-white mb-4">
-            Acesso Negado
-          </h2>
-          <p className="text-gray-400 mb-4">
-            Você não tem permissão para acessar esta página.
-          </p>
-          <a
-            href="/"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-          >
-            Voltar para Home
-          </a>
+          <h2 className="font-bold text-xl text-white mb-4">Acesso Negado</h2>
+          <p className="text-gray-400 mb-4">Você não tem permissão para acessar esta página.</p>
+          <a href="/" className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Voltar para Home</a>
         </div>
       </div>
     )

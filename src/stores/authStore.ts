@@ -21,6 +21,7 @@ interface AuthState {
   signOut: () => Promise<void>
   refreshSession: () => Promise<boolean>
   updateProfile: (updates: Partial<User>) => Promise<void>
+  ensureSession: () => Promise<boolean>
 }
 
 async function fetchAndMapProfile(userId: string): Promise<User | null> {
@@ -75,17 +76,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialized: false,
   isAdmin: false,
 
-  setUser: (user) => set({ user, isAdmin: user?.role === 'admin' }),
+  setUser: (user) => {
+    // Persist user to localStorage for session persistence across navigation
+    if (user) {
+      try {
+        localStorage.setItem('auth_user', JSON.stringify(user))
+      } catch (e) {
+        console.warn('[authStore] Failed to store user in localStorage', e)
+      }
+    } else {
+      localStorage.removeItem('auth_user')
+    }
+    set({ user, isAdmin: user?.role === 'admin' })
+  },
   setLoading: (loading) => set({ loading }),
 
-  initialize: () => {
+  initialize: async (): Promise<void> => {
     if (get().initialized) {
       if (!get().user) {
-        return get().ensureSession().then(() => undefined)
+        await get().ensureSession();
       }
-      return Promise.resolve()
+      return;
     }
-    if (initPromise) return initPromise
+    if (initPromise) return initPromise;
+
 
     if (authListener) authListener.data.subscription.unsubscribe()
 
@@ -97,7 +111,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+            get().setUser(mapped);
+            set({ loading: false, initialized: true });
           } else {
             console.warn('[authStore] fetchAndMapProfile returned null, keeping current user')
             set({ loading: false, initialized: true })
@@ -110,7 +125,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+            get().setUser(mapped);
+            set({ loading: false, initialized: true });
           } else {
             console.warn('[authStore] fetchAndMapProfile returned null on INITIAL_SESSION')
             set({ loading: false, initialized: true })
@@ -132,12 +148,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (session?.user && !get().user) {
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+            get().setUser(mapped);
+            set({ loading: false, initialized: true });
           } else {
             console.warn('[authStore] fetchAndMapProfile returned null on getSession')
             set({ loading: false, initialized: true })
           }
         } else if (!session) {
+          // Attempt to load persisted user from localStorage as fallback
+          try {
+            const stored = localStorage.getItem('auth_user')
+            if (stored) {
+              const parsed = JSON.parse(stored)
+              set({ user: parsed, isAdmin: parsed?.role === 'admin', loading: false, initialized: true })
+              return
+            }
+          } catch (e) {
+            console.warn('[authStore] Failed to parse persisted user', e)
+          }
           set({ user: null, isAdmin: false, loading: false, initialized: true })
         }
       } catch (error) {
@@ -149,7 +177,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return initPromise
   },
 
-  signIn: async (email: string, password: string) => {
+  signIn: async (email: string, password: string): Promise<User | null> => {
     set({ loading: true })
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -158,7 +186,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       const mapped = await fetchAndMapProfile(data.user.id)
       if (mapped) {
-        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+        get().setUser(mapped);
+        set({ loading: false, initialized: true });
       } else {
         set({ loading: false, initialized: true })
       }
@@ -170,7 +199,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  signUp: async (email: string, password: string, metadata?: Record<string, any>) => {
+  signUp: async (email: string, password: string, metadata?: Record<string, any>): Promise<User | null> => {
     set({ loading: true })
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -183,7 +212,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       const mapped = await fetchAndMapProfile(data.user.id)
       if (mapped) {
-        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+        get().setUser(mapped);
+        set({ loading: false, initialized: true });
       } else {
         set({ loading: false, initialized: true })
       }
@@ -195,7 +225,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  signInGoogle: async () => {
+  signInGoogle: async (): Promise<void> => {
     set({ loading: true })
     try {
       await signInWithGoogle()
@@ -208,13 +238,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   // Sign out user and clear store
-  signOut: async () => {
+  signOut: async (): Promise<void> => {
     set({ loading: true })
     try {
       await supabaseSignOut()
       // onAuthStateChange will clear the state automatically
       initPromise = null
       set({ user: null, isAdmin: false, loading: false, initialized: false })
+      // Clear persisted user
+      try { localStorage.removeItem('auth_user') } catch (e) { console.warn('[authStore] Failed to clear persisted user', e) }
     } catch (error) {
       console.error('[authStore] Sign out error:', error)
       set({ loading: false })
@@ -222,13 +254,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  refreshSession: async () => {
+  refreshSession: async (): Promise<boolean> => {
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
         const mapped = await fetchAndMapProfile(session.user.id)
         if (mapped) {
-          set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+          get().setUser(mapped);
+          set({ loading: false, initialized: true });
           return true
         }
       }
@@ -243,7 +276,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   // Ensure the store has a valid session. If user is missing, attempt to refresh.
-  ensureSession: async () => {
+  ensureSession: async (): Promise<boolean> => {
     const { user, refreshSession } = get()
     if (user) return true
     // Try to fetch session from Supabase
@@ -251,7 +284,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return success
   },
 
-  updateProfile: async (updates) => {
+  updateProfile: async (updates: Partial<User>): Promise<void> => {
     const { user } = get()
     if (!user) return
 
