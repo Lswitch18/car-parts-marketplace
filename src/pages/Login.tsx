@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
-import { supabase } from '../lib/supabase'
-import { handleSupabaseError, isRateLimitError } from '../lib/supabaseErrorHandler'
+import { handleSupabaseError } from '../lib/supabaseErrorHandler'
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
 
 export default function Login() {
   const { t } = useI18n()
-  const navigate = useNavigate()
-  const { signInGoogle } = useAuthStore()
+  const { signIn, signInGoogle } = useAuthStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -22,31 +20,7 @@ export default function Login() {
     setError('')
     
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-      
-      if (error) {
-        if (isRateLimitError(error)) {
-          setError(handleSupabaseError(error))
-          setLoading(false)
-          return
-        }
-        throw error
-      }
-
-      const userId = data?.user?.id
-      if (userId) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', userId)
-          .single()
-        navigate(profile?.role === 'admin' ? '/admin/dashboard' : profile?.role === 'seller' ? '/dashboard' : '/catalog')
-      } else {
-        navigate('/catalog')
-      }
+      await signIn(email, password)
     } catch (err: any) {
       const errorMsg = err.message || ''
       if (errorMsg.includes('Email not confirmed') || errorMsg.includes('email_not_confirmed')) {

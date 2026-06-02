@@ -57,20 +57,6 @@ export const signOut = async () => {
   if (error) throw error
 }
 
-// Admin functions
-export const isAdmin = async (userId: string): Promise<boolean> => {
-  if (!userId) return false
-  
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', userId)
-    .single()
-    
-  if (error) return false
-  return data?.role === 'admin'
-}
-
 export const getAdminStats = async () => {
   try {
     const [usersResult, gmvResult, revenueResult, transactionsResult] = await Promise.all([

@@ -1,15 +1,13 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
-import { supabase } from '../lib/supabase'
 import { handleSupabaseError, isRateLimitError } from '../lib/supabaseErrorHandler'
 import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
 
 export default function Register() {
   const { t } = useI18n()
-  const navigate = useNavigate()
-  const { initialize } = useAuthStore()
+  const { signUp } = useAuthStore()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -38,46 +36,10 @@ export default function Register() {
     }
 
     try {
-      
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            name: formData.name,
-            phone: formData.phone
-          }
-        }
+      await signUp(formData.email, formData.password, {
+        name: formData.name,
+        phone: formData.phone,
       })
-
-
-      
-      if (signUpError) {
-        if (isRateLimitError(signUpError)) {
-          setError(handleSupabaseError(signUpError))
-          setLoading(false)
-          return
-        }
-        console.error('Erro no signup:', signUpError)
-        throw signUpError
-      }
-
-      if (data.user) {
-        const { error: profileError } = await supabase.from('profiles').insert({
-          id: data.user.id,
-          full_name: formData.name,
-          email: formData.email,
-          phone: formData.phone
-        })
-        
-        if (profileError) {
-          console.error('Erro ao criar perfil:', profileError)
-        }
-      }
-
-
-      await initialize()
-      navigate('/dashboard')
     } catch (err: any) {
       console.error('Erro completo:', err)
       const errorMessage = handleSupabaseError(err)

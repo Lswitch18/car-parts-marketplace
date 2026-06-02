@@ -256,9 +256,9 @@ describe('Integration: Fluxo de Autenticação', () => {
     expect(authStorePath).toBeTruthy();
   });
 
-  it('AdminRoute verifica role=admin em profiles', () => {
-    const adminRouteFile = 'src/components/AdminRoute.tsx';
-    expect(adminRouteFile).toContain('AdminRoute');
+  it('ProtectedRoute com requireAdmin verifica role=admin via store', () => {
+    const protectedRouteFile = 'src/components/ProtectedRoute.tsx';
+    expect(protectedRouteFile).toContain('ProtectedRoute');
   });
 });
 

@@ -18,7 +18,6 @@ import ImageTo3D from './pages/admin/ImageTo3D'
 import PWARegister from './components/PWARegister'
 import TransactionManagement from './pages/admin/TransactionManagement'
 import LogistixDashboard from './pages/admin/LogistixDashboard'
-import AdminRoute from './components/AdminRoute'
 import ProtectedRoute from './components/ProtectedRoute'
 import TrackingPublico from './pages/TrackingPublico'
 import MobileApp from './pages/mobile/MobileApp'
@@ -81,7 +80,7 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="/admin" element={<AdminRoute />}>
+        <Route path="/admin" element={<ProtectedRoute requireAdmin />}>
           <Route index element={<LogistixDashboard />} />
           <Route path="dashboard" element={<LogistixDashboard />} />
           <Route path="logistix" element={<LogistixDashboard />} />

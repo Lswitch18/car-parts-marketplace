@@ -11,70 +11,24 @@ interface AuthState {
   user: User | null
   loading: boolean
   initialized: boolean
+  isAdmin: boolean
   setUser: (user: User | null) => void
   setLoading: (loading: boolean) => void
   initialize: () => Promise<void>
+  signIn: (email: string, password: string) => Promise<User | null>
+  signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<User | null>
   signInGoogle: () => Promise<void>
   signOut: () => Promise<void>
   updateProfile: (updates: Partial<User>) => Promise<void>
-}
-
-/**
- * Busca e mapeia o perfil do usuário no banco
- */
-async function fetchAndMapProfile(userId: string): Promise<User | null> {
-  let { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single()
-
-  if (profileError || !profile) {
-    const { data: authUser } = await supabase.auth.getUser()
-    const meta = authUser?.user?.user_metadata
-
-    const { data: newProfile, error: createError } = await supabase
-      .from('profiles')
-      .insert({
-        id: userId,
-        email: authUser?.user?.email ?? '',
-        full_name: meta?.full_name || meta?.name || authUser?.user?.email?.split('@')[0] || 'Usuário',
-        phone: meta?.phone || null,
-        avatar_url: meta?.avatar_url || meta?.picture || null,
-        rating: 0,
-        total_sales: 0,
-        is_verified: false,
-        role: 'buyer',
-      })
-      .select()
-      .single()
-
-    if (createError) {
-      // Erro de chave duplicada — perfil foi criado por outra requisição concorrente
-      if (createError.code === '23505') {
-        const { data: retry } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single()
-        if (retry) return { ...retry, name: retry.full_name } as User
-      }
-      console.error('[authStore] fetchAndMapProfile create error:', createError)
-      return null
-    }
-    if (!newProfile) return null
-    profile = newProfile
-  }
-
-  return { ...profile, name: profile.full_name } as User
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   loading: true,
   initialized: false,
+  isAdmin: false,
 
-  setUser: (user) => set({ user }),
+  setUser: (user) => set({ user, isAdmin: user?.role === 'admin' }),
   setLoading: (loading) => set({ loading }),
 
   initialize: () => {
@@ -90,22 +44,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (session?.user) {
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
-          // Só atualiza se fetchAndMapProfile retornou um usuário válido
           if (mapped) {
-            set({ user: mapped, loading: false, initialized: true })
+            set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
           } else {
             console.warn('[authStore] fetchAndMapProfile returned null, keeping current user')
             set({ loading: false, initialized: true })
           }
         }
       } else if (event === 'SIGNED_OUT') {
-        set({ user: null, loading: false, initialized: true })
+        set({ user: null, isAdmin: false, loading: false, initialized: true })
       } else if (event === 'INITIAL_SESSION') {
         if (session?.user && !get().user) {
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            set({ user: mapped, loading: false, initialized: true })
+            set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
           } else {
             console.warn('[authStore] fetchAndMapProfile returned null on INITIAL_SESSION')
             set({ loading: false, initialized: true })
@@ -120,28 +73,74 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         if (sessionError) {
           console.error('[authStore] Session error:', sessionError)
-          set({ user: null, loading: false, initialized: true })
+          set({ user: null, isAdmin: false, loading: false, initialized: true })
           return
         }
 
         if (session?.user && !get().user) {
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            set({ user: mapped, loading: false, initialized: true })
+            set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
           } else {
             console.warn('[authStore] fetchAndMapProfile returned null on getSession')
             set({ loading: false, initialized: true })
           }
         } else if (!session) {
-          set({ user: null, loading: false, initialized: true })
+          set({ user: null, isAdmin: false, loading: false, initialized: true })
         }
       } catch (error) {
         console.error('[authStore] Init error:', error)
-        set({ user: null, loading: false, initialized: true })
+        set({ user: null, isAdmin: false, loading: false, initialized: true })
       }
     })()
 
     return initPromise
+  },
+
+  signIn: async (email: string, password: string) => {
+    set({ loading: true })
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) throw error
+      if (!data.user) return null
+
+      const mapped = await fetchAndMapProfile(data.user.id)
+      if (mapped) {
+        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false })
+      } else {
+        set({ loading: false })
+      }
+      return mapped
+    } catch (error) {
+      console.error('[authStore] Sign in error:', error)
+      set({ loading: false })
+      throw error
+    }
+  },
+
+  signUp: async (email: string, password: string, metadata?: Record<string, any>) => {
+    set({ loading: true })
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: metadata },
+      })
+      if (error) throw error
+      if (!data.user) return null
+
+      const mapped = await fetchAndMapProfile(data.user.id)
+      if (mapped) {
+        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false })
+      } else {
+        set({ loading: false })
+      }
+      return mapped
+    } catch (error) {
+      console.error('[authStore] Sign up error:', error)
+      set({ loading: false })
+      throw error
+    }
   },
 
   signInGoogle: async () => {
@@ -162,7 +161,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await supabaseSignOut()
       // onAuthStateChange irá limpar o estado automaticamente
       initPromise = null
-      set({ user: null, loading: false, initialized: false })
+      set({ user: null, isAdmin: false, loading: false, initialized: false })
     } catch (error) {
       console.error('[authStore] Sign out error:', error)
       set({ loading: false })
@@ -183,7 +182,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .single()
 
       if (error) throw error
-      set({ user: { ...data, name: data.full_name } as User })
+      const updated = { ...data, name: data.full_name } as User
+      set({ user: updated, isAdmin: updated.role === 'admin' })
     } catch (error) {
       console.error('[authStore] Update profile error:', error)
       throw error
