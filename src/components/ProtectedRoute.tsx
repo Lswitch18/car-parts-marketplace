@@ -12,12 +12,13 @@ export default function ProtectedRoute({ requireAdmin }: ProtectedRouteProps) {
   const recovered = useRef(false)
 
   useEffect(() => {
-    if (!user && initialized && !loading && !recovered.current) {
+    if (!user && !loading && !recovered.current) {
+      // Trigger recovery if we don't have a user yet, regardless of initialized flag
       recovered.current = true
       setRecovering(true)
       refreshSession().finally(() => setRecovering(false))
     }
-  }, [user, initialized, loading, refreshSession])
+  }, [user, loading, refreshSession])
 
   if (!initialized || loading || recovering) {
     return (

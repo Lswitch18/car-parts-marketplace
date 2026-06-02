@@ -33,11 +33,18 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 
 function App() {
-  const { user, initialized, loading, initialize } = useAuthStore()
+  const { user, initialized, loading, initialize, refreshSession } = useAuthStore()
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => { initialize() }, [initialize])
+
+  // Attempt to restore session if initialized but no user
+  useEffect(() => {
+    if (initialized && !loading && !user) {
+      refreshSession()
+    }
+  }, [initialized, loading, user, refreshSession])
 
   // Redirecionar baseado na role após login
   useEffect(() => {

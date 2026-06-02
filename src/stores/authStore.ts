@@ -79,7 +79,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
 
   initialize: () => {
-    if (get().initialized) return Promise.resolve()
+    if (get().initialized) {
+      if (!get().user) {
+        return get().ensureSession().then(() => undefined)
+      }
+      return Promise.resolve()
+    }
     if (initPromise) return initPromise
 
     if (authListener) authListener.data.subscription.unsubscribe()
@@ -202,6 +207,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
+  // Sign out user and clear store
+  signOut: async () => {
+    set({ loading: true })
+    try {
+      await supabaseSignOut()
+      // onAuthStateChange will clear the state automatically
+      initPromise = null
+      set({ user: null, isAdmin: false, loading: false, initialized: false })
+    } catch (error) {
+      console.error('[authStore] Sign out error:', error)
+      set({ loading: false })
+      throw error
+    }
+  },
+
   refreshSession: async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -212,25 +232,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           return true
         }
       }
+      // No session found – mark initialized to avoid infinite loops
+      set({ user: null, isAdmin: false, loading: false, initialized: true })
       return false
     } catch (error) {
       console.error('[authStore] refreshSession error:', error)
+      set({ loading: false, initialized: true })
       return false
     }
   },
 
-  signOut: async () => {
-    set({ loading: true })
-    try {
-      await supabaseSignOut()
-      // onAuthStateChange irá limpar o estado automaticamente
-      initPromise = null
-      set({ user: null, isAdmin: false, loading: false, initialized: false })
-    } catch (error) {
-      console.error('[authStore] Sign out error:', error)
-      set({ loading: false })
-      throw error
-    }
+  // Ensure the store has a valid session. If user is missing, attempt to refresh.
+  ensureSession: async () => {
+    const { user, refreshSession } = get()
+    if (user) return true
+    // Try to fetch session from Supabase
+    const success = await refreshSession()
+    return success
   },
 
   updateProfile: async (updates) => {
