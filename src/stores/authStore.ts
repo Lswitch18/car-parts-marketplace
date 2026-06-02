@@ -7,6 +7,20 @@ import { AuthChangeEvent, Session } from '@supabase/supabase-js'
 let authListener: { data: { subscription: { unsubscribe: () => void } } } | null = null
 let initPromise: Promise<void> | null = null
 
+function createMinimalUser(sessionUser: Session['user']): User {
+  const meta = sessionUser.user_metadata || {}
+  const name = meta?.full_name || meta?.name || sessionUser.email?.split('@')[0] || 'Usuário'
+  return {
+    id: sessionUser.id,
+    email: sessionUser.email || '',
+    full_name: name,
+    name,
+    avatar_url: meta?.avatar_url || meta?.picture || null,
+    role: meta?.role || 'buyer',
+    created_at: sessionUser.created_at || new Date().toISOString(),
+  }
+}
+
 interface AuthState {
   user: User | null
   loading: boolean
@@ -62,9 +76,15 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
         if (retry) return { ...retry, name: retry.full_name } as User
       }
       console.error('[authStore] fetchAndMapProfile create error:', createError)
+      const { data: { session: fallbackSession } } = await supabase.auth.getSession()
+      if (fallbackSession?.user) return createMinimalUser(fallbackSession.user)
       return null
     }
-    if (!newProfile) return null
+    if (!newProfile) {
+      const { data: { session: fallbackSession } } = await supabase.auth.getSession()
+      if (fallbackSession?.user) return createMinimalUser(fallbackSession.user)
+      return null
+    }
     profile = newProfile
   }
 
@@ -148,9 +168,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ loading: false, initialized: true })
           }
         } else if (!session) {
-          // Removed localStorage fallback for persisted user.
-          // If no session is found, user remains null.
-          set({ user: null, isAdmin: false, loading: false, initialized: true });
           set({ user: null, isAdmin: false, loading: false, initialized: true })
         }
       } catch (error) {
