@@ -98,8 +98,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAdmin: false,
 
   setUser: (user) => {
-    // Removed insecure localStorage persistence for user session.
-    // Session is now managed solely by Supabase auth state.
     set({ user, isAdmin: user?.role === 'admin' });
   },
   setLoading: (loading) => set({ loading }),
@@ -124,27 +122,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            get().setUser(mapped);
-            set({ loading: false, initialized: true });
-          } else {
-            console.warn('[authStore] fetchAndMapProfile returned null, keeping current user')
-            set({ loading: false, initialized: true })
+            get().setUser(mapped)
           }
+          set({ loading: false, initialized: true })
         }
       } else if (event === 'SIGNED_OUT') {
         set({ user: null, isAdmin: false, loading: false, initialized: true })
-      } else if (event === 'INITIAL_SESSION') {
-        if (session?.user && !get().user) {
-          set({ loading: true })
-          const mapped = await fetchAndMapProfile(session.user.id)
-          if (mapped) {
-            get().setUser(mapped);
-            set({ loading: false, initialized: true });
-          } else {
-            console.warn('[authStore] fetchAndMapProfile returned null on INITIAL_SESSION')
-            set({ loading: false, initialized: true })
-          }
-        }
       }
     })
 
@@ -161,15 +144,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (session?.user && !get().user) {
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
-            get().setUser(mapped);
-            set({ loading: false, initialized: true });
-          } else {
-            console.warn('[authStore] fetchAndMapProfile returned null on getSession')
-            set({ loading: false, initialized: true })
+            get().setUser(mapped)
           }
-        } else if (!session) {
-          set({ user: null, isAdmin: false, loading: false, initialized: true })
         }
+        set({ loading: false, initialized: true })
       } catch (error) {
         console.error('[authStore] Init error:', error)
         set({ user: null, isAdmin: false, loading: false, initialized: true })
@@ -239,17 +217,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  // Sign out user and clear store
   signOut: async (): Promise<void> => {
     set({ loading: true })
     try {
       await supabaseSignOut()
-      // onAuthStateChange will clear the state automatically
       initPromise = null
       set({ user: null, isAdmin: false, loading: false, initialized: false })
-      // Clear user session without touching localStorage.
-      // Supabase handles token invalidation.
-      // No additional client-side storage is used.
     } catch (error) {
       console.error('[authStore] Sign out error:', error)
       set({ loading: false })
