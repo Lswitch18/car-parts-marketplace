@@ -345,16 +345,24 @@ export default function Header() {
                     className="flex items-center gap-2 p-1 rounded-lg transition-all"
                     style={{ color: '#B0B5C0' }}
                   >
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center"
-                      style={{
-                        background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
-                        boxShadow: '0 0 10px rgba(13,117,255,0.4)',
-                      }}
-                    >
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-                  </button>
+                    {user?.avatar_url ? (
+                      <img
+                        src={user.avatar_url}
+                        alt="User avatar"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center"
+                        style={{
+                          background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+                          boxShadow: '0 0 10px rgba(13,117,255,0.4)',
+                        }}
+                      >
+                        <User className="w-4 h-4 text-white" />
+                      </div>
+                    )}
+                  </button
 
                   {/* Dropdown */}
                   <div

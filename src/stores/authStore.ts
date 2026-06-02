@@ -35,6 +35,7 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
     const { data: authUser } = await supabase.auth.getUser()
     const meta = authUser?.user?.user_metadata
 
+    const roleFromMeta = meta?.role || 'buyer';
     const { data: newProfile, error: createError } = await supabase
       .from('profiles')
       .insert({
@@ -46,7 +47,7 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
         rating: 0,
         total_sales: 0,
         is_verified: false,
-        role: 'buyer',
+        role: roleFromMeta,
       })
       .select()
       .single()
@@ -77,17 +78,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAdmin: false,
 
   setUser: (user) => {
-    // Persist user to localStorage for session persistence across navigation
-    if (user) {
-      try {
-        localStorage.setItem('auth_user', JSON.stringify(user))
-      } catch (e) {
-        console.warn('[authStore] Failed to store user in localStorage', e)
-      }
-    } else {
-      localStorage.removeItem('auth_user')
-    }
-    set({ user, isAdmin: user?.role === 'admin' })
+    // Removed insecure localStorage persistence for user session.
+    // Session is now managed solely by Supabase auth state.
+    set({ user, isAdmin: user?.role === 'admin' });
   },
   setLoading: (loading) => set({ loading }),
 
@@ -155,17 +148,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ loading: false, initialized: true })
           }
         } else if (!session) {
-          // Attempt to load persisted user from localStorage as fallback
-          try {
-            const stored = localStorage.getItem('auth_user')
-            if (stored) {
-              const parsed = JSON.parse(stored)
-              set({ user: parsed, isAdmin: parsed?.role === 'admin', loading: false, initialized: true })
-              return
-            }
-          } catch (e) {
-            console.warn('[authStore] Failed to parse persisted user', e)
-          }
+          // Removed localStorage fallback for persisted user.
+          // If no session is found, user remains null.
+          set({ user: null, isAdmin: false, loading: false, initialized: true });
           set({ user: null, isAdmin: false, loading: false, initialized: true })
         }
       } catch (error) {
@@ -245,8 +230,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // onAuthStateChange will clear the state automatically
       initPromise = null
       set({ user: null, isAdmin: false, loading: false, initialized: false })
-      // Clear persisted user
-      try { localStorage.removeItem('auth_user') } catch (e) { console.warn('[authStore] Failed to clear persisted user', e) }
+      // Clear user session without touching localStorage.
+      // Supabase handles token invalidation.
+      // No additional client-side storage is used.
     } catch (error) {
       console.error('[authStore] Sign out error:', error)
       set({ loading: false })
