@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../stores/authStore'
 
 interface ProtectedRouteProps {
@@ -6,9 +7,19 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ requireAdmin }: ProtectedRouteProps) {
-  const { user, loading, initialized, isAdmin } = useAuthStore()
+  const { user, loading, initialized, isAdmin, refreshSession } = useAuthStore()
+  const [recovering, setRecovering] = useState(false)
+  const recovered = useRef(false)
 
-  if (!initialized || loading) {
+  useEffect(() => {
+    if (!user && initialized && !loading && !recovered.current) {
+      recovered.current = true
+      setRecovering(true)
+      refreshSession().finally(() => setRecovering(false))
+    }
+  }, [user, initialized, loading, refreshSession])
+
+  if (!initialized || loading || recovering) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>

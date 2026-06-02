@@ -19,6 +19,7 @@ interface AuthState {
   signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<User | null>
   signInGoogle: () => Promise<void>
   signOut: () => Promise<void>
+  refreshSession: () => Promise<boolean>
   updateProfile: (updates: Partial<User>) => Promise<void>
 }
 
@@ -152,9 +153,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       const mapped = await fetchAndMapProfile(data.user.id)
       if (mapped) {
-        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false })
+        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
       } else {
-        set({ loading: false })
+        set({ loading: false, initialized: true })
       }
       return mapped
     } catch (error) {
@@ -177,9 +178,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       const mapped = await fetchAndMapProfile(data.user.id)
       if (mapped) {
-        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false })
+        set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
       } else {
-        set({ loading: false })
+        set({ loading: false, initialized: true })
       }
       return mapped
     } catch (error) {
@@ -198,6 +199,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.error('[authStore] Google sign in error:', error)
       set({ loading: false })
       throw error
+    }
+  },
+
+  refreshSession: async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        const mapped = await fetchAndMapProfile(session.user.id)
+        if (mapped) {
+          set({ user: mapped, isAdmin: mapped.role === 'admin', loading: false, initialized: true })
+          return true
+        }
+      }
+      return false
+    } catch (error) {
+      console.error('[authStore] refreshSession error:', error)
+      return false
     }
   },
 
