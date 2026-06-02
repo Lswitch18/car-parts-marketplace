@@ -11,7 +11,7 @@ import { supabase } from '../../lib/supabase'
 import GaidLogo from '../GaidLogo'
 
 export default function Header() {
-  const { user, signOut } = useAuthStore()
+  const { user, signOut, loading } = useAuthStore()
   const { t } = useI18n()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -20,6 +20,23 @@ export default function Header() {
   const [unreadCount, setUnreadCount] = useState(0)
   const [isAdmin, setIsAdmin] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null)
+
+  // Fallback: se user está null mas existe sessão no Supabase, usa o email do auth como fallback
+  useEffect(() => {
+    if (!user && !loading) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user?.email) {
+          setSessionEmail(session.user.email)
+          setIsAdmin(false)
+        } else {
+          setSessionEmail(null)
+        }
+      })
+    } else {
+      setSessionEmail(null)
+    }
+  }, [user, loading])
 
   // Scroll shadow effect
   useEffect(() => {
@@ -210,7 +227,7 @@ export default function Header() {
               {t('Showroom 3D')}
             </Link>
 
-            {user ? (
+            {(user || sessionEmail) ? (
               <>
                 {/* Favourites */}
                 <Link
@@ -382,10 +399,10 @@ export default function Header() {
                       style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
                     >
                       <p className="text-white font-semibold text-sm truncate">
-                        {user.name || user.email}
+                        {user?.name || user?.email || sessionEmail || 'Conectado'}
                       </p>
                       <p className="text-xs truncate" style={{ color: '#6B7280' }}>
-                        {user.email}
+                        {user?.email || sessionEmail || ''}
                       </p>
                     </div>
 
@@ -593,7 +610,7 @@ export default function Header() {
               {t('Showroom 3D')}
             </Link>
 
-            {user ? (
+            {(user || sessionEmail) ? (
               <>
                 {[
                   { to: '/dashboard', label: t('Dashboard') },

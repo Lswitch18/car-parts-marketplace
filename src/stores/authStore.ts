@@ -30,7 +30,6 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
     .single()
 
   if (profileError || !profile) {
-    // Perfil não existe — cria automaticamente
     const { data: authUser } = await supabase.auth.getUser()
     const meta = authUser?.user?.user_metadata
 
@@ -50,7 +49,20 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
       .select()
       .single()
 
-    if (createError || !newProfile) return null
+    if (createError) {
+      // Erro de chave duplicada — perfil foi criado por outra requisição concorrente
+      if (createError.code === '23505') {
+        const { data: retry } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
+        if (retry) return { ...retry, name: retry.full_name } as User
+      }
+      console.error('[authStore] fetchAndMapProfile create error:', createError)
+      return null
+    }
+    if (!newProfile) return null
     profile = newProfile
   }
 
@@ -78,7 +90,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (session?.user) {
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
-          set({ user: mapped, loading: false, initialized: true })
+          // Só atualiza se fetchAndMapProfile retornou um usuário válido
+          if (mapped) {
+            set({ user: mapped, loading: false, initialized: true })
+          } else {
+            console.warn('[authStore] fetchAndMapProfile returned null, keeping current user')
+            set({ loading: false, initialized: true })
+          }
         }
       } else if (event === 'SIGNED_OUT') {
         set({ user: null, loading: false, initialized: true })
@@ -86,7 +104,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (session?.user && !get().user) {
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
-          set({ user: mapped, loading: false, initialized: true })
+          if (mapped) {
+            set({ user: mapped, loading: false, initialized: true })
+          } else {
+            console.warn('[authStore] fetchAndMapProfile returned null on INITIAL_SESSION')
+            set({ loading: false, initialized: true })
+          }
         }
       }
     })
@@ -103,7 +126,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         if (session?.user && !get().user) {
           const mapped = await fetchAndMapProfile(session.user.id)
-          set({ user: mapped, loading: false, initialized: true })
+          if (mapped) {
+            set({ user: mapped, loading: false, initialized: true })
+          } else {
+            console.warn('[authStore] fetchAndMapProfile returned null on getSession')
+            set({ loading: false, initialized: true })
+          }
         } else if (!session) {
           set({ user: null, loading: false, initialized: true })
         }
@@ -133,6 +161,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await supabaseSignOut()
       // onAuthStateChange irá limpar o estado automaticamente
+      initPromise = null
       set({ user: null, loading: false, initialized: false })
     } catch (error) {
       console.error('[authStore] Sign out error:', error)

@@ -36,7 +36,6 @@ export default function Login() {
         throw error
       }
 
-      // Redireciona baseado na role (via authStore já busca o perfil)
       const userId = data?.user?.id
       if (userId) {
         const { data: profile } = await supabase
