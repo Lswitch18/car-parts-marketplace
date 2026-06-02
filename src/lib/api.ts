@@ -1,3 +1,5 @@
+import { supabase } from './supabase';
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 
@@ -8,7 +10,8 @@ interface ApiOptions {
 }
 
 async function fetchApi<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
-  const token = localStorage.getItem('sb-access-token');
+  const { data: { session } } = await supabase.auth.getSession()
+  const token = session?.access_token;
   
   const response = await fetch(`${FUNCTIONS_URL}${endpoint}`, {
     ...options,
@@ -172,7 +175,8 @@ export const api = {
       auction_id?: string;
       title?: string;
     }) => {
-      const token = localStorage.getItem('sb-access-token');
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token;
       const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/create-checkout`, {
         method: 'POST',
         headers: {
@@ -189,7 +193,8 @@ export const api = {
     },
 
     createConnectedAccount: async (sellerId: string, email?: string) => {
-      const token = localStorage.getItem('sb-access-token');
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token;
       const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/create-connected-account`, {
         method: 'POST',
         headers: {
@@ -206,7 +211,8 @@ export const api = {
     },
 
     createAccountLink: async (accountId: string, sellerId: string) => {
-      const token = localStorage.getItem('sb-access-token');
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token;
       const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/account-link`, {
         method: 'POST',
         headers: {
@@ -223,7 +229,8 @@ export const api = {
     },
 
     createPortalSession: async (sellerId: string) => {
-      const token = localStorage.getItem('sb-access-token');
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token;
       const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/portal`, {
         method: 'POST',
         headers: {
