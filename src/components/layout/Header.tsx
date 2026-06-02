@@ -362,7 +362,7 @@ export default function Header() {
                         <User className="w-4 h-4 text-white" />
                       </div>
                     )}
-                  </button
+                  </button>
 
                   {/* Dropdown */}
                   <div
