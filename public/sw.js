@@ -18,6 +18,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    fetch(event.request).catch(() =>
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+        return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+      })
+    )
   );
 });

@@ -2,6 +2,9 @@ import { create } from 'zustand'
 import { User } from '../types'
 import { supabase } from '../lib/supabase'
 import { signInWithGoogle, signOut as supabaseSignOut } from '../lib/supabase'
+import { AuthChangeEvent, Session } from '@supabase/supabase-js'
+
+let authListener: { data: { subscription: { unsubscribe: () => void } } } | null = null
 
 interface AuthState {
   user: User | null
@@ -64,9 +67,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialize: async () => {
     if (get().initialized) return
 
+    // Remove listener anterior se houver (evita duplicatas no StrictMode)
+    if (authListener) authListener.data.subscription.unsubscribe()
+
     // Inscrever no onAuthStateChange ANTES de getSession()
     // para não perder eventos de OAuth redirect
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    authListener = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       console.log('[authStore] Auth event:', event)
 
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
