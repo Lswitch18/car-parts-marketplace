@@ -60,7 +60,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-background min-h-screen text-text">
+    <div className="bg-background min-h-screen text-text overflow-hidden">
       {/* ════════════════════════════════════════
           HERO
       ════════════════════════════════════════ */}
@@ -104,25 +104,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10 w-full">
           <div className="max-w-3xl">
             {/* Badge */}
-            <div
-              className="reveal reveal-delay-1 inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full"
-              style={{
-                background: 'rgba(13,117,255,0.1)',
-                border: '1px solid rgba(13,117,255,0.3)',
-              }}
-            >
-              <Zap className="w-4 h-4 text-daig-cyan" />
-              <span
-                className="text-sm font-semibold tracking-wide"
-                style={{ color: '#00E5FF' }}
-              >
-                {t('DAIG — A plataforma definitiva para compra e venda')}
-              </span>
-            </div>
+
 
             {/* H1 */}
             <h1 className="reveal reveal-delay-2 font-display font-bold text-text leading-[1.05] mb-6"
-              style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)', letterSpacing: '-0.03em' }}
+              style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', letterSpacing: '-0.03em' }}
             >
               {t('Encontre as melhores')}{' '}
               <span className="neon-text">{t('peças')}</span>
@@ -130,15 +116,7 @@ export default function Home() {
               {t('para seu carro')}
             </h1>
 
-            {/* Description */}
-            <p
-              className="reveal reveal-delay-3 text-lg leading-relaxed mb-10 max-w-xl"
-              style={{ color: '#8892A4' }}
-            >
-              {t('O maior marketplace de peças automotivas do Japão')}
-              <br />
-              {t('Qualidade garantida, entrega rápida e segurança total')}
-            </p>
+
 
             {/* CTA Buttons */}
             <div className="reveal reveal-delay-4 flex flex-col sm:flex-row gap-4 mb-14">
