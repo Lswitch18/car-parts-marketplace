@@ -5,6 +5,7 @@ import { signInWithGoogle, signOut as supabaseSignOut } from '../lib/supabase'
 import { AuthChangeEvent, Session } from '@supabase/supabase-js'
 
 let authListener: { data: { subscription: { unsubscribe: () => void } } } | null = null
+let initPromise: Promise<void> | null = null
 
 interface AuthState {
   user: User | null
@@ -64,14 +65,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
 
-  initialize: async () => {
-    if (get().initialized) return
+  initialize: () => {
+    if (get().initialized) return Promise.resolve()
+    if (initPromise) return initPromise
 
-    // Remove listener anterior se houver (evita duplicatas no StrictMode)
     if (authListener) authListener.data.subscription.unsubscribe()
 
-    // Inscrever no onAuthStateChange ANTES de getSession()
-    // para não perder eventos de OAuth redirect
     authListener = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       console.log('[authStore] Auth event:', event)
 
@@ -92,25 +91,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     })
 
-    try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    initPromise = (async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
-      if (sessionError) {
-        console.error('[authStore] Session error:', sessionError)
-        set({ user: null, loading: false, initialized: true })
-        return
-      }
+        if (sessionError) {
+          console.error('[authStore] Session error:', sessionError)
+          set({ user: null, loading: false, initialized: true })
+          return
+        }
 
-      if (session?.user && !get().user) {
-        const mapped = await fetchAndMapProfile(session.user.id)
-        set({ user: mapped, loading: false, initialized: true })
-      } else if (!session) {
+        if (session?.user && !get().user) {
+          const mapped = await fetchAndMapProfile(session.user.id)
+          set({ user: mapped, loading: false, initialized: true })
+        } else if (!session) {
+          set({ user: null, loading: false, initialized: true })
+        }
+      } catch (error) {
+        console.error('[authStore] Init error:', error)
         set({ user: null, loading: false, initialized: true })
       }
-    } catch (error) {
-      console.error('[authStore] Init error:', error)
-      set({ user: null, loading: false, initialized: true })
-    }
+    })()
+
+    return initPromise
   },
 
   signInGoogle: async () => {
