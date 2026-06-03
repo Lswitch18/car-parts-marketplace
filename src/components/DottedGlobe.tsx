@@ -2,40 +2,48 @@ import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-function ParticleGlobe() {
+function WireGlobe() {
   const groupRef = useRef<THREE.Group>(null)
-  const ringRef = useRef<THREE.Mesh>(null)
 
-  const { positions, colors } = useMemo(() => {
-    const count = 2500
-    const pos = new Float32Array(count * 3)
-    const col = new Float32Array(count * 3)
+  const { positions, linePositions } = useMemo(() => {
+    const count = 280
     const radius = 2.86
+    const pts: THREE.Vector3[] = []
 
+    // Fibonacci sphere for uniform distribution
+    const goldenRatio = (1 + Math.sqrt(5)) / 2
     for (let i = 0; i < count; i++) {
-      const theta = Math.acos(2 * Math.random() - 1)
-      const phi = Math.random() * Math.PI * 2
-
-      pos[i * 3] = radius * Math.sin(theta) * Math.cos(phi)
-      pos[i * 3 + 1] = radius * Math.sin(theta) * Math.sin(phi)
-      pos[i * 3 + 2] = radius * Math.cos(theta)
-
-      const isBlue = Math.random() > 0.5
-      col[i * 3] = isBlue ? 0.08 : 0.5
-      col[i * 3 + 1] = isBlue ? 0.35 : 0.5
-      col[i * 3 + 2] = isBlue ? 0.65 : 0.5
+      const theta = Math.acos(1 - 2 * (i + 0.5) / count)
+      const phi = 2 * Math.PI * i / goldenRatio
+      pts.push(new THREE.Vector3(
+        radius * Math.sin(theta) * Math.cos(phi),
+        radius * Math.sin(theta) * Math.sin(phi),
+        radius * Math.cos(theta)
+      ))
     }
 
-    return { positions: pos, colors: col }
+    // Build connections between nearby points
+    const lines: number[] = []
+    const connectDist = radius * 0.65
+    for (let i = 0; i < count; i++) {
+      for (let j = i + 1; j < count; j++) {
+        if (pts[i].distanceTo(pts[j]) < connectDist) {
+          lines.push(pts[i].x, pts[i].y, pts[i].z)
+          lines.push(pts[j].x, pts[j].y, pts[j].z)
+        }
+      }
+    }
+
+    const pos = new Float32Array(pts.flatMap(p => [p.x, p.y, p.z]))
+    const linePos = new Float32Array(lines)
+
+    return { positions: pos, linePositions: linePos }
   }, [])
 
   useFrame((_, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.25
-      groupRef.current.rotation.x = Math.sin(Date.now() * 0.0001) * 0.1
-    }
-    if (ringRef.current) {
-      ringRef.current.rotation.x += delta * 0.15
+      groupRef.current.rotation.y += delta * 0.2
+      groupRef.current.rotation.x = Math.sin(Date.now() * 0.00008) * 0.08
     }
   })
 
@@ -49,33 +57,29 @@ function ParticleGlobe() {
             array={positions}
             itemSize={3}
           />
-          <bufferAttribute
-            attach="attributes-color"
-            count={colors.length / 3}
-            array={colors}
-            itemSize={3}
-          />
         </bufferGeometry>
         <pointsMaterial
-          size={0.06}
-          vertexColors
+          size={0.08}
+          color="#80C8FF"
           transparent
-          opacity={0.4}
+          opacity={0.5}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           sizeAttenuation
         />
       </points>
 
-      <mesh ref={ringRef}>
-        <torusGeometry args={[3.38, 0.025, 16, 80]} />
-        <meshBasicMaterial color="#0D75FF" transparent opacity={0.12} />
-      </mesh>
-
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[3.38, 0.02, 16, 80]} />
-        <meshBasicMaterial color="#00E5FF" transparent opacity={0.08} />
-      </mesh>
+      <lineSegments>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={linePositions.length / 3}
+            array={linePositions}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#4080CC" transparent opacity={0.15} />
+      </lineSegments>
     </group>
   )
 }
