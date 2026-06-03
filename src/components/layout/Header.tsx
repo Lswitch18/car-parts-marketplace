@@ -96,13 +96,8 @@ export default function Header() {
     textDecoration: 'none',
   }
 
-  if (!initialized || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  // While loading, show skeleton in auth area - NEVER block the whole page
+  const showAuthSkeleton = !initialized || loading
 
   if (!user) {
     return (
@@ -126,7 +121,20 @@ export default function Header() {
             <Link to="/" className="flex items-center flex-shrink-0" onClick={() => setMenuOpen(false)}>
               <GaidLogo size={52} animated />
             </Link>
-            <Link to="/login" className="text-sm font-medium" style={{ color: '#B0B5C0' }}>{t('Entrar')}</Link>
+            {showAuthSkeleton ? (
+              // Subtle skeleton pulse while auth loads — don't flash "Entrar"
+              <div
+                style={{
+                  width: 64,
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.06)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              />
+            ) : (
+              <Link to="/login" className="text-sm font-medium" style={{ color: '#B0B5C0' }}>{t('Entrar')}</Link>
+            )}
           </div>
         </div>
       </header>

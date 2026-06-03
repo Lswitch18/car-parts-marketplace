@@ -118,24 +118,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       try {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
-          if (session?.user && !get().user) {
-            const mapped = await fetchAndMapProfile(session.user.id, session.user);
-            if (mapped) {
-              get().setUser(mapped);
+          if (session?.user) {
+            // If we already have the user in state, just ensure loading/initialized are cleared
+            if (!get().user) {
+              const mapped = await fetchAndMapProfile(session.user.id, session.user);
+              if (mapped) {
+                get().setUser(mapped);
+              }
             }
-            // Mark loading complete and initialized
-            set({ loading: false, initialized: true });
-            console.debug('[authStore] init completed', { user: get().user, initialized: true });
           }
+          // ALWAYS mark loading done and initialized – this was the source of the infinite spinner
+          set({ loading: false, initialized: true });
+          console.debug('[authStore] auth event handled', { event, user: get().user?.email });
         } else if (event === 'SIGNED_OUT') {
-          const key = 'sb-clqubcryhbrjlupkgeva-auth-token'
-          if (!localStorage.getItem(key)) {
-            set({ user: null, isAdmin: false, loading: false, initialized: true })
-          }
+          set({ user: null, isAdmin: false, loading: false, initialized: true });
+          console.debug('[authStore] signed out, state cleared');
+        } else {
+          // Unknown event – still unblock loading
+          set({ loading: false, initialized: true });
         }
       } catch (err) {
-        console.error('[authStore] onAuthStateChange error:', err)
-        console.debug('[authStore] init completed', { user: get().user, initialized: true });
+        console.error('[authStore] onAuthStateChange error:', err);
+        // On error, always unblock so UI doesn't freeze
+        set({ loading: false, initialized: true });
       }
     })
 
@@ -206,6 +211,55 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.error('[authStore] Sign up error:', error);
       set({ loading: false });
       throw error;
+    }
+  },
+
+  signInGoogle: async (): Promise<void> => {
+    console.debug('[authStore] signInGoogle start');
+    set({ loading: true });
+    try {
+      await signInWithGoogle();
+      console.debug('[authStore] signInGoogle request sent');
+    } catch (error) {
+      console.error('[authStore] Google sign in error:', error);
+      set({ loading: false });
+      throw error;
+    }
+  },
+
+  signOut: async (): Promise<void> => {
+    console.debug('[authStore] signOut start');
+    try {
+      await supabaseSignOut();
+      initPromise = null;
+      set({ user: null, isAdmin: false, loading: false, initialized: false });
+      console.debug('[authStore] signOut completed');
+    } catch (error) {
+      console.error('[authStore] Sign out error:', error);
+      set({ loading: false });
+      throw error;
+    }
+  },
+
+  refreshSession: async (): Promise<boolean> => {
+    console.debug('[authStore] refreshSession start');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const mapped = await fetchAndMapProfile(session.user.id, session.user);
+        if (mapped) {
+          get().setUser(mapped);
+          set({ loading: false, initialized: true });
+          console.debug('[authStore] refreshSession success', { user: get().user?.email });
+          return true;
+        }
+      }
+      set({ user: null, isAdmin: false, loading: false, initialized: true });
+      return false;
+    } catch (error) {
+      console.error('[authStore] refreshSession error:', error);
+      set({ loading: false, initialized: true });
+      return false;
     }
   },
 
