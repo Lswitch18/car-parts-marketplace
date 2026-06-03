@@ -38,7 +38,7 @@ interface AuthState {
   ensureSession: () => Promise<boolean>
 }
 
-async function fetchAndMapProfile(userId: string): Promise<User | null> {
+async function fetchAndMapProfile(userId: string, sessionUser: Session['user']): Promise<User | null> {
   let { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
@@ -46,16 +46,15 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
     .single()
 
   if (profileError || !profile) {
-    const { data: authUser } = await supabase.auth.getUser()
-    const meta = authUser?.user?.user_metadata
+    const meta = sessionUser.user_metadata || {}
 
     const roleFromMeta = meta?.role || 'buyer';
     const { data: newProfile, error: createError } = await supabase
       .from('profiles')
       .insert({
         id: userId,
-        email: authUser?.user?.email ?? '',
-        full_name: meta?.full_name || meta?.name || authUser?.user?.email?.split('@')[0] || 'Usuário',
+        email: sessionUser.email ?? '',
+        full_name: meta?.full_name || meta?.name || sessionUser.email?.split('@')[0] || 'Usuário',
         phone: meta?.phone || null,
         avatar_url: meta?.avatar_url || meta?.picture || null,
         rating: 0,
@@ -76,14 +75,10 @@ async function fetchAndMapProfile(userId: string): Promise<User | null> {
         if (retry) return { ...retry, name: retry.full_name } as User
       }
       console.error('[authStore] fetchAndMapProfile create error:', createError)
-      const { data: { session: fallbackSession } } = await supabase.auth.getSession()
-      if (fallbackSession?.user) return createMinimalUser(fallbackSession.user)
-      return null
+      return createMinimalUser(sessionUser)
     }
     if (!newProfile) {
-      const { data: { session: fallbackSession } } = await supabase.auth.getSession()
-      if (fallbackSession?.user) return createMinimalUser(fallbackSession.user)
-      return null
+      return createMinimalUser(sessionUser)
     }
     profile = newProfile
   }
@@ -120,14 +115,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
         if (session?.user && !get().user) {
           set({ loading: true })
-          const mapped = await fetchAndMapProfile(session.user.id)
+          const mapped = await fetchAndMapProfile(session.user.id, session.user)
           if (mapped) {
             get().setUser(mapped)
           }
           set({ loading: false, initialized: true })
         }
       } else if (event === 'SIGNED_OUT') {
-        set({ user: null, isAdmin: false, loading: false, initialized: true })
+        const key = 'sb-clqubcryhbrjlupkgeva-auth-token'
+        if (!localStorage.getItem(key)) {
+          set({ user: null, isAdmin: false, loading: false, initialized: true })
+        }
       }
     })
 
@@ -142,7 +140,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
 
         if (session?.user && !get().user) {
-          const mapped = await fetchAndMapProfile(session.user.id)
+          const mapped = await fetchAndMapProfile(session.user.id, session.user)
           if (mapped) {
             get().setUser(mapped)
           }
@@ -160,18 +158,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signIn: async (email: string, password: string): Promise<User | null> => {
     set({ loading: true })
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw error
-      if (!data.user) return null
-
-      const mapped = await fetchAndMapProfile(data.user.id)
-      if (mapped) {
-        get().setUser(mapped);
-        set({ loading: false, initialized: true });
-      } else {
-        set({ loading: false, initialized: true })
-      }
-      return mapped
+      return null
     } catch (error) {
       console.error('[authStore] Sign in error:', error)
       set({ loading: false })
@@ -182,22 +171,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signUp: async (email: string, password: string, metadata?: Record<string, any>): Promise<User | null> => {
     set({ loading: true })
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: metadata },
       })
       if (error) throw error
-      if (!data.user) return null
-
-      const mapped = await fetchAndMapProfile(data.user.id)
-      if (mapped) {
-        get().setUser(mapped);
-        set({ loading: false, initialized: true });
-      } else {
-        set({ loading: false, initialized: true })
-      }
-      return mapped
+      return null
     } catch (error) {
       console.error('[authStore] Sign up error:', error)
       set({ loading: false })
@@ -234,7 +214,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
-        const mapped = await fetchAndMapProfile(session.user.id)
+        const mapped = await fetchAndMapProfile(session.user.id, session.user)
         if (mapped) {
           get().setUser(mapped);
           set({ loading: false, initialized: true });
