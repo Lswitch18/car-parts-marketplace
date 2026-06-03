@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useState, useEffect, useRef } from 'react'
 import {
-  Menu, X, Heart, User, LogOut, Plus,
+  Menu, X, Heart, User, LogOut,
   MessageCircle, ArrowRight, Package, Sparkles,
 } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
@@ -269,29 +269,7 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* Sell button */}
-                <Link
-                  to="/create-listing"
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-sm transition-all"
-                  style={{
-                    background: 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
-                    color: '#FFFFFF',
-                    boxShadow: '0 0 16px rgba(13,117,255,0.35)',
-                  }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget as HTMLElement
-                    el.style.transform = 'translateY(-1px)'
-                    el.style.boxShadow = '0 0 24px rgba(13,117,255,0.55)'
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget as HTMLElement
-                    el.style.transform = ''
-                    el.style.boxShadow = '0 0 16px rgba(13,117,255,0.35)'
-                  }}
-                >
-                  <Plus className="w-4 h-4" />
-                  {t('Vender')}
-                </Link>
+
 
                 {/* Admin shortcut */}
                 {isAdmin && (
@@ -536,15 +514,7 @@ export default function Header() {
                   </Link>
                 ))}
 
-                <Link
-                  to="/create-listing"
-                  className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm font-semibold"
-                  style={{ color: '#0D75FF' }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <Plus className="w-4 h-4" />
-                  {t('Vender')}
-                </Link>
+
 
                 {isAdmin && (
                   <Link

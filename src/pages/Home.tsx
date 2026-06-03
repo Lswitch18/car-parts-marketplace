@@ -139,7 +139,7 @@ export default function Home() {
                 }}
               >
                 <Search className="w-5 h-5" />
-                {t('Explorar Catálogo')}
+                {t('Compre sua peça')}
               </Link>
 
               <Link
@@ -541,7 +541,7 @@ export default function Home() {
                   el.style.transform = ''
                 }}
               >
-                Explorar Catálogo
+                {t('Compre sua peça')}
               </Link>
             </div>
           </div>
