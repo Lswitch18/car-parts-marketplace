@@ -98,29 +98,34 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
 
   initialize: async (): Promise<void> => {
+    console.debug('[authStore] initPromise set, listening to auth changes');
     if (get().initialized) {
       if (!get().user) {
+        console.debug('[authStore] already initialized but no user, ensuring session');
         await get().ensureSession();
       }
+      console.debug('[authStore] initialize early exit, already initialized');
       return;
     }
+    
     if (initPromise) return initPromise;
 
+    if (authListener) authListener.data.subscription.unsubscribe();
 
-    if (authListener) authListener.data.subscription.unsubscribe()
-
+    // Set up Supabase auth listener
     authListener = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       console.log('[authStore] Auth event:', event)
 
       try {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
           if (session?.user && !get().user) {
-            set({ loading: true })
-            const mapped = await fetchAndMapProfile(session.user.id, session.user)
+            const mapped = await fetchAndMapProfile(session.user.id, session.user);
             if (mapped) {
-              get().setUser(mapped)
+              get().setUser(mapped);
             }
-            set({ loading: false, initialized: true })
+            // Mark loading complete and initialized
+            set({ loading: false, initialized: true });
+            console.debug('[authStore] init completed', { user: get().user, initialized: true });
           }
         } else if (event === 'SIGNED_OUT') {
           const key = 'sb-clqubcryhbrjlupkgeva-auth-token'
@@ -130,13 +135,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
       } catch (err) {
         console.error('[authStore] onAuthStateChange error:', err)
-        set({ loading: false, initialized: true })
+        console.debug('[authStore] init completed', { user: get().user, initialized: true });
       }
     })
 
     initPromise = (async () => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        // Fetch current session and any errors
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
         if (sessionError) {
           console.error('[authStore] Session error:', sessionError)
@@ -145,12 +151,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
 
         if (session?.user && !get().user) {
-          const mapped = await fetchAndMapProfile(session.user.id, session.user)
+          const mapped = await fetchAndMapProfile(session.user.id, session.user);
           if (mapped) {
-            get().setUser(mapped)
+            get().setUser(mapped);
           }
+          // Ensure loading and initialized are set after session init
+          set({ loading: false, initialized: true });
+          console.debug('[authStore] init completed', { user: get().user, initialized: true });
+        } else {
+          set({ loading: false, initialized: true });
+          console.debug('[authStore] init completed', { user: get().user, initialized: true });
         }
-        set({ loading: false, initialized: true })
       } catch (error) {
         console.error('[authStore] Init error:', error)
         set({ user: null, isAdmin: false, loading: false, initialized: true })
@@ -161,88 +172,62 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signIn: async (email: string, password: string): Promise<User | null> => {
-    set({ loading: true })
+    // Begin sign-in process
+    console.debug('[authStore] signIn start', { email });
+    set({ loading: true });
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
-      return null
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      // Auth state change listener will handle user setting and loading reset
+      console.debug('[authStore] signIn request sent successfully');
+      return null;
     } catch (error) {
-      console.error('[authStore] Sign in error:', error)
-      set({ loading: false })
-      throw error
+      console.error('[authStore] Sign in error:', error);
+      set({ loading: false });
+      throw error;
     }
   },
 
   signUp: async (email: string, password: string, metadata?: Record<string, any>): Promise<User | null> => {
-    set({ loading: true })
+    // Begin sign-up process
+    console.debug('[authStore] signUp start', { email });
+    set({ loading: true });
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: metadata },
       })
-      if (error) throw error
-      return null
+      if (error) throw error;
+      console.debug('[authStore] signUp request sent');
+      // Auth state change listener will handle user setting and loading reset
+      return null;
     } catch (error) {
-      console.error('[authStore] Sign up error:', error)
-      set({ loading: false })
-      throw error
+      console.error('[authStore] Sign up error:', error);
+      set({ loading: false });
+      throw error;
     }
   },
 
-  signInGoogle: async (): Promise<void> => {
-    set({ loading: true })
+  ensureSession: async (): Promise<boolean> => {
+    console.debug('[authStore] ensureSession start', { user: get().user });
+    if (get().user) return true;
     try {
-      await signInWithGoogle()
-      // Sessão será capturada pelo onAuthStateChange após redirect
-    } catch (error) {
-      console.error('[authStore] Google sign in error:', error)
-      set({ loading: false })
-      throw error
-    }
-  },
-
-  signOut: async (): Promise<void> => {
-    set({ loading: true })
-    try {
-      await supabaseSignOut()
-      initPromise = null
-      set({ user: null, isAdmin: false, loading: false, initialized: false })
-    } catch (error) {
-      console.error('[authStore] Sign out error:', error)
-      set({ loading: false })
-      throw error
-    }
-  },
-
-  refreshSession: async (): Promise<boolean> => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        const mapped = await fetchAndMapProfile(session.user.id, session.user)
+        const mapped = await fetchAndMapProfile(session.user.id, session.user);
         if (mapped) {
           get().setUser(mapped);
-          set({ loading: false, initialized: true });
-          return true
+          console.debug('[authStore] ensureSession success', { user: mapped });
+          return true;
         }
       }
-      // No session found – mark initialized to avoid infinite loops
-      set({ user: null, isAdmin: false, loading: false, initialized: true })
-      return false
-    } catch (error) {
-      console.error('[authStore] refreshSession error:', error)
-      set({ loading: false, initialized: true })
-      return false
+      console.debug('[authStore] ensureSession no session');
+      return false;
+    } catch (e) {
+      console.error('[authStore] ensureSession error:', e);
+      return false;
     }
-  },
-
-  // Ensure the store has a valid session. If user is missing, attempt to refresh.
-  ensureSession: async (): Promise<boolean> => {
-    const { user, refreshSession } = get()
-    if (user) return true
-    // Try to fetch session from Supabase
-    const success = await refreshSession()
-    return success
   },
 
   updateProfile: async (updates: Partial<User>): Promise<void> => {
