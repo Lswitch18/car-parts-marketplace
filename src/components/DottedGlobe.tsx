@@ -20,10 +20,10 @@ function ParticleGlobe() {
       pos[i * 3 + 1] = radius * Math.sin(theta) * Math.sin(phi)
       pos[i * 3 + 2] = radius * Math.cos(theta)
 
-      const isBlue = Math.random() > 0.45
-      col[i * 3] = isBlue ? 0.05 : 1
-      col[i * 3 + 1] = isBlue ? 0.5 : 1
-      col[i * 3 + 2] = isBlue ? 1 : 1
+      const isBlue = Math.random() > 0.5
+      col[i * 3] = isBlue ? 0.05 : 0.6
+      col[i * 3 + 1] = isBlue ? 0.3 : 0.6
+      col[i * 3 + 2] = isBlue ? 0.6 : 0.6
     }
 
     return { positions: pos, colors: col }
@@ -57,10 +57,10 @@ function ParticleGlobe() {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.07}
+          size={0.05}
           vertexColors
           transparent
-          opacity={0.85}
+          opacity={0.3}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           sizeAttenuation
@@ -68,13 +68,13 @@ function ParticleGlobe() {
       </points>
 
       <mesh ref={ringRef}>
-        <torusGeometry args={[2.6, 0.03, 16, 80]} />
-        <meshBasicMaterial color="#0D75FF" transparent opacity={0.25} />
+        <torusGeometry args={[2.6, 0.02, 16, 80]} />
+        <meshBasicMaterial color="#0D75FF" transparent opacity={0.08} />
       </mesh>
 
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[2.6, 0.02, 16, 80]} />
-        <meshBasicMaterial color="#00E5FF" transparent opacity={0.15} />
+        <torusGeometry args={[2.6, 0.015, 16, 80]} />
+        <meshBasicMaterial color="#00E5FF" transparent opacity={0.05} />
       </mesh>
     </group>
   )
@@ -84,7 +84,7 @@ export default function DottedGlobe() {
   return (
     <div
       className="absolute left-[-80px] top-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none z-0 hidden lg:block"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.2 }}
     >
       <Canvas camera={{ position: [0, 0, 6], fov: 45 }} gl={{ antialias: true }}>
         <ParticleGlobe />
