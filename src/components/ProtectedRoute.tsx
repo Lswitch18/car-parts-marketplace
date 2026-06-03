@@ -1,20 +1,20 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAuthStore } from '../stores/authStore'
 
 export default function ProtectedRoute({ requireAdmin }: { requireAdmin?: boolean }) {
   const { user, loading, initialized, isAdmin, ensureSession } = useAuthStore()
-  const [checking, setChecking] = useState(false)
+  const attempted = useRef(false)
 
-  // When store is initialized but user is missing, attempt to restore session
+  // Attempt to restore session once; useRef prevents infinite loop
   useEffect(() => {
-    if (initialized && !user && !loading && !checking) {
-      setChecking(true)
-      ensureSession().finally(() => setChecking(false))
+    if (initialized && !user && !loading && !attempted.current) {
+      attempted.current = true
+      ensureSession()
     }
-  }, [initialized, user, loading, checking, ensureSession])
+  }, [initialized, user, loading, ensureSession])
 
-  if (!initialized || loading || checking) {
+  if (!initialized || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
