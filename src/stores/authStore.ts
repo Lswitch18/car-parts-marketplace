@@ -117,8 +117,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     authListener = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       console.log('[authStore] Auth event:', event)
 
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-        if (session?.user) {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
+        if (session?.user && !get().user) {
           set({ loading: true })
           const mapped = await fetchAndMapProfile(session.user.id)
           if (mapped) {
