@@ -41,6 +41,22 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Compatibilidade
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/auctions" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Leilões
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/home" className="text-gray-300 hover:text-[#ff3d00] transition-colors flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
+                    Showroom 3D
+                  </Link>
+                </li>
+                <li>
                   <Link to="/dashboard" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
                     Minha Conta
                   </Link>
@@ -48,11 +64,6 @@ export default function Footer() {
                 <li>
                   <Link to="/create-listing" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
                     Vender Peças
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Carros Compatíveis
                   </Link>
                 </li>
                 <li>

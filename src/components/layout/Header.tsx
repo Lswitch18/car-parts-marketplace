@@ -219,48 +219,6 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-1">
             <LanguageDetector />
 
-            {/* Nav links */}
-            {[
-              { to: '/catalog', label: t('Catálogo') },
-              { to: '/cars', label: t('Compatibilidade') },
-              { to: '/auctions', label: t('Leilões') },
-            ].map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                style={navLinkBase}
-                onMouseEnter={(e) => {
-                  ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
-                  ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
-                }}
-                onMouseLeave={(e) => {
-                  ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
-                  ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-
-            {/* Showroom 3D — highlighted */}
-            <Link
-              to="/home"
-              className="flex items-center gap-1.5"
-              style={{ ...navLinkBase, color: '#00E5FF' }}
-              onMouseEnter={(e) => {
-                ;(e.currentTarget as HTMLElement).style.background = 'rgba(0,229,255,0.08)'
-              }}
-              onMouseLeave={(e) => {
-                ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-              }}
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-daig-cyan opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-daig-cyan" />
-              </span>
-              {t('Showroom 3D')}
-            </Link>
-
             {(user) ? (
               <>
                 {/* Favourites */}
@@ -623,38 +581,7 @@ export default function Header() {
               </div>
             </form>
 
-            {/* Mobile nav items */}
-            {[
-              { to: '/catalog', label: t('Catálogo') },
-              { to: '/cars', label: t('Compatibilidade') },
-              { to: '/auctions', label: t('Leilões 🔴') },
-            ].map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                className="block py-3 px-3 rounded-lg text-sm font-medium transition-all"
-                style={{ color: '#B0B5C0' }}
-                onClick={() => setMenuOpen(false)}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)')
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLElement).style.background = 'transparent')
-                }
-              >
-                {label}
-              </Link>
-            ))}
 
-            <Link
-              to="/home"
-              className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm font-medium"
-              style={{ color: '#00E5FF' }}
-              onClick={() => setMenuOpen(false)}
-            >
-              <span className="w-2 h-2 rounded-full bg-daig-cyan animate-pulse" />
-              {t('Showroom 3D')}
-            </Link>
 
             {(user) ? (
               <>
