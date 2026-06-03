@@ -112,20 +112,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     authListener = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
       console.log('[authStore] Auth event:', event)
 
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
-        if (session?.user && !get().user) {
-          set({ loading: true })
-          const mapped = await fetchAndMapProfile(session.user.id, session.user)
-          if (mapped) {
-            get().setUser(mapped)
+      try {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
+          if (session?.user && !get().user) {
+            set({ loading: true })
+            const mapped = await fetchAndMapProfile(session.user.id, session.user)
+            if (mapped) {
+              get().setUser(mapped)
+            }
+            set({ loading: false, initialized: true })
           }
-          set({ loading: false, initialized: true })
+        } else if (event === 'SIGNED_OUT') {
+          const key = 'sb-clqubcryhbrjlupkgeva-auth-token'
+          if (!localStorage.getItem(key)) {
+            set({ user: null, isAdmin: false, loading: false, initialized: true })
+          }
         }
-      } else if (event === 'SIGNED_OUT') {
-        const key = 'sb-clqubcryhbrjlupkgeva-auth-token'
-        if (!localStorage.getItem(key)) {
-          set({ user: null, isAdmin: false, loading: false, initialized: true })
-        }
+      } catch (err) {
+        console.error('[authStore] onAuthStateChange error:', err)
+        set({ loading: false, initialized: true })
       }
     })
 

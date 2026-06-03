@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Menu, X, Search, Heart, User, LogOut, Plus,
   MessageCircle, ArrowRight, Package, Sparkles,
@@ -19,6 +19,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const [unreadCount, setUnreadCount] = useState(0)
   const [scrolled, setScrolled] = useState(false)
+  const attempted = useRef(false)
 
   // Scroll shadow effect
   useEffect(() => {
@@ -29,14 +30,16 @@ export default function Header() {
 
   // Ensure auth session is loaded on any page that uses Header
   useEffect(() => {
-    if (!initialized) {
+    if (!initialized && !attempted.current) {
+      attempted.current = true
       ensureSession()
     }
   }, [initialized, ensureSession])
 
-  // Ensure auth session is loaded on any page using Header
+  // Retry once after init if still no user
   useEffect(() => {
-    if (initialized && !loading && !user) {
+    if (initialized && !loading && !user && !attempted.current) {
+      attempted.current = true
       ensureSession();
     }
   }, [initialized, loading, user, ensureSession]);
