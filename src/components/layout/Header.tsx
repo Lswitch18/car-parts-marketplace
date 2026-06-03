@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { useState, useEffect, useRef } from 'react'
 import {
-  Menu, X, Search, Heart, User, LogOut, Plus,
+  Menu, X, Heart, User, LogOut, Plus,
   MessageCircle, ArrowRight, Package, Sparkles,
 } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
@@ -16,7 +16,7 @@ export default function Header() {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [messagesOpen, setMessagesOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+
   const [unreadCount, setUnreadCount] = useState(0)
   const [scrolled, setScrolled] = useState(false)
   const attempted = useRef(false)
@@ -71,13 +71,7 @@ export default function Header() {
     }
   }, [user])
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      navigate(`/catalog?search=${encodeURIComponent(searchQuery)}`)
-      setMenuOpen(false)
-    }
-  }
+
 
   const handleSignOut = async () => {
     await signOut()
@@ -175,45 +169,7 @@ export default function Header() {
             <GaidLogo size={52} animated />
           </Link>
 
-          {/* ── Search bar (desktop) ── */}
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-sm mx-6">
-            <div className="relative w-full">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                style={{ color: '#4B5563' }}
-              />
-              <input
-                id="header-search"
-                type="text"
-                placeholder={t('Buscar peças, marcas, modelos...')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  paddingLeft: '2.25rem',
-                  paddingRight: '1rem',
-                  paddingTop: '8px',
-                  paddingBottom: '8px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '10px',
-                  color: '#FFFFFF',
-                  fontFamily: "'Raleway', sans-serif",
-                  fontSize: '0.875rem',
-                  outline: 'none',
-                  transition: 'border-color 0.2s, box-shadow 0.2s',
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(13,117,255,0.5)'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(13,117,255,0.12)'
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              />
-            </div>
-          </form>
+
 
           {/* ── Desktop nav ── */}
           <nav className="hidden md:flex items-center gap-1">
@@ -550,36 +506,7 @@ export default function Header() {
           }}
         >
           <div className="px-4 py-4 space-y-1">
-            {/* Mobile search */}
-            <form onSubmit={handleSearch} className="mb-4">
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                  style={{ color: '#4B5563' }}
-                />
-                <input
-                  id="header-mobile-search"
-                  type="text"
-                  placeholder={t('Buscar peças...')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{
-                    width: '100%',
-                    paddingLeft: '2.25rem',
-                    paddingRight: '1rem',
-                    paddingTop: '10px',
-                    paddingBottom: '10px',
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: '10px',
-                    color: '#FFFFFF',
-                    fontFamily: "'Raleway', sans-serif",
-                    fontSize: '0.875rem',
-                    outline: 'none',
-                  }}
-                />
-              </div>
-            </form>
+
 
 
 
