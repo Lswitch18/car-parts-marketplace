@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 import { supabase } from '../lib/supabase'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
+import DottedGlobe from '../components/DottedGlobe'
 
 /* ── Intersection Observer scroll-reveal hook ── */
 function useReveal() {
@@ -67,6 +68,8 @@ export default function Home() {
       <section className="relative min-h-[92vh] flex items-center overflow-hidden" ref={heroRef}>
         {/* Grid overlay */}
         <div className="absolute inset-0 grid-overlay opacity-60 pointer-events-none" />
+
+        <DottedGlobe />
 
         {/* Radial ambient glows */}
         <div className="absolute inset-0 pointer-events-none">
