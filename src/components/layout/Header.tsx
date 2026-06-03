@@ -11,7 +11,7 @@ import { supabase } from '../../lib/supabase'
 import GaidLogo from '../GaidLogo'
 
 export default function Header() {
-  const { user, signOut, isAdmin } = useAuthStore()
+  const { user, signOut, isAdmin, loading, initialized, ensureSession } = useAuthStore()
   const { t } = useI18n()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -26,6 +26,20 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Ensure auth session is loaded on any page that uses Header
+  useEffect(() => {
+    if (!initialized) {
+      ensureSession()
+    }
+  }, [initialized, ensureSession])
+
+  // Ensure auth session is loaded on any page using Header
+  useEffect(() => {
+    if (initialized && !loading && !user) {
+      ensureSession();
+    }
+  }, [initialized, loading, user, ensureSession]);
 
   // Fetch unread messages count
   const fetchUnreadCount = async () => {
@@ -77,6 +91,43 @@ export default function Header() {
     borderRadius: '8px',
     transition: 'color 0.2s, background 0.2s',
     textDecoration: 'none',
+  }
+
+  if (!initialized || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <header
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          background: scrolled ? 'rgba(5,5,8,0.92)' : 'rgba(5,5,8,0.75)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: scrolled ? '1px solid rgba(13,117,255,0.18)' : '1px solid rgba(255,255,255,0.04)',
+          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(13,117,255,0.12)' : 'none',
+          transition: 'background 0.3s, border-color 0.3s, box-shadow 0.3s',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-[68px] md:h-[76px]">
+            <Link to="/" className="flex items-center flex-shrink-0" onClick={() => setMenuOpen(false)}>
+              <GaidLogo size={52} animated />
+            </Link>
+            <Link to="/login" className="text-sm font-medium" style={{ color: '#B0B5C0' }}>{t('Entrar')}</Link>
+          </div>
+        </div>
+      </header>
+    );
   }
 
   return (
@@ -347,10 +398,14 @@ export default function Header() {
                   >
                     {user?.avatar_url ? (
                       <img
-                        src={user.avatar_url}
-                        alt="User avatar"
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
+                          src={user.avatar_url}
+                          alt="User avatar"
+                          className="w-8 h-8 rounded-full object-cover"
+                          onError={(e) => {
+                            // Fallback to default avatar if loading fails
+                            (e.currentTarget as HTMLImageElement).src = '/default-avatar.png';
+                          }}
+                        />
                     ) : (
                       <div
                         className="w-8 h-8 rounded-full flex items-center justify-center"

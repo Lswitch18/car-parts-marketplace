@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from datetime import datetime
 
-PROJECT_ROOT = Path(__file__).parent
+PROJECT_ROOT = Path(__file__).parent.parent
 BRAIN_FILE = PROJECT_ROOT / "brain.py"
 IGNORE_EXTENSIONS = {'.pyc', '.pyo', '__pycache__', '.git', 'node_modules', '.venv', 'dist'}
 
