@@ -1,21 +1,19 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAuthStore } from '../stores/authStore'
 
 export default function ProtectedRoute({ requireAdmin }: { requireAdmin?: boolean }) {
   const { user, loading, initialized, isAdmin, ensureSession, initialize } = useAuthStore()
   const attempted = useRef(false)
-  const [timedOut, setTimedOut] = useState(false)
 
-  // Safety: if still loading after 3s, force-unblock
+  // Safety: if still loading after 5s, log a warning and try to kickstart
   useEffect(() => {
     if (!initialized || loading) {
       const timer = setTimeout(() => {
-        console.warn('[ProtectedRoute] Timeout! Still loading after 3s — forcing ensureSession. State:', { initialized, loading, user: !!user })
-        setTimedOut(true)
+        console.warn('[ProtectedRoute] Loading taking longer than 5s — triggering background session sync. State:', { initialized, loading, user: !!user })
         ensureSession()
         initialize()
-      }, 3000)
+      }, 5000)
       return () => clearTimeout(timer)
     }
   }, [initialized, loading])
@@ -24,13 +22,15 @@ export default function ProtectedRoute({ requireAdmin }: { requireAdmin?: boolea
   useEffect(() => {
     if (initialized && !user && !loading && !attempted.current) {
       attempted.current = true
+      console.log('[ProtectedRoute] Initialized with no user in store. Restoring session...')
       ensureSession()
     }
   }, [initialized, user, loading, ensureSession])
 
-  console.debug('[ProtectedRoute] render', { initialized, loading, user: user?.email, isAdmin, timedOut, requireAdmin })
+  console.debug('[ProtectedRoute] render state:', { initialized, loading, user: user?.email, isAdmin, requireAdmin })
 
-  if (!timedOut && (!initialized || loading)) {
+  // While loading, we MUST show the spinner and NEVER redirect to login
+  if (!initialized || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -39,13 +39,16 @@ export default function ProtectedRoute({ requireAdmin }: { requireAdmin?: boolea
     )
   }
 
+  // Once loading has finished, if there is no user, redirect to login
   if (!user) {
+    console.warn('[ProtectedRoute] Auth check complete: No user found. Redirecting to /login')
     return <Navigate to="/login" replace />
   }
 
-    if (requireAdmin && !isAdmin) {
-      return <Navigate to="/" replace />;
-    }
+  if (requireAdmin && !isAdmin) {
+    console.warn('[ProtectedRoute] Auth check complete: User is not admin. Redirecting to home')
+    return <Navigate to="/" replace />
+  }
 
   return <Outlet />
 }
