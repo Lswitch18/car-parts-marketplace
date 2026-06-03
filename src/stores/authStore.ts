@@ -122,65 +122,76 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   initialize: async (): Promise<void> => {
-    // If already initialized and we have a user, nothing to do
     if (get().initialized) {
-      console.debug('[authStore] Already initialized. User:', get().user?.email, 'Loading:', get().loading)
+      console.log('[authStore] Already initialized. User:', get().user?.email)
       if (get().loading) set({ loading: false })
       return
     }
 
     if (initPromise) {
-      console.debug('[authStore] initialize called but initPromise already exists, returning it')
+      console.log('[authStore] initialize called but initPromise already exists, returning it')
       return initPromise
     }
 
-    console.log('[authStore] Initializing auth state...')
+    console.log('[authStore] Starting sequential auth initialization...')
 
     initPromise = (async () => {
       try {
+        // Step 1: Fetch session first
+        console.log('[authStore] Step 1: Fetching current session directly via getSession()')
+        const { data: { session }, error } = await supabase.auth.getSession()
+
+        if (error) {
+          console.error('[authStore] getSession() error:', error)
+        } else if (session?.user) {
+          console.log('[authStore] getSession() found active session for:', session.user.email)
+          const mapped = await fetchAndMapProfile(session.user.id, session.user)
+          console.log('[authStore] getSession() profile fetch completed. User:', mapped?.email)
+          if (mapped) get().setUser(mapped)
+        } else {
+          console.log('[authStore] getSession() returned no session')
+        }
+
+        // Step 2: Register the listener for FUTURE auth changes
         if (authListener) {
-          console.debug('[authStore] Cleaning up existing auth listener')
+          console.debug('[authStore] Cleaning up old auth listener')
           authListener.data.subscription.unsubscribe()
           authListener = null
         }
 
-        console.debug('[authStore] Registering onAuthStateChange listener')
+        console.log('[authStore] Step 2: Registering onAuthStateChange listener for future changes')
         authListener = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
           console.log('[authStore] onAuthStateChange event triggered:', event, '| Session User:', session?.user?.email)
 
           try {
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
               if (session?.user) {
-                console.debug('[authStore] event:', event, '-> session user exists. Current store user:', get().user?.email)
-                if (!get().user) {
-                  console.log('[authStore] Profile not in store. Fetching profile for:', session.user.email)
-                  const mapped = await fetchAndMapProfile(session.user.id, session.user)
-                  console.log('[authStore] Profile fetch finished. Mapped user:', mapped?.email)
-                  if (mapped) get().setUser(mapped)
+                // If user is already set and is the same, avoid redundant queries
+                if (get().user?.id === session.user.id) {
+                  console.debug('[authStore] Listener event matches current user, skipping profile fetch')
+                  set({ loading: false, initialized: true })
+                  return
                 }
+                
+                console.log('[authStore] Listener event: fetching profile for:', session.user.email)
+                const mapped = await fetchAndMapProfile(session.user.id, session.user)
+                if (mapped) get().setUser(mapped)
               }
-              console.debug('[authStore] event:', event, '-> setting loading: false, initialized: true')
               set({ loading: false, initialized: true })
 
             } else if (event === 'SIGNED_OUT') {
-              console.log('[authStore] event: SIGNED_OUT -> clearing store user')
+              console.log('[authStore] Listener event: SIGNED_OUT -> clearing user')
               set({ user: null, isAdmin: false, loading: false, initialized: true })
 
             } else if (event === 'INITIAL_SESSION') {
-              console.log('[authStore] event: INITIAL_SESSION | Session User:', session?.user?.email)
-              if (session?.user) {
-                if (!get().user) {
-                  console.log('[authStore] INITIAL_SESSION -> fetching profile for:', session.user.email)
-                  const mapped = await fetchAndMapProfile(session.user.id, session.user)
-                  console.log('[authStore] INITIAL_SESSION -> profile fetched:', mapped?.email)
-                  if (mapped) get().setUser(mapped)
-                }
+              // We already handled the initial session via getSession(), so we can ignore this or use it as fallback
+              if (session?.user && !get().user) {
+                console.log('[authStore] Listener event: INITIAL_SESSION fallback fetching profile for:', session.user.email)
+                const mapped = await fetchAndMapProfile(session.user.id, session.user)
+                if (mapped) get().setUser(mapped)
               }
-              console.debug('[authStore] INITIAL_SESSION -> setting loading: false, initialized: true')
               set({ loading: false, initialized: true })
-
             } else {
-              console.debug('[authStore] Other auth event:', event, '-> setting loading: false, initialized: true')
               set({ loading: false, initialized: true })
             }
           } catch (err) {
@@ -189,30 +200,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           }
         })
 
-        console.debug('[authStore] Fetching current session via getSession() directly')
-        const { data: { session }, error } = await supabase.auth.getSession()
-
-        if (error) {
-          console.error('[authStore] getSession() error:', error)
-          set({ loading: false, initialized: true })
-          return
-        }
-
-        if (get().initialized) {
-          console.log('[authStore] getSession() returned, but listener already initialized store. Skipping.')
-          return
-        }
-
-        if (session?.user) {
-          console.log('[authStore] getSession() found active session for:', session.user.email)
-          const mapped = await fetchAndMapProfile(session.user.id, session.user)
-          console.log('[authStore] getSession() profile fetched for:', mapped?.email)
-          if (mapped) get().setUser(mapped)
-        } else {
-          console.log('[authStore] getSession() returned no session')
-        }
-
-        console.debug('[authStore] getSession flow -> setting loading: false, initialized: true')
+        // Step 3: Mark initialization as complete
+        console.log('[authStore] Step 3: Marking initialization complete')
         set({ loading: false, initialized: true })
 
       } catch (err) {
