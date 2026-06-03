@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react'
 import GaidLogo from '../GaidLogo'
+import { useAuthStore } from '../../stores/authStore'
 
 export default function Footer() {
+  const { isAdmin } = useAuthStore()
   return (
     <footer className="mt-auto">
       {/* Seção Principal - FUNDO PRETO */}
@@ -71,6 +73,7 @@ export default function Footer() {
                     Favoritos
                   </Link>
                 </li>
+
               </ul>
             </div>
 
