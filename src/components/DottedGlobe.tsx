@@ -83,7 +83,7 @@ function ParticleGlobe() {
 export default function DottedGlobe() {
   return (
     <div
-      className="absolute left-[-80px] top-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none z-0 hidden lg:block"
+      className="absolute right-[-80px] top-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none z-0 hidden lg:block"
       style={{ opacity: 0.2 }}
     >
       <Canvas camera={{ position: [0, 0, 6], fov: 45 }} gl={{ antialias: true }}>
