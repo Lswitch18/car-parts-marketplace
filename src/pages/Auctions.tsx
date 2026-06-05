@@ -523,8 +523,8 @@ export default function Auctions() {
                       <button
                         onClick={(e) => { e.stopPropagation(); handleBuyNow(auction) }}
                         disabled={buying}
-                        className="btn-ghost mt-3 w-full justify-between text-xs"
-                        style={{ color: '#00D97E', borderColor: 'rgba(0,217,126,0.25)' }}
+                        className="mt-3 w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all text-xs cursor-pointer"
+                        style={{ background: 'rgba(0,217,126,0.06)', border: '1px solid rgba(0,217,126,0.15)', color: '#00D97E' }}
                       >
                         <span className="flex items-center gap-1.5">
                           <ShoppingBag className="w-3 h-3" />
