@@ -89,7 +89,7 @@ async function getActiveAuctions() {
       *,
       brand:brands(name, logo_url),
       category:categories(name),
-      seller:profiles(id, full_name, rating),
+      seller:profiles!parts_seller_id_fkey(id, full_name, rating),
       bids(count)
     `)
     .eq('auction_enabled', true)
@@ -126,7 +126,7 @@ async function getEndedAuctions() {
       *,
       brand:brands(name, logo_url),
       category:categories(name),
-      seller:profiles(id, full_name, rating),
+      seller:profiles!parts_seller_id_fkey(id, full_name, rating),
       winning_bid:bids!parts_winning_bid_id_fkey(id, amount, created_at, bidder:profiles(id, full_name))
     `)
     .eq('auction_enabled', true)
@@ -154,7 +154,7 @@ async function getAuction(auctionId: string) {
       *,
       brand:brands(*),
       category:categories(*),
-      seller:profiles(id, full_name, avatar_url, rating, is_verified),
+      seller:profiles!parts_seller_id_fkey(id, full_name, avatar_url, rating, is_verified),
       winning_bid:bids!parts_winning_bid_id_fkey(id, amount, created_at, bidder:profiles(id, full_name, avatar_url)),
       bids(
         id, amount, created_at, is_winning,
@@ -190,7 +190,7 @@ async function listAuctions(req: Request) {
       *,
       brand:brands(name, logo_url),
       category:categories(name),
-      seller:profiles(id, full_name, rating),
+      seller:profiles!parts_seller_id_fkey(id, full_name, rating),
       bids(count)
     `, { count: 'exact' })
     .eq('auction_enabled', true);
