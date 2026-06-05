@@ -258,11 +258,17 @@ const summary = `
 ║  AUCTION TESTS                                       ║
 ╚══════════════════════════════════════════════════════╝
 
-  calculateFees: 4 tests (¥0, ¥500, ¥10k, ¥1M)
-  validateBid:   7 tests (mínimo, self-bid, expirado, etc.)
-  validateCreate: 6 tests (campos obrigatórios, validações)
+  calculateFees:       4 tests (¥0, ¥30, ¥10k, ¥1M)
+  validateBid:         7 tests (mínimo, self-bid, expirado, etc.)
+  validateCreate:      7 tests (campos obrigatórios, validações)
 
-Total: 17 testes unitários das regras de negócio de leilão.
+Integração (separado — auctions-integration.test.ts):
+  place_bid:           2 tests (READ-ONLY)
+  resolve_auction:     2 tests (READ-ONLY)
+  buy_now:             2 tests (READ-ONLY)
+  signatures:          3 tests (cada RPC aceita params)
+
+Total: 18 unitários + 9 integração (requer SERVICE_KEY).
 `;
 
 console.log(summary);

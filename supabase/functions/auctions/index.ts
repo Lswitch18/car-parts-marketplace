@@ -425,76 +425,27 @@ async function buyNow(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  const { data: auction } = await supabase
-    .from('parts')
-    .select('id, seller_id, buy_now_price, buy_now_enabled, current_bid, status, auction_end, title')
-    .eq('id', auction_id)
-    .single();
+  // Usa a RPC buy_now (atômica, com FOR UPDATE, sem race condition)
+  const { data: rpcResult, error: rpcError } = await supabase
+    .rpc('buy_now', { p_part_id: auction_id, p_buyer_id: user.id });
 
-  if (!auction) {
-    return new Response(JSON.stringify(errorResponse('Leilão não encontrado')), {
-      status: 404, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
-
-  // Validações
-  if (auction.status !== 'active') {
-    return new Response(JSON.stringify(errorResponse('Leilão não está ativo')), {
-      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
-  if (!auction.buy_now_price) {
-    return new Response(JSON.stringify(errorResponse('Este leilão não tem preço de compra imediata')), {
-      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
-  if (!auction.buy_now_enabled) {
-    return new Response(JSON.stringify(errorResponse('Compra imediata não disponível')), {
-      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
-  if (auction.seller_id === user.id) {
-    return new Response(JSON.stringify(errorResponse('Você não pode comprar sua própria peça')), {
+  if (rpcError) {
+    return new Response(JSON.stringify(errorResponse(rpcError.message)), {
       status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
   }
 
-  const amount = Number(auction.buy_now_price);
-  const fees = calculateFees(amount);
-
-  // Cria transação
-  const { data: tx, error: txError } = await supabase
-    .from('transactions')
-    .insert({
-      part_id: auction_id,
-      auction_id,
-      buyer_id: user.id,
-      seller_id: auction.seller_id,
-      amount,
-      commission_rate: COMMISSION_RATE,
-      commission_amount: fees.commission_amount,
-      platform_fee: fees.platform_fee,
-      seller_net: fees.seller_net,
-      payment_status: 'pending',
-      fulfillment_status: 'pending',
-    })
-    .select()
-    .single();
-
-  if (txError) {
-    return new Response(JSON.stringify(errorResponse(txError.message)), {
+  const result = rpcResult as Record<string, unknown>;
+  if (!result.success) {
+    return new Response(JSON.stringify(errorResponse(String(result.error))), {
       status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
   }
 
-  // Marca como "sold" (não "pending") para não sumir do histórico
-  await supabase
-    .from('parts')
-    .update({ status: 'sold', winner_id: user.id, winning_bid_id: null, resolved_at: new Date().toISOString() })
-    .eq('id', auction_id);
-
-  return new Response(JSON.stringify(successResponse({ transaction: tx, fees },
-    'Compra iniciada. Redirecionando para pagamento...')), {
+  return new Response(JSON.stringify(successResponse({
+    transaction: result.transaction,
+    fees: result.fees,
+  }, 'Compra iniciada. Redirecionando para pagamento...')), {
     status: 201,
     headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
   });
