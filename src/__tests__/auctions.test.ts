@@ -9,7 +9,7 @@
  * Uso: npx vitest run src/__tests__/auctions.test.ts
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 // ═══════════════════════════════════════════════════════════════
 // 1. CÁLCULO DE TAXAS

@@ -8,13 +8,11 @@
  * Por segurança, a maioria dos testes é READ-ONLY ou usa transações.
  */
 
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || '';
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
-
 const hasKeys = !!(SUPABASE_URL && SERVICE_KEY);
 const supabase = hasKeys ? createClient(SUPABASE_URL, SERVICE_KEY) : null;
 

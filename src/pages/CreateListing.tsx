@@ -330,19 +330,20 @@ export default function CreateListing() {
 
                 <div>
                   <label className="block text-text-secondary text-sm mb-2">{t('Categoria')} *</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
-                  required
-                >
-                  <option value="">{t('Selecione')}</option>
-                  {CATEGORIES.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                    required
+                  >
+                    <option value="">{t('Selecione')}</option>
+                    {CATEGORIES.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
+              )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
