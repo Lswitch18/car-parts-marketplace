@@ -76,7 +76,7 @@ const STATUS_COLOR: Record<string, string> = { entregue: '#22C55E', em_transito:
 
 function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: string; value: string | number; icon: any; color: string; trend?: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="bg-[#111827] rounded-xl p-5 border border-white/5 h-[130px] flex flex-col relative overflow-hidden group transition-all hover:border-white/10 text-left w-full">
+    <button onClick={onClick} className="stat-card text-left w-full group" style={{ background: 'var(--bg-elevated)' }}>
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}22` }}>
@@ -84,14 +84,13 @@ function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: s
           </div>
         </div>
       </div>
-      <p className="text-[13px] text-gray-400 mb-1">{title}</p>
-      <p className="text-[28px] font-bold leading-none mb-1" style={{ color }}>{value}</p>
+      <p className="text-[13px] text-text-muted mb-1">{title}</p>
+      <p className="text-[28px] font-display font-bold leading-none mb-1" style={{ color }}>{value}</p>
       {trend && (
         <p className={`flex items-center gap-1 text-[11px] ${trend.startsWith('-') ? 'text-orange-400' : 'text-green-400'}`}>
           {trend} vs mês anterior
         </p>
       )}
-      <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
     </button>
   );
 }
@@ -232,25 +231,30 @@ export default function LogistixDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-[#0B1220] text-white font-sans overflow-hidden">
+    <div className="flex h-screen bg-background text-white font-sans overflow-hidden relative">
+      {/* Grid overlay + glows */}
+      <div className="absolute inset-0 grid-overlay opacity-30 pointer-events-none z-0" />
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse, rgba(13,117,255,0.10) 0%, transparent 65%)' }} />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse, rgba(112,0,255,0.08) 0%, transparent 65%)' }} />
+
       {sidebarOpen && (
         <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-[#0B1220] border-r border-white/5 flex flex-col flex-shrink-0 transition-transform duration-200 ${
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-background border-r border-border flex flex-col flex-shrink-0 transition-transform duration-200 relative z-10 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         <div className="h-[70px] flex items-center gap-3 px-6">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-daig-blue rounded-lg flex items-center justify-center">
             <Package size={20} className="text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold leading-tight tracking-wide">LOGISTIX</h1>
-            <span className="text-[11px] text-gray-400">Smart Logistics</span>
+            <h1 className="font-display text-xl font-bold leading-tight tracking-wide">LOGISTIX</h1>
+            <span className="text-[11px] text-text-muted">Smart Logistics</span>
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-2 overflow-y-auto space-y-0.5">
+        <nav className="flex-1 px-4 py-2 overflow-y-auto space-y-0.5 relative z-10">
           {NAV_GROUPS.map(group => (
             <div key={group.id}>
               {group.items.length === 0 ? (
@@ -258,8 +262,8 @@ export default function LogistixDashboard() {
                   onClick={() => setActiveNav(group.id)}
                   className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm ${
                     activeNav === group.id
-                      ? 'bg-[#1F2937] text-blue-400 shadow-[0_0_12px_-4px_rgba(59,130,246,0.3)]'
-                      : 'text-gray-400 hover:bg-[#111827] hover:text-white'
+                      ? 'bg-[#111116] text-daig-blue shadow-[0_0_12px_-4px_rgba(13,117,255,0.3)]'
+                      : 'text-text-muted hover:bg-[#111116] hover:text-white'
                   }`}
                 >
                   <group.icon size={20} />
@@ -269,7 +273,7 @@ export default function LogistixDashboard() {
                 <>
                   <button
                     onClick={() => toggleGroup(group.id)}
-                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm text-gray-400 hover:bg-[#111827] hover:text-white ${
+                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm text-text-muted hover:bg-[#111116] hover:text-white ${
                       expandedGroups[group.id] ? 'text-white' : ''
                     }`}
                   >
@@ -281,15 +285,15 @@ export default function LogistixDashboard() {
                     />
                   </button>
                   {expandedGroups[group.id] && (
-                    <div className="ml-3 space-y-0.5 border-l border-white/5 pl-3">
+                    <div className="ml-3 space-y-0.5 border-l border-border pl-3">
                       {group.items.map(item => (
                         <button
                           key={item.id}
                           onClick={() => setActiveNav(item.id)}
                           className={`w-full flex items-center gap-3 h-10 px-4 rounded-lg transition-all text-sm ${
                             activeNav === item.id
-                              ? 'bg-[#1F2937] text-blue-400 shadow-[0_0_12px_-4px_rgba(59,130,246,0.3)]'
-                              : 'text-gray-500 hover:bg-[#111827] hover:text-white'
+                              ? 'bg-[#111116] text-daig-blue shadow-[0_0_12px_-4px_rgba(13,117,255,0.3)]'
+                              : 'text-text-muted hover:bg-[#111116] hover:text-white'
                           }`}
                         >
                           {item.label}
@@ -303,54 +307,54 @@ export default function LogistixDashboard() {
           ))}
         </nav>
 
-        <div className="mx-4 my-4 p-3 flex items-center gap-3 rounded-lg border-t border-white/5 cursor-pointer hover:bg-[#111827] transition-colors">
+        <div className="mx-4 my-4 p-3 flex items-center gap-3 rounded-lg border-t border-border cursor-pointer hover:bg-[#111116] transition-colors">
           <img
             src={user?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}&backgroundColor=3B82F6`}
             alt="avatar" className="w-9 h-9 rounded-full"
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{user?.full_name || user?.name || 'Admin'}</p>
-            <p className="text-[12px] text-gray-400">Administrador</p>
+            <p className="text-[12px] text-text-muted">Administrador</p>
           </div>
-          <button onClick={signOut} className="text-gray-500 hover:text-white transition-colors">
+          <button onClick={signOut} className="text-text-muted hover:text-white transition-colors">
             <LogOut size={16} />
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col overflow-y-auto">
+      <main className="flex-1 flex flex-col overflow-y-auto relative z-10">
         {activeNav === 'dashboard' ? (
           <>
-            <header className="h-[70px] flex items-center justify-between px-3 lg:px-6 flex-shrink-0 gap-2">
+            <header className="h-[70px] flex items-center justify-between px-3 lg:px-6 flex-shrink-0 gap-2 relative z-10" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-3 min-w-0">
-                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:text-white flex-shrink-0">
+                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg bg-[var(--bg-elevated)] border border-border flex items-center justify-center text-text-muted hover:text-white flex-shrink-0">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <div className="min-w-0">
-                  <h2 className="text-lg lg:text-2xl font-bold truncate">Dashboard</h2>
-                  <p className="text-xs lg:text-sm text-gray-400 mt-0.5 truncate">Bem-vindo de volta, {user?.full_name?.split(' ')[0] || user?.name || 'Admin'} 👋</p>
+                  <h2 className="font-display text-lg lg:text-2xl font-bold truncate">Dashboard</h2>
+                  <p className="text-xs lg:text-sm text-text-muted mt-0.5 truncate">Bem-vindo de volta, {user?.full_name?.split(' ')[0] || user?.name || 'Admin'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 lg:gap-4">
-                <div className="hidden lg:flex items-center bg-[#111827] rounded-lg h-10 w-[300px] px-3 border border-white/5">
-                  <Search size={18} className="text-gray-400 mr-2" />
-                  <input type="text" placeholder="Buscar (Ctrl + K)" className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
+                <div className="hidden lg:flex items-center bg-[var(--bg-elevated)] rounded-lg h-10 w-[300px] px-3 border border-border">
+                  <Search size={18} className="text-text-muted mr-2" />
+                  <input type="text" placeholder="Buscar (Ctrl + K)" className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
                 </div>
                 <div className="relative flex-shrink-0">
-                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[#111827] border border-white/5 flex items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all relative">
+                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[var(--bg-elevated)] border border-border flex items-center justify-center text-text-muted hover:bg-[#1F2937] hover:text-white transition-all relative">
                     <Bell size={18} />
                     {ocorrenciasAbertas > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-[#0B1220]">
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-background">
                         {ocorrenciasAbertas}
                       </span>
                     )}
                   </button>
                   <NotificationCenter open={notificacaoOpen} onClose={() => setNotificacaoOpen(false)} />
                 </div>
-                <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[#111827] border border-white/5 items-center justify-center text-gray-400 hover:bg-[#1F2937] hover:text-white transition-all">
+                <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[var(--bg-elevated)] border border-border items-center justify-center text-text-muted hover:bg-[#1F2937] hover:text-white transition-all">
                   <Moon size={18} />
                 </button>
-                <button className="hidden lg:flex h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium items-center gap-2 transition-colors text-sm">
+                <button className="hidden lg:flex h-10 px-4 bg-daig-blue hover:brightness-110 text-white rounded-lg font-medium items-center gap-2 transition-all text-sm">
                   <Plus size={16} />
                   Ações rápidas
                   <ChevronDown size={14} />
@@ -370,7 +374,7 @@ export default function LogistixDashboard() {
 
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
                 {kpisLoading ? Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-[#111827] rounded-xl p-5 h-[130px] animate-pulse" />
+                  <div key={i} className="skeleton rounded-xl p-5 h-[130px]" />
                 )) : (
                   <>
                     <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="#3B82F6" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
@@ -384,15 +388,15 @@ export default function LogistixDashboard() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
-                  <h3 className="text-base font-medium mb-4">Status das Entregas</h3>
+                <div className="bg-surface rounded-xl p-5 border border-border">
+                  <h3 className="font-display text-base font-bold mb-4">Status das Entregas</h3>
                   <div className="relative h-[180px] flex items-center justify-center min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} dataKey="value" strokeWidth={0}>
                           {donutData.map((_, i) => <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />)}
                         </Pie>
-                        <Tooltip contentStyle={{ background: '#1F2937', border: 'none', borderRadius: 8, color: '#fff' }} />
+                        <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 12, color: '#fff' }} />
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute flex flex-col items-center">
@@ -411,15 +415,15 @@ export default function LogistixDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
-                  <h3 className="text-base font-medium mb-4">Performance de Entregas</h3>
+                <div className="bg-surface rounded-xl p-5 border border-border">
+                  <h3 className="font-display text-base font-bold mb-4">Performance de Entregas</h3>
                   <div className="h-[180px] min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={performance || []}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
                         <XAxis dataKey="data" tick={{ fill: '#6B7280', fontSize: 11 }} tickLine={false} axisLine={false} />
                         <YAxis tick={{ fill: '#6B7280', fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 100]} />
-                        <Tooltip contentStyle={{ background: '#1F2937', border: 'none', borderRadius: 8, color: '#fff' }} />
+                        <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 12, color: '#fff' }} />
                         <Line type="monotone" dataKey="no_prazo" stroke="#22C55E" strokeWidth={2} dot={false} />
                         <Line type="monotone" dataKey="atrasadas" stroke="#F97316" strokeWidth={2} dot={false} />
                       </LineChart>
@@ -431,8 +435,8 @@ export default function LogistixDashboard() {
                   </div>
                 </div>
 
-                <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
-                  <h3 className="text-base font-medium mb-4">Estoque por Centro de Distribuição</h3>
+                <div className="bg-surface rounded-xl p-5 border border-border">
+                  <h3 className="font-display text-base font-bold mb-4">Estoque por Centro de Distribuição</h3>
                   <div className="space-y-4">
                     {armazens.map(a => (
                       <button key={a.nome} onClick={() => { setActiveNav('armazem3d'); }} className="w-full text-left group">
@@ -449,18 +453,18 @@ export default function LogistixDashboard() {
                       </button>
                     ))}
                   </div>
-                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-4 h-10 rounded-lg border border-white/10 text-gray-400 text-sm hover:bg-[#1F2937] hover:text-white transition-all">Ver armazéns em 3D</button>
+                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-4 h-10 rounded-lg border border-border text-text-muted text-sm hover:bg-[var(--bg-elevated)] hover:text-white transition-all">Ver armazéns em 3D</button>
                 </div>
               </div>
 
-              <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
-                <h3 className="text-base font-medium mb-4">Atividade Recente</h3>
+              <div className="bg-surface rounded-xl p-5 border border-border">
+                <h3 className="font-display text-base font-bold mb-4">Atividade Recente</h3>
                 <div className="space-y-1">
                   {atividadeFeed.length === 0 ? (
                     <p className="text-sm text-gray-500 py-4 text-center">Nenhuma atividade recente</p>
                   ) : (
                     atividadeFeed.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 py-2.5 border-b border-white/5 last:border-0">
+                      <div key={i} className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.cor }} />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{item.label}</p>
@@ -473,18 +477,18 @@ export default function LogistixDashboard() {
                 </div>
               </div>
 
-              <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
-                <h3 className="text-base font-medium mb-4">Pedidos Recentes</h3>
+              <div className="bg-surface rounded-xl p-5 border border-border">
+                <h3 className="font-display text-base font-bold mb-4">Pedidos Recentes</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead><tr className="border-b border-white/5">
+                    <thead><tr className="border-b border-border">
                       {['Pedido', 'Cliente', 'Origem', 'Destino', 'Status', 'Previsão'].map(h => (
-                        <th key={h} className="text-left text-[12px] text-gray-400 font-medium pb-4 uppercase tracking-wider">{h}</th>
+                        <th key={h} className="text-left text-[12px] text-text-muted font-medium pb-4 uppercase tracking-wider">{h}</th>
                       ))}
                     </tr></thead>
                     <tbody>
                       {(recentOrders || []).slice(0, 5).map((row: any, i: number) => (
-                        <tr key={i} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
+                        <tr key={i} className="border-b border-border hover:bg-white/[0.03] transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
                           <td className="py-3 pr-4 text-sm font-bold">{row.codigo}</td>
                           <td className="py-3 pr-4 text-sm text-gray-300">{row.cliente}</td>
                           <td className="py-3 pr-4 text-sm text-gray-400">{row.origem}</td>
