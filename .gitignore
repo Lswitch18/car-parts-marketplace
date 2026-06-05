@@ -36,3 +36,9 @@ __pycache__
 
 # Reports and Documentation
 project-reports/
+
+# PDFs
+*.pdf
+
+# Terraform
+terraform/

@@ -271,27 +271,7 @@ export default function Header() {
 
 
 
-                {/* Admin shortcut */}
-                {isAdmin && (
-                  <Link
-                    to="/admin/image-to-3d"
-                    title="Gerador 3D AI"
-                    className="p-2 rounded-full transition-all"
-                    style={{
-                      color: '#a855f7',
-                      background: 'rgba(168,85,247,0.1)',
-                      border: '1px solid rgba(168,85,247,0.2)',
-                    }}
-                    onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLElement).style.background = 'rgba(168,85,247,0.18)'
-                    }}
-                    onMouseLeave={(e) => {
-                      ;(e.currentTarget as HTMLElement).style.background = 'rgba(168,85,247,0.1)'
-                    }}
-                  >
-                    <Sparkles className="w-4 h-4 animate-pulse" />
-                  </Link>
-                )}
+
 
                 {/* User avatar dropdown */}
                 <div className="relative group">
@@ -516,17 +496,7 @@ export default function Header() {
 
 
 
-                {isAdmin && (
-                  <Link
-                    to="/admin/image-to-3d"
-                    className="flex items-center gap-2 py-3 px-3 rounded-lg text-sm font-medium"
-                    style={{ color: '#a855f7' }}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    Gerador 3D AI
-                  </Link>
-                )}
+
 
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px' }}>
                   <button
