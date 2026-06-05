@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import {
   LayoutDashboard, Package, Truck, Warehouse,
   MapPin, BarChart3, Settings,
-  Bell, Search, ChevronDown, Plus, CheckCircle, AlertTriangle,
+  Bell, Search, ChevronDown, CheckCircle, AlertTriangle,
   Percent, DollarSign, Calendar, LogOut, Moon, ChevronRight, TrendingUp,
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
@@ -354,11 +354,7 @@ export default function LogistixDashboard() {
                 <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[var(--bg-elevated)] border border-border items-center justify-center text-text-muted hover:bg-[#1F2937] hover:text-white transition-all">
                   <Moon size={18} />
                 </button>
-                <button className="hidden lg:flex h-10 px-4 bg-daig-blue hover:brightness-110 text-white rounded-lg font-medium items-center gap-2 transition-all text-sm">
-                  <Plus size={16} />
-                  Ações rápidas
-                  <ChevronDown size={14} />
-                </button>
+
               </div>
             </header>
 
