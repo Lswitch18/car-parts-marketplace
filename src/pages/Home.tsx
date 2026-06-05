@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { ArrowRight, Search, Shield, Truck, Star, Wrench, Zap, CheckCircle } from 'lucide-react'
+import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle } from 'lucide-react'
 import { useEffect, useRef } from 'react'
-import { supabase } from '../lib/supabase'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
 import DottedGlobe from '../components/DottedGlobe'
@@ -36,29 +34,8 @@ function useReveal() {
 export default function Home() {
   const { t } = useI18n()
   const heroRef = useReveal()
-  const productsRef = useReveal()
   const trustRef = useReveal()
   const ctaRef = useReveal()
-
-  const { data: products } = useQuery({
-    queryKey: ['products', 'latest'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('parts')
-        .select('*, brands(name), categories(name), profiles(full_name)')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(8)
-      if (error) throw error
-      return data || []
-    },
-  })
-
-  const conditionLabel = (c: string) => {
-    if (c === 'new') return { label: 'Novo', color: '#00D97E' }
-    if (c === 'used') return { label: 'Usado', color: '#FFB800' }
-    return { label: 'Reformado', color: '#0D75FF' }
-  }
 
   return (
     <div className="bg-background min-h-screen text-text overflow-hidden">
@@ -198,154 +175,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════
-          FEATURED PRODUCTS
-      ════════════════════════════════════════ */}
-      {products && products.length > 0 && (
-        <section
-          className="py-24"
-          style={{ background: 'var(--bg-card)', borderTop: '1px solid rgba(255,255,255,0.04)' }}
-          ref={productsRef}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Section header */}
-            <div className="reveal flex items-end justify-between mb-12">
-              <div>
-                <p
-                  className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
-                  style={{ color: '#0D75FF' }}
-                >
-                  Catálogo
-                </p>
-                <h2 className="font-display text-3xl font-bold text-white">
-                  Últimas Novidades
-                </h2>
-                <p className="mt-2" style={{ color: '#6B7280' }}>
-                  As peças mais recentes adicionadas ao catálogo
-                </p>
-              </div>
-              <Link
-                to="/catalog"
-                className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold transition-all group"
-                style={{ color: '#0D75FF' }}
-                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#00E5FF')}
-                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = '#0D75FF')}
-              >
-                Ver todas
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
 
-            {/* Product grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {products.map((product, i) => {
-                const cond = conditionLabel(product.condition)
-                return (
-                  <Link
-                    key={product.id}
-                    to={`/product/${product.id}`}
-                    className={`reveal reveal-delay-${Math.min(i + 1, 6)} group block rounded-2xl overflow-hidden transition-all duration-300`}
-                    style={{
-                      background: 'var(--bg-void)',
-                      border: '1px solid rgba(255,255,255,0.05)',
-                    }}
-                    onMouseEnter={(e) => {
-                      const el = e.currentTarget as HTMLElement
-                      el.style.borderColor = 'rgba(13,117,255,0.4)'
-                      el.style.transform = 'translateY(-4px)'
-                      el.style.boxShadow = '0 20px 48px rgba(13,117,255,0.15), 0 8px 24px rgba(0,0,0,0.5)'
-                    }}
-                    onMouseLeave={(e) => {
-                      const el = e.currentTarget as HTMLElement
-                      el.style.borderColor = 'rgba(255,255,255,0.05)'
-                      el.style.transform = ''
-                      el.style.boxShadow = ''
-                    }}
-                  >
-                    {/* Image */}
-                    <div
-                      className="aspect-square relative overflow-hidden"
-                      style={{ background: 'var(--bg-elevated)' }}
-                    >
-                      {product.images && product.images[0] ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
-                          style={{ transition: 'transform 0.5s cubic-bezier(0.4,0,0.2,1)' }}
-                          onMouseEnter={(e) =>
-                            ((e.currentTarget as HTMLElement).style.transform = 'scale(1.08)')
-                          }
-                          onMouseLeave={(e) =>
-                            ((e.currentTarget as HTMLElement).style.transform = 'scale(1)')
-                          }
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center" style={{ color: '#374151' }}>
-                          <Wrench className="w-10 h-10" />
-                        </div>
-                      )}
-
-                      {/* Condition badge */}
-                      <div className="absolute top-3 right-3">
-                        <span
-                          className="text-[11px] font-bold px-2.5 py-1 rounded-full"
-                          style={{
-                            background: `${cond.color}22`,
-                            color: cond.color,
-                            border: `1px solid ${cond.color}55`,
-                            backdropFilter: 'blur(6px)',
-                          }}
-                        >
-                          {cond.label}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-4">
-                      <p className="text-xs mb-1 truncate" style={{ color: '#4B5563' }}>
-                        {product.brand} {product.model}
-                      </p>
-                      <h3
-                        className="font-semibold text-sm mb-3 truncate transition-colors duration-200"
-                        style={{ color: '#E5E7EB' }}
-                      >
-                        {product.title}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <p
-                          className="font-display font-bold text-lg"
-                          style={{ color: '#00E5FF' }}
-                        >
-                          ¥ {product.price.toLocaleString('ja-JP')}
-                        </p>
-                        <div
-                          className="w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                          style={{ background: 'rgba(13,117,255,0.2)', color: '#0D75FF' }}
-                        >
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
-
-            {/* Mobile "ver todas" */}
-            <div className="mt-8 text-center sm:hidden">
-              <Link
-                to="/catalog"
-                className="inline-flex items-center gap-2 text-sm font-semibold"
-                style={{ color: '#0D75FF' }}
-              >
-                Ver todas as peças <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ════════════════════════════════════════
           TRUST CARDS
