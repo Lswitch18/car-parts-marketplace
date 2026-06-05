@@ -4,14 +4,34 @@ const COMMISSION_RATE = 0.10;
 const STRIPE_FEE_RATE = 0.029;
 const STRIPE_FEE_FIXED = 30;
 
+/** Calcula comissão da plataforma + taxa Stripe */
 function calculateFees(amount: number) {
   const commission = amount * COMMISSION_RATE;
   const stripeFee = (amount * STRIPE_FEE_RATE) + STRIPE_FEE_FIXED;
   const platformFee = commission + stripeFee;
   const sellerNet = amount - platformFee;
-  return { gross_amount: amount, commission_rate: COMMISSION_RATE, commission_amount: commission, stripe_fee: stripeFee, platform_fee: platformFee, seller_net: sellerNet };
+  return {
+    gross_amount: amount,
+    commission_rate: COMMISSION_RATE,
+    commission_amount: commission,
+    stripe_fee: stripeFee,
+    platform_fee: platformFee,
+    seller_net: sellerNet,
+  };
 }
 
+/** Extrai o token JWT do header Authorization */
+function requireAuth(req: Request): Response | null {
+  const token = getAuthUser(req);
+  if (!token) {
+    return new Response(JSON.stringify(errorResponse('Token required')), {
+      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+  return null; // authenticated
+}
+
+// ─── Router ────────────────────────────────────────────────────
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders() });
@@ -21,23 +41,29 @@ Deno.serve(async (req) => {
     const url = new URL(req.url);
     const action = url.pathname.split('/').pop();
 
+    // GET endpoints
     if (req.method === 'GET') {
-      if (action === 'active') return await getActiveAuctions();
-      if (action === 'list') return await listAuctions(req);
-      if (action === 'ended') return await getEndedAuctions();
-      const auctionId = action?.match(/^[0-9a-f-]{36}$/) ? action : url.searchParams.get('id');
+      if (action === 'active')    return await getActiveAuctions();
+      if (action === 'list')      return await listAuctions(req);
+      if (action === 'ended')     return await getEndedAuctions();
+
+      // Match UUID pattern (single auction)
+      const auctionId = action?.match(/^[0-9a-f-]{36}$/)
+        ? action
+        : url.searchParams.get('id');
       if (auctionId) return await getAuction(auctionId);
     }
 
+    // POST endpoints
     if (req.method === 'POST') {
       const body = await req.json();
       switch (action) {
-        case 'create': return await createAuction(req, body);
-        case 'bid': return await placeBid(req, body);
-        case 'resolve': return await resolveAuction(req, body);
+        case 'create':      return await createAuction(req, body);
+        case 'bid':         return await placeBid(req, body);
+        case 'resolve':     return await resolveAuction(req, body);
         case 'resolve-all': return await resolveAllExpired(req);
-        case 'buy-now': return await buyNow(req, body);
-        case 'pay': return await payAuctionWinner(req, body);
+        case 'buy-now':     return await buyNow(req, body);
+        case 'pay':         return await payAuctionWinner(req, body);
       }
     }
 
@@ -54,7 +80,7 @@ Deno.serve(async (req) => {
   }
 });
 
-// ─── GET: Active auctions ────────────────────────────────
+// ─── GET /auctions/active ──────────────────────────────────────
 async function getActiveAuctions() {
   const now = new Date().toISOString();
   const { data, error } = await supabase
@@ -79,6 +105,7 @@ async function getActiveAuctions() {
     });
   }
 
+  // Normaliza dados para o frontend
   const auctions = data?.map(a => ({
     ...a,
     bid_count: a.bids?.[0]?.count || 0,
@@ -91,7 +118,7 @@ async function getActiveAuctions() {
   });
 }
 
-// ─── GET: Ended auctions (won/lost) ──────────────────────
+// ─── GET /auctions/ended ───────────────────────────────────────
 async function getEndedAuctions() {
   const { data, error } = await supabase
     .from('parts')
@@ -119,7 +146,7 @@ async function getEndedAuctions() {
   });
 }
 
-// ─── GET: Single auction ─────────────────────────────────
+// ─── GET /auctions/:id ─────────────────────────────────────────
 async function getAuction(auctionId: string) {
   const { data, error } = await supabase
     .from('parts')
@@ -149,7 +176,7 @@ async function getAuction(auctionId: string) {
   });
 }
 
-// ─── GET: List (paginated) ───────────────────────────────
+// ─── GET /auctions/list?status=&page=&limit= ───────────────────
 async function listAuctions(req: Request) {
   const url = new URL(req.url);
   const page = parseInt(url.searchParams.get('page') || '1');
@@ -159,13 +186,19 @@ async function listAuctions(req: Request) {
 
   let query = supabase
     .from('parts')
-    .select(`*, brand:brands(name, logo_url), category:categories(name), seller:profiles(id, full_name, rating), bids(count)`, { count: 'exact' })
+    .select(`
+      *,
+      brand:brands(name, logo_url),
+      category:categories(name),
+      seller:profiles(id, full_name, rating),
+      bids(count)
+    `, { count: 'exact' })
     .eq('auction_enabled', true);
 
   if (status === 'active') {
     query = query.eq('status', 'active').gt('auction_end', new Date().toISOString());
   } else if (status === 'ended') {
-    query = query.lt('auction_end', new Date().toISOString());
+    query = query.in('status', ['ended', 'sold']).lt('auction_end', new Date().toISOString());
   } else if (status === 'sold') {
     query = query.eq('status', 'sold');
   }
@@ -183,27 +216,44 @@ async function listAuctions(req: Request) {
 
   return new Response(JSON.stringify(successResponse({
     auctions: data,
-    pagination: { page, limit, total: count || 0, totalPages: Math.ceil((count || 0) / limit) }
+    pagination: {
+      page,
+      limit,
+      total: count || 0,
+      totalPages: Math.ceil((count || 0) / limit),
+    },
   })), {
     headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
   });
 }
 
-// ─── POST: Create auction ────────────────────────────────
+// ─── POST /auctions/create ─────────────────────────────────────
 async function createAuction(req: Request, body: Record<string, unknown>) {
-  const token = getAuthUser(req);
-  if (!token) return new Response(JSON.stringify(errorResponse('Token required')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  const user = await verifyToken(token);
-  if (!user) return new Response(JSON.stringify(errorResponse('Invalid token')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const authErr = requireAuth(req);
+  if (authErr) return authErr;
 
-  const { title, description, starting_bid, buy_now_price, auction_duration_hours, condition, brand_id, category_id, model_id, images, buy_now_enabled } = body as Record<string, unknown>;
+  const user = await verifyToken(getAuthUser(req)!);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const {
+    title, description, starting_bid, buy_now_price,
+    auction_duration_hours, condition, brand_id,
+    category_id, model_id, images, buy_now_enabled,
+  } = body as Record<string, unknown>;
 
   if (!title || !starting_bid || !auction_duration_hours) {
-    return new Response(JSON.stringify(errorResponse('title, starting_bid e auction_duration_hours são obrigatórios')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(
+      JSON.stringify(errorResponse('title, starting_bid e auction_duration_hours são obrigatórios')),
+      { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
   const now = new Date();
-  const endDate = new Date(now.getTime() + (Number(auction_duration_hours) * 60 * 60 * 1000));
+  const endDate = new Date(now.getTime() + Number(auction_duration_hours) * 60 * 60 * 1000);
 
   const { data, error } = await supabase
     .from('parts')
@@ -229,89 +279,105 @@ async function createAuction(req: Request, body: Record<string, unknown>) {
     .single();
 
   if (error) {
-    return new Response(JSON.stringify(errorResponse(error.message)), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify(errorResponse(error.message)), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  return new Response(JSON.stringify(successResponse(data, 'Leilão criado com sucesso')), { status: 201, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(successResponse(data, 'Leilão criado com sucesso')), {
+    status: 201,
+    headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+  });
 }
 
-// ─── POST: Place bid ─────────────────────────────────────
+// ─── POST /auctions/bid ────────────────────────────────────────
 async function placeBid(req: Request, body: Record<string, unknown>) {
-  const token = getAuthUser(req);
-  if (!token) return new Response(JSON.stringify(errorResponse('Token required')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  const user = await verifyToken(token);
-  if (!user) return new Response(JSON.stringify(errorResponse('Invalid token')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const authErr = requireAuth(req);
+  if (authErr) return authErr;
+
+  const user = await verifyToken(getAuthUser(req)!);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
   const { auction_id, amount } = body;
   if (!auction_id || !amount) {
-    return new Response(JSON.stringify(errorResponse('auction_id e amount são obrigatórios')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify(errorResponse('auction_id e amount são obrigatórios')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  const { data: auction, error: auctionError } = await supabase
-    .from('parts')
-    .select('id, seller_id, current_bid, auction_end, status')
-    .eq('id', auction_id)
-    .single();
+  // Usa a RPC place_bid (atômica, sem race condition)
+  const { data: rpcResult, error: rpcError } = await supabase
+    .rpc('place_bid', {
+      p_part_id: auction_id,
+      p_bidder_id: user.id,
+      p_amount: Number(amount),
+    });
 
-  if (auctionError || !auction) {
-    return new Response(JSON.stringify(errorResponse('Leilão não encontrado')), { status: 404, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  }
-  if (auction.status !== 'active') {
-    return new Response(JSON.stringify(errorResponse('Leilão não está ativo')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  }
-  if (new Date(auction.auction_end) < new Date()) {
-    return new Response(JSON.stringify(errorResponse('Leilão encerrado')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  }
-  if (auction.seller_id === user.id) {
-    return new Response(JSON.stringify(errorResponse('Você não pode dar lance no seu próprio leilão')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  if (rpcError) {
+    return new Response(JSON.stringify(errorResponse(rpcError.message)), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  const minBid = auction.current_bid * 1.05;
-  if (Number(amount) < minBid) {
-    return new Response(JSON.stringify(errorResponse(`Lance mínimo: ¥${Math.ceil(minBid).toLocaleString()}`)), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const result = rpcResult as Record<string, unknown>;
+  if (!result.success) {
+    return new Response(JSON.stringify(errorResponse(String(result.error))), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  await supabase.from('bids').update({ is_winning: false }).eq('part_id', auction_id).eq('is_winning', true);
-
-  const { data: bid, error } = await supabase
-    .from('bids')
-    .insert({ part_id: auction_id, bidder_id: user.id, amount: Number(amount), is_winning: true })
-    .select()
-    .single();
-
-  if (error) {
-    return new Response(JSON.stringify(errorResponse(error.message)), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  }
-
-  await supabase.from('parts').update({ current_bid: Number(amount), watchers: supabase.raw('watchers + 1') }).eq('id', auction_id);
-
-  const { data: allBids } = await supabase
-    .from('bids')
-    .select('id, amount, created_at, bidder:profiles(id, full_name, avatar_url)')
-    .eq('part_id', auction_id)
-    .order('created_at', { ascending: false })
-    .limit(10);
-
-  return new Response(JSON.stringify(successResponse({ bid, current_bid: Number(amount), recent_bids: allBids }, 'Lance registrado com sucesso')), { status: 201, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(successResponse({
+    bid: result.bid,
+    current_bid: result.current_bid,
+    recent_bids: result.recent_bids,
+  }, 'Lance registrado com sucesso')), {
+    status: 201,
+    headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+  });
 }
 
-// ─── POST: Resolve a single ended auction ────────────────
+// ─── POST /auctions/resolve ────────────────────────────────────
 async function resolveAuction(req: Request, body: Record<string, unknown>) {
+  const authErr = requireAuth(req);
+  if (authErr) return authErr;
+
   const { auction_id } = body;
   if (!auction_id) {
-    return new Response(JSON.stringify(errorResponse('auction_id é obrigatório')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify(errorResponse('auction_id é obrigatório')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  const result = await resolveSingleAuction(auction_id as string);
-  if (result.error) {
-    return new Response(JSON.stringify(errorResponse(result.error)), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const { data: rpcResult, error: rpcError } = await supabase
+    .rpc('resolve_auction', { p_part_id: auction_id });
+
+  if (rpcError) {
+    return new Response(JSON.stringify(errorResponse(rpcError.message)), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  return new Response(JSON.stringify(successResponse(result.data, 'Leilão resolvido')), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const result = rpcResult as Record<string, unknown>;
+  if (!result.success) {
+    return new Response(JSON.stringify(errorResponse(String(result.error))), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  return new Response(JSON.stringify(successResponse(result.data, 'Leilão resolvido')), {
+    headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+  });
 }
 
-// ─── POST: Resolve ALL expired auctions ──────────────────
-async function resolveAllExpired(_req: Request) {
+// ─── POST /auctions/resolve-all ────────────────────────────────
+async function resolveAllExpired(req: Request) {
+  const authErr = requireAuth(req);
+  if (authErr) return authErr;
+
   const now = new Date().toISOString();
 
   const { data: expired } = await supabase
@@ -322,110 +388,41 @@ async function resolveAllExpired(_req: Request) {
     .lt('auction_end', now);
 
   if (!expired || expired.length === 0) {
-    return new Response(JSON.stringify(successResponse({ resolved: 0 }, 'Nenhum leilão expirado encontrado')), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(
+      JSON.stringify(successResponse({ resolved: 0 }, 'Nenhum leilão expirado encontrado')),
+      { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } },
+    );
   }
 
   const results = [];
   for (const auction of expired) {
-    const result = await resolveSingleAuction(auction.id);
-    results.push({ id: auction.id, ...result });
+    const { data: rpcResult } = await supabase
+      .rpc('resolve_auction', { p_part_id: auction.id });
+    results.push({ id: auction.id, result: rpcResult });
   }
 
-  return new Response(JSON.stringify(successResponse({ resolved: results.length, results })), { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(successResponse({ resolved: results.length, results })), {
+    headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+  });
 }
 
-async function resolveSingleAuction(auctionId: string): Promise<{ data?: any; error?: string }> {
-  // Fetch the auction with its winning bid
-  const { data: auction } = await supabase
-    .from('parts')
-    .select('id, seller_id, title, current_bid, starting_bid, status, auction_enabled')
-    .eq('id', auctionId)
-    .single();
-
-  if (!auction) return { error: 'Leilão não encontrado' };
-  if (auction.status !== 'active') return { error: 'Leilão já foi resolvido' };
-
-  // Find winning bid
-  const { data: winningBid } = await supabase
-    .from('bids')
-    .select('id, bidder_id, amount')
-    .eq('part_id', auctionId)
-    .eq('is_winning', true)
-    .single();
-
-  const now = new Date().toISOString();
-
-  if (winningBid) {
-    // There is a winner — create transaction, mark as ended with winner
-    const fees = calculateFees(Number(winningBid.amount));
-
-    const { data: tx } = await supabase
-      .from('transactions')
-      .insert({
-        part_id: auctionId,
-        auction_id: auctionId,
-        bid_id: winningBid.id,
-        buyer_id: winningBid.bidder_id,
-        seller_id: auction.seller_id,
-        amount: Number(winningBid.amount),
-        commission_rate: COMMISSION_RATE,
-        commission_amount: fees.commission_amount,
-        platform_fee: fees.platform_fee,
-        seller_net: fees.seller_net,
-        payment_status: 'pending',
-        fulfillment_status: 'pending',
-      })
-      .select()
-      .single();
-
-    if (tx) {
-      // Update part with winner info
-      await supabase
-        .from('parts')
-        .update({
-          status: 'ended',
-          winning_bid_id: winningBid.id,
-          winner_id: winningBid.bidder_id,
-          resolved_at: now,
-          current_bid: Number(winningBid.amount),
-        })
-        .eq('id', auctionId);
-
-      // Notify winner
-      try {
-        await supabase.from('messages').insert({
-          sender_id: auction.seller_id,
-          receiver_id: winningBid.bidder_id,
-          product_id: auctionId,
-          transaction_id: tx.id,
-          content: `🎉 Você venceu o leilão "${auction.title}"! Complete o pagamento para garantir sua peça.`,
-          message_type: 'system',
-        });
-      } catch (_) { /* ignore */ }
-
-      return { data: { winner: winningBid, transaction: tx, status: 'ended' } };
-    }
-  }
-
-  // No bids — mark as ended with no winner
-  await supabase
-    .from('parts')
-    .update({ status: 'ended', resolved_at: now })
-    .eq('id', auctionId);
-
-  return { data: { winner: null, status: 'ended_no_bids' } };
-}
-
-// ─── POST: Buy Now ───────────────────────────────────────
+// ─── POST /auctions/buy-now ────────────────────────────────────
 async function buyNow(req: Request, body: Record<string, unknown>) {
-  const token = getAuthUser(req);
-  if (!token) return new Response(JSON.stringify(errorResponse('Token required')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  const user = await verifyToken(token);
-  if (!user) return new Response(JSON.stringify(errorResponse('Invalid token')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const authErr = requireAuth(req);
+  if (authErr) return authErr;
+
+  const user = await verifyToken(getAuthUser(req)!);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
   const { auction_id } = body;
   if (!auction_id) {
-    return new Response(JSON.stringify(errorResponse('auction_id é obrigatório')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify(errorResponse('auction_id é obrigatório')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
   const { data: auction } = await supabase
@@ -434,21 +431,43 @@ async function buyNow(req: Request, body: Record<string, unknown>) {
     .eq('id', auction_id)
     .single();
 
-  if (!auction) return new Response(JSON.stringify(errorResponse('Leilão não encontrado')), { status: 404, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  if (auction.status !== 'active') return new Response(JSON.stringify(errorResponse('Leilão não está ativo')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  if (!auction.buy_now_price) return new Response(JSON.stringify(errorResponse('Este leilão não tem preço de compra imediata')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  if (!auction.buy_now_enabled) return new Response(JSON.stringify(errorResponse('Compra imediata não disponível')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  if (auction.seller_id === user.id) return new Response(JSON.stringify(errorResponse('Você não pode comprar sua própria peça')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  if (!auction) {
+    return new Response(JSON.stringify(errorResponse('Leilão não encontrado')), {
+      status: 404, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Validações
+  if (auction.status !== 'active') {
+    return new Response(JSON.stringify(errorResponse('Leilão não está ativo')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+  if (!auction.buy_now_price) {
+    return new Response(JSON.stringify(errorResponse('Este leilão não tem preço de compra imediata')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+  if (!auction.buy_now_enabled) {
+    return new Response(JSON.stringify(errorResponse('Compra imediata não disponível')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+  if (auction.seller_id === user.id) {
+    return new Response(JSON.stringify(errorResponse('Você não pode comprar sua própria peça')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
   const amount = Number(auction.buy_now_price);
   const fees = calculateFees(amount);
 
-  // Create transaction
+  // Cria transação
   const { data: tx, error: txError } = await supabase
     .from('transactions')
     .insert({
       part_id: auction_id,
-      auction_id: auction_id,
+      auction_id,
       buyer_id: user.id,
       seller_id: auction.seller_id,
       amount,
@@ -463,43 +482,70 @@ async function buyNow(req: Request, body: Record<string, unknown>) {
     .single();
 
   if (txError) {
-    return new Response(JSON.stringify(errorResponse(txError.message)), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify(errorResponse(txError.message)), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  // Mark part as pending
-  await supabase.from('parts').update({ status: 'pending' }).eq('id', auction_id);
+  // Marca como "sold" (não "pending") para não sumir do histórico
+  await supabase
+    .from('parts')
+    .update({ status: 'sold', winner_id: user.id, winning_bid_id: null, resolved_at: new Date().toISOString() })
+    .eq('id', auction_id);
 
-  return new Response(JSON.stringify(successResponse({ transaction: tx, fees }, 'Compra iniciada. Redirecionando para pagamento...')), { status: 201, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(successResponse({ transaction: tx, fees },
+    'Compra iniciada. Redirecionando para pagamento...')), {
+    status: 201,
+    headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+  });
 }
 
-// ─── POST: Pay for won auction ───────────────────────────
+// ─── POST /auctions/pay ────────────────────────────────────────
 async function payAuctionWinner(req: Request, body: Record<string, unknown>) {
-  const token = getAuthUser(req);
-  if (!token) return new Response(JSON.stringify(errorResponse('Token required')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  const user = await verifyToken(token);
-  if (!user) return new Response(JSON.stringify(errorResponse('Invalid token')), { status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  const authErr = requireAuth(req);
+  if (authErr) return authErr;
+
+  const user = await verifyToken(getAuthUser(req)!);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
   const { transaction_id } = body;
   if (!transaction_id) {
-    return new Response(JSON.stringify(errorResponse('transaction_id é obrigatório')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify(errorResponse('transaction_id é obrigatório')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
-  // Verify transaction belongs to user and is unpaid
+  // Verifica se a transação pertence ao usuário
   const { data: tx } = await supabase
     .from('transactions')
     .select('id, part_id, buyer_id, seller_id, amount, payment_status')
     .eq('id', transaction_id)
     .single();
 
-  if (!tx) return new Response(JSON.stringify(errorResponse('Transação não encontrada')), { status: 404, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  if (tx.buyer_id !== user.id) return new Response(JSON.stringify(errorResponse('Esta transação não pertence a você')), { status: 403, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
-  if (tx.payment_status !== 'pending') return new Response(JSON.stringify(errorResponse('Pagamento já foi processado')), { status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' } });
+  if (!tx) {
+    return new Response(JSON.stringify(errorResponse('Transação não encontrada')), {
+      status: 404, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+  if (tx.buyer_id !== user.id) {
+    return new Response(JSON.stringify(errorResponse('Esta transação não pertence a você')), {
+      status: 403, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+  if (tx.payment_status !== 'pending') {
+    return new Response(JSON.stringify(errorResponse('Pagamento já foi processado')), {
+      status: 400, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
-  // Return the transaction data so frontend can redirect to Stripe checkout
   return new Response(JSON.stringify(successResponse({
     transaction: tx,
-    checkout_url: null, // Frontend will call stripe-checkout/create-checkout
-  }, 'Pronto para pagamento. Redirecionando...')), {
+    checkout_url: null, // Frontend chama stripe-checkout separadamente
+  }, 'Pronto para pagamento.')), {
     headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
   });
 }

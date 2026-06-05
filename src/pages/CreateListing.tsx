@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
-import { Upload, X, Loader2, Sparkles } from 'lucide-react'
+import { Upload, X, Loader2, Sparkles, Gavel } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
 import { api } from '../lib/api'
 
@@ -17,6 +17,7 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
   const [aiEnabled, setAiEnabled] = useState(true)
+  const [isAuction, setIsAuction] = useState(false)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -27,7 +28,10 @@ export default function CreateListing() {
     yearStart: '',
     yearEnd: '',
     category: '',
-    condition: ''
+    condition: '',
+    startingBid: '',
+    buyNowPrice: '',
+    auctionDurationHours: '72',
   })
 
   const analyzeWithAI = async () => {
@@ -78,22 +82,39 @@ export default function CreateListing() {
         }
       }
 
-      const { error } = await supabase.from('parts').insert({
-        seller_id: user.id,
-        title: formData.title,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        brand_id: BRAND_UUIDS[formData.brand],
-        model_id: MODEL_UUIDS[formData.model],
-        year_start: parseInt(formData.yearStart),
-        year_end: parseInt(formData.yearEnd),
-        category_id: CATEGORY_UUIDS[formData.category],
-        condition: formData.condition,
-        images: uploadedUrls,
-        status: 'active'
-      })
+      if (isAuction) {
+        // Modo Leilão — usa a Edge Function completa
+        await api.auctions.create({
+          title: formData.title,
+          description: formData.description,
+          starting_bid: parseFloat(formData.startingBid),
+          buy_now_price: formData.buyNowPrice ? parseFloat(formData.buyNowPrice) : undefined,
+          auction_duration_hours: parseInt(formData.auctionDurationHours),
+          condition: formData.condition,
+          brand_id: BRAND_UUIDS[formData.brand],
+          category_id: CATEGORY_UUIDS[formData.category],
+          model_id: MODEL_UUIDS[formData.model],
+          images: uploadedUrls,
+        });
+      } else {
+        // Modo Preço Fixo — insere direto na tabela parts
+        const { error } = await supabase.from('parts').insert({
+          seller_id: user.id,
+          title: formData.title,
+          description: formData.description,
+          price: parseFloat(formData.price),
+          brand_id: BRAND_UUIDS[formData.brand],
+          model_id: MODEL_UUIDS[formData.model],
+          year_start: parseInt(formData.yearStart),
+          year_end: parseInt(formData.yearEnd),
+          category_id: CATEGORY_UUIDS[formData.category],
+          condition: formData.condition,
+          images: uploadedUrls,
+          status: 'active',
+        });
 
-      if (error) throw error
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       navigate('/dashboard')
@@ -225,21 +246,90 @@ export default function CreateListing() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-text-secondary text-sm mb-2">{t('Preço (R$)')} *</label>
-                <input
-                  type="number"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
-                  placeholder="0,00"
-                  required
-                />
-              </div>
+            {/* ─── Modo Leilão toggle ─────────────────────────── */}
+            <div className="flex items-center space-x-3 py-2">
+              <button
+                type="button"
+                onClick={() => setIsAuction(!isAuction)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-all ${
+                  isAuction
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border bg-surface text-text-secondary'
+                }`}
+              >
+                <Gavel className="w-4 h-4" />
+                <span className="text-sm font-medium">{t('Modo Leilão')}</span>
+              </button>
+              {isAuction && (
+                <span className="text-xs text-text-muted">
+                  {t('Lances por tempo limitado')}
+                </span>
+              )}
+            </div>
 
-              <div>
-                <label className="block text-text-secondary text-sm mb-2">{t('Categoria')} *</label>
+            {isAuction ? (
+              /* ─── Campos de Leilão ─────────────────────────── */
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-text-secondary text-sm mb-2">
+                    {t('Lance Inicial (¥)')} *
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.startingBid}
+                    onChange={(e) => setFormData({ ...formData, startingBid: e.target.value })}
+                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                    placeholder="10000"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-text-secondary text-sm mb-2">
+                    {t('Preço Fixo (¥)')}
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.buyNowPrice}
+                    onChange={(e) => setFormData({ ...formData, buyNowPrice: e.target.value })}
+                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                    placeholder="Opcional"
+                  />
+                </div>
+                <div>
+                  <label className="block text-text-secondary text-sm mb-2">
+                    {t('Duração (horas)')} *
+                  </label>
+                  <select
+                    value={formData.auctionDurationHours}
+                    onChange={(e) => setFormData({ ...formData, auctionDurationHours: e.target.value })}
+                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                    required
+                  >
+                    <option value="24">24 h</option>
+                    <option value="48">48 h</option>
+                    <option value="72">72 h (3 dias)</option>
+                    <option value="168">168 h (7 dias)</option>
+                    <option value="336">336 h (14 dias)</option>
+                  </select>
+                </div>
+              </div>
+              ) : (
+              /* ─── Preço Fixo ───────────────────────────────── */
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-text-secondary text-sm mb-2">{t('Preço (R$)')} *</label>
+                  <input
+                    type="number"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text"
+                    placeholder="0,00"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-text-secondary text-sm mb-2">{t('Categoria')} *</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
