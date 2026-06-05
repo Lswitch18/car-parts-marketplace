@@ -234,7 +234,11 @@ export default function Auctions() {
 
   // ─── Render ───────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden relative">
+      {/* Grid overlay + glows */}
+      <div className="absolute inset-0 grid-overlay opacity-30 pointer-events-none z-0" />
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse, rgba(13,117,255,0.10) 0%, transparent 65%)' }} />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse, rgba(112,0,255,0.08) 0%, transparent 65%)' }} />
 
       {/* ── HERO ─────────────────────────────────────────────── */}
       <div className="relative flex flex-col items-center justify-center text-center pt-28 pb-16 px-4 overflow-hidden min-h-[480px]">
@@ -382,14 +386,13 @@ export default function Auctions() {
               return (
                 <div
                   key={auction.id}
-                  className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-300"
+                  className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-300 card"
                   style={{
-                    background: 'linear-gradient(145deg, #0A0A0F 0%, #111116 100%)',
-                    border: soon ? '1px solid rgba(255,75,75,0.4)' : '1px solid rgba(255,255,255,0.06)',
+                    animationDelay: `${idx * 80}ms`,
+                    border: soon ? '1px solid rgba(255,75,75,0.4)' : 'var(--border-subtle)',
                     boxShadow: soon
                       ? '0 0 24px rgba(255,75,75,0.12)'
                       : '0 4px 24px rgba(0,0,0,0.5)',
-                    animationDelay: `${idx * 80}ms`,
                   }}
                   onClick={() => { setSelectedAuction(auction); loadAuctionDetails(auction.id); setBidError(null); setBidSuccess(null) }}
                 >
@@ -508,26 +511,7 @@ export default function Auctions() {
                           ¥{auction.current_bid?.toLocaleString('ja-JP')}
                         </p>
                       </div>
-                      <button
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200"
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(13,117,255,0.15), rgba(0,229,255,0.08))',
-                          border: '1px solid rgba(13,117,255,0.3)',
-                          color: '#00E5FF',
-                        }}
-                        onMouseEnter={(e) => {
-                          const el = e.currentTarget as HTMLElement
-                          el.style.background = 'linear-gradient(135deg, #0D75FF, #0050c2)'
-                          el.style.color = '#fff'
-                          el.style.boxShadow = '0 0 20px rgba(13,117,255,0.5)'
-                        }}
-                        onMouseLeave={(e) => {
-                          const el = e.currentTarget as HTMLElement
-                          el.style.background = 'linear-gradient(135deg, rgba(13,117,255,0.15), rgba(0,229,255,0.08))'
-                          el.style.color = '#00E5FF'
-                          el.style.boxShadow = 'none'
-                        }}
-                      >
+                      <button className="btn-neon text-sm px-4 py-2">
                         <Gavel className="w-3.5 h-3.5" />
                         <span>Dar Lance</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -539,14 +523,14 @@ export default function Auctions() {
                       <button
                         onClick={(e) => { e.stopPropagation(); handleBuyNow(auction) }}
                         disabled={buying}
-                        className="mt-3 w-full flex items-center justify-between px-3 py-2 rounded-lg transition-all duration-200 hover:bg-[rgba(0,217,126,0.12)] cursor-pointer"
-                        style={{ background: 'rgba(0,217,126,0.06)', border: '1px solid rgba(0,217,126,0.15)' }}
+                        className="btn-ghost mt-3 w-full justify-between text-xs"
+                        style={{ color: '#00D97E', borderColor: 'rgba(0,217,126,0.25)' }}
                       >
-                        <span className="flex items-center gap-1.5 text-xs text-[#00D97E] font-semibold">
+                        <span className="flex items-center gap-1.5">
                           <ShoppingBag className="w-3 h-3" />
                           {buying ? 'Processando...' : 'Comprar Agora'}
                         </span>
-                        <span className="text-xs text-white font-bold">¥{auction.buy_now_price.toLocaleString('ja-JP')}</span>
+                        <span className="font-bold">¥{auction.buy_now_price.toLocaleString('ja-JP')}</span>
                       </button>
                     )}
                   </div>
@@ -561,14 +545,14 @@ export default function Auctions() {
       {selectedAuction && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(12px)' }}
+          style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(16px)' }}
           onClick={(e) => { if (e.target === e.currentTarget) { setSelectedAuction(null) } }}
         >
           <div
-            className="relative w-full max-w-5xl overflow-hidden rounded-2xl flex flex-col md:flex-row"
+            className="relative w-full max-w-5xl overflow-hidden rounded-2xl flex flex-col md:flex-row card"
             style={{
-              background: 'linear-gradient(145deg, #0A0A0F 0%, #0d0d14 100%)',
-              border: '1px solid rgba(13,117,255,0.25)',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-default)',
               boxShadow: '0 0 60px rgba(13,117,255,0.15), 0 32px 80px rgba(0,0,0,0.8)',
               maxHeight: '92vh',
             }}
@@ -583,7 +567,7 @@ export default function Auctions() {
             <button
               onClick={() => setSelectedAuction(null)}
               className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border-subtle)' }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,75,75,0.15)' }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)' }}
             >
@@ -591,7 +575,7 @@ export default function Auctions() {
             </button>
 
             {/* Left: Image + Description */}
-            <div className="w-full md:w-[45%] flex flex-col bg-[#060609]">
+            <div className="w-full md:w-[45%] flex flex-col" style={{ background: 'var(--bg-deep)' }}>
               <div className="relative flex-1 min-h-[220px] md:min-h-[300px] overflow-hidden">
                 {selectedAuction.images?.[0] ? (
                   <img src={selectedAuction.images[0]} alt="" className="w-full h-full object-cover" />
@@ -820,27 +804,15 @@ export default function Auctions() {
                             className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-lg"
                             style={{ color: '#0D75FF' }}
                           >¥</span>
-                          <input
-                            ref={bidInputRef}
-                            type="number"
-                            required
-                            value={bidAmount}
-                            onChange={(e) => setBidAmount(e.target.value)}
-                            placeholder={Math.ceil(selectedAuction.current_bid * 1.05).toString()}
-                            className="w-full pl-10 pr-4 py-3.5 rounded-xl font-display font-bold text-xl text-white placeholder-[#333] focus:outline-none transition-all"
-                            style={{
-                              background: 'rgba(13,117,255,0.06)',
-                              border: '1px solid rgba(13,117,255,0.2)',
-                            }}
-                            onFocus={(e) => {
-                              e.currentTarget.style.borderColor = 'rgba(0,229,255,0.5)'
-                              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(13,117,255,0.12)'
-                            }}
-                            onBlur={(e) => {
-                              e.currentTarget.style.borderColor = 'rgba(13,117,255,0.2)'
-                              e.currentTarget.style.boxShadow = 'none'
-                            }}
-                          />
+                            <input
+                              ref={bidInputRef}
+                              type="number"
+                              required
+                              value={bidAmount}
+                              onChange={(e) => setBidAmount(e.target.value)}
+                              placeholder={Math.ceil(selectedAuction.current_bid * 1.05).toString()}
+                              className="w-full pl-10 pr-4 py-3.5 rounded-xl font-display font-bold text-xl text-white placeholder-[#333] focus:outline-none transition-all input-field"
+                            />
                         </div>
                       </div>
 
