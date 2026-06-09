@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
 import DottedGlobe from '../components/DottedGlobe'
@@ -36,6 +36,54 @@ export default function Home() {
   const heroRef = useReveal()
   const trustRef = useReveal()
   const ctaRef = useReveal()
+
+  const cards = [
+    {
+      icon: Shield,
+      color: '#7000FF',
+      colorBg: 'rgba(112,0,255,0.12)',
+      colorBorder: 'rgba(112,0,255,0.25)',
+      title: 'Compra Segura',
+      desc: 'Proteção total para suas compras com garantia de entrega e devolução sem complicação.',
+      check: 'Pagamento protegido',
+      delay: 1,
+      details: [
+        { icon: CreditCard, label: 'Pagamento protegido', text: 'Seus dados financeiros são criptografados e processados por gateways certificados.' },
+        { icon: RefreshCw, label: 'Devolução fácil', text: 'Devolução gratuita em até 30 dias para qualquer insatisfação.' },
+        { icon: HeadphonesIcon, label: 'Suporte dedicado', text: 'Atendimento prioritário em português, japonês e inglês.' },
+      ],
+    },
+    {
+      icon: Truck,
+      color: '#00E5FF',
+      colorBg: 'rgba(0,229,255,0.10)',
+      colorBorder: 'rgba(0,229,255,0.25)',
+      title: 'Entrega Rápida',
+      desc: t('Envio para todo Japão com rastreamento em tempo real e estimativa precisa.'),
+      check: 'Rastreio em tempo real',
+      delay: 2,
+      details: [
+        { icon: MapPin, label: 'Cobertura nacional', text: 'Entregamos em todas as prefeituras do Japão, incluindo áreas remotas.' },
+        { icon: Clock, label: '2-5 dias úteis', text: 'Prazo médio de entrega para a maioria das regiões do Japão.' },
+        { icon: Search, label: 'Rastreio em tempo real', text: 'Acompanhe cada etapa da entrega com atualizações por email e SMS.' },
+      ],
+    },
+    {
+      icon: Star,
+      color: '#0D75FF',
+      colorBg: 'rgba(13,117,255,0.12)',
+      colorBorder: 'rgba(13,117,255,0.25)',
+      title: 'Qualidade Garantida',
+      desc: 'Peças originais e de procedência com verificação de autenticidade em cada anúncio.',
+      check: 'Peças verificadas',
+      delay: 3,
+      details: [
+        { icon: BadgeCheck, label: 'Peças verificadas', text: 'Cada anúncio passa por verificação de autenticidade antes de ser publicado.' },
+        { icon: FileText, label: 'Garantia estendida', text: 'Garantia de 12 meses em peças originais e 6 meses em peças usadas.' },
+        { icon: Gauge, label: 'Teste de qualidade', text: 'Peças testadas e certificadas por nossa equipe técnica especializada.' },
+      ],
+    },
+  ]
 
   return (
     <div className="bg-background min-h-screen text-text overflow-hidden">
@@ -196,85 +244,8 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Shield,
-                color: '#7000FF',
-                colorBg: 'rgba(112,0,255,0.12)',
-                colorBorder: 'rgba(112,0,255,0.25)',
-                title: 'Compra Segura',
-                desc: 'Proteção total para suas compras com garantia de entrega e devolução sem complicação.',
-                check: 'Pagamento protegido',
-                delay: 1,
-              },
-              {
-                icon: Truck,
-                color: '#00E5FF',
-                colorBg: 'rgba(0,229,255,0.10)',
-                colorBorder: 'rgba(0,229,255,0.25)',
-                title: 'Entrega Rápida',
-                desc: t('Envio para todo Japão com rastreamento em tempo real e estimativa precisa.'),
-                check: 'Rastreio em tempo real',
-                delay: 2,
-              },
-              {
-                icon: Star,
-                color: '#0D75FF',
-                colorBg: 'rgba(13,117,255,0.12)',
-                colorBorder: 'rgba(13,117,255,0.25)',
-                title: 'Qualidade Garantida',
-                desc: 'Peças originais e de procedência com verificação de autenticidade em cada anúncio.',
-                check: 'Peças verificadas',
-                delay: 3,
-              },
-            ].map(({ icon: Icon, color, colorBg, colorBorder, title, desc, check, delay }) => (
-              <div
-                key={title}
-                className={`reveal reveal-delay-${delay} group relative rounded-2xl p-8 overflow-hidden transition-all duration-300`}
-                style={{
-                  background: colorBg,
-                  border: `1px solid ${colorBorder}`,
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.transform = 'translateY(-4px)'
-                  el.style.boxShadow = `0 20px 48px ${color}22`
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.transform = ''
-                  el.style.boxShadow = ''
-                }}
-              >
-                {/* Top glow bar */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-px"
-                  style={{
-                    background: `linear-gradient(90deg, transparent, ${color}88, transparent)`,
-                  }}
-                />
-
-                {/* Icon */}
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-                  style={{ background: `${color}18`, border: `1px solid ${color}33` }}
-                >
-                  <Icon className="w-7 h-7" style={{ color }} />
-                </div>
-
-                <h3 className="font-display text-xl font-bold text-white mb-3">{title}</h3>
-                <p className="text-sm leading-relaxed mb-5" style={{ color: '#8892A4' }}>
-                  {desc}
-                </p>
-
-                {/* Check feature */}
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color }} />
-                  <span className="text-xs font-medium" style={{ color }}>
-                    {check}
-                  </span>
-                </div>
-              </div>
+            {cards.map((card) => (
+              <FeatureCard key={card.title} {...card} />
             ))}
           </div>
         </div>
@@ -413,6 +384,110 @@ export default function Home() {
           ))}
         </div>
       </section>
+    </div>
+  )
+}
+
+function FeatureCard({ icon: Icon, color, colorBg, colorBorder, title, desc, check, delay, details }: {
+  icon: any; color: string; colorBg: string; colorBorder: string;
+  title: string; desc: string; check: string; delay: number;
+  details: { icon: any; label: string; text: string }[];
+}) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div
+      className={`reveal reveal-delay-${delay} group relative rounded-2xl p-8 overflow-hidden transition-all duration-300 cursor-pointer`}
+      style={{
+        background: colorBg,
+        border: `1px solid ${colorBorder}`,
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLElement
+        el.style.transform = 'translateY(-4px)'
+        el.style.boxShadow = `0 20px 48px ${color}22`
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLElement
+        if (!expanded) {
+          el.style.transform = ''
+          el.style.boxShadow = ''
+        }
+      }}
+      onClick={() => setExpanded(!expanded)}
+    >
+      {/* Top glow bar */}
+      <div
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${color}88, transparent)`,
+        }}
+      />
+
+      {/* Animated background pulse */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 60% 40% at 50% 30%, ${color}15, transparent)`,
+        }}
+      />
+
+      {/* Icon */}
+      <div
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-6deg]"
+        style={{ background: `${color}18`, border: `1px solid ${color}33` }}
+      >
+        <Icon className="w-7 h-7 transition-transform duration-500 group-hover:scale-110" style={{ color }} />
+      </div>
+
+      <h3 className="font-display text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-sm leading-relaxed mb-5" style={{ color: '#8892A4' }}>
+        {desc}
+      </p>
+
+      {/* Check feature */}
+      <div className="flex items-center gap-2 mb-4">
+        <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color }} />
+        <span className="text-xs font-medium" style={{ color }}>
+          {check}
+        </span>
+      </div>
+
+      {/* Expandable details */}
+      <div
+        className="overflow-hidden transition-all duration-400"
+        style={{
+          maxHeight: expanded ? '400px' : '0px',
+          opacity: expanded ? 1 : 0,
+          transition: 'max-height 0.4s ease, opacity 0.4s ease',
+        }}
+      >
+        <div style={{ borderTop: `1px solid ${color}22`, margin: '12px 0' }} />
+        <div className="space-y-4">
+          {details.map(({ icon: DIcon, label, text }) => (
+            <div key={label} className="flex gap-3">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                style={{ background: `${color}15` }}
+              >
+                <DIcon className="w-4 h-4" style={{ color }} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{label}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#8892A4' }}>{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Expand / collapse indicator */}
+      <div className="flex items-center gap-1.5 mt-4 text-xs font-medium transition-all" style={{ color }}>
+        <span>{expanded ? 'Menos detalhes' : 'Mais detalhes'}</span>
+        <ChevronDown
+          className="w-3.5 h-3.5 transition-transform duration-300"
+          style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
+      </div>
     </div>
   )
 }
