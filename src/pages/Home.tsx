@@ -3,7 +3,7 @@ import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown,
 import { useEffect, useRef, useState } from 'react'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
-import DottedGlobe from '../components/DottedGlobe'
+import HeroCarScene from '../components/HeroCarScene'
 
 /* ── Intersection Observer scroll-reveal hook ── */
 function useReveal() {
@@ -94,7 +94,7 @@ export default function Home() {
         {/* Grid overlay */}
         <div className="absolute inset-0 grid-overlay opacity-60 pointer-events-none" />
 
-        <DottedGlobe />
+        <HeroCarScene />
 
         {/* Radial ambient glows */}
         <div className="absolute inset-0 pointer-events-none">
