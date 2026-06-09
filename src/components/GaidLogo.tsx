@@ -97,13 +97,14 @@ const GaidLogo: React.FC<{
               alignItems: 'baseline',
             }}
           >
-            {/* D — neon blue */}
+            {/* D — metallic chrome (same as AIG) */}
             <span
               style={{
-                background: 'linear-gradient(175deg, #6EB5FF 0%, #0D75FF 52%, #4d9cff 100%)',
+                background: 'linear-gradient(175deg, #FFFFFF 0%, #C8D8F4 38%, #9AAEC6 70%, #E8F0FA 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
+                filter: 'drop-shadow(0 1px 2px rgba(13,117,255,0.2))',
               }}
             >
               D
@@ -132,11 +133,14 @@ const GaidLogo: React.FC<{
               marginTop: size * 0.07,
               textTransform: 'uppercase',
               whiteSpace: 'nowrap',
-              animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
             }}
           >
             <span style={{ color: '#8892A4' }}>DIGITAL{'\u00A0'}</span>
-            <span style={{ color: '#0D75FF' }}>A.I.</span>
+            <span style={{
+              color: '#0D75FF',
+              textShadow: '0 0 8px rgba(13,117,255,0.6), 0 0 24px rgba(13,117,255,0.3)',
+              animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
+            }}>A.I.</span>
             <span style={{ color: '#8892A4' }}>{'\u00A0'}GARAGE</span>
           </div>
 
