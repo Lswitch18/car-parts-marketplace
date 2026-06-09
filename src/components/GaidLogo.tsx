@@ -63,6 +63,16 @@ const GaidLogo: React.FC<{
               border-color: rgba(0, 229, 255, 0.8);
             }
           }
+          @keyframes neon-pulse {
+            0%, 100% {
+              text-shadow: 0 0 4px rgba(13, 117, 255, 0.3), 0 0 12px rgba(13, 117, 255, 0.1);
+              opacity: 0.9;
+            }
+            50% {
+              text-shadow: 0 0 8px rgba(13, 117, 255, 0.6), 0 0 24px rgba(13, 117, 255, 0.3), 0 0 48px rgba(13, 117, 255, 0.15);
+              opacity: 1;
+            }
+          }
         `}</style>
       </div>
 
@@ -122,6 +132,7 @@ const GaidLogo: React.FC<{
               marginTop: size * 0.07,
               textTransform: 'uppercase',
               whiteSpace: 'nowrap',
+              animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
             }}
           >
             <span style={{ color: '#8892A4' }}>DIGITAL{'\u00A0'}</span>
