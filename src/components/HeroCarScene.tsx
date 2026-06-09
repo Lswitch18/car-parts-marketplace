@@ -119,7 +119,7 @@ export default function HeroCarScene() {
   return (
     <div className="absolute right-[-120px] top-1/2 -translate-y-1/2 w-[900px] h-[900px] pointer-events-none z-0 hidden lg:block">
       <Canvas
-        camera={{ position: [0, 0.5, 5.5], fov: 38 }}
+        camera={{ position: [0, 0.5, 6.5], fov: 35 }}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.15} />
