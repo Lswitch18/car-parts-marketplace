@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard } from 'lucide-react'
+import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
@@ -393,101 +393,138 @@ function FeatureCard({ icon: Icon, color, colorBg, colorBorder, title, desc, che
   title: string; desc: string; check: string; delay: number;
   details: { icon: any; label: string; text: string }[];
 }) {
-  const [expanded, setExpanded] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   return (
-    <div
-      className={`reveal reveal-delay-${delay} group relative rounded-2xl p-8 overflow-hidden transition-all duration-300 cursor-pointer`}
-      style={{
-        background: colorBg,
-        border: `1px solid ${colorBorder}`,
-      }}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLElement
-        el.style.transform = 'translateY(-4px)'
-        el.style.boxShadow = `0 20px 48px ${color}22`
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLElement
-        if (!expanded) {
+    <>
+      <div
+        className={`reveal reveal-delay-${delay} group relative rounded-2xl p-8 overflow-hidden transition-all duration-300 cursor-pointer`}
+        style={{
+          background: colorBg,
+          border: `1px solid ${colorBorder}`,
+        }}
+        onMouseEnter={(e) => {
+          const el = e.currentTarget as HTMLElement
+          el.style.transform = 'translateY(-4px)'
+          el.style.boxShadow = `0 20px 48px ${color}22`
+        }}
+        onMouseLeave={(e) => {
+          const el = e.currentTarget as HTMLElement
           el.style.transform = ''
           el.style.boxShadow = ''
-        }
-      }}
-      onClick={() => setExpanded(!expanded)}
-    >
-      {/* Top glow bar */}
-      <div
-        className="absolute top-0 left-0 right-0 h-px"
-        style={{
-          background: `linear-gradient(90deg, transparent, ${color}88, transparent)`,
         }}
-      />
-
-      {/* Animated background pulse */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse 60% 40% at 50% 30%, ${color}15, transparent)`,
-        }}
-      />
-
-      {/* Icon */}
-      <div
-        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-6deg]"
-        style={{ background: `${color}18`, border: `1px solid ${color}33` }}
+        onClick={() => setShowModal(true)}
       >
-        <Icon className="w-7 h-7 transition-transform duration-500 group-hover:scale-110" style={{ color }} />
-      </div>
+        {/* Top glow bar */}
+        <div
+          className="absolute top-0 left-0 right-0 h-px"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${color}88, transparent)`,
+          }}
+        />
 
-      <h3 className="font-display text-xl font-bold text-white mb-3">{title}</h3>
-      <p className="text-sm leading-relaxed mb-5" style={{ color: '#8892A4' }}>
-        {desc}
-      </p>
+        {/* Animated background pulse */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 60% 40% at 50% 30%, ${color}15, transparent)`,
+          }}
+        />
 
-      {/* Check feature */}
-      <div className="flex items-center gap-2 mb-4">
-        <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color }} />
-        <span className="text-xs font-medium" style={{ color }}>
-          {check}
-        </span>
-      </div>
+        {/* Icon */}
+        <div
+          className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-6deg]"
+          style={{ background: `${color}18`, border: `1px solid ${color}33` }}
+        >
+          <Icon className="w-7 h-7 transition-transform duration-500 group-hover:scale-110" style={{ color }} />
+        </div>
 
-      {/* Expandable details */}
-      <div
-        className="overflow-hidden transition-all duration-400"
-        style={{
-          maxHeight: expanded ? '400px' : '0px',
-          opacity: expanded ? 1 : 0,
-          transition: 'max-height 0.4s ease, opacity 0.4s ease',
-        }}
-      >
-        <div style={{ borderTop: `1px solid ${color}22`, margin: '12px 0' }} />
-        <div className="space-y-4">
-          {details.map(({ icon: DIcon, label, text }) => (
-            <div key={label} className="flex gap-3">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                style={{ background: `${color}15` }}
-              >
-                <DIcon className="w-4 h-4" style={{ color }} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">{label}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#8892A4' }}>{text}</p>
-              </div>
-            </div>
-          ))}
+        <h3 className="font-display text-xl font-bold text-white mb-3">{title}</h3>
+        <p className="text-sm leading-relaxed mb-5" style={{ color: '#8892A4' }}>
+          {desc}
+        </p>
+
+        {/* Check feature */}
+        <div className="flex items-center gap-2 mb-4">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color }} />
+          <span className="text-xs font-medium" style={{ color }}>
+            {check}
+          </span>
+        </div>
+
+        {/* Click hint */}
+        <div className="flex items-center gap-1.5 text-xs font-medium transition-all group-hover:gap-2" style={{ color }}>
+          <span>Clique para detalhes</span>
+          <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
         </div>
       </div>
 
-      {/* Expand / collapse indicator */}
-      <div className="flex items-center gap-1.5 mt-4 text-xs font-medium transition-all" style={{ color }}>
-        <span>{expanded ? 'Menos detalhes' : 'Mais detalhes'}</span>
-        <ChevronDown
-          className="w-3.5 h-3.5 transition-transform duration-300"
-          style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-        />
-      </div>
-    </div>
+      {/* Modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          onClick={() => setShowModal(false)}
+          style={{
+            background: 'rgba(0,0,0,0.7)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl p-8 overflow-hidden"
+            style={{
+              background: 'rgba(10,10,15,0.97)',
+              border: `1px solid ${color}44`,
+              boxShadow: `0 32px 64px rgba(0,0,0,0.8), 0 0 48px ${color}22`,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/10"
+              style={{ color: '#6B7280' }}
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-6">
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ background: `${color}18`, border: `1px solid ${color}33` }}
+              >
+                <Icon className="w-7 h-7" style={{ color }} />
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-bold text-white">{title}</h3>
+                <p className="text-xs mt-0.5" style={{ color }}>{check}</p>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p className="text-sm leading-relaxed mb-6" style={{ color: '#8892A4' }}>
+              {desc}
+            </p>
+
+            {/* Detail items */}
+            <div className="space-y-5">
+              {details.map(({ icon: DIcon, label, text }) => (
+                <div key={label} className="flex gap-4">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${color}15` }}
+                  >
+                    <DIcon className="w-5 h-5" style={{ color }} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white mb-1">{label}</p>
+                    <p className="text-xs leading-relaxed" style={{ color: '#8892A4' }}>{text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
