@@ -1,155 +1,114 @@
 import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Sparkles } from '@react-three/drei'
+import { useGLTF, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 
 const NEON = '#00D4FF'
 
-/* ── Car section shapes (coupe silhouette) ────────── */
-interface Section {
-  size: [number, number, number]
-  pos: [number, number, number]
-  rot?: [number, number, number]
-}
-
-const SECTIONS: Section[] = [
-  // Underbody
-  { size: [2.0, 0.06, 5.2], pos: [0, 0.03, 0] },
-  // Front bumper
-  { size: [1.96, 0.28, 0.3], pos: [0, 0.18, 2.6] },
-  // Hood
-  { size: [1.86, 0.2, 1.0], pos: [0, 0.32, 1.8] },
-  // Cowl / windshield base
-  { size: [1.76, 0.18, 0.3], pos: [0, 0.52, 1.1], rot: [-0.15, 0, 0] },
-  // Cabin
-  { size: [1.66, 0.38, 1.4], pos: [0, 0.68, -0.1] },
-  // Rear window
-  { size: [1.76, 0.18, 0.3], pos: [0, 0.52, -1.1], rot: [0.15, 0, 0] },
-  // Trunk
-  { size: [1.86, 0.2, 1.0], pos: [0, 0.32, -1.8] },
-  // Rear bumper
-  { size: [1.96, 0.28, 0.3], pos: [0, 0.18, -2.6] },
-
-  // Front wheel arches
-  { size: [0.28, 0.2, 0.7], pos: [-1.07, 0.14, 1.7] },
-  { size: [0.28, 0.2, 0.7], pos: [1.07, 0.14, 1.7] },
-  // Rear wheel arches
-  { size: [0.28, 0.2, 0.7], pos: [-1.07, 0.14, -1.7] },
-  { size: [0.28, 0.2, 0.7], pos: [1.07, 0.14, -1.7] },
-
-  // Rear spoiler wing
-  { size: [1.7, 0.03, 0.35], pos: [0, 0.56, -2.35] },
-  // Spoiler supports
-  { size: [0.03, 0.16, 0.03], pos: [-0.75, 0.46, -2.35] },
-  { size: [0.03, 0.16, 0.03], pos: [0.75, 0.46, -2.35] },
-  // Front splitter
-  { size: [1.8, 0.03, 0.15], pos: [0, 0.02, 2.75] },
-]
-
-/* ── Wheel ring helper ────────────────────────────── */
-function buildCircle(radius: number, seg = 32) {
-  const pts: number[] = []
-  for (let i = 0; i <= seg; i++) {
-    const t = (i / seg) * Math.PI * 2
-    pts.push(Math.cos(t) * radius, Math.sin(t) * radius, 0)
-  }
-  const g = new THREE.BufferGeometry()
-  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pts), 3))
-  return g
-}
-
-/* ── 3D Car ───────────────────────────────────────── */
+/* ── TRON wireframe car from GLB model ───────────── */
 function TronCar() {
   const groupRef = useRef<THREE.Group>(null)
+  const { scene } = useGLTF('/sports_car.glb')
 
-  const meshes = useMemo(
-    () =>
-      SECTIONS.map((s) => {
-        const geom = new THREE.BoxGeometry(...s.size)
-        const edges = new THREE.EdgesGeometry(geom, 15)
-        return { pos: s.pos, rot: s.rot ?? [0, 0, 0], geom, edges }
-      }),
-    [],
-  )
+  const { glassScene, edgesData } = useMemo(() => {
+    const cloned = scene.clone(true)
 
-  const wheelPositions: [number, number, number][] = [
-    [-1.06, 0.15, 1.7],
-    [1.06, 0.15, 1.7],
-    [-1.06, 0.15, -1.7],
-    [1.06, 0.15, -1.7],
-  ]
+    // Auto-scale to 4 units
+    const box = new THREE.Box3().setFromObject(cloned)
+    const size = new THREE.Vector3()
+    box.getSize(size)
+    const maxDim = Math.max(size.x, size.y, size.z)
+    const scale = maxDim > 0 ? 4 / maxDim : 1
+    cloned.scale.set(scale, scale, scale)
 
-  const wheelGeom = useMemo(() => buildCircle(0.36, 24), [])
+    // Center
+    const scaledBox = new THREE.Box3().setFromObject(cloned)
+    const center = new THREE.Vector3()
+    scaledBox.getCenter(center)
+    cloned.position.sub(center)
+    cloned.position.y += 0.6
 
-  const groundRing = useMemo(() => new THREE.RingGeometry(1.5, 2.3, 48), [])
+    const edges: {
+      pos: THREE.Vector3
+      quat: THREE.Quaternion
+      scl: THREE.Vector3
+      geom: THREE.EdgesGeometry
+    }[] = []
+
+    cloned.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.geometry) {
+        // Replace mesh material with glassmorphism
+        child.material = new THREE.MeshPhysicalMaterial({
+          color: '#000000',
+          transparent: true,
+          opacity: 0.05,
+          roughness: 0.05,
+          metalness: 0,
+          clearcoat: 0.6,
+          clearcoatRoughness: 0.2,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        })
+        child.castShadow = false
+        child.receiveShadow = false
+
+        // Neon edge geometry
+        edges.push({
+          pos: child.position.clone(),
+          quat: child.quaternion.clone(),
+          scl: child.scale.clone(),
+          geom: new THREE.EdgesGeometry(child.geometry, 18),
+        })
+      }
+    })
+
+    return { glassScene: cloned, edgesData: edges }
+  }, [scene])
 
   useFrame((_, delta) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.28
+      groupRef.current.rotation.y += delta * 0.3
     }
   })
 
   return (
-    <group ref={groupRef} position={[0, -0.2, 0]}>
+    <group ref={groupRef} position={[0, -0.3, 0]}>
       {/* Ground reflection ring */}
       <mesh
-        geometry={groundRing}
         rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.3, 0]}
+        position={[0, -0.28, 0]}
       >
+        <ringGeometry args={[1.2, 2.2, 48]} />
         <meshBasicMaterial
           color={NEON}
           transparent
-          opacity={0.08}
+          opacity={0.1}
           side={THREE.DoubleSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
       </mesh>
 
-      {/* Car body sections — glass fill + neon edges */}
-      {meshes.map((m, i) => (
-        <group key={i} position={m.pos} rotation={m.rot as any}>
-          {/* Glassmorphism fill */}
-          <mesh geometry={m.geom}>
-            <meshPhysicalMaterial
-              color="#000000"
-              transparent
-              opacity={0.04}
-              roughness={0.05}
-              metalness={0}
-              clearcoat={0.5}
-              clearcoatRoughness={0.3}
-              side={THREE.DoubleSide}
-              depthWrite={false}
-            />
-          </mesh>
-          {/* Neon wireframe */}
-          <lineSegments geometry={m.edges}>
-            <lineBasicMaterial
-              color={NEON}
-              transparent
-              opacity={0.7}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </lineSegments>
-        </group>
-      ))}
+      {/* Glass car body (original meshes with glass material) */}
+      <primitive object={glassScene} />
 
-      {/* Wheels — continuous circle lines */}
-      {wheelPositions.map((pos, i) => (
-        <group key={`w${i}`} position={pos} rotation={[0, 0, Math.PI / 2]}>
-          <line geometry={wheelGeom}>
-            <lineBasicMaterial
-              color={NEON}
-              transparent
-              opacity={0.9}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </line>
-        </group>
+      {/* Neon wireframe edges */}
+      {edgesData.map((ed, i) => (
+        <lineSegments
+          key={i}
+          geometry={ed.geom}
+          position={ed.pos}
+          quaternion={ed.quat}
+          scale={ed.scl}
+        >
+          <lineBasicMaterial
+            color={NEON}
+            transparent
+            opacity={0.75}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </lineSegments>
       ))}
     </group>
   )
@@ -169,12 +128,12 @@ export default function HeroCarScene() {
         <TronCar />
 
         <Sparkles
-          count={45}
+          count={50}
           scale={[7, 3.5, 7]}
           size={2}
           speed={0.2}
           color={NEON}
-          opacity={0.2}
+          opacity={0.25}
         />
       </Canvas>
     </div>
