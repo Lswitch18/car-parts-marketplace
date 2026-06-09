@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
+import { CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import { fetchParts } from '../lib/partsApi'
 import { Product } from '../types'
+import { getCountryFlag, getCountryOrder } from '../lib/countryFlags'
 
 // Extend product with relational fields used in UI
 interface ProductUI extends Product {
@@ -48,6 +49,41 @@ export default function Catalog() {
 
   const [expandedBrand, setExpandedBrand] = useState<string | null>(filters.brand || null)
   const [showBrands, setShowBrands] = useState(true)
+  const [collapsedCountries, setCollapsedCountries] = useState<Set<string>>(new Set())
+
+  const { data: dbBrands = [] } = useQuery<{ id: string; name: string; slug: string; country: string | null }[]>({
+    queryKey: ['brands'],
+    staleTime: 300_000,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('brands')
+        .select('id, name, slug, country')
+        .not('slug', 'is', null)
+        .order('name')
+      return data || []
+    },
+  })
+
+  const brandsByCountry = useMemo(() => {
+    const grouped: Record<string, { id: string; name: string; slug: string; country: string | null }[]> = {}
+    for (const b of dbBrands) {
+      const key = b.country || 'Other'
+      if (!grouped[key]) grouped[key] = []
+      grouped[key].push(b)
+    }
+    return Object.entries(grouped).sort(
+      ([a], [b]) => getCountryOrder(a) - getCountryOrder(b)
+    )
+  }, [dbBrands])
+
+  const toggleCountry = (country: string) => {
+    setCollapsedCountries(prev => {
+      const next = new Set(prev)
+      if (next.has(country)) next.delete(country)
+      else next.add(country)
+      return next
+    })
+  }
   const [sortBy, setSortBy] = useState('created_at')
   const [searchInput, setSearchInput] = useState(filters.search)
 
@@ -319,64 +355,58 @@ export default function Catalog() {
                 </button>
 
                 {showBrands && (
-                  <div className="space-y-0.5 max-h-[40vh] overflow-y-auto pr-1 scrollbar-thin ml-1">
-                    {BRANDS.map(brand => (
-                      <div key={brand.id}>
-                        <button
-                          onClick={() => setBrand(brand.id)}
-                          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-all"
-                          style={
-                            filters.brand === brand.id
-                              ? {
-                                  background: 'rgba(13,117,255,0.12)',
-                                  color: '#4d9cff',
-                                  border: '1px solid rgba(13,117,255,0.25)',
-                                }
-                              : {
-                                  color: '#6B7280',
-                                  border: '1px solid transparent',
-                                }
-                          }
-                        >
-                          <span>{brand.name}</span>
-                          <ChevronRight
-                            className="w-3.5 h-3.5 transition-transform duration-200"
-                            style={{
-                              transform: expandedBrand === brand.id ? 'rotate(90deg)' : 'rotate(0deg)',
-                              color: filters.brand === brand.id ? '#4d9cff' : '#4B5563',
-                            }}
-                          />
-                        </button>
-                        {expandedBrand === brand.id && (
-                          <div
-                            className="ml-4 mt-1 mb-1 space-y-0.5 pl-3"
-                            style={{ borderLeft: '1px solid rgba(13,117,255,0.15)' }}
+                  <div className="space-y-1 max-h-[50vh] overflow-y-auto pr-1 scrollbar-thin ml-1">
+                    {brandsByCountry.map(([country, brands]) => {
+                      const isCollapsed = collapsedCountries.has(country)
+                      const flag = getCountryFlag(country)
+                      return (
+                        <div key={country}>
+                          <button
+                            onClick={() => toggleCountry(country)}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors hover:bg-white/5"
+                            style={{ color: '#6B7280' }}
                           >
-                            <button
-                              onClick={() => { setBrand(brand.id); updateFilter('model', '') }}
-                              className="w-full text-left px-3 py-1.5 rounded-lg text-xs transition-colors"
-                              style={{ color: !filters.model ? '#4d9cff' : '#6B7280' }}
-                            >
-                              Todos os modelos
-                            </button>
-                            {brand.models.map(model => (
-                              <button
-                                key={model}
-                                onClick={() => { setBrand(brand.id); setModelFilter(model) }}
-                                className="w-full text-left px-3 py-1.5 rounded-lg text-xs transition-all"
-                                style={
-                                  filters.model === model
-                                    ? { color: '#4d9cff', background: 'rgba(13,117,255,0.08)' }
-                                    : { color: '#6B7280' }
-                                }
-                              >
-                                {model}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                            <span className="text-base">{flag}</span>
+                            <span className="uppercase tracking-wider">{country}</span>
+                            <span className="ml-auto text-[10px] opacity-50">{brands.length}</span>
+                            <ChevronRight
+                              className="w-3 h-3 transition-transform duration-200"
+                              style={{
+                                transform: isCollapsed ? 'rotate(0deg)' : 'rotate(90deg)',
+                                color: '#4B5563',
+                              }}
+                            />
+                          </button>
+                          {!isCollapsed && (
+                            <div className="space-y-0.5 ml-1">
+                              {brands.map(brand => (
+                                <div key={brand.id}>
+                                  <button
+                                    onClick={() => setBrand(brand.slug)}
+                                    className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all"
+                                    style={
+                                      filters.brand === brand.slug
+                                        ? {
+                                            background: 'rgba(13,117,255,0.12)',
+                                            color: '#4d9cff',
+                                            border: '1px solid rgba(13,117,255,0.25)',
+                                          }
+                                        : {
+                                            color: '#6B7280',
+                                            border: '1px solid transparent',
+                                          }
+                                    }
+                                  >
+                                    <span className="text-xs opacity-50">{flag}</span>
+                                    <span className="truncate">{brand.name}</span>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
 

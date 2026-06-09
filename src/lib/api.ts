@@ -260,6 +260,45 @@ export const api = {
   ai: {
     analyzePart: (image: string) => fetchApi('/analyze-part', { method: 'POST', body: JSON.stringify({ image }) }),
   },
+
+  partsLookup: {
+    brands: () => fetchPublic<{ id: string; name: string; slug: string; logo_url?: string; parts_count: number }[]>('/parts-lookup/brands'),
+
+    models: (brandId: string) => fetchPublic<{ name: string; generations: { name: string | null; year_start: number; year_end: number | null }[] }[]>(`/parts-lookup/models?brand_id=${brandId}`),
+
+    vehicles: (model: string, year?: number) => {
+      const params = new URLSearchParams()
+      if (model) params.set('model', model)
+      if (year) params.set('year', String(year))
+      return fetchPublic<import('../types').VehicleModel[]>(`/parts-lookup/vehicles?${params}`)
+    },
+
+    categories: () => fetchPublic<{ id: string; name: string; slug: string; parts_count: number }[]>('/parts-lookup/categories'),
+
+    search: (params: { q?: string; vehicle_id?: string; category_id?: string; brand_id?: string; page?: number; limit?: number }) => {
+      const query = new URLSearchParams()
+      Object.entries(params).forEach(([k, v]) => v !== undefined && v !== '' && query.set(k, String(v)))
+      return fetchPublic<import('../types').PartsLookupResult>(`/parts-lookup/search?${query}`)
+    },
+
+    partDetail: (partNumber: string) => fetchPublic<import('../types').PartCatalogItem>(`/parts-lookup/part/${encodeURIComponent(partNumber)}`),
+
+    vehicleParts: (vehicleId: string) => fetchPublic<import('../types').PartsByCategory[]>(`/parts-lookup/vehicle/${vehicleId}/parts`),
+  },
 };
+
+async function fetchPublic<T>(endpoint: string): Promise<T> {
+  const response = await fetch(`${FUNCTIONS_URL}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json' },
+  })
+
+  const data = await response.json()
+
+  if (!response.ok || !data.success) {
+    throw new Error(data.error || 'Request failed')
+  }
+
+  return data.data
+}
 
 export type ApiClient = typeof api;

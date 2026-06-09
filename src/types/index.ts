@@ -153,6 +153,64 @@ export interface Transaction {
   seller?: { id: string; full_name: string; email: string }
 }
 
+export interface VehicleModel {
+  id: string
+  brand_id: string
+  name: string
+  generation?: string
+  year_start: number
+  year_end: number | null
+  chassis_code?: string
+  engine_code?: string
+  body_style?: string
+  drivetrain?: string
+  transmission?: string
+  specs?: Record<string, unknown>
+  brand?: { id: string; name: string; slug?: string; logo_url?: string }
+}
+
+export interface PartCatalogItem {
+  id: string
+  part_number: string
+  oem_number?: string
+  name: string
+  brand_id: string
+  category_id: string
+  description?: string
+  specs?: Record<string, unknown>
+  image_url?: string
+  price_reference?: number
+  source?: string
+  brand?: { id: string; name: string; slug?: string; logo_url?: string }
+  category?: { id: string; name: string; slug?: string }
+  compatible_vehicles?: Fitment[]
+  position?: string
+  notes?: string
+  oem_ref?: string
+}
+
+export interface Fitment {
+  id: string
+  part_id: string
+  vehicle_id: string
+  position?: string
+  notes?: string
+  oem_ref?: string
+  vehicle?: VehicleModel
+}
+
+export interface PartsLookupResult {
+  parts: PartCatalogItem[]
+  total: number
+  page: number
+  total_pages: number
+}
+
+export interface PartsByCategory {
+  category: { id: string; name: string; slug: string }
+  parts: PartCatalogItem[]
+}
+
 export interface CreateAuctionInput {
   title: string
   description?: string

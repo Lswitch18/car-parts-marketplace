@@ -175,6 +175,21 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-1">
             <LanguageDetector />
 
+            <Link
+              to="/parts"
+              style={navLinkBase}
+              onMouseEnter={(e) => {
+                ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+              }}
+              onMouseLeave={(e) => {
+                ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+              }}
+            >
+              Catálogo de Peças
+            </Link>
+
             {(user) ? (
               <>
                 {/* Favourites */}
@@ -470,6 +485,14 @@ export default function Header() {
 
             {(user) ? (
               <>
+                <Link
+                  to="/parts"
+                  className="flex items-center justify-between py-3 px-3 rounded-lg text-sm font-medium"
+                  style={{ color: '#B0B5C0' }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Catálogo de Peças
+                </Link>
                 {[
                   { to: '/dashboard', label: t('Dashboard') },
                   { to: '/favorites', label: t('Favoritos') },
@@ -511,6 +534,18 @@ export default function Header() {
               </>
             ) : (
               <div className="pt-2 flex flex-col gap-2">
+                <Link
+                  to="/parts"
+                  className="block text-center py-3 px-4 rounded-xl text-sm font-medium"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: '#B0B5C0',
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Catálogo de Peças
+                </Link>
                 <Link
                   to="/login"
                   className="block text-center py-3 px-4 rounded-xl text-sm font-medium"

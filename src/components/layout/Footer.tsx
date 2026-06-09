@@ -43,6 +43,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/parts" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Consulta de Peças
+                  </Link>
+                </li>
+                <li>
                   <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
                     Compatibilidade
                   </Link>
