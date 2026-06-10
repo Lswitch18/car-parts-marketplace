@@ -107,7 +107,7 @@ const GaidLogo: React.FC<{
               alignItems: 'baseline',
             }}
           >
-            {/* D — metallic chrome (same as AIG) */}
+            {/* D — metallic chrome */}
             <span
               style={{
                 background: 'linear-gradient(175deg, #FFFFFF 0%, #C8D8F4 38%, #9AAEC6 70%, #E8F0FA 100%)',
@@ -119,7 +119,27 @@ const GaidLogo: React.FC<{
             >
               D
             </span>
-            {/* AIG — metallic chrome */}
+            {/* A — neon blue */}
+            <span
+              style={{
+                color: '#0D75FF',
+                textShadow: '0 0 8px rgba(13,117,255,0.8), 0 0 24px rgba(13,117,255,0.4), 0 0 48px rgba(13,117,255,0.2)',
+                animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
+              }}
+            >
+              A
+            </span>
+            {/* I — neon blue */}
+            <span
+              style={{
+                color: '#0D75FF',
+                textShadow: '0 0 8px rgba(13,117,255,0.8), 0 0 24px rgba(13,117,255,0.4), 0 0 48px rgba(13,117,255,0.2)',
+                animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
+              }}
+            >
+              I
+            </span>
+            {/* G — metallic chrome */}
             <span
               style={{
                 background: 'linear-gradient(175deg, #FFFFFF 0%, #C8D8F4 38%, #9AAEC6 70%, #E8F0FA 100%)',
@@ -129,7 +149,7 @@ const GaidLogo: React.FC<{
                 filter: 'drop-shadow(0 1px 2px rgba(13,117,255,0.2))',
               }}
             >
-              AIG
+              G
             </span>
           </div>
 
