@@ -1,10 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Prioritiza variáveis de ambiente (Vercel/.env), mas mantém os valores fixos como fallback
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-const STORAGE_KEY = 'sb-clqubcryhbrjlupkgeva-auth-token'
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase credentials not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')
+}
+
+const STORAGE_KEY = 'daig-auth-token'
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {

@@ -15,6 +15,10 @@ export class SupabaseError extends Error {
   }
 }
 
+function sanitizeMessage(msg: string): string {
+  return msg.replace(/https?:\/\/[^\s'"]+/g, '[URL OCULTA]')
+}
+
 export function handleSupabaseError(error: any): string {
   console.error('Supabase Error:', error)
 
@@ -22,9 +26,11 @@ export function handleSupabaseError(error: any): string {
     return 'Erro desconhecido. Tente novamente.'
   }
 
-  const errorMessage = error.message || error.error_description || String(error)
+  let errorMessage = error.message || error.error_description || String(error)
   const errorCode = error.code || ''
   const statusCode = error.status || error.statusCode
+
+  errorMessage = sanitizeMessage(errorMessage)
 
   for (const [key, message] of Object.entries(RATE_LIMIT_ERRORS)) {
     if (errorMessage.toLowerCase().includes(key.toLowerCase()) || 
