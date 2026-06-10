@@ -86,13 +86,46 @@ export default function Footer() {
             <div>
               <h3 className="font-bold text-white mb-4">Marcas</h3>
               <ul className="space-y-2">
-                <li><span className="text-gray-300">Nissan</span></li>
-                <li><span className="text-gray-300">Toyota</span></li>
-                <li><span className="text-gray-300">Honda</span></li>
-                <li><span className="text-gray-300">Mazda</span></li>
-                <li><span className="text-gray-300">Subaru</span></li>
-                <li><span className="text-gray-300">Mitsubishi</span></li>
-                <li><span className="text-gray-300">Tesla & BYD</span></li>
+                <li>
+                  <Link to="/catalog?brand=nissan" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Nissan
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=toyota" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Toyota
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=honda" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Honda
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=mazda" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Mazda
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=subaru" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Subaru
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=mitsubishi" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Mitsubishi
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=tesla" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Tesla
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog?brand=byd" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    BYD
+                  </Link>
+                </li>
               </ul>
             </div>
 
