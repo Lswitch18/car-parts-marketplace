@@ -56,9 +56,9 @@ const GaidLogo: React.FC<{
           src="/logo.png"
           alt="DAIG"
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
+            width: '75%',
+            height: '75%',
+            objectFit: 'contain',
             display: 'block',
           }}
         />
