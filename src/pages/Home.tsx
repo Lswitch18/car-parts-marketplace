@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard, X } from 'lucide-react'
+import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard, X, MessageCircle, Send, Cpu, Eye, Globe } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
@@ -55,9 +55,9 @@ export default function Home() {
     },
     {
       icon: Truck,
-      color: '#00E5FF',
-      colorBg: 'rgba(0,229,255,0.10)',
-      colorBorder: 'rgba(0,229,255,0.25)',
+      color: '#4DA3FF',
+      colorBg: 'rgba(77,163,255,0.10)',
+      colorBorder: 'rgba(77,163,255,0.25)',
       title: 'Entrega Rápida',
       desc: t('Envio para todo Japão com rastreamento em tempo real e estimativa precisa.'),
       check: 'Rastreio em tempo real',
@@ -69,18 +69,18 @@ export default function Home() {
       ],
     },
     {
-      icon: Star,
+      icon: MessageCircle,
       color: '#0D75FF',
       colorBg: 'rgba(13,117,255,0.12)',
       colorBorder: 'rgba(13,117,255,0.25)',
-      title: 'Qualidade Garantida',
-      desc: 'Peças originais e de procedência com verificação de autenticidade em cada anúncio.',
-      check: 'Peças verificadas',
+      title: 'Negociação Transparente',
+      desc: 'Converse diretamente com o vendedor, tire dúvidas e envie sua proposta sem intermediários.',
+      check: 'Contato direto',
       delay: 3,
       details: [
-        { icon: BadgeCheck, label: 'Peças verificadas', text: 'Cada anúncio passa por verificação de autenticidade antes de ser publicado.' },
-        { icon: FileText, label: 'Garantia estendida', text: 'Garantia de 12 meses em peças originais e 6 meses em peças usadas.' },
-        { icon: Gauge, label: 'Teste de qualidade', text: 'Peças testadas e certificadas por nossa equipe técnica especializada.' },
+        { icon: MessageCircle, label: 'Chat com o vendedor', text: 'Comunique-se em tempo real com o vendedor para alinhar detalhes antes de fechar negócio.' },
+        { icon: Send, label: 'Envie sua proposta', text: 'Faça uma oferta personalizada — o vendedor analisa e responde diretamente pelo chat.' },
+        { icon: RefreshCw, label: 'Negociação flexível', text: 'Combine prazos, frete e condições de pagamento direto com o vendedor.' },
       ],
     },
   ]
@@ -246,6 +246,86 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {cards.map((card) => (
               <FeatureCard key={card.title} {...card} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          TECH & INNOVATION
+      ════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden bg-background">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full filter blur-[180px]"
+            style={{ background: 'rgba(13,117,255,0.06)' }} />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full filter blur-[150px]"
+            style={{ background: 'rgba(112,0,255,0.05)' }} />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="reveal text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4"
+              style={{ border: '1px solid rgba(13,117,255,0.2)', background: 'rgba(13,117,255,0.06)' }}>
+              <Cpu className="w-3.5 h-3.5" style={{ color: '#0D75FF' }} />
+              <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#0D75FF' }}>
+                Tecnologia & Inovação
+              </span>
+            </div>
+            <h2 className="font-display text-3xl font-bold text-white">
+              Potência tecnológica da{' '}
+              <span className="neon-text">DAIG</span>
+            </h2>
+            <p className="text-base mt-4 max-w-2xl mx-auto" style={{ color: '#8892A4' }}>
+              Do matching inteligente à visualização 3D — nossa plataforma é construída sobre engenharia de ponta para conectar compradores e vendedores com segurança e velocidade.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Bot,
+                color: '#0D75FF',
+                title: 'Matching por IA',
+                desc: 'Nosso algoritmo de machine learning analisa milhares de peças em segundos e encontra a compatibilidade exata para seu veículo — mesmo em modelos raros e importados.',
+              },
+              {
+                icon: Eye,
+                color: '#00E5FF',
+                title: 'Visualização 3D Imersiva',
+                desc: 'Inspencione peças em 3D com zoom, rotação e realidade aumentada antes de comprar. Veja cada detalhe como se estivesse com a peça em mãos.',
+              },
+              {
+                icon: Globe,
+                color: '#7000FF',
+                title: 'Logística Inteligente',
+                desc: 'Rastreamento em tempo real com estimativas precisas, rotas otimizadas por IA e integração com as principais transportadoras do Japão.',
+              },
+            ].map((tech, idx) => (
+              <div
+                key={tech.title}
+                className="reveal rounded-2xl p-8 transition-all duration-300 group hover:-translate-y-1"
+                style={{
+                  background: `rgba(13,117,255,0.04)`,
+                  border: '1px solid rgba(255,255,255,0.06)',
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.borderColor = `${tech.color}44`
+                  el.style.boxShadow = `0 16px 40px ${tech.color}15`
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.borderColor = 'rgba(255,255,255,0.06)'
+                  el.style.boxShadow = ''
+                }}
+              >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-500 group-hover:scale-110"
+                  style={{ background: `${tech.color}18`, border: `1px solid ${tech.color}33` }}>
+                  <tech.icon className="w-6 h-6" style={{ color: tech.color }} />
+                </div>
+                <h3 className="font-display text-lg font-bold text-white mb-3">{tech.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: '#8892A4' }}>{tech.desc}</p>
+              </div>
             ))}
           </div>
         </div>
