@@ -10,7 +10,7 @@ export default function Footer() {
       {/* Seção Principal - FUNDO PRETO */}
       <div className="bg-black text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
             
             {/* Coluna 1: Logo + Descrição */}
             <div>
@@ -103,7 +103,39 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Coluna 4: Contato */}
+            {/* Coluna 4: Recursos */}
+            <div>
+              <h3 className="font-bold text-white mb-4">Recursos</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/rastreio" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Rastrear Pedido
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/catalog" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Catálogo Completo
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Compatibilidade
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/parts" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Consulta de Peças
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/auctions" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
+                    Leilões
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Coluna 5: Contato */}
             <div>
               <h3 className="font-bold text-white mb-4">Contato</h3>
               <ul className="space-y-2">
