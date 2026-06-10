@@ -1,6 +1,6 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF, Sparkles, Text } from '@react-three/drei'
+import { useGLTF, Sparkles, Html } from '@react-three/drei'
 import * as THREE from 'three'
 
 const NEON = '#00D4FF'
@@ -101,6 +101,7 @@ function TronCar() {
 /* ── Floating company values: Missão, Visão, Inovação ── */
 function CompanyValues() {
   const groupRef = useRef<THREE.Group>(null)
+  const [hovered, setHovered] = useState<number | null>(null)
 
   const items = [
     { title: 'Missão', desc: 'Conectar pessoas com as peças certas', color: '#0D75FF' },
@@ -117,36 +118,41 @@ function CompanyValues() {
   })
 
   return (
-    <group ref={groupRef} position={[-0.35, 1.4, 0.6]}>
+    <group ref={groupRef} position={[-0.35, 1.37, 0.6]}>
       {items.map((item, i) => {
         const offsetX = [-0.1, 0.12, -0.06][i]
         return (
-          <group key={item.title} position={[offsetX, 0.12 - i * 0.12, 0]}>
-            <Text
-              fontSize={0.08}
-              color={item.color}
-              anchorX="center"
-              anchorY="middle"
+          <Html key={item.title} position={[offsetX, 0.12 - i * 0.12, 0]} center>
+            <div
+              className="flex items-center gap-2 whitespace-nowrap"
+              style={{ opacity: 0.85, cursor: 'default' }}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
             >
-              {item.title}
-            </Text>
-            <Text
-              position={[0, -0.1, 0]}
-              fontSize={0.04}
-              color="#8892A4"
-              anchorX="center"
-              anchorY="middle"
-              maxWidth={1.2}
-            >
-              {item.desc}
-            </Text>
-            {i < 2 && (
-              <mesh position={[0, -0.13, 0]}>
-                <planeGeometry args={[0.3, 0.003]} />
-                <meshBasicMaterial color={item.color} transparent opacity={0.25} />
-              </mesh>
-            )}
-          </group>
+              <span
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  letterSpacing: '0.04em',
+                  color: item.color,
+                  textShadow: hovered === i ? `0 0 8px ${item.color}` : 'none',
+                  transition: 'text-shadow 0.3s',
+                }}
+              >
+                {item.title}
+              </span>
+              <span
+                style={{
+                  fontSize: '10px',
+                  fontWeight: 300,
+                  color: hovered === i ? '#00D4FF' : '#8892A4',
+                  transition: 'color 0.3s',
+                }}
+              >
+                {item.desc}
+              </span>
+            </div>
+          </Html>
         )
       })}
     </group>
