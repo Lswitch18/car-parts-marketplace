@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF, Sparkles, Html } from '@react-three/drei'
+import { useGLTF, Sparkles, Html, Line } from '@react-three/drei'
 import * as THREE from 'three'
 
 const NEON = '#00D4FF'
@@ -98,12 +98,18 @@ function TronCar() {
   )
 }
 
-/* ── 3D dots with hover tooltips (Missão, Visão, Inovação) ── */
+/* ── 3D dots in stair pattern along windshield line ── */
 function CompanyDots() {
   const items = [
     { title: 'Missão', desc: 'Conectar pessoas com as peças certas', color: '#0D75FF' },
     { title: 'Visão', desc: 'Referência em autopeças no Japão', color: '#7000FF' },
     { title: 'Inovação', desc: 'IA + 3D + Logística Inteligente', color: '#00D4FF' },
+  ]
+
+  const positions: [number, number, number][] = [
+    [0.50, 0.90, 0.4],
+    [0.38, 0.78, 0.4],
+    [0.26, 0.66, 0.4],
   ]
 
   const groupRef = useRef<THREE.Group>(null)
@@ -119,23 +125,41 @@ function CompanyDots() {
 
   useFrame(() => {
     if (!groupRef.current) return
-    const targetY = Math.max(0.5, Math.min(1.5, 0.85 + scrollRef.current * 0.0004))
+    const targetY = Math.max(0.3, Math.min(1.2, 0.85 + scrollRef.current * 0.0004))
     currentY.current += (targetY - currentY.current) * 0.05
     groupRef.current.position.y = currentY.current
   })
 
   return (
-    <group ref={groupRef} position={[-0.7, 0.85, 0.6]}>
+    <group ref={groupRef} position={[0, 0, 0]}>
+      {/* Diagonal connecting line */}
+      <Line
+        points={positions}
+        color={NEON}
+        lineWidth={1}
+        transparent
+        opacity={0.25}
+      />
+
+      {/* Horizontal base line (bed) */}
+      <Line
+        points={[[0.22, 0.62, 0.4], [0.54, 0.62, 0.4]]}
+        color={NEON}
+        lineWidth={1}
+        transparent
+        opacity={0.12}
+      />
+
       {items.map((item, i) => (
-        <Html key={item.title} position={[0, 0.08 - i * 0.08, 0]}>
+        <Html key={item.title} position={positions[i]}>
           <div className="flex items-center pointer-events-auto">
             <div
-              className="w-[5px] h-[5px] rounded-full cursor-pointer transition-all duration-200"
+              className="w-[3px] h-[3px] rounded-full cursor-pointer transition-all duration-200"
               style={{
                 backgroundColor: hovered === i ? '#00D4FF' : item.color,
                 boxShadow: hovered === i
                   ? '0 0 8px #00D4FF'
-                  : `0 0 4px ${item.color}55`,
+                  : `0 0 4px ${item.color}66`,
               }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
