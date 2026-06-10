@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF, Sparkles } from '@react-three/drei'
+import { useGLTF, Sparkles, Text } from '@react-three/drei'
 import * as THREE from 'three'
 
 const NEON = '#00D4FF'
@@ -98,6 +98,61 @@ function TronCar() {
   )
 }
 
+/* ── Floating company values: Missão, Visão, Inovação ── */
+function CompanyValues() {
+  const groupRef = useRef<THREE.Group>(null)
+
+  const items = [
+    { title: 'Missão', desc: 'Conectar pessoas com as peças certas', color: '#0D75FF' },
+    { title: 'Visão', desc: 'Referência em autopeças no Japão', color: '#7000FF' },
+    { title: 'Inovação', desc: 'IA + 3D + Logística Inteligente', color: '#00D4FF' },
+  ]
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return
+    groupRef.current.children.forEach((child, i) => {
+      const baseY = [0.12, 0, -0.12][i]
+      child.position.y = baseY + Math.sin(clock.elapsedTime * 0.6 + i * 2.1) * 0.03
+    })
+  })
+
+  return (
+    <group ref={groupRef} position={[-0.35, 1.4, 0.6]}>
+      {items.map((item, i) => {
+        const offsetX = [-0.1, 0.12, -0.06][i]
+        return (
+          <group key={item.title} position={[offsetX, 0.12 - i * 0.12, 0]}>
+            <Text
+              fontSize={0.08}
+              color={item.color}
+              anchorX="center"
+              anchorY="middle"
+            >
+              {item.title}
+            </Text>
+            <Text
+              position={[0, -0.1, 0]}
+              fontSize={0.04}
+              color="#8892A4"
+              anchorX="center"
+              anchorY="middle"
+              maxWidth={1.2}
+            >
+              {item.desc}
+            </Text>
+            {i < 2 && (
+              <mesh position={[0, -0.13, 0]}>
+                <planeGeometry args={[0.3, 0.003]} />
+                <meshBasicMaterial color={item.color} transparent opacity={0.25} />
+              </mesh>
+            )}
+          </group>
+        )
+      })}
+    </group>
+  )
+}
+
 /* ── Public component ─────────────────────────────── */
 export default function HeroCarScene() {
   return (
@@ -110,6 +165,8 @@ export default function HeroCarScene() {
         <pointLight position={[5, 5, 5]} intensity={0.3} color={NEON} />
 
         <TronCar />
+
+        <CompanyValues />
 
         <Sparkles
           count={50}
