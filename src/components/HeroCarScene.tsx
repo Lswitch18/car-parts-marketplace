@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF, Sparkles } from '@react-three/drei'
+import { Canvas } from '@react-three/fiber'
+import { useGLTF, Sparkles, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 const NEON = '#00D4FF'
@@ -13,7 +13,6 @@ function TronCar() {
   const { glassScene, edgesData } = useMemo(() => {
     const cloned = scene.clone(true)
 
-    // Auto-scale to 4 units
     const box = new THREE.Box3().setFromObject(cloned)
     const size = new THREE.Vector3()
     box.getSize(size)
@@ -21,7 +20,6 @@ function TronCar() {
     const scale = maxDim > 0 ? 4 / maxDim : 1
     cloned.scale.set(scale, scale, scale)
 
-    // Center
     const scaledBox = new THREE.Box3().setFromObject(cloned)
     const center = new THREE.Vector3()
     scaledBox.getCenter(center)
@@ -37,7 +35,6 @@ function TronCar() {
 
     cloned.traverse((child) => {
       if (child instanceof THREE.Mesh && child.geometry) {
-        // Replace mesh material with glassmorphism
         child.material = new THREE.MeshPhysicalMaterial({
           color: '#000000',
           transparent: true,
@@ -52,7 +49,6 @@ function TronCar() {
         child.castShadow = false
         child.receiveShadow = false
 
-        // Neon edge geometry
         edges.push({
           pos: child.position.clone(),
           quat: child.quaternion.clone(),
@@ -65,15 +61,8 @@ function TronCar() {
     return { glassScene: cloned, edgesData: edges }
   }, [scene])
 
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.3
-    }
-  })
-
   return (
     <group ref={groupRef} position={[0, -0.3, 0]}>
-      {/* Ground reflection ring */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -0.28, 0]}
@@ -89,10 +78,8 @@ function TronCar() {
         />
       </mesh>
 
-      {/* Glass car body (original meshes with glass material) */}
       <primitive object={glassScene} />
 
-      {/* Neon wireframe edges */}
       {edgesData.map((ed, i) => (
         <lineSegments
           key={i}
@@ -117,13 +104,24 @@ function TronCar() {
 /* ── Public component ─────────────────────────────── */
 export default function HeroCarScene() {
   return (
-    <div className="absolute right-[-120px] top-1/2 -translate-y-1/2 w-[900px] h-[900px] pointer-events-none z-0 hidden lg:block">
+    <div className="absolute inset-0 z-0 w-full h-full">
       <Canvas
         camera={{ position: [0, 0.85, 6.5], fov: 35 }}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.15} />
         <pointLight position={[5, 5, 5]} intensity={0.3} color={NEON} />
+
+        <OrbitControls
+          autoRotate
+          autoRotateSpeed={2}
+          enablePan={false}
+          enableZoom={false}
+          enableDamping
+          dampingFactor={0.05}
+          minPolarAngle={Math.PI / 3}
+          maxPolarAngle={Math.PI / 2}
+        />
 
         <TronCar />
 
