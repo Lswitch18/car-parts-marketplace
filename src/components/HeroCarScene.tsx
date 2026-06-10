@@ -98,63 +98,68 @@ function TronCar() {
   )
 }
 
-/* ── Floating company values: Missão, Visão, Inovação ── */
-function CompanyValues() {
-  const groupRef = useRef<THREE.Group>(null)
-  const [hovered, setHovered] = useState<number | null>(null)
-
+/* ── 3D dots with hover tooltips (Missão, Visão, Inovação) ── */
+function CompanyDots() {
   const items = [
     { title: 'Missão', desc: 'Conectar pessoas com as peças certas', color: '#0D75FF' },
     { title: 'Visão', desc: 'Referência em autopeças no Japão', color: '#7000FF' },
     { title: 'Inovação', desc: 'IA + 3D + Logística Inteligente', color: '#00D4FF' },
   ]
 
-  useFrame(({ clock }) => {
+  const groupRef = useRef<THREE.Group>(null)
+  const [hovered, setHovered] = useState<number | null>(null)
+  const scrollRef = useRef(0)
+  const currentY = useRef(0.85)
+
+  useEffect(() => {
+    const onScroll = () => { scrollRef.current = window.scrollY }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useFrame(() => {
     if (!groupRef.current) return
-    groupRef.current.children.forEach((child, i) => {
-      const baseY = [0.12, 0, -0.12][i]
-      child.position.y = baseY + Math.sin(clock.elapsedTime * 0.6 + i * 2.1) * 0.03
-    })
+    const targetY = Math.max(0.5, Math.min(1.5, 0.85 + scrollRef.current * 0.0004))
+    currentY.current += (targetY - currentY.current) * 0.05
+    groupRef.current.position.y = currentY.current
   })
 
   return (
-    <group ref={groupRef} position={[-0.35, 1.37, 0.6]}>
-      {items.map((item, i) => {
-        const offsetX = [-0.1, 0.12, -0.06][i]
-        return (
-          <Html key={item.title} position={[offsetX, 0.12 - i * 0.12, 0]} center>
+    <group ref={groupRef} position={[-0.7, 0.85, 0.6]}>
+      {items.map((item, i) => (
+        <Html key={item.title} position={[0, 0.08 - i * 0.08, 0]}>
+          <div className="flex items-center pointer-events-auto">
             <div
-              className="flex items-center gap-2 whitespace-nowrap"
-              style={{ opacity: 0.85, cursor: 'default' }}
+              className="w-[5px] h-[5px] rounded-full cursor-pointer transition-all duration-200"
+              style={{
+                backgroundColor: hovered === i ? '#00D4FF' : item.color,
+                boxShadow: hovered === i
+                  ? '0 0 8px #00D4FF'
+                  : `0 0 4px ${item.color}55`,
+              }}
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
-            >
-              <span
+            />
+            {hovered === i && (
+              <div
+                className="ml-2 px-2 py-1 rounded whitespace-nowrap"
                 style={{
-                  fontSize: '10px',
-                  fontWeight: 700,
-                  letterSpacing: '0.04em',
-                  color: item.color,
-                  textShadow: hovered === i ? `0 0 8px ${item.color}` : 'none',
-                  transition: 'text-shadow 0.3s',
+                  backgroundColor: 'rgba(0,0,0,0.85)',
+                  border: `1px solid ${item.color}44`,
+                  backdropFilter: 'blur(8px)',
                 }}
               >
-                {item.title}
-              </span>
-              <span
-                style={{
-                  fontSize: '10px',
-                  fontWeight: 300,
-                  color: hovered === i ? '#00D4FF' : '#8892A4',
-                  transition: 'color 0.3s',
-                }}
-              >
-                {item.desc}
-              </span>
-            </div>
-          </Html>
-        )
-      })}
+                <span style={{ fontSize: '10px', fontWeight: 700, color: item.color, marginRight: '5px' }}>
+                  {item.title}
+                </span>
+                <span style={{ fontSize: '9px', fontWeight: 300, color: '#8892A4' }}>
+                  {item.desc}
+                </span>
+              </div>
+            )}
+          </div>
+        </Html>
+      ))}
     </group>
   )
 }
@@ -172,7 +177,7 @@ export default function HeroCarScene() {
 
         <TronCar />
 
-        <CompanyValues />
+        <CompanyDots />
 
         <Sparkles
           count={50}
