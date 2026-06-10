@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard, X, MessageCircle, Send, Cpu, Eye, Globe } from 'lucide-react'
+import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown, Package, RefreshCw, HeadphonesIcon, MapPin, Clock, FileText, BadgeCheck, Gauge, CreditCard, X, MessageCircle, Send, Cpu, Eye, Globe, Bot } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { BRANDS } from '../lib/constants'
 import { useI18n } from '../lib/i18n'
