@@ -58,7 +58,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/home" className="text-gray-300 hover:text-[#ff3d00] transition-colors flex items-center gap-1">
+                  <Link to="/" className="text-gray-300 hover:text-[#ff3d00] transition-colors flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
                     Showroom 3D
                   </Link>
