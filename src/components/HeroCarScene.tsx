@@ -72,7 +72,7 @@ function TronCar() {
   })
 
   return (
-    <group ref={groupRef} position={[0, -0.31, 0]}>
+    <group ref={groupRef} position={[0, -0.4, 0]}>
       {/* Glass car body (original meshes with glass material) */}
       <primitive object={glassScene} />
 
