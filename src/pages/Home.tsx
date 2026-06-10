@@ -254,6 +254,7 @@ export default function Home() {
       {/* ════════════════════════════════════════
           TECH & INNOVATION
       ════════════════════════════════════════ */}
+      {/*
       <section className="py-24 relative overflow-hidden bg-background">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full filter blur-[180px]"
@@ -330,6 +331,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      */}
 
       {/* ════════════════════════════════════════
           CTA — Glassmorphism
