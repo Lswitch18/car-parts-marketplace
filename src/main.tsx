@@ -21,6 +21,10 @@ const queryClient = new QueryClient({
 window.addEventListener('error', (e) => console.error('[main] Global error:', e.message, e.error));
 window.addEventListener('unhandledrejection', (e) => console.error('[main] Unhandled rejection:', e.reason));
 
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual'
+}
+
 const root = document.getElementById('root');
 if (!root) {
   console.error('[main] #root element not found!');
