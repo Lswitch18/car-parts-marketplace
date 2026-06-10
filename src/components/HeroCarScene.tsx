@@ -18,7 +18,7 @@ function TronCar() {
     const size = new THREE.Vector3()
     box.getSize(size)
     const maxDim = Math.max(size.x, size.y, size.z)
-    const scale = maxDim > 0 ? 4 / maxDim : 1
+    const scale = maxDim > 0 ? 3.5 / maxDim : 1
     cloned.scale.set(scale, scale, scale)
 
     // Center
