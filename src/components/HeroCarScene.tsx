@@ -73,22 +73,6 @@ function TronCar() {
 
   return (
     <group ref={groupRef} position={[0, -0.3, 0]}>
-      {/* Ground reflection ring */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.28, 0]}
-      >
-        <ringGeometry args={[1.2, 2.2, 48]} />
-        <meshBasicMaterial
-          color={NEON}
-          transparent
-          opacity={0.1}
-          side={THREE.DoubleSide}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-
       {/* Glass car body (original meshes with glass material) */}
       <primitive object={glassScene} />
 
