@@ -228,7 +228,7 @@ export default function Home() {
       {/* ════════════════════════════════════════
           TRUST CARDS
       ════════════════════════════════════════ */}
-      <section className="py-24 bg-background" ref={trustRef}>
+      <section className="pt-24 pb-10 bg-background" ref={trustRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section label */}
           <div className="reveal text-center mb-14">
