@@ -29,6 +29,7 @@ import ImmersiveExperience from './pages/ImmersiveExperience'
 import Auctions from './pages/Auctions'
 import PartsLookup from './pages/PartsLookup'
 import ChatPopup from './components/ChatPopup'
+import ScrollToTop from './components/ScrollToTop'
 import { useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
@@ -58,6 +59,7 @@ function App() {
 
   return (
     <I18nProvider>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
