@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   Gavel, Clock, TrendingUp, User, AlertTriangle, ArrowRight, X, ChevronRight, Zap, Timer, Star, Award, ShoppingBag, CreditCard
 } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 
 interface AuctionItem {
   id: string
@@ -408,17 +409,12 @@ export default function Auctions() {
 
                   {/* Image */}
                   <div className="relative aspect-video bg-[#050508] overflow-hidden">
-                    {auction.images?.[0] ? (
-                      <img
-                        src={auction.images[0]}
-                        alt={auction.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Gavel className="w-10 h-10 text-[#1e1e2e]" />
-                      </div>
-                    )}
+                    <SafeImage
+                      src={auction.images?.[0]}
+                      alt={auction.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      fallback={<div className="w-full h-full flex items-center justify-center"><Gavel className="w-10 h-10 text-[#1e1e2e]" /></div>}
+                    />
 
                     {/* Dark overlay gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0F] via-transparent to-transparent opacity-80" />
@@ -577,13 +573,12 @@ export default function Auctions() {
             {/* Left: Image + Description */}
             <div className="w-full md:w-[45%] flex flex-col" style={{ background: 'var(--bg-deep)' }}>
               <div className="relative flex-1 min-h-[220px] md:min-h-[300px] overflow-hidden">
-                {selectedAuction.images?.[0] ? (
-                  <img src={selectedAuction.images[0]} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Gavel className="w-16 h-16 text-[#1e1e2e]" />
-                  </div>
-                )}
+                <SafeImage
+                  src={selectedAuction.images?.[0]}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  fallback={<div className="w-full h-full flex items-center justify-center"><Gavel className="w-16 h-16 text-[#1e1e2e]" /></div>}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#060609] via-transparent to-transparent opacity-60" />
 
                 {/* Countdown over image */}

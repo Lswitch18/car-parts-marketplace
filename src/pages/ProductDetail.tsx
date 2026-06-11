@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Heart, Share2, MessageCircle, Eye, Shield, Truck } from 'lucide-react'
+import { ArrowLeft, Heart, Share2, MessageCircle, Eye, Shield, Truck, Package } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useFavoriteStore } from '../stores/favoriteStore'
@@ -62,17 +63,12 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
             <div className="aspect-square bg-surface rounded-xl overflow-hidden mb-4">
-              {product.images?.[selectedImage] ? (
-                <img
-                  src={product.images[selectedImage]}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-600">
-                  <span className="text-6xl">🔧</span>
-                </div>
-              )}
+              <SafeImage
+                src={product.images?.[selectedImage]}
+                alt={product.title}
+                className="w-full h-full object-cover"
+                fallback={<div className="w-full h-full flex items-center justify-center text-gray-600"><span className="text-6xl">🔧</span></div>}
+              />
             </div>
             {product.images && product.images.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
@@ -84,7 +80,7 @@ export default function ProductDetail() {
                       selectedImage === i ? 'border-daig-blue' : 'border-transparent'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <SafeImage src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

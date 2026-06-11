@@ -9,6 +9,7 @@ import {
   CreditCard, Lock, ShieldCheck, Package, 
   ArrowLeft, Check, AlertCircle, Loader2
 } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 
 interface Part {
   id: string
@@ -251,7 +252,7 @@ export default function PaymentCheckout() {
                 <h2 className="text-lg font-semibold text-white mb-4">Resumo do Pedido</h2>
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="w-20 h-20 bg-background rounded-lg flex items-center justify-center overflow-hidden">
-                    {part.images?.[0] ? <img src={part.images[0]} alt="" className="w-full h-full object-cover" /> : <Package className="w-10 h-10 text-gray-600" />}
+                    <SafeImage src={part.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<Package className="w-10 h-10 text-gray-600" />} />
                   </div>
                   <div><p className="text-white font-medium">{part.title}</p><p className="text-gray-400 text-sm">{part.brands?.name}</p></div>
                 </div>

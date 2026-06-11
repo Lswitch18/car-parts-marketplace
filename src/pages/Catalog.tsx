@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List } from 'lucide-react'
+import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List, Package } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 import { supabase } from '../lib/supabase'
 import { CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '../lib/constants'
 import { useFavoriteStore } from '../stores/favoriteStore'
@@ -623,17 +624,12 @@ export default function Catalog() {
                     >
                       {/* Image */}
                       <div className="aspect-[4/3] bg-[#050505] relative overflow-hidden">
-                        {product.images?.[0] ? (
-                          <img
-                            src={product.images[0]}
-                            alt={product.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Wrench className="w-10 h-10" style={{ color: '#374151' }} />
-                          </div>
-                        )}
+                        <SafeImage
+                          src={product.images?.[0]}
+                          alt={product.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          fallback={<div className="w-full h-full flex items-center justify-center"><Package className="w-10 h-10" style={{ color: '#374151' }} /></div>}
+                        />
                         {/* Gradient overlay */}
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
@@ -725,13 +721,12 @@ export default function Catalog() {
                       }}
                     >
                       <div className="w-28 h-20 rounded-xl bg-[#050505] overflow-hidden flex-shrink-0 relative">
-                        {product.images?.[0] ? (
-                          <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Wrench className="w-6 h-6" style={{ color: '#374151' }} />
-                          </div>
-                        )}
+                        <SafeImage
+                          src={product.images?.[0]}
+                          alt={product.title}
+                          className="w-full h-full object-cover"
+                          fallback={<div className="w-full h-full flex items-center justify-center"><Package className="w-6 h-6" style={{ color: '#374151' }} /></div>}
+                        />
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-center">
                         <div className="flex items-center gap-2 mb-1">

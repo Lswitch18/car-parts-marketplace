@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/authStore'
 import { api } from '../lib/api'
 import { formatJPY } from '../lib/fees'
 import { ShoppingCart, Package, Check, X, DollarSign } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 
 interface Part {
   id: string
@@ -147,11 +148,7 @@ export default function SimulateSale({ onComplete }: Props) {
           {parts.map(part => (
             <div key={part.id} className="card p-4 flex items-center space-x-4">
               <div className="w-16 h-16 bg-[#0a0a0a] rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-                {part.images?.[0] ? (
-                  <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <Package className="w-8 h-8 text-gray-600" />
-                )}
+                <SafeImage src={part.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<Package className="w-8 h-8 text-gray-600" />} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-medium truncate">{part.title}</p>

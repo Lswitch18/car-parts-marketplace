@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { MessageCircle, Send, User, ArrowRight, DollarSign, Check, ShoppingCart } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 
 interface Message {
   id: string
@@ -179,7 +180,7 @@ export default function Messages() {
   useEffect(() => {
     if (!user) return
     const channel = supabase
-      .channel('messages-changes')
+      .channel('messages-changes-page')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
         queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] })
         if (selectedConversation) {
@@ -291,11 +292,7 @@ export default function Messages() {
                   >
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center overflow-hidden">
-                        {conv.part.images?.[0] ? (
-                          <img src={conv.part.images[0]} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <MessageCircle className="w-6 h-6 text-gray-500" />
-                        )}
+                        <SafeImage src={conv.part.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<MessageCircle className="w-6 h-6 text-gray-500" />} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-medium truncate">{conv.oder.full_name || 'Usuário'}</p>

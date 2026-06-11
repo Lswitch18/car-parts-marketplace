@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save, CreditCard, ExternalLink } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 import { useI18n } from '../lib/i18n'
 import { api } from '../lib/api'
 import SimulateSale from '../components/SimulateSale'
@@ -284,15 +285,7 @@ export default function Dashboard() {
                       className="flex items-center space-x-4 p-4 bg-background rounded-lg border border-border hover:border-primary/30 transition-all group"
                     >
                       <div className="w-16 h-16 bg-surface rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-                        {product.images?.[0] ? (
-                          <img
-                            src={product.images[0]}
-                            alt={product.title}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        ) : (
-                          <Package className="w-6 h-6 text-text-secondary" />
-                        )}
+                        <SafeImage src={product.images?.[0]} alt={product.title} className="w-full h-full object-cover rounded-lg" fallback={<Package className="w-6 h-6 text-text-secondary" />} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-text font-medium group-hover:text-primary transition-colors truncate">{product.title}</h3>
@@ -331,9 +324,7 @@ export default function Dashboard() {
                       <div key={t.id} className="p-4 bg-background rounded-lg border border-border hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group">
                         <Link to={`/product/${t.part_id}`} className="flex items-center space-x-4 flex-1 min-w-0">
                           <div className="w-12 h-12 bg-surface rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                            {t.parts?.images?.[0] ? (
-                              <img src={t.parts.images[0]} alt="" className="w-full h-full object-cover" />
-                            ) : <Package className="w-6 h-6 text-text-secondary" />}
+                            <SafeImage src={t.parts?.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<Package className="w-6 h-6 text-text-secondary" />} />
                           </div>
                           <div className="min-w-0">
                             <p className="text-text font-medium group-hover:text-primary transition-colors truncate">{t.parts?.title || 'Produto'}</p>

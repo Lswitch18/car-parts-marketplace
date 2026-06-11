@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { MessageCircle, X, Send, User, Minimize2, Maximize2, Package, DollarSign, Check, ShoppingCart, ArrowRight } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 
 interface ChatPopupProps {
   initialProductId?: string
@@ -121,7 +122,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
     if (user) {
       fetchConversations()
       const channel = supabase
-        .channel('messages-changes')
+        .channel('messages-changes-popup')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
           fetchConversations()
           if (selectedConversation) fetchMessages(selectedConversation)
@@ -376,11 +377,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                   >
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center overflow-hidden flex-shrink-0">
-                        {conv.part.images?.[0] ? (
-                          <img src={conv.part.images[0]} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <Package className="w-6 h-6 text-gray-500" />
-                        )}
+                        <SafeImage src={conv.part.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<Package className="w-6 h-6 text-gray-500" />} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-medium truncate">{conv.oder.full_name || 'Usuário'}</p>

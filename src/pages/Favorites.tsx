@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useFavoriteStore } from '../stores/favoriteStore'
 import { supabase } from '../lib/supabase'
 import { Heart, Trash2, Package } from 'lucide-react'
+import SafeImage from '../components/SafeImage'
 
 export default function Favorites() {
   const { favorites, clearFavorites } = useFavoriteStore()
@@ -68,17 +69,12 @@ export default function Favorites() {
                 className="card overflow-hidden group"
               >
                 <div className="aspect-square bg-[#1a1a1a] relative overflow-hidden">
-                  {product.images?.[0] ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-600">
-                      <Package className="w-12 h-12" />
-                    </div>
-                  )}
+                  <SafeImage
+                    src={product.images?.[0]}
+                    alt={product.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    fallback={<div className="w-full h-full flex items-center justify-center text-gray-600"><Package className="w-12 h-12" /></div>}
+                  />
                   <button
                     onClick={(e) => {
                       e.preventDefault()
