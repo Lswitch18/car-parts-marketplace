@@ -33,7 +33,7 @@ export default function SimulateSale({ onComplete }: Props) {
   const fetchActiveParts = async () => {
     const { data } = await supabase
       .from('parts')
-      .select('id, title, price, images, seller_id, status, brands(name), profiles(full_name)')
+      .select('id, title, price, images, seller_id, status, brands(name), profiles!parts_seller_id_fkey(full_name)')
       .eq('status', 'active')
       .limit(10)
     
@@ -69,7 +69,7 @@ export default function SimulateSale({ onComplete }: Props) {
       await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: part.seller_id,
-        product_id: part.id,
+        part_id: part.id,
         transaction_id: transaction.id,
         content: `Olá! Acabei de comprar "${part.title}" por ${formatJPY(part.price)}. Por favor, prepare o envio!`
       })
@@ -77,7 +77,7 @@ export default function SimulateSale({ onComplete }: Props) {
       await supabase.from('messages').insert({
         sender_id: part.seller_id,
         receiver_id: user.id,
-        product_id: part.id,
+        part_id: part.id,
         transaction_id: transaction.id,
         content: `Obrigado pela compra! Vou preparar a peça e enviar o código de rastreamento em breve. 🚚`
       })

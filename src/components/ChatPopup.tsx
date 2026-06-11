@@ -19,7 +19,7 @@ interface Message {
   proposed_price?: number
   price_confirmed?: boolean
   created_at: string
-  product_id?: string
+  part_id?: string
   parts?: {
     id: string
     title: string
@@ -148,9 +148,10 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
     if (data) {
       const grouped = data.reduce((acc: Record<string, Conversation>, msg: any) => {
         const otherUserId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id
+        const key = `${otherUserId}-${msg.part_id || 'no-product'}`
         
-        if (!acc[otherUserId]) {
-          acc[otherUserId] = {
+        if (!acc[key]) {
+          acc[key] = {
             oder_id: otherUserId,
             oder: { id: otherUserId, full_name: '', avatar_url: '' },
             part: msg.parts || { id: '', title: '', price: 0, images: [] },
@@ -159,7 +160,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
           }
         } else {
           if (msg.receiver_id === user.id && !msg.read_at) {
-            acc[otherUserId].unreadCount++
+            acc[key].unreadCount++
           }
         }
         return acc
@@ -230,7 +231,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
     const { error } = await supabase.from('messages').insert({
       sender_id: user.id,
       receiver_id: selectedConversation,
-      product_id: conversation?.part.id || null,
+      part_id: conversation?.part.id || null,
       content: type === 'price_proposal' ? `Proposta de preço: ¥${Number(price).toLocaleString('ja-JP')}` : newMessage.trim(),
       message_type: type,
       proposed_price: type === 'price_proposal' ? price : null,
@@ -257,7 +258,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
       await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: selectedConversation,
-        product_id: conversations.find(c => c.oder_id === selectedConversation)?.part.id,
+        part_id: conversations.find(c => c.oder_id === selectedConversation)?.part.id,
         content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
         message_type: 'price_confirmed'
       })

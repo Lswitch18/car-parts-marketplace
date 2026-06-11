@@ -124,7 +124,7 @@ export default function ProductDetail() {
                {user?.id !== product.seller_id && (
                  <>
                    <Link
-                     to={`/messages?product=${product.id}`}
+                      to={`/messages?user=${product.seller_id}&product=${product.id}`}
                      className="flex-1 bg-daig-blue hover:bg-daig-blue/80 text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
                    >
                      <MessageCircle className="w-5 h-5" />

@@ -14,7 +14,7 @@ interface Message {
   proposed_price?: number
   price_confirmed?: boolean
   created_at: string
-  product_id?: string
+  part_id?: string
   parts?: {
     id: string
     title: string
@@ -46,8 +46,9 @@ export default function Messages() {
   const { user } = useAuthStore()
   const queryClient = useQueryClient()
   const [selectedConversation, setSelectedConversation] = useState<string | null>(
-    searchParams.get('product') || null
+    searchParams.get('user') || null
   )
+  const urlProductId = searchParams.get('product')
   const [newMessage, setNewMessage] = useState('')
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [proposedPrice, setProposedPrice] = useState('')
@@ -99,7 +100,7 @@ export default function Messages() {
         .order('created_at', { ascending: false })
 
       const grouped = messages?.reduce((acc: Record<string, Conversation>, msg: any) => {
-        const key = `${msg.sender_id === user.id ? msg.receiver_id : msg.sender_id}-${msg.product_id || 'no-product'}`
+        const key = `${msg.sender_id === user.id ? msg.receiver_id : msg.sender_id}-${msg.part_id || 'no-product'}`
         if (!acc[key]) {
           acc[key] = {
             oder_id: msg.sender_id === user.id ? msg.receiver_id : msg.sender_id,
@@ -125,6 +126,33 @@ export default function Messages() {
           return { ...conv, oder: profile || conv.oder }
         })
       )
+
+      if (urlProductId && selectedConversation) {
+        const exists = convs.some(
+          c => c.oder_id === selectedConversation && c.part.id === urlProductId
+        )
+        if (!exists) {
+          const { data: part } = await supabase
+            .from('parts')
+            .select('id, title, price, images')
+            .eq('id', urlProductId)
+            .single()
+          if (part) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('id, full_name, avatar_url')
+              .eq('id', selectedConversation)
+              .single()
+            convs.unshift({
+              oder_id: selectedConversation,
+              oder: profile || { id: selectedConversation, full_name: '', avatar_url: '' },
+              part,
+              lastMessage: { id: '', sender_id: '', receiver_id: '', content: '', message_type: 'text', created_at: '' },
+              unreadCount: 0
+            })
+          }
+        }
+      }
 
       return convs
     },
@@ -157,7 +185,7 @@ export default function Messages() {
       await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: selectedConversation,
-        product_id: conversation?.part.id || null,
+        part_id: conversation?.part.id || null,
         content: type === 'price_proposal' ? `Proposta de preço: ¥${Number(price).toLocaleString('ja-JP')}` : newMessage.trim(),
         message_type: type,
         proposed_price: type === 'price_proposal' ? price : null,
@@ -183,7 +211,7 @@ export default function Messages() {
     await supabase.from('messages').insert({
       sender_id: user.id,
       receiver_id: selectedConversation,
-      product_id: conversations?.find(c => c.oder_id === selectedConversation)?.part.id,
+      part_id: conversations?.find(c => c.oder_id === selectedConversation)?.part.id,
       content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
       message_type: 'price_confirmed'
     })
