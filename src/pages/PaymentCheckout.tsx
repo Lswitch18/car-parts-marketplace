@@ -10,6 +10,7 @@ import {
   ArrowLeft, Check, AlertCircle, Loader2
 } from 'lucide-react'
 import SafeImage from '../components/SafeImage'
+import { fetchCep } from '../lib/cep'
 
 interface Part {
   id: string
@@ -40,8 +41,25 @@ export default function PaymentCheckout() {
   const [errorMessage, setErrorMessage] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'pix'>('card')
   const [shippingInfo, setShippingInfo] = useState({
-    name: '', email: '', phone: '', address: '', city: '', state: '', zipCode: '',
+    name: '', email: '', phone: '', address: '', number: '', complement: '', city: '', state: '', zipCode: '',
   })
+  const [cepLoading, setCepLoading] = useState(false)
+
+  const handleCepBlur = useCallback(async () => {
+    const raw = shippingInfo.zipCode.replace(/\D/g, '')
+    if (raw.length !== 8) return
+    setCepLoading(true)
+    const result = await fetchCep(raw)
+    if (result) {
+      setShippingInfo(prev => ({
+        ...prev,
+        address: result.logradouro || prev.address,
+        city: result.localidade || prev.city,
+        state: result.uf || prev.state,
+      }))
+    }
+    setCepLoading(false)
+  }, [shippingInfo.zipCode])
 
   const { data: part, isLoading } = useQuery({
     queryKey: ['part', id],
@@ -105,10 +123,16 @@ export default function PaymentCheckout() {
       try {
         const idempotencyKey = await buildIdempotencyKey()
 
+        const fullAddress = [
+          shippingInfo.address,
+          shippingInfo.number && `Nº ${shippingInfo.number}`,
+          shippingInfo.complement,
+        ].filter(Boolean).join(', ')
+
         const tx: any = await api.transactions.create({
           part_id: part.id,
           amount: finalPrice || part.price,
-          shipping: shippingInfo,
+          shipping: { ...shippingInfo, address: fullAddress },
           idempotency_key: idempotencyKey,
           confirmed_message_id: confirmedMessageId,
         })
@@ -124,14 +148,20 @@ export default function PaymentCheckout() {
 
       const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
 
-      if (stripePublicKey && stripePublicKey.startsWith('pk_')) {
+        if (stripePublicKey && stripePublicKey.startsWith('pk_')) {
+        const fullAddress = [
+          shippingInfo.address,
+          shippingInfo.number && `Nº ${shippingInfo.number}`,
+          shippingInfo.complement,
+        ].filter(Boolean).join(', ')
+
         const result = await api.stripe.createCheckout({
           transaction_id: transaction.id,
           part_id: part!.id,
           buyer_id: user!.id,
           seller_id: part!.seller_id,
           amount: finalPrice || part!.price,
-          shipping: shippingInfo,
+          shipping: { ...shippingInfo, address: fullAddress },
         })
 
         if (result.url) {
@@ -219,12 +249,19 @@ export default function PaymentCheckout() {
                   <input type="text" placeholder="Nome completo" value={shippingInfo.name} onChange={(e) => setShippingInfo({ ...shippingInfo, name: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   <input type="email" placeholder="E-mail" value={shippingInfo.email} onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   <input type="tel" placeholder="Telefone" value={shippingInfo.phone} onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  <div className="relative">
+                    <input type="text" placeholder="CEP" value={shippingInfo.zipCode} onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })} onBlur={handleCepBlur} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    {cepLoading && <Loader2 className="w-4 h-4 text-daig-blue animate-spin absolute right-3 top-1/2 -translate-y-1/2" />}
+                  </div>
                   <input type="text" placeholder="Endereço" value={shippingInfo.address} onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  <div className="grid grid-cols-3 gap-4">
+                    <input type="text" placeholder="Número" value={shippingInfo.number} onChange={(e) => setShippingInfo({ ...shippingInfo, number: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="Complemento" value={shippingInfo.complement} onChange={(e) => setShippingInfo({ ...shippingInfo, complement: e.target.value })} className="col-span-2 bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  </div>
                   <div className="grid grid-cols-2 gap-4">
                     <input type="text" placeholder="Cidade" value={shippingInfo.city} onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
                     <input type="text" placeholder="Estado" value={shippingInfo.state} onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   </div>
-                  <input type="text" placeholder="CEP" value={shippingInfo.zipCode} onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                 </div>
               </div>
 
