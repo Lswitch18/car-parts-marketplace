@@ -171,7 +171,13 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  const { part_id, amount, shipping } = body;
+  const { part_id, amount, shipping, idempotency_key, confirmed_message_id } = body as {
+    part_id: string;
+    amount: number;
+    shipping?: Record<string, string>;
+    idempotency_key?: string;
+    confirmed_message_id?: string;
+  };
 
   if (!part_id || !amount) {
     return new Response(JSON.stringify(errorResponse('part_id e amount são obrigatórios')), {
@@ -180,6 +186,93 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     });
   }
 
+  // ── Idempotência: retorna transação existente se a chave já foi usada ──────
+  if (idempotency_key) {
+    const { data: existing } = await supabase
+      .from('transactions')
+      .select('*')
+      .eq('idempotency_key', idempotency_key)
+      .maybeSingle();
+
+    if (existing) {
+      const fees = calculateFees(existing.amount);
+      return new Response(JSON.stringify(successResponse({
+        transaction: existing,
+        fees,
+        idempotent: true,
+      }, 'Transação já existente (idempotente).')), {
+        status: 200,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
+  // ── Verificação: transação ativa já existe para este (comprador, peça) ─────
+  const { data: activeTx } = await supabase
+    .from('transactions')
+    .select('id, payment_status, amount')
+    .eq('buyer_id', user.id)
+    .eq('part_id', part_id)
+    .in('payment_status', ['pending', 'paid'])
+    .maybeSingle();
+
+  if (activeTx) {
+    const fees = calculateFees(activeTx.amount);
+    return new Response(JSON.stringify(successResponse({
+      transaction: activeTx,
+      fees,
+      idempotent: true,
+    }, 'Transação ativa já existe para esta peça.')), {
+      status: 200,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  // ── Validação do preço negociado via mensagem confirmada ──────────────────
+  // Se confirmed_message_id foi fornecido, valida que o preço bate com a proposta real.
+  // Impede manipulação de ?price=X na URL.
+  let validatedAmount = Number(amount);
+
+  if (confirmed_message_id) {
+    const { data: confirmedMsg } = await supabase
+      .from('messages')
+      .select('id, message_type, price_confirmed, proposed_price, receiver_id')
+      .eq('id', confirmed_message_id)
+      .maybeSingle();
+
+    if (!confirmedMsg) {
+      return new Response(JSON.stringify(errorResponse('Mensagem de proposta não encontrada')), {
+        status: 400,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (confirmedMsg.message_type !== 'price_proposal' || !confirmedMsg.price_confirmed) {
+      return new Response(JSON.stringify(errorResponse('Proposta de preço não confirmada')), {
+        status: 400,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+
+    // O comprador que inicia o pagamento deve ser quem recebeu a proposta (i.e., o vendedor confirmou)
+    // Na arquitetura: comprador ENVIOU a proposta, vendedor CONFIRMOU.
+    // Portanto confirmed_message.receiver_id deve ser o vendedor (= part.seller_id).
+    // O user autenticado é o comprador, então apenas garantimos que o preço bate.
+    const realPrice = Number(confirmedMsg.proposed_price);
+    if (Math.abs(realPrice - validatedAmount) > 0.01) {
+      return new Response(JSON.stringify(errorResponse(
+        `Valor inválido. O preço confirmado da proposta é ¥${realPrice.toLocaleString('ja-JP')}`
+      )), {
+        status: 400,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Usa o preço do banco (fonte de verdade), não o da URL
+    validatedAmount = realPrice;
+  }
+
+  // ── Validação da peça ─────────────────────────────────────────────────────
   const { data: part } = await supabase
     .from('parts')
     .select('id, seller_id, price, status')
@@ -200,19 +293,26 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  const fees = calculateFees(Number(amount));
+  // Se não há proposta negociada, usa o preço original da peça (também como fonte de verdade)
+  if (!confirmed_message_id) {
+    validatedAmount = part.price;
+  }
+
+  const fees = calculateFees(validatedAmount);
 
   const insertData: Record<string, unknown> = {
     part_id,
     buyer_id: user.id,
     seller_id: part.seller_id,
-    amount: Number(amount),
+    amount: validatedAmount,
     commission_rate: COMMISSION_RATE,
     commission_amount: fees.commission_amount,
     platform_fee: fees.platform_fee,
     seller_net: fees.seller_net,
     payment_status: 'pending',
     fulfillment_status: 'pending',
+    ...(idempotency_key ? { idempotency_key } : {}),
+    ...(confirmed_message_id ? { confirmed_message_id } : {}),
   };
 
   if (shipping && typeof shipping === 'object') {
@@ -233,6 +333,25 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     .single();
 
   if (error) {
+    // Conflict por unique index (race condition): busca e retorna a existente
+    if (error.code === '23505') {
+      const { data: raceExisting } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('idempotency_key', idempotency_key as string)
+        .maybeSingle();
+      if (raceExisting) {
+        return new Response(JSON.stringify(successResponse({
+          transaction: raceExisting,
+          fees,
+          idempotent: true,
+        }, 'Transação já existente (race condition resolvida).')), {
+          status: 200,
+          headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     return new Response(JSON.stringify(errorResponse(error.message)), {
       status: 400,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },

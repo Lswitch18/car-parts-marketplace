@@ -102,7 +102,15 @@ export const api = {
 
     get: (id: string) => fetchApi(`/transactions/${id}`),
 
-    create: (data: { part_id: string; amount: number; shipping?: Record<string, string> }) => 
+    create: (data: {
+      part_id: string;
+      amount: number;
+      shipping?: Record<string, string>;
+      /** Chave determinística para evitar transações duplicadas (hash de buyer+part+message) */
+      idempotency_key?: string;
+      /** ID da mensagem de price_proposal confirmada — backend valida o preço real */
+      confirmed_message_id?: string;
+    }) =>
       fetchApi('/transactions/create', { method: 'POST', body: JSON.stringify(data) }),
 
     update: (id: string, data: { payment_status?: string; fulfillment_status?: string }) =>

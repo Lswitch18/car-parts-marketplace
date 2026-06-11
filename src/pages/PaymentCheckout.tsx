@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
@@ -70,20 +70,53 @@ export default function PaymentCheckout() {
 
   const urlParams = new URLSearchParams(window.location.search)
   const negotiatedPrice = urlParams.get('price')
+  /** ID da mensagem de proposta confirmada — enviado ao backend para validar o preço real */
+  const confirmedMessageId = urlParams.get('msg') || undefined
   const finalPrice = negotiatedPrice ? Number(negotiatedPrice) : part?.price
   const fees = part ? calculateFees(finalPrice || part.price) : null
+
+  /** Ref para garantir que a mutation só dispare uma vez mesmo com duplo clique */
+  const isSubmitting = useRef(false)
+
+  /** Gera uma chave de idempotência determinística para (comprador, peça, proposta) */
+  const buildIdempotencyKey = useCallback(async (): Promise<string | undefined> => {
+    if (!user || !id) return undefined
+    const raw = [user.id, id, confirmedMessageId ?? 'direct'].join('|')
+    try {
+      const encoded = new TextEncoder().encode(raw)
+      const hashBuffer = await crypto.subtle.digest('SHA-256', encoded)
+      const hashArray = Array.from(new Uint8Array(hashBuffer))
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    } catch {
+      // Fallback para browsers sem Web Crypto (não esperado, mas seguro)
+      return btoa(raw).replace(/[^a-zA-Z0-9]/g, '').slice(0, 64)
+    }
+  }, [user, id, confirmedMessageId])
 
   const createTransaction = useMutation({
     mutationFn: async () => {
       if (!user || !part) throw new Error('Usuário não autenticado')
 
-      const tx: any = await api.transactions.create({
-        part_id: part.id,
-        amount: finalPrice || part.price,
-        shipping: shippingInfo,
-      })
+      // Lock de idempotência no cliente: impede duplo clique
+      if (isSubmitting.current) throw new Error('Pagamento já em processamento')
+      isSubmitting.current = true
 
-      return tx.transaction || tx
+      try {
+        const idempotencyKey = await buildIdempotencyKey()
+
+        const tx: any = await api.transactions.create({
+          part_id: part.id,
+          amount: finalPrice || part.price,
+          shipping: shippingInfo,
+          idempotency_key: idempotencyKey,
+          confirmed_message_id: confirmedMessageId,
+        })
+
+        return tx.transaction || tx
+      } catch (err) {
+        isSubmitting.current = false
+        throw err
+      }
     },
     onSuccess: async (transaction) => {
       setStep('processing')
@@ -106,11 +139,22 @@ export default function PaymentCheckout() {
         }
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // Modo demo (sem Stripe): marca como pago no banco para evitar transacões presas como 'pending'
+      try {
+        await supabase
+          .from('transactions')
+          .update({ payment_status: 'paid', updated_at: new Date().toISOString() })
+          .eq('id', transaction.id)
+          .eq('payment_status', 'pending') // só atualiza se ainda pendente (idempotente)
+      } catch (err) {
+        console.warn('[PaymentCheckout] Demo mode: falha ao marcar paid', err)
+      }
 
+      await new Promise(resolve => setTimeout(resolve, 1000))
       setStep('success')
     },
     onError: (err: any) => {
+      isSubmitting.current = false
       setErrorMessage(err.message)
       setStep('error')
     }

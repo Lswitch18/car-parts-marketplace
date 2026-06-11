@@ -247,11 +247,14 @@ export default function Messages() {
     }
   }
 
-  const getCurrentPrice = () => {
-    const confirmedProposal = selectedMessages?.slice().reverse().find(m => 
-      m.message_type === 'price_proposal' && m.price_confirmed === true
-    )
-    return confirmedProposal ? confirmedProposal.proposed_price : null
+  const getConfirmedProposal = () => {
+    // Busca a proposta mais recente confirmada para este part específico
+    const partId = conversations?.find(c => c.oder_id === selectedConversation)?.part.id
+    return selectedMessages?.slice().reverse().find(m =>
+      m.message_type === 'price_proposal' &&
+      m.price_confirmed === true &&
+      (!partId || m.part_id === partId || !m.part_id)
+    ) ?? null
   }
 
   if (!user) {
@@ -259,7 +262,9 @@ export default function Messages() {
     return null
   }
 
-  const currentPrice = getCurrentPrice()
+  const confirmedProposal = getConfirmedProposal()
+  const currentPrice = confirmedProposal?.proposed_price ?? null
+  const confirmedMessageId = confirmedProposal?.id ?? null
   const conversation = conversations?.find(c => c.oder_id === selectedConversation)
   const checkoutPartId = conversation?.part.id || selectedMessages?.find(m => m.part_id)?.part_id || ''
 
@@ -414,7 +419,7 @@ export default function Messages() {
                           </span>
                         </div>
                         <Link
-                          to={`/checkout/${checkoutPartId}?price=${currentPrice}`}
+                          to={`/checkout/${checkoutPartId}?price=${currentPrice}${confirmedMessageId ? `&msg=${confirmedMessageId}` : ''}`}
                           className="bg-daig-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1"
                         >
                           <ShoppingCart className="w-4 h-4" />
