@@ -111,7 +111,7 @@ export default function Catalog() {
       } catch {
         let query = supabase
           .from('parts')
-          .select('*, brands(name), categories(name), profiles(full_name, avatar_url, rating, is_verified)')
+          .select('*, brands(name), categories(name), profiles!parts_seller_id_fkey(full_name, avatar_url, rating, is_verified)')
           .eq('status', 'active')
 
         if (filters.brand) {

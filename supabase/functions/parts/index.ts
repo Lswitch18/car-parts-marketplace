@@ -94,7 +94,7 @@ async function listParts(params: ListPartsParams) {
       brand:brands(id, name, slug, logo_url),
       category:categories(id, name, slug),
       model:car_models(id, name, slug),
-      seller:profiles(id, full_name, avatar_url, rating, is_verified)
+      seller:profiles!parts_seller_id_fkey(id, full_name, avatar_url, rating, is_verified)
     `, { count: 'exact' });
 
   if (filters.status) query = query.eq('status', filters.status);
@@ -149,7 +149,7 @@ async function getPart(partId: string) {
       brand:brands(*),
       category:categories(*),
       model:car_models(*),
-      seller:profiles(id, full_name, avatar_url, rating, is_verified, total_sales, bio)
+      seller:profiles!parts_seller_id_fkey(id, full_name, avatar_url, rating, is_verified, total_sales, bio)
     `)
     .eq('id', partId)
     .single();

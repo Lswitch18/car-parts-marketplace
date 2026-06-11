@@ -97,8 +97,8 @@ async function listTransactions(req: Request) {
     .select(`
       *,
       part:parts(id, title, images, price),
-      buyer:profiles(id, full_name, email),
-      seller:profiles(id, full_name, email)
+      buyer:profiles!transactions_buyer_id_fkey(id, full_name, email),
+      seller:profiles!transactions_seller_id_fkey(id, full_name, email)
     `, { count: 'exact' });
 
   if (!profile?.role?.includes('admin')) {
@@ -136,8 +136,8 @@ async function getTransaction(txId: string) {
     .select(`
       *,
       part:parts(*),
-      buyer:profiles(id, full_name, email, phone),
-      seller:profiles(id, full_name, email, phone)
+      buyer:profiles!transactions_buyer_id_fkey(id, full_name, email, phone),
+      seller:profiles!transactions_seller_id_fkey(id, full_name, email, phone)
     `)
     .eq('id', txId)
     .single();

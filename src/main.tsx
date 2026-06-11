@@ -5,9 +5,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import './index.css'
 
-console.log('[main] App starting...');
-console.log('[main] SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL ? 'OK' : 'MISSING!');
-console.log('[main] SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'OK' : 'MISSING!');
+// TODO(security): diagnostic logs restricted to dev mode only — never expose DB URLs or key status in production
+if (import.meta.env.DEV) {
+  console.log('[main] App starting (dev mode)...');
+  console.log('[main] SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL ? 'configured' : 'MISSING!');
+  console.log('[main] SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'configured' : 'MISSING!');
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,11 +45,29 @@ if (!root) {
     );
     console.log('[main] React rendered successfully');
   } catch (err) {
-    console.error('[main] React render error:', err);
-    root.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0B1220;color:white;font-family:system-ui;padding:20px;text-align:center;">
-      <h2 style="color:#EF4444;">Erro ao carregar</h2>
-      <p style="color:#9CA3AF;margin-top:8px;">${(err as Error).message}</p>
-      <button onclick="location.reload()" style="margin-top:16px;padding:10px 24px;background:#3B82F6;border:none;border-radius:8px;color:white;cursor:pointer;">Recarregar</button>
-    </div>`;
+    // TODO(security): never expose raw error messages to the user in production
+    if (import.meta.env.DEV) {
+      console.error('[main] React render error:', err);
+    }
+    // Build error UI safely without innerHTML to prevent XSS
+    const wrapper = document.createElement('div');
+    Object.assign(wrapper.style, {
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      justifyContent: 'center', height: '100vh', background: '#0B1220',
+      color: 'white', fontFamily: 'system-ui', padding: '20px', textAlign: 'center',
+    });
+    const heading = document.createElement('h2');
+    heading.style.color = '#EF4444';
+    heading.textContent = 'Erro ao carregar a aplicação';
+    const msg = document.createElement('p');
+    msg.style.cssText = 'color:#9CA3AF;margin-top:8px;';
+    // Generic message only — never expose internal error details to the user
+    msg.textContent = 'Ocorreu um erro inesperado. Tente novamente.';
+    const btn = document.createElement('button');
+    btn.style.cssText = 'margin-top:16px;padding:10px 24px;background:#3B82F6;border:none;border-radius:8px;color:white;cursor:pointer;';
+    btn.textContent = 'Recarregar';
+    btn.addEventListener('click', () => location.reload());
+    wrapper.append(heading, msg, btn);
+    root.replaceChildren(wrapper);
   }
 }

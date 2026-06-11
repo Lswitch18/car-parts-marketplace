@@ -90,7 +90,7 @@ async function getActiveAuctions() {
       brand:brands(name, logo_url),
       category:categories(name),
       seller:profiles!parts_seller_id_fkey(id, full_name, rating),
-      bids(count)
+      bids!bids_part_id_fkey(count)
     `)
     .eq('auction_enabled', true)
     .eq('status', 'active')
@@ -127,7 +127,7 @@ async function getEndedAuctions() {
       brand:brands(name, logo_url),
       category:categories(name),
       seller:profiles!parts_seller_id_fkey(id, full_name, rating),
-      winning_bid:bids!parts_winning_bid_id_fkey(id, amount, created_at, bidder:profiles(id, full_name))
+      winning_bid:bids!parts_winning_bid_id_fkey(id, amount, created_at, bidder:profiles!bids_bidder_id_fkey(id, full_name))
     `)
     .eq('auction_enabled', true)
     .in('status', ['ended', 'sold'])
@@ -155,10 +155,10 @@ async function getAuction(auctionId: string) {
       brand:brands(*),
       category:categories(*),
       seller:profiles!parts_seller_id_fkey(id, full_name, avatar_url, rating, is_verified),
-      winning_bid:bids!parts_winning_bid_id_fkey(id, amount, created_at, bidder:profiles(id, full_name, avatar_url)),
-      bids(
+      winning_bid:bids!parts_winning_bid_id_fkey(id, amount, created_at, bidder:profiles!bids_bidder_id_fkey(id, full_name, avatar_url)),
+      bids!bids_part_id_fkey(
         id, amount, created_at, is_winning,
-        bidder:profiles(id, full_name, avatar_url)
+        bidder:profiles!bids_bidder_id_fkey(id, full_name, avatar_url)
       )
     `)
     .eq('id', auctionId)
@@ -191,7 +191,7 @@ async function listAuctions(req: Request) {
       brand:brands(name, logo_url),
       category:categories(name),
       seller:profiles!parts_seller_id_fkey(id, full_name, rating),
-      bids(count)
+      bids!bids_part_id_fkey(count)
     `, { count: 'exact' })
     .eq('auction_enabled', true);
 

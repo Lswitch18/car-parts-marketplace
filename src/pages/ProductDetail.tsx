@@ -18,7 +18,7 @@ export default function ProductDetail() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('parts')
-        .select('*, brands(name), categories(name), profiles(full_name)')
+        .select('*, brands(name), categories(name), profiles!parts_seller_id_fkey(full_name, avatar_url, rating, is_verified, total_sales)')
         .eq('id', id)
         .single()
       
