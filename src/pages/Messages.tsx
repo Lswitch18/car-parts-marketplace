@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
@@ -53,6 +53,7 @@ export default function Messages() {
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [proposedPrice, setProposedPrice] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
 
   const suggestAiResponse = async () => {
     if (!selectedMessages || selectedMessages.length === 0) {
@@ -175,6 +176,20 @@ export default function Messages() {
     enabled: !!user && !!selectedConversation
   })
 
+  useEffect(() => {
+    if (!user) return
+    const channel = supabase
+      .channel('messages-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] })
+        if (selectedConversation) {
+          queryClient.invalidateQueries({ queryKey: ['messages', user?.id, selectedConversation] })
+        }
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [user, selectedConversation, queryClient])
+
   const sendMessage = useMutation({
     mutationFn: async (params: { type?: string; price?: number } = {}) => {
       const { type = 'text', price } = params
@@ -201,22 +216,35 @@ export default function Messages() {
   })
 
   const confirmPrice = async (messageId: string, price: number) => {
-    if (!user || !selectedConversation) return
+    if (!user || !selectedConversation || isConfirming) return
+    setIsConfirming(true)
 
-    await supabase
-      .from('messages')
-      .update({ price_confirmed: true })
-      .eq('id', messageId)
+    try {
+      const partId = conversations?.find(c => c.oder_id === selectedConversation)?.part.id
+        || selectedMessages?.find(m => m.part_id)?.part_id
+        || null
 
-    await supabase.from('messages').insert({
-      sender_id: user.id,
-      receiver_id: selectedConversation,
-      part_id: conversations?.find(c => c.oder_id === selectedConversation)?.part.id,
-      content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
-      message_type: 'price_confirmed'
-    })
+      const { error: updateError } = await supabase
+        .from('messages')
+        .update({ price_confirmed: true })
+        .eq('id', messageId)
+      if (updateError) throw updateError
 
-    queryClient.invalidateQueries({ queryKey: ['messages', user?.id, selectedConversation] })
+      const { error: insertError } = await supabase.from('messages').insert({
+        sender_id: user.id,
+        receiver_id: selectedConversation,
+        part_id: partId,
+        content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
+        message_type: 'price_confirmed'
+      })
+      if (insertError) throw insertError
+
+      queryClient.invalidateQueries({ queryKey: ['messages', user?.id, selectedConversation] })
+    } catch (err) {
+      console.error('Erro ao confirmar preço:', err)
+    } finally {
+      setIsConfirming(false)
+    }
   }
 
   const getCurrentPrice = () => {
@@ -345,13 +373,14 @@ export default function Messages() {
                                 {new Date(msg.created_at).toLocaleString('pt-BR')}
                               </p>
                               
-                                     {isPriceProposal && !isPriceConfirmed && !isMe && (
+                                      {isPriceProposal && !isPriceConfirmed && !isMe && (
                                 <button
                                   onClick={() => confirmPrice(msg.id, msg.proposed_price!)}
-                                  className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 ml-2"
+                                  disabled={isConfirming}
+                                  className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 ml-2 disabled:opacity-50"
                                 >
                                   <Check className="w-3 h-3" />
-                                  <span>Confirmar</span>
+                                  <span>{isConfirming ? 'Confirmando...' : 'Confirmar'}</span>
                                 </button>
                               )}
                               {isPriceConfirmed && (

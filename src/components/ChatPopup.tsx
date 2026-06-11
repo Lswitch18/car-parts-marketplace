@@ -58,6 +58,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   const [showPriceModal, setShowPriceModal] = useState(false)
   const [proposedPrice, setProposedPrice] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -247,23 +248,34 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   }
 
   const confirmPrice = async (messageId: string, price: number) => {
-    if (!user || !selectedConversation) return
+    if (!user || !selectedConversation || isConfirming) return
+    setIsConfirming(true)
 
-    const { error } = await supabase
-      .from('messages')
-      .update({ price_confirmed: true })
-      .eq('id', messageId)
+    try {
+      const partId = conversations.find(c => c.oder_id === selectedConversation)?.part.id
+        || messages.find(m => m.part_id)?.part_id
+        || null
 
-    if (!error) {
-      await supabase.from('messages').insert({
+      const { error: updateError } = await supabase
+        .from('messages')
+        .update({ price_confirmed: true })
+        .eq('id', messageId)
+      if (updateError) throw updateError
+
+      const { error: insertError } = await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: selectedConversation,
-        part_id: conversations.find(c => c.oder_id === selectedConversation)?.part.id,
+        part_id: partId,
         content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
         message_type: 'price_confirmed'
       })
+      if (insertError) throw insertError
 
       fetchMessages(selectedConversation)
+    } catch (err) {
+      console.error('Erro ao confirmar preço:', err)
+    } finally {
+      setIsConfirming(false)
     }
   }
 
@@ -445,10 +457,11 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                             {isPriceProposal && !isPriceConfirmed && !isMe && (
                               <button
                                 onClick={() => confirmPrice(msg.id, msg.proposed_price!)}
-                                className="bg-green-500 text-white text-xs px-3 py-1 rounded-full flex items-center space-x-1"
+                                disabled={isConfirming}
+                                className="bg-green-500 text-white text-xs px-3 py-1 rounded-full flex items-center space-x-1 disabled:opacity-50"
                               >
                                 <Check className="w-3 h-3" />
-                                <span>Confirmar</span>
+                                <span>{isConfirming ? 'Confirmando...' : 'Confirmar'}</span>
                               </button>
                             )}
                             
