@@ -10,7 +10,7 @@ import {
   ArrowLeft, Check, AlertCircle, Loader2
 } from 'lucide-react'
 import SafeImage from '../components/SafeImage'
-import { fetchJpPostal } from '../lib/jp-postal'
+import { fetchPostal } from '../lib/postal'
 
 interface Part {
   id: string
@@ -47,9 +47,9 @@ export default function PaymentCheckout() {
 
   const handlePostalBlur = useCallback(async () => {
     const raw = shippingInfo.zipCode.replace(/\D/g, '')
-    if (raw.length !== 7) return
+    if (raw.length < 5) return
     setPostalLoading(true)
-    const result = await fetchJpPostal(raw)
+    const result = await fetchPostal(raw)
     if (result) {
       setShippingInfo(prev => ({
         ...prev,
