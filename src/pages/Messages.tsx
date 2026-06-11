@@ -260,6 +260,7 @@ export default function Messages() {
   }
 
   const currentPrice = getCurrentPrice()
+  const checkoutPartId = conversation?.part.id || selectedMessages?.find(m => m.part_id)?.part_id || ''
   const conversation = conversations?.find(c => c.oder_id === selectedConversation)
 
   return (
@@ -413,7 +414,7 @@ export default function Messages() {
                           </span>
                         </div>
                         <Link
-                          to={`/checkout/${conversation?.part.id}?price=${currentPrice}`}
+                          to={`/checkout/${checkoutPartId}?price=${currentPrice}`}
                           className="bg-daig-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1"
                         >
                           <ShoppingCart className="w-4 h-4" />
@@ -469,7 +470,7 @@ export default function Messages() {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="Digite sua mensagem..."
-                          className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-white focus:border-[#ff3d00] focus:ring-1 focus:ring-[#ff3d00] outline-none"
+                          className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-white focus:border-daig-blue focus:ring-1 focus:ring-daig-blue outline-none"
                         />
                         <button
                           type="submit"

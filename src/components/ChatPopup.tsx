@@ -298,6 +298,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   }
 
   const currentPrice = getCurrentPrice()
+  const checkoutPartId = conversation?.part.id || messages.find(m => m.part_id)?.part_id || ''
   const conversation = conversations.find(c => c.oder_id === selectedConversation)
 
   if (!isOpen) {
@@ -308,19 +309,19 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
         {totalUnread > 0 && (
           <Link
             to="/messages"
-            className="bg-[#1a1a1a] text-white px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2a2a2a] shadow-lg flex items-center space-x-2 animate-bounce"
+            className="bg-surface text-white px-3 py-1.5 rounded-lg text-xs font-medium border border-border shadow-lg flex items-center space-x-2 animate-bounce"
           >
-            <span className="w-2 h-2 bg-[#ff3d00] rounded-full"></span>
+            <span className="w-2 h-2 bg-daig-blue rounded-full"></span>
             <span>{totalUnread} novas mensagens</span>
           </Link>
         )}
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-[#ff3d00] text-white p-4 rounded-full shadow-lg hover:bg-[#dd2c00] transition-colors relative"
+          className="bg-daig-blue text-white p-4 rounded-full shadow-lg hover:bg-daig-blue/80 transition-colors relative"
         >
           <MessageCircle className="w-6 h-6" />
           {totalUnread > 0 && (
-            <span className="absolute -top-1 -right-1 bg-white text-[#ff3d00] text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] border-2 border-[#ff3d00]">
+            <span className="absolute -top-1 -right-1 bg-white text-daig-blue text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] border-2 border-daig-blue">
               {totalUnread > 99 ? '99+' : totalUnread}
             </span>
           )}
@@ -330,15 +331,15 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   }
 
   return (
-    <div className={`fixed bottom-0 right-4 w-96 bg-[#1a1a1a] border border-[#2a2a2a] rounded-t-xl shadow-2xl z-50 flex flex-col transition-all duration-300 ${
+    <div className={`fixed bottom-0 right-4 w-96 bg-surface border border-border rounded-t-xl shadow-2xl z-50 flex flex-col transition-all duration-300 ${
       isMinimized ? 'h-16' : 'h-[600px]'
     }`}>
       <div 
-        className="flex items-center justify-between p-4 border-b border-[#2a2a2a] cursor-pointer"
+        className="flex items-center justify-between p-4 border-b border-border cursor-pointer"
         onClick={() => setIsMinimized(!isMinimized)}
       >
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-daig-blue to-[#00e5ff] flex items-center justify-center">
             <MessageCircle className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -363,7 +364,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
               <div className="p-4 space-y-2">
                 <div className="flex items-center justify-between mb-4 px-1">
                   <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">Recentes</span>
-                  <Link to="/messages" className="text-[#ff3d00] text-xs hover:underline flex items-center">
+                  <Link to="/messages" className="text-daig-blue text-xs hover:underline flex items-center">
                     Ver todas <ArrowRight className="w-3 h-3 ml-1" />
                   </Link>
                 </div>
@@ -371,10 +372,10 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                   <button
                     key={`${conv.oder_id}-${conv.part.id}`}
                     onClick={() => { setSelectedConversation(conv.oder_id); fetchMessages(conv.oder_id) }}
-                    className="w-full p-3 bg-[#0a0a0a] rounded-lg hover:bg-[#2a2a2a] transition-colors text-left"
+                    className="w-full p-3 bg-background rounded-lg hover:bg-surface transition-colors text-left"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-lg bg-[#2a2a2a] flex items-center justify-center overflow-hidden flex-shrink-0">
+                      <div className="w-12 h-12 rounded-lg bg-surface flex items-center justify-center overflow-hidden flex-shrink-0">
                         {conv.part.images?.[0] ? (
                           <img src={conv.part.images[0]} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -384,10 +385,10 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-medium truncate">{conv.oder.full_name || 'Usuário'}</p>
                         <p className="text-gray-400 text-sm truncate">{conv.part.title || 'Produto'}</p>
-                        <p className="text-[#ff3d00] text-xs">¥ {conv.part.price?.toLocaleString('ja-JP')}</p>
+                        <p className="text-daig-blue text-xs">¥ {conv.part.price?.toLocaleString('ja-JP')}</p>
                       </div>
                       {conv.unreadCount > 0 && (
-                        <span className="bg-[#ff3d00] text-white text-xs px-2 py-1 rounded-full">
+                        <span className="bg-daig-blue text-white text-xs px-2 py-1 rounded-full">
                           {conv.unreadCount}
                         </span>
                       )}
@@ -403,11 +404,11 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
               </div>
             ) : (
               <div className="flex flex-col h-full">
-                <div className="p-3 border-b border-[#2a2a2a] flex items-center space-x-2">
+                <div className="p-3 border-b border-border flex items-center space-x-2">
                   <button onClick={() => setSelectedConversation(null)} className="text-gray-400 hover:text-white">
                     ←
                   </button>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-daig-blue to-[#00e5ff] flex items-center justify-center">
                     <User className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1">
@@ -419,7 +420,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                     )}
                   </div>
                   {conversation && (
-                    <span className="text-[#ff3d00] text-sm font-bold">
+                    <span className="text-daig-blue text-sm font-bold">
                       ¥ {conversation.part.price.toLocaleString('ja-JP')}
                     </span>
                   )}
@@ -435,8 +436,8 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                       <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[85%] px-4 py-3 rounded-2xl ${
                           isMe 
-                            ? 'bg-[#ff3d00] text-white rounded-br-md' 
-                            : 'bg-[#2a2a2a] text-white rounded-bl-md'
+                            ? 'bg-daig-blue text-white rounded-br-md' 
+                            : 'bg-surface text-white rounded-bl-md'
                         } ${isPriceProposal ? 'border-2 border-green-500' : ''}`}>
                           {isPriceProposal && (
                             <div className="flex items-center space-x-2 mb-2">
@@ -488,8 +489,8 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                         </span>
                       </div>
                       <a
-                        href={`/checkout/${conversation?.part.id}?price=${currentPrice}`}
-                        className="bg-[#ff3d00] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1 hover:bg-[#dd2c00]"
+                        href={`/checkout/${checkoutPartId}?price=${currentPrice}`}
+                        className="bg-daig-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1 hover:bg-daig-blue/80"
                       >
                         <ShoppingCart className="w-4 h-4" />
                         <span>Pagar</span>
@@ -503,7 +504,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
           </div>
 
           {selectedConversation && !currentPrice && (
-            <div className="p-3 border-t border-[#2a2a2a]">
+            <div className="p-3 border-t border-border">
               {/* Quick Reply Chips */}
               <div className="flex gap-1.5 overflow-x-auto pb-2 mb-1 scrollbar-none">
                 {['Está disponível?', 'Qual o menor preço?', 'Faz entrega?', 'Aceita proposta?'].map((txt) => (
@@ -511,7 +512,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                     key={txt}
                     type="button"
                     onClick={() => setNewMessage(txt)}
-                    className="flex-shrink-0 bg-[#2a2a2a] hover:bg-[#3b3b3b] text-gray-300 text-xs px-2.5 py-1 rounded-full border border-[#3b3b3b] transition-colors"
+                    className="flex-shrink-0 bg-surface hover:bg-[#1a1a1f] text-gray-300 text-xs px-2.5 py-1 rounded-full border border-border transition-colors"
                   >
                     {txt}
                   </button>
@@ -541,12 +542,12 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Digite sua mensagem..."
-                  className="flex-1 bg-[#0a0a0a] border border-[#2a2a2a] rounded-full px-4 py-2 text-white text-sm focus:border-[#ff3d00] focus:ring-1 focus:ring-[#ff3d00] outline-none"
+                  className="flex-1 bg-background border border-border rounded-lg px-4 py-2 text-white text-sm focus:border-daig-blue focus:ring-1 focus:ring-daig-blue outline-none"
                 />
                 <button
                   type="submit"
                   disabled={!newMessage.trim()}
-                  className="bg-[#ff3d00] p-2 rounded-full text-white disabled:opacity-50 hover:bg-[#dd2c00] transition-colors"
+                  className="bg-daig-blue p-2 rounded-full text-white disabled:opacity-50 hover:bg-daig-blue/80 transition-colors"
                 >
                   <Send className="w-5 h-5" />
                 </button>
@@ -558,7 +559,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
 
       {showPriceModal && (
         <div className="absolute inset-0 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6 w-full max-w-sm">
+          <div className="bg-surface border border-border rounded-lg p-6 w-full max-w-sm">
             <h3 className="text-white font-semibold mb-4 flex items-center">
               <DollarSign className="w-5 h-5 mr-2 text-green-400" />
               Fazer Proposta de Preço
@@ -571,12 +572,12 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
               value={proposedPrice}
               onChange={(e) => setProposedPrice(e.target.value)}
               placeholder="Digite seu preço proposto"
-              className="w-full bg-[#0a0a0a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white mb-4"
+              className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white mb-4"
             />
             <div className="flex space-x-3">
               <button
                 onClick={() => { setShowPriceModal(false); setProposedPrice('') }}
-                className="flex-1 bg-[#2a2a2a] text-white py-2 rounded-lg"
+                className="flex-1 bg-surface text-white py-2 rounded-lg"
               >
                 Cancelar
               </button>
