@@ -10,7 +10,7 @@ import {
   ArrowLeft, Check, AlertCircle, Loader2
 } from 'lucide-react'
 import SafeImage from '../components/SafeImage'
-import { fetchCep } from '../lib/cep'
+import { fetchJpPostal } from '../lib/jp-postal'
 
 interface Part {
   id: string
@@ -43,22 +43,22 @@ export default function PaymentCheckout() {
   const [shippingInfo, setShippingInfo] = useState({
     name: '', email: '', phone: '', address: '', number: '', complement: '', city: '', state: '', zipCode: '',
   })
-  const [cepLoading, setCepLoading] = useState(false)
+  const [postalLoading, setPostalLoading] = useState(false)
 
-  const handleCepBlur = useCallback(async () => {
+  const handlePostalBlur = useCallback(async () => {
     const raw = shippingInfo.zipCode.replace(/\D/g, '')
-    if (raw.length !== 8) return
-    setCepLoading(true)
-    const result = await fetchCep(raw)
+    if (raw.length !== 7) return
+    setPostalLoading(true)
+    const result = await fetchJpPostal(raw)
     if (result) {
       setShippingInfo(prev => ({
         ...prev,
-        address: result.logradouro || prev.address,
-        city: result.localidade || prev.city,
-        state: result.uf || prev.state,
+        address: result.fullAddress || prev.address,
+        city: result.city || prev.city,
+        state: result.state || prev.state,
       }))
     }
-    setCepLoading(false)
+    setPostalLoading(false)
   }, [shippingInfo.zipCode])
 
   const { data: part, isLoading } = useQuery({
@@ -250,17 +250,17 @@ export default function PaymentCheckout() {
                   <input type="email" placeholder="E-mail" value={shippingInfo.email} onChange={(e) => setShippingInfo({ ...shippingInfo, email: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   <input type="tel" placeholder="Telefone" value={shippingInfo.phone} onChange={(e) => setShippingInfo({ ...shippingInfo, phone: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   <div className="relative">
-                    <input type="text" placeholder="CEP" value={shippingInfo.zipCode} onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })} onBlur={handleCepBlur} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
-                    {cepLoading && <Loader2 className="w-4 h-4 text-daig-blue animate-spin absolute right-3 top-1/2 -translate-y-1/2" />}
+                    <input type="text" placeholder="〒 郵便番号 (ex: 1030027)" value={shippingInfo.zipCode} onChange={(e) => setShippingInfo({ ...shippingInfo, zipCode: e.target.value })} onBlur={handlePostalBlur} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    {postalLoading && <Loader2 className="w-4 h-4 text-daig-blue animate-spin absolute right-3 top-1/2 -translate-y-1/2" />}
                   </div>
-                  <input type="text" placeholder="Endereço" value={shippingInfo.address} onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
-                  <div className="grid grid-cols-3 gap-4">
-                    <input type="text" placeholder="Número" value={shippingInfo.number} onChange={(e) => setShippingInfo({ ...shippingInfo, number: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
-                    <input type="text" placeholder="Complemento" value={shippingInfo.complement} onChange={(e) => setShippingInfo({ ...shippingInfo, complement: e.target.value })} className="col-span-2 bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="Endereço (都道府県 市区町村 番地)" value={shippingInfo.address} onChange={(e) => setShippingInfo({ ...shippingInfo, address: e.target.value })} className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                  <div className="grid grid-cols-4 gap-4">
+                    <input type="text" placeholder="番号" value={shippingInfo.number} onChange={(e) => setShippingInfo({ ...shippingInfo, number: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="建物名・部屋番号" value={shippingInfo.complement} onChange={(e) => setShippingInfo({ ...shippingInfo, complement: e.target.value })} className="col-span-3 bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="Cidade" value={shippingInfo.city} onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
-                    <input type="text" placeholder="Estado" value={shippingInfo.state} onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="市区町村" value={shippingInfo.city} onChange={(e) => setShippingInfo({ ...shippingInfo, city: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="都道府県" value={shippingInfo.state} onChange={(e) => setShippingInfo({ ...shippingInfo, state: e.target.value })} className="bg-background border border-border rounded-lg px-4 py-3 text-white" />
                   </div>
                 </div>
               </div>

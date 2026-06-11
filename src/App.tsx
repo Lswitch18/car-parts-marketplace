@@ -30,7 +30,7 @@ import Auctions from './pages/Auctions'
 import PartsLookup from './pages/PartsLookup'
 import ChatPopup from './components/ChatPopup'
 import ScrollToTop from './components/ScrollToTop'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 
@@ -38,6 +38,9 @@ function App() {
   const { user, initialized, loading, initialize } = useAuthStore()
   const navigate = useNavigate()
   const location = useLocation()
+  const [showChat, setShowChat] = useState(true)
+
+  const isCheckout = location.pathname.startsWith('/checkout')
 
   useEffect(() => { initialize() }, [initialize])
 
@@ -111,7 +114,12 @@ function App() {
         {/* Redirecionamento para rotas inexistentes (404) */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {user && <ChatPopup />}
+      {user && showChat && !isCheckout && <ChatPopup onClose={() => setShowChat(false)} />}
+      {user && !showChat && !isCheckout && (
+        <button onClick={() => setShowChat(true)} className="fixed bottom-4 right-4 bg-daig-blue text-white p-4 rounded-full shadow-lg z-50 hover:bg-daig-blue/80">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+        </button>
+      )}
       <PWARegister />
     </I18nProvider>
   )
