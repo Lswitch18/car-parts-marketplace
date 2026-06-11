@@ -298,8 +298,8 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
   }
 
   const currentPrice = getCurrentPrice()
-  const checkoutPartId = conversation?.part.id || messages.find(m => m.part_id)?.part_id || ''
   const conversation = conversations.find(c => c.oder_id === selectedConversation)
+  const checkoutPartId = conversation?.part.id || messages.find(m => m.part_id)?.part_id || ''
 
   if (!isOpen) {
     const totalUnread = conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)

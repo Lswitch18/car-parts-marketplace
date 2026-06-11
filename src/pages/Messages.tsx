@@ -260,8 +260,8 @@ export default function Messages() {
   }
 
   const currentPrice = getCurrentPrice()
-  const checkoutPartId = conversation?.part.id || selectedMessages?.find(m => m.part_id)?.part_id || ''
   const conversation = conversations?.find(c => c.oder_id === selectedConversation)
+  const checkoutPartId = conversation?.part.id || selectedMessages?.find(m => m.part_id)?.part_id || ''
 
   return (
     <div className="min-h-screen bg-background py-8">
