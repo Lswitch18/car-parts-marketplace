@@ -253,15 +253,24 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     .maybeSingle();
 
   if (activeTx) {
-    const fees = calculateFees(activeTx.amount);
-    return new Response(JSON.stringify(successResponse({
-      transaction: activeTx,
-      fees,
-      idempotent: true,
-    }, 'Transação ativa já existe para esta peça.')), {
-      status: 200,
-      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
+    if (activeTx.payment_status === 'pending') {
+      // Se já existe uma transação pendente do mesmo usuário, cancela a antiga e permite criar a nova
+      await supabase
+        .from('transactions')
+        .update({ payment_status: 'failed', updated_at: new Date().toISOString() })
+        .eq('id', activeTx.id);
+      console.log(`[Transactions] Cancelada transação pendente antiga do mesmo comprador: ${activeTx.id}`);
+    } else {
+      const fees = calculateFees(activeTx.amount);
+      return new Response(JSON.stringify(successResponse({
+        transaction: activeTx,
+        fees,
+        idempotent: true,
+      }, 'Transação ativa já existe para esta peça.')), {
+        status: 200,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
   }
 
   // ── Validação do preço negociado via mensagem confirmada ──────────────────
