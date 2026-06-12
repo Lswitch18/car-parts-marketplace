@@ -57,14 +57,33 @@ Deno.serve(async (req) => {
 });
 
 async function createCheckoutSession(req: Request) {
-  const { transaction_id, part_id, buyer_id, seller_id, amount, shipping, auction_id, title: customTitle } = await req.json();
+  const { transaction_id, part_id: clientPartId, buyer_id: clientBuyerId, seller_id: clientSellerId, amount: clientAmount, shipping, auction_id, title: customTitle } = await req.json();
 
-  if (!transaction_id || !amount) {
-    return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+  if (!transaction_id) {
+    return new Response(JSON.stringify({ error: 'Missing transaction_id' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
+
+  // ── Buscar transação no banco de dados como fonte da verdade (segurança contra adulteração de preço)
+  const { data: tx, error: txError } = await supabase
+    .from('transactions')
+    .select('amount, buyer_id, seller_id, part_id')
+    .eq('id', transaction_id)
+    .single();
+
+  if (txError || !tx) {
+    return new Response(JSON.stringify({ error: 'Transação não encontrada no banco de dados' }), {
+      status: 404,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  const amount = tx.amount;
+  const part_id = tx.part_id;
+  const buyer_id = tx.buyer_id;
+  const seller_id = tx.seller_id;
 
   if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
     return new Response(JSON.stringify({ 
