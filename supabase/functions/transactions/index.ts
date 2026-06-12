@@ -171,7 +171,7 @@ async function expireOldPendingTransactions() {
       // Marca as transações como falhas
       await supabase
         .from('transactions')
-        .update({ payment_status: 'failed', updated_at: new Date().toISOString() })
+        .update({ payment_status: 'failed' })
         .in('id', txIds);
 
       // Devolve os itens para ativos
@@ -257,7 +257,7 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
       // Se já existe uma transação pendente do mesmo usuário, cancela a antiga e permite criar a nova
       await supabase
         .from('transactions')
-        .update({ payment_status: 'failed', updated_at: new Date().toISOString() })
+        .update({ payment_status: 'failed' })
         .eq('id', activeTx.id);
 
       // Devolve a peça ao status 'active' para que a validação abaixo passe com sucesso
@@ -470,7 +470,6 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
   if (payment_status) updates.payment_status = payment_status;
   if (fulfillment_status) updates.fulfillment_status = fulfillment_status;
   if (stripe_payment_id) updates.stripe_payment_id = stripe_payment_id;
-  updates.updated_at = new Date().toISOString();
 
   const { data, error } = await supabase
     .from('transactions')

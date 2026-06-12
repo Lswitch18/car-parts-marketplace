@@ -134,7 +134,6 @@ async function handleCheckoutCompleted(session: any) {
         .update({
           payment_status: 'escrow',
           stripe_payment_id: session.id,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', transaction_id);
 
@@ -182,7 +181,7 @@ async function handlePaymentFailed(payment: any) {
   if (transactionId) {
     await supabase
       .from('transactions')
-      .update({ payment_status: 'failed', updated_at: new Date().toISOString() })
+      .update({ payment_status: 'failed' })
       .eq('id', transactionId);
     console.log(`[Webhook] Payment failed for transaction ${transactionId}`);
   }
@@ -199,7 +198,7 @@ async function handleChargeRefunded(charge: any) {
     if (transaction) {
       await supabase
         .from('transactions')
-        .update({ payment_status: 'refunded', updated_at: new Date().toISOString() })
+        .update({ payment_status: 'refunded' })
         .eq('id', transaction.id);
 
       if (transaction.part_id) {
@@ -226,7 +225,7 @@ async function handleDisputeCreated(dispute: any) {
     if (transaction) {
       await supabase
         .from('transactions')
-        .update({ payment_status: 'disputed', updated_at: new Date().toISOString() })
+        .update({ payment_status: 'disputed' })
         .eq('id', transaction.id);
       console.log(`[Webhook] Dispute created for transaction ${transaction.id}`);
     }
