@@ -154,6 +154,39 @@ async function getTransaction(txId: string) {
   });
 }
 
+async function expireOldPendingTransactions() {
+  const expiryTime = new Date(Date.now() - 5 * 60 * 1000).toISOString(); // 5 minutos atrás
+  try {
+    // Busca transações pendentes que expiraram
+    const { data: expiredTxs } = await supabase
+      .from('transactions')
+      .select('id, part_id')
+      .eq('payment_status', 'pending')
+      .lt('created_at', expiryTime);
+
+    if (expiredTxs && expiredTxs.length > 0) {
+      const txIds = expiredTxs.map(t => t.id);
+      const partIds = expiredTxs.map(t => t.part_id);
+
+      // Marca as transações como falhas
+      await supabase
+        .from('transactions')
+        .update({ payment_status: 'failed', updated_at: new Date().toISOString() })
+        .in('id', txIds);
+
+      // Devolve os itens para ativos
+      await supabase
+        .from('parts')
+        .update({ status: 'active' })
+        .in('id', partIds);
+        
+      console.log(`[Transactions] Expiradas ${expiredTxs.length} transações pendentes.`);
+    }
+  } catch (err) {
+    console.error('[Transactions] Falha ao expirar transações antigas:', err);
+  }
+}
+
 async function createTransaction(req: Request, body: Record<string, unknown>) {
   const token = getAuthUser(req);
   if (!token) {
@@ -170,6 +203,9 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
   }
+
+  // Limpa transações pendentes antigas antes de criar ou validar nova transação
+  await expireOldPendingTransactions();
 
   const { part_id, amount, shipping, idempotency_key, confirmed_message_id } = body as {
     part_id: string;
