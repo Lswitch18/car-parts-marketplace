@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { User, Phone, MapPin, Camera, Loader2 } from 'lucide-react'
+import { fetchPostal } from '../lib/postal'
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -16,6 +17,23 @@ export default function Profile() {
     state: user?.state || '',
     zip_code: user?.zip_code || ''
   })
+  const [postalLoading, setPostalLoading] = useState(false)
+
+  const handlePostalBlur = useCallback(async () => {
+    const raw = formData.zip_code.replace(/\D/g, '')
+    if (raw.length < 5) return
+    setPostalLoading(true)
+    const result = await fetchPostal(raw)
+    if (result) {
+      setFormData(prev => ({
+        ...prev,
+        address: result.fullAddress || prev.address,
+        city: result.city || prev.city,
+        state: result.state || prev.state,
+      }))
+    }
+    setPostalLoading(false)
+  }, [formData.zip_code])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -149,12 +167,18 @@ export default function Profile() {
 
               <div>
                 <label className="block text-gray-400 text-sm mb-2">CEP</label>
-                <input
-                  type="text"
-                  value={formData.zip_code}
-                  onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
-                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.zip_code}
+                    onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
+                    onBlur={handlePostalBlur}
+                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg pl-4 pr-10 py-3 text-white"
+                  />
+                  {postalLoading && (
+                    <Loader2 className="w-4 h-4 text-[#ff3d00] animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+                  )}
+                </div>
               </div>
             </div>
 

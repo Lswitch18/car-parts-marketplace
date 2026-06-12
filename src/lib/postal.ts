@@ -22,6 +22,16 @@ interface ZippopotamusResponse {
   places: ZippopotamusPlace[]
 }
 
+interface ViaCEPResponse {
+  cep: string
+  logradouro: string
+  complemento: string
+  bairro: string
+  localidade: string
+  uf: string
+  erro?: boolean
+}
+
 export interface PostalResult {
   fullAddress: string
   city: string
@@ -45,6 +55,23 @@ async function fetchZipcloud(digits: string): Promise<PostalResult | null> {
   }
 }
 
+async function fetchViaCEP(digits: string): Promise<PostalResult | null> {
+  try {
+    const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`)
+    if (!res.ok) return null
+    const data: ViaCEPResponse = await res.json()
+    if (data.erro) return null
+    const fullAddress = [data.logradouro, data.bairro].filter(Boolean).join(', ')
+    return {
+      state: data.uf,
+      city: data.localidade,
+      fullAddress: fullAddress,
+    }
+  } catch {
+    return null
+  }
+}
+
 async function fetchZippopotamus(country: string, digits: string): Promise<PostalResult | null> {
   try {
     const res = await fetch(`https://api.zippopotam.us/${country}/${digits}`)
@@ -53,9 +80,9 @@ async function fetchZippopotamus(country: string, digits: string): Promise<Posta
     if (!data.places?.length) return null
     const p = data.places[0]
     return {
-      state: data.state,
+      state: p.state || data.state,
       city: p['place name'],
-      fullAddress: `${p['place name']}, ${data.state}`,
+      fullAddress: `${p['place name']}, ${p.state || data.state}`,
     }
   } catch {
     return null
@@ -72,12 +99,18 @@ export async function fetchPostal(code: string): Promise<PostalResult | null> {
   const country = COUNTRIES_BY_LENGTH[digits.length]
   if (!country) return null
 
+  // ViaCEP: Melhor para o Brasil
+  if (country === 'BR') {
+    const result = await fetchViaCEP(digits)
+    if (result) return result
+  }
+
   // Zipcloud: melhor para Japão (endereço completo com rua/bairro)
   if (country === 'JP') {
     const result = await fetchZipcloud(digits)
     if (result) return result
   }
 
-  // Zippopotam.us: fallback global (JP sem rua, BR completo)
+  // Zippopotam.us: fallback global
   return fetchZippopotamus(country, digits)
 }

@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
-import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save, CreditCard, ExternalLink } from 'lucide-react'
+import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save, CreditCard, ExternalLink, Loader2 } from 'lucide-react'
 import SafeImage from '../components/SafeImage'
 import { useI18n } from '../lib/i18n'
 import { api } from '../lib/api'
 import SimulateSale from '../components/SimulateSale'
+import { fetchPostal } from '../lib/postal'
 
 export default function Dashboard() {
   const { t } = useI18n()
@@ -29,6 +30,23 @@ export default function Dashboard() {
     state: user?.state || '',
     zip_code: user?.zip_code || ''
   })
+  const [postalLoading, setPostalLoading] = useState(false)
+
+  const handlePostalBlur = useCallback(async () => {
+    const raw = profileForm.zip_code.replace(/\D/g, '')
+    if (raw.length < 5) return
+    setPostalLoading(true)
+    const result = await fetchPostal(raw)
+    if (result) {
+      setProfileForm(prev => ({
+        ...prev,
+        address: result.fullAddress || prev.address,
+        city: result.city || prev.city,
+        state: result.state || prev.state,
+      }))
+    }
+    setPostalLoading(false)
+  }, [profileForm.zip_code])
 
   const { data: stats } = useQuery({
     queryKey: ['seller-stats', user?.id],
@@ -447,12 +465,18 @@ export default function Dashboard() {
 
                   <div>
                     <label className="block text-text-secondary text-sm mb-1">{t('CEP')}</label>
-                    <input
-                      type="text"
-                      value={profileForm.zip_code}
-                      onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
-                      className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text"
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={profileForm.zip_code}
+                        onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
+                        onBlur={handlePostalBlur}
+                        className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text pr-10"
+                      />
+                      {postalLoading && (
+                        <Loader2 className="w-4 h-4 text-primary animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+                      )}
+                    </div>
                   </div>
 
                   <button
