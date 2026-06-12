@@ -259,7 +259,14 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
         .from('transactions')
         .update({ payment_status: 'failed', updated_at: new Date().toISOString() })
         .eq('id', activeTx.id);
-      console.log(`[Transactions] Cancelada transação pendente antiga do mesmo comprador: ${activeTx.id}`);
+
+      // Devolve a peça ao status 'active' para que a validação abaixo passe com sucesso
+      await supabase
+        .from('parts')
+        .update({ status: 'active' })
+        .eq('id', part_id);
+
+      console.log(`[Transactions] Cancelada transação pendente antiga do mesmo comprador: ${activeTx.id} e reativada a peça ${part_id}`);
     } else {
       const fees = calculateFees(activeTx.amount);
       return new Response(JSON.stringify(successResponse({
