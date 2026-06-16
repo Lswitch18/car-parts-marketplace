@@ -96,7 +96,25 @@ async function createCheckoutSession(req: Request) {
     });
   }
 
-  const fees = calculateFees(Number(amount));
+  // ── Buscar taxa de comissão customizada do banco de dados
+  let customRate = COMMISSION_RATE;
+  try {
+    const { data: configData } = await supabase
+      .from('admin_configuracoes')
+      .select('valor')
+      .eq('chave', 'comissao_taxa')
+      .single();
+    if (configData?.valor) {
+      const parsed = parseFloat(configData.valor);
+      if (!isNaN(parsed)) {
+        customRate = parsed / 100;
+      }
+    }
+  } catch (e) {
+    console.warn('Falha ao obter taxa customizada de comissão, usando padrão de 10%:', e);
+  }
+
+  const fees = calculateFees(Number(amount), customRate);
   const applicationFeeAmount = Math.round(fees.commission_amount + fees.stripe_fee);
 
   const { data: part } = await supabase
@@ -318,15 +336,15 @@ async function createPortalSession(req: Request) {
   });
 }
 
-function calculateFees(amount: number) {
-  const commission = amount * COMMISSION_RATE;
+function calculateFees(amount: number, rate: number = COMMISSION_RATE) {
+  const commission = amount * rate;
   const stripeFee = (amount * STRIPE_FEE_RATE) + STRIPE_FEE_FIXED;
   const platformFee = commission + stripeFee;
   const sellerNet = amount - platformFee;
 
   return {
     gross_amount: amount,
-    commission_rate: COMMISSION_RATE,
+    commission_rate: rate,
     commission_amount: commission,
     stripe_fee: stripeFee,
     platform_fee: platformFee,
