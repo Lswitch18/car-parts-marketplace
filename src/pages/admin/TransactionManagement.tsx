@@ -315,12 +315,12 @@ export default function TransactionManagement() {
                   </td>
                 </tr>
               ) : (
-                filteredTransactions.map((t) => {
-                  const buyer = t.buyer;
-                  const seller = t.seller;
-                  const part = t.part;
+                filteredTransactions.map((tx) => {
+                  const buyer = tx.buyer;
+                  const seller = tx.seller;
+                  const part = tx.part;
                   return (
-                    <tr key={t.id} className="bg-white hover:bg-slate-50 transition-colors">
+                    <tr key={tx.id} className="bg-white hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
                         {part?.title || 'Peça removida'}
                       </td>
@@ -331,18 +331,18 @@ export default function TransactionManagement() {
                         {seller?.full_name || seller?.email || 'Usuário desconhecido'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
-                        ¥ {parseFloat(t.amount || 0).toLocaleString('ja-JP')}
+                        ¥ {parseFloat(tx.amount || 0).toLocaleString('ja-JP')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        ¥ {(parseFloat(t.amount || 0) * (commissionRate / 100)).toLocaleString('ja-JP')}
+                        ¥ {(parseFloat(tx.amount || 0) * (commissionRate / 100)).toLocaleString('ja-JP')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        ¥ {(parseFloat(t.amount || 0) * (1 - commissionRate / 100)).toLocaleString('ja-JP')}
+                        ¥ {(parseFloat(tx.amount || 0) * (1 - commissionRate / 100)).toLocaleString('ja-JP')}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
-                          value={t.payment_status}
-                          onChange={(e) => updateTransactionStatus(t.id, e.target.value, 'payment')}
+                          value={tx.payment_status}
+                          onChange={(e) => updateTransactionStatus(tx.id, e.target.value, 'payment')}
                           className="bg-background border border-border rounded-lg px-2 py-1 text-text text-sm focus:outline-none focus:border-primary"
                         >
                           <option value="pending">{t('Pendente')}</option>
@@ -356,8 +356,8 @@ export default function TransactionManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
-                          value={t.fulfillment_status}
-                          onChange={(e) => updateTransactionStatus(t.id, e.target.value, 'fulfillment')}
+                          value={tx.fulfillment_status}
+                          onChange={(e) => updateTransactionStatus(tx.id, e.target.value, 'fulfillment')}
                           className="bg-background border border-border rounded-lg px-2 py-1 text-text text-sm focus:outline-none focus:border-primary"
                         >
                           <option value="pending">{t('Pendente')}</option>
@@ -370,11 +370,11 @@ export default function TransactionManagement() {
                         </select>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        {new Date(t.created_at).toLocaleDateString()}
+                        {new Date(tx.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                         <button
-                          onClick={() => setSelectedTransaction(t)}
+                          onClick={() => setSelectedTransaction(tx)}
                           className="text-primary hover:text-primary-dark font-medium"
                         >
                           {t('Detalhes')}
