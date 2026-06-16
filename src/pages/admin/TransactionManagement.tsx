@@ -12,8 +12,7 @@ export default function TransactionManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [fulfillmentFilter, setFulfillmentFilter] = useState('all');
+  const [activeLedgerFilter, setActiveLedgerFilter] = useState<string | null>(null);
 
   const [selectedTransaction, setSelectedTransaction] = useState<any | null>(null);
   const [commissionRate, setCommissionRate] = useState<number>(10);
@@ -111,18 +110,25 @@ export default function TransactionManagement() {
   };
 
   useEffect(() => {
-    if (statusFilter === 'all' && fulfillmentFilter === 'all') {
+    if (!activeLedgerFilter) {
       setFilteredTransactions(transactions);
       return;
     }
     
     const filtered = transactions.filter(t => {
-      const statusMatch = statusFilter === 'all' || t.payment_status === statusFilter;
-      const fulfillmentMatch = fulfillmentFilter === 'all' || t.fulfillment_status === fulfillmentFilter;
-      return statusMatch && fulfillmentMatch;
+      if (activeLedgerFilter === 'receber') {
+        return t.payment_status === 'pending' || t.payment_status === 'processing';
+      }
+      if (activeLedgerFilter === 'retido') {
+        return t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed');
+      }
+      if (activeLedgerFilter === 'pagos') {
+        return t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed');
+      }
+      return true;
     });
     setFilteredTransactions(filtered);
-  }, [statusFilter, fulfillmentFilter, transactions]);
+  }, [activeLedgerFilter, transactions]);
 
   const updateTransactionStatus = async (transactionId: string, status: string, type: 'payment' | 'fulfillment') => {
     try {
@@ -228,57 +234,49 @@ export default function TransactionManagement() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-text-secondary text-sm">{t('Status do pagamento:')}</span>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-background border border-border rounded-lg px-3 py-1 text-text text-sm focus:outline-none focus:border-primary"
+        {activeLedgerFilter && (
+          <div className="flex items-center justify-between bg-background border border-border rounded-lg px-4 py-2 mt-2">
+            <span className="text-xs text-text-secondary font-medium">
+              {t('Filtrando por:')} <strong className="text-text font-bold uppercase tracking-wider">{activeLedgerFilter === 'receber' ? t('A Receber') : activeLedgerFilter === 'retido' ? t('Valores Retidos') : t('Valores Pagos')}</strong>
+            </span>
+            <button
+              onClick={() => setActiveLedgerFilter(null)}
+              className="text-xs text-primary hover:underline font-bold uppercase tracking-wider"
             >
-              <option value="all">{t('Todos')}</option>
-              <option value="pending">{t('Pendente')}</option>
-              <option value="processing">{t('Processando')}</option>
-              <option value="escrow">{t('Em custódia')}</option>
-              <option value="paid">{t('Pago')}</option>
-              <option value="failed">{t('Falhou')}</option>
-              <option value="refunded">{t('Reembolsado')}</option>
-              <option value="cancelled">{t('Cancelado')}</option>
-            </select>
+              {t('Limpar Filtro')}
+            </button>
           </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-text-secondary text-sm">{t('Status entrega:')}</span>
-            <select
-              value={fulfillmentFilter}
-              onChange={(e) => setFulfillmentFilter(e.target.value)}
-              className="bg-background border border-border rounded-lg px-3 py-1 text-text text-sm focus:outline-none focus:border-primary"
-            >
-              <option value="all">{t('Todos')}</option>
-              <option value="pending">{t('Pendente')}</option>
-              <option value="packed">{t('Embalado')}</option>
-              <option value="shipped">{t('Enviado')}</option>
-              <option value="delivered">{t('Entregue')}</option>
-              <option value="completed">{t('Concluído')}</option>
-              <option value="disputed">{t('Em disputa')}</option>
-              <option value="returned">{t('Devolvido')}</option>
-            </select>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Ledger Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-surface border border-border rounded-lg p-5">
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
+          className={`bg-surface border rounded-lg p-5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+            activeLedgerFilter === 'receber' ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-text-secondary'
+          }`}
+        >
           <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('A Receber (Comprador)')}</p>
           <p className="text-2xl font-bold text-text mt-2">¥ {aReceberVal.toLocaleString('ja-JP')}</p>
           <p className="text-[10px] text-text-secondary mt-1">{t('Transações pendentes/processando')}</p>
         </div>
-        <div className="bg-surface border border-border rounded-lg p-5">
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
+          className={`bg-surface border rounded-lg p-5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+            activeLedgerFilter === 'retido' ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-text-secondary'
+          }`}
+        >
           <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Valores Retidos (Custódia)')}</p>
           <p className="text-2xl font-bold text-text mt-2">¥ {retidoVal.toLocaleString('ja-JP')}</p>
           <p className="text-[10px] text-text-secondary mt-1">{t('Aguardando confirmação de entrega')}</p>
         </div>
-        <div className="bg-surface border border-border rounded-lg p-5">
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
+          className={`bg-surface border rounded-lg p-5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
+            activeLedgerFilter === 'pagos' ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-text-secondary'
+          }`}
+        >
           <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Valores Pagos (Vendedor)')}</p>
           <p className="text-2xl font-bold text-text mt-2">¥ {pagosVal.toLocaleString('ja-JP')}</p>
           <p className="text-[10px] text-text-secondary mt-1">{(100 - commissionRate)}% {t('de repasse líquido liberado')}</p>
@@ -357,7 +355,7 @@ export default function TransactionManagement() {
                   const seller = tx.seller;
                   const part = tx.part;
                   return (
-                    <tr key={tx.id} className="bg-white hover:bg-slate-50 transition-colors">
+                    <tr key={tx.id} className="bg-[#0A0A0F] hover:bg-[#111116] border-b border-border transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
                         {part?.title || 'Peça removida'}
                       </td>

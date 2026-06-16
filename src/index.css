@@ -492,6 +492,50 @@ select option {
 }
 
 .btn-ghost:hover {
-  background: rgba(13,117,255,0.15);
-  border-color: rgba(13,117,255,0.35);
+  background: rgba(13, 117, 255, 0.15);
+  border-color: rgba(13, 117, 255, 0.35);
+}
+
+/* ============================================
+   Print Styles for PDF Export
+   ============================================ */
+@media print {
+  aside, 
+  header, 
+  nav, 
+  button, 
+  select,
+  .no-print,
+  .global-search-trigger {
+    display: none !important;
+  }
+  
+  body, 
+  main, 
+  html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .bg-\[\#111827\], 
+  .bg-surface, 
+  .bg-card,
+  .card {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, span, td, th, div {
+    color: #000000 !important;
+  }
+
+  .grid-cols-5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
 }

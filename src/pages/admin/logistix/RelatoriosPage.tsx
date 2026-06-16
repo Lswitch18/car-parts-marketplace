@@ -63,8 +63,11 @@ export default function RelatoriosPage() {
             <option value="quarter">Este trimestre</option>
             <option value="year">Este ano</option>
           </select>
-          <button className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2">
-            <Download size={16} /> Exportar
+          <button 
+            onClick={() => window.print()}
+            className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2"
+          >
+            <Download size={16} /> Exportar PDF
           </button>
         </div>
       </div>
