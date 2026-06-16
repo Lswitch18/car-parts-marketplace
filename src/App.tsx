@@ -16,6 +16,7 @@ import PaymentCheckout from './pages/PaymentCheckout'
 import UserManagement from './pages/admin/UserManagement'
 import ImageTo3D from './pages/admin/ImageTo3D'
 import ReviewManagement from './pages/admin/ReviewManagement'
+import AdminDashboard from './pages/admin/AdminDashboard'
 import PWARegister from './components/PWARegister'
 import TransactionManagement from './pages/admin/TransactionManagement'
 import LogistixDashboard from './pages/admin/LogistixDashboard'
@@ -90,8 +91,8 @@ function App() {
         </Route>
 
         <Route path="/admin" element={<ProtectedRoute requireAdmin />}>
-          <Route index element={<LogistixDashboard />} />
-          <Route path="dashboard" element={<LogistixDashboard />} />
+          <Route index element={<AdminDashboard />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="logistix" element={<LogistixDashboard />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="transactions" element={<TransactionManagement />} />

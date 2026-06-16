@@ -3,7 +3,7 @@ import { useAuthStore } from '../../stores/authStore'
 import { useState, useEffect, useRef } from 'react'
 import {
   Menu, X, Heart, User, LogOut,
-  MessageCircle, ArrowRight, Package, Sparkles,
+  MessageCircle, ArrowRight, Package, Sparkles, Settings,
 } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '../../lib/i18n'
@@ -353,6 +353,20 @@ export default function Header() {
                             style={{ color: '#0D75FF' }}
                             onMouseEnter={(e) =>
                               ((e.currentTarget as HTMLElement).style.background = 'rgba(13,117,255,0.1)')
+                            }
+                            onMouseLeave={(e) =>
+                              ((e.currentTarget as HTMLElement).style.background = 'transparent')
+                            }
+                          >
+                            <Settings className="w-4 h-4" />
+                            Painel Admin
+                          </Link>
+                          <Link
+                            to="/admin/logistix"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                            style={{ color: '#3b82f6' }}
+                            onMouseEnter={(e) =>
+                              ((e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.1)')
                             }
                             onMouseLeave={(e) =>
                               ((e.currentTarget as HTMLElement).style.background = 'transparent')
