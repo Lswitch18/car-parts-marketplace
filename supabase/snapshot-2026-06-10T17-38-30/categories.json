@@ -1,0 +1,86 @@
+[
+  {
+    "id": "f6c29df8-8eb9-4910-96e1-8e1c53d5276c",
+    "name": "Body Kits",
+    "slug": "body-kits",
+    "icon": "Car",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "002ac22c-2a9d-4a08-920c-fc507d53173b",
+    "name": "Wings & Spoilers",
+    "slug": "wings-spoilers",
+    "icon": "Wind",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "8c01e7c1-adc9-474d-a88e-65dd5d089962",
+    "name": "Wheels & Rims",
+    "slug": "wheels-rims",
+    "icon": "Circle",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "383dd03b-4cce-46dd-8bab-da273852e4a7",
+    "name": "Brakes",
+    "slug": "brakes",
+    "icon": "Disc",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "098a67ef-a49f-4483-84dd-54175c51d971",
+    "name": "Suspension",
+    "slug": "suspension",
+    "icon": "ArrowDownUp",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "0b069287-10e9-4ebc-af65-de6fbffc0373",
+    "name": "Engine",
+    "slug": "engine",
+    "icon": "Cog",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "53a6d6e9-b794-4d21-904d-b630161f3de6",
+    "name": "Exhaust",
+    "slug": "exhaust",
+    "icon": "Flame",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "bc9c1631-783f-49dd-82e0-a7a758c5546c",
+    "name": "Interior",
+    "slug": "interior",
+    "icon": "Armchair",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "01521b37-9915-45bf-9d83-34c38ad9f046",
+    "name": "Lighting",
+    "slug": "lighting",
+    "icon": "Lightbulb",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "11916931-aca3-4dfa-86b2-3c2462d97667",
+    "name": "Aero",
+    "slug": "aero",
+    "icon": "Waves",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "7b19af80-26f4-4346-b13b-33bdd7865bda",
+    "name": "Turbo & Boost",
+    "slug": "turbo-boost",
+    "icon": "Zap",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "9ef6c897-b83d-4e90-bd54-34caba630862",
+    "name": "Cooling",
+    "slug": "cooling",
+    "icon": "Thermometer",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  }
+]

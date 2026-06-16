@@ -1,0 +1,738 @@
+[
+  {
+    "id": "ccb331a0-95e0-4cdf-a69e-94bbed7c1a05",
+    "name": "Alfa Romeo",
+    "slug": "alfa-romeo",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "b8936528-bd6b-4473-81b3-70fca3ccbea4",
+    "name": "Jetta",
+    "slug": "jetta",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "11111111-1111-1111-1111-111111111111",
+    "name": "Nissan",
+    "slug": "nissan",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Nissan_2020_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "22222222-2222-2222-2222-222222222222",
+    "name": "Toyota",
+    "slug": "toyota",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Toyota_crest.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "33333333-3333-3333-3333-333333333333",
+    "name": "Honda",
+    "slug": "honda",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Honda_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "44444444-4444-4444-4444-444444444444",
+    "name": "Mazda",
+    "slug": "mazda",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Mazda_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "55555555-5555-5555-5555-555555555555",
+    "name": "Subaru",
+    "slug": "subaru",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Subaru_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "66666666-6666-6666-6666-666666666666",
+    "name": "Mitsubishi",
+    "slug": "mitsubishi",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Mitsubishi_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "77777777-7777-7777-7777-777777777777",
+    "name": "Lexus",
+    "slug": "lexus",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/Lexus_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "88888888-8888-8888-8888-888888888888",
+    "name": "Acura",
+    "slug": "acura",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Acura_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "99999999-9999-9999-9999-999999999999",
+    "name": "Infiniti",
+    "slug": "infiniti",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Infiniti_logo.svg",
+    "country": "Japan",
+    "created_at": "2026-05-08T03:34:49.008727+00:00"
+  },
+  {
+    "id": "9f196d75-57c2-473c-88f4-c9bedb2b7afb",
+    "name": "Suzuki",
+    "slug": "suzuki",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T12:59:22.463158+00:00"
+  },
+  {
+    "id": "0aa32182-872a-47b3-9721-9838ba52a69b",
+    "name": "Daihatsu",
+    "slug": "daihatsu",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "e7aa7aed-0243-4d9c-89ca-ef10bc94351f",
+    "name": "Datsun",
+    "slug": "datsun",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "d6662f54-b651-4aa4-9ad4-c8a20f76e6c3",
+    "name": "Isuzu",
+    "slug": "isuzu",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+    "name": "Porsche",
+    "slug": "porsche",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+    "name": "BMW",
+    "slug": "bmw",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "name": "Audi",
+    "slug": "audi",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "660170b0-2017-49e2-bcdb-20367bd7dcb1",
+    "name": "Mercedes-Benz",
+    "slug": "mercedes-benz",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T12:59:22.463158+00:00"
+  },
+  {
+    "id": "aa7f2bc8-41a9-4d86-a88b-d3ae01901721",
+    "name": "Volkswagen",
+    "slug": "volkswagen",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T12:59:22.463158+00:00"
+  },
+  {
+    "id": "ee0d0cd1-67cc-4787-adb2-4ce1acb0bd8a",
+    "name": "Opel",
+    "slug": "opel",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "374da829-a099-47e6-8910-e63d6c498ec8",
+    "name": "Smart",
+    "slug": "smart",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "7a8311d2-f1ec-477e-88a0-2f0bbd37a0d8",
+    "name": "MAN",
+    "slug": "man",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "name": "Tesla",
+    "slug": "tesla",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "7a3c862f-29ee-4e71-87ba-bd386adcfd71",
+    "name": "Chevrolet",
+    "slug": "chevrolet",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "32b79e6c-1356-4922-a0eb-796579165133",
+    "name": "Dodge",
+    "slug": "dodge",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "55ca03be-8054-4050-aec6-5449c9c12898",
+    "name": "Chrysler",
+    "slug": "chrysler",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "79aa1026-8192-451c-8a43-3db305387be3",
+    "name": "Ford",
+    "slug": "ford",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "856b0f72-8996-4fe4-9fa7-c67d17619ccc",
+    "name": "Hummer",
+    "slug": "hummer",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "ba0e2718-6f0b-4c59-a7b1-cea0ed437843",
+    "name": "Jeep",
+    "slug": "jeep",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "45efbbf5-c260-45b3-a495-96f605219570",
+    "name": "Buick",
+    "slug": "buick",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "51d3f047-b33b-4f84-b0da-a522061a218f",
+    "name": "Cadillac",
+    "slug": "cadillac",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "7362a3d1-ceff-400a-944c-b6a0cbadfc47",
+    "name": "GMC",
+    "slug": "gmc",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "a6cb02e8-a1a6-4ea1-8a13-adfa1aca0337",
+    "name": "Lincoln",
+    "slug": "lincoln",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "0593de0f-1c53-40dc-a828-c868a946f07a",
+    "name": "Mercury",
+    "slug": "mercury",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "f8203028-5357-4fb7-b8a3-ea18a0733b9c",
+    "name": "Plymouth",
+    "slug": "plymouth",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "b994285e-d8bb-468c-bd28-e92085edac19",
+    "name": "Pontiac",
+    "slug": "pontiac",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "7366e3d2-78b2-4d88-b263-ed993c3f52ee",
+    "name": "Saturn",
+    "slug": "saturn",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "a32263a0-f1e5-439e-a2c5-36efe091b8a0",
+    "name": "Land Rover",
+    "slug": "land-rover",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "c32e99f9-cdb4-4557-b247-1b24b6a82ee2",
+    "name": "Jaguar",
+    "slug": "jaguar",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "ab54ebe6-2316-4f6d-8de5-19d85aaf77af",
+    "name": "MINI",
+    "slug": "mini",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "f108b349-2515-41c6-835e-0dae8bf2b55f",
+    "name": "Rover",
+    "slug": "rover",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "04f427c9-76bb-48d9-8b3d-cf1f32628b3e",
+    "name": "Bentley",
+    "slug": "bentley",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "e6531036-c311-4f4c-afd5-12821d36a479",
+    "name": "Triumph",
+    "slug": "triumph",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "6f61a1c9-54d9-4845-86c6-64c4db3560c5",
+    "name": "LDV",
+    "slug": "ldv",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "7c9240aa-178b-4755-8ff6-631f9e8341dd",
+    "name": "MG",
+    "slug": "mg",
+    "logo_url": null,
+    "country": "UK",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "c5dcfe59-b8b7-480c-a7ae-429a7faba059",
+    "name": "Renault",
+    "slug": "renault",
+    "logo_url": null,
+    "country": "France",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "de4b83a6-2453-4814-8337-cca66933264d",
+    "name": "Peugeot",
+    "slug": "peugeot",
+    "logo_url": null,
+    "country": "France",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "f256f36f-9e79-47cd-939e-c4536df06fb8",
+    "name": "Citroën",
+    "slug": "citroen",
+    "logo_url": null,
+    "country": "France",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "966341b1-54bf-42f5-b248-0c29321f1cfb",
+    "name": "Fiat",
+    "slug": "fiat",
+    "logo_url": null,
+    "country": "Italy",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "7b23e911-dc14-4b9c-8452-0e4fbd9dc82c",
+    "name": "Lancia",
+    "slug": "lancia",
+    "logo_url": null,
+    "country": "Italy",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "2cdb4d6b-477e-4649-abee-cac284f4e838",
+    "name": "Maserati",
+    "slug": "maserati",
+    "logo_url": null,
+    "country": "Italy",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "5b0c7ca3-6642-4ada-a8e1-d2abfb8f88ca",
+    "name": "Lamborghini",
+    "slug": "lamborghini",
+    "logo_url": null,
+    "country": "Italy",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "6d1a9d06-01df-4df8-b2f1-c64d90897491",
+    "name": "Pagani",
+    "slug": "pagani",
+    "logo_url": null,
+    "country": "Italy",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "b66674c6-1541-4673-b1ad-1b9c77057712",
+    "name": "Kia",
+    "slug": "kia",
+    "logo_url": null,
+    "country": "South Korea",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "189babc0-1d01-4f51-8471-50701e16e315",
+    "name": "Hyundai",
+    "slug": "hyundai",
+    "logo_url": null,
+    "country": "South Korea",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "010fda5a-1bbe-48d5-8178-6a7c9d39132c",
+    "name": "Daewoo",
+    "slug": "daewoo",
+    "logo_url": null,
+    "country": "South Korea",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "4a18c43f-8a45-4f93-b924-261b66094b50",
+    "name": "Ravon",
+    "slug": "ravon",
+    "logo_url": null,
+    "country": "South Korea",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "17fbb8dd-cc34-4195-bd2e-975842409846",
+    "name": "SsangYong",
+    "slug": "ssangyong",
+    "logo_url": null,
+    "country": "South Korea",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    "name": "BYD",
+    "slug": "byd",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+    "name": "Zeekr",
+    "slug": "zeekr",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+    "name": "NIO",
+    "slug": "nio",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-05-28T00:10:10.609092+00:00"
+  },
+  {
+    "id": "400cae63-43d7-4519-9fc6-25a80d8aafbc",
+    "name": "Chery",
+    "slug": "chery",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "1d0a8a0d-1670-4bd7-a89e-65af7b660767",
+    "name": "Changan",
+    "slug": "changan",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "a0b9c131-fd88-402f-a15a-5f57a7032c68",
+    "name": "Geely",
+    "slug": "geely",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "d3d9531d-fc0b-4aa1-9333-8191a217a977",
+    "name": "Great Wall",
+    "slug": "great-wall",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "230a3318-ddda-4f3b-987b-2af4f16cdb73",
+    "name": "Haval",
+    "slug": "haval",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "2428fc4d-2b47-4d1e-ad12-09ab20a12500",
+    "name": "Voyah",
+    "slug": "voyah",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "43742156-6cd2-417f-824a-5ff075953039",
+    "name": "Hongqi",
+    "slug": "hongqi",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "0dda3c21-2dcd-4af8-8055-69b1b23da23c",
+    "name": "Jetour",
+    "slug": "jetour",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "4b30c4fc-dd0f-46e8-9a55-e224aa89abcc",
+    "name": "Lifan",
+    "slug": "lifan",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "8c5cdd8c-54dc-4204-9509-03b7ac3fb094",
+    "name": "FAW",
+    "slug": "faw",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "09dafdf1-0bcf-48df-b529-52638a456895",
+    "name": "Li Auto",
+    "slug": "li-auto",
+    "logo_url": null,
+    "country": "China",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "9b7fe936-f2c1-40ca-8066-99c4f6220ede",
+    "name": "Saab",
+    "slug": "saab",
+    "logo_url": null,
+    "country": "Sweden",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "9f63b613-defc-44b1-bd60-fac9a3cb5be9",
+    "name": "Volvo",
+    "slug": "volvo",
+    "logo_url": null,
+    "country": "Sweden",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "2302bc0c-ac42-4e8d-9796-c4a1dcff4161",
+    "name": "Scania",
+    "slug": "scania",
+    "logo_url": null,
+    "country": "Sweden",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "4f2e6a12-cfa1-40e9-a092-1f6ff15da433",
+    "name": "Skoda",
+    "slug": "skoda",
+    "logo_url": null,
+    "country": "Czech Republic",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "cc5315b4-1e91-4a93-802f-06c676db22b9",
+    "name": "Seat",
+    "slug": "seat",
+    "logo_url": null,
+    "country": "Spain",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "28e58289-070f-4dbf-ac47-58dec61a4ef0",
+    "name": "Lada",
+    "slug": "lada",
+    "logo_url": null,
+    "country": "Russia",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "0df30734-59b8-4eed-80c3-d8c743508023",
+    "name": "Eicher",
+    "slug": "eicher",
+    "logo_url": null,
+    "country": "India",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "9b91bd84-0061-43bf-89a6-88c0a6de0f85",
+    "name": "DAF",
+    "slug": "daf",
+    "logo_url": null,
+    "country": "Netherlands",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "ef619914-4af5-4651-aaea-7cf6e66f41c4",
+    "name": "Proton",
+    "slug": "proton",
+    "logo_url": null,
+    "country": "Malaysia",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "12376653-b36c-48d5-9882-76baeebce1a3",
+    "name": "Dacia",
+    "slug": "dacia",
+    "logo_url": null,
+    "country": "Romania",
+    "created_at": "2026-06-09T13:06:27.951352+00:00"
+  },
+  {
+    "id": "2383acfb-b2ad-4abb-be9f-867fa62c446a",
+    "name": "Krone",
+    "slug": "krone",
+    "logo_url": null,
+    "country": "Austria",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "dd15d284-abbe-47f6-9ea9-e687ebc72f1a",
+    "name": "Kogel",
+    "slug": "kogel",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "bb923f5b-ea0a-42d5-8821-56f7f1ffd791",
+    "name": "Schmitz",
+    "slug": "schmitz",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "03bde34c-d1f5-473d-bcef-a27198cb212d",
+    "name": "Setra",
+    "slug": "setra",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "74fbecbf-82f6-4964-8791-9686818c05d6",
+    "name": "Komatsu",
+    "slug": "komatsu",
+    "logo_url": null,
+    "country": "Japan",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "85f1138f-c7cf-4bc6-9337-dc21055356be",
+    "name": "John Deere",
+    "slug": "john-deere",
+    "logo_url": null,
+    "country": "USA",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "553ea471-d36c-44c8-92d4-4a7bc54af50e",
+    "name": "Hanomag",
+    "slug": "hanomag",
+    "logo_url": null,
+    "country": "Germany",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "c16fed7a-0ddb-4d0c-a53d-02f0f040fcf5",
+    "name": "Wartburg",
+    "slug": "wartburg",
+    "logo_url": null,
+    "country": "East Germany",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  },
+  {
+    "id": "eeae444e-d7b6-4e0e-bb1d-0687598cdd65",
+    "name": "Iveco",
+    "slug": "iveco",
+    "logo_url": null,
+    "country": "Italy",
+    "created_at": "2026-06-09T13:06:29.660295+00:00"
+  }
+]

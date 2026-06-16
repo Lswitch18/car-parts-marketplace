@@ -1,0 +1,44 @@
+[
+  {
+    "id": "125fa295-2999-4b44-9e35-7a9cd05ca0fe",
+    "part_id": "b67e2c29-9d3f-46da-8ef6-9f665258740f",
+    "buyer_id": "e4fffabc-8616-4738-988b-952f492cfe68",
+    "seller_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "amount": 4500,
+    "commission": 450,
+    "status": "pending",
+    "created_at": "2026-05-09T15:48:23.096758+00:00",
+    "payment_status": "pending",
+    "fulfillment_status": "pending",
+    "auction_id": null,
+    "bid_id": null
+  },
+  {
+    "id": "657bee93-f7e0-4d1b-bd24-1890f11446b9",
+    "part_id": "b67e2c29-9d3f-46da-8ef6-9f665258740f",
+    "buyer_id": "f011bc61-645d-4be0-9782-556685c8c896",
+    "seller_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "amount": 4500,
+    "commission": 0,
+    "status": "pending",
+    "created_at": "2026-05-13T04:26:32.550027+00:00",
+    "payment_status": "paid",
+    "fulfillment_status": "pending",
+    "auction_id": null,
+    "bid_id": null
+  },
+  {
+    "id": "c797640b-aa51-4a96-a2bf-6d3b05939f5a",
+    "part_id": "ae6c04f2-dd83-42a5-825c-c648cd587ea9",
+    "buyer_id": "262214d4-fc23-418c-bb20-a0300e97faa2",
+    "seller_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "amount": 45000,
+    "commission": 0,
+    "status": "pending",
+    "created_at": "2026-05-13T15:51:36.763555+00:00",
+    "payment_status": "paid",
+    "fulfillment_status": "pending",
+    "auction_id": null,
+    "bid_id": null
+  }
+]

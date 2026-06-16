@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminApi } from '../../../lib/adminApi';
-import { Search, Plus, Edit3, Trash2, ChevronLeft, ChevronRight, X, MapPin } from 'lucide-react';
+import { logisticsApi } from '../../../lib/logisticsApi';
+import { Search, Plus, Edit3, Trash2, ChevronLeft, ChevronRight, X, MapPin, Printer } from 'lucide-react';
 
 const STATUS_OPTIONS = ['pendente', 'em_transito', 'entregue', 'atrasado', 'cancelado', 'recebido'];
 const STATUS_COLOR: Record<string, string> = {
@@ -60,6 +61,20 @@ export default function PedidosPage() {
     mutationFn: (id: string) => adminApi.pedidos.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['admin', 'pedidos'] }); setShowDelete(null); },
   });
+
+  async function handlePrintLabel(row: any) {
+    try {
+      const shipment = await logisticsApi.shipments.create({
+        pedido_id: row.id, cliente_id: row.cliente_id,
+        armazem_origem_id: row.armazem_origem_id,
+        destino_cidade: row.destino_cidade, destino_estado: row.destino_estado,
+        peso_kg: row.peso_kg,
+      });
+      await logisticsApi.labels.downloadZpl(shipment.id, `etiqueta-${row.codigo}.zpl`);
+    } catch (e: any) {
+      alert(`Erro ao gerar etiqueta: ${e.message}`);
+    }
+  }
 
   function openCreate() {
     setEditingId(null); setForm(emptyForm); setShowModal(true);
@@ -156,13 +171,14 @@ export default function PedidosPage() {
                     }}>{row.status?.replace('_', ' ')}</span>
                   </td>
                   <td className="p-4 text-sm text-gray-400">{row.peso_kg ? `${row.peso_kg}kg` : '-'}</td>
-                  <td className="p-4 text-sm text-green-400 font-mono">{row.valor ? `R$ ${Number(row.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}</td>
+                  <td className="p-4 text-sm text-green-400 font-mono">{row.valor ? `¥ ${Number(row.valor).toLocaleString('ja-JP')}` : '-'}</td>
                   <td className="p-4 text-sm text-gray-400">{row.previsao ? new Date(row.previsao).toLocaleDateString('pt-BR') : '-'}</td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400 transition-colors" title="Editar"><Edit3 size={14} /></button>
                       <button onClick={() => window.open(`/admin/logistix/rastreamento?codigo=${row.codigo}`, '_blank')}
                         className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-green-400 transition-colors" title="Rastrear"><MapPin size={14} /></button>
+                      <button onClick={() => handlePrintLabel(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-yellow-400 transition-colors" title="Imprimir Etiqueta"><Printer size={14} /></button>
                       <button onClick={() => setShowDelete(row.id)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-red-400 transition-colors" title="Excluir"><Trash2 size={14} /></button>
                     </div>
                   </td>
@@ -230,7 +246,7 @@ export default function PedidosPage() {
                   <input type="number" value={form.peso_kg} onChange={e => setForm({ ...form, peso_kg: Number(e.target.value) })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Valor (R$)</label>
+                  <label className="text-sm text-gray-400 mb-1 block">Valor (¥)</label>
                   <input type="number" value={form.valor} onChange={e => setForm({ ...form, valor: Number(e.target.value) })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
                 <div>

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "7f80e721-8f4b-4815-9a2e-314a3f4a3b70",
+    "sender_id": "e4fffabc-8616-4738-988b-952f492cfe68",
+    "receiver_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "part_id": "b67e2c29-9d3f-46da-8ef6-9f665258740f",
+    "content": "Olá! Gostaria de saber mais sobre o turbo. Ainda está disponível?",
+    "is_read": false,
+    "created_at": "2026-05-09T13:48:59.957701+00:00",
+    "message_type": "text",
+    "proposed_price": null,
+    "price_confirmed": false
+  },
+  {
+    "id": "8226304a-8969-4acc-9805-516d0c408e7b",
+    "sender_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "receiver_id": "e4fffabc-8616-4738-988b-952f492cfe68",
+    "part_id": "b67e2c29-9d3f-46da-8ef6-9f665258740f",
+    "content": "Olá! Sim, ainda está disponível. Posso fazer um desconto!",
+    "is_read": false,
+    "created_at": "2026-05-09T14:48:59.957701+00:00",
+    "message_type": "text",
+    "proposed_price": null,
+    "price_confirmed": false
+  },
+  {
+    "id": "eb4ca7dd-b319-48b9-a339-cbfed7e5d275",
+    "sender_id": "e4fffabc-8616-4738-988b-952f492cfe68",
+    "receiver_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "part_id": "b67e2c29-9d3f-46da-8ef6-9f665258740f",
+    "content": "Proposta de preço: ¥4,000",
+    "is_read": false,
+    "created_at": "2026-05-09T15:18:59.957701+00:00",
+    "message_type": "price_proposal",
+    "proposed_price": 4000,
+    "price_confirmed": false
+  },
+  {
+    "id": "b0a97f7b-a7c2-4caf-9f72-580a88488e89",
+    "sender_id": "203ee131-797c-43a8-8a65-0df4a2cf3338",
+    "receiver_id": "e4fffabc-8616-4738-988b-952f492cfe68",
+    "part_id": "b67e2c29-9d3f-46da-8ef6-9f665258740f",
+    "content": "Proposta de preço: ¥4,000",
+    "is_read": false,
+    "created_at": "2026-05-09T15:33:59.957701+00:00",
+    "message_type": "price_proposal",
+    "proposed_price": 4000,
+    "price_confirmed": true
+  }
+]
