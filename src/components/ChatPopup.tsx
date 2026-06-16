@@ -123,7 +123,17 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
       fetchConversations()
       const channel = supabase
         .channel('messages-changes-popup')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload: any) => {
+          fetchConversations()
+          if (selectedConversation) fetchMessages(selectedConversation)
+          
+          // Abre o popup automaticamente apenas se o destinatário for o usuário atual (mensagem recebida)
+          if (payload.new && payload.new.receiver_id === user.id) {
+            setIsOpen(true)
+            setIsMinimized(false)
+          }
+        })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, () => {
           fetchConversations()
           if (selectedConversation) fetchMessages(selectedConversation)
         })
