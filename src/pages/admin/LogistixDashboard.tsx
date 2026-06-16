@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Package, Truck, Warehouse,
   MapPin, BarChart3, Settings,
   Bell, Search, ChevronDown, CheckCircle, AlertTriangle,
-  Percent, DollarSign, Calendar, LogOut, Moon, ChevronRight, TrendingUp,
+  Percent, DollarSign, Calendar, LogOut, Moon, ChevronRight, TrendingUp, Sliders
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 import { useAuthStore } from '../../stores/authStore';
@@ -31,6 +31,7 @@ import Armazem3DPage from './logistix/Armazem3DPage';
 import GlobalSearch from '../../components/logistix/GlobalSearch';
 import NotificationCenter from '../../components/logistix/NotificationCenter';
 import PedidoDetail from './logistix/PedidoDetail';
+import GaidLogo from '../../components/GaidLogo';
 
 interface NavGroup {
   icon: any;
@@ -71,24 +72,26 @@ const NAV_GROUPS: NavGroup[] = [
   ]},
 ];
 
-const DONUT_COLORS = ['#22C55E', '#3B82F6', '#F97316', '#EF4444'];
+// Professional monochrome palette for donut chart and status labels
+const DONUT_COLORS = ['#000000', '#4B5563', '#9CA3AF', '#D1D5DB'];
 const STATUS_LABEL: Record<string, string> = { entregue: 'Entregue', em_transito: 'Em trânsito', atrasado: 'Atrasado', cancelado: 'Cancelado' };
-const STATUS_COLOR: Record<string, string> = { entregue: '#22C55E', em_transito: '#3B82F6', atrasado: '#F97316', cancelado: '#EF4444' };
+const STATUS_COLOR: Record<string, string> = { entregue: '#000000', em_transito: '#4B5563', atrasado: '#9CA3AF', cancelado: '#E5E7EB' };
 
 function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: string; value: string | number; icon: any; color: string; trend?: string; onClick?: () => void }) {
   return (
-    <button onClick={onClick} className="stat-card text-left w-full group" style={{ background: 'var(--bg-elevated)' }}>
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${color}22` }}>
-            <Icon size={16} style={{ color }} />
-          </div>
+    <button 
+      onClick={onClick} 
+      className="text-left w-full p-6 bg-white border-2 border-black rounded-xl hover:bg-slate-50 transition-all focus:outline-none"
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 border border-black/10">
+          <Icon size={16} className="text-black" />
         </div>
       </div>
-      <p className="text-[13px] text-text-muted mb-1">{title}</p>
-      <p className="text-[28px] font-display font-bold leading-none mb-1" style={{ color }}>{value}</p>
+      <p className="text-xs uppercase tracking-widest font-black text-slate-500 mb-1">{title}</p>
+      <p className="text-2xl font-black leading-none text-black mb-2">{value}</p>
       {trend && (
-        <p className={`flex items-center gap-1 text-[11px] ${trend.startsWith('-') ? 'text-orange-400' : 'text-green-400'}`}>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
           {trend} vs mês anterior
         </p>
       )}
@@ -190,9 +193,9 @@ export default function LogistixDashboard() {
     queryFn: () => adminApi.armazens.list(),
   });
 
-  const armazens = (armazensList || []).slice(0, 8).map((a: any) => {
+  const CD_list = (armazensList || []).slice(0, 8).map((a: any) => {
     const pct = a.capacidade && a.capacidade > 0 ? Math.round((a.ocupacao / a.capacidade) * 100) : 0;
-    const cor = pct > 80 ? '#EF4444' : pct > 60 ? '#FACC15' : '#22C55E';
+    const cor = pct > 80 ? '#000000' : pct > 60 ? '#4b5563' : '#9ca3af';
     return { id: a.id, nome: a.nome, pct, cor, cidade: a.cidade };
   });
 
@@ -201,35 +204,37 @@ export default function LogistixDashboard() {
       tipo: 'pedido' as const,
       label: `Pedido ${o.codigo}`,
       desc: `${o.cliente} · ${o.status}`,
-      cor: STATUS_COLOR[o.status] || '#6B7280',
+      cor: STATUS_COLOR[o.status] || '#000000',
       hora: o.previsao || '',
     })),
     ...(ocorrencias || []).slice(0, 2).map((o: any) => ({
       tipo: 'ocorrencia' as const,
       label: `Ocorrência: ${o.tipo}`,
       desc: o.descricao?.slice(0, 40) || '',
-      cor: '#EF4444',
+      cor: '#000000',
       hora: o.created_at || '',
     })),
-  ];  function QuickActions({ onNavigate }: { onNavigate: (id: string) => void }) {
+  ];
+
+  function QuickActions({ onNavigate }: { onNavigate: (id: string) => void }) {
     return (
       <div className="flex flex-wrap gap-2">
-        <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-500/20">
+        <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
           + Nova Coleta
         </button>
-        <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg text-sm font-medium transition-colors border border-green-500/20">
+        <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
           + Gerar Etiquetas
         </button>
-        <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 rounded-lg text-sm font-medium transition-colors border border-purple-500/20">
+        <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
           + Novo Pedido
         </button>
-        <button onClick={() => onNavigate('transferencias')} className="flex items-center gap-2 h-10 px-4 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg text-sm font-medium transition-colors border border-cyan-500/20">
+        <button onClick={() => onNavigate('transferencias')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
           + Transferência
         </button>
-        <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 rounded-lg text-sm font-medium transition-colors border border-orange-500/20">
+        <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
           + Ocorrência
         </button>
-        <button onClick={() => onNavigate('armazem3d')} className="flex items-center gap-2 h-10 px-4 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-sm font-medium transition-colors border border-indigo-500/20">
+        <button onClick={() => onNavigate('armazem3d')} className="flex items-center gap-2 h-10 px-4 bg-black hover:bg-neutral-800 text-white rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
           ⊞ Armazém 3D
         </button>
       </div>
@@ -237,69 +242,63 @@ export default function LogistixDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-background text-white font-sans overflow-hidden relative">
-      {/* Grid overlay + glows */}
-      <div className="absolute inset-0 grid-overlay opacity-30 pointer-events-none z-0" />
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse, rgba(13,117,255,0.10) 0%, transparent 65%)' }} />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse, rgba(112,0,255,0.08) 0%, transparent 65%)' }} />
-
+    <div className="flex h-screen bg-white text-black font-sans overflow-hidden relative border-t border-black/10 antialiased">
       {sidebarOpen && (
-        <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-30 bg-black/40 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-background border-r border-border flex flex-col flex-shrink-0 transition-transform duration-200 relative z-10 ${
+      {/* Sidebar - P&B Minimalist */}
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-slate-50 border-r border-black/15 flex flex-col flex-shrink-0 transition-transform duration-200 relative z-10 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        <div className="h-[70px] flex items-center gap-3 px-6">
-          <div className="w-8 h-8 bg-daig-blue rounded-lg flex items-center justify-center">
-            <Package size={20} className="text-white" />
-          </div>
+        <div className="h-[74px] flex items-center gap-3 px-6 border-b border-black/10">
+          <GaidLogo size={42} animated={false} />
           <div>
-            <h1 className="font-display text-xl font-bold leading-tight tracking-wide">LOGISTIX</h1>
-            <span className="text-[11px] text-text-muted">Smart Logistics</span>
+            <h1 className="font-sans text-lg font-black leading-tight tracking-wider uppercase text-black">LOGISTIX</h1>
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Painel Operacional</span>
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-2 overflow-y-auto space-y-0.5 relative z-10">
+        <nav className="flex-1 px-4 py-4 overflow-y-auto space-y-1 relative z-10">
           {NAV_GROUPS.map(group => (
             <div key={group.id}>
               {group.items.length === 0 ? (
                 <button
                   onClick={() => setActiveNav(group.id)}
-                  className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm ${
+                  className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-xs font-bold uppercase tracking-wider ${
                     activeNav === group.id
-                      ? 'bg-[#111116] text-daig-blue shadow-[0_0_12px_-4px_rgba(13,117,255,0.3)]'
-                      : 'text-text-muted hover:bg-[#111116] hover:text-white'
+                      ? 'bg-black text-white'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-black'
                   }`}
                 >
-                  <group.icon size={20} />
+                  <group.icon size={16} />
                   {group.label}
                 </button>
               ) : (
                 <>
                   <button
                     onClick={() => toggleGroup(group.id)}
-                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-sm text-text-muted hover:bg-[#111116] hover:text-white ${
-                      expandedGroups[group.id] ? 'text-white' : ''
+                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 hover:text-black ${
+                      expandedGroups[group.id] ? 'text-black font-black' : ''
                     }`}
                   >
-                    <group.icon size={20} />
+                    <group.icon size={16} />
                     <span className="flex-1 text-left">{group.label}</span>
                     <ChevronRight
-                      size={14}
+                      size={12}
                       className={`transition-transform ${expandedGroups[group.id] ? 'rotate-90' : ''}`}
                     />
                   </button>
                   {expandedGroups[group.id] && (
-                    <div className="ml-3 space-y-0.5 border-l border-border pl-3">
+                    <div className="ml-3.5 space-y-1 border-l-2 border-black/10 pl-3.5">
                       {group.items.map(item => (
                         <button
                           key={item.id}
                           onClick={() => setActiveNav(item.id)}
-                          className={`w-full flex items-center gap-3 h-10 px-4 rounded-lg transition-all text-sm ${
+                          className={`w-full flex items-center gap-3 h-9 px-3.5 rounded-md transition-all text-xs font-bold ${
                             activeNav === item.id
-                              ? 'bg-[#111116] text-daig-blue shadow-[0_0_12px_-4px_rgba(13,117,255,0.3)]'
-                              : 'text-text-muted hover:bg-[#111116] hover:text-white'
+                              ? 'bg-black text-white'
+                              : 'text-slate-500 hover:bg-slate-100 hover:text-black'
                           }`}
                         >
                           {item.label}
@@ -313,212 +312,211 @@ export default function LogistixDashboard() {
           ))}
         </nav>
 
-        <div className="mx-4 my-4 p-3 flex items-center gap-3 rounded-lg border-t border-border cursor-pointer hover:bg-[#111116] transition-colors">
+        <div className="mx-4 my-4 p-3 flex items-center gap-3 rounded-xl border border-black/10 bg-white cursor-pointer hover:bg-slate-50 transition-colors">
           <img
-            src={user?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}&backgroundColor=3B82F6`}
-            alt="avatar" className="w-9 h-9 rounded-full"
+            src={user?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}&backgroundColor=dddddd`}
+            alt="avatar" className="w-8 h-8 rounded-full border border-black/10"
           />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{user?.full_name || user?.name || 'Admin'}</p>
-            <p className="text-[12px] text-text-muted">Administrador</p>
+            <p className="text-xs font-black truncate text-black">{user?.full_name || user?.name || 'Admin'}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">WMS Admin</p>
           </div>
-          <button onClick={signOut} className="text-text-muted hover:text-white transition-colors">
-            <LogOut size={16} />
+          <button onClick={signOut} className="text-slate-400 hover:text-black transition-colors p-1">
+            <LogOut size={14} />
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col overflow-y-auto relative z-10">
+      {/* Main Content Pane - White background */}
+      <main className="flex-1 flex flex-col overflow-y-auto bg-white relative z-10">
         {activeNav === 'dashboard' ? (
           <>
-            <header className="h-[70px] flex items-center justify-between px-3 lg:px-6 flex-shrink-0 gap-2 relative z-10" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+            <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-black/10 bg-white">
               <div className="flex items-center gap-3 min-w-0">
-                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg bg-[var(--bg-elevated)] border border-border flex items-center justify-center text-text-muted hover:text-white flex-shrink-0">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg border-2 border-black flex items-center justify-center text-black hover:bg-slate-50 flex-shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <div className="min-w-0">
-                  <h2 className="font-display text-lg lg:text-2xl font-bold truncate">Dashboard</h2>
-                  <p className="text-xs lg:text-sm text-text-muted mt-0.5 truncate">Bem-vindo de volta, {user?.full_name?.split(' ')[0] || user?.name || 'Admin'}</p>
+                  <h2 className="font-sans text-xl lg:text-2xl font-black uppercase tracking-tight text-black">Logistix WMS</h2>
+                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">{t('Controle operacional de suprimentos e transportes')}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 lg:gap-4">
-                <div className="hidden lg:flex items-center bg-[var(--bg-elevated)] rounded-lg h-10 w-[300px] px-3 border border-border">
-                  <Search size={18} className="text-text-muted mr-2" />
-                  <input type="text" placeholder="Buscar (Ctrl + K)" className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
+              <div className="flex items-center gap-3">
+                <div className="hidden lg:flex items-center bg-slate-50 rounded-lg h-10 w-[260px] px-3 border-2 border-black">
+                  <Search size={16} className="text-slate-400 mr-2" />
+                  <input type="text" placeholder="Buscar no sistema..." className="bg-transparent border-none outline-none text-black text-xs w-full font-bold placeholder:text-slate-400" />
                 </div>
                 <div className="relative flex-shrink-0">
-                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-9 h-9 lg:w-10 lg:h-10 rounded-lg bg-[var(--bg-elevated)] border border-border flex items-center justify-center text-text-muted hover:bg-[#1F2937] hover:text-white transition-all relative">
-                    <Bell size={18} />
+                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-10 h-10 rounded-lg border-2 border-black bg-white flex items-center justify-center text-black hover:bg-slate-50 transition-all relative">
+                    <Bell size={16} />
                     {ocorrenciasAbertas > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-background">
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-black text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white">
                         {ocorrenciasAbertas}
                       </span>
                     )}
                   </button>
                   <NotificationCenter open={notificacaoOpen} onClose={() => setNotificacaoOpen(false)} />
                 </div>
-                <button className="hidden lg:flex w-10 h-10 rounded-lg bg-[var(--bg-elevated)] border border-border items-center justify-center text-text-muted hover:bg-[#1F2937] hover:text-white transition-all">
-                  <Moon size={18} />
-                </button>
-
               </div>
             </header>
 
-            <div className="px-6 pb-6 space-y-5">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="px-6 py-6 space-y-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <QuickActions onNavigate={setActiveNav} />
-                <div className="flex items-center gap-2 text-gray-400 text-[13px] cursor-pointer">
-                  <Calendar size={16} />
+                <div className="flex items-center gap-2 text-slate-500 text-xs font-black uppercase tracking-wider cursor-pointer">
+                  <Calendar size={14} />
                   <span>{dataLabel}</span>
-                  <ChevronDown size={14} />
+                  <ChevronDown size={12} />
                 </div>
               </div>
 
+              {/* KPIs Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
                 {kpisLoading ? Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="skeleton rounded-xl p-5 h-[130px]" />
+                  <div key={i} className="animate-pulse bg-slate-50 border-2 border-black/10 rounded-xl h-[130px]" />
                 )) : (
                   <>
-                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="#3B82F6" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
-                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#22C55E" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
-                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#F97316" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
-                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#8B5CF6" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Receita Mensal" value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="#22C55E" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Lucro Mensal" value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color={Number(kpis?.lucro_mensal || 0) >= 0 ? '#22C55E' : '#EF4444'} trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="#000000" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#000000" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
+                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#000000" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#000000" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Receita Mensal" value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="#000000" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Lucro Mensal" value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color="#000000" trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
                   </>
                 )}
               </div>
 
+              {/* Operations Charts & CD occupancy */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <div className="bg-surface rounded-xl p-5 border border-border">
-                  <h3 className="font-display text-base font-bold mb-4">Status das Entregas</h3>
+                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Status das Entregas</h3>
                   <div className="relative h-[180px] flex items-center justify-center min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} dataKey="value" strokeWidth={0}>
                           {donutData.map((_, i) => <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />)}
                         </Pie>
-                        <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 12, color: '#fff' }} />
+                        <Tooltip contentStyle={{ background: '#ffffff', border: '2px solid #000000', borderRadius: 8, color: '#000' }} />
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute flex flex-col items-center">
-                      <span className="text-xl font-bold">{totalPedidos}</span>
-                      <span className="text-[12px] text-gray-400">Total</span>
+                      <span className="text-xl font-black text-black">{totalPedidos}</span>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total</span>
                     </div>
                   </div>
-                  <div className="space-y-3 mt-2">
+                  <div className="space-y-3 mt-4">
                     {donutData.map((d, i) => (
-                      <div key={d.name} className="flex items-center text-[12px]">
-                        <span className="w-2 h-2 rounded-full mr-2" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
-                        <span className="text-gray-400 flex-1">{d.name}</span>
-                        <span className="font-medium">{d.value} ({totalPedidos > 0 ? ((d.value / totalPedidos) * 100).toFixed(1) : 0}%)</span>
+                      <div key={d.name} className="flex items-center text-xs font-bold text-slate-600">
+                        <span className="w-2.5 h-2.5 rounded-full mr-2.5" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
+                        <span className="flex-1">{d.name}</span>
+                        <span className="text-black font-black">{d.value} ({totalPedidos > 0 ? ((d.value / totalPedidos) * 100).toFixed(1) : 0}%)</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-surface rounded-xl p-5 border border-border">
-                  <h3 className="font-display text-base font-bold mb-4">Performance de Entregas</h3>
+                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Performance no Prazo</h3>
                   <div className="h-[180px] min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={performance || []}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                        <XAxis dataKey="data" tick={{ fill: '#6B7280', fontSize: 11 }} tickLine={false} axisLine={false} />
-                        <YAxis tick={{ fill: '#6B7280', fontSize: 11 }} tickLine={false} axisLine={false} domain={[0, 100]} />
-                        <Tooltip contentStyle={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: 12, color: '#fff' }} />
-                        <Line type="monotone" dataKey="no_prazo" stroke="#22C55E" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="atrasadas" stroke="#F97316" strokeWidth={2} dot={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="data" tick={{ fill: '#000000', fontSize: 10, fontWeight: 'bold' }} tickLine={false} axisLine={false} />
+                        <YAxis tick={{ fill: '#000000', fontSize: 10, fontWeight: 'bold' }} tickLine={false} axisLine={false} domain={[0, 100]} />
+                        <Tooltip contentStyle={{ background: '#ffffff', border: '2px solid #000000', borderRadius: 8, color: '#000' }} />
+                        <Line type="monotone" dataKey="no_prazo" stroke="#000000" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="atrasadas" stroke="#9CA3AF" strokeWidth={2} dot={false} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="flex justify-center gap-6 mt-3">
-                    <div className="flex items-center gap-2 text-[12px] text-gray-400"><span className="w-4 h-0.5 bg-green-500" /> Entregas no prazo</div>
-                    <div className="flex items-center gap-2 text-[12px] text-gray-400"><span className="w-4 h-0.5 bg-orange-500" /> Entregas com atraso</div>
+                  <div className="flex justify-center gap-6 mt-4">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600"><span className="w-4 h-0.5 bg-black" /> No prazo</div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600"><span className="w-4 h-0.5 bg-slate-400" /> Em atraso</div>
                   </div>
                 </div>
 
-                <div className="bg-surface rounded-xl p-5 border border-border">
-                  <h3 className="font-display text-base font-bold mb-4">Estoque por Centro de Distribuição</h3>
+                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Capacidade dos CDs</h3>
                   <div className="space-y-4">
-                    {armazens.map(a => (
+                    {CD_list.map(a => (
                       <button key={a.nome} onClick={() => { setActiveNav('armazem3d'); }} className="w-full text-left group">
-                        <div className="flex justify-between text-[12px] text-gray-400 mb-1.5 group-hover:text-white transition-colors">
-                          <span className="flex items-center gap-1.5">
-                            <span className="text-gray-600 group-hover:text-blue-400 transition-colors">{'>'}</span>
+                        <div className="flex justify-between text-xs font-bold text-slate-500 mb-1.5 group-hover:text-black transition-colors">
+                          <span className="flex items-center gap-1">
+                            <span className="text-slate-300 group-hover:text-black transition-colors">›</span>
                             {a.nome}
                           </span>
-                          <span style={{ color: a.cor, fontWeight: 600 }}>{a.pct}%</span>
+                          <span className="text-black font-black">{a.pct}%</span>
                         </div>
-                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden group-hover:bg-white/10 transition-colors">
-                          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${a.pct}%`, background: a.cor, boxShadow: `0 0 6px ${a.cor}66` }} />
+                        <div className="h-2.5 bg-slate-100 border border-black/10 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-500 bg-black" style={{ width: `${a.pct}%` }} />
                         </div>
                       </button>
                     ))}
                   </div>
-                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-4 h-10 rounded-lg border border-border text-text-muted text-sm hover:bg-[var(--bg-elevated)] hover:text-white transition-all">Ver armazéns em 3D</button>
+                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-5 h-10 rounded-lg border-2 border-black bg-white text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Ver galpões em 3D</button>
                 </div>
               </div>
 
-              <div className="bg-surface rounded-xl p-5 border border-border">
-                <h3 className="font-display text-base font-bold mb-4">Atividade Recente</h3>
+              {/* Activity feeds */}
+              <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
+                <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Feed de Eventos Operacionais</h3>
                 <div className="space-y-1">
                   {atividadeFeed.length === 0 ? (
-                    <p className="text-sm text-gray-500 py-4 text-center">Nenhuma atividade recente</p>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider py-6 text-center">Nenhum evento registrado</p>
                   ) : (
                     atividadeFeed.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 py-2.5 border-b border-border last:border-0">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: item.cor }} />
+                      <div key={i} className="flex items-center gap-3 py-3 border-b border-black/5 last:border-0">
+                        <div className="w-2.5 h-2.5 rounded-full bg-black flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{item.label}</p>
-                          <p className="text-[12px] text-gray-500 truncate">{item.desc}</p>
+                          <p className="text-xs font-black text-black">{item.label}</p>
+                          <p className="text-[11px] text-slate-500 font-bold">{item.desc}</p>
                         </div>
-                        <span className="text-[11px] text-gray-600 flex-shrink-0">{item.hora}</span>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex-shrink-0">{item.hora}</span>
                       </div>
                     ))
                   )}
                 </div>
               </div>
 
-              <div className="bg-surface rounded-xl p-5 border border-border">
-                <h3 className="font-display text-base font-bold mb-4">Pedidos Recentes</h3>
+              {/* Recent Orders table */}
+              <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
+                <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Remessas Recentes</h3>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead><tr className="border-b border-border">
-                      {['Pedido', 'Cliente', 'Origem', 'Destino', 'Status', 'Previsão'].map(h => (
-                        <th key={h} className="text-left text-[12px] text-text-muted font-medium pb-4 uppercase tracking-wider">{h}</th>
+                  <table className="w-full text-left divide-y divide-black/10">
+                    <thead><tr>
+                      {['Código', 'Cliente', 'Origem CD', 'Destino', 'Status', 'Previsão'].map(h => (
+                        <th key={h} className="text-xs font-black text-black uppercase tracking-wider pb-3">{h}</th>
                       ))}
                     </tr></thead>
-                    <tbody>
+                    <tbody className="divide-y divide-black/5">
                       {(recentOrders || []).slice(0, 5).map((row: any, i: number) => (
-                        <tr key={i} className="border-b border-border hover:bg-white/[0.03] transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
-                          <td className="py-3 pr-4 text-sm font-bold">{row.codigo}</td>
-                          <td className="py-3 pr-4 text-sm text-gray-300">{row.cliente}</td>
-                          <td className="py-3 pr-4 text-sm text-gray-400">{row.origem}</td>
-                          <td className="py-3 pr-4 text-sm text-gray-400">{row.destino_cidade} - {row.destino_estado}</td>
+                        <tr key={i} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
+                          <td className="py-3 pr-4 text-xs font-black text-black">{row.codigo}</td>
+                          <td className="py-3 pr-4 text-xs text-slate-600 font-bold">{row.cliente}</td>
+                          <td className="py-3 pr-4 text-xs text-slate-500 font-medium">{row.origem}</td>
+                          <td className="py-3 pr-4 text-xs text-slate-500 font-medium">{row.destino_cidade} - {row.destino_estado}</td>
                           <td className="py-3 pr-4">
-                            <span className="inline-flex px-2.5 py-1 rounded text-[11px] font-medium" style={{
-                              color: STATUS_COLOR[row.status] || '#6B7280',
-                              background: `${STATUS_COLOR[row.status] || '#6B7280'}18`,
-                              border: `1px solid ${STATUS_COLOR[row.status] || '#6B7280'}33`,
-                            }}>{STATUS_LABEL[row.status] || row.status}</span>
+                            <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest bg-slate-100 text-black border border-black/10">
+                              {STATUS_LABEL[row.status] || row.status}
+                            </span>
                           </td>
-                          <td className="py-3 text-sm text-gray-400">{row.previsao}</td>
+                          <td className="py-3 text-xs text-slate-500 font-medium">{row.previsao}</td>
                         </tr>
                       ))}
                       {(!recentOrders || recentOrders.length === 0) && (
-                        <tr><td colSpan={6} className="text-center py-8 text-gray-500 text-sm">Nenhum pedido recente</td></tr>
+                        <tr><td colSpan={6} className="text-center py-8 text-slate-400 text-xs font-bold uppercase tracking-wider">Nenhum pedido recente</td></tr>
                       )}
                     </tbody>
                   </table>
                 </div>
-                <div className="text-center mt-4">
-                  <button onClick={() => setActiveNav('pedidos')} className="text-sm text-gray-400 hover:text-white transition-colors">Ver todos os pedidos</button>
+                <div className="text-center mt-5">
+                  <button onClick={() => setActiveNav('pedidos')} className="text-xs font-black text-slate-500 hover:text-black uppercase tracking-widest transition-all">Ver todas as remessas</button>
                 </div>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto bg-white">
             {detailPedidoId ? (
               <PedidoDetail pedidoId={detailPedidoId} onBack={() => setDetailPedidoId(undefined)} />
             ) : activeNav === 'pedidos' && <PedidosPage />}
