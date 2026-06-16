@@ -120,11 +120,16 @@ export default function UserManagement() {
         adminApi.armazens.list().catch(() => [])
       ]);
 
-      setUsers(usersData || []);
-      setFilteredUsers(usersData || []);
-      setSetores(setoresData || []);
-      setCargos(cargosData || []);
-      setArmazens(armazensData || []);
+      const finalUsers = Array.isArray(usersData) ? usersData : (usersData && Array.isArray((usersData as any).rows) ? (usersData as any).rows : []);
+      const finalSetores = Array.isArray(setoresData) ? setoresData : (setoresData && Array.isArray((setoresData as any).rows) ? (setoresData as any).rows : []);
+      const finalCargos = Array.isArray(cargosData) ? cargosData : (cargosData && Array.isArray((cargosData as any).rows) ? (cargosData as any).rows : []);
+      const finalArmazens = Array.isArray(armazensData) ? armazensData : (armazensData && Array.isArray((armazensData as any).rows) ? (armazensData as any).rows : []);
+
+      setUsers(finalUsers);
+      setFilteredUsers(finalUsers);
+      setSetores(finalSetores);
+      setCargos(finalCargos);
+      setArmazens(finalArmazens);
     } catch (err: any) {
       console.error("Error loading data:", err);
       setError(err.message || 'Falha ao carregar dados do painel.');

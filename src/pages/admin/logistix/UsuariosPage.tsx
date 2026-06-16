@@ -95,7 +95,19 @@ export default function UsuariosPage() {
     }));
   }
 
-  const rows = Array.isArray(usuarios) ? usuarios : [];
+  const getArray = (val: any): any[] => {
+    if (Array.isArray(val)) return val;
+    if (val && Array.isArray(val.rows)) return val.rows;
+    if (val && Array.isArray(val.data)) return val.data;
+    return [];
+  };
+
+  const setoresArr = getArray(setoresList);
+  const cargosArr = getArray(cargosList);
+  const armazensArr = getArray(armazensList);
+  const semCargoArr = getArray(semCargo);
+
+  const rows = getArray(usuarios);
   const total = rows.length;
   const perPage = 15;
   const pages = Math.ceil(total / perPage);
@@ -198,15 +210,15 @@ export default function UsuariosPage() {
                 <div>
                   <label className="text-sm text-gray-400 mb-1.5 block">Selecionar usuário do marketplace</label>
                   <select value={form.usuario_id} onChange={e => {
-                    const sel = (semCargo || []).find((u: any) => u.id === e.target.value);
+                    const sel = semCargoArr.find((u: any) => u.id === e.target.value);
                     setForm({ ...form, usuario_id: e.target.value, nome: sel?.full_name || '', email: sel?.email || '' });
                   }} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione um usuário...</option>
-                    {(semCargo || []).map((u: any) => (
+                    {semCargoArr.map((u: any) => (
                       <option key={u.id} value={u.id}>{u.full_name || u.email} ({u.email})</option>
                     ))}
                   </select>
-                  {(!semCargo || semCargo.length === 0) && (
+                  {semCargoArr.length === 0 && (
                     <p className="text-xs text-yellow-400 mt-1">Todos os usuários já possuem cargo no Logistix</p>
                   )}
                 </div>
@@ -233,7 +245,7 @@ export default function UsuariosPage() {
                   <select value={form.setor_id} onChange={e => setForm({ ...form, setor_id: e.target.value })}
                     className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione...</option>
-                    {(setoresList || []).map((s: any) => (
+                    {setoresArr.map((s: any) => (
                       <option key={s.id} value={s.id}>{s.nome}</option>
                     ))}
                   </select>
@@ -243,7 +255,7 @@ export default function UsuariosPage() {
                   <select value={form.cargo_id} onChange={e => setForm({ ...form, cargo_id: e.target.value })}
                     className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione...</option>
-                    {(cargosList || []).map((c: any) => (
+                    {cargosArr.map((c: any) => (
                       <option key={c.id} value={c.id}>{c.nome}</option>
                     ))}
                   </select>
@@ -270,7 +282,7 @@ export default function UsuariosPage() {
               <div>
                 <label className="text-sm text-gray-400 mb-1.5 block">Acesso a Armazéns</label>
                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
-                  {(armazensList || []).map((a: any) => (
+                  {armazensArr.map((a: any) => (
                     <label key={a.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
                       <input type="checkbox" checked={form.armazens.some((fa: any) => fa.id === a.id)}
                         onChange={() => toggleArmazem(a.id)}
