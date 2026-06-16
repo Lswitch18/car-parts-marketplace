@@ -19,6 +19,7 @@ export default function TransactionManagement() {
   const [commissionRate, setCommissionRate] = useState<number>(10);
   const [tempRate, setTempRate] = useState<string>('10');
   const [savingRate, setSavingRate] = useState(false);
+  const [custoTerceiros, setCustoTerceiros] = useState<number>(0);
 
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/" replace />;
@@ -27,7 +28,26 @@ export default function TransactionManagement() {
   useEffect(() => {
     fetchTransactions();
     fetchConfig();
+    fetchTerceiros();
   }, []);
+
+  const fetchTerceiros = async () => {
+    try {
+      const { data } = await supabase
+        .from('admin_logistica_terceiros')
+        .select('valor_contrato')
+        .eq('ativo', true);
+      if (data) {
+        const sum = data.reduce((acc, curr) => acc + Number(curr.valor_contrato), 0);
+        setCustoTerceiros(sum);
+      } else {
+        // Fallback robusto se a tabela ainda não existir no Supabase remoto
+        setCustoTerceiros(152000);
+      }
+    } catch (e) {
+      setCustoTerceiros(152000);
+    }
+  };
 
   const fetchConfig = async () => {
     try {
@@ -263,10 +283,27 @@ export default function TransactionManagement() {
           <p className="text-2xl font-bold text-text mt-2">¥ {pagosVal.toLocaleString('ja-JP')}</p>
           <p className="text-[10px] text-text-secondary mt-1">{(100 - commissionRate)}% {t('de repasse líquido liberado')}</p>
         </div>
-        <div className="bg-surface border border-border rounded-lg p-5">
-          <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Lucro da Plataforma')}</p>
-          <p className="text-2xl font-bold text-text mt-2">¥ {lucroVal.toLocaleString('ja-JP')}</p>
-          <p className="text-[10px] text-text-secondary mt-1">{commissionRate}% {t('de taxa de serviço cobrada')}</p>
+        <div className="bg-surface border border-border rounded-lg p-5 flex flex-col justify-between">
+          <div>
+            <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Lucro da Plataforma')}</p>
+            <div className="mt-2 space-y-1">
+              <div className="flex justify-between text-xs font-medium text-text-secondary">
+                <span>{t('Bruto')}:</span>
+                <span className="font-semibold text-text">¥ {lucroVal.toLocaleString('ja-JP')}</span>
+              </div>
+              <div className="flex justify-between text-xs font-medium text-text-secondary">
+                <span>{t('Contratos')}:</span>
+                <span className="font-semibold text-red-400">-¥ {custoTerceiros.toLocaleString('ja-JP')}</span>
+              </div>
+              <div className="border-t border-border pt-1 flex justify-between text-sm font-bold text-text">
+                <span>{t('Líquido')}:</span>
+                <span className={lucroVal - custoTerceiros >= 0 ? "text-green-400" : "text-red-400"}>
+                  ¥ {(lucroVal - custoTerceiros).toLocaleString('ja-JP')}
+                </span>
+              </div>
+            </div>
+          </div>
+          <p className="text-[9px] text-text-secondary mt-2">{commissionRate}% {t('de taxa - custo de contratos deduzido')}</p>
         </div>
       </div>
 

@@ -28,6 +28,7 @@ import DropoffPage from './logistix/DropoffPage';
 import WMSPage from './logistix/WMSPage';
 import MapaPage from './logistix/MapaPage';
 import Armazem3DPage from './logistix/Armazem3DPage';
+import TerceirosPage from './logistix/TerceirosPage';
 import GlobalSearch from '../../components/logistix/GlobalSearch';
 import NotificationCenter from '../../components/logistix/NotificationCenter';
 import PedidoDetail from './logistix/PedidoDetail';
@@ -62,6 +63,7 @@ const NAV_GROUPS: NavGroup[] = [
     { id: 'etiquetas', label: 'Etiquetas' },
     { id: 'transportes', label: 'Transportes' },
     { id: 'dropoffs', label: 'Drop-offs' },
+    { id: 'terceiros', label: 'Terceiros' },
   ]},
   { icon: BarChart3, label: 'Relatórios', id: 'relatorios', items: [] },
   { icon: Settings, label: 'Administração', id: 'grupo_admin', items: [
@@ -528,6 +530,7 @@ export default function LogistixDashboard() {
             {activeNav === 'armazens' && <ArmazensPage />}
             {activeNav === 'armazem3d' && <Armazem3DPage />}
             {activeNav === 'transportes' && <TransportesPage />}
+            {activeNav === 'terceiros' && <TerceirosPage />}
             {activeNav === 'dropoffs' && <DropoffPage />}
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}
             {activeNav === 'clientes' && <ClientesPage />}

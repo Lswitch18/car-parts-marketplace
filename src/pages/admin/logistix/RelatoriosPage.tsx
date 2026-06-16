@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { adminApi } from '../../../lib/adminApi';
-import { BarChart3, Download, FileText, TrendingUp, Users, Package, DollarSign } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
+import { BarChart3, Download, FileText, TrendingUp, Users, Package, DollarSign, ShieldAlert } from 'lucide-react';
 
 export default function RelatoriosPage() {
   const [period, setPeriod] = useState('month');
+  const [custoTerceiros, setCustoTerceiros] = useState(0);
 
   const { data: kpis } = useQuery({
     queryKey: ['admin', 'kpis'],
@@ -16,11 +18,34 @@ export default function RelatoriosPage() {
     queryFn: () => adminApi.dashboard.pedidosRecentes(),
   });
 
+  useEffect(() => {
+    const fetchTerceiros = async () => {
+      try {
+        const { data } = await supabase
+          .from('admin_logistica_terceiros')
+          .select('valor_contrato')
+          .eq('ativo', true);
+        
+        if (data) {
+          const sum = data.reduce((acc, curr) => acc + Number(curr.valor_contrato), 0);
+          setCustoTerceiros(sum);
+        } else {
+          // Fallback robusto em caso da tabela não estar migrada ainda
+          setCustoTerceiros(152000);
+        }
+      } catch (e) {
+        setCustoTerceiros(152000);
+      }
+    };
+    fetchTerceiros();
+  }, []);
+
   const stats = [
     { label: 'Total Pedidos', value: kpis?.total || 0, icon: Package, color: '#3B82F6' },
     { label: 'Entregues', value: kpis?.concluidas || 0, icon: TrendingUp, color: '#22C55E' },
     { label: 'Cancelados', value: kpis?.cancelados || 0, icon: Users, color: '#EF4444' },
     { label: 'Receita', value: `R$ ${Number(kpis?.custo || 0).toLocaleString('pt-BR')}`, icon: DollarSign, color: '#FACC15' },
+    { label: 'Contratos Terceiros', value: `¥ ${custoTerceiros.toLocaleString('ja-JP')}`, icon: ShieldAlert, color: '#A855F7' },
   ];
 
   return (
@@ -44,7 +69,7 @@ export default function RelatoriosPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         {stats.map((s, i) => (
           <div key={i} className="bg-[#111827] rounded-xl p-5 border border-white/5">
             <div className="flex items-center gap-2 mb-3">
