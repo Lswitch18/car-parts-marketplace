@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useI18n } from '../../lib/i18n';
+import { useAuthStore } from '../../stores/authStore';
+import { Navigate } from 'react-router-dom';
 
 export default function TransactionManagement() {
+  const { user: currentUser } = useAuthStore();
   const { t } = useI18n();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +15,10 @@ export default function TransactionManagement() {
   const [fulfillmentFilter, setFulfillmentFilter] = useState('all');
 
   const [selectedTransaction, setSelectedTransaction] = useState<any | null>(null);
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
 
   useEffect(() => {
     fetchTransactions();

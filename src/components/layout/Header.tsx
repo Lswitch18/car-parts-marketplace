@@ -11,7 +11,7 @@ import { supabase } from '../../lib/supabase'
 import GaidLogo from '../GaidLogo'
 
 export default function Header() {
-  const { user, signOut, isAdmin, loading, initialized, ensureSession } = useAuthStore()
+  const { user, signOut, isAdmin, loading, initialized } = useAuthStore()
   const { t } = useI18n()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -19,7 +19,6 @@ export default function Header() {
 
   const [unreadCount, setUnreadCount] = useState(0)
   const [scrolled, setScrolled] = useState(false)
-  const attempted = useRef(false)
 
   // Scroll shadow effect
   useEffect(() => {
@@ -27,22 +26,6 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  // Ensure auth session is loaded on any page that uses Header
-  useEffect(() => {
-    if (!initialized && !attempted.current) {
-      attempted.current = true
-      ensureSession()
-    }
-  }, [initialized, ensureSession])
-
-  // Retry once after init if still no user
-  useEffect(() => {
-    if (initialized && !loading && !user && !attempted.current) {
-      attempted.current = true
-      ensureSession();
-    }
-  }, [initialized, loading, user, ensureSession]);
 
   // Fetch unread messages count
   const fetchUnreadCount = async () => {

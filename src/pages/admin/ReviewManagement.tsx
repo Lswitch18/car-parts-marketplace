@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useI18n } from '../../lib/i18n';
+import { useAuthStore } from '../../stores/authStore';
+import { Navigate } from 'react-router-dom';
 
 export default function ReviewManagement() {
+  const { user: currentUser } = useAuthStore();
   const { t } = useI18n();
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ratingFilter, setRatingFilter] = useState('all');
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
 
   useEffect(() => {
     fetchReviews();
