@@ -148,41 +148,31 @@ export default function PaymentCheckout() {
 
       const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY
 
-        if (stripePublicKey && stripePublicKey.startsWith('pk_')) {
-        const fullAddress = [
-          shippingInfo.address,
-          shippingInfo.number && `Nº ${shippingInfo.number}`,
-          shippingInfo.complement,
-        ].filter(Boolean).join(', ')
-
-        const result = await api.stripe.createCheckout({
-          transaction_id: transaction.id,
-          part_id: part!.id,
-          buyer_id: user!.id,
-          seller_id: part!.seller_id,
-          amount: finalPrice || part!.price,
-          shipping: { ...shippingInfo, address: fullAddress },
-        })
-
-        if (result.url) {
-          window.location.href = result.url
-          return
-        }
+      if (!stripePublicKey || !stripePublicKey.startsWith('pk_')) {
+        throw new Error("Pagamento via Stripe não configurado. Por favor, contate o suporte.")
       }
 
-      // Modo demo (sem Stripe): marca como pago no banco para evitar transacões presas como 'pending'
-      try {
-        await supabase
-          .from('transactions')
-          .update({ payment_status: 'paid', updated_at: new Date().toISOString() })
-          .eq('id', transaction.id)
-          .eq('payment_status', 'pending') // só atualiza se ainda pendente (idempotente)
-      } catch (err) {
-        console.warn('[PaymentCheckout] Demo mode: falha ao marcar paid', err)
-      }
+      const fullAddress = [
+        shippingInfo.address,
+        shippingInfo.number && `Nº ${shippingInfo.number}`,
+        shippingInfo.complement,
+      ].filter(Boolean).join(', ')
 
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setStep('success')
+      const result = await api.stripe.createCheckout({
+        transaction_id: transaction.id,
+        part_id: part!.id,
+        buyer_id: user!.id,
+        seller_id: part!.seller_id,
+        amount: finalPrice || part!.price,
+        shipping: { ...shippingInfo, address: fullAddress },
+      })
+
+      if (result.url) {
+        window.location.href = result.url
+        return
+      } else {
+        throw new Error("Não foi possível gerar a sessão de pagamento do Stripe.")
+      }
     },
     onError: (err: any) => {
       isSubmitting.current = false
