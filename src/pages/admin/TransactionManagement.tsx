@@ -35,9 +35,9 @@ export default function TransactionManagement() {
           payment_status,
           fulfillment_status,
           created_at,
-          profiles!transactions_buyer_id_fkey(email, full_name, rating),
-          profiles!transactions_seller_id_fkey(email, full_name, rating),
-          parts!transactions_part_id_fkey(title, description, price)
+          buyer:profiles!transactions_buyer_id_fkey(email, full_name, rating),
+          seller:profiles!transactions_seller_id_fkey(email, full_name, rating),
+          part:parts!transactions_part_id_fkey(title, description, price)
         `)
         .order('created_at', { ascending: false });
       
@@ -207,9 +207,9 @@ export default function TransactionManagement() {
                 </tr>
               ) : (
                 filteredTransactions.map((t) => {
-                  const buyer = Array.isArray(t.profiles) ? t.profiles[0] : t.profiles;
-                  const seller = Array.isArray(t.profiles) ? t.profiles[1] : null;
-                  const part = Array.isArray(t.parts) ? t.parts[0] : t.parts;
+                  const buyer = t.buyer;
+                  const seller = t.seller;
+                  const part = t.part;
                   return (
                     <tr key={t.id} className="bg-white hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
@@ -301,9 +301,9 @@ export default function TransactionManagement() {
 
       {/* Transaction Details Modal */}
       {selectedTransaction && (() => {
-        const buyer = Array.isArray(selectedTransaction.profiles) ? selectedTransaction.profiles[0] : selectedTransaction.profiles;
-        const seller = Array.isArray(selectedTransaction.profiles) ? selectedTransaction.profiles[1] : null;
-        const part = Array.isArray(selectedTransaction.parts) ? selectedTransaction.parts[0] : selectedTransaction.parts;
+        const buyer = selectedTransaction.buyer;
+        const seller = selectedTransaction.seller;
+        const part = selectedTransaction.part;
         return (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
             <div className="bg-surface border border-border rounded-xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in duration-200">
