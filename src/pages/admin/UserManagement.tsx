@@ -365,15 +365,18 @@ export default function UserManagement() {
   const handleOpenEditCargo = (cargoItem: any) => {
     setEditingCargo(cargoItem);
     
-    let parsedPerms: string[] = [];
+    let parsedPerms: any = [];
     try {
       if (typeof cargoItem.permissoes === 'string') {
         parsedPerms = JSON.parse(cargoItem.permissoes);
-      } else if (Array.isArray(cargoItem.permissoes)) {
+      } else {
         parsedPerms = cargoItem.permissoes;
       }
     } catch (e) {
       console.warn("Failed to parse permissions", e);
+    }
+    if (!Array.isArray(parsedPerms)) {
+      parsedPerms = [];
     }
 
     setCargoForm({
@@ -502,14 +505,18 @@ export default function UserManagement() {
 
   // Helper for displaying permissions lists cleanly
   const renderPermissionsList = (permissionsObj: any) => {
-    let list: string[] = [];
+    let list: any = [];
     try {
       if (typeof permissionsObj === 'string') {
         list = JSON.parse(permissionsObj);
-      } else if (Array.isArray(permissionsObj)) {
+      } else {
         list = permissionsObj;
       }
     } catch (e) {}
+
+    if (!Array.isArray(list)) {
+      list = [];
+    }
 
     if (list.length === 0) return <span className="text-slate-400 font-normal">Nenhuma</span>;
     return (
@@ -1275,14 +1282,18 @@ export default function UserManagement() {
                       const selectedCargo = cargos.find(c => c.id === selectedUser.cargo_id);
                       if (!selectedCargo) return <span className="text-xs text-slate-400">{t('Nenhuma permissão associada')}</span>;
                       
-                      let perms: string[] = [];
+                      let perms: any = [];
                       try {
                         if (typeof selectedCargo.permissoes === 'string') {
                           perms = JSON.parse(selectedCargo.permissoes);
-                        } else if (Array.isArray(selectedCargo.permissoes)) {
+                        } else {
                           perms = selectedCargo.permissoes;
                         }
                       } catch (e) {}
+
+                      if (!Array.isArray(perms)) {
+                        perms = [];
+                      }
 
                       if (perms.length === 0) return <span className="text-xs text-slate-400">{t('Nenhuma permissão associada')}</span>;
 
