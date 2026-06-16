@@ -362,6 +362,40 @@ Deno.serve(async (req) => {
       if (req.method === 'POST') {
         const authUser = await requireAdmin(req);
         if (!authUser) return json({ error: 'Não autorizado' }, 401);
+
+        // Se for solicitado criar um novo usuário no Supabase Auth
+        if (body.criar_usuario) {
+          const { email, nome, role, cargo_id, setor_id } = body as any;
+          if (!email || !nome) return json({ error: 'Nome e email são obrigatórios' }, 400);
+
+          // Criar o usuário no Supabase Auth usando o Admin Auth API
+          const { data: authData, error: authErr } = await supabase.auth.admin.createUser({
+            email,
+            email_confirm: true,
+            user_metadata: { full_name: nome }
+          });
+
+          if (authErr) return json({ error: 'Erro no Supabase Auth: ' + authErr.message }, 400);
+          const newUserId = authData.user?.id;
+          if (!newUserId) return json({ error: 'Falha ao recuperar ID do novo usuário' }, 500);
+
+          // Atualizar o perfil associado que é gerado pelo trigger (ou fazer upsert se não existir)
+          const { error: profileErr } = await supabase.from('profiles').upsert({
+            id: newUserId,
+            email,
+            full_name: nome,
+            role: role || 'user',
+            cargo_id: cargo_id || null,
+            setor_id: setor_id || null,
+            is_verified: false
+          });
+
+          if (profileErr) return json({ error: 'Erro ao criar perfil no banco: ' + profileErr.message }, 400);
+
+          auditLog(authUser.id, 'CREATE_USER', 'profiles', newUserId, `Criado usuário ${email}`, null);
+          return json({ ok: true, user_id: newUserId }, 201);
+        }
+
         const { usuario_id, cargo_id, setor_id, telefone, status, armazens } = body as any;
         if (!usuario_id) return json({ error: 'usuario_id é obrigatório' }, 400);
         const updates: Record<string, unknown> = {};

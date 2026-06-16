@@ -5,7 +5,7 @@ import { useI18n } from '../../lib/i18n';
 import { supabase } from '../../lib/supabase';
 import { 
   Users, DollarSign, Star, Truck, Sparkles, 
-  ArrowRight, ShieldAlert, LogOut 
+  ArrowRight, LogOut 
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -74,12 +74,16 @@ export default function AdminDashboard() {
         {/* KPI Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { title: t('Total de Usuários'), value: stats.usersCount, icon: Users },
-            { title: t('Transações'), value: stats.transactionsCount, icon: DollarSign },
-            { title: t('Avaliações'), value: stats.reviewsCount, icon: Star },
-            { title: t('Envios Pendentes'), value: stats.pendingDeliveries, icon: Truck }
+            { title: t('Total de Usuários'), value: stats.usersCount, icon: Users, to: '/admin/users' },
+            { title: t('Transações'), value: stats.transactionsCount, icon: DollarSign, to: '/admin/transactions' },
+            { title: t('Avaliações'), value: stats.reviewsCount, icon: Star, to: '/admin/reviews' },
+            { title: t('Envios Pendentes'), value: stats.pendingDeliveries, icon: Truck, to: '/admin/logistix' }
           ].map((card, idx) => (
-            <div key={idx} className="bg-white border-2 border-black rounded-xl p-6 transition-all duration-300 hover:shadow-lg">
+            <Link 
+              key={idx} 
+              to={card.to}
+              className="bg-white border-2 border-black rounded-xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 block cursor-pointer text-left text-black decoration-transparent"
+            >
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-wider text-slate-500 font-bold">{card.title}</span>
                 <div className="p-2 bg-slate-100 text-black rounded-lg border border-black/5">
@@ -93,7 +97,7 @@ export default function AdminDashboard() {
                   card.value.toLocaleString()
                 )}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
 
