@@ -41,7 +41,7 @@ export default function ReviewManagement() {
           comment,
           created_at,
           reviewer:profiles!reviewer_id(full_name, email),
-          reviewee:profiles!reviewee_id(full_name, email),
+          reviewee:profiles!reviewed_id(full_name, email),
           transaction:transactions(id, amount)
         `)
         .order('created_at', { ascending: false });
