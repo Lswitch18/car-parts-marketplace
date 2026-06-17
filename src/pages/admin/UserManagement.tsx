@@ -2140,6 +2140,27 @@ export default function UserManagement() {
                 </button>
               </div>
 
+              {/* Personal Data & Address Summary */}
+              <div className="border border-black/10 rounded-xl p-4 bg-slate-50 space-y-2.5">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-black/5 pb-1">{t('Dados Pessoais & Endereço')}</span>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs text-black">
+                  <div>
+                    <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Telefone')}</span>
+                    <span className="font-bold">{activeModUser.phone || t('Não cadastrado')}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase text-slate-400 block">{t('CEP')}</span>
+                    <span className="font-bold">{activeModUser.cep || t('Não cadastrado')}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Endereço')}</span>
+                  <span className="text-xs font-bold leading-tight block">{activeModUser.address || t('Não cadastrado')}</span>
+                </div>
+              </div>
+
               {/* Financial & Activity Summary */}
               <div className="border border-black/10 rounded-xl p-4 bg-slate-50 space-y-3">
                 <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-black/5 pb-1">{t('Resumo de Transações')}</span>
