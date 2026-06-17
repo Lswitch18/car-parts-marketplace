@@ -80,6 +80,10 @@ export default function UserManagement() {
   const [emailConfirmUserId, setEmailConfirmUserId] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  // User Parts Modal States
+  const [selectedUserParts, setSelectedUserParts] = useState<any[] | null>(null);
+  const [selectedUserPartsOwner, setSelectedUserPartsOwner] = useState<string>('');
+
   // Selection / Modal States
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [userArmazens, setUserArmazens] = useState<any[]>([]);
@@ -115,15 +119,27 @@ export default function UserManagement() {
       setLoading(true);
       setError(null);
 
-      // Fetch users, sectors, and cargos in parallel using adminApi
-      const [usersData, setoresData, cargosData, armazensData] = await Promise.all([
+      // Fetch users, sectors, cargos, armazens, and parts in parallel using adminApi and supabase
+      const [usersData, setoresData, cargosData, armazensData, partsResult] = await Promise.all([
         adminApi.usuarios.list(),
         adminApi.setores.list().catch(() => []),
         adminApi.cargos.list().catch(() => []),
-        adminApi.armazens.list().catch(() => [])
+        adminApi.armazens.list().catch(() => []),
+        supabase.from('parts').select('id, seller_id, title, price, images, status').catch(() => ({ data: [] }))
       ]);
 
-      const finalUsers = Array.isArray(usersData) ? usersData : (usersData && Array.isArray((usersData as any).rows) ? (usersData as any).rows : []);
+      const partsData = partsResult && 'data' in partsResult ? partsResult.data || [] : [];
+
+      const rawUsers = Array.isArray(usersData) ? usersData : (usersData && Array.isArray((usersData as any).rows) ? (usersData as any).rows : []);
+      const finalUsers = rawUsers.map((u: any) => {
+        const userParts = partsData.filter((p: any) => p.seller_id === u.id);
+        return {
+          ...u,
+          parts: userParts,
+          partsCount: userParts.length
+        };
+      });
+
       const finalSetores = Array.isArray(setoresData) ? setoresData : (setoresData && Array.isArray((setoresData as any).rows) ? (setoresData as any).rows : []);
       const finalCargos = Array.isArray(cargosData) ? cargosData : (cargosData && Array.isArray((cargosData as any).rows) ? (cargosData as any).rows : []);
       const finalArmazens = Array.isArray(armazensData) ? armazensData : (armazensData && Array.isArray((armazensData as any).rows) ? (armazensData as any).rows : []);
@@ -761,13 +777,14 @@ export default function UserManagement() {
                       <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Role')}</th>
                       <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Setor / Cargo')}</th>
                       <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Verificado')}</th>
+                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Anúncios')}</th>
                       <th className="px-6 py-4 text-right text-xs font-black text-black uppercase tracking-wider">{t('Ações')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-black/10">
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-12 text-center text-slate-400 text-sm font-semibold uppercase tracking-wider">
+                        <td colSpan={7} className="px-6 py-12 text-center text-slate-400 text-sm font-semibold uppercase tracking-wider">
                           {t('Nenhum usuário localizado')}
                         </td>
                       </tr>
@@ -820,6 +837,24 @@ export default function UserManagement() {
                             >
                               {u.is_verified ? t('Sim') : t('Não')}
                             </button>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {u.partsCount > 0 ? (
+                              <div className="flex flex-col">
+                                <span className="text-xs font-bold text-black">{u.partsCount} {u.partsCount === 1 ? t('anúncio') : t('anúncios')}</span>
+                                <button 
+                                  onClick={() => {
+                                    setSelectedUserParts(u.parts || []);
+                                    setSelectedUserPartsOwner(u.full_name || u.email);
+                                  }} 
+                                  className="text-daig-blue hover:underline text-[10px] text-left font-black uppercase tracking-wider mt-0.5 flex items-center gap-1"
+                                >
+                                  <Eye size={10} /> {t('Ver todos')}
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="text-slate-400 text-xs italic">{t('Nenhum')}</span>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                             <button
@@ -1715,6 +1750,87 @@ export default function UserManagement() {
                 className="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-red-600 disabled:opacity-30 flex items-center gap-1.5 shadow-sm"
               >
                 <Trash2 size={12} /> {submitting ? t('Excluindo...') : t('Excluir Usuário')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedUserParts && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white border-2 border-black rounded-xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-black/10 flex justify-between items-center bg-slate-50">
+              <div>
+                <h3 className="text-black font-black text-lg">
+                  {t('Anúncios de')} {selectedUserPartsOwner}
+                </h3>
+                <p className="text-slate-500 text-xs mt-0.5">
+                  {selectedUserParts.length} {selectedUserParts.length === 1 ? t('anúncio encontrado') : t('anúncios encontrados')}
+                </p>
+              </div>
+              <button 
+                onClick={() => { setSelectedUserParts(null); setSelectedUserPartsOwner(''); }}
+                className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-black transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto divide-y divide-black/10 flex-1">
+              {selectedUserParts.length === 0 ? (
+                <p className="text-center text-slate-400 py-8 italic">{t('Nenhum anúncio cadastrado por este usuário.')}</p>
+              ) : (
+                selectedUserParts.map((part: any) => (
+                  <div key={part.id} className="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-12 h-12 rounded-lg bg-slate-100 flex-shrink-0 overflow-hidden border border-black/10">
+                        {part.images?.[0] ? (
+                          <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs font-bold bg-slate-50">
+                            No Img
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-black font-black text-sm truncate">{part.title}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 rounded border ${
+                            part.status === 'active' 
+                              ? 'bg-green-50 text-green-700 border-green-200' 
+                              : part.status === 'sold'
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
+                              : 'bg-slate-50 text-slate-500 border-slate-200'
+                          }`}>
+                            {part.status}
+                          </span>
+                          <span className="text-daig-blue font-bold text-xs">
+                            ¥ {part.price?.toLocaleString('ja-JP')}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <a 
+                      href={`/product/${part.id}`} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="bg-white hover:bg-slate-50 text-black border border-black/20 font-bold px-3 py-1.5 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center gap-1"
+                    >
+                      <Eye size={12} /> {t('Ver anúncio')}
+                    </a>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-black/10 flex justify-end">
+              <button
+                type="button"
+                onClick={() => { setSelectedUserParts(null); setSelectedUserPartsOwner(''); }}
+                className="bg-black text-white hover:bg-slate-800 font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest transition-colors"
+              >
+                {t('Fechar')}
               </button>
             </div>
           </div>
