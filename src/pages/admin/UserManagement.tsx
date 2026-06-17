@@ -42,7 +42,6 @@ const PREDEFINED_PERMISSIONS = [
 export default function UserManagement() {
   const { user: currentUser } = useAuthStore();
   const { t } = useI18n();
-  const userParts = selectedUser ? (users.find(u => u.id === selectedUser.id)?.parts || []) : [];
 
   // Navigation
   const [activeTab, setActiveTab] = useState<'users' | 'cargos' | 'setores'>('users');
@@ -106,6 +105,8 @@ export default function UserManagement() {
   const [setorForm, setSetorForm] = useState({
     nome: ''
   });
+
+  const userParts = selectedUser ? (users.find(u => u.id === selectedUser.id)?.parts || []) : [];
 
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/" replace />;
