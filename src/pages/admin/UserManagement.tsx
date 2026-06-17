@@ -84,6 +84,8 @@ export default function UserManagement() {
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [userArmazens, setUserArmazens] = useState<any[]>([]);
   const [showCreateUserModal, setShowCreateUserModal] = useState(false);
+  const [deletingUser, setDeletingUser] = useState<any | null>(null);
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
 
   const [showCargoModal, setShowCargoModal] = useState(false);
   const [editingCargo, setEditingCargo] = useState<any | null>(null);
@@ -182,6 +184,15 @@ export default function UserManagement() {
       setSubmitting(true);
       setError(null);
 
+      // Centralized sector alignment: if cargo is chosen, align with cargo's sector
+      let finalSectorId = newUserForm.setor_id;
+      if (newUserForm.cargo_id) {
+        const selectedCargo = cargos.find(c => c.id === newUserForm.cargo_id);
+        if (selectedCargo && selectedCargo.setor_id) {
+          finalSectorId = selectedCargo.setor_id;
+        }
+      }
+
       // Call the Edge Function via adminApi.usuarios.create
       await adminApi.usuarios.create({
         criar_usuario: true,
@@ -189,7 +200,7 @@ export default function UserManagement() {
         email: newUserForm.email,
         role: newUserForm.role,
         cargo_id: newUserForm.cargo_id || null,
-        setor_id: newUserForm.setor_id || null
+        setor_id: finalSectorId || null
       });
 
       showFlashSuccess(`Colaborador ${newUserForm.nome} adicionado e registrado com sucesso.`);
@@ -289,12 +300,21 @@ export default function UserManagement() {
       setSubmitting(true);
       setError(null);
 
+      // Centralized sector alignment: if cargo is chosen, align with cargo's sector
+      let finalSectorId = selectedUser.setor_id;
+      if (selectedUser.cargo_id) {
+        const selectedCargo = cargos.find(c => c.id === selectedUser.cargo_id);
+        if (selectedCargo && selectedCargo.setor_id) {
+          finalSectorId = selectedCargo.setor_id;
+        }
+      }
+
       // Update basic fields
       await adminApi.usuarios.update(selectedUser.id, {
         nome: selectedUser.full_name,
         email: selectedUser.email,
         cargo_id: selectedUser.cargo_id || null,
-        setor_id: selectedUser.setor_id || null,
+        setor_id: finalSectorId || null,
         telefone: selectedUser.phone || '',
         status: selectedUser.status || 'ativo',
         armazens: userArmazens.map(ua => ({ id: ua.armazem_id, acesso_admin: true }))
@@ -313,7 +333,8 @@ export default function UserManagement() {
           birthdate: selectedUser.birthdate || null,
           card_brand: selectedUser.card_brand || null,
           payment_method: selectedUser.payment_method || null,
-          email_verified: selectedUser.email_verified || false
+          email_verified: selectedUser.email_verified || false,
+          setor_id: finalSectorId || null
         })
         .eq('id', selectedUser.id);
 
@@ -355,7 +376,6 @@ export default function UserManagement() {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm('Deseja realmente excluir permanentemente este usuário?')) return;
     try {
       setSubmitting(true);
       setError(null);
@@ -368,6 +388,8 @@ export default function UserManagement() {
       if (err) throw err;
 
       showFlashSuccess('Usuário excluído com sucesso.');
+      setDeletingUser(null);
+      setDeleteConfirmationText('');
       await loadAllData();
     } catch (err: any) {
       setError('Falha ao excluir usuário: ' + err.message);
@@ -819,7 +841,10 @@ export default function UserManagement() {
                               <Lock size={14} />
                             </button>
                             <button
-                              onClick={() => handleDeleteUser(u.id)}
+                              onClick={() => {
+                                setDeletingUser(u);
+                                setDeleteConfirmationText('');
+                              }}
                               className="bg-white hover:bg-red-600 hover:text-white text-red-600 hover:border-red-600 font-bold p-1.5 rounded border border-red-600 transition-all inline-flex items-center"
                               title={t('Excluir Usuário')}
                             >
@@ -1615,6 +1640,83 @@ export default function UserManagement() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------------------------------------------- */}
+      {/* MODAL: DELETE USER CONFIRMATION (SUPABASE STYLE) */}
+      {/* ---------------------------------------------------- */}
+      {deletingUser && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border-2 border-red-600 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="p-5 border-b-2 border-red-600/15 flex justify-between items-center bg-red-50">
+              <div className="flex items-center gap-2 text-red-600">
+                <ShieldAlert size={20} />
+                <h2 className="text-md font-black uppercase tracking-wider">{t('Excluir Conta Permanentemente')}</h2>
+              </div>
+              <button 
+                onClick={() => {
+                  setDeletingUser(null);
+                  setDeleteConfirmationText('');
+                }} 
+                className="text-red-600 hover:text-black text-xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-700 font-medium leading-relaxed">
+                Esta ação é <span className="font-bold text-red-600 uppercase">definitiva</span> e não pode ser desfeita.
+                O usuário <strong className="font-bold text-black">{deletingUser.full_name || 'Sem Nome'}</strong> (<span className="font-mono text-xs">{deletingUser.email}</span>) será excluído permanentemente da plataforma, perdendo todos os acessos imediatos.
+              </p>
+
+              <div className="bg-red-50 border border-red-200 p-4 rounded-xl space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-red-700 block">{t('Atenção')}</span>
+                <p className="text-xs text-red-600 leading-normal font-bold">
+                  Todos os dados de perfil, preferências e vinculações associados a este usuário serão removidos.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+                  Para confirmar, digite <span className="font-mono bg-slate-100 px-1 py-0.5 rounded text-black font-bold">{deletingUser.email}</span> no campo abaixo:
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={deleteConfirmationText}
+                  onChange={(e) => setDeleteConfirmationText(e.target.value)}
+                  placeholder={deletingUser.email}
+                  className="w-full px-3 py-2.5 bg-white border-2 border-red-200 focus:border-red-600 rounded-lg text-sm text-black focus:outline-none font-bold placeholder-slate-300"
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 bg-slate-50 border-t border-black/10 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setDeletingUser(null);
+                  setDeleteConfirmationText('');
+                }}
+                className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+              >
+                {t('Cancelar')}
+              </button>
+              <button
+                type="button"
+                disabled={submitting || deleteConfirmationText !== deletingUser.email}
+                onClick={() => handleDeleteUser(deletingUser.id)}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-red-600 disabled:opacity-30 flex items-center gap-1.5 shadow-sm"
+              >
+                <Trash2 size={12} /> {submitting ? t('Excluindo...') : t('Excluir Usuário')}
+              </button>
+            </div>
           </div>
         </div>
       )}
