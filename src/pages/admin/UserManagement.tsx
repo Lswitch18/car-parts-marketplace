@@ -83,6 +83,7 @@ export default function UserManagement() {
   // Selection / Modal States
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [userArmazens, setUserArmazens] = useState<any[]>([]);
+  const [showCreateUserModal, setShowCreateUserModal] = useState(false);
 
   const [showCargoModal, setShowCargoModal] = useState(false);
   const [editingCargo, setEditingCargo] = useState<any | null>(null);
@@ -353,6 +354,54 @@ export default function UserManagement() {
     });
   };
 
+  const handleDeleteUser = async (userId: string) => {
+    if (!window.confirm('Deseja realmente excluir permanentemente este usuário?')) return;
+    try {
+      setSubmitting(true);
+      setError(null);
+
+      const { error: err } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+
+      if (err) throw err;
+
+      showFlashSuccess('Usuário excluído com sucesso.');
+      await loadAllData();
+    } catch (err: any) {
+      setError('Falha ao excluir usuário: ' + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleToggleBlockUser = async (userId: string, currentStatus: string) => {
+    const isBlocked = currentStatus === 'blocked';
+    const newStatus = isBlocked ? 'ativo' : 'blocked';
+
+    if (!window.confirm(`Deseja realmente ${isBlocked ? 'desbloquear' : 'bloquear'} este usuário?`)) return;
+
+    try {
+      setSubmitting(true);
+      setError(null);
+
+      const { error: err } = await supabase
+        .from('profiles')
+        .update({ status: newStatus })
+        .eq('id', userId);
+
+      if (err) throw err;
+
+      showFlashSuccess(`Usuário ${isBlocked ? 'desbloqueado' : 'bloqueado'} com sucesso.`);
+      await loadAllData();
+    } catch (err: any) {
+      setError('Falha ao alterar status do usuário: ' + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // ----------------------------------------------------
   // CARGO (ROLE) ACTIONS
   // ----------------------------------------------------
@@ -549,6 +598,14 @@ export default function UserManagement() {
 
         {/* Action Button depending on current tab */}
         <div>
+          {activeTab === 'users' && (
+            <button 
+              onClick={() => setShowCreateUserModal(true)}
+              className="bg-black hover:bg-neutral-800 text-white font-bold px-4 py-2.5 rounded-lg text-xs uppercase tracking-widest transition-all border-2 border-black flex items-center gap-2 shadow-sm"
+            >
+              <Plus size={14} strokeWidth={3} /> {t('Novo Usuário')}
+            </button>
+          )}
           {activeTab === 'cargos' && (
             <button 
               onClick={handleOpenCreateCargo}
@@ -632,7 +689,7 @@ export default function UserManagement() {
       {activeTab === 'users' && (
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main User List Section */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-9 space-y-6">
             {/* Filters Bar */}
             <div className="bg-slate-50 border-2 border-black rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
               <div className="relative w-full md:flex-1">
@@ -742,12 +799,31 @@ export default function UserManagement() {
                               {u.is_verified ? t('Sim') : t('Não')}
                             </button>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                             <button
                               onClick={() => handleOpenUserDetails(u)}
-                              className="bg-white hover:bg-black hover:text-white text-black font-bold px-3 py-1.5 rounded border-2 border-black text-xs uppercase tracking-widest transition-all"
+                              className="bg-white hover:bg-black hover:text-white text-black font-bold p-1.5 rounded border border-black transition-all inline-flex items-center"
+                              title={t('Editar Usuário')}
                             >
-                              {t('Editar')}
+                              <Edit3 size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleToggleBlockUser(u.id, u.status || 'ativo')}
+                              className={`p-1.5 rounded border transition-all inline-flex items-center ${
+                                u.status === 'blocked'
+                                  ? 'bg-red-50 text-red-600 border-red-600 hover:bg-red-100'
+                                  : 'bg-white hover:bg-neutral-800 hover:text-white text-black border-black/20 hover:border-black'
+                              }`}
+                              title={u.status === 'blocked' ? t('Desbloquear Usuário') : t('Bloquear Usuário')}
+                            >
+                              <Lock size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteUser(u.id)}
+                              className="bg-white hover:bg-red-600 hover:text-white text-red-600 hover:border-red-600 font-bold p-1.5 rounded border border-red-600 transition-all inline-flex items-center"
+                              title={t('Excluir Usuário')}
+                            >
+                              <Trash2 size={14} />
                             </button>
                           </td>
                         </tr>
@@ -760,94 +836,7 @@ export default function UserManagement() {
           </div>
 
           {/* Quick Actions Sidebar Section */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Card 1: Add User */}
-            <div className="bg-slate-50 border-2 border-black rounded-xl p-5 space-y-4">
-              <div className="flex items-center gap-2 border-b border-black/10 pb-3">
-                <UserPlus size={18} />
-                <h3 className="text-xs font-black uppercase tracking-wider text-black">{t('Adicionar Usuário')}</h3>
-              </div>
-
-              <form onSubmit={handleAddUserSubmit} className="space-y-3.5">
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">{t('Nome Completo')}</label>
-                  <input
-                    type="text"
-                    required
-                    value={newUserForm.nome}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, nome: e.target.value })}
-                    placeholder="Ex: Roberto Carlos"
-                    className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">{t('E-mail')}</label>
-                  <input
-                    type="email"
-                    required
-                    value={newUserForm.email}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
-                    placeholder="Ex: roberto@empresa.com"
-                    className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">{t('Role')}</label>
-                    <select
-                      value={newUserForm.role}
-                      onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
-                      className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-2.5 py-2 text-xs text-black font-bold focus:outline-none"
-                    >
-                      <option value="user">Comprador</option>
-                      <option value="seller">Vendedor</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">{t('Setor')}</label>
-                    <select
-                      value={newUserForm.setor_id}
-                      onChange={(e) => setNewUserForm({ ...newUserForm, setor_id: e.target.value })}
-                      className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-2.5 py-2 text-xs text-black font-bold focus:outline-none"
-                    >
-                      <option value="">{t('Nenhum')}</option>
-                      {setores.map(s => (
-                        <option key={s.id} value={s.id}>{s.nome}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">{t('Cargo')}</label>
-                  <select
-                    value={newUserForm.cargo_id}
-                    onChange={(e) => setNewUserForm({ ...newUserForm, cargo_id: e.target.value })}
-                    className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none"
-                  >
-                    <option value="">{t('Nenhum')}</option>
-                    {cargos
-                      .filter(c => !newUserForm.setor_id || c.setor_id === newUserForm.setor_id)
-                      .map(c => (
-                        <option key={c.id} value={c.id}>{c.nome}</option>
-                      ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-black hover:bg-neutral-800 text-white font-bold py-2.5 rounded-lg text-[10px] uppercase tracking-widest transition-all border border-black flex items-center justify-center gap-1.5 shadow-sm"
-                >
-                  <UserPlus size={12} /> {t('Adicionar Usuário')}
-                </button>
-              </form>
-            </div>
-
+          <div className="lg:col-span-3 space-y-6">
             {/* Card 2: Quick Assign Permissions */}
             <div className="bg-slate-50 border-2 border-black rounded-xl p-5 space-y-4">
               <div className="flex items-center gap-2 border-b border-black/10 pb-3">
@@ -1515,6 +1504,117 @@ export default function UserManagement() {
                 {submitting ? t('Processando...') : t('Salvar Setor')}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------------------------------------------- */}
+      {/* MODAL: CREATE USER */}
+      {/* ---------------------------------------------------- */}
+      {showCreateUserModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border-2 border-black rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-5 border-b-2 border-black/15 flex justify-between items-center bg-slate-50">
+              <h2 className="text-md font-black text-black uppercase tracking-wider">{t('Cadastrar Novo Usuário')}</h2>
+              <button 
+                onClick={() => setShowCreateUserModal(false)} 
+                className="text-slate-500 hover:text-black text-xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              await handleAddUserSubmit(e);
+              setShowCreateUserModal(false);
+            }} className="p-6 space-y-4">
+              <div>
+                <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('Nome Completo')}</label>
+                <input
+                  type="text"
+                  required
+                  value={newUserForm.nome}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, nome: e.target.value })}
+                  placeholder="Ex: Roberto Carlos"
+                  className="w-full px-3 py-2.5 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('E-mail')}</label>
+                <input
+                  type="email"
+                  required
+                  value={newUserForm.email}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
+                  placeholder="Ex: roberto@empresa.com"
+                  className="w-full px-3 py-2.5 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('Role')}</label>
+                  <select
+                    value={newUserForm.role}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
+                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                  >
+                    <option value="user">Comprador</option>
+                    <option value="seller">Vendedor</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('Setor')}</label>
+                  <select
+                    value={newUserForm.setor_id}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, setor_id: e.target.value })}
+                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                  >
+                    <option value="">{t('Nenhum')}</option>
+                    {setores.map(s => (
+                      <option key={s.id} value={s.id}>{s.nome}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('Cargo')}</label>
+                <select
+                  value={newUserForm.cargo_id}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, cargo_id: e.target.value })}
+                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                >
+                  <option value="">{t('Nenhum')}</option>
+                  {cargos
+                    .filter(c => !newUserForm.setor_id || c.setor_id === newUserForm.setor_id)
+                    .map(c => (
+                      <option key={c.id} value={c.id}>{c.nome}</option>
+                    ))}
+                </select>
+              </div>
+
+              <div className="p-4 bg-slate-50 -mx-6 -mb-6 border-t-2 border-black/15 flex justify-end gap-3 px-6 py-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateUserModal(false)}
+                  className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+                >
+                  {t('Cancelar')}
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-black disabled:opacity-50"
+                >
+                  {submitting ? t('Processando...') : t('Adicionar Usuário')}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
