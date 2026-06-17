@@ -414,10 +414,10 @@ Deno.serve(async (req) => {
         const { usuario_id, cargo_id, setor_id, telefone, status, armazens } = body as any;
         if (!usuario_id) return json({ error: 'usuario_id é obrigatório' }, 400);
         const updates: Record<string, unknown> = {};
-        if (cargo_id) updates.cargo_id = cargo_id;
-        if (setor_id) updates.setor_id = setor_id;
-        if (telefone) updates.telefone = telefone;
-        if (status) updates.status = status;
+        if (cargo_id !== undefined) updates.cargo_id = cargo_id;
+        if (setor_id !== undefined) updates.setor_id = setor_id;
+        if (telefone !== undefined) updates.phone = telefone;
+        if (status !== undefined) updates.status = status;
         updates.role = 'admin';
         const { error } = await supabase.from('profiles').update(updates).eq('id', usuario_id);
         if (error) return json({ error: error.message }, 400);
@@ -434,12 +434,12 @@ Deno.serve(async (req) => {
         const user = await requireAdmin(req);
         if (!user) return json({ error: 'Não autorizado' }, 401);
         const updates: Record<string, unknown> = {};
-        if (body.nome) updates.full_name = body.nome;
-        if (body.email) updates.email = body.email;
-        if (body.cargo_id) updates.cargo_id = body.cargo_id;
-        if (body.setor_id) updates.setor_id = body.setor_id;
-        if (body.telefone) updates.telefone = body.telefone;
-        if (body.status) updates.status = body.status;
+        if (body.nome !== undefined) updates.full_name = body.nome;
+        if (body.email !== undefined) updates.email = body.email;
+        if (body.cargo_id !== undefined) updates.cargo_id = body.cargo_id;
+        if (body.setor_id !== undefined) updates.setor_id = body.setor_id;
+        if (body.telefone !== undefined) updates.phone = body.telefone;
+        if (body.status !== undefined) updates.status = body.status;
         const { error } = await supabase.from('profiles').update(updates).eq('id', segments[1]);
         if (error) return json({ error: error.message }, 400);
 
