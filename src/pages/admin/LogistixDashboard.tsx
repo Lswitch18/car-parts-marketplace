@@ -27,6 +27,7 @@ import UsuariosPage from './logistix/UsuariosPage';
 import EtiquetasPage from './logistix/EtiquetasPage';
 import DropoffPage from './logistix/DropoffPage';
 import WMSPage from './logistix/WMSPage';
+import B2BPage from './logistix/B2BPage';
 import MapaPage from './logistix/MapaPage';
 import Armazem3DPage from './logistix/Armazem3DPage';
 import TerceirosPage from './logistix/TerceirosPage';
@@ -54,6 +55,7 @@ const NAV_GROUPS: NavGroup[] = [
     { id: 'armazens', label: 'Centros de Distribuição' },
     { id: 'estoque', label: 'Estoque' },
     { id: 'wms', label: 'WMS' },
+    { id: 'b2b', label: 'Integração B2B' },
     { id: 'armazem3d', label: 'Armazém 3D' },
   ]},
   { icon: MapPin, label: 'Rastreamento', id: 'grupo_rastreamento', items: [
@@ -550,6 +552,7 @@ export default function LogistixDashboard() {
             {activeNav === 'ocorrencias' && <OcorrenciasPage />}
             {activeNav === 'clientes' && <ClientesPage />}
             {activeNav === 'wms' && <WMSPage />}
+            {activeNav === 'b2b' && <B2BPage />}
             {activeNav === 'etiquetas' && <EtiquetasPage />}
             {activeNav === 'usuarios' && <UsuariosPage />}
             {activeNav === 'mapa' && <MapaPage />}

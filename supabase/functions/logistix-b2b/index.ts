@@ -13,6 +13,8 @@ interface B2BApiKey {
   api_key_prefix: string
   scopes: string[]
   is_active: boolean
+  partner_carrier?: string | null
+  partner_warehouse_id?: string | null
 }
 
 function corsHeaders() {
@@ -64,6 +66,11 @@ async function validateApiKey(apiKey: string): Promise<{ valid: boolean; apiKey?
     return { valid: false, error: 'API key inválida ou inativa' }
   }
 
+  const hash = await hashString(apiKey)
+  if (data[0].api_key_hash !== hash) {
+    return { valid: false, error: 'API key inválida ou inativa' }
+  }
+
   return { valid: true, apiKey: data[0] }
 }
 
@@ -84,41 +91,85 @@ async function hashString(str: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
+async function logRequest(
+  apiKeyId: string | null,
+  endpoint: string,
+  method: string,
+  statusCode: number,
+  responseTimeMs: number,
+  ip: string | null,
+  ua: string | null
+) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/b2b_request_logs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({
+        api_key_id: apiKeyId,
+        endpoint,
+        method,
+        status_code: statusCode,
+        response_time_ms: responseTimeMs,
+        ip_address: ip,
+        user_agent: ua
+      })
+    })
+  } catch (err) {
+    console.error('[Logistix B2B] Logging failed:', err)
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders() })
   }
 
-  try {
-    const url = new URL(req.url)
-    // Get path without the function prefix
-    const path = url.pathname.includes('/logistix-b2b') 
-      ? url.pathname.split('/logistix-b2b')[1] 
-      : url.pathname
+  const startTime = Date.now()
+  let apiKeyId: string | null = null
+  const url = new URL(req.url)
+  const path = url.pathname.includes('/logistix-b2b') 
+    ? url.pathname.split('/logistix-b2b')[1] 
+    : url.pathname
+  const method = req.method
+  const ip = req.headers.get('x-forwarded-for') || '127.0.0.1'
+  const ua = req.headers.get('user-agent') || ''
 
+  const send = async (res: Response) => {
+    const duration = Date.now() - startTime
+    if (path !== '/health' && path !== '' && path !== '/') {
+      await logRequest(apiKeyId, path, method, res.status, duration, ip, ua)
+    }
+    return res
+  }
+
+  try {
     console.log('Full pathname:', url.pathname, 'Extracted path:', path)
 
     // Health check - PUBLIC (no auth required)
     if (path === '/health' || path === '' || path === '/') {
-      return json({
+      return send(json({
         status: 'healthy',
         service: 'Logistix B2B API',
         version: '1.0.0',
         timestamp: new Date().toISOString()
-      })
+      }))
     }
 
     // Auth endpoint - PUBLIC (no key required)
     if (path === '/auth/token') {
       if (req.method !== 'POST') {
-        return error('Método não permitido', 405)
+        return send(error('Método não permitido', 405))
       }
 
       const body = await req.json()
-      const { partner_name, partner_email } = body
+      const { partner_name, partner_email, partner_carrier, partner_warehouse_id } = body
 
       if (!partner_name || !partner_email) {
-        return error('partner_name e partner_email são obrigatórios')
+        return send(error('partner_name e partner_email são obrigatórios'))
       }
 
       const apiKey = generateApiKey()
@@ -140,7 +191,9 @@ Deno.serve(async (req) => {
           api_key_prefix: prefix,
           scopes: ['read'],
           rate_limit: 100,
-          is_active: true
+          is_active: true,
+          partner_carrier: partner_carrier || null,
+          partner_warehouse_id: partner_warehouse_id || null
         })
       })
 
@@ -148,15 +201,15 @@ Deno.serve(async (req) => {
       console.log('Insert result:', { status: insertResponse.status, data: insertData })
 
       if (!insertResponse.ok) {
-        return error('Erro ao criar API key: ' + JSON.stringify(insertData))
+        return send(error('Erro ao criar API key: ' + JSON.stringify(insertData)))
       }
 
-      return json({
+      return send(json({
         success: true,
         api_key: apiKey,
         prefix: prefix,
         message: 'Guarde esta API key - não será possível recuperá-la'
-      })
+      }))
     }
 
     // Validate API key for PROTECTED routes (orders, shipments, inventory, webhooks)
@@ -164,8 +217,10 @@ Deno.serve(async (req) => {
     const auth = await validateApiKey(apiKeyHeader || '')
     
     if (!auth.valid) {
-      return error(auth.error || 'Unauthorized', 401)
+      return send(error(auth.error || 'Unauthorized', 401))
     }
+
+    apiKeyId = auth.apiKey?.id || null
 
     // Orders endpoints (protected)
     if (path.startsWith('/orders')) {
@@ -177,25 +232,53 @@ Deno.serve(async (req) => {
         const status = url.searchParams.get('status')
         const offset = (page - 1) * limit
 
+        // Data isolation by carrier
+        let pedidoIds: string[] = []
+        if (auth.apiKey?.partner_carrier) {
+          const carrier = auth.apiKey.partner_carrier
+          const { data: shipments } = await supabaseFetch(
+            `admin_shipments?transportadora=eq.${encodeURIComponent(carrier)}&select=pedido_id`
+          )
+          pedidoIds = (shipments || []).map((s: any) => s.pedido_id).filter(Boolean)
+          
+          if (pedidoIds.length === 0) {
+            return send(json({ success: true, data: [] }))
+          }
+        }
+
         let query = `admin_pedidos?order=created_at.desc&offset=${offset}&limit=${limit}`
         if (status) {
           query += `&status=eq.${status}`
+        }
+        if (auth.apiKey?.partner_carrier) {
+          query += `&id=in.(${pedidoIds.join(',')})`
         }
 
         const { data, error: fetchError } = await supabaseFetch(query)
 
         if (fetchError) {
-          return error('Erro ao buscar pedidos: ' + JSON.stringify(fetchError))
+          return send(error('Erro ao buscar pedidos: ' + JSON.stringify(fetchError)))
         }
 
-        return json({ success: true, data: data || [] })
+        return send(json({ success: true, data: data || [] }))
       }
 
       // Get single order
       const { data, error: fetchError } = await supabaseFetch(`admin_pedidos?id=eq.${orderId}`)
       
       if (fetchError || !data || data.length === 0) {
-        return error('Pedido não encontrado', 404)
+        return send(error('Pedido não encontrado', 404))
+      }
+
+      // Enforce carrier scope check for single order detail
+      if (auth.apiKey?.partner_carrier) {
+        const carrier = auth.apiKey.partner_carrier
+        const { data: belongs } = await supabaseFetch(
+          `admin_shipments?pedido_id=eq.${orderId}&transportadora=eq.${encodeURIComponent(carrier)}&select=id`
+        )
+        if (!belongs || belongs.length === 0) {
+          return send(error('Acesso não autorizado a este pedido', 403))
+        }
       }
 
       // Get tracking
@@ -203,23 +286,31 @@ Deno.serve(async (req) => {
         `admin_rastreamento?pedido_id=eq.${orderId}&order=created_at.asc`
       )
 
-      return json({ success: true, data: { ...data[0], rastreamento: rastreamento || [] } })
+      return send(json({ success: true, data: { ...data[0], rastreamento: rastreamento || [] } }))
     }
 
     // Shipments
     if (path.startsWith('/shipments')) {
-      const { data } = await supabaseFetch(
-        'admin_pedidos?status=in.(em_transito,entregue)&order=created_at.desc&limit=20'
-      )
-      return json({ success: true, data: data || [] })
+      let query = 'admin_shipments?select=*,pedido:admin_pedidos!pedido_id(*)'
+      if (auth.apiKey?.partner_carrier) {
+        query += `&transportadora=eq.${encodeURIComponent(auth.apiKey.partner_carrier)}`
+      }
+      const { data } = await supabaseFetch(query)
+      return send(json({ success: true, data: data || [] }))
     }
 
     // Inventory
     if (path.startsWith('/inventory')) {
       const warehouseId = url.searchParams.get('warehouse_id')
+      const targetWarehouseId = auth.apiKey?.partner_warehouse_id || warehouseId
+      
+      if (auth.apiKey?.partner_warehouse_id && warehouseId && warehouseId !== auth.apiKey.partner_warehouse_id) {
+        return send(error('Não autorizado a acessar este centro de distribuição', 403))
+      }
+
       let query = 'admin_armazens?select=*'
-      if (warehouseId) {
-        query = `admin_armazens?id=eq.${warehouseId}&select=*`
+      if (targetWarehouseId) {
+        query = `admin_armazens?id=eq.${targetWarehouseId}&select=*`
       }
       
       const { data } = await supabaseFetch(query)
@@ -231,10 +322,10 @@ Deno.serve(async (req) => {
         estado: wh.estado,
         capacidade: wh.capacidade,
         ocupacao: wh.ocupacao,
-        ocupacao_percent: Math.round((wh.ocupacao / wh.capacidade) * 100)
+        ocupacao_percent: wh.capacidade > 0 ? Math.round((wh.ocupacao / wh.capacidade) * 100) : 0
       }))
 
-      return json({ success: true, data: enriched })
+      return send(json({ success: true, data: enriched }))
     }
 
     // Webhooks
@@ -243,7 +334,7 @@ Deno.serve(async (req) => {
         const { data } = await supabaseFetch(
           `b2b_webhooks?api_key_id=eq.${auth.apiKey?.id}&is_active=eq.true`
         )
-        return json({ success: true, data: data || [] })
+        return send(json({ success: true, data: data || [] }))
       }
 
       if (req.method === 'POST') {
@@ -251,13 +342,13 @@ Deno.serve(async (req) => {
         const { webhook_url, events } = body
 
         if (!webhook_url || !events || events.length === 0) {
-          return error('webhook_url e events são obrigatórios')
+          return send(error('webhook_url e events são obrigatórios'))
         }
 
         try {
           new URL(webhook_url)
         } catch {
-          return error('URL de webhook inválida')
+          return send(error('URL de webhook inválida'))
         }
 
         const { data } = await supabaseFetch('b2b_webhooks', {
@@ -270,13 +361,13 @@ Deno.serve(async (req) => {
           })
         })
 
-        return json({ success: true, data })
+        return send(json({ success: true, data }))
       }
 
       if (req.method === 'DELETE') {
         const webhookId = url.searchParams.get('id')
         if (!webhookId) {
-          return error('ID do webhook é obrigatório')
+          return send(error('ID do webhook é obrigatório'))
         }
 
         await supabaseFetch(`b2b_webhooks?id=eq.${webhookId}`, {
@@ -284,14 +375,14 @@ Deno.serve(async (req) => {
           body: JSON.stringify({ is_active: false })
         })
 
-        return json({ success: true, message: 'Webhook removido' })
+        return send(json({ success: true, message: 'Webhook removido' }))
       }
     }
 
-    return error('Endpoint não encontrado', 404)
+    return send(error('Endpoint não encontrado', 404))
 
   } catch (err) {
     console.error('[Logistix B2B] Error:', err)
-    return error('Erro interno do servidor', 500)
+    return send(error('Erro interno do servidor', 500))
   }
 })

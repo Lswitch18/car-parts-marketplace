@@ -45,6 +45,7 @@
     "auto-parts-db": "^2.0.0",
     "autoprefixer": "^10.5.0",
     "postcss": "^8.5.14",
+    "supabase": "^2.107.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
     "vitest": "^4.1.6"
