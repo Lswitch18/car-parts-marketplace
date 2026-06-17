@@ -40,8 +40,8 @@ export default function ReviewManagement() {
           rating,
           comment,
           created_at,
-          reviewer:profiles!reviews_reviewer_id_fkey(full_name, email),
-          reviewee:profiles!reviews_reviewee_id_fkey(full_name, email),
+          reviewer:profiles!reviewer_id(full_name, email),
+          reviewee:profiles!reviewee_id(full_name, email),
           transaction:transactions(id, amount)
         `)
         .order('created_at', { ascending: false });
