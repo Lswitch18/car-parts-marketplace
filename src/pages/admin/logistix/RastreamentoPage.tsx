@@ -17,9 +17,18 @@ const STATUS_COLOR: Record<string, string> = {
   atrasado: '#F97316', cancelado: '#EF4444', recebido: '#8B5CF6',
 };
 
-export default function RastreamentoPage() {
-  const [searchCode, setSearchCode] = useState('');
-  const [activeCode, setActiveCode] = useState('');
+import { useEffect } from 'react';
+
+export default function RastreamentoPage({ initialCode, onClear }: { initialCode?: string; onClear?: () => void }) {
+  const [searchCode, setSearchCode] = useState(initialCode || '');
+  const [activeCode, setActiveCode] = useState(initialCode || '');
+
+  useEffect(() => {
+    if (initialCode) {
+      setSearchCode(initialCode);
+      setActiveCode(initialCode);
+    }
+  }, [initialCode]);
 
   const { data: trackingData, isLoading: trackingLoading, error: trackingError } = useQuery({
     queryKey: ['admin', 'rastreamento', activeCode],
@@ -68,7 +77,7 @@ export default function RastreamentoPage() {
           <Search size={20} className="text-gray-400 mr-3" />
           <input type="text" placeholder="Digite o código do pedido (ex: #PED-...)" value={searchCode} onChange={e => setSearchCode(e.target.value)}
             className="bg-transparent border-none outline-none text-white text-base w-full placeholder:text-gray-500 flex-1" />
-          {searchCode && <X size={18} className="text-gray-400 cursor-pointer hover:text-white" onClick={() => { setSearchCode(''); setActiveCode(''); }} />}
+          {searchCode && <X size={18} className="text-gray-400 cursor-pointer hover:text-white" onClick={() => { setSearchCode(''); setActiveCode(''); if (onClear) onClear(); }} />}
         </div>
         <button type="submit" className="h-12 px-6 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
           <Search size={18} /> Rastrear

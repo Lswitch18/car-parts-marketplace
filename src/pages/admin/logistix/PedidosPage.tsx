@@ -22,7 +22,7 @@ const emptyForm: PedidoForm = {
   peso_kg: 0, valor: 0, previsao: '',
 };
 
-export default function PedidosPage() {
+export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) => void }) {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -176,7 +176,7 @@ export default function PedidosPage() {
                   <td className="p-4">
                     <div className="flex items-center gap-2">
                       <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400 transition-colors" title="Editar"><Edit3 size={14} /></button>
-                      <button onClick={() => window.open(`/admin/logistix/rastreamento?codigo=${row.codigo}`, '_blank')}
+                      <button onClick={() => onTrack ? onTrack(row.codigo) : window.open(`/admin/logistix/rastreamento?codigo=${row.codigo}`, '_blank')}
                         className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-green-400 transition-colors" title="Rastrear"><MapPin size={14} /></button>
                       <button onClick={() => handlePrintLabel(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-yellow-400 transition-colors" title="Imprimir Etiqueta"><Printer size={14} /></button>
                       <button onClick={() => setShowDelete(row.id)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-red-400 transition-colors" title="Excluir"><Trash2 size={14} /></button>

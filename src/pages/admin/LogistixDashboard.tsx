@@ -123,6 +123,7 @@ export default function LogistixDashboard() {
   const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
   const [notificacaoOpen, setNotificacaoOpen] = useState(false);
   const [detailPedidoId, setDetailPedidoId] = useState<string | undefined>();
+  const [selectedTrackingCode, setSelectedTrackingCode] = useState<string | null>(null);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -523,8 +524,20 @@ export default function LogistixDashboard() {
           <div className="flex-1 overflow-y-auto bg-white">
             {detailPedidoId ? (
               <PedidoDetail pedidoId={detailPedidoId} onBack={() => setDetailPedidoId(undefined)} />
-            ) : activeNav === 'pedidos' && <PedidosPage />}
-            {activeNav === 'rastreamento' && <RastreamentoPage />}
+            ) : activeNav === 'pedidos' && (
+              <PedidosPage 
+                onTrack={(codigo) => {
+                  setSelectedTrackingCode(codigo);
+                  setActiveNav('rastreamento');
+                }} 
+              />
+            )}
+            {activeNav === 'rastreamento' && (
+              <RastreamentoPage 
+                initialCode={selectedTrackingCode || ''} 
+                onClear={() => setSelectedTrackingCode(null)} 
+              />
+            )}
             {activeNav === 'entregas' && <EntregasPage />}
             {activeNav === 'coletas' && <ColetasPage />}
             {activeNav === 'transferencias' && <TransferenciasPage />}
