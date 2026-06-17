@@ -100,61 +100,61 @@ export default function EntregasPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Entregas</h2>
-          <p className="text-sm text-gray-400 mt-1">{total} entregas registradas</p>
+          <p className="text-sm text-text-secondary mt-1">{total} entregas registradas</p>
         </div>
-        <button onClick={openCreate} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 transition-colors text-sm">
+        <button onClick={openCreate} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium flex items-center gap-2 transition-colors text-sm">
           <Plus size={16} /> Nova Entrega
         </button>
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-          <p className="text-[13px] text-gray-400">Total</p>
+        <div className="bg-[#111827] rounded-xl p-4 border border-border">
+          <p className="text-[13px] text-text-secondary">Total</p>
           <p className="text-2xl font-bold text-white mt-1">{stats.total}</p>
         </div>
-        <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-          <p className="text-[13px] text-gray-400">Em Trânsito</p>
+        <div className="bg-[#111827] rounded-xl p-4 border border-border">
+          <p className="text-[13px] text-text-secondary">Em Trânsito</p>
           <p className="text-2xl font-bold text-blue-400 mt-1">{stats.em_transito}</p>
         </div>
-        <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-          <p className="text-[13px] text-gray-400">Entregues</p>
+        <div className="bg-[#111827] rounded-xl p-4 border border-border">
+          <p className="text-[13px] text-text-secondary">Entregues</p>
           <p className="text-2xl font-bold text-green-400 mt-1">{stats.entregue}</p>
         </div>
-        <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-          <p className="text-[13px] text-gray-400">Pendentes</p>
+        <div className="bg-[#111827] rounded-xl p-4 border border-border">
+          <p className="text-[13px] text-text-secondary">Pendentes</p>
           <p className="text-2xl font-bold text-yellow-400 mt-1">{stats.pendente}</p>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center bg-[#111827] rounded-lg h-10 flex-1 px-3 border border-white/5">
-          <Search size={18} className="text-gray-400 mr-2" />
+        <div className="flex items-center bg-[#111827] rounded-lg h-10 flex-1 px-3 border border-border">
+          <Search size={18} className="text-text-secondary mr-2" />
           <input type="text" placeholder="Buscar por código do pedido..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
-          {searchTerm && <X size={16} className="text-gray-400 cursor-pointer" onClick={() => setSearchTerm('')} />}
+            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
+          {searchTerm && <X size={16} className="text-text-secondary cursor-pointer" onClick={() => setSearchTerm('')} />}
         </div>
         <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-          className="bg-[#111827] border border-white/5 rounded-lg h-10 px-3 text-sm text-white outline-none">
+          className="bg-[#111827] border border-border rounded-lg h-10 px-3 text-sm text-white outline-none">
           <option value="">Todos os status</option>
           {STATUS_ENTREGA.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
         </select>
       </div>
 
-      <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-border">
                 {['Pedido', 'Transporte', 'Status', 'Entregue em', 'Ações'].map(h => (
-                  <th key={h} className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left text-[12px] text-text-secondary font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filteredRows.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-12 text-gray-500 text-sm">Nenhuma entrega encontrada</td></tr>
+                <tr><td colSpan={5} className="text-center py-12 text-text-muted text-sm">Nenhuma entrega encontrada</td></tr>
               ) : filteredRows.map((row: any) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                <tr key={row.id} className="border-b border-border hover:bg-surface/[0.02] transition-colors">
                   <td className="p-4 text-sm font-mono text-blue-400">{row.pedido?.codigo || row.pedido_id?.substring(0, 8) || '-'}</td>
                   <td className="p-4 text-sm text-gray-300">{row.transporte?.nome || row.transporte_id?.substring(0, 8) || '-'}</td>
                   <td className="p-4">
@@ -164,9 +164,9 @@ export default function EntregasPage() {
                       border: `1px solid ${STATUS_COLOR[row.status] || '#6B7280'}33`,
                     }}>{row.status?.replace('_', ' ')}</span>
                   </td>
-                  <td className="p-4 text-sm text-gray-400">{row.entregue_em ? new Date(row.entregue_em).toLocaleDateString('pt-BR') : '-'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.entregue_em ? new Date(row.entregue_em).toLocaleDateString('pt-BR') : '-'}</td>
                   <td className="p-4">
-                    <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400 transition-colors" title="Editar">
+                    <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-blue-400 transition-colors" title="Editar">
                       <Edit3 size={14} />
                     </button>
                   </td>
@@ -176,11 +176,11 @@ export default function EntregasPage() {
           </table>
         </div>
         {pages > 1 && (
-          <div className="flex items-center justify-between p-4 border-t border-white/5">
-            <span className="text-sm text-gray-400">Página {page} de {pages}</span>
+          <div className="flex items-center justify-between p-4 border-t border-border">
+            <span className="text-sm text-text-secondary">Página {page} de {pages}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronLeft size={16} /></button>
-              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronRight size={16} /></button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronLeft size={16} /></button>
+              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronRight size={16} /></button>
             </div>
           </div>
         )}
@@ -188,16 +188,16 @@ export default function EntregasPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={closeModal}>
-          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-white/10" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-border" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{editingId ? 'Editar Entrega' : 'Nova Entrega'}</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-white"><X size={20} /></button>
+              <button onClick={closeModal} className="text-text-secondary hover:text-white"><X size={20} /></button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Pedido</label>
+                <label className="text-sm text-text-secondary mb-1 block">Pedido</label>
                 <select value={form.pedido_id} onChange={e => setForm({ ...form, pedido_id: e.target.value })}
-                  className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                   <option value="">Selecione...</option>
                   {(Array.isArray(pedidos) ? pedidos : (pedidos as any)?.rows || []).map((p: any) => (
                     <option key={p.id} value={p.id}>{p.codigo}</option>
@@ -205,9 +205,9 @@ export default function EntregasPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Transporte</label>
+                <label className="text-sm text-text-secondary mb-1 block">Transporte</label>
                 <select value={form.transporte_id} onChange={e => setForm({ ...form, transporte_id: e.target.value })}
-                  className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                   <option value="">Selecione...</option>
                   {(transportes || []).map((t: any) => (
                     <option key={t.id} value={t.id}>{t.nome}</option>
@@ -215,22 +215,22 @@ export default function EntregasPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Status</label>
+                <label className="text-sm text-text-secondary mb-1 block">Status</label>
                 <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
-                  className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                   {STATUS_ENTREGA.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Data de Entrega</label>
+                <label className="text-sm text-text-secondary mb-1 block">Data de Entrega</label>
                 <input type="date" value={form.entregue_em} onChange={e => setForm({ ...form, entregue_em: e.target.value })}
-                  className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                  className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
               </div>
             </div>
             <div className="flex items-center gap-3 mt-6 justify-end">
-              <button onClick={closeModal} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white">Cancelar</button>
+              <button onClick={closeModal} className="h-10 px-4 border border-border rounded-lg text-sm text-text-secondary hover:text-white">Cancelar</button>
               <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending}
-                className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+                className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium flex items-center gap-2 disabled:opacity-50">
                 {(createMutation.isPending || updateMutation.isPending) && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                 {editingId ? 'Atualizar' : 'Criar Entrega'}
               </button>

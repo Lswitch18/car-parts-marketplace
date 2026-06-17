@@ -86,17 +86,17 @@ function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: s
   return (
     <button 
       onClick={onClick} 
-      className="text-left w-full p-6 bg-white border-2 border-black rounded-xl hover:bg-slate-50 transition-all focus:outline-none"
+      className="text-left w-full p-6 bg-surface border border-border rounded-xl hover:bg-slate-900/50 hover:shadow-[0_0_15px_rgba(13,117,255,0.05)] transition-all focus:outline-none"
     >
       <div className="flex items-start justify-between mb-4">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 border border-black/10">
-          <Icon size={16} className="text-black" />
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-background border border-border">
+          <Icon size={16} className="text-primary-light" style={{ color: 'var(--color-primary-light)' }} />
         </div>
       </div>
-      <p className="text-xs uppercase tracking-widest font-black text-slate-500 mb-1">{title}</p>
-      <p className="text-2xl font-black leading-none text-black mb-2">{value}</p>
+      <p className="text-xs uppercase tracking-widest font-black text-text-secondary mb-1">{title}</p>
+      <p className="text-2xl font-black leading-none text-text mb-2">{value}</p>
       {trend && (
-        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
           {trend} vs mês anterior
         </p>
       )}
@@ -226,22 +226,22 @@ export default function LogistixDashboard() {
   function QuickActions({ onNavigate }: { onNavigate: (id: string) => void }) {
     return (
       <div className="flex flex-wrap gap-2">
-        <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
+        <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
           + Nova Coleta
         </button>
-        <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
+        <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
           + Gerar Etiquetas
         </button>
-        <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
+        <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
           + Novo Pedido
         </button>
-        <button onClick={() => onNavigate('transferencias')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
+        <button onClick={() => onNavigate('transferencias')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
           + Transferência
         </button>
-        <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-white hover:bg-slate-50 text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
+        <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
           + Ocorrência
         </button>
-        <button onClick={() => onNavigate('armazem3d')} className="flex items-center gap-2 h-10 px-4 bg-black hover:bg-neutral-800 text-white rounded-lg text-xs font-black uppercase tracking-widest transition-all border-2 border-black shadow-xs">
+        <button onClick={() => onNavigate('armazem3d')} className="flex items-center gap-2 h-10 px-4 bg-primary hover:bg-primary-dark text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-primary/50 shadow-xs neon-border">
           ⊞ Armazém 3D
         </button>
       </div>
@@ -249,20 +249,20 @@ export default function LogistixDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-white text-black font-sans overflow-hidden relative border-t border-black/10 antialiased">
+    <div className="flex h-screen bg-background text-text font-sans overflow-hidden relative border-t border-border antialiased">
       {sidebarOpen && (
-        <div className="fixed inset-0 z-30 bg-black/40 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-30 bg-black/60 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Sidebar - P&B Minimalist */}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-slate-50 border-r border-black/15 flex flex-col flex-shrink-0 transition-transform duration-200 relative z-10 ${
+      {/* Sidebar - JDM Void & Neon */}
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-surface border-r border-border flex flex-col flex-shrink-0 transition-transform duration-200 relative z-10 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        <div className="h-[74px] flex items-center gap-3 px-6 border-b border-black/10">
+        <div className="h-[74px] flex items-center gap-3 px-6 border-b border-border">
           <GaidLogo size={42} animated={false} />
           <div>
-            <h1 className="font-sans text-lg font-black leading-tight tracking-wider uppercase text-black">LOGISTIX</h1>
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Painel Operacional</span>
+            <h1 className="font-sans text-lg font-black leading-tight tracking-wider uppercase text-text neon-text-cyan">LOGISTIX</h1>
+            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Painel Operacional</span>
           </div>
         </div>
 
@@ -274,8 +274,8 @@ export default function LogistixDashboard() {
                   onClick={() => setActiveNav(group.id)}
                   className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-xs font-bold uppercase tracking-wider ${
                     activeNav === group.id
-                      ? 'bg-black text-white'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-black'
+                      ? 'bg-primary/20 text-white border-l-2 border-primary neon-border'
+                      : 'text-text-secondary hover:bg-slate-900/50 hover:text-text'
                   }`}
                 >
                   <group.icon size={16} />
@@ -285,8 +285,8 @@ export default function LogistixDashboard() {
                 <>
                   <button
                     onClick={() => toggleGroup(group.id)}
-                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 hover:text-black ${
-                      expandedGroups[group.id] ? 'text-black font-black' : ''
+                    className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-xs font-bold uppercase tracking-wider text-text-secondary hover:bg-slate-900/50 hover:text-text ${
+                      expandedGroups[group.id] ? 'text-text font-black' : ''
                     }`}
                   >
                     <group.icon size={16} />
@@ -304,8 +304,8 @@ export default function LogistixDashboard() {
                           onClick={() => setActiveNav(item.id)}
                           className={`w-full flex items-center gap-3 h-9 px-3.5 rounded-md transition-all text-xs font-bold ${
                             activeNav === item.id
-                              ? 'bg-black text-white'
-                              : 'text-slate-500 hover:bg-slate-100 hover:text-black'
+                              ? 'bg-primary/20 text-primary-light border-l border-primary/40'
+                              : 'text-text-secondary hover:bg-slate-900/50 hover:text-text'
                           }`}
                         >
                           {item.label}
@@ -319,45 +319,45 @@ export default function LogistixDashboard() {
           ))}
         </nav>
 
-        <div className="mx-4 my-4 p-3 flex items-center gap-3 rounded-xl border border-black/10 bg-white cursor-pointer hover:bg-slate-50 transition-colors">
+        <div className="mx-4 my-4 p-3 flex items-center gap-3 rounded-xl border border-border bg-surface cursor-pointer hover:bg-slate-900/50 transition-colors">
           <img
             src={user?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}&backgroundColor=dddddd`}
-            alt="avatar" className="w-8 h-8 rounded-full border border-black/10"
+            alt="avatar" className="w-8 h-8 rounded-full border border-border"
           />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-black truncate text-black">{user?.full_name || user?.name || 'Admin'}</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">WMS Admin</p>
+            <p className="text-xs font-black truncate text-text">{user?.full_name || user?.name || 'Admin'}</p>
+            <p className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">WMS Admin</p>
           </div>
-          <button onClick={signOut} className="text-slate-400 hover:text-black transition-colors p-1">
+          <button onClick={signOut} className="text-text-secondary hover:text-text transition-colors p-1">
             <LogOut size={14} />
           </button>
         </div>
       </aside>
 
       {/* Main Content Pane - White background */}
-      <main className="flex-1 flex flex-col overflow-y-auto bg-white relative z-10">
+      <main className="flex-1 flex flex-col overflow-y-auto bg-background relative z-10">
         {activeNav === 'dashboard' ? (
           <>
-            <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-black/10 bg-white">
+            <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-border bg-surface">
               <div className="flex items-center gap-3 min-w-0">
-                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg border-2 border-black flex items-center justify-center text-black hover:bg-slate-50 flex-shrink-0">
+                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text hover:bg-background flex-shrink-0">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <div className="min-w-0">
-                  <h2 className="font-sans text-xl lg:text-2xl font-black uppercase tracking-tight text-black">Logistix WMS</h2>
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">{t('Controle operacional de suprimentos e transportes')}</p>
+                  <h2 className="font-sans text-xl lg:text-2xl font-black uppercase tracking-tight text-text neon-text-cyan">Logistix WMS</h2>
+                  <p className="text-xs text-text-secondary font-bold uppercase tracking-wider mt-0.5">{t('Controle operacional de suprimentos e transportes')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="hidden lg:flex items-center bg-slate-50 rounded-lg h-10 w-[260px] px-3 border-2 border-black">
-                  <Search size={16} className="text-slate-400 mr-2" />
-                  <input type="text" placeholder="Buscar no sistema..." className="bg-transparent border-none outline-none text-black text-xs w-full font-bold placeholder:text-slate-400" />
+                <div className="hidden lg:flex items-center bg-background rounded-lg h-10 w-[260px] px-3 border border-border">
+                  <Search size={16} className="text-text-muted mr-2" />
+                  <input type="text" placeholder="Buscar no sistema..." className="bg-transparent border-none outline-none text-text text-xs w-full font-bold placeholder:text-text-muted" />
                 </div>
                 <div className="relative flex-shrink-0">
-                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-10 h-10 rounded-lg border-2 border-black bg-white flex items-center justify-center text-black hover:bg-slate-50 transition-all relative">
+                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-10 h-10 rounded-lg border border-border bg-surface flex items-center justify-center text-text hover:bg-background transition-all relative">
                     <Bell size={16} />
                     {ocorrenciasAbertas > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-black text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white">
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center px-1 border border-background">
                         {ocorrenciasAbertas}
                       </span>
                     )}
@@ -380,105 +380,105 @@ export default function LogistixDashboard() {
               {/* KPIs Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
                 {kpisLoading ? Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="animate-pulse bg-slate-50 border-2 border-black/10 rounded-xl h-[130px]" />
+                  <div key={i} className="animate-pulse bg-surface border border-border rounded-xl h-[130px] skeleton" />
                 )) : (
                   <>
-                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="#000000" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
-                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="#000000" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
-                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="#000000" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
-                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="#000000" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Receita Mensal" value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="#000000" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Lucro Mensal" value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color="#000000" trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="var(--daig-cyan)" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="var(--daig-cyan)" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
+                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="var(--daig-cyan)" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="var(--daig-cyan)" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Receita Mensal" value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="var(--daig-cyan)" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title="Lucro Mensal" value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color="var(--daig-cyan)" trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
                   </>
                 )}
               </div>
 
               {/* Operations Charts & CD occupancy */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Status das Entregas</h3>
+                <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Status das Entregas</h3>
                   <div className="relative h-[180px] flex items-center justify-center min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} dataKey="value" strokeWidth={0}>
                           {donutData.map((_, i) => <Cell key={i} fill={DONUT_COLORS[i % DONUT_COLORS.length]} />)}
                         </Pie>
-                        <Tooltip contentStyle={{ background: '#ffffff', border: '2px solid #000000', borderRadius: 8, color: '#000' }} />
+                        <Tooltip contentStyle={{ background: '#0A0A0F', border: '1px solid rgba(13, 117, 255, 0.3)', borderRadius: 8, color: '#fff' }} />
                       </PieChart>
                     </ResponsiveContainer>
                     <div className="absolute flex flex-col items-center">
-                      <span className="text-xl font-black text-black">{totalPedidos}</span>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total</span>
+                      <span className="text-xl font-black text-text">{totalPedidos}</span>
+                      <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">Total</span>
                     </div>
                   </div>
                   <div className="space-y-3 mt-4">
                     {donutData.map((d, i) => (
-                      <div key={d.name} className="flex items-center text-xs font-bold text-slate-600">
+                      <div key={d.name} className="flex items-center text-xs font-bold text-text-secondary">
                         <span className="w-2.5 h-2.5 rounded-full mr-2.5" style={{ background: DONUT_COLORS[i % DONUT_COLORS.length] }} />
                         <span className="flex-1">{d.name}</span>
-                        <span className="text-black font-black">{d.value} ({totalPedidos > 0 ? ((d.value / totalPedidos) * 100).toFixed(1) : 0}%)</span>
+                        <span className="text-text font-black">{d.value} ({totalPedidos > 0 ? ((d.value / totalPedidos) * 100).toFixed(1) : 0}%)</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Performance no Prazo</h3>
+                <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Performance no Prazo</h3>
                   <div className="h-[180px] min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={performance || []}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="data" tick={{ fill: '#000000', fontSize: 10, fontWeight: 'bold' }} tickLine={false} axisLine={false} />
-                        <YAxis tick={{ fill: '#000000', fontSize: 10, fontWeight: 'bold' }} tickLine={false} axisLine={false} domain={[0, 100]} />
-                        <Tooltip contentStyle={{ background: '#ffffff', border: '2px solid #000000', borderRadius: 8, color: '#000' }} />
-                        <Line type="monotone" dataKey="no_prazo" stroke="#000000" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="atrasadas" stroke="#9CA3AF" strokeWidth={2} dot={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                        <XAxis dataKey="data" tick={{ fill: '#B0B5C0', fontSize: 10, fontWeight: 'bold' }} tickLine={false} axisLine={false} />
+                        <YAxis tick={{ fill: '#B0B5C0', fontSize: 10, fontWeight: 'bold' }} tickLine={false} axisLine={false} domain={[0, 100]} />
+                        <Tooltip contentStyle={{ background: '#0A0A0F', border: '1px solid rgba(13, 117, 255, 0.3)', borderRadius: 8, color: '#fff' }} />
+                        <Line type="monotone" dataKey="no_prazo" stroke="var(--daig-cyan)" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="atrasadas" stroke="var(--daig-purple)" strokeWidth={2} dot={false} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
                   <div className="flex justify-center gap-6 mt-4">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600"><span className="w-4 h-0.5 bg-black" /> No prazo</div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-600"><span className="w-4 h-0.5 bg-slate-400" /> Em atraso</div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary"><span className="w-4 h-0.5 bg-cyan-400" /> No prazo</div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary"><span className="w-4 h-0.5 bg-purple-500" /> Em atraso</div>
                   </div>
                 </div>
 
-                <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Capacidade dos CDs</h3>
+                <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
+                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Capacidade dos CDs</h3>
                   <div className="space-y-4">
                     {CD_list.map(a => (
                       <button key={a.nome} onClick={() => { setActiveNav('armazem3d'); }} className="w-full text-left group">
-                        <div className="flex justify-between text-xs font-bold text-slate-500 mb-1.5 group-hover:text-black transition-colors">
+                        <div className="flex justify-between text-xs font-bold text-text-secondary mb-1.5 group-hover:text-text transition-colors">
                           <span className="flex items-center gap-1">
-                            <span className="text-slate-300 group-hover:text-black transition-colors">›</span>
+                            <span className="text-text-muted group-hover:text-text transition-colors">›</span>
                             {a.nome}
                           </span>
-                          <span className="text-black font-black">{a.pct}%</span>
+                          <span className="text-text font-black">{a.pct}%</span>
                         </div>
-                        <div className="h-2.5 bg-slate-100 border border-black/10 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full transition-all duration-500 bg-black" style={{ width: `${a.pct}%` }} />
+                        <div className="h-2.5 bg-background border border-border rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-500 bg-primary" style={{ width: `${a.pct}%` }} />
                         </div>
                       </button>
                     ))}
                   </div>
-                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-5 h-10 rounded-lg border-2 border-black bg-white text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all">Ver galpões em 3D</button>
+                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-5 h-10 rounded-lg border border-border bg-surface text-text text-xs font-black uppercase tracking-widest hover:bg-slate-900/50 transition-all">Ver galpões em 3D</button>
                 </div>
               </div>
 
               {/* Activity feeds */}
-              <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
-                <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Feed de Eventos Operacionais</h3>
+              <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
+                <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Feed de Eventos Operacionais</h3>
                 <div className="space-y-1">
                   {atividadeFeed.length === 0 ? (
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider py-6 text-center">Nenhum evento registrado</p>
+                    <p className="text-xs text-text-muted font-bold uppercase tracking-wider py-6 text-center">Nenhum evento registrado</p>
                   ) : (
                     atividadeFeed.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 py-3 border-b border-black/5 last:border-0">
-                        <div className="w-2.5 h-2.5 rounded-full bg-black flex-shrink-0" />
+                      <div key={i} className="flex items-center gap-3 py-3 border-b border-border last:border-0">
+                        <div className="w-2.5 h-2.5 rounded-full bg-primary flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-black text-black">{item.label}</p>
-                          <p className="text-[11px] text-slate-500 font-bold">{item.desc}</p>
+                          <p className="text-xs font-black text-text">{item.label}</p>
+                          <p className="text-[11px] text-text-secondary font-bold">{item.desc}</p>
                         </div>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex-shrink-0">{item.hora}</span>
+                        <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider flex-shrink-0">{item.hora}</span>
                       </div>
                     ))
                   )}
@@ -486,44 +486,44 @@ export default function LogistixDashboard() {
               </div>
 
               {/* Recent Orders table */}
-              <div className="bg-white border-2 border-black rounded-xl p-5 shadow-xs">
-                <h3 className="text-xs font-black uppercase tracking-wider text-slate-500 mb-4">Remessas Recentes</h3>
+              <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
+                <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Remessas Recentes</h3>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left divide-y divide-black/10">
+                  <table className="w-full text-left divide-y divide-border">
                     <thead><tr>
                       {['Código', 'Cliente', 'Origem CD', 'Destino', 'Status', 'Previsão'].map(h => (
-                        <th key={h} className="text-xs font-black text-black uppercase tracking-wider pb-3">{h}</th>
+                        <th key={h} className="text-xs font-black text-text uppercase tracking-wider pb-3">{h}</th>
                       ))}
                     </tr></thead>
-                    <tbody className="divide-y divide-black/5">
+                    <tbody className="divide-y divide-border">
                       {(recentOrders || []).slice(0, 5).map((row: any, i: number) => (
-                        <tr key={i} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
-                          <td className="py-3 pr-4 text-xs font-black text-black">{row.codigo}</td>
-                          <td className="py-3 pr-4 text-xs text-slate-600 font-bold">{row.cliente}</td>
-                          <td className="py-3 pr-4 text-xs text-slate-500 font-medium">{row.origem}</td>
-                          <td className="py-3 pr-4 text-xs text-slate-500 font-medium">{row.destino_cidade} - {row.destino_estado}</td>
+                        <tr key={i} className="hover:bg-slate-900/50 transition-colors cursor-pointer" onClick={() => { setActiveNav('pedidos'); setDetailPedidoId(row.codigo || row.id); }}>
+                          <td className="py-3 pr-4 text-xs font-black text-text font-mono">{row.codigo}</td>
+                          <td className="py-3 pr-4 text-xs text-text-secondary font-bold">{row.cliente}</td>
+                          <td className="py-3 pr-4 text-xs text-text-muted font-medium">{row.origem}</td>
+                          <td className="py-3 pr-4 text-xs text-text-muted font-medium">{row.destino_cidade} - {row.destino_estado}</td>
                           <td className="py-3 pr-4">
-                            <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest bg-slate-100 text-black border border-black/10">
+                            <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest bg-primary/10 text-primary-light border border-primary/20">
                               {STATUS_LABEL[row.status] || row.status}
                             </span>
                           </td>
-                          <td className="py-3 text-xs text-slate-500 font-medium">{row.previsao}</td>
+                          <td className="py-3 text-xs text-text-secondary font-medium">{row.previsao}</td>
                         </tr>
                       ))}
                       {(!recentOrders || recentOrders.length === 0) && (
-                        <tr><td colSpan={6} className="text-center py-8 text-slate-400 text-xs font-bold uppercase tracking-wider">Nenhum pedido recente</td></tr>
+                        <tr><td colSpan={6} className="text-center py-8 text-text-muted text-xs font-bold uppercase tracking-wider">Nenhum pedido recente</td></tr>
                       )}
                     </tbody>
                   </table>
                 </div>
                 <div className="text-center mt-5">
-                  <button onClick={() => setActiveNav('pedidos')} className="text-xs font-black text-slate-500 hover:text-black uppercase tracking-widest transition-all">Ver todas as remessas</button>
+                  <button onClick={() => setActiveNav('pedidos')} className="text-xs font-black text-text-secondary hover:text-text uppercase tracking-widest transition-all">Ver todas as remessas</button>
                 </div>
               </div>
             </div>
           </>
         ) : (
-          <div className="flex-1 overflow-y-auto bg-white">
+          <div className="flex-1 overflow-y-auto bg-background">
             {detailPedidoId ? (
               <PedidoDetail pedidoId={detailPedidoId} onBack={() => setDetailPedidoId(undefined)} />
             ) : activeNav === 'pedidos' && (

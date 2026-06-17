@@ -69,17 +69,17 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
     <div className="space-y-5">
       <div>
         <h2 className="text-2xl font-bold">Rastreamento</h2>
-        <p className="text-sm text-gray-400 mt-1">Acompanhe pedidos em tempo real</p>
+        <p className="text-sm text-text-secondary mt-1">Acompanhe pedidos em tempo real</p>
       </div>
 
       <form onSubmit={handleSearch} className="flex items-center gap-3">
-        <div className="flex items-center bg-[#111827] rounded-lg h-12 flex-1 px-4 border border-white/5 focus-within:border-blue-500 transition-colors">
-          <Search size={20} className="text-gray-400 mr-3" />
+        <div className="flex items-center bg-[#111827] rounded-lg h-12 flex-1 px-4 border border-border focus-within:border-blue-500 transition-colors">
+          <Search size={20} className="text-text-secondary mr-3" />
           <input type="text" placeholder="Digite o código do pedido (ex: #PED-...)" value={searchCode} onChange={e => setSearchCode(e.target.value)}
-            className="bg-transparent border-none outline-none text-white text-base w-full placeholder:text-gray-500 flex-1" />
-          {searchCode && <X size={18} className="text-gray-400 cursor-pointer hover:text-white" onClick={() => { setSearchCode(''); setActiveCode(''); if (onClear) onClear(); }} />}
+            className="bg-transparent border-none outline-none text-white text-base w-full placeholder:text-text-muted flex-1" />
+          {searchCode && <X size={18} className="text-text-secondary cursor-pointer hover:text-white" onClick={() => { setSearchCode(''); setActiveCode(''); if (onClear) onClear(); }} />}
         </div>
-        <button type="submit" className="h-12 px-6 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2">
+        <button type="submit" className="h-12 px-6 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium transition-colors flex items-center gap-2">
           <Search size={18} /> Rastrear
         </button>
       </form>
@@ -94,17 +94,17 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
         <div className="bg-[#111827] rounded-xl border border-red-500/20 p-6 text-center">
           <AlertCircle size={40} className="text-red-400 mx-auto mb-3" />
           <p className="text-red-400 font-medium">Erro ao buscar rastreamento</p>
-          <p className="text-gray-400 text-sm mt-1">{(trackingError as any)?.message || 'Código inválido'}</p>
+          <p className="text-text-secondary text-sm mt-1">{(trackingError as any)?.message || 'Código inválido'}</p>
         </div>
       )}
 
       {trackingData && !trackingLoading && (
-        <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
-          <div className="p-6 border-b border-white/5">
+        <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-xl font-bold">{trackingData.pedido?.codigo || activeCode}</h3>
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-text-secondary mt-1">
                   {trackingData.destino?.cidade}{trackingData.destino?.estado ? ` - ${trackingData.destino.estado}` : ''}
                 </p>
               </div>
@@ -120,13 +120,13 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
 
           <div className="p-6">
             {(!trackingData.eventos || trackingData.eventos.length === 0) ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-text-muted">
                 <Package size={40} className="mx-auto mb-3 opacity-50" />
                 <p>Nenhum evento de rastreamento encontrado</p>
               </div>
             ) : (
               <div className="relative">
-                <div className="absolute left-[19px] top-0 bottom-0 w-0.5 bg-white/10" />
+                <div className="absolute left-[19px] top-0 bottom-0 w-0.5 bg-surface/10" />
                 <div className="space-y-0">
                   {trackingData.eventos.map((ev: any, idx: number) => {
                     const Icon = TIPO_ICON[ev.tipo] || Clock;
@@ -139,12 +139,12 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
                         <div className="flex-1 min-w-0 pt-1">
                           <div className="flex items-center justify-between">
                             <p className="text-sm font-medium text-white">{ev.descricao || ev.tipo}</p>
-                            <span className="text-[11px] text-gray-500 ml-4 whitespace-nowrap">
+                            <span className="text-[11px] text-text-muted ml-4 whitespace-nowrap">
                               {ev.created_at ? new Date(ev.created_at).toLocaleString('pt-BR') : '-'}
                             </span>
                           </div>
                           <div className="flex items-center gap-3 mt-1">
-                            {ev.local && <span className="text-xs text-gray-400 flex items-center gap-1"><MapPin size={10} />{ev.local}</span>}
+                            {ev.local && <span className="text-xs text-text-secondary flex items-center gap-1"><MapPin size={10} />{ev.local}</span>}
                             <span className="text-xs px-2 py-0.5 rounded-full" style={{
                               color: STATUS_COLOR[ev.status] || '#6B7280',
                               background: `${STATUS_COLOR[ev.status] || '#6B7280'}15`,
@@ -162,8 +162,8 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
       )}
 
       {!activeCode && (
-        <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden mt-6">
-          <div className="p-4 border-b border-white/5">
+        <div className="bg-[#111827] rounded-xl border border-border overflow-hidden mt-6">
+          <div className="p-4 border-b border-border">
             <h3 className="text-base font-medium">Eventos Recentes</h3>
           </div>
           {allLoading ? (
@@ -172,17 +172,17 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/5">
+                  <tr className="border-b border-border">
                     {['Pedido', 'Tipo', 'Descrição', 'Local', 'Status', 'Data'].map(h => (
-                      <th key={h} className="text-left text-[12px] text-gray-400 font-medium p-3 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left text-[12px] text-text-secondary font-medium p-3 uppercase tracking-wider whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {(!allTracking || allTracking.length === 0) ? (
-                    <tr><td colSpan={6} className="text-center py-8 text-gray-500 text-sm">Nenhum evento recente</td></tr>
+                    <tr><td colSpan={6} className="text-center py-8 text-text-muted text-sm">Nenhum evento recente</td></tr>
                   ) : allTracking.slice(0, 50).map((ev: any, idx: number) => (
-                    <tr key={ev.id || idx} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                    <tr key={ev.id || idx} className="border-b border-border hover:bg-surface/[0.02] transition-colors">
                       <td className="p-3 text-sm font-mono text-blue-400">{ev.pedido?.codigo || ev.pedido_id?.substring(0, 8)}</td>
                       <td className="p-3">
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px]" style={{
@@ -191,14 +191,14 @@ export default function RastreamentoPage({ initialCode, onClear }: { initialCode
                         }}>{ev.tipo}</span>
                       </td>
                       <td className="p-3 text-sm text-gray-300">{ev.descricao || '-'}</td>
-                      <td className="p-3 text-sm text-gray-400">{ev.local || '-'}</td>
+                      <td className="p-3 text-sm text-text-secondary">{ev.local || '-'}</td>
                       <td className="p-3">
                         <span className="text-xs px-2 py-0.5 rounded-full" style={{
                           color: STATUS_COLOR[ev.status] || '#6B7280',
                           background: `${STATUS_COLOR[ev.status] || '#6B7280'}15`,
                         }}>{ev.status?.replace('_', ' ')}</span>
                       </td>
-                      <td className="p-3 text-sm text-gray-400 whitespace-nowrap">{ev.created_at ? new Date(ev.created_at).toLocaleString('pt-BR') : '-'}</td>
+                      <td className="p-3 text-sm text-text-secondary whitespace-nowrap">{ev.created_at ? new Date(ev.created_at).toLocaleString('pt-BR') : '-'}</td>
                     </tr>
                   ))}
                 </tbody>

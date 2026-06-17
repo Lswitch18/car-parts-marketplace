@@ -166,8 +166,8 @@ export default function TerceirosPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-black text-black">Terceiros e Contratos</h2>
-          <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mt-1">
+          <h2 className="text-2xl font-black text-text">Terceiros e Contratos</h2>
+          <p className="text-sm text-text-muted font-bold uppercase tracking-wider mt-1">
             {list.length} parceiros cadastrados
           </p>
         </div>
@@ -180,26 +180,26 @@ export default function TerceirosPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white border-2 border-black rounded-xl p-5">
+        <div className="bg-surface border-2 border-black rounded-xl p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center border border-black/10">
-              <DollarSign className="text-black" size={20} />
+            <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center border border-black/10">
+              <DollarSign className="text-text" size={20} />
             </div>
             <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider">Custo de Contratos Ativos</p>
-              <p className="text-xl font-black text-black">{formatJPY(activeContractsTotal)} /mês</p>
+              <p className="text-[10px] text-text-secondary font-black uppercase tracking-wider">Custo de Contratos Ativos</p>
+              <p className="text-xl font-black text-text">{formatJPY(activeContractsTotal)} /mês</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white border-2 border-black rounded-xl p-5">
+        <div className="bg-surface border-2 border-black rounded-xl p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center border border-black/10">
-              <Shield className="text-black" size={20} />
+            <div className="w-10 h-10 bg-background rounded-lg flex items-center justify-center border border-black/10">
+              <Shield className="text-text" size={20} />
             </div>
             <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider">Parceiros Ativos</p>
-              <p className="text-xl font-black text-black">{list.filter(t => t.ativo).length} de {list.length}</p>
+              <p className="text-[10px] text-text-secondary font-black uppercase tracking-wider">Parceiros Ativos</p>
+              <p className="text-xl font-black text-text">{list.filter(t => t.ativo).length} de {list.length}</p>
             </div>
           </div>
         </div>
@@ -213,9 +213,9 @@ export default function TerceirosPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {list.map((item) => (
-          <div key={item.id} className="bg-white border-2 border-black rounded-xl p-5 hover:bg-slate-50 transition-all group relative">
+          <div key={item.id} className="bg-surface border-2 border-black rounded-xl p-5 hover:bg-background transition-all group relative">
             <div className="absolute top-5 right-5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => openEdit(item)} className="p-1.5 hover:bg-slate-100 border border-black/10 rounded-lg text-slate-600">
+              <button onClick={() => openEdit(item)} className="p-1.5 hover:bg-background border border-black/10 rounded-lg text-slate-600">
                 <Edit3 size={14} />
               </button>
               <button onClick={() => handleDelete(item.id)} className="p-1.5 hover:bg-red-50 border border-red-200 rounded-lg text-red-600">
@@ -225,23 +225,23 @@ export default function TerceirosPage() {
 
             <div className="flex items-center gap-2 mb-3">
               <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${
-                item.ativo ? 'bg-slate-100 text-black border border-black/10' : 'bg-slate-100 text-slate-400 border border-slate-200'
+                item.ativo ? 'bg-background text-text border border-black/10' : 'bg-background text-text-secondary border border-border'
               }`}>
                 {item.ativo ? 'Ativo' : 'Inativo'}
               </span>
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{item.tipo}</span>
+              <span className="text-[9px] text-text-secondary font-bold uppercase tracking-wider">{item.tipo}</span>
             </div>
 
-            <h3 className="text-base font-black text-black mb-1">{item.nome}</h3>
+            <h3 className="text-base font-black text-text mb-1">{item.nome}</h3>
             <div className="flex items-baseline gap-1 mt-2">
-              <span className="text-lg font-black text-black">{formatJPY(item.valor_contrato)}</span>
-              <span className="text-[10px] text-slate-400 font-bold">/{item.periodo}</span>
+              <span className="text-lg font-black text-text">{formatJPY(item.valor_contrato)}</span>
+              <span className="text-[10px] text-text-secondary font-bold">/{item.periodo}</span>
             </div>
           </div>
         ))}
 
         {list.length === 0 && (
-          <div className="col-span-full text-center py-12 text-slate-400 text-xs font-bold uppercase tracking-wider">
+          <div className="col-span-full text-center py-12 text-text-secondary text-xs font-bold uppercase tracking-wider">
             Nenhum parceiro ou contrato cadastrado
           </div>
         )}
@@ -249,34 +249,34 @@ export default function TerceirosPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowModal(false)}>
-          <div className="bg-white border-2 border-black rounded-xl p-6 w-full max-w-md mx-4" onClick={e => e.stopPropagation()}>
+          <div className="bg-surface border-2 border-black rounded-xl p-6 w-full max-w-md mx-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-sm font-black uppercase tracking-widest text-black">
+              <h3 className="text-sm font-black uppercase tracking-widest text-text">
                 {editingId ? 'Editar Parceiro' : 'Novo Parceiro'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-black">
+              <button onClick={() => setShowModal(false)} className="text-text-secondary hover:text-text">
                 <X size={20} />
               </button>
             </div>
             
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1 block">Nome do Parceiro</label>
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-wider mb-1 block">Nome do Parceiro</label>
                 <input
                   value={form.nome}
                   onChange={e => setForm({ ...form, nome: e.target.value })}
                   placeholder="Ex: Sagawa Express, DHL..."
-                  className="w-full bg-white border-2 border-black rounded-lg px-4 py-2 text-sm text-black outline-none focus:bg-slate-50"
+                  className="w-full bg-surface border-2 border-black rounded-lg px-4 py-2 text-sm text-text outline-none focus:bg-background"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1 block">Tipo de Serviço</label>
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-wider mb-1 block">Tipo de Serviço</label>
                   <select
                     value={form.tipo}
                     onChange={e => setForm({ ...form, tipo: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-4 py-2 text-sm text-black outline-none"
+                    className="w-full bg-surface border-2 border-black rounded-lg px-4 py-2 text-sm text-text outline-none"
                   >
                     <option value="transportadora">Transportadora</option>
                     <option value="motoboy">Motoboy</option>
@@ -286,11 +286,11 @@ export default function TerceirosPage() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1 block">Faturamento</label>
+                  <label className="text-[10px] text-text-secondary font-black uppercase tracking-wider mb-1 block">Faturamento</label>
                   <select
                     value={form.periodo}
                     onChange={e => setForm({ ...form, periodo: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-4 py-2 text-sm text-black outline-none"
+                    className="w-full bg-surface border-2 border-black rounded-lg px-4 py-2 text-sm text-text outline-none"
                   >
                     <option value="mensal">Mensal</option>
                     <option value="anual">Anual</option>
@@ -299,12 +299,12 @@ export default function TerceirosPage() {
               </div>
 
               <div>
-                <label className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1 block">Valor do Contrato (¥)</label>
+                <label className="text-[10px] text-text-secondary font-black uppercase tracking-wider mb-1 block">Valor do Contrato (¥)</label>
                 <input
                   type="number"
                   value={form.valor_contrato}
                   onChange={e => setForm({ ...form, valor_contrato: Number(e.target.value) })}
-                  className="w-full bg-white border-2 border-black rounded-lg px-4 py-2 text-sm text-black outline-none focus:bg-slate-50"
+                  className="w-full bg-surface border-2 border-black rounded-lg px-4 py-2 text-sm text-text outline-none focus:bg-background"
                 />
               </div>
 
@@ -322,7 +322,7 @@ export default function TerceirosPage() {
             <div className="flex items-center gap-3 mt-6 justify-end">
               <button
                 onClick={() => setShowModal(false)}
-                className="h-10 px-4 border-2 border-black rounded-lg text-xs font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50"
+                className="h-10 px-4 border-2 border-black rounded-lg text-xs font-black uppercase tracking-widest text-slate-600 hover:bg-background"
               >
                 Cancelar
               </button>

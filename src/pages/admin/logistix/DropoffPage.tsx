@@ -38,18 +38,18 @@ export default function DropoffPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Drop-offs</h2>
-          <p className="text-sm text-gray-400 mt-1">{rows.filter(r => r.status === 'received').length} aguardando coleta</p>
+          <p className="text-sm text-text-secondary mt-1">{rows.filter(r => r.status === 'received').length} aguardando coleta</p>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center bg-[#111827] rounded-lg h-10 px-3 border border-white/5 flex-1">
-          <Search size={18} className="text-gray-400 mr-2" />
+        <div className="flex items-center bg-[#111827] rounded-lg h-10 px-3 border border-border flex-1">
+          <Search size={18} className="text-text-secondary mr-2" />
           <input type="text" placeholder="Buscar por código..." value={search} onChange={e => setSearch(e.target.value)}
-            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
+            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
         </div>
         <select value={filterAgencia} onChange={e => setFilterAgencia(e.target.value)}
-          className="h-10 bg-[#111827] border border-white/10 rounded-lg px-3 text-sm text-white outline-none">
+          className="h-10 bg-[#111827] border border-border rounded-lg px-3 text-sm text-white outline-none">
           <option value="">Todas agências</option>
           {(agencias || []).map((a: any) => (
             <option key={a.id} value={a.id}>{a.nome}</option>
@@ -59,7 +59,7 @@ export default function DropoffPage() {
 
       <div className="grid gap-3">
         {rows.filter(r => !search || r.shipment?.codigo?.includes(search)).map((d: any) => (
-          <div key={d.id} className="bg-[#111827] rounded-xl p-4 border border-white/5">
+          <div key={d.id} className="bg-[#111827] rounded-xl p-4 border border-border">
             <div className="flex items-start justify-between mb-3">
               <div>
                 <div className="flex items-center gap-2">
@@ -81,14 +81,14 @@ export default function DropoffPage() {
               )}
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="flex items-center gap-1.5 text-gray-400">
+              <div className="flex items-center gap-1.5 text-text-secondary">
                 <Building size={12} /> {d.agencia?.nome || '—'}
               </div>
-              <div className="flex items-center gap-1.5 text-gray-400">
+              <div className="flex items-center gap-1.5 text-text-secondary">
                 <Clock size={12} /> {new Date(d.created_at).toLocaleString('pt-BR')}
               </div>
               {d.recebido_por && (
-                <div className="flex items-center gap-1.5 text-gray-400">
+                <div className="flex items-center gap-1.5 text-text-secondary">
                   <CheckCircle size={12} /> {d.recebido_por}
                 </div>
               )}

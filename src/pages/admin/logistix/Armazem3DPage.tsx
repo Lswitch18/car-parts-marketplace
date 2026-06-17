@@ -42,8 +42,8 @@ function LoadingSkeleton() {
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
           <Warehouse size={28} className="text-blue-400/50" />
         </div>
-        <div className="w-32 h-3 bg-white/5 rounded-full mx-auto animate-pulse mb-2" />
-        <div className="w-24 h-2 bg-white/5 rounded-full mx-auto animate-pulse" />
+        <div className="w-32 h-3 bg-surface/5 rounded-full mx-auto animate-pulse mb-2" />
+        <div className="w-24 h-2 bg-surface/5 rounded-full mx-auto animate-pulse" />
       </div>
     </div>
   );
@@ -51,11 +51,11 @@ function LoadingSkeleton() {
 
 function EmptyState() {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center text-gray-500 bg-[#0a0a1a]">
+    <div className="flex-1 flex flex-col items-center justify-center text-text-muted bg-[#0a0a1a]">
       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center mb-4">
         <Boxes size={36} className="text-gray-600" />
       </div>
-      <p className="text-sm text-gray-400 font-medium">Nenhuma zona encontrada</p>
+      <p className="text-sm text-text-secondary font-medium">Nenhuma zona encontrada</p>
       <p className="text-xs text-gray-600 mt-1">Este armazém não possui zonas configuradas</p>
     </div>
   );
@@ -67,11 +67,11 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
       <div className="w-16 h-16 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
         <AlertCircle size={28} className="text-red-400" />
       </div>
-      <p className="text-sm text-gray-400 font-medium">Erro ao carregar</p>
+      <p className="text-sm text-text-secondary font-medium">Erro ao carregar</p>
       <p className="text-xs text-gray-600 mt-1 mb-4 text-center px-8">{message}</p>
       <button
         onClick={onRetry}
-        className="h-9 px-4 bg-[#1F2937] hover:bg-[#2a3a4a] rounded-xl text-xs text-gray-300 font-medium transition-colors border border-white/5"
+        className="h-9 px-4 bg-[#1F2937] hover:bg-[#2a3a4a] rounded-xl text-xs text-gray-300 font-medium transition-colors border border-border"
       >
         Tentar novamente
       </button>
@@ -164,18 +164,18 @@ export default function Armazem3DPage() {
             {selectedArmazem ? (
               <div className="min-w-0">
                 <h2 className="text-sm font-bold truncate drop-shadow-lg">{selectedArmazem.nome}</h2>
-                <p className="text-[10px] text-gray-400 truncate drop-shadow">
+                <p className="text-[10px] text-text-secondary truncate drop-shadow">
                   {selectedArmazem.cidade} · {selectedArmazem.estado}
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-gray-400">Selecione um centro de distribuição</p>
+              <p className="text-sm text-text-secondary">Selecione um centro de distribuição</p>
             )}
           </div>
           {armazemId && (
             <button
               onClick={() => setResetKey((k) => k + 1)}
-              className="w-8 h-8 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+              className="w-8 h-8 rounded-lg bg-black/40 backdrop-blur-sm border border-border flex items-center justify-center text-text-secondary hover:text-white transition-colors"
               title="Resetar visão"
             >
               <RotateCcw size={14} />
@@ -190,26 +190,26 @@ export default function Armazem3DPage() {
               setShowSelector(!showSelector);
               setSearchCD('');
             }}
-            className="w-full h-10 bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl px-3.5 flex items-center justify-between text-sm text-white active:scale-[0.99] transition-transform"
+            className="w-full h-10 bg-black/40 backdrop-blur-sm border border-border rounded-xl px-3.5 flex items-center justify-between text-sm text-white active:scale-[0.99] transition-transform"
           >
             <div className="flex items-center gap-2 min-w-0">
               <Warehouse size={14} className="text-blue-400 flex-shrink-0" />
-              <span className={`truncate ${armazemId ? '' : 'text-gray-400'}`}>
+              <span className={`truncate ${armazemId ? '' : 'text-text-secondary'}`}>
                 {selectedArmazem?.nome || 'Escolher centro de distribuição...'}
               </span>
             </div>
             <ChevronDown
               size={14}
-              className={`text-gray-400 transition-transform flex-shrink-0 ${showSelector ? 'rotate-180' : ''}`}
+              className={`text-text-secondary transition-transform flex-shrink-0 ${showSelector ? 'rotate-180' : ''}`}
             />
           </button>
 
           {showSelector && (
             <>
               <div className="fixed inset-0 z-20" onClick={() => setShowSelector(false)} />
-              <div className="absolute left-3 right-3 top-full mt-1 z-30 bg-[#1a1a2e]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden">
-                <div className="flex items-center gap-2 px-3 h-10 border-b border-white/5">
-                  <Search size={14} className="text-gray-500 flex-shrink-0" />
+              <div className="absolute left-3 right-3 top-full mt-1 z-30 bg-[#1a1a2e]/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl overflow-hidden">
+                <div className="flex items-center gap-2 px-3 h-10 border-b border-border">
+                  <Search size={14} className="text-text-muted flex-shrink-0" />
                   <input
                     type="text"
                     placeholder="Buscar CD por nome ou cidade..."
@@ -229,7 +229,7 @@ export default function Armazem3DPage() {
                       Erro ao carregar armazéns
                     </div>
                   ) : filteredCDs.length === 0 ? (
-                    <div className="text-center py-6 text-xs text-gray-500">
+                    <div className="text-center py-6 text-xs text-text-muted">
                       Nenhum CD encontrado
                     </div>
                   ) : (
@@ -244,8 +244,8 @@ export default function Armazem3DPage() {
                             setShowSelector(false);
                             setSelectedZone(null);
                           }}
-                          className={`w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-white/5 transition-colors ${
-                            a.id === armazemId ? 'bg-blue-500/10 border-l-2 border-blue-500' : ''
+                          className={`w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-surface/5 transition-colors ${
+                            a.id === armazemId ? 'bg-primary/10 border-l-2 border-blue-500' : ''
                           }`}
                         >
                           <div className="w-9 h-9 rounded-lg bg-[#111827] flex items-center justify-center flex-shrink-0">
@@ -253,7 +253,7 @@ export default function Armazem3DPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium truncate">{a.nome}</p>
-                            <p className="text-[11px] text-gray-500 flex items-center gap-1">
+                            <p className="text-[11px] text-text-muted flex items-center gap-1">
                               <MapPin size={10} /> {a.cidade}
                             </p>
                           </div>
@@ -276,16 +276,16 @@ export default function Armazem3DPage() {
         {/* Mini Stats */}
         {armazemId && !layoutLoading && !layoutError && zonas.length > 0 && (
           <div className="flex items-center gap-3 px-3 py-1.5 backdrop-blur-sm bg-black/30">
-            <span className="flex items-center gap-1.5 text-[11px] text-gray-400 whitespace-nowrap">
+            <span className="flex items-center gap-1.5 text-[11px] text-text-secondary whitespace-nowrap">
               <Boxes size={12} className="text-blue-400" />
               {totalZonas} zonas
             </span>
-            <span className="w-px h-3 bg-white/10" />
-            <span className="flex items-center gap-1.5 text-[11px] text-gray-400 whitespace-nowrap">
+            <span className="w-px h-3 bg-surface/10" />
+            <span className="flex items-center gap-1.5 text-[11px] text-text-secondary whitespace-nowrap">
               <Package size={12} className="text-cyan-400" />
               {totalItens} itens
             </span>
-            <span className="w-px h-3 bg-white/10" />
+            <span className="w-px h-3 bg-surface/10" />
             <span className="flex items-center gap-1.5 text-[11px] whitespace-nowrap" style={{ color: getOccColor(pctGeral) }}>
               <Percent size={12} />
               {pctGeral}% ocupado
@@ -296,7 +296,7 @@ export default function Armazem3DPage() {
         {/* Zone Legend */}
         {armazemId && !layoutLoading && zonas.length > 0 && (
           <div className="flex items-center gap-3 px-3 py-1.5 backdrop-blur-sm bg-black/20 overflow-x-auto">
-            <span className="text-[10px] text-gray-500 font-medium mr-1">Zonas:</span>
+            <span className="text-[10px] text-text-muted font-medium mr-1">Zonas:</span>
             {Object.entries(ZONE_TYPE_LABEL).map(([tipo, label]) => {
               const hasType = zonas.some((z) => z.tipo === tipo);
               if (!hasType) return null;
@@ -306,7 +306,7 @@ export default function Armazem3DPage() {
                 ARMAZENAGEM: '#8B5CF6',
               };
               return (
-                <span key={tipo} className="flex items-center gap-1 text-[10px] text-gray-400 whitespace-nowrap">
+                <span key={tipo} className="flex items-center gap-1 text-[10px] text-text-secondary whitespace-nowrap">
                   <span className="w-2 h-2 rounded-sm flex-shrink-0" style={{ background: colors[tipo] || '#6B7280' }} />
                   {label}
                 </span>
@@ -319,7 +319,7 @@ export default function Armazem3DPage() {
       {/* 3D Canvas - always fills the screen */}
       <div className="flex-1 relative">
         {!armazemId ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500 py-24">
+          <div className="flex flex-col items-center justify-center h-full text-text-muted py-24">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center mb-4">
               <Warehouse size={36} className="text-gray-600" />
             </div>
@@ -341,7 +341,7 @@ export default function Armazem3DPage() {
 
         {/* Legend overlay at bottom */}
         {armazemId && zonas.length > 0 && !layoutLoading && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 text-[10px] bg-black/70 backdrop-blur-md rounded-xl px-4 py-2 border border-white/5 pointer-events-none shadow-lg">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 text-[10px] bg-black/70 backdrop-blur-md rounded-xl px-4 py-2 border border-border pointer-events-none shadow-lg">
             <span className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-sm bg-[#22C55E]" /> Normal
             </span>

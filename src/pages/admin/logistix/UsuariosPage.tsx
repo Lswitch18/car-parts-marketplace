@@ -122,36 +122,36 @@ export default function UsuariosPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Usuários Logistix</h2>
-          <p className="text-sm text-gray-400 mt-1">{total} usuários</p>
+          <p className="text-sm text-text-secondary mt-1">{total} usuários</p>
         </div>
-        <button onClick={openCreate} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 text-sm">
+        <button onClick={openCreate} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium flex items-center gap-2 text-sm">
           <Plus size={16} /> Vincular ao Logistix
         </button>
       </div>
 
-      <div className="flex items-center bg-[#111827] rounded-lg h-10 px-3 border border-white/5">
-        <Search size={18} className="text-gray-400 mr-2" />
+      <div className="flex items-center bg-[#111827] rounded-lg h-10 px-3 border border-border">
+        <Search size={18} className="text-text-secondary mr-2" />
         <input type="text" placeholder="Buscar por nome ou email..." value={search}
           onChange={e => { setSearch(e.target.value); setPage(1); }}
-          className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
-        {search && <X size={16} className="text-gray-400 cursor-pointer" onClick={() => setSearch('')} />}
+          className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
+        {search && <X size={16} className="text-text-secondary cursor-pointer" onClick={() => setSearch('')} />}
       </div>
 
-      <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-border">
                 {['Nome', 'Email', 'Cargo', 'Setor', 'Tipo', 'Status', 'Ações'].map(h => (
-                  <th key={h} className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left text-[12px] text-text-secondary font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {paginated.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-12 text-gray-500 text-sm">Nenhum usuário encontrado</td></tr>
+                <tr><td colSpan={7} className="text-center py-12 text-text-muted text-sm">Nenhum usuário encontrado</td></tr>
               ) : paginated.map((row: any) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                <tr key={row.id} className="border-b border-border hover:bg-surface/[0.02] transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">
@@ -161,20 +161,20 @@ export default function UsuariosPage() {
                     </div>
                   </td>
                   <td className="p-4 text-sm text-gray-300">{row.email || '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.cargo?.nome || <span className="text-gray-600">—</span>}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.setor?.nome || <span className="text-gray-600">—</span>}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.cargo?.nome || <span className="text-gray-600">—</span>}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.setor?.nome || <span className="text-gray-600">—</span>}</td>
                   <td className="p-4">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${row.role === 'admin' ? 'text-purple-400 bg-purple-400/15' : row.role === 'seller' ? 'text-blue-400 bg-blue-400/15' : 'text-gray-400 bg-gray-400/15'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${row.role === 'admin' ? 'text-purple-400 bg-purple-400/15' : row.role === 'seller' ? 'text-blue-400 bg-blue-400/15' : 'text-text-secondary bg-gray-400/15'}`}>
                       {row.role || 'buyer'}
                     </span>
                   </td>
                   <td className="p-4">
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${row.status === 'ativo' ? 'text-green-400 bg-green-400/15' : 'text-gray-400 bg-gray-400/15'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${row.status === 'ativo' ? 'text-green-400 bg-green-400/15' : 'text-text-secondary bg-gray-400/15'}`}>
                       {row.status || 'ativo'}
                     </span>
                   </td>
                   <td className="p-4">
-                    <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400">
+                    <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-blue-400">
                       <Edit3 size={14} />
                     </button>
                   </td>
@@ -184,11 +184,11 @@ export default function UsuariosPage() {
           </table>
         </div>
         {pages > 1 && (
-          <div className="flex items-center justify-between p-4 border-t border-white/5">
-            <span className="text-sm text-gray-400">Página {page} de {pages}</span>
+          <div className="flex items-center justify-between p-4 border-t border-border">
+            <span className="text-sm text-text-secondary">Página {page} de {pages}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronLeft size={16} /></button>
-              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronRight size={16} /></button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronLeft size={16} /></button>
+              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronRight size={16} /></button>
             </div>
           </div>
         )}
@@ -196,23 +196,23 @@ export default function UsuariosPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={closeModal}>
-          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-2xl mx-4 border border-white/10 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-2xl mx-4 border border-border max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Shield size={20} className="text-blue-400" />
                 <h3 className="text-lg font-bold">{editingId ? 'Editar Usuário Logistix' : 'Vincular ao Logistix'}</h3>
               </div>
-              <button onClick={closeModal} className="text-gray-400 hover:text-white"><X size={20} /></button>
+              <button onClick={closeModal} className="text-text-secondary hover:text-white"><X size={20} /></button>
             </div>
 
             <div className="space-y-5">
               {!editingId && (
                 <div>
-                  <label className="text-sm text-gray-400 mb-1.5 block">Selecionar usuário do marketplace</label>
+                  <label className="text-sm text-text-secondary mb-1.5 block">Selecionar usuário do marketplace</label>
                   <select value={form.usuario_id} onChange={e => {
                     const sel = semCargoArr.find((u: any) => u.id === e.target.value);
                     setForm({ ...form, usuario_id: e.target.value, nome: sel?.full_name || '', email: sel?.email || '' });
-                  }} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  }} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione um usuário...</option>
                     {semCargoArr.map((u: any) => (
                       <option key={u.id} value={u.id}>{u.full_name || u.email} ({u.email})</option>
@@ -227,23 +227,23 @@ export default function UsuariosPage() {
               {editingId && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm text-gray-400 mb-1 block">Nome</label>
+                    <label className="text-sm text-text-secondary mb-1 block">Nome</label>
                     <input value={form.nome} onChange={e => setForm({ ...form, nome: e.target.value })}
-                      className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                      className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                   </div>
                   <div>
-                    <label className="text-sm text-gray-400 mb-1 block">Email</label>
+                    <label className="text-sm text-text-secondary mb-1 block">Email</label>
                     <input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                      className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                      className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                   </div>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Setor</label>
+                  <label className="text-sm text-text-secondary mb-1 block">Setor</label>
                   <select value={form.setor_id} onChange={e => setForm({ ...form, setor_id: e.target.value })}
-                    className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                    className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione...</option>
                     {setoresArr.map((s: any) => (
                       <option key={s.id} value={s.id}>{s.nome}</option>
@@ -251,9 +251,9 @@ export default function UsuariosPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Cargo</label>
+                  <label className="text-sm text-text-secondary mb-1 block">Cargo</label>
                   <select value={form.cargo_id} onChange={e => setForm({ ...form, cargo_id: e.target.value })}
-                    className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                    className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione...</option>
                     {cargosArr.map((c: any) => (
                       <option key={c.id} value={c.id}>{c.nome}</option>
@@ -264,14 +264,14 @@ export default function UsuariosPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Telefone</label>
+                  <label className="text-sm text-text-secondary mb-1 block">Telefone</label>
                   <input value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })}
-                    className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                    className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Status</label>
+                  <label className="text-sm text-text-secondary mb-1 block">Status</label>
                   <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}
-                    className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                    className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="ativo">Ativo</option>
                     <option value="inativo">Inativo</option>
                     <option value="afastado">Afastado</option>
@@ -280,10 +280,10 @@ export default function UsuariosPage() {
               </div>
 
               <div>
-                <label className="text-sm text-gray-400 mb-1.5 block">Acesso a Armazéns</label>
+                <label className="text-sm text-text-secondary mb-1.5 block">Acesso a Armazéns</label>
                 <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
                   {armazensArr.map((a: any) => (
-                    <label key={a.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer">
+                    <label key={a.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-surface/5 cursor-pointer">
                       <input type="checkbox" checked={form.armazens.some((fa: any) => fa.id === a.id)}
                         onChange={() => toggleArmazem(a.id)}
                         className="h-4 w-4 rounded border-white/20 bg-[#111827] text-blue-500" />
@@ -294,10 +294,10 @@ export default function UsuariosPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 mt-6 justify-end border-t border-white/5 pt-4">
-              <button onClick={closeModal} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white">Cancelar</button>
+            <div className="flex items-center gap-3 mt-6 justify-end border-t border-border pt-4">
+              <button onClick={closeModal} className="h-10 px-4 border border-border rounded-lg text-sm text-text-secondary hover:text-white">Cancelar</button>
               <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending || (!editingId && !form.usuario_id)}
-                className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2">
+                className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2">
                 {createMutation.isPending || updateMutation.isPending ? (
                   <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Salvando...</>
                 ) : editingId ? 'Atualizar' : 'Vincular ao Logistix'}

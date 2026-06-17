@@ -50,7 +50,7 @@ export default function WMSPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">WMS — Armazém</h2>
-          <p className="text-sm text-gray-400 mt-1">{invRows.length} itens · {totalQty} unidades</p>
+          <p className="text-sm text-text-secondary mt-1">{invRows.length} itens · {totalQty} unidades</p>
         </div>
       </div>
 
@@ -63,7 +63,7 @@ export default function WMSPage() {
         ].map(t => (
           <button key={t.id} onClick={() => setTab(t.id as any)}
             className={`flex items-center gap-2 h-10 px-4 rounded-lg text-sm font-medium transition-colors ${
-              tab === t.id ? 'bg-blue-500 text-white' : 'bg-[#111827] text-gray-400 border border-white/5'
+              tab === t.id ? 'bg-primary text-white' : 'bg-[#111827] text-text-secondary border border-border'
             }`}>
             <t.icon size={16} /> {t.label}
           </button>
@@ -73,7 +73,7 @@ export default function WMSPage() {
       {/* Armazém selector */}
       <div className="flex items-center gap-3">
         <select value={armazemId} onChange={e => setArmazemId(e.target.value)}
-          className="h-10 bg-[#111827] border border-white/10 rounded-lg px-3 text-sm text-white outline-none">
+          className="h-10 bg-[#111827] border border-border rounded-lg px-3 text-sm text-white outline-none">
           <option value="">Selecione o armazém</option>
           {(armazens || []).map((a: any) => (
             <option key={a.id} value={a.id}>{a.nome}</option>
@@ -81,7 +81,7 @@ export default function WMSPage() {
         </select>
         {tab === 'inventory' && (
           <select value={zonaId} onChange={e => setZonaId(e.target.value)}
-            className="h-10 bg-[#111827] border border-white/10 rounded-lg px-3 text-sm text-white outline-none">
+            className="h-10 bg-[#111827] border border-border rounded-lg px-3 text-sm text-white outline-none">
             <option value="">Todas zonas</option>
             {zonaRows.map((z: any) => (
               <option key={z.id} value={z.id}>{z.nome}</option>
@@ -92,29 +92,29 @@ export default function WMSPage() {
 
       {/* Tab content */}
       {tab === 'inventory' && (
-        <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+        <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4">Produto</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4">Zona</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4">Qtd</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4">Lote</th>
-                <th className="text-left text-[12px] text-gray-400 font-medium p-4">Armazém</th>
+              <tr className="border-b border-border">
+                <th className="text-left text-[12px] text-text-secondary font-medium p-4">Produto</th>
+                <th className="text-left text-[12px] text-text-secondary font-medium p-4">Zona</th>
+                <th className="text-left text-[12px] text-text-secondary font-medium p-4">Qtd</th>
+                <th className="text-left text-[12px] text-text-secondary font-medium p-4">Lote</th>
+                <th className="text-left text-[12px] text-text-secondary font-medium p-4">Armazém</th>
               </tr>
             </thead>
             <tbody>
               {invRows.filter(i => i.quantidade > 0).map((i: any) => (
-                <tr key={i.id} className="border-b border-white/5">
+                <tr key={i.id} className="border-b border-border">
                   <td className="p-4 text-sm font-medium">{i.produto}</td>
-                  <td className="p-4 text-sm text-gray-400">{i.zona?.nome || '—'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{i.zona?.nome || '—'}</td>
                   <td className="p-4 text-sm">{i.quantidade}</td>
-                  <td className="p-4 text-sm text-gray-400 font-mono">{i.lote || '—'}</td>
-                  <td className="p-4 text-sm text-gray-400">{i.armazem?.nome || '—'}</td>
+                  <td className="p-4 text-sm text-text-secondary font-mono">{i.lote || '—'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{i.armazem?.nome || '—'}</td>
                 </tr>
               ))}
               {invRows.length === 0 && (
-                <tr><td colSpan={5} className="text-center py-12 text-gray-500 text-sm">Nenhum item no inventário</td></tr>
+                <tr><td colSpan={5} className="text-center py-12 text-text-muted text-sm">Nenhum item no inventário</td></tr>
               )}
             </tbody>
           </table>
@@ -122,21 +122,21 @@ export default function WMSPage() {
       )}
 
       {tab === 'receive' && (
-        <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
+        <div className="bg-[#111827] rounded-xl p-5 border border-border">
           <h3 className="text-sm font-semibold mb-1">Receber Pacote no CD</h3>
-          <p className="text-xs text-gray-400 mb-4">Escaneie ou digite o código de barras do pacote</p>
+          <p className="text-xs text-text-secondary mb-4">Escaneie ou digite o código de barras do pacote</p>
 
           <div className="flex gap-2 mb-4">
             <input type="text" value={scanCode} onChange={e => setScanCode(e.target.value)}
               placeholder="Código de barras..."
-              className="flex-1 h-12 bg-[#0B1220] border border-white/10 rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500 font-mono" />
+              className="flex-1 h-12 bg-[#0B1220] border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500 font-mono" />
             <button onClick={() => receiveMutation.mutate()} disabled={!scanCode || !armazemId || receiveMutation.isPending}
-              className="h-12 px-6 bg-blue-500 rounded-xl text-sm font-semibold disabled:opacity-50 flex items-center gap-2">
+              className="h-12 px-6 bg-primary rounded-xl text-sm font-semibold disabled:opacity-50 flex items-center gap-2">
               {receiveMutation.isPending ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /></> : <><CheckCircle size={16} /> Receber</>}
             </button>
           </div>
 
-          <div className="text-xs text-gray-500 space-y-1">
+          <div className="text-xs text-text-muted space-y-1">
             <p>📦 O pacote será adicionado ao inventário do armazém selecionado</p>
             <p>📋 O tracking será atualizado automaticamente</p>
           </div>
@@ -144,21 +144,21 @@ export default function WMSPage() {
       )}
 
       {tab === 'sort' && (
-        <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
+        <div className="bg-[#111827] rounded-xl p-5 border border-border">
           <h3 className="text-sm font-semibold mb-1">Triagem / Separar para Rota</h3>
-          <p className="text-xs text-gray-400 mb-4">Atribua itens a zonas de separação</p>
+          <p className="text-xs text-text-secondary mb-4">Atribua itens a zonas de separação</p>
 
           <div className="space-y-3 mb-4">
             <div>
-              <label className="text-xs text-gray-400 mb-1 block">Item do Inventário (ID)</label>
+              <label className="text-xs text-text-secondary mb-1 block">Item do Inventário (ID)</label>
               <input type="text" value={sortInvId} onChange={e => setSortInvId(e.target.value)}
                 placeholder="ID do inventário..."
-                className="w-full h-11 bg-[#0B1220] border border-white/10 rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500 font-mono" />
+                className="w-full h-11 bg-[#0B1220] border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500 font-mono" />
             </div>
             <div>
-              <label className="text-xs text-gray-400 mb-1 block">Zona de Destino</label>
+              <label className="text-xs text-text-secondary mb-1 block">Zona de Destino</label>
               <select value={sortZonaId} onChange={e => setSortZonaId(e.target.value)}
-                className="w-full h-11 bg-[#0B1220] border border-white/10 rounded-xl px-4 text-sm text-white outline-none">
+                className="w-full h-11 bg-[#0B1220] border border-border rounded-xl px-4 text-sm text-white outline-none">
                 <option value="">Selecione...</option>
                 {zonaRows.filter(z => z.tipo === 'SEPARACAO').map((z: any) => (
                   <option key={z.id} value={z.id}>{z.nome} ({z.tipo})</option>
@@ -166,7 +166,7 @@ export default function WMSPage() {
               </select>
             </div>
             <button onClick={() => sortMutation.mutate()} disabled={!sortInvId || !sortZonaId || sortMutation.isPending}
-              className="h-11 px-5 bg-blue-500 rounded-xl text-sm font-semibold disabled:opacity-50 flex items-center gap-2">
+              className="h-11 px-5 bg-primary rounded-xl text-sm font-semibold disabled:opacity-50 flex items-center gap-2">
               <ArrowRight size={16} /> Separar
             </button>
           </div>

@@ -22,7 +22,7 @@ const EVENT_ICONS: Record<string, any> = {
 
 function Timeline({ events }: { events: any[] }) {
   if (!events || events.length === 0) {
-    return <p className="text-sm text-gray-500 text-center py-8">Nenhum evento registrado</p>;
+    return <p className="text-sm text-text-muted text-center py-8">Nenhum evento registrado</p>;
   }
   return (
     <div className="relative pl-8 space-y-0">
@@ -38,11 +38,11 @@ function Timeline({ events }: { events: any[] }) {
               <Icon size={8} style={{ color: cor }} />
             </div>
             {i < events.length - 1 && (
-              <div className="absolute left-[-17px] top-5 bottom-0 w-[1px] bg-white/5" />
+              <div className="absolute left-[-17px] top-5 bottom-0 w-[1px] bg-surface/5" />
             )}
             <div>
               <p className="text-sm font-medium">{ev.descricao || ev.tipo}</p>
-              <p className="text-[11px] text-gray-500 mt-0.5">
+              <p className="text-[11px] text-text-muted mt-0.5">
                 {ev.local ? `${ev.local} · ` : ''}{ev.created_at || ''}
               </p>
             </div>
@@ -83,17 +83,17 @@ export default function PedidoDetail({
     <div className="p-6 max-w-4xl mx-auto">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-6 transition-colors"
+        className="flex items-center gap-2 text-sm text-text-secondary hover:text-white mb-6 transition-colors"
       >
         <ArrowLeft size={16} /> Voltar
       </button>
 
       {!orderCode ? (
-        <div className="text-center py-16 text-gray-500">
+        <div className="text-center py-16 text-text-muted">
           <p className="text-sm">Selecione um pedido para ver detalhes</p>
         </div>
       ) : !pedido ? (
-        <div className="text-center py-16 text-gray-500">
+        <div className="text-center py-16 text-text-muted">
           <Package size={40} className="mx-auto mb-3 text-gray-600" />
           <p className="text-sm">Pedido não encontrado</p>
           <p className="text-xs text-gray-600 mt-1">{orderCode}</p>
@@ -115,36 +115,36 @@ export default function PedidoDetail({
                   {statusLabel}
                 </span>
               </div>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-text-secondary mt-1">
                 {pedido.cliente || pedido.cliente_nome || 'Cliente não informado'}
               </p>
             </div>
             <div className="flex gap-2">
-              <button className="h-9 px-4 bg-[#111827] border border-white/5 rounded-lg text-sm text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
+              <button className="h-9 px-4 bg-[#111827] border border-border rounded-lg text-sm text-gray-300 hover:text-white flex items-center gap-2 transition-colors">
                 <Printer size={14} /> Imprimir
               </button>
-              <button className="h-9 px-4 bg-blue-500 hover:bg-blue-600 rounded-lg text-sm text-white flex items-center gap-2 transition-colors">
+              <button className="h-9 px-4 bg-primary hover:bg-primary-dark rounded-lg text-sm text-white flex items-center gap-2 transition-colors">
                 <MapPin size={14} /> Rastrear
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-              <div className="flex items-center gap-2 text-gray-400 text-[11px] mb-1"><MapPin size={13} /> Origem</div>
+            <div className="bg-[#111827] rounded-xl p-4 border border-border">
+              <div className="flex items-center gap-2 text-text-secondary text-[11px] mb-1"><MapPin size={13} /> Origem</div>
               <p className="text-sm font-medium">{pedido.origem || '-'}</p>
             </div>
-            <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-              <div className="flex items-center gap-2 text-gray-400 text-[11px] mb-1"><MapPin size={13} /> Destino</div>
+            <div className="bg-[#111827] rounded-xl p-4 border border-border">
+              <div className="flex items-center gap-2 text-text-secondary text-[11px] mb-1"><MapPin size={13} /> Destino</div>
               <p className="text-sm font-medium">{pedido.destino_cidade || pedido.destino || '-'}</p>
-              {pedido.destino_estado && <p className="text-[11px] text-gray-500">{pedido.destino_estado}</p>}
+              {pedido.destino_estado && <p className="text-[11px] text-text-muted">{pedido.destino_estado}</p>}
             </div>
-            <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-              <div className="flex items-center gap-2 text-gray-400 text-[11px] mb-1"><Scale size={13} /> Peso</div>
+            <div className="bg-[#111827] rounded-xl p-4 border border-border">
+              <div className="flex items-center gap-2 text-text-secondary text-[11px] mb-1"><Scale size={13} /> Peso</div>
               <p className="text-sm font-medium">{pedido.peso ? `${pedido.peso} kg` : '-'}</p>
             </div>
-            <div className="bg-[#111827] rounded-xl p-4 border border-white/5">
-              <div className="flex items-center gap-2 text-gray-400 text-[11px] mb-1"><DollarSign size={13} /> Valor</div>
+            <div className="bg-[#111827] rounded-xl p-4 border border-border">
+              <div className="flex items-center gap-2 text-text-secondary text-[11px] mb-1"><DollarSign size={13} /> Valor</div>
               <p className="text-sm font-medium">
                 {pedido.valor ? `¥${Number(pedido.valor).toLocaleString('ja-JP')}` : '-'}
               </p>
@@ -152,13 +152,13 @@ export default function PedidoDetail({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
+            <div className="bg-[#111827] rounded-xl p-5 border border-border">
               <h3 className="text-base font-medium mb-4">Timeline</h3>
               <Timeline events={(() => { if (!tracking) return []; if (Array.isArray(tracking)) return tracking; return (tracking as any).eventos || []; })()} />
             </div>
 
             <div className="space-y-4">
-              <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
+              <div className="bg-[#111827] rounded-xl p-5 border border-border">
                 <h3 className="text-base font-medium mb-3">Detalhes do Pedido</h3>
                 <div className="space-y-3 text-sm">
                   {[
@@ -167,18 +167,18 @@ export default function PedidoDetail({
                     { label: 'Previsão', value: pedido.previsao || '-', icon: Clock },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <item.icon size={14} className="text-gray-500" />
-                      <span className="text-gray-400 min-w-[80px]">{item.label}</span>
+                      <item.icon size={14} className="text-text-muted" />
+                      <span className="text-text-secondary min-w-[80px]">{item.label}</span>
                       <span className="text-white">{item.value}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-[#111827] rounded-xl p-5 border border-white/5">
+              <div className="bg-[#111827] rounded-xl p-5 border border-border">
                 <h3 className="text-base font-medium mb-3">Ações</h3>
                 <div className="flex flex-wrap gap-2">
-                  <button className="h-9 px-4 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg text-sm border border-blue-500/20 transition-colors">
+                  <button className="h-9 px-4 bg-primary/10 hover:bg-primary/20 text-blue-400 rounded-lg text-sm border border-blue-500/20 transition-colors">
                     Editar Pedido
                   </button>
                   <button className="h-9 px-4 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-lg text-sm border border-green-500/20 transition-colors">

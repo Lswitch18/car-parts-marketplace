@@ -64,39 +64,39 @@ export default function ColetasPage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <div><h2 className="text-2xl font-bold">Coletas</h2><p className="text-sm text-gray-400 mt-1">{total} coletas agendadas</p></div>
-        <button onClick={openCreate} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 text-sm"><Plus size={16} /> Nova Coleta</button>
+        <div><h2 className="text-2xl font-bold">Coletas</h2><p className="text-sm text-text-secondary mt-1">{total} coletas agendadas</p></div>
+        <button onClick={openCreate} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium flex items-center gap-2 text-sm"><Plus size={16} /> Nova Coleta</button>
       </div>
 
-      <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead><tr className="border-b border-white/5">
+            <thead><tr className="border-b border-border">
               {['Pedido', 'Endereço', 'Cidade', 'Contato', 'Telefone', 'Ações'].map(h => (
-                <th key={h} className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                <th key={h} className="text-left text-[12px] text-text-secondary font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
               ))}
             </tr></thead>
             <tbody>
-              {rows.length === 0 ? <tr><td colSpan={6} className="text-center py-12 text-gray-500 text-sm">Nenhuma coleta encontrada</td></tr>
+              {rows.length === 0 ? <tr><td colSpan={6} className="text-center py-12 text-text-muted text-sm">Nenhuma coleta encontrada</td></tr>
               : rows.map((row: any) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                <tr key={row.id} className="border-b border-border hover:bg-surface/[0.02] transition-colors">
                   <td className="p-4 text-sm font-mono text-blue-400">{row.pedido?.codigo || row.pedido_id?.substring(0, 8)}</td>
                   <td className="p-4 text-sm text-gray-300 max-w-xs truncate">{row.endereco || '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.cidade}{row.estado ? `/${row.estado}` : ''}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.cidade}{row.estado ? `/${row.estado}` : ''}</td>
                   <td className="p-4 text-sm text-gray-300">{row.contato || '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.telefone || '-'}</td>
-                  <td className="p-4"><button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400"><Edit3 size={14} /></button></td>
+                  <td className="p-4 text-sm text-text-secondary">{row.telefone || '-'}</td>
+                  <td className="p-4"><button onClick={() => openEdit(row)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-blue-400"><Edit3 size={14} /></button></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         {pages > 1 && (
-          <div className="flex items-center justify-between p-4 border-t border-white/5">
-            <span className="text-sm text-gray-400">Página {page} de {pages}</span>
+          <div className="flex items-center justify-between p-4 border-t border-border">
+            <span className="text-sm text-text-secondary">Página {page} de {pages}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronLeft size={16} /></button>
-              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronRight size={16} /></button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronLeft size={16} /></button>
+              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronRight size={16} /></button>
             </div>
           </div>
         )}
@@ -104,32 +104,32 @@ export default function ColetasPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={closeModal}>
-          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-white/10" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-border" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{editingId ? 'Editar Coleta' : 'Nova Coleta'}</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-white"><X size={20} /></button>
+              <button onClick={closeModal} className="text-text-secondary hover:text-white"><X size={20} /></button>
             </div>
             <div className="space-y-4">
-              <div><label className="text-sm text-gray-400 mb-1 block">Pedido</label>
-                <select value={form.pedido_id} onChange={e => setForm({ ...form, pedido_id: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+              <div><label className="text-sm text-text-secondary mb-1 block">Pedido</label>
+                <select value={form.pedido_id} onChange={e => setForm({ ...form, pedido_id: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                   <option value="">Selecione...</option>
                   {(Array.isArray(pedidos) ? pedidos : (pedidos as any)?.rows || []).map((p: any) => <option key={p.id} value={p.id}>{p.codigo}</option>)}
                 </select>
               </div>
-              <div><label className="text-sm text-gray-400 mb-1 block">Endereço</label><input value={form.endereco} onChange={e => setForm({ ...form, endereco: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+              <div><label className="text-sm text-text-secondary mb-1 block">Endereço</label><input value={form.endereco} onChange={e => setForm({ ...form, endereco: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-sm text-gray-400 mb-1 block">Cidade</label><input value={form.cidade} onChange={e => setForm({ ...form, cidade: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
-                <div><label className="text-sm text-gray-400 mb-1 block">Estado</label><input value={form.estado} onChange={e => setForm({ ...form, estado: e.target.value })} maxLength={2} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">Cidade</label><input value={form.cidade} onChange={e => setForm({ ...form, cidade: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">Estado</label><input value={form.estado} onChange={e => setForm({ ...form, estado: e.target.value })} maxLength={2} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-sm text-gray-400 mb-1 block">Contato</label><input value={form.contato} onChange={e => setForm({ ...form, contato: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
-                <div><label className="text-sm text-gray-400 mb-1 block">Telefone</label><input value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">Contato</label><input value={form.contato} onChange={e => setForm({ ...form, contato: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">Telefone</label><input value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
               </div>
-              <div><label className="text-sm text-gray-400 mb-1 block">Observação</label><textarea value={form.observacao} onChange={e => setForm({ ...form, observacao: e.target.value })} rows={2} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500 resize-none" /></div>
+              <div><label className="text-sm text-text-secondary mb-1 block">Observação</label><textarea value={form.observacao} onChange={e => setForm({ ...form, observacao: e.target.value })} rows={2} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500 resize-none" /></div>
             </div>
             <div className="flex items-center gap-3 mt-6 justify-end">
-              <button onClick={closeModal} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white">Cancelar</button>
-              <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium disabled:opacity-50">{editingId ? 'Atualizar' : 'Criar'}</button>
+              <button onClick={closeModal} className="h-10 px-4 border border-border rounded-lg text-sm text-text-secondary hover:text-white">Cancelar</button>
+              <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium disabled:opacity-50">{editingId ? 'Atualizar' : 'Criar'}</button>
             </div>
           </div>
         </div>

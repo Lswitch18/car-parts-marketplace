@@ -53,52 +53,52 @@ export default function EstoquePage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <div><h2 className="text-2xl font-bold">Estoque</h2><p className="text-sm text-gray-400 mt-1">{totalItems} unidades em {allItems.length} itens</p></div>
-        <button onClick={openCreate} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 text-sm"><Plus size={16} /> Novo Item</button>
+        <div><h2 className="text-2xl font-bold">Estoque</h2><p className="text-sm text-text-secondary mt-1">{totalItems} unidades em {allItems.length} itens</p></div>
+        <button onClick={openCreate} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium flex items-center gap-2 text-sm"><Plus size={16} /> Novo Item</button>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center bg-[#111827] rounded-lg h-10 flex-1 px-3 border border-white/5">
-          <Search size={18} className="text-gray-400 mr-2" />
+        <div className="flex items-center bg-[#111827] rounded-lg h-10 flex-1 px-3 border border-border">
+          <Search size={18} className="text-text-secondary mr-2" />
           <input type="text" placeholder="Buscar por produto ou SKU..." value={searchTerm} onChange={e => { setSearchTerm(e.target.value); setPage(1); }}
-            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
-          {searchTerm && <X size={16} className="text-gray-400 cursor-pointer" onClick={() => setSearchTerm('')} />}
+            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
+          {searchTerm && <X size={16} className="text-text-secondary cursor-pointer" onClick={() => setSearchTerm('')} />}
         </div>
         <select value={armazemFilter} onChange={e => { setArmazemFilter(e.target.value); setPage(1); }}
-          className="bg-[#111827] border border-white/5 rounded-lg h-10 px-3 text-sm text-white outline-none">
+          className="bg-[#111827] border border-border rounded-lg h-10 px-3 text-sm text-white outline-none">
           <option value="">Todos armazéns</option>
           {(armazens || []).map((a: any) => <option key={a.id} value={a.id}>{a.nome}</option>)}
         </select>
       </div>
 
-      <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead><tr className="border-b border-white/5">
+            <thead><tr className="border-b border-border">
               {['Produto', 'SKU', 'Armazém', 'Quantidade', 'Ações'].map(h => (
-                <th key={h} className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                <th key={h} className="text-left text-[12px] text-text-secondary font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
               ))}
             </tr></thead>
             <tbody>
-              {paged.length === 0 ? <tr><td colSpan={5} className="text-center py-12 text-gray-500 text-sm">Nenhum item no estoque</td></tr>
+              {paged.length === 0 ? <tr><td colSpan={5} className="text-center py-12 text-text-muted text-sm">Nenhum item no estoque</td></tr>
               : paged.map((row: any) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                <tr key={row.id} className="border-b border-border hover:bg-surface/[0.02] transition-colors">
                   <td className="p-4 text-sm text-white">{row.produto}</td>
-                  <td className="p-4 text-sm font-mono text-gray-400">{row.sku || '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.armazem?.nome || row.armazem_id?.substring(0, 8) || '-'}</td>
+                  <td className="p-4 text-sm font-mono text-text-secondary">{row.sku || '-'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.armazem?.nome || row.armazem_id?.substring(0, 8) || '-'}</td>
                   <td className="p-4"><span className={`text-sm font-mono ${(row.quantidade || 0) > 10 ? 'text-green-400' : (row.quantidade || 0) > 0 ? 'text-yellow-400' : 'text-red-400'}`}>{row.quantidade || 0}</span></td>
-                  <td className="p-4"><button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400"><Edit3 size={14} /></button></td>
+                  <td className="p-4"><button onClick={() => openEdit(row)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-blue-400"><Edit3 size={14} /></button></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         {totalPages > 1 && (
-          <div className="flex items-center justify-between p-4 border-t border-white/5">
-            <span className="text-sm text-gray-400">Página {page} de {totalPages}</span>
+          <div className="flex items-center justify-between p-4 border-t border-border">
+            <span className="text-sm text-text-secondary">Página {page} de {totalPages}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronLeft size={16} /></button>
-              <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronRight size={16} /></button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronLeft size={16} /></button>
+              <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronRight size={16} /></button>
             </div>
           </div>
         )}
@@ -106,27 +106,27 @@ export default function EstoquePage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={closeModal}>
-          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-white/10" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-border" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{editingId ? 'Editar Item' : 'Novo Item'}</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-white"><X size={20} /></button>
+              <button onClick={closeModal} className="text-text-secondary hover:text-white"><X size={20} /></button>
             </div>
             <div className="space-y-4">
-              <div><label className="text-sm text-gray-400 mb-1 block">Produto</label><input value={form.produto} onChange={e => setForm({ ...form, produto: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+              <div><label className="text-sm text-text-secondary mb-1 block">Produto</label><input value={form.produto} onChange={e => setForm({ ...form, produto: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-sm text-gray-400 mb-1 block">SKU</label><input value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
-                <div><label className="text-sm text-gray-400 mb-1 block">Quantidade</label><input type="number" value={form.quantidade} onChange={e => setForm({ ...form, quantidade: Number(e.target.value) })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">SKU</label><input value={form.sku} onChange={e => setForm({ ...form, sku: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
+                <div><label className="text-sm text-text-secondary mb-1 block">Quantidade</label><input type="number" value={form.quantidade} onChange={e => setForm({ ...form, quantidade: Number(e.target.value) })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" /></div>
               </div>
-              <div><label className="text-sm text-gray-400 mb-1 block">Armazém</label>
-                <select value={form.armazem_id} onChange={e => setForm({ ...form, armazem_id: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+              <div><label className="text-sm text-text-secondary mb-1 block">Armazém</label>
+                <select value={form.armazem_id} onChange={e => setForm({ ...form, armazem_id: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                   <option value="">Selecione...</option>
                   {(armazens || []).map((a: any) => <option key={a.id} value={a.id}>{a.nome}</option>)}
                 </select>
               </div>
             </div>
             <div className="flex items-center gap-3 mt-6 justify-end">
-              <button onClick={closeModal} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white">Cancelar</button>
-              <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium disabled:opacity-50">{editingId ? 'Atualizar' : 'Criar'}</button>
+              <button onClick={closeModal} className="h-10 px-4 border border-border rounded-lg text-sm text-text-secondary hover:text-white">Cancelar</button>
+              <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium disabled:opacity-50">{editingId ? 'Atualizar' : 'Criar'}</button>
             </div>
           </div>
         </div>

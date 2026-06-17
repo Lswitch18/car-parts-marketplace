@@ -512,11 +512,11 @@ export default function B2BPage() {
   };
 
   return (
-    <div className="space-y-6 p-6 bg-white min-h-screen text-black relative">
+    <div className="space-y-6 p-6 bg-surface min-h-screen text-text relative">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-black uppercase tracking-tight">Integração B2B & Transportadoras</h2>
-          <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mt-1">
+          <p className="text-sm text-text-muted font-bold uppercase tracking-wider mt-1">
             Gerencie chaves de API externas, webhooks e credenciais de operadoras logísticas japonesas
           </p>
         </div>
@@ -531,7 +531,7 @@ export default function B2BPage() {
       </div>
 
       {/* Tabs Menu */}
-      <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+      <div className="flex flex-wrap gap-2 border-b border-border pb-3">
         {[
           { id: 'keys', label: 'Chaves API B2B', icon: Key },
           { id: 'contracts', label: 'Contratos Jurídicos', icon: FileText },
@@ -545,7 +545,7 @@ export default function B2BPage() {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all border-2 ${
               activeTab === t.id
                 ? 'bg-black text-white border-black'
-                : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                : 'bg-background text-slate-600 border-border hover:bg-background'
             }`}
           >
             <t.icon size={14} />
@@ -558,17 +558,17 @@ export default function B2BPage() {
       {activeTab === 'keys' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-slate-50 border-2 border-black rounded-xl p-5">
+            <div className="bg-background border-2 border-black rounded-xl p-5">
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4">Parceiros Integrados</h3>
-              {loading && <p className="text-xs text-slate-500 font-bold">Carregando...</p>}
+              {loading && <p className="text-xs text-text-muted font-bold">Carregando...</p>}
               {!loading && keys.length === 0 && (
-                <p className="text-xs text-slate-500 py-4 font-bold uppercase">Nenhum parceiro B2B cadastrado.</p>
+                <p className="text-xs text-text-muted py-4 font-bold uppercase">Nenhum parceiro B2B cadastrado.</p>
               )}
               <div className="space-y-3">
                 {keys.map(k => {
                   const whName = armazens.find(a => a.id === k.partner_warehouse_id)?.nome;
                   return (
-                    <div key={k.id} className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between shadow-xs">
+                    <div key={k.id} className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between shadow-xs">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-black uppercase">{k.partner_name}</span>
@@ -576,8 +576,8 @@ export default function B2BPage() {
                             {k.is_active ? 'Ativo' : 'Inativo'}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 font-bold mt-0.5">{k.partner_email}</p>
-                        <p className="text-[10px] text-slate-400 font-mono mt-1">Prefixo Key: {k.api_key_prefix}*********</p>
+                        <p className="text-xs text-text-muted font-bold mt-0.5">{k.partner_email}</p>
+                        <p className="text-[10px] text-text-secondary font-mono mt-1">Prefixo Key: {k.api_key_prefix}*********</p>
                         {(k.partner_carrier || k.partner_warehouse_id) && (
                           <div className="flex gap-2 mt-2">
                             {k.partner_carrier && (
@@ -594,10 +594,10 @@ export default function B2BPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => toggleKeyStatus(k.id, k.is_active)} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                          {k.is_active ? <ToggleRight size={20} className="text-slate-800" /> : <ToggleLeft size={20} className="text-slate-400" />}
+                        <button onClick={() => toggleKeyStatus(k.id, k.is_active)} className="p-2 hover:bg-background rounded-lg transition-colors">
+                          {k.is_active ? <ToggleRight size={20} className="text-slate-800" /> : <ToggleLeft size={20} className="text-text-secondary" />}
                         </button>
-                        <button onClick={() => handleDeleteKey(k.id)} className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-red-600">
+                        <button onClick={() => handleDeleteKey(k.id)} className="p-2 hover:bg-background rounded-lg transition-colors text-red-600">
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -609,36 +609,36 @@ export default function B2BPage() {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white border-2 border-black rounded-xl p-5">
+            <div className="bg-surface border-2 border-black rounded-xl p-5">
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4">Gerar Chave de Parceiro</h3>
               <form onSubmit={handleGenerateKey} className="space-y-3">
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Nome do Parceiro (Ex: Toyota WMS)</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Nome do Parceiro (Ex: Toyota WMS)</label>
                   <input
                     type="text" required value={partnerName} onChange={e => setPartnerName(e.target.value)}
-                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none focus:bg-slate-50"
+                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none focus:bg-background"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">E-mail do Administrador</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">E-mail do Administrador</label>
                   <input
                     type="email" required value={partnerEmail} onChange={e => setPartnerEmail(e.target.value)}
-                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none focus:bg-slate-50"
+                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none focus:bg-background"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Limitar por Transportadora (Opcional)</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Limitar por Transportadora (Opcional)</label>
                   <input
                     type="text" value={partnerCarrier} onChange={e => setPartnerCarrier(e.target.value)}
                     placeholder="Ex: Yamato Transport"
-                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none focus:bg-slate-50"
+                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none focus:bg-background"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Limitar por Centro de Distribuição (Opcional)</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Limitar por Centro de Distribuição (Opcional)</label>
                   <select
                     value={partnerWarehouseId} onChange={e => setPartnerWarehouseId(e.target.value)}
-                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none bg-white"
+                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none bg-surface"
                   >
                     <option value="">Acesso total (Todos os CDs)</option>
                     {armazens.map(a => (
@@ -658,7 +658,7 @@ export default function B2BPage() {
                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-xs">
                   <p className="font-black text-yellow-800 uppercase mb-1">⚠️ ATENÇÃO: Copie a chave abaixo agora</p>
                   <p className="text-[10px] text-yellow-700 font-bold mb-2">Por segurança, ela não será exibida novamente.</p>
-                  <div className="p-2 bg-white border border-yellow-200 rounded font-mono break-all text-xs font-bold flex items-center justify-between">
+                  <div className="p-2 bg-surface border border-yellow-200 rounded font-mono break-all text-xs font-bold flex items-center justify-between">
                     <span>{generatedKey}</span>
                   </div>
                 </div>
@@ -670,16 +670,16 @@ export default function B2BPage() {
 
       {/* Contracts / Jurídico Tab */}
       {activeTab === 'contracts' && (
-        <div className="bg-slate-50 border-2 border-black rounded-xl p-5">
+        <div className="bg-background border-2 border-black rounded-xl p-5">
           <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4">Contratos Jurídicos Logistix</h3>
-          {loading && <p className="text-xs text-slate-500 font-bold">Carregando...</p>}
+          {loading && <p className="text-xs text-text-muted font-bold">Carregando...</p>}
           {!loading && contracts.length === 0 && (
-            <p className="text-xs text-slate-500 py-4 font-bold uppercase">Nenhum contrato gerado.</p>
+            <p className="text-xs text-text-muted py-4 font-bold uppercase">Nenhum contrato gerado.</p>
           )}
 
           <div className="space-y-4">
             {contracts.map(c => (
-              <div key={c.id} className="bg-white border-2 border-black rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between shadow-xs gap-4">
+              <div key={c.id} className="bg-surface border-2 border-black rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between shadow-xs gap-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-black uppercase tracking-widest">{c.contract_number}</span>
@@ -692,15 +692,15 @@ export default function B2BPage() {
                     </span>
                   </div>
                   <p className="text-xs text-slate-700 font-bold mt-1">Parceiro: {c.partner_name} ({c.partner_email})</p>
-                  <p className="text-xs text-slate-500 font-bold mt-0.5">Serviços: {c.service_type.replace(/,/g, ', ')}</p>
-                  <p className="text-xs text-slate-500 mt-1 font-mono">Valor: ¥ {c.contract_value.toLocaleString()} / {c.periodicity}</p>
+                  <p className="text-xs text-text-muted font-bold mt-0.5">Serviços: {c.service_type.replace(/,/g, ', ')}</p>
+                  <p className="text-xs text-text-muted mt-1 font-mono">Valor: ¥ {c.contract_value.toLocaleString()} / {c.periodicity}</p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
                   {c.status === 'pending_signature' && (
                     <button
                       onClick={() => handleSimulateSignature(c.id)}
-                      className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white rounded text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
+                      className="h-9 px-3 bg-primary hover:bg-primary-dark text-white rounded text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
                     >
                       <Mail size={12} /> Assinar p/ Email
                     </button>
@@ -718,7 +718,7 @@ export default function B2BPage() {
                   <a
                     href={c.pdf_path || `file:///home/lswitch/car-parts-marketplce/artifacts/contrato-yamato.pdf`}
                     target="_blank"
-                    className="h-9 px-3 border border-black hover:bg-slate-50 rounded text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
+                    className="h-9 px-3 border border-black hover:bg-background rounded text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
                   >
                     {c.language && (
                       <span className="px-1.5 py-0.5 bg-black text-white text-[8px] font-bold rounded mr-1">
@@ -738,14 +738,14 @@ export default function B2BPage() {
       {activeTab === 'webhooks' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">
-            <div className="bg-slate-50 border-2 border-black rounded-xl p-5">
+            <div className="bg-background border-2 border-black rounded-xl p-5">
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4">Endpoints de Webhook Ativos</h3>
               {webhooks.length === 0 && (
-                <p className="text-xs text-slate-500 py-4 font-bold uppercase">Nenhum webhook registrado.</p>
+                <p className="text-xs text-text-muted py-4 font-bold uppercase">Nenhum webhook registrado.</p>
               )}
               <div className="space-y-3">
                 {webhooks.map(w => (
-                  <div key={w.id} className="bg-white border border-slate-200 rounded-lg p-4 flex items-center justify-between shadow-xs">
+                  <div key={w.id} className="bg-surface border border-border rounded-lg p-4 flex items-center justify-between shadow-xs">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-mono font-bold break-all">{w.webhook_url}</span>
@@ -755,17 +755,17 @@ export default function B2BPage() {
                       </div>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {w.events.map(ev => (
-                          <span key={ev} className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-600 rounded text-[9px] font-bold">
+                          <span key={ev} className="px-2 py-0.5 bg-background border border-border text-slate-600 rounded text-[9px] font-bold">
                             {ev}
                           </span>
                         ))}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button onClick={() => toggleWebhookStatus(w.id, w.is_active)} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                        {w.is_active ? <ToggleRight size={20} className="text-slate-800" /> : <ToggleLeft size={20} className="text-slate-400" />}
+                      <button onClick={() => toggleWebhookStatus(w.id, w.is_active)} className="p-2 hover:bg-background rounded-lg transition-colors">
+                        {w.is_active ? <ToggleRight size={20} className="text-slate-800" /> : <ToggleLeft size={20} className="text-text-secondary" />}
                       </button>
-                      <button onClick={() => handleDeleteWebhook(w.id)} className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-red-600">
+                      <button onClick={() => handleDeleteWebhook(w.id)} className="p-2 hover:bg-background rounded-lg transition-colors text-red-600">
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -776,14 +776,14 @@ export default function B2BPage() {
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white border-2 border-black rounded-xl p-5">
+            <div className="bg-surface border-2 border-black rounded-xl p-5">
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 mb-4">Registrar Novo Webhook</h3>
               <form onSubmit={handleCreateWebhook} className="space-y-3">
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Chave do Parceiro</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Chave do Parceiro</label>
                   <select
                     value={selectedApiKeyId} onChange={e => setSelectedApiKeyId(e.target.value)}
-                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none bg-white"
+                    className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none bg-surface"
                   >
                     <option value="">Selecione...</option>
                     {keys.map(k => (
@@ -792,7 +792,7 @@ export default function B2BPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">URL de Destino</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">URL de Destino</label>
                   <input
                     type="url" required value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)}
                     placeholder="https://seu-sistema.com/webhook"
@@ -800,7 +800,7 @@ export default function B2BPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Eventos Inscritos</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Eventos Inscritos</label>
                   <div className="space-y-2 mt-2">
                     {['orders.updated', 'inventory.updated', 'shipments.delivered'].map(ev => (
                       <label key={ev} className="flex items-center gap-2 text-xs font-bold cursor-pointer">
@@ -835,10 +835,10 @@ export default function B2BPage() {
 
       {/* Traffic Logs Tab */}
       {activeTab === 'logs' && (
-        <div className="bg-slate-50 border-2 border-black rounded-xl p-5">
+        <div className="bg-background border-2 border-black rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-black uppercase tracking-widest text-slate-800">Histórico de Requisições da API</h3>
-            <button onClick={fetchLogs} className="flex items-center gap-1.5 h-8 px-3 border border-slate-300 hover:bg-slate-100 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors">
+            <button onClick={fetchLogs} className="flex items-center gap-1.5 h-8 px-3 border border-slate-300 hover:bg-background rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors">
               <RefreshCw size={12} /> Atualizar Logs
             </button>
           </div>
@@ -847,17 +847,17 @@ export default function B2BPage() {
             <table className="w-full text-left divide-y divide-slate-200">
               <thead>
                 <tr>
-                  <th className="pb-3 text-xs font-black uppercase text-slate-500">Parceiro</th>
-                  <th className="pb-3 text-xs font-black uppercase text-slate-500">Método/Endpoint</th>
-                  <th className="pb-3 text-xs font-black uppercase text-slate-500">Status</th>
-                  <th className="pb-3 text-xs font-black uppercase text-slate-500">Tempo de Resposta</th>
-                  <th className="pb-3 text-xs font-black uppercase text-slate-500">IP de Origem</th>
-                  <th className="pb-3 text-xs font-black uppercase text-slate-500">Data</th>
+                  <th className="pb-3 text-xs font-black uppercase text-text-muted">Parceiro</th>
+                  <th className="pb-3 text-xs font-black uppercase text-text-muted">Método/Endpoint</th>
+                  <th className="pb-3 text-xs font-black uppercase text-text-muted">Status</th>
+                  <th className="pb-3 text-xs font-black uppercase text-text-muted">Tempo de Resposta</th>
+                  <th className="pb-3 text-xs font-black uppercase text-text-muted">IP de Origem</th>
+                  <th className="pb-3 text-xs font-black uppercase text-text-muted">Data</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs">
                 {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-100 transition-colors">
+                  <tr key={log.id} className="hover:bg-background transition-colors">
                     <td className="py-3 font-bold">{log.api_key?.partner_name || 'Autenticação pública'}</td>
                     <td className="py-3">
                       <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-black uppercase mr-2 ${
@@ -877,15 +877,15 @@ export default function B2BPage() {
                       </span>
                     </td>
                     <td className="py-3 font-mono font-bold text-slate-600">{log.response_time_ms} ms</td>
-                    <td className="py-3 font-mono text-slate-500">{log.ip_address}</td>
-                    <td className="py-3 text-slate-400 font-bold">
+                    <td className="py-3 font-mono text-text-muted">{log.ip_address}</td>
+                    <td className="py-3 text-text-secondary font-bold">
                       {new Date(log.created_at).toLocaleString('pt-BR')}
                     </td>
                   </tr>
                 ))}
                 {logs.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="text-center py-8 text-slate-400 font-bold uppercase">Nenhum log registrado nas últimas 24h.</td>
+                    <td colSpan={6} className="text-center py-8 text-text-secondary font-bold uppercase">Nenhum log registrado nas últimas 24h.</td>
                   </tr>
                 )}
               </tbody>
@@ -899,19 +899,19 @@ export default function B2BPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
           {/* YAMATO TRANSPORT SETTINGS */}
-          <div className="bg-slate-50 border-2 border-black rounded-xl p-5 flex flex-col justify-between">
+          <div className="bg-background border-2 border-black rounded-xl p-5 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-3 mb-4 border-b border-border pb-2">
                 <span className="text-lg">🐈⬛</span>
                 <div>
                   <h3 className="text-sm font-black uppercase tracking-wider">Yamato Transport (ヤマト運輸)</h3>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase">Integração nativa B2 Cloud API</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase">Integração nativa B2 Cloud API</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">API Endpoint Url</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">API Endpoint Url</label>
                   <input
                     type="text" value={yamatoConfig.endpoint} 
                     onChange={e => setYamatoConfig({...yamatoConfig, endpoint: e.target.value})}
@@ -920,7 +920,7 @@ export default function B2BPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Client ID</label>
+                    <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Client ID</label>
                     <input
                       type="text" value={yamatoConfig.clientId} 
                       onChange={e => setYamatoConfig({...yamatoConfig, clientId: e.target.value})}
@@ -929,7 +929,7 @@ export default function B2BPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Client Secret</label>
+                    <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Client Secret</label>
                     <input
                       type="password" value={yamatoConfig.clientSecret} 
                       onChange={e => setYamatoConfig({...yamatoConfig, clientSecret: e.target.value})}
@@ -939,7 +939,7 @@ export default function B2BPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Customer Contract Code (顧客コード)</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Customer Contract Code (顧客コード)</label>
                   <input
                     type="text" value={yamatoConfig.customerCode} 
                     onChange={e => setYamatoConfig({...yamatoConfig, customerCode: e.target.value})}
@@ -950,10 +950,10 @@ export default function B2BPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 mt-6 pt-4 border-t border-slate-200">
+            <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
               <button 
                 onClick={() => handleSaveCarrier('yamato')}
-                className="h-10 px-4 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-black uppercase tracking-wider"
+                className="h-10 px-4 bg-slate-800 hover:bg-surface text-white rounded-lg text-xs font-black uppercase tracking-wider"
               >
                 Salvar Configurações
               </button>
@@ -968,19 +968,19 @@ export default function B2BPage() {
           </div>
 
           {/* SEINO TRANSPORTATION SETTINGS */}
-          <div className="bg-slate-50 border-2 border-black rounded-xl p-5 flex flex-col justify-between">
+          <div className="bg-background border-2 border-black rounded-xl p-5 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-4 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-3 mb-4 border-b border-border pb-2">
                 <span className="text-lg">🦘</span>
                 <div>
                   <h3 className="text-sm font-black uppercase tracking-wider">Seino Transportation (西濃運輸)</h3>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase">Integração Kangaroo Web Service API</p>
+                  <p className="text-[10px] text-text-muted font-bold uppercase">Integração Kangaroo Web Service API</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">API Endpoint Url</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">API Endpoint Url</label>
                   <input
                     type="text" value={seinoConfig.endpoint} 
                     onChange={e => setSeinoConfig({...seinoConfig, endpoint: e.target.value})}
@@ -989,7 +989,7 @@ export default function B2BPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Client ID / API Key</label>
+                    <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Client ID / API Key</label>
                     <input
                       type="text" value={seinoConfig.clientId} 
                       onChange={e => setSeinoConfig({...seinoConfig, clientId: e.target.value})}
@@ -998,7 +998,7 @@ export default function B2BPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Web Service Password</label>
+                    <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Web Service Password</label>
                     <input
                       type="password" value={seinoConfig.password} 
                       onChange={e => setSeinoConfig({...seinoConfig, password: e.target.value})}
@@ -1008,7 +1008,7 @@ export default function B2BPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Customer Contract Code (顧客コード)</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Customer Contract Code (顧客コード)</label>
                   <input
                     type="text" value={seinoConfig.customerCode} 
                     onChange={e => setSeinoConfig({...seinoConfig, customerCode: e.target.value})}
@@ -1019,10 +1019,10 @@ export default function B2BPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 mt-6 pt-4 border-t border-slate-200">
+            <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border">
               <button 
                 onClick={() => handleSaveCarrier('seino')}
-                className="h-10 px-4 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-black uppercase tracking-wider"
+                className="h-10 px-4 bg-slate-800 hover:bg-surface text-white rounded-lg text-xs font-black uppercase tracking-wider"
               >
                 Salvar Configurações
               </button>
@@ -1038,8 +1038,8 @@ export default function B2BPage() {
 
           {/* SIMULATION TEST RESULTS */}
           {(testingCarrier || testResult) && (
-            <div className="lg:col-span-2 bg-slate-900 text-white border-2 border-black rounded-xl p-5 font-mono text-xs">
-              <h4 className="text-xs font-black uppercase text-slate-400 mb-3 flex items-center gap-2">
+            <div className="lg:col-span-2 bg-surface text-white border-2 border-black rounded-xl p-5 font-mono text-xs">
+              <h4 className="text-xs font-black uppercase text-text-secondary mb-3 flex items-center gap-2">
                 <ShieldCheck size={16} className="text-green-400" /> Console de Simulação Operacional
               </h4>
 
@@ -1055,7 +1055,7 @@ export default function B2BPage() {
                   <div className="flex items-center gap-2">
                     <span className="font-bold">STATUS:</span>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
-                      testResult.status === 'success' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'
+                      testResult.status === 'success' ? 'bg-green-500 text-text' : 'bg-red-500 text-white'
                     }`}>
                       {testResult.status === 'success' ? 'CONECTADO' : 'ERRO'}
                     </span>
@@ -1065,28 +1065,28 @@ export default function B2BPage() {
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <p><span className="text-slate-400">Transportadora:</span> {testResult.carrier}</p>
-                          <p><span className="text-slate-400">Código Rastreamento:</span> <span className="font-black text-green-400">{testResult.tracking}</span></p>
-                          <p><span className="text-slate-400">Timestamp:</span> {testResult.timestamp}</p>
+                          <p><span className="text-text-secondary">Transportadora:</span> {testResult.carrier}</p>
+                          <p><span className="text-text-secondary">Código Rastreamento:</span> <span className="font-black text-green-400">{testResult.tracking}</span></p>
+                          <p><span className="text-text-secondary">Timestamp:</span> {testResult.timestamp}</p>
                         </div>
                         <div className="border border-slate-700 rounded-lg p-3 bg-slate-950 flex flex-col justify-between">
                           <div>
-                            <span className="text-[10px] font-black text-slate-400 block mb-1 uppercase">Visualização da Etiqueta de Envio</span>
+                            <span className="text-[10px] font-black text-text-secondary block mb-1 uppercase">Visualização da Etiqueta de Envio</span>
                             <div className="border-t border-dashed border-slate-700 my-1" />
                             <div className="py-2 flex items-center gap-2">
                               <FileText size={16} className="text-green-400" />
                               <div>
                                 <span className="text-xs font-black text-white block">{testResult.tracking}</span>
-                                <span className="text-[9px] text-slate-500 block">Formato ZPL gerado com sucesso</span>
+                                <span className="text-[9px] text-text-muted block">Formato ZPL gerado com sucesso</span>
                               </div>
                             </div>
                           </div>
-                          <pre className="text-[8px] text-slate-500 overflow-x-auto bg-slate-900 p-2 rounded">{testResult.labelZpl}</pre>
+                          <pre className="text-[8px] text-text-muted overflow-x-auto bg-surface p-2 rounded">{testResult.labelZpl}</pre>
                         </div>
                       </div>
 
                       <div>
-                        <span className="text-slate-400 block mb-1">Payload JSON Enviado (Simulação):</span>
+                        <span className="text-text-secondary block mb-1">Payload JSON Enviado (Simulação):</span>
                         <pre className="bg-slate-950 p-3 rounded-lg overflow-x-auto text-[10px] text-green-300 max-h-48">
                           {JSON.stringify(testResult.payloadSent, null, 2)}
                         </pre>
@@ -1105,22 +1105,22 @@ export default function B2BPage() {
       {/* CREATE CONTRACT MODAL */}
       {showContractModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
-          <div className="bg-white border-2 border-black rounded-xl max-w-lg w-full p-6 space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+          <div className="bg-surface border-2 border-black rounded-xl max-w-lg w-full p-6 space-y-4">
+            <div className="flex justify-between items-center border-b border-border pb-2">
               <h3 className="text-base font-black uppercase">Gerar Novo Contrato B2B</h3>
-              <button onClick={() => setShowContractModal(false)} className="text-slate-500 hover:text-black font-bold text-xs uppercase">Fechar</button>
+              <button onClick={() => setShowContractModal(false)} className="text-text-muted hover:text-text font-bold text-xs uppercase">Fechar</button>
             </div>
 
             <form onSubmit={handleCreateContractAndKey} className="space-y-3">
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Nome da Empresa Parceira (Ex: Yamato Transport)</label>
+                <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Nome da Empresa Parceira (Ex: Yamato Transport)</label>
                 <input
                   type="text" required value={partnerName} onChange={e => setPartnerName(e.target.value)}
                   className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">E-mail Corporativo</label>
+                <label className="text-[10px] font-black uppercase text-text-muted block mb-1">E-mail Corporativo</label>
                 <input
                   type="email" required value={partnerEmail} onChange={e => setPartnerEmail(e.target.value)}
                   className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none"
@@ -1129,17 +1129,17 @@ export default function B2BPage() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Valor (¥)</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Valor (¥)</label>
                   <input
                     type="number" required value={newContractVal} onChange={e => setNewContractVal(e.target.value)}
                     className="w-full h-10 border-2 border-black rounded-lg px-2 text-xs font-bold outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Periodicidade</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Periodicidade</label>
                   <select
                     value={contractPeriodicity} onChange={e => setContractPeriodicity(e.target.value)}
-                    className="w-full h-10 border-2 border-black rounded-lg px-2 text-xs font-bold outline-none bg-white"
+                    className="w-full h-10 border-2 border-black rounded-lg px-2 text-xs font-bold outline-none bg-surface"
                   >
                     <option value="mensal">Mensal</option>
                     <option value="anual">Anual</option>
@@ -1147,10 +1147,10 @@ export default function B2BPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Idioma</label>
+                  <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Idioma</label>
                   <select
                     value={contractLanguage} onChange={e => setContractLanguage(e.target.value)}
-                    className="w-full h-10 border-2 border-black rounded-lg px-2 text-xs font-bold outline-none bg-white"
+                    className="w-full h-10 border-2 border-black rounded-lg px-2 text-xs font-bold outline-none bg-surface"
                   >
                     <option value="pt">Português</option>
                     <option value="en">English</option>
@@ -1160,7 +1160,7 @@ export default function B2BPage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Restrição por Transportadora (Opcional)</label>
+                <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Restrição por Transportadora (Opcional)</label>
                 <input
                   type="text" value={partnerCarrier} onChange={e => setPartnerCarrier(e.target.value)}
                   placeholder="Ex: Yamato Transport"
@@ -1169,10 +1169,10 @@ export default function B2BPage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Restrição por CD (Opcional)</label>
+                <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Restrição por CD (Opcional)</label>
                 <select
                   value={partnerWarehouseId} onChange={e => setPartnerWarehouseId(e.target.value)}
-                  className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none bg-white"
+                  className="w-full h-10 border-2 border-black rounded-lg px-3 text-xs font-bold outline-none bg-surface"
                 >
                   <option value="">Todos os Centros de Distribuição</option>
                   {armazens.map(a => (
@@ -1182,7 +1182,7 @@ export default function B2BPage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-500 block mb-1">Serviços Habilitados</label>
+                <label className="text-[10px] font-black uppercase text-text-muted block mb-1">Serviços Habilitados</label>
                 <div className="space-y-2 mt-1">
                   {[
                     { id: 'b2b_logistix', label: 'B2B Logistix API (Pedidos/Inventário)' },

@@ -123,46 +123,46 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Pedidos</h2>
-          <p className="text-sm text-gray-400 mt-1">{total} pedidos no total</p>
+          <p className="text-sm text-text-secondary mt-1">{total} pedidos no total</p>
         </div>
-        <button onClick={openCreate} className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium flex items-center gap-2 transition-colors text-sm">
+        <button onClick={openCreate} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium flex items-center gap-2 transition-colors text-sm">
           <Plus size={16} /> Novo Pedido
         </button>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center bg-[#111827] rounded-lg h-10 flex-1 px-3 border border-white/5">
-          <Search size={18} className="text-gray-400 mr-2" />
+        <div className="flex items-center bg-[#111827] rounded-lg h-10 flex-1 px-3 border border-border">
+          <Search size={18} className="text-text-secondary mr-2" />
           <input type="text" placeholder="Buscar por código..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-gray-500" />
-          {search && <X size={16} className="text-gray-400 cursor-pointer" onClick={() => setSearch('')} />}
+            className="bg-transparent border-none outline-none text-white text-sm w-full placeholder:text-text-muted" />
+          {search && <X size={16} className="text-text-secondary cursor-pointer" onClick={() => setSearch('')} />}
         </div>
         <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
-          className="bg-[#111827] border border-white/5 rounded-lg h-10 px-3 text-sm text-white outline-none">
+          className="bg-[#111827] border border-border rounded-lg h-10 px-3 text-sm text-white outline-none">
           <option value="">Todos os status</option>
           {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
         </select>
       </div>
 
-      <div className="bg-[#111827] rounded-xl border border-white/5 overflow-hidden">
+      <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-border">
                 {['Código', 'Cliente', 'Origem', 'Destino', 'Status', 'Peso', 'Valor', 'Previsão', 'Ações'].map(h => (
-                  <th key={h} className="text-left text-[12px] text-gray-400 font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left text-[12px] text-text-secondary font-medium p-4 uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={9} className="text-center py-12 text-gray-500 text-sm">Nenhum pedido encontrado</td></tr>
+                <tr><td colSpan={9} className="text-center py-12 text-text-muted text-sm">Nenhum pedido encontrado</td></tr>
               ) : rows.map((row: any) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                <tr key={row.id} className="border-b border-border hover:bg-surface/[0.02] transition-colors">
                   <td className="p-4 text-sm font-mono text-blue-400 whitespace-nowrap">{row.codigo}</td>
                   <td className="p-4 text-sm text-gray-300">{row.cliente?.nome || row.cliente_id?.substring(0, 8) || '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.armazem?.nome || '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.destino_cidade}{row.destino_estado ? ` - ${row.destino_estado}` : ''}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.armazem?.nome || '-'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.destino_cidade}{row.destino_estado ? ` - ${row.destino_estado}` : ''}</td>
                   <td className="p-4">
                     <span className="inline-flex px-2.5 py-1 rounded text-[11px] font-medium" style={{
                       color: STATUS_COLOR[row.status] || '#6B7280',
@@ -170,16 +170,16 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
                       border: `1px solid ${STATUS_COLOR[row.status] || '#6B7280'}33`,
                     }}>{row.status?.replace('_', ' ')}</span>
                   </td>
-                  <td className="p-4 text-sm text-gray-400">{row.peso_kg ? `${row.peso_kg}kg` : '-'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.peso_kg ? `${row.peso_kg}kg` : '-'}</td>
                   <td className="p-4 text-sm text-green-400 font-mono">{row.valor ? `¥ ${Number(row.valor).toLocaleString('ja-JP')}` : '-'}</td>
-                  <td className="p-4 text-sm text-gray-400">{row.previsao ? new Date(row.previsao).toLocaleDateString('pt-BR') : '-'}</td>
+                  <td className="p-4 text-sm text-text-secondary">{row.previsao ? new Date(row.previsao).toLocaleDateString('pt-BR') : '-'}</td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-blue-400 transition-colors" title="Editar"><Edit3 size={14} /></button>
+                      <button onClick={() => openEdit(row)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-blue-400 transition-colors" title="Editar"><Edit3 size={14} /></button>
                       <button onClick={() => onTrack ? onTrack(row.codigo) : window.open(`/admin/logistix/rastreamento?codigo=${row.codigo}`, '_blank')}
-                        className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-green-400 transition-colors" title="Rastrear"><MapPin size={14} /></button>
-                      <button onClick={() => handlePrintLabel(row)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-yellow-400 transition-colors" title="Imprimir Etiqueta"><Printer size={14} /></button>
-                      <button onClick={() => setShowDelete(row.id)} className="p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-red-400 transition-colors" title="Excluir"><Trash2 size={14} /></button>
+                        className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-green-400 transition-colors" title="Rastrear"><MapPin size={14} /></button>
+                      <button onClick={() => handlePrintLabel(row)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-yellow-400 transition-colors" title="Imprimir Etiqueta"><Printer size={14} /></button>
+                      <button onClick={() => setShowDelete(row.id)} className="p-1.5 hover:bg-surface/5 rounded-lg text-text-secondary hover:text-red-400 transition-colors" title="Excluir"><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
@@ -188,11 +188,11 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
           </table>
         </div>
         {pages > 1 && (
-          <div className="flex items-center justify-between p-4 border-t border-white/5">
-            <span className="text-sm text-gray-400">Página {page} de {pages}</span>
+          <div className="flex items-center justify-between p-4 border-t border-border">
+            <span className="text-sm text-text-secondary">Página {page} de {pages}</span>
             <div className="flex items-center gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronLeft size={16} /></button>
-              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-white/5 rounded-lg disabled:opacity-30 text-gray-400"><ChevronRight size={16} /></button>
+              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronLeft size={16} /></button>
+              <button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="p-2 hover:bg-surface/5 rounded-lg disabled:opacity-30 text-text-secondary"><ChevronRight size={16} /></button>
             </div>
           </div>
         )}
@@ -200,20 +200,20 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={closeModal}>
-          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-white/10" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-lg mx-4 border border-border" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold">{editingId ? 'Editar Pedido' : 'Novo Pedido'}</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-white"><X size={20} /></button>
+              <button onClick={closeModal} className="text-text-secondary hover:text-white"><X size={20} /></button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Código</label>
-                <input value={form.codigo} onChange={e => setForm({ ...form, codigo: e.target.value })} placeholder="#PED-..." className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                <label className="text-sm text-text-secondary mb-1 block">Código</label>
+                <input value={form.codigo} onChange={e => setForm({ ...form, codigo: e.target.value })} placeholder="#PED-..." className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Cliente</label>
-                  <select value={form.cliente_id} onChange={e => setForm({ ...form, cliente_id: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  <label className="text-sm text-text-secondary mb-1 block">Cliente</label>
+                  <select value={form.cliente_id} onChange={e => setForm({ ...form, cliente_id: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione...</option>
                     {(Array.isArray(clientes) ? clientes : (clientes as any)?.rows || []).map((c: any) => (
                       <option key={c.id} value={c.id}>{c.nome}</option>
@@ -221,8 +221,8 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Armazém Origem</label>
-                  <select value={form.armazem_origem_id} onChange={e => setForm({ ...form, armazem_origem_id: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  <label className="text-sm text-text-secondary mb-1 block">Armazém Origem</label>
+                  <select value={form.armazem_origem_id} onChange={e => setForm({ ...form, armazem_origem_id: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     <option value="">Selecione...</option>
                     {(armazens || []).map((a: any) => (
                       <option key={a.id} value={a.id}>{a.nome}</option>
@@ -232,39 +232,39 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Cidade Destino</label>
-                  <input value={form.destino_cidade} onChange={e => setForm({ ...form, destino_cidade: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                  <label className="text-sm text-text-secondary mb-1 block">Cidade Destino</label>
+                  <input value={form.destino_cidade} onChange={e => setForm({ ...form, destino_cidade: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Estado</label>
-                  <input value={form.destino_estado} onChange={e => setForm({ ...form, destino_estado: e.target.value })} maxLength={2} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                  <label className="text-sm text-text-secondary mb-1 block">Estado</label>
+                  <input value={form.destino_estado} onChange={e => setForm({ ...form, destino_estado: e.target.value })} maxLength={2} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Peso (kg)</label>
-                  <input type="number" value={form.peso_kg} onChange={e => setForm({ ...form, peso_kg: Number(e.target.value) })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                  <label className="text-sm text-text-secondary mb-1 block">Peso (kg)</label>
+                  <input type="number" value={form.peso_kg} onChange={e => setForm({ ...form, peso_kg: Number(e.target.value) })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Valor (¥)</label>
-                  <input type="number" value={form.valor} onChange={e => setForm({ ...form, valor: Number(e.target.value) })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                  <label className="text-sm text-text-secondary mb-1 block">Valor (¥)</label>
+                  <input type="number" value={form.valor} onChange={e => setForm({ ...form, valor: Number(e.target.value) })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 mb-1 block">Status</label>
-                  <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
+                  <label className="text-sm text-text-secondary mb-1 block">Status</label>
+                  <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500">
                     {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-sm text-gray-400 mb-1 block">Previsão de Entrega</label>
-                <input type="date" value={form.previsao} onChange={e => setForm({ ...form, previsao: e.target.value })} className="w-full bg-[#111827] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
+                <label className="text-sm text-text-secondary mb-1 block">Previsão de Entrega</label>
+                <input type="date" value={form.previsao} onChange={e => setForm({ ...form, previsao: e.target.value })} className="w-full bg-[#111827] border border-border rounded-lg px-4 py-2.5 text-sm text-white outline-none focus:border-blue-500" />
               </div>
             </div>
             <div className="flex items-center gap-3 mt-6 justify-end">
-              <button onClick={closeModal} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white">Cancelar</button>
+              <button onClick={closeModal} className="h-10 px-4 border border-border rounded-lg text-sm text-text-secondary hover:text-white">Cancelar</button>
               <button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending}
-                className="h-10 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center gap-2 disabled:opacity-50">
+                className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium flex items-center gap-2 disabled:opacity-50">
                 {(createMutation.isPending || updateMutation.isPending) && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                 {editingId ? 'Atualizar' : 'Criar Pedido'}
               </button>
@@ -275,11 +275,11 @@ export default function PedidosPage({ onTrack }: { onTrack?: (codigo: string) =>
 
       {showDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setShowDelete(null)}>
-          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-sm mx-4 border border-white/10" onClick={e => e.stopPropagation()}>
+          <div className="bg-[#1F2937] rounded-xl p-6 w-full max-w-sm mx-4 border border-border" onClick={e => e.stopPropagation()}>
             <h3 className="text-lg font-bold mb-2">Confirmar exclusão</h3>
-            <p className="text-sm text-gray-400 mb-6">Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.</p>
+            <p className="text-sm text-text-secondary mb-6">Tem certeza que deseja excluir este pedido? Esta ação não pode ser desfeita.</p>
             <div className="flex items-center gap-3 justify-end">
-              <button onClick={() => setShowDelete(null)} className="h-10 px-4 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white">Cancelar</button>
+              <button onClick={() => setShowDelete(null)} className="h-10 px-4 border border-border rounded-lg text-sm text-text-secondary hover:text-white">Cancelar</button>
               <button onClick={() => deleteMutation.mutate(showDelete)} disabled={deleteMutation.isPending}
                 className="h-10 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium disabled:opacity-50">
                 {deleteMutation.isPending ? 'Excluindo...' : 'Excluir'}
