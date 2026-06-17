@@ -340,6 +340,42 @@ export default function B2BPage() {
     }
   };
 
+  const handleStripePayment = async (contractId: string) => {
+    setLoading(true);
+    try {
+      const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout/create-contract-subscription`;
+      const res = await fetch(functionUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contract_id: contractId })
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        if (data.demo_mode) {
+          alert('Modo Demo Ativo: Redirecionando para o ambiente simulado.');
+        }
+        window.location.href = data.url;
+      } else {
+        alert('Erro ao iniciar checkout: ' + (data.error || 'Erro desconhecido'));
+      }
+    } catch (err) {
+      console.error('Erro de requisição Stripe:', err);
+      alert('Erro de conexão ao iniciar checkout.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const payment = params.get('payment');
+    const contractId = params.get('contract_id');
+    if (payment === 'success' && contractId) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      handleSimulatePayment(contractId);
+    }
+  }, []);
+
   const toggleKeyStatus = async (id: string, currentStatus: boolean) => {
     try {
       const { error } = await supabase
@@ -672,7 +708,7 @@ export default function B2BPage() {
 
                   {c.status === 'signed' && (
                     <button
-                      onClick={() => handleSimulatePayment(c.id)}
+                      onClick={() => handleStripePayment(c.id)}
                       className="h-9 px-3 bg-green-500 hover:bg-green-600 text-white rounded text-[10px] font-black uppercase tracking-widest flex items-center gap-1"
                     >
                       <DollarSign size={12} /> Confirmar Pagamento (Liberar B2B)

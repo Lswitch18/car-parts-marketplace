@@ -126,7 +126,22 @@ async function notifyBuyerAndSeller(tx: any) {
 }
 
 async function handleCheckoutCompleted(session: any) {
-  const { transaction_id, part_id, buyer_id, seller_id, auction_id } = session.metadata || {};
+  const { transaction_id, part_id, buyer_id, seller_id, auction_id, contract_id } = session.metadata || {};
+
+  if (contract_id) {
+    const { error: contractErr } = await supabase
+      .from('legal_contracts')
+      .update({
+        status: 'active',
+        paid_at: new Date().toISOString()
+      })
+      .eq('id', contract_id);
+    if (contractErr) {
+      console.error(`[Webhook] Error activating contract ${contract_id}:`, contractErr);
+    } else {
+      console.log(`[Webhook] Contract ${contract_id} activated via Stripe`);
+    }
+  }
 
   if (transaction_id) {
       await supabase

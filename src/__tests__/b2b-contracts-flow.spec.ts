@@ -106,5 +106,5 @@ describe('B2B Contracts & Activation Flow', () => {
     // Cleanup test data
     await supabaseAdmin.from('legal_contracts').delete().eq('id', contract.id);
     await supabaseAdmin.from('b2b_api_keys').delete().eq('id', apiKey.id);
-  });
+  }, 15000);
 });

@@ -106,17 +106,13 @@ async function deleteResource(table: string, req: Request, id: string) {
 
 async function calcularCustos(supabase: any) {
   const mesAtual = new Date().toISOString().slice(0, 7);
-  const { data: entregas } = await supabase.from('admin_entregas').select('id', { count: 'exact', head: true }).eq('status', 'entregue');
-  const { data: motoristas } = await supabase.from('admin_motoristas').select('id', { count: 'exact', head: true }).eq('ativo', true);
-  const { data: dropoffs } = await supabase.from('admin_dropoffs').select('id', { count: 'exact', head: true }).eq('status', 'recebido');
-  const { data: ativos } = await supabase.from('admin_armazens').select('id', { count: 'exact', head: true }).eq('ativo', true);
+  const { count: qtdEntregas } = await supabase.from('admin_entregas').select('id', { count: 'exact', head: true }).eq('status', 'entregue');
+  const { count: qtdMotoristas } = await supabase.from('admin_motoristas').select('id', { count: 'exact', head: true }).eq('ativo', true);
+  const { count: qtdDropoffs } = await supabase.from('admin_dropoffs').select('id', { count: 'exact', head: true }).eq('status', 'recebido');
+  const { count: qtdArmazens } = await supabase.from('admin_armazens').select('id', { count: 'exact', head: true }).eq('ativo', true);
   const { data: params } = await supabase.from('admin_custos_parametros').select('*');
 
   const p = params && params.length > 0 ? params[0] : {};
-  const qtdEntregas = entregas?.count || 0;
-  const qtdMotoristas = motoristas?.count || 0;
-  const qtdDropoffs = dropoffs?.count || 0;
-  const qtdArmazens = ativos?.count || 0;
 
   const custoEntregas = qtdEntregas * Number(p.custo_por_entrega || 25);
   const custoMotoristas = qtdMotoristas * Number(p.custo_mensal_motorista || 2500);
@@ -150,12 +146,11 @@ async function handleDashboard(req: Request, path: string) {
   if (!user) return json({ error: 'Não autorizado' }, 401);
 
   if (path === '/kpis') {
-    const { data: total } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true });
-    const { data: concluidas } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'entregue');
-    const { data: atrasos } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'atrasado');
-    const { data: cancelados } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'cancelado');
-    const { data: emTransito } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'em_transito');
-    const totalCount = total?.count || 0;
+    const { count: totalCount } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true });
+    const { count: concluidasCount } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'entregue');
+    const { count: atrasosCount } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'atrasado');
+    const { count: canceladosCount } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'cancelado');
+    const { count: emTransitoCount } = await supabase.from('admin_pedidos').select('*', { count: 'exact', head: true }).eq('status', 'em_transito');
 
     // Receita total e do mês atual
     const mesAtual = new Date().toISOString().slice(0, 7);
@@ -190,16 +185,16 @@ async function handleDashboard(req: Request, path: string) {
       custo_anual = (custoAno || []).reduce((s, r: any) => s + Number(r.custo_total || 0), 0);
     } else {
       // Fallback
-      const { data: entregas } = await supabase.from('admin_entregas').select('id', { count: 'exact', head: true }).eq('status', 'entregue');
-      const { data: motoristas } = await supabase.from('admin_motoristas').select('id', { count: 'exact', head: true }).eq('ativo', true);
-      const { data: dropoffs } = await supabase.from('admin_dropoffs').select('id', { count: 'exact', head: true }).eq('status', 'recebido');
-      const { data: ativos } = await supabase.from('admin_armazens').select('id', { count: 'exact', head: true }).eq('ativo', true);
+      const { count: entregasCount } = await supabase.from('admin_entregas').select('id', { count: 'exact', head: true }).eq('status', 'entregue');
+      const { count: motoristasCount } = await supabase.from('admin_motoristas').select('id', { count: 'exact', head: true }).eq('ativo', true);
+      const { count: dropoffsCount } = await supabase.from('admin_dropoffs').select('id', { count: 'exact', head: true }).eq('status', 'recebido');
+      const { count: ativosCount } = await supabase.from('admin_armazens').select('id', { count: 'exact', head: true }).eq('ativo', true);
       const { data: params } = await supabase.from('admin_custos_parametros').select('*');
       const p = params && params.length > 0 ? params[0] : {};
-      custo = (entregas?.count || 0) * Number(p.custo_por_entrega || 25)
-            + (motoristas?.count || 0) * Number(p.custo_mensal_motorista || 2500)
-            + (dropoffs?.count || 0) * Number(p.custo_por_dropoff || 8)
-            + (ativos?.count || 0) * Number(p.custo_fixo_mensal_armazem || 50000);
+      custo = (entregasCount || 0) * Number(p.custo_por_entrega || 25)
+            + (motoristasCount || 0) * Number(p.custo_mensal_motorista || 2500)
+            + (dropoffsCount || 0) * Number(p.custo_por_dropoff || 8)
+            + (ativosCount || 0) * Number(p.custo_fixo_mensal_armazem || 50000);
       custo_mensal = custo;
       custo_anual = custo;
     }
@@ -209,12 +204,12 @@ async function handleDashboard(req: Request, path: string) {
     const margem = receita_mensal > 0 ? ((lucro_mensal / receita_mensal) * 100).toFixed(1) : '0.0';
 
     return json({
-      total: totalCount,
-      concluidas: concluidas?.count || 0,
-      atrasos: atrasos?.count || 0,
-      cancelados: cancelados?.count || 0,
-      emTransito: emTransito?.count || 0,
-      taxa: totalCount > 0 ? ((concluidas?.count || 0) / totalCount * 100).toFixed(1) : '0.0',
+      total: totalCount || 0,
+      concluidas: concluidasCount || 0,
+      atrasos: atrasosCount || 0,
+      cancelados: canceladosCount || 0,
+      emTransito: emTransitoCount || 0,
+      taxa: totalCount > 0 ? (((concluidasCount || 0) / totalCount) * 100).toFixed(1) : '0.0',
       receita: receita.toFixed(2),
       receita_mensal: receita_mensal.toFixed(2),
       receita_anual: receita_anual.toFixed(2),

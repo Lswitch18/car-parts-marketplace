@@ -30,6 +30,10 @@ Deno.serve(async (req) => {
       return await createCheckoutSession(req);
     }
 
+    if (action === 'create-contract-subscription') {
+      return await createContractSubscription(req);
+    }
+
     if (action === 'create-connected-account') {
       return await createConnectedAccount(req);
     }
@@ -350,4 +354,116 @@ function calculateFees(amount: number, rate: number = COMMISSION_RATE) {
     platform_fee: platformFee,
     seller_net: sellerNet,
   };
+}
+
+async function createContractSubscription(req: Request) {
+  const { contract_id } = await req.json();
+
+  if (!contract_id) {
+    return new Response(JSON.stringify({ error: 'Missing contract_id' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // 1. Fetch the contract details from database
+  const { data: contract, error: contractErr } = await supabase
+    .from('legal_contracts')
+    .select('*')
+    .eq('id', contract_id)
+    .single();
+
+  if (contractErr || !contract) {
+    return new Response(JSON.stringify({ error: 'Contrato não encontrado' }), {
+      status: 404,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
+    // Demo Mode Checkout simulation URL or mock response
+    return new Response(JSON.stringify({ 
+      success: true, 
+      demo_mode: true,
+      url: `${APP_URL}/admin/logistix?payment=success&contract_id=${contract_id}` 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  try {
+    // 2. Create product in Stripe
+    const productParams = new URLSearchParams({
+      'name': `JDM Logistix WMS Partnership - ${contract.partner_name}`,
+      'description': `Contrato B2B Nº ${contract.contract_number}. Serviços: ${contract.service_type}`,
+    });
+    
+    const productRes = await fetch('https://api.stripe.com/v1/products', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: productParams.toString()
+    });
+    const productData = await productRes.json();
+    if (productData.error) throw new Error(productData.error.message);
+
+    // 3. Create price in Stripe
+    const interval = contract.periodicity === 'anual' ? 'year' : 'month';
+    const priceParams = new URLSearchParams({
+      'product': productData.id,
+      'unit_amount': String(Math.round(contract.contract_value)),
+      'currency': 'jpy',
+      'recurring[interval]': interval,
+    });
+
+    const priceRes = await fetch('https://api.stripe.com/v1/prices', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: priceParams.toString()
+    });
+    const priceData = await priceRes.json();
+    if (priceData.error) throw new Error(priceData.error.message);
+
+    // 4. Create Stripe Checkout Session in subscription mode
+    const sessionParams = new URLSearchParams({
+      'mode': 'subscription',
+      'payment_method_types[]': 'card',
+      'line_items[0][price]': priceData.id,
+      'line_items[0][quantity]': '1',
+      'success_url': `${APP_URL}/admin/logistix?payment=success&contract_id=${contract_id}`,
+      'cancel_url': `${APP_URL}/admin/logistix?payment=cancelled`,
+      'metadata[contract_id]': contract_id,
+      'metadata[contract_number]': contract.contract_number,
+      'metadata[partner_email]': contract.partner_email,
+    });
+
+    const sessionRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: sessionParams.toString(),
+    });
+    const sessionData = await sessionRes.json();
+    if (sessionData.error) throw new Error(sessionData.error.message);
+
+    return new Response(JSON.stringify({
+      success: true,
+      url: sessionData.url,
+      session_id: sessionData.id,
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
 }
