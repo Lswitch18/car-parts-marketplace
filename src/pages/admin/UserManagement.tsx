@@ -125,7 +125,10 @@ export default function UserManagement() {
         adminApi.setores.list().catch(() => []),
         adminApi.cargos.list().catch(() => []),
         adminApi.armazens.list().catch(() => []),
-        supabase.from('parts').select('id, seller_id, title, price, images, status').catch(() => ({ data: [] }))
+        supabase.from('parts').select('id, seller_id, title, price, images, status').then(
+          res => res,
+          () => ({ data: [], error: null })
+        )
       ]);
 
       const partsData = partsResult && 'data' in partsResult ? partsResult.data || [] : [];
