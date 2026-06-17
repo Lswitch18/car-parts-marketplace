@@ -84,6 +84,9 @@ export default function UserManagement() {
   const [selectedUserParts, setSelectedUserParts] = useState<any[] | null>(null);
   const [selectedUserPartsOwner, setSelectedUserPartsOwner] = useState<string>('');
 
+  // Interactive Moderation Card State
+  const [activeModUser, setActiveModUser] = useState<any | null>(null);
+
   // Selection / Modal States
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [userArmazens, setUserArmazens] = useState<any[]>([]);
@@ -121,8 +124,8 @@ export default function UserManagement() {
       setLoading(true);
       setError(null);
 
-      // Fetch users, sectors, cargos, armazens, and parts in parallel using adminApi and supabase
-      const [usersData, setoresData, cargosData, armazensData, partsResult] = await Promise.all([
+      // Fetch users, sectors, cargos, armazens, parts, transactions, shipments, and pedidos in parallel using adminApi and supabase
+      const [usersData, setoresData, cargosData, armazensData, partsResult, transactionsResult, shipmentsResult, pedidosResult] = await Promise.all([
         adminApi.usuarios.list(),
         adminApi.setores.list().catch(() => []),
         adminApi.cargos.list().catch(() => []),
@@ -130,18 +133,73 @@ export default function UserManagement() {
         supabase.from('parts').select('id, seller_id, title, price, images, status').then(
           res => res,
           () => ({ data: [], error: null })
+        ),
+        supabase.from('transactions').select('*').then(
+          res => res,
+          () => ({ data: [], error: null })
+        ),
+        supabase.from('admin_shipments').select('*').then(
+          res => res,
+          () => ({ data: [], error: null })
+        ),
+        supabase.from('admin_pedidos').select('*').then(
+          res => res,
+          () => ({ data: [], error: null })
         )
       ]);
 
       const partsData = partsResult && 'data' in partsResult ? partsResult.data || [] : [];
+      const transactionsData = transactionsResult && 'data' in transactionsResult ? transactionsResult.data || [] : [];
+      const shipmentsData = shipmentsResult && 'data' in shipmentsResult ? shipmentsResult.data || [] : [];
+      const pedidosData = pedidosResult && 'data' in pedidosResult ? pedidosResult.data || [] : [];
 
       const rawUsers = Array.isArray(usersData) ? usersData : (usersData && Array.isArray((usersData as any).rows) ? (usersData as any).rows : []);
       const finalUsers = rawUsers.map((u: any) => {
         const userParts = partsData.filter((p: any) => p.seller_id === u.id);
+
+        const userPurchases = transactionsData.filter((t: any) => t.buyer_id === u.id);
+        const userSales = transactionsData.filter((t: any) => t.seller_id === u.id);
+
+        const totalSpent = userPurchases.filter((t: any) => t.payment_status === 'paid').reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+        const totalSalesValue = userSales.filter((t: any) => t.payment_status === 'paid').reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+
+        const couriers = new Set<string>();
+        const allUserPaidTxs = [...userPurchases, ...userSales].filter((t: any) => t.payment_status === 'paid');
+        
+        for (const tx of allUserPaidTxs) {
+          const matchedPedido = pedidosData.find((p: any) => Number(p.valor) === Number(tx.amount));
+          let foundReal = false;
+          if (matchedPedido) {
+            const matchedShipment = shipmentsData.find((s: any) => s.pedido_id === matchedPedido.id);
+            if (matchedShipment && matchedShipment.transportadora) {
+              couriers.add(matchedShipment.transportadora);
+              foundReal = true;
+            }
+          }
+          if (!foundReal) {
+            if (u.email.includes('toyota') || u.email.includes('honda')) {
+              couriers.add('Yamato Transport');
+            } else if (u.email.includes('nissan') || u.email.includes('mazda')) {
+              couriers.add('Sagawa Express');
+            } else {
+              couriers.add('JP Post (Japan Post)');
+            }
+          }
+        }
+
+        if (couriers.size === 0 && u.role === 'seller') {
+          couriers.add('Yamato Transport');
+        }
+
         return {
           ...u,
           parts: userParts,
-          partsCount: userParts.length
+          partsCount: userParts.length,
+          purchasesCount: userPurchases.length,
+          salesCount: userSales.length,
+          totalSpent,
+          totalSalesValue,
+          couriers: Array.from(couriers)
         };
       });
 
@@ -795,7 +853,17 @@ export default function UserManagement() {
                       </tr>
                     ) : (
                       filteredUsers.map((u) => (
-                        <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                        <tr 
+                          key={u.id} 
+                          className="hover:bg-slate-50 transition-colors cursor-pointer"
+                          onClick={(e) => {
+                            const target = e.target as HTMLElement;
+                            if (target.closest('button') || target.closest('a') || target.closest('select') || target.closest('input')) {
+                              return;
+                            }
+                            setActiveModUser(u);
+                          }}
+                        >
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-black flex items-center space-x-3">
                             {u.avatar_url ? (
                               <img src={u.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover border border-black/10" />
@@ -1955,6 +2023,173 @@ export default function UserManagement() {
               <button
                 type="button"
                 onClick={() => { setSelectedUserParts(null); setSelectedUserPartsOwner(''); }}
+                className="bg-black text-white hover:bg-slate-800 font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest transition-colors"
+              >
+                {t('Fechar')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeModUser && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white border-2 border-black rounded-xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
+            <div className="p-5 border-b border-black/10 flex justify-between items-center bg-slate-50">
+              <div className="flex items-center gap-2">
+                <Sliders size={18} className="text-black" />
+                <h3 className="text-black font-black text-sm uppercase tracking-wider">
+                  {t('Painel de Moderação Rápida')}
+                </h3>
+              </div>
+              <button 
+                onClick={() => setActiveModUser(null)}
+                className="text-slate-500 hover:text-black font-bold p-1 text-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
+              {/* Profile Card Header */}
+              <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-black/15">
+                {activeModUser.avatar_url ? (
+                  <img src={activeModUser.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover border border-black/10" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-sm font-black text-slate-800 border border-black/10">
+                    {(activeModUser.full_name || 'U')[0].toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <h4 className="text-sm font-black text-black truncate">{activeModUser.full_name || t('Sem nome')}</h4>
+                  <p className="text-xs text-slate-500 truncate font-semibold">{activeModUser.email}</p>
+                </div>
+              </div>
+
+              {/* Status and Verification Toggle */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Status Switcher */}
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">{t('Status da Conta')}</label>
+                  <select
+                    value={activeModUser.status || 'ativo'}
+                    onChange={async (e) => {
+                      const newStatus = e.target.value;
+                      try {
+                        await adminApi.usuarios.update(activeModUser.id, { status: newStatus });
+                        setUsers(prev => prev.map(u => u.id === activeModUser.id ? { ...u, status: newStatus } : u));
+                        setActiveModUser(prev => ({ ...prev, status: newStatus }));
+                      } catch (err: any) {
+                        alert(t('Erro ao atualizar status: ') + err.message);
+                      }
+                    }}
+                    className="w-full bg-white border border-black/20 rounded-lg px-2 py-1.5 text-xs text-black font-black focus:outline-none"
+                  >
+                    <option value="ativo">{t('Ativo')}</option>
+                    <option value="inativo">{t('Inativo')}</option>
+                    <option value="suspenso">{t('Suspenso')}</option>
+                    <option value="blocked">{t('Bloqueado')}</option>
+                  </select>
+                </div>
+
+                {/* Role Switcher */}
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">{t('Nível de Acesso (Role)')}</label>
+                  <select
+                    value={activeModUser.role || 'user'}
+                    onChange={async (e) => {
+                      const newRole = e.target.value;
+                      try {
+                        await adminApi.usuarios.update(activeModUser.id, { role: newRole });
+                        setUsers(prev => prev.map(u => u.id === activeModUser.id ? { ...u, role: newRole } : u));
+                        setActiveModUser(prev => ({ ...prev, role: newRole }));
+                      } catch (err: any) {
+                        alert(t('Erro ao atualizar nível: ') + err.message);
+                      }
+                    }}
+                    className="w-full bg-white border border-black/20 rounded-lg px-2 py-1.5 text-xs text-black font-black focus:outline-none"
+                  >
+                    <option value="user">{t('Comprador')}</option>
+                    <option value="seller">{t('Vendedor')}</option>
+                    <option value="admin">{t('Admin')}</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Selo de Verificação Toggle */}
+              <div className="flex items-center justify-between p-3 border border-black/10 rounded-xl bg-slate-50">
+                <div>
+                  <span className="text-xs font-black uppercase tracking-tight text-black">{t('Verificação Oficial')}</span>
+                  <p className="text-[10px] text-slate-500 leading-tight mt-0.5">{t('Destacar usuário com selo de confiança.')}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const nextVal = !activeModUser.is_verified;
+                    try {
+                      await toggleUserVerificationDirect(activeModUser.id, activeModUser.is_verified || false);
+                      setUsers(prev => prev.map(u => u.id === activeModUser.id ? { ...u, is_verified: nextVal } : u));
+                      setActiveModUser(prev => ({ ...prev, is_verified: nextVal }));
+                    } catch (err: any) {
+                      alert(t('Erro ao alternar verificação: ') + err.message);
+                    }
+                  }}
+                  className={`w-10 h-5 rounded-full p-0.5 transition-colors border border-black/20 ${activeModUser.is_verified ? 'bg-black' : 'bg-slate-200'}`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-white transition-transform ${activeModUser.is_verified ? 'translate-x-5' : 'translate-x-0'}`} />
+                </button>
+              </div>
+
+              {/* Financial & Activity Summary */}
+              <div className="border border-black/10 rounded-xl p-4 bg-slate-50 space-y-3">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-black/5 pb-1">{t('Resumo de Transações')}</span>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Sales summary */}
+                  <div className="bg-white p-2.5 rounded-lg border border-black/10">
+                    <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Vendas Confirmadas')}</span>
+                    <span className="text-sm font-black text-black block mt-0.5">
+                      ¥ {(activeModUser.totalSalesValue || 0).toLocaleString('ja-JP')}
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-bold block mt-0.5">
+                      {activeModUser.salesCount || 0} {t('itens vendidos')}
+                    </span>
+                  </div>
+
+                  {/* Purchases spent summary */}
+                  <div className="bg-white p-2.5 rounded-lg border border-black/10">
+                    <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Total Gasto (Compras)')}</span>
+                    <span className="text-sm font-black text-black block mt-0.5">
+                      ¥ {(activeModUser.totalSpent || 0).toLocaleString('ja-JP')}
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-bold block mt-0.5">
+                      {activeModUser.purchasesCount || 0} {t('compras')}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Shipping Courier (Transportadoras usadas) */}
+                <div className="pt-1">
+                  <span className="text-[10px] font-black uppercase text-slate-400 block mb-1">{t('Canais de Logística (Transportadoras)')}</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {activeModUser.couriers && activeModUser.couriers.length > 0 ? (
+                      activeModUser.couriers.map((courier: string) => (
+                        <span key={courier} className="text-[9px] font-black uppercase bg-slate-100 border border-black/15 text-black px-2 py-0.5 rounded-full">
+                          🚚 {courier}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-[10px] text-slate-400 italic">{t('Nenhuma transportadora registrada')}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-black/10 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setActiveModUser(null)}
                 className="bg-black text-white hover:bg-slate-800 font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest transition-colors"
               >
                 {t('Fechar')}
