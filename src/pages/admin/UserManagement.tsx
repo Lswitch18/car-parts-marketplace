@@ -388,7 +388,7 @@ export default function UserManagement() {
         }
       }
 
-      // Update basic fields
+      // Update basic and rich profile fields via the Admin Edge Function (bypassing client-side RLS)
       await adminApi.usuarios.update(selectedUser.id, {
         nome: selectedUser.full_name,
         email: selectedUser.email,
@@ -396,26 +396,16 @@ export default function UserManagement() {
         setor_id: finalSectorId || null,
         telefone: selectedUser.phone || '',
         status: selectedUser.status || 'ativo',
+        role: selectedUser.role,
+        is_verified: selectedUser.is_verified,
+        address: selectedUser.address || '',
+        cep: selectedUser.cep || '',
+        birthdate: selectedUser.birthdate || null,
+        card_brand: selectedUser.card_brand || null,
+        payment_method: selectedUser.payment_method || null,
+        email_verified: selectedUser.email_verified || false,
         armazens: userArmazens.map(ua => ({ id: ua.armazem_id, acesso_admin: true }))
       });
-
-      // Update role & verification and rich profile fields via supabase directly
-      await supabase
-        .from('profiles')
-        .update({
-          full_name: selectedUser.full_name,
-          role: selectedUser.role,
-          is_verified: selectedUser.is_verified,
-          phone: selectedUser.phone || '',
-          address: selectedUser.address || '',
-          cep: selectedUser.cep || '',
-          birthdate: selectedUser.birthdate || null,
-          card_brand: selectedUser.card_brand || null,
-          payment_method: selectedUser.payment_method || null,
-          email_verified: selectedUser.email_verified || false,
-          setor_id: finalSectorId || null
-        })
-        .eq('id', selectedUser.id);
 
       showFlashSuccess('Usuário atualizado com sucesso.');
       setSelectedUser(null);

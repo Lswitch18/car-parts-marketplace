@@ -440,6 +440,14 @@ Deno.serve(async (req) => {
         if (body.setor_id !== undefined) updates.setor_id = body.setor_id;
         if (body.telefone !== undefined) updates.phone = body.telefone;
         if (body.status !== undefined) updates.status = body.status;
+        if (body.role !== undefined) updates.role = body.role;
+        if (body.is_verified !== undefined) updates.is_verified = body.is_verified;
+        if (body.address !== undefined) updates.address = body.address;
+        if (body.cep !== undefined) updates.cep = body.cep;
+        if (body.birthdate !== undefined) updates.birthdate = body.birthdate;
+        if (body.card_brand !== undefined) updates.card_brand = body.card_brand;
+        if (body.payment_method !== undefined) updates.payment_method = body.payment_method;
+        if (body.email_verified !== undefined) updates.email_verified = body.email_verified;
         const { error } = await supabase.from('profiles').update(updates).eq('id', segments[1]);
         if (error) return json({ error: error.message }, 400);
 
