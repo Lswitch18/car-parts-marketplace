@@ -42,6 +42,7 @@ const PREDEFINED_PERMISSIONS = [
 export default function UserManagement() {
   const { user: currentUser } = useAuthStore();
   const { t } = useI18n();
+  const userParts = selectedUser ? (users.find(u => u.id === selectedUser.id)?.parts || []) : [];
 
   // Navigation
   const [activeTab, setActiveTab] = useState<'users' | 'cargos' | 'setores'>('users');
@@ -1374,6 +1375,128 @@ export default function UserManagement() {
                   </div>
                 </div>
               )}
+
+              {/* Interactive Card: User Ads & Moderation */}
+              <div className="border-2 border-black p-4 rounded-xl space-y-3 bg-white">
+                <div className="flex items-center justify-between border-b border-black/5 pb-2">
+                  <span className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5">
+                    <FolderTree size={14} />
+                    {t('Anúncios & Moderação')}
+                  </span>
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-100 border border-black/10">
+                    {userParts.length} {userParts.length === 1 ? t('Anúncio') : t('Anúncios')}
+                  </span>
+                </div>
+
+                {userParts.length === 0 ? (
+                  <p className="text-xs text-slate-400 italic py-2 text-center">{t('Este usuário não possui anúncios cadastrados.')}</p>
+                ) : (
+                  <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1">
+                    {userParts.map((part: any) => {
+                      return (
+                        <div key={part.id} className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-black/10 hover:border-black/20 bg-slate-50 transition-colors">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-10 h-10 rounded bg-slate-200 overflow-hidden shrink-0 border border-black/5">
+                              {part.images?.[0] ? (
+                                <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[8px] font-bold text-slate-400">No Img</div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-xs font-black block truncate text-black">{part.title}</span>
+                              <span className="text-[10px] font-bold text-daig-blue block">¥ {part.price?.toLocaleString('ja-JP')}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {/* Interactive toggle for part status */}
+                            <select
+                              value={part.status}
+                              onChange={async (e) => {
+                                const newStatus = e.target.value;
+                                try {
+                                  // Update in Supabase
+                                  const { error: err } = await supabase
+                                    .from('parts')
+                                    .update({ status: newStatus })
+                                    .eq('id', part.id);
+                                  if (err) throw err;
+                                  
+                                  // Update local state instantly so the UI reflects it
+                                  setUsers(prevUsers => {
+                                    return prevUsers.map(u => {
+                                      if (u.id === selectedUser.id) {
+                                        return {
+                                          ...u,
+                                          parts: u.parts.map((p: any) => p.id === part.id ? { ...p, status: newStatus } : p)
+                                        };
+                                      }
+                                      return u;
+                                    });
+                                  });
+                                } catch (error: any) {
+                                  console.error("Error updating part status:", error);
+                                  alert("Erro ao atualizar status do anúncio: " + error.message);
+                                }
+                              }}
+                              className={`text-[10px] font-black uppercase rounded border-2 border-black px-1.5 py-1 bg-white text-black focus:outline-none cursor-pointer ${
+                                part.status === 'active' 
+                                  ? 'border-green-600 text-green-700 bg-green-50/50' 
+                                  : part.status === 'sold'
+                                  ? 'border-blue-600 text-blue-700 bg-blue-50/50'
+                                  : 'border-slate-400 text-slate-500'
+                              }`}
+                            >
+                              <option value="active">{t('Ativo')}</option>
+                              <option value="sold">{t('Vendido')}</option>
+                              <option value="blocked">{t('Bloqueado')}</option>
+                              <option value="inactive">{t('Inativo')}</option>
+                            </select>
+
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                if (confirm(t('Tem certeza que deseja excluir permanentemente este anúncio?'))) {
+                                  try {
+                                    const { error: err } = await supabase
+                                      .from('parts')
+                                      .delete()
+                                      .eq('id', part.id);
+                                    if (err) throw err;
+                                    
+                                    // Update local state
+                                    setUsers(prevUsers => {
+                                      return prevUsers.map(u => {
+                                        if (u.id === selectedUser.id) {
+                                          const filtered = u.parts.filter((p: any) => p.id !== part.id);
+                                          return {
+                                            ...u,
+                                            parts: filtered,
+                                            partsCount: filtered.length
+                                          };
+                                        }
+                                        return u;
+                                      });
+                                    });
+                                  } catch (error: any) {
+                                    console.error("Error deleting part:", error);
+                                    alert("Erro ao excluir anúncio: " + error.message);
+                                  }
+                                }
+                              }}
+                              className="p-1.5 rounded-md hover:bg-red-50 text-slate-400 hover:text-red-600 hover:border-red-200 border border-transparent transition-colors"
+                              title={t('Excluir anúncio')}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
 
               {/* Warehouse permissions (Logistix integration) */}
               <div>
