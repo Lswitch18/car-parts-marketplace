@@ -44,33 +44,88 @@ const GaidLogo: React.FC<{
         style={{
           width: size,
           height: size,
-          boxShadow: animated ? '0 0 12px rgba(13, 117, 255, 0.5), inset 0 0 8px rgba(13, 117, 255, 0.3)' : '0 0 8px rgba(13, 117, 255, 0.4)',
-          border: '1px solid rgba(13, 117, 255, 0.4)',
+          boxShadow: animated ? '0 0 12px rgba(13, 117, 255, 0.4), inset 0 0 8px rgba(13, 117, 255, 0.2)' : '0 0 8px rgba(13, 117, 255, 0.3)',
+          border: '1px solid rgba(13, 117, 255, 0.3)',
           animation: animated ? 'daig-logo-pulse 2.5s ease-in-out infinite' : 'none',
           overflow: 'hidden',
-          background: '#050508',
+          background: '#030305',
           flexShrink: 0
         }}
       >
-        <img
-          src="/logo.png"
-          alt="DAIG"
-          style={{
-            width: '75%',
-            height: '75%',
-            objectFit: 'contain',
-            display: 'block',
-          }}
-        />
+        <svg viewBox="0 0 100 100" className="w-[85%] h-[85%]">
+          <defs>
+            <linearGradient id="gear-metallic" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="30%" stopColor="#D8E5F6" />
+              <stop offset="70%" stopColor="#647E9C" />
+              <stop offset="100%" stopColor="#1E2E42" />
+            </linearGradient>
+            <filter id="gear-neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Dynamic Gear Teeth */}
+          {(() => {
+            const teethAngles = [65, 95, 125, 155, 185, 215, 245, 275, 305];
+            return teethAngles.map((deg) => {
+              const rad = (deg * Math.PI) / 180;
+              const radLeft = ((deg - 7) * Math.PI) / 180;
+              const radRight = ((deg + 7) * Math.PI) / 180;
+              const radTipLeft = ((deg - 4) * Math.PI) / 180;
+              const radTipRight = ((deg + 4) * Math.PI) / 180;
+
+              const p1 = `${50 + 31 * Math.cos(radLeft)},${50 + 31 * Math.sin(radLeft)}`;
+              const p2 = `${50 + 39 * Math.cos(radTipLeft)},${50 + 39 * Math.sin(radTipLeft)}`;
+              const p3 = `${50 + 39 * Math.cos(radTipRight)},${50 + 39 * Math.sin(radTipRight)}`;
+              const p4 = `${50 + 31 * Math.cos(radRight)},${50 + 31 * Math.sin(radRight)}`;
+
+              return (
+                <polygon
+                  key={deg}
+                  points={`${p1} ${p2} ${p3} ${p4}`}
+                  fill="url(#gear-metallic)"
+                  stroke="#506c8f"
+                  strokeWidth="0.5"
+                />
+              );
+            });
+          })()}
+
+          {/* G body (Outer arc CCW, Inner arc CW) */}
+          <path
+            d="M 72.6 27.4 A 32 32 0 1 0 72.6 72.6 L 64.1 64.1 A 20 20 0 1 1 64.1 35.9 Z"
+            fill="url(#gear-metallic)"
+            stroke="#506c8f"
+            strokeWidth="0.5"
+          />
+
+          {/* G horizontal crossbar shelf */}
+          <path
+            d="M 60 54 H 76 V 46 H 60 Z"
+            fill="url(#gear-metallic)"
+            stroke="#506c8f"
+            strokeWidth="0.5"
+          />
+
+          {/* Inner decorative gear core */}
+          <circle cx="50" cy="50" r="10" fill="none" stroke="#2563EB" strokeWidth="1.5" opacity="0.8" />
+          <circle cx="50" cy="50" r="5" fill="#030305" stroke="#2563EB" strokeWidth="1" />
+        </svg>
+
         <style>{`
           @keyframes daig-logo-pulse {
             0%, 100% {
-              box-shadow: 0 0 12px rgba(13, 117, 255, 0.5), inset 0 0 8px rgba(13, 117, 255, 0.3);
-              border-color: rgba(13, 117, 255, 0.4);
+              box-shadow: 0 0 12px rgba(13, 117, 255, 0.4), inset 0 0 8px rgba(13, 117, 255, 0.2);
+              border-color: rgba(13, 117, 255, 0.3);
             }
             50% {
-              box-shadow: 0 0 24px rgba(0, 229, 255, 0.9), inset 0 0 16px rgba(0, 229, 255, 0.6);
-              border-color: rgba(0, 229, 255, 0.8);
+              box-shadow: 0 0 24px rgba(0, 229, 255, 0.8), inset 0 0 16px rgba(0, 229, 255, 0.4);
+              border-color: rgba(0, 229, 255, 0.6);
             }
           }
           @keyframes neon-pulse {
