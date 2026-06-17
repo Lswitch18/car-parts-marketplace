@@ -60,6 +60,7 @@ export const adminApi = {
     get: (id: string) => adminFetch<any>(`/usuarios/${id}`),
     create: (data: any) => adminFetch<any>('/usuarios', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: any) => adminFetch<any>(`/usuarios/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    enviarConvite: (email: string) => adminFetch<any>('/usuarios', { method: 'POST', body: JSON.stringify({ enviar_convite: true, email }) }),
   },
 
   armazens: {

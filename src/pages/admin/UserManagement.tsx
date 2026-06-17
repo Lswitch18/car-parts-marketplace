@@ -265,8 +265,8 @@ export default function UserManagement() {
       setSendingEmail(true);
       setError(null);
 
-      // Simulate network request to trigger auth confirmation email
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Trigger the real confirmation/invite email dispatch
+      await adminApi.usuarios.enviarConvite(selected.email);
 
       showFlashSuccess(`E-mail de confirmação operacional enviado com sucesso para ${selected.email}!`);
       setEmailConfirmUserId('');

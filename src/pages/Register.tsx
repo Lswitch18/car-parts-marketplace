@@ -19,6 +19,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [retryCount, setRetryCount] = useState(0)
+  const [success, setSuccess] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -40,6 +41,7 @@ export default function Register() {
         name: formData.name,
         phone: formData.phone,
       })
+      setSuccess(true)
     } catch (err: any) {
       console.error('Erro completo:', err)
       const errorMessage = handleSupabaseError(err)
@@ -51,6 +53,35 @@ export default function Register() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-md text-center">
+          <div className="card p-8 space-y-6">
+            <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto text-emerald-500 border border-emerald-500/20">
+              <Mail className="w-8 h-8" />
+            </div>
+            <h1 className="font-display text-2xl font-bold text-text">
+              {t('Verifique seu e-mail')}
+            </h1>
+            <p className="text-text-secondary text-sm leading-relaxed">
+              {t('Enviamos um link de confirmação para')} <strong className="text-text font-bold">{formData.email}</strong>. 
+              {t('Por favor, verifique sua caixa de entrada (e pasta de spam) para confirmar o cadastro e começar a utilizar a plataforma.')}
+            </p>
+            <div className="pt-2">
+              <Link 
+                to="/login" 
+                className="w-full inline-block text-center bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold transition-colors"
+              >
+                {t('Ir para o Login')}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

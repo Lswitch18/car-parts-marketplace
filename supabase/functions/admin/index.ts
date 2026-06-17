@@ -363,6 +363,21 @@ Deno.serve(async (req) => {
         const authUser = await requireAdmin(req);
         if (!authUser) return json({ error: 'Não autorizado' }, 401);
 
+        // Se for solicitado disparar e-mail de convite/confirmação
+        if (body.enviar_convite) {
+          const { email } = body as any;
+          if (!email) return json({ error: 'Email é obrigatório' }, 400);
+
+          const { data, error: inviteErr } = await supabase.auth.admin.inviteUserByEmail(email, {
+            redirectTo: `${url.origin}/auth/callback`
+          });
+
+          if (inviteErr) return json({ error: inviteErr.message }, 400);
+
+          auditLog(authUser.id, 'INVITE_USER', 'profiles', null, `Convite enviado para ${email}`, null);
+          return json({ ok: true, data }, 201);
+        }
+
         // Se for solicitado criar um novo usuário no Supabase Auth
         if (body.criar_usuario) {
           const { email, nome, role, cargo_id, setor_id } = body as any;
