@@ -179,6 +179,42 @@ describe('adminApi - URL construction', () => {
     const adminApi = await importModule();
     await expect(adminApi.me()).rejects.toThrow('Admin API error');
   });
+
+  it('usuarios.list monta URL e query string corretas', async () => {
+    const adminApi = await importModule();
+    await adminApi.usuarios.list('Patrick', true);
+    const url = mockFetch.mock.calls[0][0] as string;
+    expect(url).toContain('/usuarios?search=Patrick&sem_cargo=true');
+  });
+
+  it('usuarios.get monta URL com ID correto', async () => {
+    const adminApi = await importModule();
+    await adminApi.usuarios.get('user-uuid-123');
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/usuarios/user-uuid-123'),
+      expect.any(Object),
+    );
+  });
+
+  it('usuarios.update envia método PUT com body completo (role, status, etc)', async () => {
+    const adminApi = await importModule();
+    const payload = {
+      nome: 'Patrick Editado',
+      role: 'seller',
+      status: 'ativo',
+      is_verified: true,
+      address: 'Tokyo Shibuya 1-2-3',
+      cep: '150-0002'
+    };
+    await adminApi.usuarios.update('user-uuid-123', payload);
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining('/usuarios/user-uuid-123'),
+      expect.objectContaining({
+        method: 'PUT',
+        body: JSON.stringify(payload)
+      })
+    );
+  });
 });
 
 describe('DashboardKPIs - processamento de dados', () => {
