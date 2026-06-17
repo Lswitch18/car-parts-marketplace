@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { adminApi } from '../../lib/adminApi';
 import { useAuthStore } from '../../stores/authStore';
+import { useI18n } from '../../lib/i18n';
 import PedidosPage from './logistix/PedidosPage';
 import EntregasPage from './logistix/EntregasPage';
 import RastreamentoPage from './logistix/RastreamentoPage';
@@ -103,6 +104,7 @@ function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: s
 
 export default function LogistixDashboard() {
   const { user, signOut } = useAuthStore();
+  const { t } = useI18n();
 
   if (!user || user.role !== 'admin') {
     return <Navigate to="/" replace />;
