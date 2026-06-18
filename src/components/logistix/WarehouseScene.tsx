@@ -53,12 +53,14 @@ function RackGrid({
   onZoneClick,
   hoveredId,
   setHoveredId,
+  highlightedSlot,
 }: {
   zonas: Zone[];
   armazem: ArmazemData;
   onZoneClick: (z: Zone) => void;
   hoveredId: string | null;
   setHoveredId: (id: string | null) => void;
+  highlightedSlot?: { px: number; py: number } | null;
 }) {
   const bodyRef = useRef<THREE.InstancedMesh>(null);
   const shelfRef = useRef<THREE.InstancedMesh>(null);
@@ -128,12 +130,25 @@ function RackGrid({
       }
 
       if (glow) {
+        const isHighlightedRack = highlightedSlot && d.zone.pos_x === highlightedSlot.px && d.zone.pos_y === highlightedSlot.py;
+        const isHoveredRack = hoveredId === d.zone.id;
+
         rackH.identity();
-        rackH.makeScale(rackWidth + 0.3, rackHeight + 0.3, rackDepth + 0.3);
-        rackH.setPosition(d.pos.x, rackHeight / 2, d.pos.z);
-        glow.setMatrixAt(i, rackH);
-        tempC.copy(d.occColor);
-        glow.setColorAt(i, tempC);
+        if (isHighlightedRack || isHoveredRack) {
+          rackH.makeScale(rackWidth + 0.35, rackHeight + 0.35, rackDepth + 0.35);
+          rackH.setPosition(d.pos.x, rackHeight / 2, d.pos.z);
+          glow.setMatrixAt(i, rackH);
+
+          if (isHighlightedRack) {
+            tempC.set('#00E5FF'); // Cyan neon glow for search target
+          } else {
+            tempC.copy(d.occColor);
+          }
+          glow.setColorAt(i, tempC);
+        } else {
+          rackH.makeScale(0, 0, 0);
+          glow.setMatrixAt(i, rackH);
+        }
       }
     });
     body.instanceMatrix.needsUpdate = true;
@@ -143,10 +158,9 @@ function RackGrid({
       if (fill.instanceColor) fill.instanceColor.needsUpdate = true;
     }
     if (glow) {
+      glow.count = (hoveredId || highlightedSlot) ? config.length : 0;
       glow.instanceMatrix.needsUpdate = true;
       if (glow.instanceColor) glow.instanceColor.needsUpdate = true;
-      glow.count = hoveredId ? config.length : 0;
-      if (glow.instanceMatrix) glow.instanceMatrix.needsUpdate = true;
     }
 
     if (shelfRef.current) {
@@ -163,7 +177,7 @@ function RackGrid({
       });
       shelfRef.current.instanceMatrix.needsUpdate = true;
     }
-  }, [config, rackHeight, shelfSpacing, rackWidth, rackDepth, hoveredId]);
+  }, [config, rackHeight, shelfSpacing, rackWidth, rackDepth, hoveredId, highlightedSlot]);
 
   const handleClick = useCallback(
     (e: ThreeEvent<MouseEvent>) => {
@@ -412,12 +426,14 @@ function SceneContent({
   onZoneClick,
   hoveredId,
   setHoveredId,
+  highlightedSlot,
 }: {
   zonas: Zone[];
   armazem: ArmazemData;
   onZoneClick: (z: Zone) => void;
   hoveredId: string | null;
   setHoveredId: (id: string | null) => void;
+  highlightedSlot?: { px: number; py: number } | null;
 }) {
   return (
     <>
@@ -444,6 +460,7 @@ function SceneContent({
         onZoneClick={onZoneClick}
         hoveredId={hoveredId}
         setHoveredId={setHoveredId}
+        highlightedSlot={highlightedSlot}
       />
       <ZoneLabels zonas={zonas} armazem={armazem} />
 
@@ -478,10 +495,12 @@ export default function WarehouseScene({
   zonas,
   armazem,
   onZoneClick,
+  highlightedSlot,
 }: {
   zonas: Zone[];
   armazem: ArmazemData;
   onZoneClick: (z: Zone) => void;
+  highlightedSlot?: { px: number; py: number } | null;
 }) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -506,6 +525,7 @@ export default function WarehouseScene({
           onZoneClick={onZoneClick}
           hoveredId={hoveredId}
           setHoveredId={setHoveredId}
+          highlightedSlot={highlightedSlot}
         />
       </Canvas>
     </div>

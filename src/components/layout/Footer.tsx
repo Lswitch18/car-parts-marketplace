@@ -2,9 +2,12 @@ import { Link } from 'react-router-dom'
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react'
 import GaidLogo from '../GaidLogo'
 import { useAuthStore } from '../../stores/authStore'
+import { useI18n } from '../../lib/i18n'
 
 export default function Footer() {
   const { isAdmin } = useAuthStore()
+  const { t } = useI18n()
+
   return (
     <footer className="mt-auto">
       {/* Seção Principal - FUNDO PRETO */}
@@ -18,7 +21,7 @@ export default function Footer() {
                 <GaidLogo size={40} />
               </div>
               <p className="text-gray-300 text-sm mb-4">
-                O maior marketplace de peças automotivas JDM do Japão. Encontre peças genuínas para seu carro japonês com entrega em todo o Japão.
+                {t('O maior marketplace de peças automotivas JDM do Japão. Encontre peças genuínas para seu carro japonês com entrega em todo o Japão.')}
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -35,56 +38,55 @@ export default function Footer() {
 
             {/* Coluna 2: Navegação */}
             <div>
-              <h3 className="font-bold text-white mb-4">Navegação</h3>
+              <h3 className="font-bold text-white mb-4">{t('Navegação')}</h3>
               <ul className="space-y-2">
                 <li>
                   <Link to="/catalog" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Catálogo
+                    {t('Catálogo')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/parts" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Consulta de Peças
+                    {t('Consulta de Peças')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Compatibilidade
+                    {t('Compatibilidade')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/auctions" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Leilões
+                    {t('Leilões')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/" className="text-gray-300 hover:text-[#ff3d00] transition-colors flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
-                    Showroom 3D
+                    {t('Showroom 3D')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/dashboard" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Minha Conta
+                    {t('Minha Conta')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/create-listing" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Vender Peças
+                    {t('Vender Peças')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/favorites" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Favoritos
+                    {t('Favoritos')}
                   </Link>
                 </li>
-
               </ul>
             </div>
 
             {/* Coluna 3: Marcas */}
             <div>
-              <h3 className="font-bold text-white mb-4">Marcas</h3>
+              <h3 className="font-bold text-white mb-4">{t('Marcas')}</h3>
               <ul className="space-y-2">
                 <li><span className="text-gray-300">Nissan</span></li>
                 <li><span className="text-gray-300">Toyota</span></li>
@@ -105,31 +107,31 @@ export default function Footer() {
 
             {/* Coluna 4: Recursos */}
             <div>
-              <h3 className="font-bold text-white mb-4">Recursos</h3>
+              <h3 className="font-bold text-white mb-4">{t('Recursos')}</h3>
               <ul className="space-y-2">
                 <li>
                   <Link to="/rastreio" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Rastrear Pedido
+                    {t('Rastrear Pedido')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/catalog" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Catálogo Completo
+                    {t('Catálogo Completo')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/cars" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Compatibilidade
+                    {t('Compatibilidade')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/parts" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Consulta de Peças
+                    {t('Consulta de Peças')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/auctions" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    Leilões
+                    {t('Leilões')}
                   </Link>
                 </li>
               </ul>
@@ -137,7 +139,7 @@ export default function Footer() {
 
             {/* Coluna 5: Contato */}
             <div>
-              <h3 className="font-bold text-white mb-4">Contato</h3>
+              <h3 className="font-bold text-white mb-4">{t('Contato')}</h3>
               <ul className="space-y-2">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <Mail className="w-4 h-4" />
@@ -149,7 +151,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center space-x-2 text-gray-300">
                   <MapPin className="w-4 h-4" />
-                  <span>Nagoya, Japão</span>
+                  <span>{t('Nagoya, Japão')}</span>
                 </li>
               </ul>
             </div>
@@ -161,17 +163,17 @@ export default function Footer() {
       <div className="bg-[#0a0a0a] py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2026 GAID. Todos os direitos reservados.
+            © 2026 GAID. {t('Todos os direitos reservados.')}
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Termos de Uso
+              {t('Termos de Uso')}
             </a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacidade
+              {t('Privacidade')}
             </a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Cookies
+              {t('Cookies')}
             </a>
           </div>
         </div>

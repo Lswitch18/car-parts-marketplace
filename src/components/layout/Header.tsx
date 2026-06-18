@@ -170,7 +170,7 @@ export default function Header() {
                 ;(e.currentTarget as HTMLElement).style.background = 'transparent'
               }}
             >
-              Catálogo de Peças
+              {t('Catálogo de Peças')}
             </Link>
 
             {(user) ? (
@@ -243,8 +243,8 @@ export default function Header() {
                         <h4 className="font-semibold text-white text-sm">{t('Mensagens')}</h4>
                         <p className="text-xs mt-1" style={{ color: '#6B7280' }}>
                           {unreadCount > 0
-                            ? `${unreadCount} mensagem${unreadCount > 1 ? 's' : ''} não lida${unreadCount > 1 ? 's' : ''}`
-                            : 'Nenhuma mensagem nova'}
+                            ? t('analytics.unreadMessagesCount').replace('{count}', String(unreadCount))
+                            : t('Nenhuma mensagem nova')}
                         </p>
                       </div>
                       <div className="p-2">
@@ -359,7 +359,7 @@ export default function Header() {
                             }
                           >
                             <Settings className="w-4 h-4" />
-                            Painel Admin
+                            {t('Painel Admin')}
                           </Link>
                           <Link
                             to="/admin/logistix"
@@ -373,7 +373,7 @@ export default function Header() {
                             }
                           >
                             <Package className="w-4 h-4" />
-                            Logistix WMS
+                            {t('Logistix WMS')}
                           </Link>
                           <Link
                             to="/admin/image-to-3d"
@@ -387,7 +387,7 @@ export default function Header() {
                             }
                           >
                             <Sparkles className="w-4 h-4" />
-                            Gerador 3D AI
+                            {t('Gerador 3D AI')}
                           </Link>
                         </>
                       )}
@@ -488,7 +488,7 @@ export default function Header() {
                   style={{ color: '#B0B5C0' }}
                   onClick={() => setMenuOpen(false)}
                 >
-                  Catálogo de Peças
+                  {t('Catálogo de Peças')}
                 </Link>
                 {[
                   { to: '/dashboard', label: t('Dashboard') },
@@ -541,7 +541,7 @@ export default function Header() {
                   }}
                   onClick={() => setMenuOpen(false)}
                 >
-                  Catálogo de Peças
+                  {t('Catálogo de Peças')}
                 </Link>
                 <Link
                   to="/login"

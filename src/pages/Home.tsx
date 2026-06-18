@@ -43,14 +43,14 @@ export default function Home() {
       color: '#7000FF',
       colorBg: 'rgba(112,0,255,0.12)',
       colorBorder: 'rgba(112,0,255,0.25)',
-      title: 'Compra Segura',
-      desc: 'Proteção total para suas compras com garantia de entrega e devolução sem complicação.',
-      check: 'Pagamento protegido',
+      title: t('Compra Segura'),
+      desc: t('Proteção total para suas compras com Compra Segura e devolução sem complicação.'),
+      check: t('Pagamento protegido'),
       delay: 1,
       details: [
-        { icon: CreditCard, label: 'Pagamento protegido', text: 'Seus dados financeiros são criptografados e processados por gateways certificados.' },
-        { icon: RefreshCw, label: 'Devolução fácil', text: 'Devolução gratuita em até 30 dias para qualquer insatisfação.' },
-        { icon: HeadphonesIcon, label: 'Suporte dedicado', text: 'Atendimento prioritário em português, japonês e inglês.' },
+        { icon: CreditCard, label: t('Pagamento protegido'), text: t('Seus dados financeiros são criptografados e processados por gateways certificados.') },
+        { icon: RefreshCw, label: t('Devolução fácil'), text: t('Devolução gratuita em até 30 dias para qualquer insatisfação.') },
+        { icon: HeadphonesIcon, label: t('Suporte dedicado'), text: t('Atendimento prioritário em português, japonês e inglês.') },
       ],
     },
     {
@@ -58,14 +58,14 @@ export default function Home() {
       color: '#4DA3FF',
       colorBg: 'rgba(77,163,255,0.10)',
       colorBorder: 'rgba(77,163,255,0.25)',
-      title: 'Entrega Rápida',
+      title: t('Entrega Rápida'),
       desc: t('Envio para todo Japão com rastreamento em tempo real e estimativa precisa.'),
-      check: 'Rastreio em tempo real',
+      check: t('Rastreio em tempo real'),
       delay: 2,
       details: [
-        { icon: MapPin, label: 'Cobertura nacional', text: 'Entregamos em todas as prefeituras do Japão, incluindo áreas remotas.' },
-        { icon: Clock, label: '2-5 dias úteis', text: 'Prazo médio de entrega para a maioria das regiões do Japão.' },
-        { icon: Search, label: 'Rastreio em tempo real', text: 'Acompanhe cada etapa da entrega com atualizações por email e SMS.' },
+        { icon: MapPin, label: t('Cobertura nacional'), text: t('Entregamos em todas as prefeituras do Japão, incluindo áreas remotas.') },
+        { icon: Clock, label: t('2-5 dias úteis'), text: t('Prazo médio de entrega para a maioria das regiões do Japão.') },
+        { icon: Search, label: t('Rastreio em tempo real'), text: t('Acompanhe cada etapa da entrega com atualizações por email e SMS.') },
       ],
     },
     {
@@ -73,14 +73,14 @@ export default function Home() {
       color: '#0D75FF',
       colorBg: 'rgba(13,117,255,0.12)',
       colorBorder: 'rgba(13,117,255,0.25)',
-      title: 'Negociação Transparente',
-      desc: 'Converse diretamente com o vendedor, tire dúvidas e envie sua proposta sem intermediários.',
-      check: 'Contato direto',
+      title: t('Negociação Transparente'),
+      desc: t('Converse diretamente com o vendedor, tire dúvidas e envie sua proposta sem intermediários.'),
+      check: t('Contato direto'),
       delay: 3,
       details: [
-        { icon: MessageCircle, label: 'Chat com o vendedor', text: 'Comunique-se em tempo real com o vendedor para alinhar detalhes antes de fechar negócio.' },
-        { icon: Send, label: 'Envie sua proposta', text: 'Faça uma oferta personalizada — o vendedor analisa e responde diretamente pelo chat.' },
-        { icon: RefreshCw, label: 'Negociação flexível', text: 'Combine prazos, frete e condições de pagamento direto com o vendedor.' },
+        { icon: MessageCircle, label: t('Chat com o vendedor'), text: t('Comunique-se em tempo real com o vendedor para alinhar detalhes antes de fechar negócio.') },
+        { icon: Send, label: t('Envie sua proposta'), text: t('Faça uma oferta personalizada — o vendedor analisa e responde diretamente pelo chat.') },
+        { icon: RefreshCw, label: t('Negociação flexível'), text: t('Combine prazos, frete e condições de pagamento direto com o vendedor.') },
       ],
     },
   ]
@@ -236,10 +236,10 @@ export default function Home() {
               className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
               style={{ color: '#0D75FF' }}
             >
-              Por que escolher a DAIG
+              {t('Por que escolher a DAIG')}
             </p>
             <h2 className="font-display text-3xl font-bold text-white">
-              Compre com confiança
+              {t('Compre com confiança')}
             </h2>
           </div>
 
@@ -381,10 +381,10 @@ export default function Home() {
             </div>
 
             <h2 className="font-display text-4xl font-bold text-white mb-4" style={{ letterSpacing: '-0.02em' }}>
-              Pronto para vender suas peças?
+              {t('Pronto para vender suas peças?')}
             </h2>
             <p className="text-lg mb-10" style={{ color: '#8892A4' }}>
-              Junte-se a milhares de vendedores e alcance milhões de compradores na DAIG!
+              {t('Junte-se a milhares de vendedores e alcance milhões de compradores!')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -406,7 +406,7 @@ export default function Home() {
                   el.style.boxShadow = '0 0 30px rgba(13,117,255,0.4)'
                 }}
               >
-                Começar a Vender
+                {t('Começar a Vender')}
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
@@ -475,6 +475,7 @@ function FeatureCard({ icon: Icon, color, colorBg, colorBorder, title, desc, che
   title: string; desc: string; check: string; delay: number;
   details: { icon: any; label: string; text: string }[];
 }) {
+  const { t } = useI18n()
   const [showModal, setShowModal] = useState(false)
   return (
     <>
@@ -535,7 +536,7 @@ function FeatureCard({ icon: Icon, color, colorBg, colorBorder, title, desc, che
 
         {/* Click hint */}
         <div className="flex items-center gap-1.5 text-xs font-medium transition-all group-hover:gap-2" style={{ color }}>
-          <span>Clique para detalhes</span>
+          <span>{t('Clique para detalhes')}</span>
           <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-y-0.5" />
         </div>
       </div>

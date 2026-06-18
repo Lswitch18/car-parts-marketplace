@@ -95,7 +95,7 @@ export const logisticsApi = {
 
   // WMS
   wms: {
-    receive: (data: { codigo_barras: string; armazem_id: string; zona_id?: string }) =>
+    receive: (data: { codigo_barras: string; armazem_id: string; zona_id?: string; lote?: string }) =>
       logisticsFetch<any>('/wms/receive', { method: 'POST', body: JSON.stringify(data) }),
     sort: (data: { inventory_id: string; zona_id: string; rota_id?: string }) =>
       logisticsFetch<any>('/wms/sort', { method: 'POST', body: JSON.stringify(data) }),

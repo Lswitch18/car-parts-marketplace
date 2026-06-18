@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import {
@@ -255,11 +255,13 @@ export default function LogistixDashboard() {
       )}
 
       {/* Sidebar - JDM Void & Neon */}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-surface border-r border-border flex flex-col flex-shrink-0 transition-transform duration-200 relative z-10 ${
+      <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-[260px] bg-surface border-r border-border flex flex-col flex-shrink-0 transition-transform duration-200 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         <div className="h-[74px] flex items-center gap-3 px-6 border-b border-border">
-          <GaidLogo size={42} animated={false} />
+          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <GaidLogo size={42} animated={false} />
+          </Link>
           <div>
             <h1 className="font-sans text-lg font-black leading-tight tracking-wider uppercase text-text neon-text-cyan">LOGISTIX</h1>
             <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Painel Operacional</span>
@@ -271,7 +273,7 @@ export default function LogistixDashboard() {
             <div key={group.id}>
               {group.items.length === 0 ? (
                 <button
-                  onClick={() => setActiveNav(group.id)}
+                  onClick={() => { setActiveNav(group.id); setSidebarOpen(false); }}
                   className={`w-full flex items-center gap-3 h-11 px-4 rounded-lg transition-all text-xs font-bold uppercase tracking-wider ${
                     activeNav === group.id
                       ? 'bg-primary/20 text-white border-l-2 border-primary neon-border'
@@ -301,7 +303,7 @@ export default function LogistixDashboard() {
                       {group.items.map(item => (
                         <button
                           key={item.id}
-                          onClick={() => setActiveNav(item.id)}
+                          onClick={() => { setActiveNav(item.id); setSidebarOpen(false); }}
                           className={`w-full flex items-center gap-3 h-9 px-3.5 rounded-md transition-all text-xs font-bold ${
                             activeNav === item.id
                               ? 'bg-primary/20 text-primary-light border-l border-primary/40'
@@ -335,41 +337,44 @@ export default function LogistixDashboard() {
       </aside>
 
       {/* Main Content Pane - White background */}
-      <main className="flex-1 flex flex-col overflow-y-auto bg-background relative z-10">
-        {activeNav === 'dashboard' ? (
-          <>
-            <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-border bg-surface">
-              <div className="flex items-center gap-3 min-w-0">
-                <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text hover:bg-background flex-shrink-0">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                </button>
-                <div className="min-w-0">
-                  <h2 className="font-sans text-xl lg:text-2xl font-black uppercase tracking-tight text-text neon-text-cyan">Logistix WMS</h2>
-                  <p className="text-xs text-text-secondary font-bold uppercase tracking-wider mt-0.5">{t('Controle operacional de suprimentos e transportes')}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="hidden lg:flex items-center bg-background rounded-lg h-10 w-[260px] px-3 border border-border">
-                  <Search size={16} className="text-text-muted mr-2" />
-                  <input type="text" placeholder="Buscar no sistema..." className="bg-transparent border-none outline-none text-text text-xs w-full font-bold placeholder:text-text-muted" />
-                </div>
-                <div className="relative flex-shrink-0">
-                  <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-10 h-10 rounded-lg border border-border bg-surface flex items-center justify-center text-text hover:bg-background transition-all relative">
-                    <Bell size={16} />
-                    {ocorrenciasAbertas > 0 && (
-                      <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center px-1 border border-background">
-                        {ocorrenciasAbertas}
-                      </span>
-                    )}
-                  </button>
-                  <NotificationCenter open={notificacaoOpen} onClose={() => setNotificacaoOpen(false)} />
-                </div>
-              </div>
-            </header>
+      <main className="flex-1 flex flex-col overflow-hidden bg-background relative z-10">
+        <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-border bg-surface">
+          <div className="flex items-center gap-3 min-w-0">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text hover:bg-background flex-shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <Link to="/" className="lg:hidden flex items-center hover:opacity-80 transition-opacity flex-shrink-0">
+              <GaidLogo size={32} animated={false} />
+            </Link>
+            <div className="min-w-0">
+              <h2 className="font-sans text-xl lg:text-2xl font-black uppercase tracking-tight text-text neon-text-cyan">Logistix WMS</h2>
+              <p className="text-xs text-text-secondary font-bold uppercase tracking-wider mt-0.5">{t('Controle operacional de suprimentos e transportes')}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="hidden lg:flex items-center bg-background rounded-lg h-10 w-[260px] px-3 border border-border">
+              <Search size={16} className="text-text-muted mr-2" />
+              <input type="text" placeholder="Buscar no sistema..." className="bg-transparent border-none outline-none text-text text-xs w-full font-bold placeholder:text-text-muted" />
+            </div>
+            <div className="relative flex-shrink-0">
+              <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-10 h-10 rounded-lg border border-border bg-surface flex items-center justify-center text-text hover:bg-background transition-all relative">
+                <Bell size={16} />
+                {ocorrenciasAbertas > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-primary text-black text-[9px] font-black rounded-full flex items-center justify-center px-1 border border-background">
+                    {ocorrenciasAbertas}
+                  </span>
+                )}
+              </button>
+              <NotificationCenter open={notificacaoOpen} onClose={() => setNotificacaoOpen(false)} />
+            </div>
+          </div>
+        </header>
 
-            <div className="px-6 py-6 space-y-6">
+        <div className="flex-1 overflow-y-auto bg-background p-4 lg:p-6">
+          {activeNav === 'dashboard' ? (
+            <div className="space-y-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <QuickActions onNavigate={setActiveNav} />
+                <QuickActions onNavigate={(id) => { setActiveNav(id); setSidebarOpen(false); }} />
                 <div className="flex items-center gap-2 text-slate-500 text-xs font-black uppercase tracking-wider cursor-pointer">
                   <Calendar size={14} />
                   <span>{dataLabel}</span>
@@ -521,45 +526,45 @@ export default function LogistixDashboard() {
                 </div>
               </div>
             </div>
-          </>
-        ) : (
-          <div className="flex-1 overflow-y-auto bg-background">
-            {detailPedidoId ? (
-              <PedidoDetail pedidoId={detailPedidoId} onBack={() => setDetailPedidoId(undefined)} />
-            ) : activeNav === 'pedidos' && (
-              <PedidosPage 
-                onTrack={(codigo) => {
-                  setSelectedTrackingCode(codigo);
-                  setActiveNav('rastreamento');
-                }} 
-              />
-            )}
-            {activeNav === 'rastreamento' && (
-              <RastreamentoPage 
-                initialCode={selectedTrackingCode || ''} 
-                onClear={() => setSelectedTrackingCode(null)} 
-              />
-            )}
-            {activeNav === 'entregas' && <EntregasPage />}
-            {activeNav === 'coletas' && <ColetasPage />}
-            {activeNav === 'transferencias' && <TransferenciasPage />}
-            {activeNav === 'estoque' && <EstoquePage />}
-            {activeNav === 'armazens' && <ArmazensPage />}
-            {activeNav === 'armazem3d' && <Armazem3DPage />}
-            {activeNav === 'transportes' && <TransportesPage />}
-            {activeNav === 'terceiros' && <TerceirosPage />}
-            {activeNav === 'dropoffs' && <DropoffPage />}
-            {activeNav === 'ocorrencias' && <OcorrenciasPage />}
-            {activeNav === 'clientes' && <ClientesPage />}
-            {activeNav === 'wms' && <WMSPage />}
-            {activeNav === 'b2b' && <B2BPage />}
-            {activeNav === 'etiquetas' && <EtiquetasPage />}
-            {activeNav === 'usuarios' && <UsuariosPage />}
-            {activeNav === 'mapa' && <MapaPage />}
-            {activeNav === 'relatorios' && <RelatoriosPage />}
-            {activeNav === 'config' && <ConfigPage />}
-          </div>
-        )}
+          ) : (
+            <>
+              {detailPedidoId ? (
+                <PedidoDetail pedidoId={detailPedidoId} onBack={() => setDetailPedidoId(undefined)} />
+              ) : activeNav === 'pedidos' && (
+                <PedidosPage 
+                  onTrack={(codigo) => {
+                    setSelectedTrackingCode(codigo);
+                    setActiveNav('rastreamento');
+                  }} 
+                />
+              )}
+              {activeNav === 'rastreamento' && (
+                <RastreamentoPage 
+                  initialCode={selectedTrackingCode || ''} 
+                  onClear={() => setSelectedTrackingCode(null)} 
+                />
+              )}
+              {activeNav === 'entregas' && <EntregasPage />}
+              {activeNav === 'coletas' && <ColetasPage />}
+              {activeNav === 'transferencias' && <TransferenciasPage />}
+              {activeNav === 'estoque' && <EstoquePage />}
+              {activeNav === 'armazens' && <ArmazensPage />}
+              {activeNav === 'armazem3d' && <Armazem3DPage />}
+              {activeNav === 'transportes' && <TransportesPage />}
+              {activeNav === 'terceiros' && <TerceirosPage />}
+              {activeNav === 'dropoffs' && <DropoffPage />}
+              {activeNav === 'ocorrencias' && <OcorrenciasPage />}
+              {activeNav === 'clientes' && <ClientesPage />}
+              {activeNav === 'wms' && <WMSPage />}
+              {activeNav === 'b2b' && <B2BPage />}
+              {activeNav === 'etiquetas' && <EtiquetasPage />}
+              {activeNav === 'usuarios' && <UsuariosPage />}
+              {activeNav === 'mapa' && <MapaPage />}
+              {activeNav === 'relatorios' && <RelatoriosPage />}
+              {activeNav === 'config' && <ConfigPage />}
+            </>
+          )}
+        </div>
       </main>
 
       <GlobalSearch

@@ -422,7 +422,7 @@ export default function HomeLanding() {
               <div className="p-4 bg-[#0D75FF]/10 rounded-2xl w-fit border border-[#0D75FF]/20 group-hover:bg-[#0D75FF] group-hover:text-black transition-all">
                 <Zap className="w-8 h-8 text-[#0D75FF] group-hover:text-black" />
               </div>
-              <h3 className="text-xl font-bold text-white font-display">Garantia e Pagamento Stripe</h3>
+              <h3 className="text-xl font-bold text-white font-display">Pagamento Seguro Stripe</h3>
               <p className="text-gray-400 text-sm leading-relaxed font-light">
                 Transações financeiras ultra-seguras baseadas em escrow com proteção total do comprador. O dinheiro só é liberado ao vendedor após o recebimento e validação da peça.
               </p>
@@ -578,7 +578,7 @@ export default function HomeLanding() {
           <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/5 max-w-lg mx-auto">
             <div className="text-center">
               <span className="text-2xl font-bold font-mono text-white block">100%</span>
-              <span className="text-[10px] text-gray-500 font-mono uppercase">Garantia Escrow</span>
+              <span className="text-[10px] text-gray-500 font-mono uppercase">Proteção Escrow</span>
             </div>
             <div className="text-center">
               <span className="text-2xl font-bold font-mono text-white block">0.18ms</span>

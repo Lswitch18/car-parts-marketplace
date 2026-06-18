@@ -5,6 +5,8 @@ import { useAuthStore } from '../stores/authStore'
 import { supabase } from '../lib/supabase'
 import { MessageCircle, Send, User, ArrowRight, DollarSign, Check, ShoppingCart } from 'lucide-react'
 import SafeImage from '../components/SafeImage'
+import { useI18n } from '../lib/i18n'
+import AutoTranslateText from '../components/AutoTranslateText'
 
 interface Message {
   id: string
@@ -46,6 +48,7 @@ export default function Messages() {
   const [searchParams] = useSearchParams()
   const { user } = useAuthStore()
   const queryClient = useQueryClient()
+  const { t, language } = useI18n()
   const [selectedConversation, setSelectedConversation] = useState<string | null>(
     searchParams.get('user') || null
   )
@@ -58,7 +61,7 @@ export default function Messages() {
 
   const suggestAiResponse = async () => {
     if (!selectedMessages || selectedMessages.length === 0) {
-      setNewMessage('Olá! Tenho interesse no seu produto.')
+      setNewMessage(t('Olá! Tenho interesse no seu produto.'))
       return
     }
     
@@ -70,19 +73,19 @@ export default function Messages() {
     
     let suggestion = ''
     if (isLastMe) {
-      suggestion = 'Olá! Aguardo seu retorno para fecharmos.'
+      suggestion = t('Olá! Aguardo seu retorno para fecharmos.')
     } else {
       const content = lastMsg.content.toLowerCase()
       if (content.includes('dispon') || content.includes('disponivel')) {
-        suggestion = 'Olá! Sim, está disponível. Gostaria de fazer uma proposta?'
+        suggestion = t('Olá! Sim, está disponível. Gostaria de fazer uma proposta?')
       } else if (content.includes('preço') || content.includes('valor') || content.includes('prop')) {
-        suggestion = 'Obrigado pela oferta. O preço já está no limite, mas posso fazer um pequeno desconto se fechar hoje.'
+        suggestion = t('Obrigado pela oferta. O preço já está no limite, mas posso fazer um pequeno desconto se fechar hoje.')
       } else if (content.includes('envio') || content.includes('entreg')) {
-        suggestion = 'Consigo enviar amanhã mesmo via Yamato Transport com rastreamento completo.'
+        suggestion = t('Consigo enviar amanhã mesmo via Yamato Transport com rastreamento completo.')
       } else if (content.includes('confirm') || content.includes('pagar')) {
-        suggestion = 'Excelente! Acabei de confirmar a proposta de preço. Pode realizar o pagamento.'
+        suggestion = t('Excelente! Acabei de confirmar a proposta de preço. Pode realizar o pagamento.')
       } else {
-        suggestion = 'Perfeito. Como prefere seguir com a negociação?'
+        suggestion = t('Perfeito. Como prefere seguir com a negociação?')
       }
     }
     
@@ -107,7 +110,7 @@ export default function Messages() {
           acc[key] = {
             oder_id: msg.sender_id === user.id ? msg.receiver_id : msg.sender_id,
             oder: { id: msg.sender_id === user.id ? msg.receiver_id : msg.sender_id, full_name: '', avatar_url: '' },
-            part: msg.parts || { id: '', title: 'Sem produto', price: 0, images: [] },
+            part: msg.parts || { id: '', title: t('Sem produto'), price: 0, images: [] },
             lastMessage: msg,
             unreadCount: 0
           }
@@ -158,7 +161,8 @@ export default function Messages() {
 
       return convs
     },
-    enabled: !!user
+    enabled: !!user,
+    refetchInterval: 3000
   })
 
   const { data: selectedMessages } = useQuery({
@@ -174,13 +178,20 @@ export default function Messages() {
 
       return data || []
     },
-    enabled: !!user && !!selectedConversation
+    enabled: !!user && !!selectedConversation,
+    refetchInterval: 3000
   })
+
+  useEffect(() => {
+    if (user && selectedConversation) {
+      queryClient.invalidateQueries({ queryKey: ['messages', user.id, selectedConversation] })
+    }
+  }, [selectedConversation, user, queryClient])
 
   useEffect(() => {
     if (!user) return
     const channel = supabase
-      .channel('messages-changes-page')
+      .channel(`messages-changes-page-${user.id}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, () => {
         queryClient.invalidateQueries({ queryKey: ['conversations', user?.id] })
         if (selectedConversation) {
@@ -202,7 +213,7 @@ export default function Messages() {
         sender_id: user.id,
         receiver_id: selectedConversation,
         part_id: conversation?.part.id || null,
-        content: type === 'price_proposal' ? `Proposta de preço: ¥${Number(price).toLocaleString('ja-JP')}` : newMessage.trim(),
+        content: type === 'price_proposal' ? `${t('Proposta de preço')}: ¥${Number(price).toLocaleString('ja-JP')}` : newMessage.trim(),
         message_type: type,
         proposed_price: type === 'price_proposal' ? price : null,
         price_confirmed: type === 'price_proposal' ? false : null
@@ -235,7 +246,7 @@ export default function Messages() {
         sender_id: user.id,
         receiver_id: selectedConversation,
         part_id: partId,
-        content: `✅ Preço de ¥${price.toLocaleString('ja-JP')} confirmado! Pronto para prosseguir para o pagamento.`,
+        content: `✅ ${t('Preço de')} ¥${price.toLocaleString('ja-JP')} ${t('confirmado')}! ${t('Pronto para prosseguir para o pagamento.')}`,
         message_type: 'price_confirmed'
       })
       if (insertError) throw insertError
@@ -249,7 +260,6 @@ export default function Messages() {
   }
 
   const getConfirmedProposal = () => {
-    // Busca a proposta mais recente confirmada para este part específico
     const partId = conversations?.find(c => c.oder_id === selectedConversation)?.part.id
     return selectedMessages?.slice().reverse().find(m =>
       m.message_type === 'price_proposal' &&
@@ -274,7 +284,7 @@ export default function Messages() {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-display text-3xl font-bold text-white">
-            Mensagens
+            {t('Mensagens')}
           </h1>
         </div>
 
@@ -295,8 +305,8 @@ export default function Messages() {
                         <SafeImage src={conv.part.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<MessageCircle className="w-6 h-6 text-gray-500" />} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium truncate">{conv.oder.full_name || 'Usuário'}</p>
-                        <p className="text-gray-400 text-sm truncate">{conv.part.title || 'Sem produto'}</p>
+                        <p className="text-white font-medium truncate">{conv.oder.full_name || t('Usuário')}</p>
+                        <p className="text-gray-400 text-sm truncate">{conv.part.title || t('Sem produto')}</p>
                         <p className="text-daig-blue text-xs">¥ {conv.part.price?.toLocaleString('ja-JP') || 0}</p>
                       </div>
                       {conv.unreadCount > 0 && (
@@ -310,7 +320,7 @@ export default function Messages() {
               ) : (
                 <div className="p-8 text-center">
                   <MessageCircle className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-400">Nenhuma conversa</p>
+                  <p className="text-gray-400">{t('Nenhuma conversa')}</p>
                 </div>
               )}
             </div>
@@ -329,8 +339,8 @@ export default function Messages() {
                       <div>
                         <span className="text-white font-medium">
                           {selectedMessages[0]?.sender_id === user.id 
-                            ? selectedMessages.find(m => m.sender_id !== user.id)?.parts?.title || 'Usuário'
-                            : selectedMessages[0]?.parts?.title || 'Usuário'}
+                            ? selectedMessages.find(m => m.sender_id !== user.id)?.parts?.title || t('Usuário')
+                            : selectedMessages[0]?.parts?.title || t('Usuário')}
                         </span>
                         <p className="text-gray-400 text-xs">
                           ¥ {conversation?.part.price.toLocaleString('ja-JP')}
@@ -342,7 +352,7 @@ export default function Messages() {
                         to={`/product/${conversation.part.id}`}
                         className="text-daig-blue text-sm hover:underline"
                       >
-                        Ver anúncio
+                        {t('Ver anúncio')}
                       </Link>
                     )}
                   </div>
@@ -370,25 +380,25 @@ export default function Messages() {
                                 </span>
                               </div>
                             )}
-                            <p>{msg.content}</p>
+                            <AutoTranslateText text={msg.content} targetLang={language} />
                             <div className="flex items-center justify-between mt-2">
                               <p className="text-xs opacity-60">
                                 {new Date(msg.created_at).toLocaleString('pt-BR')}
                               </p>
                               
-                                      {isPriceProposal && !isPriceConfirmed && !isMe && (
+                              {isPriceProposal && !isPriceConfirmed && !isMe && (
                                 <button
                                   onClick={() => confirmPrice(msg.id, msg.proposed_price!)}
                                   disabled={isConfirming}
                                   className="bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center space-x-1 ml-2 disabled:opacity-50"
                                 >
                                   <Check className="w-3 h-3" />
-                                  <span>{isConfirming ? 'Confirmando...' : 'Confirmar'}</span>
+                                  <span>{isConfirming ? t('Confirmando...') : t('Confirmar')}</span>
                                 </button>
                               )}
                               {isPriceConfirmed && (
                                 <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full ml-2">
-                                  ✓ Confirmado
+                                  ✓ {t('Confirmado')}
                                 </span>
                               )}
                               {msg.transaction_id && (
@@ -396,7 +406,7 @@ export default function Messages() {
                                   href={`/admin/logistix`}
                                   className="text-daig-cyan text-xs ml-2 hover:underline"
                                 >
-                                  🚚 Rastrear
+                                  🚚 {t('Rastrear Pedido')}
                                 </a>
                               )}
                             </div>
@@ -412,7 +422,7 @@ export default function Messages() {
                         <div className="flex items-center space-x-2">
                           <Check className="w-5 h-5 text-green-500" />
                           <span className="text-green-400 font-medium">
-                            Preço confirmado: ¥{currentPrice.toLocaleString('ja-JP')}
+                            {t('Preço confirmado: ¥')}{currentPrice.toLocaleString('ja-JP')}
                           </span>
                         </div>
                         <Link
@@ -420,7 +430,7 @@ export default function Messages() {
                           className="bg-daig-blue text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-1"
                         >
                           <ShoppingCart className="w-4 h-4" />
-                          <span>Ir para Pagamento</span>
+                          <span>{t('Ir para Pagamento')}</span>
                           <ArrowRight className="w-4 h-4" />
                         </Link>
                       </div>
@@ -435,10 +445,10 @@ export default function Messages() {
                           <button
                             key={txt}
                             type="button"
-                            onClick={() => setNewMessage(txt)}
+                            onClick={() => setNewMessage(t(txt))}
                             className="flex-shrink-0 bg-surface hover:bg-border/30 text-gray-300 text-xs px-2.5 py-1 rounded-full border border-border transition-colors"
                           >
-                            {txt}
+                            {t(txt)}
                           </button>
                         ))}
                       </div>
@@ -449,7 +459,7 @@ export default function Messages() {
                           className="flex-1 bg-green-500/20 text-green-400 py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-green-500/30 transition-all"
                         >
                           <DollarSign className="w-4 h-4" />
-                          <span>Fazer Proposta</span>
+                          <span>{t('Fazer Proposta')}</span>
                         </button>
                         <button
                           onClick={suggestAiResponse}
@@ -457,7 +467,7 @@ export default function Messages() {
                           className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all"
                         >
                           <span>✨</span>
-                          <span>{aiLoading ? 'Pensando...' : 'IA Sugerir'}</span>
+                          <span>{aiLoading ? t('Pensando...') : t('IA Sugerir')}</span>
                         </button>
                       </div>
                       <form
@@ -471,7 +481,7 @@ export default function Messages() {
                           type="text"
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder="Digite sua mensagem..."
+                          placeholder={t('Digite sua mensagem...')}
                           className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-white focus:border-daig-blue focus:ring-1 focus:ring-daig-blue outline-none"
                         />
                         <button
@@ -489,7 +499,7 @@ export default function Messages() {
                 <div className="flex-1 flex items-center justify-center">
                   <div className="text-center">
                     <MessageCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                    <p className="text-gray-400">Selecione uma conversa</p>
+                    <p className="text-gray-400">{t('Selecione uma conversa')}</p>
                   </div>
                 </div>
               )}
@@ -503,16 +513,16 @@ export default function Messages() {
           <div className="bg-surface border border-border rounded-lg p-6 w-full max-w-md">
             <h3 className="text-white font-semibold mb-4 flex items-center">
               <DollarSign className="w-5 h-5 mr-2 text-green-400" />
-              Fazer Proposta de Preço
+              {t('Fazer Proposta de Preço')}
             </h3>
             <p className="text-gray-400 text-sm mb-4">
-              Preço original: ¥ {conversation?.part.price.toLocaleString('ja-JP')}
+              {t('Preço original: ¥ ')}{conversation?.part.price.toLocaleString('ja-JP')}
             </p>
             <input
               type="number"
               value={proposedPrice}
               onChange={(e) => setProposedPrice(e.target.value)}
-              placeholder="Digite seu preço proposto"
+              placeholder={t('Digite seu preço proposto')}
               className="w-full bg-background border border-border rounded-lg px-4 py-3 text-white mb-4"
             />
             <div className="flex space-x-3">
@@ -520,14 +530,14 @@ export default function Messages() {
                 onClick={() => { setShowPriceModal(false); setProposedPrice('') }}
                 className="flex-1 bg-surface text-white py-2 rounded-lg"
               >
-                Cancelar
+                {t('Cancelar')}
               </button>
               <button
                 onClick={() => sendMessage.mutate({ type: 'price_proposal', price: Number(proposedPrice) })}
                 disabled={!proposedPrice || Number(proposedPrice) <= 0}
                 className="flex-1 bg-green-500 text-white py-2 rounded-lg disabled:opacity-50"
               >
-                Enviar Proposta
+                {t('Enviar Proposta')}
               </button>
             </div>
           </div>

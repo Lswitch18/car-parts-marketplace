@@ -151,9 +151,9 @@ FILES = {
         "hash": "259d538b4ccabf0bafd1cb596543f5ef"
     },
     "brain.py": {
-        "size": 335233,
-        "modified": 1781786678.9996226,
-        "hash": "29f2779d7d07acc571d0bfa6032a30c3"
+        "size": 335579,
+        "modified": 1781798407.4276235,
+        "hash": "0dc101a3512c3276bfd6586cd35bc712"
     },
     "vite.config.js": {
         "size": 636,
@@ -191,9 +191,9 @@ FILES = {
         "hash": "dbe72d2128067fe2147e8f6fbf8004b0"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 5144,
-        "modified": 1781786670.5876224,
-        "hash": "cb408b1843e4f065e2d901d1d94e72f4"
+        "size": 5130,
+        "modified": 1781786811.019622,
+        "hash": "cefc7311895df186aa5065b2b44b110c"
     },
     "ORCAMENTO_AWS_TOKYO.pdf": {
         "size": 29694,
@@ -461,9 +461,9 @@ FILES = {
         "hash": "a5181cf002226dcdecb940722c0c2185"
     },
     "src/pages/Home.tsx": {
-        "size": 26594,
-        "modified": 1781062339.5879283,
-        "hash": "8d503135b3abcc76ebc8b6f64f921e13"
+        "size": 26588,
+        "modified": 1781798256.115624,
+        "hash": "ef545eec49461c6060a0e49c9af56684"
     },
     "src/pages/CarList.tsx": {
         "size": 14525,
@@ -501,9 +501,9 @@ FILES = {
         "hash": "5ffc50da8da71a57cd1e43615711ad0d"
     },
     "src/pages/ProductDetail.tsx": {
-        "size": 9062,
-        "modified": 1781210366.9724214,
-        "hash": "72f63756a8e8dbb6368da58986cbe4c6"
+        "size": 9057,
+        "modified": 1781798245.5396235,
+        "hash": "434d4660efccbda5ea8c3c295086f395"
     },
     "src/pages/MotionFramePage.tsx": {
         "size": 16241,
@@ -531,14 +531,14 @@ FILES = {
         "hash": "a8dcdad4370ab8b9b79d144b512c27b8"
     },
     "src/pages/Messages.tsx": {
-        "size": 23701,
-        "modified": 1781210400.5084207,
-        "hash": "ac946585530077b0a7e8b71f52bf6c7b"
+        "size": 23755,
+        "modified": 1781798231.9276237,
+        "hash": "17b0299312359104d2dca3804ddbb7c0"
     },
     "src/pages/HomeLanding.tsx": {
-        "size": 29565,
-        "modified": 1779925065.766402,
-        "hash": "af0d035cd2c7d8d69f4d01fb6c983273"
+        "size": 29563,
+        "modified": 1781798266.611624,
+        "hash": "fd348d1bb9953552f8e90a5dfa7d8865"
     },
     "src/pages/Profile.tsx": {
         "size": 7532,
@@ -546,9 +546,9 @@ FILES = {
         "hash": "96c99da151dddd7214a91ac0533e76fa"
     },
     "src/pages/PaymentCheckout.tsx": {
-        "size": 18884,
-        "modified": 1781645429.440603,
-        "hash": "1bc24efe5c060ba8125fe08ee2914165"
+        "size": 18883,
+        "modified": 1781798278.651624,
+        "hash": "e0b3d7037afda2179586114f2b6df5f0"
     },
     "src/pages/mobile/WorkerCadastro.tsx": {
         "size": 18218,
@@ -621,9 +621,9 @@ FILES = {
         "hash": "da1ff2d4e4a987eaa5190b5cfc4deec0"
     },
     "src/pages/admin/LogistixDashboard.tsx": {
-        "size": 31488,
-        "modified": 1781734436.6245954,
-        "hash": "6d0b5de762ca30959d20abbfb976d25c"
+        "size": 31706,
+        "modified": 1781798142.8156235,
+        "hash": "b02ad784cfd0b609eab095704e75d4f8"
     },
     "src/pages/admin/UserManagement.tsx": {
         "size": 108472,
@@ -721,9 +721,9 @@ FILES = {
         "hash": "dd0b92c5d1ede1e4a2e4b5a85334c690"
     },
     "src/pages/admin/logistix/WMSPage.tsx": {
-        "size": 11249,
-        "modified": 1781749308.0605953,
-        "hash": "b135066044065d43af8d7cd07c0779b1"
+        "size": 25491,
+        "modified": 1781798221.7636225,
+        "hash": "67993b90ad22d567735d0f5e31fc0709"
     },
     "src/pages/admin/logistix/MapaPage.tsx": {
         "size": 10812,
@@ -741,14 +741,14 @@ FILES = {
         "hash": "118a15e13238c4d9e846e36cf791b440"
     },
     "src/pages/admin/logistix/Armazem3DPage.tsx": {
-        "size": 15690,
-        "modified": 1781734544.0405939,
-        "hash": "f41440d5ea72b721570dc50c3fdad964"
+        "size": 19137,
+        "modified": 1781798402.2956235,
+        "hash": "a872324e7044dac672eb196ca7a25017"
     },
     "src/pages/admin/logistix/EtiquetasPage.tsx": {
-        "size": 11032,
-        "modified": 1781734544.160594,
-        "hash": "ff9c97f7dc783ca2b41e6f078dc40513"
+        "size": 14950,
+        "modified": 1781798167.0956223,
+        "hash": "963d8179b4403e8347bef6c7d5887119"
     },
     "src/hooks/useAnalytics.ts": {
         "size": 3869,
@@ -921,9 +921,9 @@ FILES = {
         "hash": "ed41e47cc06abe3b013701a65dc62202"
     },
     "src/components/logistix/WarehouseScene.tsx": {
-        "size": 15499,
-        "modified": 1778871266.3428266,
-        "hash": "481c4a1eef02e4c4c3d41247c1b60340"
+        "size": 16262,
+        "modified": 1781798394.5316236,
+        "hash": "d183a7048e8e387a7a5038dc91c430eb"
     },
     "src/components/logistix/ZoneBottomSheet.tsx": {
         "size": 7019,
@@ -996,9 +996,9 @@ FILES = {
         "hash": "2da14f9ba9199fab5659dbbb443f236c"
     },
     "src/lib/logisticsApi.ts": {
-        "size": 6041,
-        "modified": 1778865547.3188298,
-        "hash": "3db39c3651b381b78d0f8506cd4b97d1"
+        "size": 6056,
+        "modified": 1781793909.9116273,
+        "hash": "9fdb2eff58690d649fff9ab3582e0e29"
     },
     "src/lib/constants.ts": {
         "size": 7465,
@@ -1261,9 +1261,9 @@ FILES = {
         "hash": "18fd4823093eadba1ed0252b47a9140d"
     },
     "supabase/functions/logistics/index.ts": {
-        "size": 30003,
-        "modified": 1778865538.1748307,
-        "hash": "d2c6ebf81ea82f6cdf8a8912e6b34b64"
+        "size": 30042,
+        "modified": 1781798357.9196236,
+        "hash": "b7c7d3254983f582baf9a1329176baf2"
     },
     "supabase/functions/logistics/_shared/cors.ts": {
         "size": 561,
@@ -1369,6 +1369,11 @@ FILES = {
         "size": 1612,
         "modified": 1781625035.5166116,
         "hash": "6621dedfa2c5c0a818c43a903c0f41da"
+    },
+    "supabase/migrations/20260618_add_nissan_buyer.sql": {
+        "size": 1188,
+        "modified": 1781798347.4756234,
+        "hash": "a8d70360032ff436eeecb263184c1b98"
     },
     "supabase/migrations/20260617_add_language_column.sql": {
         "size": 139,
@@ -1584,6 +1589,11 @@ FILES = {
         "size": 11681,
         "modified": 1781731143.8205988,
         "hash": "398b26e30499f0f9806dd5cc21fbd9d4"
+    },
+    "scripts/setup_driver_and_packages.mjs": {
+        "size": 6712,
+        "modified": 1781787468.4476185,
+        "hash": "abef7594e624935795d882e2daba8c68"
     },
     "scripts/monitor.py": {
         "size": 4652,
@@ -2012,7 +2022,7 @@ FILES = {
     },
     "android/app/src/main/res/xml/config.xml": {
         "size": 185,
-        "modified": 1781753714.9645941,
+        "modified": 1781799720.7556303,
         "hash": "ec72d9bfef4584efc28998a0075e6799"
     },
     "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
@@ -2097,233 +2107,233 @@ FILES = {
     },
     "android/app/src/main/assets/capacitor.plugins.json": {
         "size": 3,
-        "modified": 1781753713.920593,
+        "modified": 1781799720.8756301,
         "hash": "58e0494c51d30eb3494f7c9198986bb9"
     },
     "android/app/src/main/assets/capacitor.config.json": {
         "size": 142,
-        "modified": 1781753713.560593,
+        "modified": 1781799720.5516303,
         "hash": "9ee46545d40629809417185e20dbb082"
     },
     "android/app/src/main/assets/public/carbon_frame_bike.glb": {
         "size": 3395040,
-        "modified": 1781753711.352591,
+        "modified": 1781799719.7596302,
         "hash": "6939cbc923d371c27adabed8953c3752"
     },
     "android/app/src/main/assets/public/sports_car_exploded.obj": {
         "size": 1605,
-        "modified": 1781753709.3565905,
+        "modified": 1781799719.2396302,
         "hash": "0b724b1e2778dd472e934eff44c62f95"
     },
     "android/app/src/main/assets/public/labels-data.json": {
         "size": 688,
-        "modified": 1781753711.352591,
+        "modified": 1781799719.67963,
         "hash": "a2c2827ed070688d2f9c81de2f14016b"
     },
     "android/app/src/main/assets/public/logo.png": {
         "size": 257349,
-        "modified": 1781784949.9236453,
+        "modified": 1781799719.5796301,
         "hash": "c6710a20397a98be214c10db97f81bdf"
     },
     "android/app/src/main/assets/public/cordova.js": {
         "size": 0,
-        "modified": 1781753714.832594,
+        "modified": 1781799720.67563,
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "android/app/src/main/assets/public/test-qr.html": {
         "size": 3649,
-        "modified": 1781753709.2845905,
+        "modified": 1781799719.19563,
         "hash": "291a28bd3fd27ab219ed32fc4968a3e7"
     },
     "android/app/src/main/assets/public/icons.svg": {
         "size": 5031,
-        "modified": 1781753711.352591,
+        "modified": 1781799719.7036302,
         "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
     },
     "android/app/src/main/assets/public/favicon.svg": {
         "size": 1628,
-        "modified": 1781785928.5676415,
+        "modified": 1781799719.71563,
         "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
     "android/app/src/main/assets/public/cordova_plugins.js": {
         "size": 0,
-        "modified": 1781753714.896594,
+        "modified": 1781799720.67963,
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "android/app/src/main/assets/public/sports_car.glb": {
         "size": 175100,
-        "modified": 1781753709.3645904,
+        "modified": 1781799719.2996302,
         "hash": "95e354532b4e6224434674758605ab4d"
     },
     "android/app/src/main/assets/public/lamborghini_aventador.glb": {
         "size": 1928792,
-        "modified": 1781753711.352591,
+        "modified": 1781799719.6676302,
         "hash": "35c9c832ae53b5811c613ecc10980f6b"
     },
     "android/app/src/main/assets/public/manifest.json": {
         "size": 564,
-        "modified": 1781753711.300591,
+        "modified": 1781799719.5716302,
         "hash": "253035b6489559ab8246752910130b45"
     },
     "android/app/src/main/assets/public/car_engine_scan.glb": {
         "size": 30500176,
-        "modified": 1781753711.9205914,
+        "modified": 1781799720.0796301,
         "hash": "c328d301056572cce00d86d510888bb7"
     },
     "android/app/src/main/assets/public/index.html": {
         "size": 2388,
-        "modified": 1781753711.352591,
-        "hash": "60fb2cad38b92d2e3ee11b90f8338081"
+        "modified": 1781799719.6996303,
+        "hash": "e8974ec18eaabff154ea37f6dee57e53"
     },
     "android/app/src/main/assets/public/engineering_car_exploded.obj": {
         "size": 2804,
-        "modified": 1781753711.352591,
+        "modified": 1781799719.71563,
         "hash": "cf2beec2dbd261aa7efe3c517ff75782"
     },
     "android/app/src/main/assets/public/sw.js": {
         "size": 747,
-        "modified": 1781753709.3485904,
+        "modified": 1781799719.23563,
         "hash": "18a93c312d310813263c6eafe978a45f"
     },
     "android/app/src/main/assets/public/test-labels.html": {
         "size": 14249,
-        "modified": 1781753709.3285904,
+        "modified": 1781799719.23563,
         "hash": "c89c10a05ea0c3c638700eade53daa40"
     },
     "android/app/src/main/assets/public/wheel_hydraulics.glb": {
         "size": 7828704,
-        "modified": 1781753708.8605905,
+        "modified": 1781799719.0556302,
         "hash": "6dc69bb15750868ae76e2791191a5c04"
     },
     "android/app/src/main/assets/public/toy_car.glb": {
         "size": 5422412,
-        "modified": 1781753709.1565905,
+        "modified": 1781799719.1636302,
         "hash": "7bee65587717abc2a905f47890a6e0a8"
     },
     "android/app/src/main/assets/public/car_model.glb": {
         "size": 433948,
-        "modified": 1781753711.380591,
+        "modified": 1781799719.82763,
         "hash": "de32f1c72cf9616d9bb3357662cb5742"
     },
     "android/app/src/main/assets/public/littlest_tokyo.glb": {
         "size": 4133072,
-        "modified": 1781753711.352591,
+        "modified": 1781799719.6156301,
         "hash": "2a6181dbb4859544e4f29dd5f4e15e34"
     },
     "android/app/src/main/assets/public/parts-images/wheels-work-meister.png": {
         "size": 623485,
-        "modified": 1781753709.4285905,
+        "modified": 1781799719.3916302,
         "hash": "8a869bb29dc07b09065764daef69f940"
     },
     "android/app/src/main/assets/public/parts-images/bodykit-top-secret-s15.png": {
         "size": 691131,
-        "modified": 1781753711.300591,
+        "modified": 1781799719.56363,
         "hash": "3d8e7375d2af48573e83a9bf2d27e54c"
     },
     "android/app/src/main/assets/public/parts-images/engine-2jzgte.png": {
         "size": 660772,
-        "modified": 1781753710.6605904,
+        "modified": 1781799719.50763,
         "hash": "9ae1bb8f8e43a6b5f425385c40f3282a"
     },
     "android/app/src/main/assets/public/parts-images/suspension-tein-monosport-nsx.png": {
         "size": 551113,
-        "modified": 1781753710.5325906,
+        "modified": 1781799719.45563,
         "hash": "2f9aefe52cf24d10ef3ea6250eb600c0"
     },
     "android/app/src/main/assets/public/parts-images/wheels-bbs-ria-18.png": {
         "size": 615946,
-        "modified": 1781753709.5325904,
+        "modified": 1781799719.41963,
         "hash": "fec87ee57394de6778c0efc4bca50d74"
     },
     "android/app/src/main/assets/public/parts-images/turbo-hks-gt3540.png": {
         "size": 720636,
-        "modified": 1781753710.1805904,
+        "modified": 1781799719.4476302,
         "hash": "b7d83f37d5e2da9313c47ad03f9a233d"
     },
     "android/app/src/main/assets/public/parts-images/turbo-td06h-25g-evo.png": {
         "size": 83,
-        "modified": 1781753709.6285906,
+        "modified": 1781799719.4236302,
         "hash": "a067956b1223828cad62392c4c6f8c5d"
     },
     "android/app/src/main/assets/public/parts-images/exhaust-hks-hipower.png": {
         "size": 459126,
-        "modified": 1781753710.5845904,
+        "modified": 1781799719.4996302,
         "hash": "33ee38f097ca00147f00e8d43f9cd354"
     },
     "android/app/src/main/assets/public/parts-images/engine-13b-rew.png": {
         "size": 806181,
-        "modified": 1781753711.2765908,
+        "modified": 1781799719.50763,
         "hash": "e4184eecfe1860dd4133902c45748eed"
     },
     "android/app/src/main/assets/public/parts-images/alternator-skyline-r34.png": {
         "size": 91,
-        "modified": 1781753711.300591,
+        "modified": 1781799719.56763,
         "hash": "ffaa5d3aca3e5c617b9ec79ae9ef20bf"
     },
     "android/app/src/main/assets/public/parts-images/sparkplugs-ngk-iridium-ix.png": {
         "size": 87,
-        "modified": 1781753710.5605905,
+        "modified": 1781799719.4956303,
         "hash": "70072573bff8bd63af3d3dbffc83a38a"
     },
     "android/app/src/main/assets/public/parts-images/bodykit-veilside-rx7.png": {
         "size": 695623,
-        "modified": 1781753711.300591,
+        "modified": 1781799719.53163,
         "hash": "d57a8d5ae16fee295750bd9e65ff08fe"
     },
     "android/app/src/main/assets/public/parts-images/engine-rb26dett.png": {
         "size": 723540,
-        "modified": 1781753710.5845904,
+        "modified": 1781799719.5036302,
         "hash": "42c3e26c0beb8fad88763a6929eb9300"
     },
     "android/app/src/main/assets/public/parts-images/brakes-brembo-gt-s2000.png": {
         "size": 628515,
-        "modified": 1781753711.2925909,
+        "modified": 1781799719.5196302,
         "hash": "25f57fca992497ad3b6c68755a38f80e"
     },
     "android/app/src/main/assets/public/icons/icon.svg": {
         "size": 1628,
-        "modified": 1781785928.5756414,
+        "modified": 1781799719.7076302,
         "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
-    "android/app/src/main/assets/public/assets/index-BfPX5R3I.js": {
-        "size": 1436709,
-        "modified": 1781753713.5245929,
-        "hash": "44ef67556055db14291276287117791f"
+    "android/app/src/main/assets/public/assets/WarehouseScene-dX9wZAMi.js": {
+        "size": 8516,
+        "modified": 1781799720.4796302,
+        "hash": "972ce039baa6980f0e81210f1c36d741"
     },
     "android/app/src/main/assets/public/assets/vendor-supabase-CW1GYbG4.js": {
         "size": 206616,
-        "modified": 1781753713.1525924,
+        "modified": 1781799720.1516302,
         "hash": "c85a19de208797cd0fd5db639a35151e"
-    },
-    "android/app/src/main/assets/public/assets/WarehouseScene-A_BKtBnF.js": {
-        "size": 8332,
-        "modified": 1781753713.5245929,
-        "hash": "8236660905b94b68706f101ac84420f9"
     },
     "android/app/src/main/assets/public/assets/vendor-query-DWBpmHC9.js": {
         "size": 42192,
-        "modified": 1781753713.3685927,
+        "modified": 1781799720.2196302,
         "hash": "0a81d5ca4a5d721eea81902f0a6402a6"
     },
     "android/app/src/main/assets/public/assets/vendor-three-1CdULahT.js": {
         "size": 1112105,
-        "modified": 1781753712.9205923,
+        "modified": 1781799720.1476302,
         "hash": "93ddf82137d38f056e27e0cda2edd45c"
     },
-    "android/app/src/main/assets/public/assets/index-CjE21XLt.css": {
-        "size": 125024,
-        "modified": 1781753713.4965928,
-        "hash": "3fd6dd6b84ff5651c28233824bad78a1"
+    "android/app/src/main/assets/public/assets/index-DrZCnl-s.css": {
+        "size": 127144,
+        "modified": 1781799720.3956301,
+        "hash": "95fa5f264069d97ccfc56fe742479a31"
     },
     "android/app/src/main/assets/public/assets/index-ySgPz8Na.js": {
         "size": 374867,
-        "modified": 1781753713.3965926,
+        "modified": 1781799720.32363,
         "hash": "c872f20a0251de07f3330c33bd2925ab"
     },
     "android/app/src/main/assets/public/assets/vendor-react-Ct1SiH8I.js": {
         "size": 163243,
-        "modified": 1781753713.3525927,
+        "modified": 1781799720.21563,
         "hash": "98e98b3b89c4445cc8be13f7b8022ec6"
+    },
+    "android/app/src/main/assets/public/assets/index-DCwxopNf.js": {
+        "size": 1452709,
+        "modified": 1781799720.4796302,
+        "hash": "0f847bd5369a876fc80abe0beb6d6bd9"
     },
     "android/gradle/wrapper/gradle-wrapper.jar": {
         "size": 61608,
@@ -2337,17 +2347,17 @@ FILES = {
     },
     "android/capacitor-cordova-android-plugins/cordova.variables.gradle": {
         "size": 312,
-        "modified": 1781753715.0525942,
+        "modified": 1781799721.23563,
         "hash": "299becb7733b8720b74d289e3cb837f1"
     },
     "android/capacitor-cordova-android-plugins/build.gradle": {
         "size": 1668,
-        "modified": 1781753715.0365942,
+        "modified": 1781799721.2236302,
         "hash": "5a522043da5fc6333024de5e59682b6f"
     },
     "android/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml": {
         "size": 210,
-        "modified": 1781753715.064594,
+        "modified": 1781799721.23563,
         "hash": "2b19f034114933f743294245f3ef79b6"
     },
     "venv/pyvenv.cfg": {

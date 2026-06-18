@@ -188,7 +188,7 @@ export default function ProductDetail() {
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-3 text-gray-400">
                 <Shield className="w-5 h-5 text-daig-cyan" />
-                <span>Compra segura com garantia</span>
+                <span>Compra segura na DAIG</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
                 <Truck className="w-5 h-5 text-daig-cyan" />

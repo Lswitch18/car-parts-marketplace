@@ -326,7 +326,7 @@ export default function PaymentCheckout() {
                 {createTransaction.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Lock className="w-5 h-5 mr-2" /> Pagar {formatJPY(fees.gross_amount)}</>}
               </button>
 
-              <p className="text-gray-500 text-sm text-center flex items-center justify-center"><ShieldCheck className="w-4 h-4 mr-1" /> Pagamento seguro com garantia</p>
+              <p className="text-gray-500 text-sm text-center flex items-center justify-center"><ShieldCheck className="w-4 h-4 mr-1" /> Pagamento seguro e garantido</p>
             </div>
           </div>
         )}

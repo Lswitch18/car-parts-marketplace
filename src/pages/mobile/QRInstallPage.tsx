@@ -8,7 +8,7 @@ export default function QRInstallPage() {
 
   useEffect(() => {
     setIsMobile(/Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-    const url = window.location.origin + '/app/worker';
+    const url = 'https://daig.jp/app/worker';
     QRCode.toDataURL(url, { width: 300, margin: 2, color: { dark: '#3B82F6', light: '#FFFFFF' } })
       .then(setQrUrl);
   }, []);

@@ -85,6 +85,31 @@ export default function Armazem3DPage() {
   const [showSelector, setShowSelector] = useState(false);
   const [searchCD, setSearchCD] = useState('');
   const [resetKey, setResetKey] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [highlightedSlot, setHighlightedSlot] = useState<{
+    rack: string;
+    bay: string;
+    level: string;
+    position: string;
+    formatted: string;
+    px: number;
+    py: number;
+  } | null>(null);
+
+  function parseWMSSlot(search: string) {
+    const clean = search.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const match = clean.match(/^([A-F])(0[1-6]|[1-6])([A-F])([1-2])$/);
+    if (match) {
+      const rack = match[1];
+      const bayStr = match[2].padStart(2, '0');
+      const level = match[3];
+      const position = match[4];
+      const py = rack.charCodeAt(0) - 65;
+      const px = parseInt(bayStr, 10) - 1;
+      return { rack, bay: bayStr, level, position, formatted: `${rack}-${bayStr}-${level}${position}`, px, py };
+    }
+    return null;
+  }
 
   const {
     data: armazens,
@@ -334,9 +359,61 @@ export default function Armazem3DPage() {
           <EmptyState />
         ) : (
           <Suspense fallback={<LoadingSkeleton />}>
-            <WarehouseScene key={resetKey} zonas={zonas} armazem={armazem3d} onZoneClick={(z) => setSelectedZone(z)} />
+            <WarehouseScene
+              key={resetKey}
+              zonas={zonas}
+              armazem={armazem3d}
+              onZoneClick={(z) => setSelectedZone(z)}
+              highlightedSlot={highlightedSlot}
+            />
             <GestureHint />
           </Suspense>
+        )}
+
+        {/* WMS Slot Search Overlay */}
+        {armazemId && zonas.length > 0 && !layoutLoading && !layoutError && (
+          <div className="absolute top-28 right-3 z-30 bg-[#111827]/90 backdrop-blur-md border border-border p-4 rounded-xl shadow-2xl w-64 space-y-3 pointer-events-auto">
+            <div>
+              <span className="text-[10px] text-primary font-bold uppercase tracking-widest font-mono">Endereço WMS</span>
+              <p className="text-[11px] text-text-secondary font-medium">Digite a posição (Ex: A-03-D1)</p>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Ex: A-03-D1..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  const parsed = parseWMSSlot(e.target.value);
+                  setHighlightedSlot(parsed);
+                }}
+                className="flex-1 h-9 bg-black/35 border border-border/80 rounded-lg px-3 text-xs text-white outline-none focus:border-primary font-mono placeholder:text-gray-600"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setHighlightedSlot(null);
+                  }}
+                  className="h-9 px-2 bg-surface hover:bg-black/30 border border-border text-text-secondary rounded-lg text-xs"
+                >
+                  Limpar
+                </button>
+              )}
+            </div>
+
+            {highlightedSlot && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg p-2.5 space-y-1">
+                <span className="text-[10px] text-primary font-bold uppercase tracking-wider block">Localizado</span>
+                <div className="text-[11px] text-text-secondary space-y-0.5 font-mono">
+                  <p><span className="text-text-muted font-sans">Corredor:</span> {highlightedSlot.rack} (Linha {highlightedSlot.py + 1})</p>
+                  <p><span className="text-text-muted font-sans">Baia:</span> B{highlightedSlot.bay} (Coluna {highlightedSlot.px + 1})</p>
+                  <p><span className="text-text-muted font-sans">Nível:</span> {highlightedSlot.level}</p>
+                  <p><span className="text-text-muted font-sans">Posição:</span> P{highlightedSlot.position}</p>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Legend overlay at bottom */}

@@ -144,7 +144,7 @@ async function gerarZPL(shipment: any, index: number): Promise<string> {
 ^FO50,60^BY2^BCN,80,Y,N,N
 ^FD${cod}^FS
 
-^FO50,160^BQN,2,8^FDQA,${cod}^FS
+^FO50,160^BQN,2,8^FDQA,https://daig.jp/tracking/${cod}^FS
 
 ^FO50,220^ADN,24,12^FD${(cliente.nome || 'Destinatario').substring(0, 35)}^FS
 ^FO50,260^ADN,24,12^FD${destino || 'Japao'}^FS
@@ -479,7 +479,7 @@ Deno.serve(async (req) => {
     if (path === '/wms/receive' && req.method === 'POST') {
       const user = await requireAdmin(req);
       if (!user) return json({ error: 'Não autorizado' }, 401);
-      const { codigo_barras, armazem_id, zona_id } = body as any;
+      const { codigo_barras, armazem_id, zona_id, lote } = body as any;
       if (!codigo_barras || !armazem_id) return json({ error: 'codigo_barras e armazem_id obrigatórios' }, 400);
 
       const { data: package_rec } = await supabase.from('admin_packages').select('*, shipment:admin_shipments!shipment_id(*)').eq('codigo_barras', codigo_barras).maybeSingle();
@@ -490,7 +490,7 @@ Deno.serve(async (req) => {
         armazem_id, zona_id: zona_id || null,
         produto: package_rec.descricao || codigo_barras,
         sku: codigo_barras, quantidade: 1,
-        lote: `REC-${new Date().toISOString().slice(0,10)}`,
+        lote: lote || `REC-${new Date().toISOString().slice(0,10)}`,
       });
 
       await trackingEvent(package_rec.shipment.pedido_id, 'RECEBIDO_CD', `Recebido no CD - ${codigo_barras}`, 'CD');
