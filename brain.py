@@ -61,9 +61,9 @@ FILES = {
         "hash": "f6e39166b1a1e2b94a25e87bd231d8cb"
     },
     "tsconfig.json": {
-        "size": 655,
-        "modified": 1778767366.0071764,
-        "hash": "12ea398b332bf1f409436e40efa022d6"
+        "size": 657,
+        "modified": 1781786690.4196227,
+        "hash": "cee37d11245240fc77acac0975e29a5a"
     },
     "BUILD-REPORT-GAID-2026-05-10.pdf": {
         "size": 28895,
@@ -152,8 +152,8 @@ FILES = {
     },
     "brain.py": {
         "size": 335233,
-        "modified": 1781786572.1796234,
-        "hash": "ded25c2a78f79e1b7f32504b45794b78"
+        "modified": 1781786678.9996226,
+        "hash": "29f2779d7d07acc571d0bfa6032a30c3"
     },
     "vite.config.js": {
         "size": 636,
@@ -191,9 +191,9 @@ FILES = {
         "hash": "dbe72d2128067fe2147e8f6fbf8004b0"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 4681,
-        "modified": 1781265024.776008,
-        "hash": "59ec57c5e56d13246883674d33b5c01f"
+        "size": 5144,
+        "modified": 1781786670.5876224,
+        "hash": "cb408b1843e4f065e2d901d1d94e72f4"
     },
     "ORCAMENTO_AWS_TOKYO.pdf": {
         "size": 29694,
