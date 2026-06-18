@@ -76,48 +76,6 @@ export default function Header() {
   // While loading, show skeleton in auth area - NEVER block the whole page
   const showAuthSkeleton = !initialized || loading
 
-  if (!user) {
-    return (
-      <header
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          background: scrolled ? 'rgba(5,5,8,0.92)' : 'rgba(5,5,8,0.75)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderBottom: scrolled ? '1px solid rgba(13,117,255,0.18)' : '1px solid rgba(255,255,255,0.04)',
-          boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(13,117,255,0.12)' : 'none',
-          transition: 'background 0.3s, border-color 0.3s, box-shadow 0.3s',
-        }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[68px] md:h-[76px]">
-            <Link to="/" className="flex items-center flex-shrink-0" onClick={() => setMenuOpen(false)}>
-              <GaidLogo size={52} animated />
-            </Link>
-            {showAuthSkeleton ? (
-              // Subtle skeleton pulse while auth loads — don't flash "Entrar"
-              <div
-                style={{
-                  width: 64,
-                  height: 32,
-                  borderRadius: 8,
-                  background: 'rgba(255,255,255,0.06)',
-                  animation: 'pulse 1.5s ease-in-out infinite',
-                }}
-              />
-            ) : (
-              <Link to="/login" className="text-sm font-medium" style={{ color: '#B0B5C0' }}>{t('Entrar')}</Link>
-            )}
-          </div>
-        </div>
-      </header>
-    );
-  }
-
   return (
     <header
       style={{
@@ -173,7 +131,17 @@ export default function Header() {
               {t('Catálogo de Peças')}
             </Link>
 
-            {(user) ? (
+            {showAuthSkeleton ? (
+              <div
+                style={{
+                  width: 64,
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.06)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              />
+            ) : user ? (
               <>
                 {/* Favourites */}
                 <Link
@@ -437,7 +405,16 @@ export default function Header() {
 
 
 
-            {(user) ? (
+            {showAuthSkeleton ? (
+              <div
+                style={{
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.06)',
+                  animation: 'pulse 1.5s ease-in-out infinite',
+                }}
+              />
+            ) : user ? (
               <>
                 <Link
                   to="/parts"

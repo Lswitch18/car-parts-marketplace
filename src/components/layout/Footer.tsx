@@ -47,7 +47,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link to="/parts" className="text-gray-300 hover:text-[#ff3d00] transition-colors">
-                    {t('Consulta de Peças')}
+                    {t('Catálogo de Peças')}
                   </Link>
                 </li>
                 <li>
