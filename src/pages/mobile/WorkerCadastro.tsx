@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, FileText, Smartphone, Truck, ShieldCheck, Camera, CheckCircle, Mail, Download, X } from 'lucide-react';
 import BiometricScanner from '../../components/mobile/BiometricScanner';
+import { supabase } from '../../lib/supabase';
 
 interface DriverProfile {
   name: string;
@@ -48,7 +49,7 @@ export default function WorkerCadastro() {
     }
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name || !email || !cnh || !plate || !phone) {
       alert('Por favor, preencha todos os campos cadastrais.');
       return;
@@ -75,9 +76,47 @@ export default function WorkerCadastro() {
     localStorage.setItem('driver_face_template', faceTemplate);
     
     setSavedSuccess(true);
+
+    // Trigger real transactional email sending via Supabase Edge Function
+    try {
+      const downloadLink = `${window.location.origin}/app/worker/install`;
+      await supabase.functions.invoke('notifications', {
+        body: {
+          type: 'email',
+          to: email,
+          subject: 'Bem-vindo ao DAIG Logistix Express - Link para Download do App',
+          body: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #111827; color: #fff; border-radius: 16px; border: 1px solid #1f2937;">
+              <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="color: #3b82f6; margin-bottom: 5px;">DAIG LOGISTIX EXPRESS</h2>
+                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #9ca3af;">Onboarding de Condutores</span>
+              </div>
+              <hr style="border: 0; border-top: 1px solid #1f2937; margin-bottom: 20px;" />
+              <p>Olá, <strong>${name}</strong>,</p>
+              <p>Seu perfil de motorista foi cadastrado e sua biometria facial foi vinculada com sucesso no sistema daig.</p>
+              <p>Abaixo estão suas credenciais para login rápido:</p>
+              <div style="background-color: #0b1220; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #1f2937;">
+                <p style="margin: 5px 0; font-size: 13px;"><strong>CNH:</strong> ${cnh}</p>
+                <p style="margin: 5px 0; font-size: 13px;"><strong>Placa do Veículo:</strong> ${plate}</p>
+              </div>
+              <p>Para iniciar as rotas de coleta e entregas em campo, faça o download e instale o aplicativo Android dedicado:</p>
+              <div style="text-align: center; margin: 35px 0;">
+                <a href="${downloadLink}" style="background-color: #3b82f6; color: #000; font-weight: bold; padding: 14px 28px; text-decoration: none; border-radius: 10px; text-transform: uppercase; font-size: 12px; display: inline-block;">Baixar Aplicativo Android (APK)</a>
+              </div>
+              <hr style="border: 0; border-top: 1px solid #1f2937; margin-top: 20px; margin-bottom: 20px;" />
+              <p style="font-size: 11px; color: #9ca3af; text-align: center; margin: 0;">© 2026 DAIG Logistix Express. Todos os direitos reservados.</p>
+            </div>
+          `
+        }
+      });
+      console.log('[WorkerCadastro] Edge Function Triggered successfully');
+    } catch (err) {
+      console.error('[WorkerCadastro] Failed to trigger backend notifications:', err);
+    }
+
     setTimeout(() => {
       setSavedSuccess(false);
-      setShowEmailPreview(true); // Open the mock email download preview modal
+      setShowEmailPreview(true); // Still show the client preview for UI confirmation
     }, 1500);
   };
 
@@ -294,7 +333,7 @@ export default function WorkerCadastro() {
                 <div className="w-3.5 h-3.5 bg-red-500 rounded-full" />
                 <div className="w-3.5 h-3.5 bg-yellow-500 rounded-full" />
                 <div className="w-3.5 h-3.5 bg-green-500 rounded-full" />
-                <span className="text-xs text-gray-400 font-bold ml-2 font-mono">Caixa de Entrada (Simulação)</span>
+                <span className="text-xs text-gray-400 font-bold ml-2 font-mono">Caixa de Entrada</span>
               </div>
               <button onClick={() => setShowEmailPreview(false)} className="text-gray-400 hover:text-white">
                 <X size={18} />
