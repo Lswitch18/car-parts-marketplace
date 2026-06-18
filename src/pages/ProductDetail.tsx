@@ -6,8 +6,11 @@ import SafeImage from '../components/SafeImage'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../stores/authStore'
 import { useFavoriteStore } from '../stores/favoriteStore'
+import { useI18n } from '../lib/i18n'
+import AutoTranslateText from '../components/AutoTranslateText'
 
 export default function ProductDetail() {
+  const { t, language } = useI18n()
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuthStore()
@@ -40,9 +43,9 @@ export default function ProductDetail() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-400 text-xl mb-4">Produto não encontrado</p>
+          <p className="text-gray-400 text-xl mb-4">{t('Produto não encontrado')}</p>
           <button onClick={() => navigate('/catalog')} className="text-daig-blue">
-            Voltar ao catálogo
+            {t('Voltar ao catálogo')}
           </button>
         </div>
       </div>
@@ -57,7 +60,7 @@ export default function ProductDetail() {
           className="flex items-center space-x-2 text-gray-400 hover:text-white mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Voltar</span>
+          <span>{t('Voltar')}</span>
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -93,13 +96,19 @@ export default function ProductDetail() {
                 <p className="text-daig-blue font-medium mb-2">
                   {product.brand} {product.model} • {product.year_start} - {product.year_end}
                 </p>
-                <h1 className="text-3xl font-bold text-white mb-2">{product.title}</h1>
+                <h1 className="text-3xl font-bold text-white mb-2">
+                  <AutoTranslateText text={product.title} targetLang={language} simple />
+                </h1>
                 <div className="flex items-center space-x-4 text-gray-400 text-sm">
                   <span className="flex items-center space-x-1">
                     <Eye className="w-4 h-4" />
-                    <span>{product.views || 0} visualizações</span>
+                    <span>{product.views || 0} {t('visualizações')}</span>
                   </span>
-                  <span className="badge">{product.condition}</span>
+                  <span className="badge">
+                    {product.condition === 'new' ? t('Novo') : 
+                     product.condition === 'used' ? t('Usado') : 
+                     t('Reformado')}
+                  </span>
                 </div>
               </div>
               <button
@@ -124,14 +133,14 @@ export default function ProductDetail() {
                      className="flex-1 bg-daig-blue hover:bg-daig-blue/80 text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
                    >
                      <MessageCircle className="w-5 h-5" />
-                     <span>Enviar Mensagem</span>
+                     <span>{t('Enviar Mensagem')}</span>
                    </Link>
 <Link
                       to={`/checkout/${product.id}`}
                       className="flex-1 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
                     >
                       <span className="w-5 h-5">💳</span>
-                      <span>Comprar Agora</span>
+                      <span>{t('Comprar Agora')}</span>
                     </Link>
                  </>
                )}
@@ -153,21 +162,21 @@ export default function ProductDetail() {
                  </div>
                  <div className="flex-1">
                    <div className="flex items-center space-x-2">
-                     <p className="text-white font-medium">{product.profiles?.full_name || 'Vendedor'}</p>
+                     <p className="text-white font-medium">{product.profiles?.full_name || t('Vendedor')}</p>
                      {product.profiles?.is_verified && (
                        <span className="bg-[#00E5FF]/20 text-[#00E5FF] text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                         ✓ Verificado
+                         {t('✓ Verificado')}
                        </span>
                      )}
                    </div>
-                   <p className="text-gray-400 text-xs">Membro GAID JDM</p>
+                   <p className="text-gray-400 text-xs">{t('Membro GAID JDM')}</p>
                  </div>
                </div>
 
                {/* Seller Reputation Details */}
                <div className="border-t border-border pt-4 mt-2 grid grid-cols-2 gap-4">
                  <div>
-                   <p className="text-gray-500 text-xs uppercase font-semibold">Reputação</p>
+                   <p className="text-gray-500 text-xs uppercase font-semibold">{t('Reputação')}</p>
                    <div className="flex items-center mt-1">
                      <span className="text-[#ffd700] mr-1 text-sm">★</span>
                      <span className="text-white font-bold text-sm">
@@ -177,9 +186,9 @@ export default function ProductDetail() {
                    </div>
                  </div>
                  <div>
-                   <p className="text-gray-500 text-xs uppercase font-semibold">Vendas</p>
+                   <p className="text-gray-500 text-xs uppercase font-semibold">{t('Vendas')}</p>
                    <p className="text-white font-bold text-sm mt-1">
-                     {product.profiles?.total_sales || 0} realizadas
+                     {product.profiles?.total_sales || 0} {t('realizadas')}
                    </p>
                  </div>
                </div>
@@ -188,17 +197,19 @@ export default function ProductDetail() {
             <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-3 text-gray-400">
                 <Shield className="w-5 h-5 text-daig-cyan" />
-                <span>Compra segura na DAIG</span>
+                <span>{t('Compra segura na DAIG')}</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
                 <Truck className="w-5 h-5 text-daig-cyan" />
-                <span>Envio para todo Japão</span>
+                <span>{t('Envio para todo Japão')}</span>
               </div>
             </div>
 
             <div className="card p-6">
-              <h3 className="text-white font-semibold mb-4">Descrição</h3>
-              <p className="text-gray-400 whitespace-pre-line">{product.description}</p>
+              <h3 className="text-white font-semibold mb-4">{t('Descrição')}</h3>
+              <div className="text-gray-400 whitespace-pre-line">
+                <AutoTranslateText text={product.description} targetLang={language} />
+              </div>
             </div>
           </div>
         </div>
