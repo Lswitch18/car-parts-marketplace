@@ -1,4 +1,4 @@
-import { PackageSearch, Truck } from 'lucide-react';
+import { PackageSearch, Truck, User } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 
 interface Props {
@@ -11,11 +11,14 @@ interface Props {
 export default function WorkerLayout({ children, activeTab, onTabChange, role }: Props) {
   const { user, signOut } = useAuthStore();
 
-  const tabs = role === 'coletor'
-    ? [{ id: 'coletas', label: 'MINHAS COLETAS', icon: PackageSearch }]
-    : role === 'entregador'
-    ? [{ id: 'entregas', label: 'MINHAS ENTREGAS', icon: Truck }]
-    : [];
+  const tabs = [
+    ...(role === 'coletor'
+      ? [{ id: 'coletas', label: 'MINHAS COLETAS', icon: PackageSearch }]
+      : role === 'entregador'
+      ? [{ id: 'entregas', label: 'MINHAS ENTREGAS', icon: Truck }]
+      : []),
+    { id: 'cadastro', label: 'CADASTRO', icon: User }
+  ];
 
   return (
     <div className="h-screen w-full max-w-md mx-auto bg-[#0B1220] text-white flex flex-col">

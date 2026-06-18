@@ -4,6 +4,7 @@ import { mobileApi } from '../../lib/mobileApi';
 import WorkerLayout from '../../components/mobile/WorkerLayout';
 import WorkerColetas from './WorkerColetas';
 import WorkerEntregas from './WorkerEntregas';
+import WorkerCadastro from './WorkerCadastro';
 
 export default function WorkerApp() {
   const [activeTab, setActiveTab] = useState('coletas');
@@ -62,8 +63,9 @@ export default function WorkerApp() {
 
   return (
     <WorkerLayout activeTab={activeTab} onTabChange={setActiveTab} role={role}>
-      {role === 'coletor' && <WorkerColetas />}
-      {role === 'entregador' && <WorkerEntregas />}
+      {activeTab === 'cadastro' && <WorkerCadastro />}
+      {activeTab === 'coletas' && role === 'coletor' && <WorkerColetas />}
+      {activeTab === 'entregas' && role === 'entregador' && <WorkerEntregas />}
       {role === 'admin' && (
         <div className="p-4">
           {activeTab === 'coletas' && <WorkerColetas />}

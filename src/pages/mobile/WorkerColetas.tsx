@@ -5,9 +5,11 @@ import { getCurrentPosition } from '../../lib/geo';
 import { getCityCoords, haversineKm } from '../../lib/distance';
 import { useGpsTracking } from '../../lib/useGpsTracking';
 import ScannerCamera from '../../components/mobile/ScannerCamera';
+import BiometricScanner from '../../components/mobile/BiometricScanner';
+import SignaturePad from '../../components/mobile/SignaturePad';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, ArrowRight,
-  RefreshCw, ScanLine,
+  RefreshCw, ScanLine, UserCheck, PenTool
 } from 'lucide-react';
 
 const STATUS_LABEL: Record<string, string> = {
@@ -34,6 +36,12 @@ export default function WorkerColetas() {
   const [batchMode, setBatchMode] = useState(false);
   const [batchCount, setBatchCount] = useState(0);
   const [showLabel, setShowLabel] = useState(false);
+
+  // Biometric & Signature states
+  const [showFaceVerification, setShowFaceVerification] = useState(false);
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [batchFinalize, setBatchFinalize] = useState(false);
 
   const { data, isLoading, error, isRefetching } = useQuery({
     queryKey: ['worker', 'coletas', filtroStatus],
@@ -125,6 +133,49 @@ export default function WorkerColetas() {
     return parts.join(', ') || 'Japão';
   }
 
+  // Intercept handlers
+  const initiateSingleVerification = () => {
+    const faceTemplate = localStorage.getItem('driver_face_template');
+    if (!faceTemplate) {
+      setErrorMessage('Você precisa cadastrar sua biometria facial e documentos na aba CADASTRO antes de realizar a coleta.');
+      return;
+    }
+    setErrorMessage(null);
+    setBatchFinalize(false);
+    setShowFaceVerification(true);
+  };
+
+  const initiateBatchVerification = () => {
+    const faceTemplate = localStorage.getItem('driver_face_template');
+    if (!faceTemplate) {
+      alert('Você precisa cadastrar sua biometria facial e documentos na aba CADASTRO antes de realizar coletas.');
+      return;
+    }
+    setBatchFinalize(true);
+    setShowFaceVerification(true);
+  };
+
+  const handleFaceSuccess = (facePhoto: string) => {
+    setShowFaceVerification(false);
+    setShowSignaturePad(true);
+  };
+
+  const handleSignatureSave = (signatureBase64: string) => {
+    setShowSignaturePad(false);
+    if (batchFinalize) {
+      // Complete batch collection
+      localStorage.setItem(`batch_signature_${Date.now()}`, signatureBase64);
+      setBatchMode(false);
+      setBatchCount(0);
+      setBatchFinalize(false);
+      alert('Coleta em Lote concluída com sucesso com biometria e assinatura!');
+    } else {
+      // Complete single collection
+      localStorage.setItem(`col_sig_${selected.id}`, signatureBase64);
+      updateMutation.mutate('coletado');
+    }
+  };
+
   return (
     <div className="p-4 pb-24">
       <div className="mb-4">
@@ -179,8 +230,14 @@ export default function WorkerColetas() {
               <CheckCircle size={16} className="text-green-400" />
               <span className="text-sm font-medium text-green-400">{batchCount} pacote(s) coletado(s)</span>
             </div>
-            <button onClick={() => setShowScanner(false)}
-              className="text-xs text-gray-400 underline">Fechar</button>
+            <div className="flex items-center gap-2">
+              <button onClick={initiateBatchVerification}
+                className="h-8 px-3 bg-green-500 hover:bg-green-600 text-black text-xs font-bold rounded-lg flex items-center gap-1 transition-all">
+                <PenTool size={12} /> Assinar
+              </button>
+              <button onClick={() => { setBatchMode(false); setBatchCount(0); }}
+                className="text-xs text-gray-400 underline">Cancelar</button>
+            </div>
           </div>
         )}
 
@@ -258,7 +315,7 @@ export default function WorkerColetas() {
                     )}
                   </div>
 
-                      <div className="flex gap-2">
+                  <div className="flex gap-2">
                     {row.status === 'pendente' && (
                       <>
                         <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(endereco)}`}
@@ -266,7 +323,8 @@ export default function WorkerColetas() {
                           className="flex-[2] h-11 bg-blue-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-blue-600">
                           <Navigation size={15} /> Ir
                         </a>
-                        <button onClick={async () => {
+                        <button onClick={async (e) => {
+                          e.stopPropagation();
                           try {
                             setSelected(row);
                             await updateMutation.mutateAsync('em_transito');
@@ -278,7 +336,6 @@ export default function WorkerColetas() {
                           className="flex-[1] h-11 bg-[#111827] border border-white/10 rounded-xl text-xs font-medium text-gray-300 flex items-center justify-center gap-1.5 active:bg-white/5 disabled:opacity-50">
                           <ArrowRight size={14} /> Iniciar
                         </button>
-
                       </>
                     )}
                     {row.status === 'em_transito' && (
@@ -288,7 +345,7 @@ export default function WorkerColetas() {
                           className="flex-[2] h-11 bg-green-500 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 active:bg-green-600">
                           <Navigation size={15} /> Ir
                         </a>
-                        <button onClick={() => { setSelected(row); setShowScanner(true); }}
+                        <button onClick={(e) => { e.stopPropagation(); setSelected(row); setShowScanner(true); }}
                           className="flex-[1] h-11 bg-[#111827] border border-white/10 rounded-xl text-xs font-medium text-gray-300 flex items-center justify-center gap-1.5 active:bg-white/5">
                           <ScanLine size={14} /> Scan
                         </button>
@@ -358,10 +415,12 @@ export default function WorkerColetas() {
                 className="flex-1 h-12 bg-blue-500 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 active:bg-blue-600">
                 <Navigation size={16} /> Ir
               </a>
-              <button onClick={() => { setShowLabel(false); setShowScanner(true); }}
-                className="flex-1 h-12 bg-green-500 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 active:bg-green-600">
-                <ScanLine size={16} /> Escanear
-              </button>
+              {selected.status === 'em_transito' && (
+                <button onClick={() => { setShowLabel(false); setShowScanner(true); }}
+                  className="flex-1 h-12 bg-green-500 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 active:bg-green-600">
+                  <ScanLine size={16} /> Escanear
+                </button>
+              )}
             </div>
 
             <button onClick={() => setShowLabel(false)}
@@ -415,6 +474,12 @@ export default function WorkerColetas() {
               </div>
             )}
 
+            {errorMessage && (
+              <div className="bg-red-500/15 border border-red-500/30 text-red-400 p-3 rounded-xl text-xs font-semibold mb-4 text-center">
+                ⚠️ {errorMessage}
+              </div>
+            )}
+
             <div className="bg-[#111827] rounded-xl p-4 mb-5 space-y-3">
               <p className="text-sm flex items-start gap-2.5">
                 <MapPin size={16} className="text-blue-400 mt-0.5 shrink-0" />
@@ -426,14 +491,14 @@ export default function WorkerColetas() {
             </div>
 
             <div className="space-y-3">
-              <button onClick={() => updateMutation.mutate('coletado')} disabled={updateMutation.isPending || scannedCode !== selected.pedido?.codigo}
+              <button onClick={initiateSingleVerification} disabled={updateMutation.isPending || scannedCode !== selected.pedido?.codigo}
                 className="w-full h-14 bg-green-500 rounded-2xl text-base font-bold disabled:opacity-50 flex items-center justify-center gap-3 active:bg-green-600">
                 {updateMutation.isPending ? (
                   <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Confirmando...</>
                 ) : scannedCode !== selected.pedido?.codigo ? (
                   <><ScanLine size={22} /> Escaneie o código primeiro</>
                 ) : (
-                  <><CheckCircle size={22} /> CONFIRMAR COLETA</>
+                  <><UserCheck size={22} /> BIOMETRIA & CONFIRMAÇÃO</>
                 )}
               </button>
 
@@ -455,6 +520,26 @@ export default function WorkerColetas() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Face Biometric Verification Scan */}
+      {showFaceVerification && (
+        <BiometricScanner
+          mode="face"
+          onCapture={handleFaceSuccess}
+          onClose={() => setShowFaceVerification(false)}
+          title="Verificação de Identidade"
+        />
+      )}
+
+      {/* Signature Pad screen */}
+      {showSignaturePad && (
+        <SignaturePad
+          onSave={handleSignatureSave}
+          onCancel={() => setShowSignaturePad(false)}
+          title={batchFinalize ? "Assinatura do Recebedor (Lote)" : "Assinatura do Recebedor"}
+          packageCount={batchFinalize ? batchCount : 1}
+        />
       )}
     </div>
   );
