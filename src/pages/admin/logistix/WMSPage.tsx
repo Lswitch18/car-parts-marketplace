@@ -10,6 +10,8 @@ export default function WMSPage() {
   const [scanCode, setScanCode] = useState('');
   const [sortInvId, setSortInvId] = useState('');
   const [sortZonaId, setSortZonaId] = useState('');
+  const [sortScanCode, setSortScanCode] = useState('');
+  const [resolvedInvItem, setResolvedInvItem] = useState<any | null>(null);
 
   const { data: armazens } = useQuery({
     queryKey: ['admin', 'armazens-wms'],
@@ -38,8 +40,37 @@ export default function WMSPage() {
 
   const sortMutation = useMutation({
     mutationFn: () => logisticsApi.wms.sort({ inventory_id: sortInvId, zona_id: sortZonaId }),
-    onSuccess: () => { setSortInvId(''); setSortZonaId(''); refetchInv(); },
+    onSuccess: () => { setSortInvId(''); setSortZonaId(''); setSortScanCode(''); setResolvedInvItem(null); refetchInv(); },
   });
+
+  const handleResolveSortItem = async () => {
+    if (!armazemId) {
+      alert('Selecione um armazém primeiro.');
+      return;
+    }
+    if (!sortScanCode) return;
+    try {
+      const supabase = (await import('../../../lib/supabase')).supabase;
+      const { data: invItem } = await supabase
+        .from('admin_inventario')
+        .select('*')
+        .eq('armazem_id', armazemId)
+        .or(`produto.ilike.%${sortScanCode}%,lote.eq.${sortScanCode}`)
+        .limit(1)
+        .maybeSingle();
+
+      if (invItem) {
+        setResolvedInvItem(invItem);
+        setSortInvId(invItem.id);
+      } else {
+        alert('Item não localizado no estoque deste armazém.');
+        setResolvedInvItem(null);
+        setSortInvId('');
+      }
+    } catch (e: any) {
+      alert('Erro ao buscar item: ' + e.message);
+    }
+  };
 
   const invRows = Array.isArray(inventory) ? inventory : [];
   const zonaRows = Array.isArray(zonas) ? zonas : [];
@@ -144,30 +175,58 @@ export default function WMSPage() {
       )}
 
       {tab === 'sort' && (
-        <div className="bg-[#111827] rounded-xl p-5 border border-border">
-          <h3 className="text-sm font-semibold mb-1">Triagem / Separar para Rota</h3>
-          <p className="text-xs text-text-secondary mb-4">Atribua itens a zonas de separação</p>
+        <div className="bg-[#111827] rounded-xl p-5 border border-border space-y-4">
+          <div>
+            <h3 className="text-sm font-semibold mb-1">Triagem / Separar para Rota (WMS Sort Center)</h3>
+            <p className="text-xs text-text-secondary">Escaneie o pacote para verificar e direcioná-lo para a zona de embarque correta</p>
+          </div>
 
-          <div className="space-y-3 mb-4">
+          <div className="space-y-4">
             <div>
-              <label className="text-xs text-text-secondary mb-1 block">Item do Inventário (ID)</label>
-              <input type="text" value={sortInvId} onChange={e => setSortInvId(e.target.value)}
-                placeholder="ID do inventário..."
-                className="w-full h-11 bg-[#0B1220] border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500 font-mono" />
+              <label className="text-xs text-text-secondary mb-1 block">Escanear Lote/Pacote</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Escaneie o código de barras ou lote (ex: #PED-...)"
+                  value={sortScanCode}
+                  onChange={e => setSortScanCode(e.target.value)}
+                  className="flex-1 h-11 bg-[#0B1220] border border-border rounded-xl px-4 text-sm text-white outline-none focus:border-blue-500 font-mono"
+                />
+                <button
+                  onClick={handleResolveSortItem}
+                  className="h-11 px-4 bg-surface border border-border hover:bg-slate-900/50 text-text rounded-xl text-xs font-semibold"
+                >
+                  Buscar
+                </button>
+              </div>
             </div>
+
+            {resolvedInvItem && (
+              <div className="bg-background border border-border rounded-xl p-4 space-y-2 text-xs">
+                <p className="font-bold text-text">Item Localizado:</p>
+                <div className="grid grid-cols-2 gap-2 text-text-secondary">
+                  <div><span className="font-semibold text-text">Produto:</span> {resolvedInvItem.produto}</div>
+                  <div><span className="font-semibold text-text">Lote/Pedido:</span> {resolvedInvItem.lote || '—'}</div>
+                  <div><span className="font-semibold text-text">Quantidade:</span> {resolvedInvItem.quantidade}</div>
+                  <div><span className="font-semibold text-text">Localização Atual:</span> {resolvedInvItem.zona_id || '—'}</div>
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="text-xs text-text-secondary mb-1 block">Zona de Destino</label>
+              <label className="text-xs text-text-secondary mb-1 block">Direcionar para Zona de Destino</label>
               <select value={sortZonaId} onChange={e => setSortZonaId(e.target.value)}
                 className="w-full h-11 bg-[#0B1220] border border-border rounded-xl px-4 text-sm text-white outline-none">
-                <option value="">Selecione...</option>
-                {zonaRows.filter(z => z.tipo === 'SEPARACAO').map((z: any) => (
+                <option value="">Selecione a zona de saída...</option>
+                {zonaRows.map((z: any) => (
                   <option key={z.id} value={z.id}>{z.nome} ({z.tipo})</option>
                 ))}
               </select>
             </div>
+
             <button onClick={() => sortMutation.mutate()} disabled={!sortInvId || !sortZonaId || sortMutation.isPending}
-              className="h-11 px-5 bg-primary rounded-xl text-sm font-semibold disabled:opacity-50 flex items-center gap-2">
-              <ArrowRight size={16} /> Separar
+              className="h-11 w-full bg-primary hover:bg-primary-dark text-black rounded-xl text-sm font-bold disabled:opacity-50 flex items-center justify-center gap-2 transition-all">
+              {sortMutation.isPending ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" /> : <><ArrowRight size={16} /> Confirmar Triagem / Enviar para Saída</>}
             </button>
           </div>
         </div>

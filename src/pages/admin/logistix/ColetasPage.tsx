@@ -26,6 +26,7 @@ export default function ColetasPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ pedido_id: '', endereco: '', cidade: '', estado: '', contato: '', telefone: '', observacao: '' });
+  const [scannedCode, setScannedCode] = useState('');
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'coletas', page],
@@ -34,6 +35,66 @@ export default function ColetasPage() {
       return authFetch<any>(`/coletas?${params}`);
     },
   });
+
+  const handleScanColeta = async () => {
+    if (!scannedCode) {
+      alert('Por favor, digite ou escaneie o código do pacote ou pedido.');
+      return;
+    }
+    try {
+      const supabase = (await import('../../../lib/supabase')).supabase;
+      
+      let shipment = null;
+      const { data: shByCode } = await supabase
+        .from('admin_shipments')
+        .select('id, pedido_id, codigo')
+        .eq('codigo', scannedCode)
+        .maybeSingle();
+        
+      if (shByCode) {
+        shipment = shByCode;
+      } else {
+        const { data: pedido } = await supabase
+          .from('admin_pedidos')
+          .select('id')
+          .eq('codigo', scannedCode)
+          .maybeSingle();
+          
+        if (pedido) {
+          const { data: shByPed } = await supabase
+            .from('admin_shipments')
+            .select('id, pedido_id, codigo')
+            .eq('pedido_id', pedido.id)
+            .maybeSingle();
+          shipment = shByPed;
+        }
+      }
+
+      if (!shipment) {
+        alert('Nenhuma remessa encontrada para este código.');
+        return;
+      }
+
+      await supabase
+        .from('admin_shipments')
+        .update({ status: 'coletado', data_coleta: new Date().toISOString() })
+        .eq('id', shipment.id);
+
+      await supabase.from('admin_rastreamento').insert({
+        pedido_id: shipment.pedido_id || null,
+        titulo: 'Pacote Coletado',
+        descricao: 'O motorista realizou a coleta e o pacote está em trânsito para o centro de triagem.',
+        etapa: 'COLETADO',
+        localizacao: 'Coleta em domicílio'
+      });
+
+      setScannedCode('');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'coletas'] });
+      alert('Coleta registrada com sucesso! Pacote agora está sob custódia logística.');
+    } catch (e: any) {
+      alert('Erro ao registrar coleta: ' + e.message);
+    }
+  };
 
   const { data: pedidos } = useQuery({
     queryKey: ['admin', 'pedidos-dropdown'],
@@ -66,6 +127,31 @@ export default function ColetasPage() {
       <div className="flex items-center justify-between">
         <div><h2 className="text-2xl font-bold">Coletas</h2><p className="text-sm text-text-secondary mt-1">{total} coletas agendadas</p></div>
         <button onClick={openCreate} className="h-10 px-4 bg-primary hover:bg-primary-dark text-white rounded-lg font-medium flex items-center gap-2 text-sm"><Plus size={16} /> Nova Coleta</button>
+      </div>
+
+      {/* Registrar Coleta Escaneada (Shopee Pickup Style) */}
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+        <h3 className="text-sm font-bold text-text flex items-center gap-2">
+          <Plus size={16} className="text-primary-light" /> Simular Coleta do Motorista (Scan Pickup)
+        </h3>
+        <div className="flex flex-col md:flex-row items-end gap-4">
+          <div className="flex-1 w-full">
+            <label className="text-xs text-text-secondary mb-1 block">Código do Pedido ou Remessa</label>
+            <input
+              type="text"
+              placeholder="Digite o código da remessa ou pedido (ex: #PED-MQIGIRDQ-Y5NX)"
+              value={scannedCode}
+              onChange={e => setScannedCode(e.target.value)}
+              className="w-full h-10 bg-background border border-border rounded-lg px-3 text-sm text-white outline-none placeholder:text-text-muted"
+            />
+          </div>
+          <button
+            onClick={handleScanColeta}
+            className="h-10 px-5 bg-primary hover:bg-primary-dark text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-xs w-full md:w-auto"
+          >
+            Registrar Coleta
+          </button>
+        </div>
       </div>
 
       <div className="bg-[#111827] rounded-xl border border-border overflow-hidden">

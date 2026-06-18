@@ -8,6 +8,9 @@ export default function DropoffPage() {
   const [search, setSearch] = useState('');
   const [filterAgencia, setFilterAgencia] = useState('');
 
+  const [selectedAgencia, setSelectedAgencia] = useState('');
+  const [shipmentCode, setShipmentCode] = useState('');
+
   const { data: dropoffs } = useQuery({
     queryKey: ['admin', 'dropoffs', filterAgencia],
     queryFn: () => logisticsApi.dropoff.list(filterAgencia || undefined),
@@ -31,6 +34,42 @@ export default function DropoffPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin', 'dropoffs'] }),
   });
 
+  const handleCreateDropoff = async () => {
+    if (!selectedAgencia || !shipmentCode) {
+      alert('Por favor, selecione uma agência e insira o código do pacote.');
+      return;
+    }
+    try {
+      const supabase = (await import('../../../lib/supabase')).supabase;
+      const { data: shipment, error: findError } = await supabase
+        .from('admin_shipments')
+        .select('id')
+        .eq('codigo', shipmentCode)
+        .single();
+
+      if (findError || !shipment) {
+        alert('Remessa/Pacote não encontrado.');
+        return;
+      }
+
+      await logisticsApi.dropoff.create({
+        shipment_id: shipment.id,
+        agencia_id: selectedAgencia
+      });
+
+      await supabase
+        .from('admin_shipments')
+        .update({ status: 'recebido' })
+        .eq('id', shipment.id);
+
+      setShipmentCode('');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'dropoffs'] });
+      alert('Pacote recebido com sucesso no ponto de coleta!');
+    } catch (e: any) {
+      alert('Erro ao realizar check-in: ' + e.message);
+    }
+  };
+
   const rows = Array.isArray(dropoffs) ? dropoffs : [];
 
   return (
@@ -39,6 +78,44 @@ export default function DropoffPage() {
         <div>
           <h2 className="text-2xl font-bold">Drop-offs</h2>
           <p className="text-sm text-text-secondary mt-1">{rows.filter(r => r.status === 'received').length} aguardando coleta</p>
+        </div>
+      </div>
+
+      {/* Simular Check-in de Drop-off (Shopee Xpress Point Style) */}
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+        <h3 className="text-sm font-bold text-text flex items-center gap-2">
+          <Package size={16} className="text-primary-light" /> Simular Ponto de Coleta (Drop-off Check-in)
+        </h3>
+        <div className="flex flex-col md:flex-row items-end gap-4">
+          <div className="flex-1 w-full">
+            <label className="text-xs text-text-secondary mb-1 block">Selecionar Agência / Ponto de Coleta</label>
+            <select
+              value={selectedAgencia}
+              onChange={e => setSelectedAgencia(e.target.value)}
+              className="w-full h-10 bg-background border border-border rounded-lg px-3 text-sm text-white outline-none"
+            >
+              <option value="">Selecione...</option>
+              {(agencias || []).map((a: any) => (
+                <option key={a.id} value={a.id}>{a.nome}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex-1 w-full">
+            <label className="text-xs text-text-secondary mb-1 block">Código de Barras do Pacote</label>
+            <input
+              type="text"
+              placeholder="Código da remessa (ex: #PED-MQIGIRDQ-Y5NX)"
+              value={shipmentCode}
+              onChange={e => setShipmentCode(e.target.value)}
+              className="w-full h-10 bg-background border border-border rounded-lg px-3 text-sm text-white outline-none placeholder:text-text-muted"
+            />
+          </div>
+          <button
+            onClick={handleCreateDropoff}
+            className="h-10 px-5 bg-primary hover:bg-primary-dark text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-xs w-full md:w-auto"
+          >
+            Registrar Check-in
+          </button>
         </div>
       </div>
 

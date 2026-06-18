@@ -1,15 +1,40 @@
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { logisticsApi } from '../../../lib/logisticsApi';
 import { useI18n } from '../../../lib/i18n';
-import { Truck, MapPin, Compass, Clock, CheckCircle, Navigation } from 'lucide-react';
+import { Truck, MapPin, Compass, Clock, CheckCircle, Navigation, Radio } from 'lucide-react';
 
 export default function MapaPage() {
   const { t } = useI18n();
+  const queryClient = useQueryClient();
+  const [selectedSimDriver, setSelectedSimDriver] = useState('');
 
   const { data: motoristas, isLoading } = useQuery({
     queryKey: ['admin', 'gps-motoristas'],
     queryFn: () => logisticsApi.tracking.gpsList(),
-    refetchInterval: 10000, // Fetch every 10 seconds for real-time status updates
+    refetchInterval: 10000,
+  });
+
+  const { data: drivers } = useQuery({
+    queryKey: ['admin', 'drivers-map'],
+    queryFn: async () => {
+      const supabase = (await import('../../../lib/supabase')).supabase;
+      const { data } = await supabase.from('profiles').select('id, full_name, email').order('full_name');
+      return data || [];
+    }
+  });
+
+  const simGpsMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedSimDriver) return;
+      const lat = 35.6762 + (Math.random() - 0.5) * 0.1;
+      const lng = 139.6503 + (Math.random() - 0.5) * 0.1;
+      await logisticsApi.tracking.gps(selectedSimDriver, lat, lng, 10, 50);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'gps-motoristas'] });
+      alert('Sinal de GPS simulado enviado com sucesso!');
+    }
   });
 
   const rows = Array.isArray(motoristas) ? motoristas : [];
@@ -30,18 +55,47 @@ export default function MapaPage() {
     <div className="space-y-6 text-text font-sans">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-black/15 pb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
           <span className="text-xs font-black uppercase tracking-widest text-text-muted">{t('Despacho de frotas')}</span>
           <h2 className="text-3xl font-black uppercase tracking-tight text-text mt-1">
-            {t('Último Status de Motoristas')}
+            {t('Torre de Controle (GPS Logístico)')}
           </h2>
           <p className="text-text-muted text-sm mt-0.5">
             {t('Posição em tempo real de motoristas e transportadoras ativas no sistema WMS Japão.')}
           </p>
         </div>
-        <div className="bg-black text-white px-4 py-2 border-2 border-black rounded-lg text-xs font-black uppercase tracking-wider">
+        <div className="bg-primary text-black px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider">
           {activeCount} {t('Motoristas Ativos')}
+        </div>
+      </div>
+
+      {/* Simulador de Telemetria GPS */}
+      <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
+        <h3 className="text-sm font-bold text-text flex items-center gap-2">
+          <Radio size={16} className="text-primary-light animate-pulse" /> Simular Transmissor GPS do Entregador (Last-Mile Telemetry)
+        </h3>
+        <div className="flex flex-col md:flex-row items-end gap-4">
+          <div className="flex-1 w-full">
+            <label className="text-xs text-text-secondary mb-1 block">Selecionar Entregador / Motorista</label>
+            <select
+              value={selectedSimDriver}
+              onChange={e => setSelectedSimDriver(e.target.value)}
+              className="w-full h-10 bg-background border border-border rounded-lg px-3 text-sm text-white outline-none"
+            >
+              <option value="">Selecione...</option>
+              {(drivers || []).map((d: any) => (
+                <option key={d.id} value={d.id}>{d.full_name || d.email}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            onClick={() => simGpsMutation.mutate()}
+            disabled={!selectedSimDriver || simGpsMutation.isPending}
+            className="h-10 px-5 bg-primary hover:bg-primary-dark text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-xs w-full md:w-auto flex items-center justify-center gap-2"
+          >
+            {simGpsMutation.isPending ? <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" /> : <><Compass size={14} /> Transmitir Coordenadas (Tóquio)</>}
+          </button>
         </div>
       </div>
 
