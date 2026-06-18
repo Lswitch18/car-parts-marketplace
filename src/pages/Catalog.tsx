@@ -9,6 +9,7 @@ import { useFavoriteStore } from '../stores/favoriteStore'
 import { fetchParts } from '../lib/partsApi'
 import { Product } from '../types'
 import { getCountryFlag, getCountryOrder } from '../lib/countryFlags'
+import { useI18n } from '../lib/i18n'
 
 // Extend product with relational fields used in UI
 interface ProductUI extends Product {
@@ -32,6 +33,7 @@ function SkeletonCard() {
 }
 
 export default function Catalog() {
+  const { t } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const { toggleFavorite, isFavorite } = useFavoriteStore()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -180,9 +182,9 @@ export default function Catalog() {
   const activeFiltersCount = Object.values(filters).filter(v => v).length
 
   const conditionLabel = (c: string) => {
-    if (c === 'new') return 'Novo'
-    if (c === 'used') return 'Usado'
-    return 'Reformado'
+    if (c === 'new') return t('Novo')
+    if (c === 'used') return t('Usado')
+    return t('Reformado')
   }
 
   const conditionColor = (c: string) => {
@@ -217,11 +219,11 @@ export default function Catalog() {
                   <Zap className="w-3.5 h-3.5" style={{ color: '#0D75FF' }} />
                 </div>
                 <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#0D75FF' }}>
-                  Catálogo JDM
+                  {t('Catálogo JDM')}
                 </span>
               </div>
               <h1 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
-                Encontre sua{' '}
+                {t('Encontre sua')}{' '}
                 <span
                   style={{
                     background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
@@ -229,12 +231,12 @@ export default function Catalog() {
                     WebkitTextFillColor: 'transparent',
                   }}
                 >
-                  Peça Ideal
+                  {t('Peça Ideal')}
                 </span>
               </h1>
               {!isLoading && (
                 <p className="mt-2 text-sm" style={{ color: '#6B7280' }}>
-                  <span className="font-semibold" style={{ color: '#B0B5C0' }}>{products?.length || 0}</span> peças disponíveis no estoque
+                  <span className="font-semibold" style={{ color: '#B0B5C0' }}>{products?.length || 0}</span> {t('peças disponíveis no estoque')}
                 </p>
               )}
             </div>
@@ -252,7 +254,7 @@ export default function Catalog() {
                 <Search className="w-4 h-4 flex-shrink-0" style={{ color: '#6B7280' }} />
                 <input
                   type="text"
-                  placeholder="Buscar peças, marcas..."
+                  placeholder={t('Buscar peças, marcas...')}
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
                   className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-[#6B7280]"
@@ -280,15 +282,15 @@ export default function Catalog() {
                   }}
                 >
                   <span style={{ color: '#6B7280' }}>
-                    {key === 'brand' && 'Marca'}
-                    {key === 'model' && 'Modelo'}
-                    {key === 'category' && 'Categoria'}
-                    {key === 'condition' && 'Condição'}
-                    {key === 'minPrice' && 'Preço mín'}
-                    {key === 'maxPrice' && 'Preço máx'}
-                    {key === 'search' && 'Busca'}
-                    {key === 'yearStart' && 'Ano de'}
-                    {key === 'yearEnd' && 'Ano até'}
+                    {key === 'brand' && t('catalog.brand')}
+                    {key === 'model' && t('Modelo')}
+                    {key === 'category' && t('Categoria')}
+                    {key === 'condition' && t('catalog.condition')}
+                    {key === 'minPrice' && t('Preço mín')}
+                    {key === 'maxPrice' && t('Preço máx')}
+                    {key === 'search' && t('Busca')}
+                    {key === 'yearStart' && t('catalog.yearFrom')}
+                    {key === 'yearEnd' && t('catalog.yearTo')}
                   </span>
                   {val}
                   <button
@@ -304,7 +306,7 @@ export default function Catalog() {
                 className="text-xs px-3 py-1.5 rounded-full transition-colors"
                 style={{ color: '#6B7280' }}
               >
-                Limpar tudo
+                {t('Limpar tudo')}
               </button>
             </div>
           )}
@@ -330,7 +332,7 @@ export default function Catalog() {
                 style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
               >
                 <SlidersHorizontal className="w-4 h-4" style={{ color: '#0D75FF' }} />
-                <span className="text-sm font-semibold text-white">Filtros</span>
+                <span className="text-sm font-semibold text-white">{t('Filtros')}</span>
                 {activeFiltersCount > 0 && (
                   <span
                     className="ml-auto text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full"
@@ -348,7 +350,7 @@ export default function Catalog() {
                   className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors hover:bg-white/5"
                 >
                   <Filter className="w-3.5 h-3.5" style={{ color: '#0D75FF' }} />
-                  Marcas
+                  {t('catalog.brands')}
                   <ChevronRight
                     className="w-3.5 h-3.5 ml-auto transition-transform duration-200"
                     style={{ transform: showBrands ? 'rotate(90deg)' : 'rotate(0deg)', color: '#6B7280' }}
@@ -417,7 +419,7 @@ export default function Catalog() {
                 {/* Filters */}
                 <div className="space-y-3 px-1">
                   <div>
-                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Categoria</label>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>{t('Categoria')}</label>
                     <select
                       value={filters.category}
                       onChange={e => updateFilter('category', e.target.value)}
@@ -428,12 +430,12 @@ export default function Catalog() {
                         color: filters.category ? '#fff' : '#6B7280',
                       }}
                     >
-                      <option value="">Todas</option>
-                      {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                      <option value="">{t('Todas')}</option>
+                      {CATEGORIES.map(c => <option key={c.id} value={c.id}>{t(c.name)}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Condição</label>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>{t('catalog.condition')}</label>
                     <select
                       value={filters.condition}
                       onChange={e => updateFilter('condition', e.target.value)}
@@ -444,12 +446,12 @@ export default function Catalog() {
                         color: filters.condition ? '#fff' : '#6B7280',
                       }}
                     >
-                      <option value="">Todas</option>
-                      {CONDITIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+                      <option value="">{t('Todas')}</option>
+                      {CONDITIONS.map(c => <option key={c.id} value={c.id}>{t(c.label)}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Ano</label>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>{t('Ano')}</label>
                     <div className="grid grid-cols-2 gap-2">
                       <select
                         value={filters.yearStart}
@@ -461,7 +463,7 @@ export default function Catalog() {
                           color: filters.yearStart ? '#fff' : '#6B7280',
                         }}
                       >
-                        <option value="">De</option>
+                        <option value="">{t('De')}</option>
                         {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                       </select>
                       <select
@@ -474,17 +476,17 @@ export default function Catalog() {
                           color: filters.yearEnd ? '#fff' : '#6B7280',
                         }}
                       >
-                        <option value="">Até</option>
+                        <option value="">{t('Até')}</option>
                         {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
                       </select>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>Faixa de Preço (¥)</label>
+                    <label className="block text-xs font-medium mb-1.5" style={{ color: '#6B7280' }}>{t('Faixa de Preço (¥)')}</label>
                     <div className="grid grid-cols-2 gap-2">
                       <input
                         type="number"
-                        placeholder="Mín"
+                        placeholder={t('Mín')}
                         value={filters.minPrice}
                         onChange={e => updateFilter('minPrice', e.target.value)}
                         className="w-full rounded-xl px-3 py-2.5 text-sm outline-none text-white"
@@ -495,7 +497,7 @@ export default function Catalog() {
                       />
                       <input
                         type="number"
-                        placeholder="Máx"
+                        placeholder={t('Máx')}
                         value={filters.maxPrice}
                         onChange={e => updateFilter('maxPrice', e.target.value)}
                         className="w-full rounded-xl px-3 py-2.5 text-sm outline-none text-white"
@@ -515,7 +517,7 @@ export default function Catalog() {
                       className="w-full py-2.5 rounded-xl text-xs font-semibold transition-all hover:bg-white/5"
                       style={{ color: '#6B7280' }}
                     >
-                      ✕ Limpar todos os filtros
+                      {t('catalog.cleanFilters')}
                     </button>
                   </div>
                 )}
@@ -530,7 +532,7 @@ export default function Catalog() {
               <div className="flex items-center gap-3">
                 {!isLoading && (
                   <p className="text-sm" style={{ color: '#6B7280' }}>
-                    <span className="font-semibold text-white">{products?.length || 0}</span> resultados
+                    <span className="font-semibold text-white">{products?.length || 0}</span> {t('catalog.results')}
                   </p>
                 )}
                 {/* View mode toggle */}
@@ -564,7 +566,7 @@ export default function Catalog() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs" style={{ color: '#6B7280' }}>Ordenar:</span>
+                <span className="text-xs" style={{ color: '#6B7280' }}>{t('Ordenar:')}</span>
                 <select
                   value={sortBy}
                   onChange={e => setSortBy(e.target.value)}
@@ -574,10 +576,10 @@ export default function Catalog() {
                     border: '1px solid rgba(255,255,255,0.07)',
                   }}
                 >
-                  <option value="created_at">Mais recentes</option>
-                  <option value="price">Menor preço</option>
-                  <option value="-price">Maior preço</option>
-                  <option value="views">Mais vistos</option>
+                  <option value="created_at">{t('Mais recentes')}</option>
+                  <option value="price">{t('Menor preço')}</option>
+                  <option value="-price">{t('Maior preço')}</option>
+                  <option value="views">{t('Mais vistos')}</option>
                 </select>
               </div>
             </div>
@@ -598,14 +600,14 @@ export default function Catalog() {
                 >
                   <Wrench className="w-9 h-9" style={{ color: '#6B7280' }} />
                 </div>
-                <p className="text-lg font-semibold text-white mb-1">Nenhuma peça encontrada</p>
-                <p className="text-sm mb-5" style={{ color: '#6B7280' }}>Tente ajustar os filtros ou a busca</p>
+                <p className="text-lg font-semibold text-white mb-1">{t('Nenhuma peça encontrada')}</p>
+                <p className="text-sm mb-5" style={{ color: '#6B7280' }}>{t('Tente ajustar os filtros ou a busca')}</p>
                 <button
                   onClick={clearFilters}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
                   style={{ background: 'rgba(13,117,255,0.15)', color: '#4d9cff', border: '1px solid rgba(13,117,255,0.25)' }}
                 >
-                  Limpar filtros
+                  {t('Limpar filtros')}
                 </button>
               </div>
             ) : viewMode === 'grid' ? (
@@ -676,7 +678,7 @@ export default function Catalog() {
                           {product.title}
                         </h3>
                         <p className="text-xs mb-3 truncate" style={{ color: '#6B7280' }}>
-                          {product.categories?.name}
+                          {t(product.categories?.name || '')}
                         </p>
                         <div className="flex items-center justify-between">
                           <p className="text-base font-bold" style={{ color: '#0D75FF' }}>
@@ -743,7 +745,7 @@ export default function Catalog() {
                         <h3 className="text-sm font-semibold text-white truncate group-hover:text-[#4d9cff] transition-colors">
                           {product.title}
                         </h3>
-                        <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>{product.categories?.name}</p>
+                        <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>{t(product.categories?.name || '')}</p>
                       </div>
                       <div className="flex flex-col items-end justify-center gap-2 flex-shrink-0">
                         <p className="text-lg font-bold" style={{ color: '#0D75FF' }}>
