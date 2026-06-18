@@ -312,7 +312,9 @@ export default function Messages() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-white font-medium truncate">{conv.oder.full_name || t('Usuário')}</p>
-                        <p className="text-gray-400 text-sm truncate">{conv.part.title || t('Sem produto')}</p>
+                        <p className="text-gray-400 text-sm truncate">
+                          <AutoTranslateText text={conv.part.title || t('Sem produto')} targetLang={language} simple />
+                        </p>
                         <p className="text-daig-blue text-xs">¥ {conv.part.price?.toLocaleString('ja-JP') || 0}</p>
                       </div>
                       {conv.unreadCount > 0 && (
@@ -344,9 +346,11 @@ export default function Messages() {
                       </div>
                       <div>
                         <span className="text-white font-medium">
-                          {selectedMessages[0]?.sender_id === user.id 
-                            ? selectedMessages.find(m => m.sender_id !== user.id)?.parts?.title || t('Usuário')
-                            : selectedMessages[0]?.parts?.title || t('Usuário')}
+                          {selectedMessages[0]?.sender_id === user.id ? (
+                            <AutoTranslateText text={selectedMessages.find(m => m.sender_id !== user.id)?.parts?.title || t('Usuário')} targetLang={language} simple />
+                          ) : (
+                            <AutoTranslateText text={selectedMessages[0]?.parts?.title || t('Usuário')} targetLang={language} simple />
+                          )}
                         </span>
                         <p className="text-gray-400 text-xs">
                           ¥ {conversation?.part.price.toLocaleString('ja-JP')}

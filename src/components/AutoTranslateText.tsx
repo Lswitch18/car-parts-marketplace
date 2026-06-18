@@ -4,9 +4,10 @@ import { Globe } from 'lucide-react'
 interface AutoTranslateTextProps {
   text: string
   targetLang: string
+  simple?: boolean
 }
 
-export default function AutoTranslateText({ text, targetLang }: AutoTranslateTextProps) {
+export default function AutoTranslateText({ text, targetLang, simple }: AutoTranslateTextProps) {
   const [translatedText, setTranslatedText] = useState<string | null>(null)
   const [showOriginal, setShowOriginal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -48,6 +49,9 @@ export default function AutoTranslateText({ text, targetLang }: AutoTranslateTex
   }, [text, targetLang])
 
   if (loading) {
+    if (simple) {
+      return <span className="opacity-70 animate-pulse">{text}</span>
+    }
     return (
       <span className="opacity-70 animate-pulse flex items-center space-x-1">
         <span>{text}</span>
@@ -60,6 +64,9 @@ export default function AutoTranslateText({ text, targetLang }: AutoTranslateTex
   }
 
   if (translatedText && !showOriginal) {
+    if (simple) {
+      return <span>{translatedText}</span>
+    }
     return (
       <div>
         <p className="text-white">{translatedText}</p>
@@ -75,6 +82,9 @@ export default function AutoTranslateText({ text, targetLang }: AutoTranslateTex
   }
 
   if (translatedText && showOriginal) {
+    if (simple) {
+      return <span>{text}</span>
+    }
     return (
       <div>
         <p className="text-white">{text}</p>
@@ -89,5 +99,5 @@ export default function AutoTranslateText({ text, targetLang }: AutoTranslateTex
     )
   }
 
-  return <p className="text-white">{text}</p>
+  return simple ? <span>{text}</span> : <p className="text-white">{text}</p>
 }
