@@ -1272,4 +1272,47 @@ FILES = {
     }
 }
 
-last_updated = "2026-06-03"
+last_updated = "2026-06-18"
+
+RECENT_COMMITS = [
+    {"hash": "9796922", "message": "feat: implement real transactional email sending via Resend API in notifications edge function and invoke from driver cadastro"},
+    {"hash": "02557ab", "message": "feat: add email registration field and mock confirmation email with Android APK install link to onboarding"},
+    {"hash": "316e8b7", "message": "feat: integrate Capacitor and initialize Android platform for dedicated native APK builds"},
+    {"hash": "3d89c13", "message": "feat: implement dedicated WorkerLogin driver credentials authentication page and resolve lint warnings in tests"},
+    {"hash": "9150273", "message": "refactor: adjust collection updates to pass biometrics and signature base64 in API payloads for production readiness"},
+    {"hash": "419655e", "message": "feat: Driver registration, face biometrics verification and signature pad with admin dashboard monitoring"},
+    {"hash": "19b4a40", "message": "feat: implement Shopee-style logistics pipeline (First-Mile check-in, WMS Triagem, TMS Route dispatcher, and Telemetry tower)"},
+    {"hash": "6f96e9d", "message": "style: restyle all logistix sub-pages and dashboard to dark void and neon theme"},
+    {"hash": "8176c7a", "message": "fix(kpis): resolve exact count destructuring bug & feat: integrate stripe recurring checkout for B2B contracts"},
+    {"hash": "9855757", "message": "feat: implement multi-language legal contracts (PT, EN, JA), PDF generator, and automated B2B key activation"},
+    {"hash": "703d4c4", "message": "test: add unit tests for WMS/TMS logisticsApi status and pipeline updates"},
+    {"hash": "cc0974a", "message": "fix: route logistics tracking internally via SPA tab state to prevent window.open connection resets"},
+    {"hash": "d6a5a40", "message": "design: replace MapaPage OSM Leaflet maps with lightweight status text list"},
+    {"hash": "e32e197", "message": "fix: change reviewer/reviewee query relations to match reviewed_id column name in production reviews table"},
+    {"hash": "5b99fb8", "message": "fix: resolve schema cache relationship issue between reviews and profiles"},
+    {"hash": "0ecdb80", "message": "design: redesign ReviewManagement.tsx with premium neo-brutalist styling, tags, and search filters"},
+    {"hash": "8d9c818", "message": "fix: import and initialize useI18n in LogistixDashboard to fix reference error"},
+    {"hash": "995a6fa", "message": "design: update logo to high resolution clean version without glow"},
+    {"hash": "272887a", "message": "test: add unit tests for adminApi.usuarios endpoints"},
+    {"hash": "03b959a", "message": "fix: route user role and profiles updates through admin edge function"},
+    {"hash": "ed477ba", "message": "feat: add address and phone data sections to rapid moderation popup modal"},
+    {"hash": "9f8b310", "message": "feat: implement interactive user row clicks with moderation card, financial summaries and couriers info"},
+    {"hash": "c197b65", "message": "fix: resolve ReferenceError by moving userParts declaration after state hooks"},
+    {"hash": "88ce062", "message": "feat: add interactive ads list and moderation card to user details sidebar"},
+    {"hash": "72bfced", "message": "fix: resolve select().catch is not a function error"},
+    {"hash": "7dbf030", "message": "feat: add ads count and modal list to UserManagement admin panel"},
+    {"hash": "da44b42", "message": "fix: mapeamento correto da coluna phone e suporte a valores nulos no edge function"},
+    {"hash": "2e2efe7", "message": "feat: customizacao no controle de usuarios, exclusao com modal supabase, bloqueio e disparo real de email"},
+    {"hash": "662ddfc", "message": "feat: modal de exclusão estilo Supabase + alinhamento automático setor/cargo"},
+    {"hash": "79a6fce", "message": "feat: bloqueio/exclusão de usuários + criação em modal no UserManagement"},
+    {"hash": "f8c79f3", "message": "feat: logotipo SVG vetorial com engrenagem em formato de G"},
+    {"hash": "fa03b68", "message": "feat: exportar relatórios para PDF + ledger cards clicáveis"},
+    {"hash": "b66e061", "message": "feat: cadastro de terceiros e integração de contratos no ledger financeiro"},
+    {"hash": "8ce00d2", "message": "feat: remove demo mode — SimulateSale do dashboard e fallback local do checkout"},
+    {"hash": "106be6b", "message": "feat: ChatPopup oculto em rotas admin + abertura automática só p/ mensagens recebidas"},
+    {"hash": "36d4b19", "message": "fix: variable shadowing do i18n t() no map de transactions"},
+    {"hash": "ac020af", "message": "feat: régua de pagamentos e ledger financeiro no admin"},
+    {"hash": "b5fa3ca", "message": "fix: aliases nas joins do Supabase em TransactionManagement — resolve 400 Bad Request nas transactions"},
+    {"hash": "8cb577f", "message": "fix: tratamento O.map is not a function — extrai .rows/.data das respostas da API Logistix"},
+    {"hash": "5808a1e", "message": "fix: validação Array.isArray() nas permissões de cargo — fallback [] evita .map() crash com objeto JSON"}
+]
