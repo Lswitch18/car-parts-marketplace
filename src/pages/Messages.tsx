@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '../stores/authStore'
@@ -58,6 +58,8 @@ export default function Messages() {
   const [proposedPrice, setProposedPrice] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
 
   const suggestAiResponse = async () => {
     if (!selectedMessages || selectedMessages.length === 0) {
@@ -183,6 +185,10 @@ export default function Messages() {
   })
 
   useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [selectedMessages])
+
+  useEffect(() => {
     if (user && selectedConversation) {
       queryClient.invalidateQueries({ queryKey: ['messages', user.id, selectedConversation] })
     }
@@ -290,7 +296,7 @@ export default function Messages() {
 
         <div className="card overflow-hidden" style={{ height: '600px' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
-            <div className="border-r border-border overflow-y-auto">
+            <div className={`border-r border-border overflow-y-auto ${selectedConversation ? 'hidden md:block' : 'block'}`}>
               {conversations && conversations.length > 0 ? (
                 conversations.map((conv: any) => (
                   <button
@@ -325,7 +331,7 @@ export default function Messages() {
               )}
             </div>
 
-            <div className="col-span-2 flex flex-col">
+            <div className={`col-span-2 flex-col ${!selectedConversation ? 'hidden md:flex' : 'flex'}`}>
               {selectedConversation && selectedMessages ? (
                 <>
                   <div className="p-4 border-b border-border flex items-center justify-between">
@@ -414,6 +420,7 @@ export default function Messages() {
                         </div>
                       )
                     })}
+                    <div ref={messagesEndRef} />
                   </div>
 
                   {currentPrice && (
