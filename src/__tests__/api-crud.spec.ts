@@ -150,6 +150,10 @@ describe('Admin API - LIST (GET)', () => {
 // ═══════════════════════════════════════════════════════════════
 
 describe('Logistics API - LIST (GET)', () => {
+  if (!TOKEN) {
+    it.skip('SUPABASE_ACCESS_TOKEN não configurado');
+    return;
+  }
 
   it('GET /oms/shipments', async () => {
     const data = await logisticsFetch<any[]>('/oms/shipments');
@@ -194,12 +198,17 @@ describe('Logistics API - LIST (GET)', () => {
 // ═══════════════════════════════════════════════════════════════
 
 describe('Admin API - CRUD Cycle (POST → GET → PUT)', () => {
+  if (!TOKEN) {
+    it.skip('SUPABASE_ACCESS_TOKEN não configurado');
+    return;
+  }
 
   const uid = `${TEST_PREFIX}`;
   let createdClienteId: string;
   let createdArmazemId: string;
   let createdPedidoId: string;
   let createdOcorrenciaId: string;
+
 
   // ── CLIENTES ──────────────────────────────────────────────
 
@@ -423,6 +432,10 @@ describe('Admin API - CRUD Cycle (POST → GET → PUT)', () => {
 // ═══════════════════════════════════════════════════════════════
 
 describe('Logistics API - POST / WMS operations', () => {
+  if (!TOKEN) {
+    it.skip('SUPABASE_ACCESS_TOKEN não configurado');
+    return;
+  }
 
   it('POST /wms/receive → recebe pacote no inventário', async () => {
     const data = await logisticsFetch<any>('/wms/receive', {
