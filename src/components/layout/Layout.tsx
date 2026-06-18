@@ -4,7 +4,14 @@ import Footer from './Footer'
 
 export default function Layout() {
   const location = useLocation()
-  const isMessagesPage = location.pathname === '/messages'
+  
+  const showFooter = 
+    location.pathname === '/' ||
+    location.pathname === '/catalog' ||
+    location.pathname === '/parts' ||
+    location.pathname === '/cars' ||
+    location.pathname === '/auctions' ||
+    location.pathname.startsWith('/product/')
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -12,7 +19,7 @@ export default function Layout() {
       <main className="flex-1 pt-20 md:pt-24">
         <Outlet />
       </main>
-      {!isMessagesPage && <Footer />}
+      {showFooter && <Footer />}
     </div>
   )
 }
