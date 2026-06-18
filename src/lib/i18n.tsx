@@ -586,12 +586,7 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      const browserLang = navigator.language.split('-')[0] as Language
-      if (['pt', 'en', 'ja'].includes(browserLang)) {
-        return browserLang
-      }
-    }
+    // Always default to Japanese ('ja') as requested
     return 'ja'
   })
 
