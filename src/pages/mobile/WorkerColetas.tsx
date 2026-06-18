@@ -51,15 +51,19 @@ export default function WorkerColetas() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (novoStatus: string) => {
+    mutationFn: async (payloadData: { status: string; assinatura?: string }) => {
       const gps = await getCurrentPosition();
-      const payload: any = { status: novoStatus };
-      if (novoStatus === 'coletado') {
+      const payload: any = { status: payloadData.status };
+      if (payloadData.status === 'coletado') {
         payload.data_coleta = new Date().toISOString();
       }
+      if (payloadData.assinatura) {
+        payload.assinatura = payloadData.assinatura;
+        payload.biometria_verificada = true;
+      }
       if (gps) {
-        payload[`latitude_${novoStatus}`] = gps.latitude;
-        payload[`longitude_${novoStatus}`] = gps.longitude;
+        payload[`latitude_${payloadData.status}`] = gps.latitude;
+        payload[`longitude_${payloadData.status}`] = gps.longitude;
       }
       return mobileApi.coletas.update(selected.id, payload);
     },
@@ -172,7 +176,7 @@ export default function WorkerColetas() {
     } else {
       // Complete single collection
       localStorage.setItem(`col_sig_${selected.id}`, signatureBase64);
-      updateMutation.mutate('coletado');
+      updateMutation.mutate({ status: 'coletado', assinatura: signatureBase64 });
     }
   };
 
@@ -327,7 +331,7 @@ export default function WorkerColetas() {
                           e.stopPropagation();
                           try {
                             setSelected(row);
-                            await updateMutation.mutateAsync('em_transito');
+                            await updateMutation.mutateAsync({ status: 'em_transito' });
                           } catch (err) {
                             alert('Erro ao iniciar coleta: ' + (err as any)?.message);
                           }
