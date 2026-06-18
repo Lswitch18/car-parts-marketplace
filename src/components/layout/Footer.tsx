@@ -34,7 +34,7 @@ export default function Footer() {
       {/* Seção Principal - FUNDO PRETO */}
       <div className="bg-black text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
             {/* Coluna 1: Logo + Descrição */}
             <div>
@@ -105,26 +105,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Coluna 3: Marcas */}
-            <div>
-              <h3 className="font-bold text-white mb-4">{t('Marcas')}</h3>
-              <ul className="space-y-2">
-                <li><span className="text-gray-300">Nissan</span></li>
-                <li><span className="text-gray-300">Toyota</span></li>
-                <li><span className="text-gray-300">Honda</span></li>
-                <li><span className="text-gray-300">Mazda</span></li>
-                <li><span className="text-gray-300">Subaru</span></li>
-                <li><span className="text-gray-300">Mitsubishi</span></li>
-                <li><span className="text-gray-300">Lexus</span></li>
-                <li><span className="text-gray-300">Acura</span></li>
-                <li><span className="text-gray-300">Infiniti</span></li>
-                <li><span className="text-gray-300">Porsche</span></li>
-                <li><span className="text-gray-300">BMW</span></li>
-                <li><span className="text-gray-300">Audi</span></li>
-                <li><span className="text-gray-300">Tesla</span></li>
-                <li><span className="text-gray-300">BYD</span></li>
-              </ul>
-            </div>
 
             {/* Coluna 4: Recursos */}
             <div>
