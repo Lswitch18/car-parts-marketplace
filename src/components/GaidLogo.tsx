@@ -44,10 +44,6 @@ const GaidLogo: React.FC<{
         style={{
           width: size,
           height: size,
-          boxShadow: animated ? '0 0 12px rgba(13, 117, 255, 0.4), inset 0 0 8px rgba(13, 117, 255, 0.2)' : '0 0 8px rgba(13, 117, 255, 0.3)',
-          border: '1px solid rgba(13, 117, 255, 0.3)',
-          animation: animated ? 'daig-logo-pulse 2.5s ease-in-out infinite' : 'none',
-          overflow: 'hidden',
           background: '#030305',
           flexShrink: 0
         }}
@@ -60,13 +56,6 @@ const GaidLogo: React.FC<{
               <stop offset="70%" stopColor="#647E9C" />
               <stop offset="100%" stopColor="#1E2E42" />
             </linearGradient>
-            <filter id="gear-neon-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </defs>
 
           {/* Dynamic Gear Teeth */}
@@ -113,32 +102,9 @@ const GaidLogo: React.FC<{
           />
 
           {/* Inner decorative gear core */}
-          <circle cx="50" cy="50" r="10" fill="none" stroke="#2563EB" strokeWidth="1.5" opacity="0.8" />
-          <circle cx="50" cy="50" r="5" fill="#030305" stroke="#2563EB" strokeWidth="1" />
+          <circle cx="50" cy="50" r="10" fill="none" stroke="#647E9C" strokeWidth="1.5" opacity="0.5" />
+          <circle cx="50" cy="50" r="5" fill="#030305" stroke="#647E9C" strokeWidth="1" />
         </svg>
-
-        <style>{`
-          @keyframes daig-logo-pulse {
-            0%, 100% {
-              box-shadow: 0 0 12px rgba(13, 117, 255, 0.4), inset 0 0 8px rgba(13, 117, 255, 0.2);
-              border-color: rgba(13, 117, 255, 0.3);
-            }
-            50% {
-              box-shadow: 0 0 24px rgba(0, 229, 255, 0.8), inset 0 0 16px rgba(0, 229, 255, 0.4);
-              border-color: rgba(0, 229, 255, 0.6);
-            }
-          }
-          @keyframes neon-pulse {
-            0%, 100% {
-              text-shadow: 0 0 4px rgba(13, 117, 255, 0.3), 0 0 12px rgba(13, 117, 255, 0.1);
-              opacity: 0.9;
-            }
-            50% {
-              text-shadow: 0 0 8px rgba(13, 117, 255, 0.6), 0 0 24px rgba(13, 117, 255, 0.3), 0 0 48px rgba(13, 117, 255, 0.15);
-              opacity: 1;
-            }
-          }
-        `}</style>
       </div>
 
       {/* ══════════════════════════════════════
@@ -174,22 +140,26 @@ const GaidLogo: React.FC<{
             >
               D
             </span>
-            {/* A — neon blue */}
+            {/* A — metallic chrome */}
             <span
               style={{
-                color: '#0D75FF',
-                textShadow: '0 0 8px rgba(13,117,255,0.8), 0 0 24px rgba(13,117,255,0.4), 0 0 48px rgba(13,117,255,0.2)',
-                animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
+                background: 'linear-gradient(175deg, #FFFFFF 0%, #C8D8F4 38%, #9AAEC6 70%, #E8F0FA 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 1px 2px rgba(13,117,255,0.2))',
               }}
             >
               A
             </span>
-            {/* I — neon blue */}
+            {/* I — metallic chrome */}
             <span
               style={{
-                color: '#0D75FF',
-                textShadow: '0 0 8px rgba(13,117,255,0.8), 0 0 24px rgba(13,117,255,0.4), 0 0 48px rgba(13,117,255,0.2)',
-                animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
+                background: 'linear-gradient(175deg, #FFFFFF 0%, #C8D8F4 38%, #9AAEC6 70%, #E8F0FA 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                filter: 'drop-shadow(0 1px 2px rgba(13,117,255,0.2))',
               }}
             >
               I
@@ -221,11 +191,7 @@ const GaidLogo: React.FC<{
             }}
           >
             <span style={{ color: '#8892A4' }}>DIGITAL{'\u00A0'}</span>
-            <span style={{
-              color: '#0D75FF',
-              textShadow: '0 0 8px rgba(13,117,255,0.6), 0 0 24px rgba(13,117,255,0.3)',
-              animation: animated ? 'neon-pulse 2s ease-in-out infinite' : 'none',
-            }}>A.I.</span>
+            <span style={{ color: '#8892A4' }}>A.I.</span>
             <span style={{ color: '#8892A4' }}>{'\u00A0'}GARAGE</span>
           </div>
 
@@ -249,7 +215,7 @@ const GaidLogo: React.FC<{
                 style={{
                   width: '14px',
                   height: '1.5px',
-                  background: 'linear-gradient(90deg, #0D75FF, #7000FF)',
+                  background: 'linear-gradient(90deg, #647E9C, #1E2E42)',
                   display: 'inline-block',
                   borderRadius: '2px',
                 }}
