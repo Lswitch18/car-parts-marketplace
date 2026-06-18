@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { User, FileText, Smartphone, Truck, ShieldCheck, Camera, CheckCircle } from 'lucide-react';
+import { User, FileText, Smartphone, Truck, ShieldCheck, Camera, CheckCircle, Mail, Download, X } from 'lucide-react';
 import BiometricScanner from '../../components/mobile/BiometricScanner';
 
 interface DriverProfile {
   name: string;
+  email: string;
   cnh: string;
   plate: string;
   phone: string;
@@ -13,6 +14,7 @@ interface DriverProfile {
 
 export default function WorkerCadastro() {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [cnh, setCnh] = useState('');
   const [plate, setPlate] = useState('');
   const [phone, setPhone] = useState('');
@@ -21,6 +23,7 @@ export default function WorkerCadastro() {
 
   const [activeScanner, setActiveScanner] = useState<'face' | 'document' | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
 
   // Load existing profile if any
   useEffect(() => {
@@ -31,6 +34,7 @@ export default function WorkerCadastro() {
       try {
         const profile = JSON.parse(savedProfileStr) as DriverProfile;
         setName(profile.name || '');
+        setEmail(profile.email || '');
         setCnh(profile.cnh || '');
         setPlate(profile.plate || '');
         setPhone(profile.phone || '');
@@ -45,7 +49,7 @@ export default function WorkerCadastro() {
   }, []);
 
   const handleSave = () => {
-    if (!name || !cnh || !plate || !phone) {
+    if (!name || !email || !cnh || !plate || !phone) {
       alert('Por favor, preencha todos os campos cadastrais.');
       return;
     }
@@ -60,6 +64,7 @@ export default function WorkerCadastro() {
 
     const profile: DriverProfile = {
       name,
+      email,
       cnh,
       plate,
       phone,
@@ -72,7 +77,8 @@ export default function WorkerCadastro() {
     setSavedSuccess(true);
     setTimeout(() => {
       setSavedSuccess(false);
-    }, 3000);
+      setShowEmailPreview(true); // Open the mock email download preview modal
+    }, 1500);
   };
 
   const handleCapture = (image: string) => {
@@ -101,7 +107,7 @@ export default function WorkerCadastro() {
           <CheckCircle className="text-green-400 shrink-0" size={24} />
           <div>
             <p className="text-sm font-bold text-green-400">Cadastro Salvo com Sucesso!</p>
-            <p className="text-xs text-green-500/80">Dados e biometria atualizados localmente.</p>
+            <p className="text-xs text-green-500/80">Enviando e-mail de instalação para {email}...</p>
           </div>
         </div>
       )}
@@ -122,6 +128,23 @@ export default function WorkerCadastro() {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Digite seu nome completo"
+              className="w-full h-11 pl-10 pr-4 bg-[#0B1220] border border-white/5 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+            />
+          </div>
+        </div>
+
+        {/* Email */}
+        <div className="space-y-1.5">
+          <label className="text-xs text-gray-400 block font-medium">E-mail</label>
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-500">
+              <Mail size={16} />
+            </span>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Ex: motorista@provedor.com"
               className="w-full h-11 pl-10 pr-4 bg-[#0B1220] border border-white/5 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
@@ -259,6 +282,85 @@ export default function WorkerCadastro() {
           title={activeScanner === 'face' ? 'Escanear Rosto' : 'Escanear CNH'}
         />
       )}
+
+      {/* Mock Email Client Preview Modal */}
+      {showEmailPreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4">
+          <div className="bg-[#111827] rounded-3xl border border-white/10 w-full max-w-lg overflow-hidden shadow-2xl">
+            
+            {/* Header simulated inbox */}
+            <div className="bg-[#1F2937] p-4 flex items-center justify-between border-b border-white/5">
+              <div className="flex items-center gap-2">
+                <div className="w-3.5 h-3.5 bg-red-500 rounded-full" />
+                <div className="w-3.5 h-3.5 bg-yellow-500 rounded-full" />
+                <div className="w-3.5 h-3.5 bg-green-500 rounded-full" />
+                <span className="text-xs text-gray-400 font-bold ml-2 font-mono">Caixa de Entrada (Simulação)</span>
+              </div>
+              <button onClick={() => setShowEmailPreview(false)} className="text-gray-400 hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Email Headers info */}
+            <div className="p-4 bg-[#182232] space-y-1 text-xs border-b border-white/5">
+              <p><span className="text-gray-500">De:</span> <span className="text-blue-400 font-bold">DAIG Logistix Express</span> &lt;noreply@daiglogistix.com&gt;</p>
+              <p><span className="text-gray-500">Para:</span> <span className="text-gray-300 font-medium">{email}</span></p>
+              <p><span className="text-gray-500">Assunto:</span> <span className="text-white font-bold">Bem-vindo ao DAIG Logistix Express - Link para Download do App</span></p>
+            </div>
+
+            {/* Email Body template */}
+            <div className="p-6 space-y-6 text-sm text-gray-300 max-h-[50vh] overflow-y-auto font-sans leading-relaxed">
+              <div className="text-center space-y-2">
+                <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto text-blue-400">
+                  <Truck size={24} />
+                </div>
+                <h2 className="text-lg font-black text-white">Olá, {name}!</h2>
+                <p className="text-xs text-gray-400">Seu cadastro biométrico foi aprovado no painel administrativo.</p>
+              </div>
+
+              <div className="bg-[#0B1220] rounded-2xl p-4 border border-white/5 space-y-2">
+                <p className="text-xs text-blue-400 font-bold uppercase tracking-wider">Suas Credenciais do Motorista:</p>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                  <p className="text-gray-500">CNH: <span className="text-white font-bold">{cnh}</span></p>
+                  <p className="text-gray-500">Placa: <span className="text-white font-bold">{plate}</span></p>
+                </div>
+              </div>
+
+              <p>
+                Para começar a realizar coletas e entregas em campo, faça o download e instalação do aplicativo móvel dedicado **DAIG Logistix Express** no seu dispositivo Android.
+              </p>
+
+              <div className="text-center pt-2">
+                <a
+                  href="/app/worker/install"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setShowEmailPreview(false)}
+                  className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-black font-black py-3 px-6 rounded-2xl text-xs tracking-wider uppercase shadow-[0_0_15px_rgba(59,130,246,0.2)] transition-all"
+                >
+                  <Download size={14} /> Baixar Aplicativo (APK)
+                </a>
+              </div>
+
+              <p className="text-[10px] text-gray-500 text-center pt-4 border-t border-white/5">
+                Caso tenha dúvidas sobre a instalação, acesse a central de suporte em campo.
+              </p>
+            </div>
+
+            {/* Footer action */}
+            <div className="bg-[#1F2937] p-4 flex justify-end border-t border-white/5">
+              <button
+                onClick={() => setShowEmailPreview(false)}
+                className="h-10 px-5 bg-blue-500 text-black font-bold rounded-xl text-xs uppercase"
+              >
+                Concluir
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 
 interface DriverProfileInput {
   name: string;
+  email: string;
   cnh: string;
   plate: string;
   phone: string;
@@ -16,6 +17,9 @@ interface DriverProfileInput {
 function validateDriverRegistration(profile: DriverProfileInput): string | null {
   if (!profile.name || profile.name.trim() === '') {
     return 'Nome completo é obrigatório';
+  }
+  if (!profile.email || profile.email.trim() === '' || !profile.email.includes('@')) {
+    return 'E-mail válido é obrigatório';
   }
   if (!profile.cnh || profile.cnh.trim() === '') {
     return 'Número da CNH é obrigatório';
@@ -110,6 +114,7 @@ function checkCollectionAuth(state: VerificationState): {
 describe('Driver Registration & Onboarding Validation', () => {
   const validProfile: DriverProfileInput = {
     name: 'José Motorista',
+    email: 'jose@daig.com',
     cnh: '12345678900',
     plate: 'ABC-1234',
     phone: '11999999999',
@@ -124,6 +129,14 @@ describe('Driver Registration & Onboarding Validation', () => {
   it('deve rejeitar cadastro sem nome', () => {
     const p: DriverProfileInput = { ...validProfile, name: '' };
     expect(validateDriverRegistration(p)).toBe('Nome completo é obrigatório');
+  });
+
+  it('deve rejeitar cadastro sem email válido', () => {
+    const p1: DriverProfileInput = { ...validProfile, email: '' };
+    expect(validateDriverRegistration(p1)).toBe('E-mail válido é obrigatório');
+
+    const p2: DriverProfileInput = { ...validProfile, email: 'email_invalido' };
+    expect(validateDriverRegistration(p2)).toBe('E-mail válido é obrigatório');
   });
 
   it('deve rejeitar cadastro sem CNH', () => {
