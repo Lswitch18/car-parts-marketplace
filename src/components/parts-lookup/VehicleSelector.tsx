@@ -1,12 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../lib/api'
 import { useState, useEffect } from 'react'
+import { useI18n } from '../../lib/i18n'
 
 interface Props {
   onVehicleSelect: (vehicleId: string) => void
 }
 
 export default function VehicleSelector({ onVehicleSelect }: Props) {
+  const { t } = useI18n()
   const [selectedBrand, setSelectedBrand] = useState('')
   const [selectedModel, setSelectedModel] = useState('')
   const [selectedYear, setSelectedYear] = useState('')
@@ -76,13 +78,13 @@ export default function VehicleSelector({ onVehicleSelect }: Props) {
     <div className="bg-[#0A0A0F] border border-white/5 rounded-2xl p-5 mb-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
-          <label className="block text-xs text-gray-400 mb-1.5">Marca</label>
+          <label className="block text-xs text-gray-400 mb-1.5">{t('Marca')}</label>
           <select
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
             className="w-full bg-black border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#00E5FF] transition-colors"
           >
-            <option value="">Selecione uma marca</option>
+            <option value="">{t('Selecione uma marca')}</option>
             {brands?.map((b) => (
               <option key={b.id} value={b.id}>{b.name}</option>
             ))}
@@ -90,14 +92,14 @@ export default function VehicleSelector({ onVehicleSelect }: Props) {
         </div>
 
         <div>
-          <label className="block text-xs text-gray-400 mb-1.5">Modelo</label>
+          <label className="block text-xs text-gray-400 mb-1.5">{t('Modelo')}</label>
           <select
             value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
             disabled={!selectedBrand}
             className="w-full bg-black border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#00E5FF] transition-colors disabled:opacity-40"
           >
-            <option value="">Selecione um modelo</option>
+            <option value="">{t('Selecione um modelo')}</option>
             {models?.map((m) => (
               <option key={m.name} value={m.name}>{m.name}</option>
             ))}
@@ -105,14 +107,14 @@ export default function VehicleSelector({ onVehicleSelect }: Props) {
         </div>
 
         <div>
-          <label className="block text-xs text-gray-400 mb-1.5">Ano</label>
+          <label className="block text-xs text-gray-400 mb-1.5">{t('Ano')}</label>
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
             disabled={!selectedModel}
             className="w-full bg-black border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#00E5FF] transition-colors disabled:opacity-40"
           >
-            <option value="">Selecione o ano</option>
+            <option value="">{t('Selecione o ano')}</option>
             {years.map((y) => (
               <option key={y} value={y}>{y}</option>
             ))}
@@ -120,14 +122,14 @@ export default function VehicleSelector({ onVehicleSelect }: Props) {
         </div>
 
         <div>
-          <label className="block text-xs text-gray-400 mb-1.5">Versão</label>
+          <label className="block text-xs text-gray-400 mb-1.5">{t('Versão')}</label>
           <select
             value={selectedVehicleId}
             onChange={handleVehicleChange}
             disabled={!vehicles || vehicles.length === 0}
             className="w-full bg-black border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#00E5FF] transition-colors disabled:opacity-40"
           >
-            <option value="">Selecione a versão</option>
+            <option value="">{t('Selecione a versão')}</option>
             {vehicles?.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.generation || v.name} {v.chassis_code ? `(${v.chassis_code})` : ''} {v.engine_code || ''}

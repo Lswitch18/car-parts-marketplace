@@ -2,6 +2,7 @@ import { PartCatalogItem } from '../../types'
 import { X, Wrench } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../lib/api'
+import { useI18n } from '../../lib/i18n'
 
 interface Props {
   partNumber: string
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function PartDetailDrawer({ partNumber, onClose }: Props) {
+  const { t } = useI18n()
   const { data: part, isLoading } = useQuery({
     queryKey: ['parts-lookup', 'detail', partNumber],
     queryFn: () => api.partsLookup.partDetail(partNumber),
@@ -21,7 +23,7 @@ export default function PartDetailDrawer({ partNumber, onClose }: Props) {
       <div className="fixed inset-0 bg-black/50 z-50" onClick={onClose} />
       <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-[#0A0A0F] border-l border-white/10 z-50 overflow-y-auto">
         <div className="sticky top-0 bg-[#0A0A0F] border-b border-white/5 p-4 flex items-center justify-between">
-          <h2 className="text-white font-semibold">Detalhes da Peça</h2>
+          <h2 className="text-white font-semibold">{t('Detalhes da Peça')}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white p-1">
             <X className="w-5 h-5" />
           </button>
@@ -55,21 +57,21 @@ export default function PartDetailDrawer({ partNumber, onClose }: Props) {
 
             {part.price_reference && (
               <div className="flex items-center justify-between bg-black rounded-xl p-4">
-                <span className="text-gray-400 text-sm">Preço de referência</span>
+                <span className="text-gray-400 text-sm">{t('Preço de referência')}</span>
                 <span className="text-[#00E5FF] text-xl font-bold">¥{part.price_reference.toLocaleString()}</span>
               </div>
             )}
 
             {part.description && (
               <div>
-                <h4 className="text-gray-300 text-sm font-medium mb-2">Descrição</h4>
+                <h4 className="text-gray-300 text-sm font-medium mb-2">{t('Descrição')}</h4>
                 <p className="text-gray-400 text-sm">{part.description}</p>
               </div>
             )}
 
             {part.specs && Object.keys(part.specs).length > 0 && (
               <div>
-                <h4 className="text-gray-300 text-sm font-medium mb-2">Especificações</h4>
+                <h4 className="text-gray-300 text-sm font-medium mb-2">{t('Especificações')}</h4>
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(part.specs).map(([k, v]) => (
                     <div key={k} className="bg-black rounded-lg px-3 py-2">
@@ -87,7 +89,7 @@ export default function PartDetailDrawer({ partNumber, onClose }: Props) {
                   {part.brand.name[0]}
                 </div>
                 <div>
-                  <span className="text-gray-400 text-xs">Marca</span>
+                  <span className="text-gray-400 text-xs">{t('Marca')}</span>
                   <p className="text-white text-sm">{part.brand.name}</p>
                 </div>
               </div>
@@ -96,7 +98,7 @@ export default function PartDetailDrawer({ partNumber, onClose }: Props) {
             {part.compatible_vehicles && part.compatible_vehicles.length > 0 && (
               <div>
                 <h4 className="text-gray-300 text-sm font-medium mb-2">
-                  Veículos Compatíveis ({part.compatible_vehicles.length})
+                  {t('Veículos Compatíveis')} ({part.compatible_vehicles.length})
                 </h4>
                 <div className="space-y-2">
                   {part.compatible_vehicles.map((f) => (
@@ -129,7 +131,7 @@ export default function PartDetailDrawer({ partNumber, onClose }: Props) {
           </div>
         ) : (
           <div className="p-6 text-center text-gray-500">
-            Peça não encontrada
+            {t('Peça não encontrada')}
           </div>
         )}
       </div>

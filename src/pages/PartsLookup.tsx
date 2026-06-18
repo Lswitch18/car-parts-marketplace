@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { useI18n } from '../lib/i18n'
 import { api } from '../lib/api'
 import { PartCatalogItem } from '../types'
 import PartsLookupHeader from '../components/parts-lookup/PartsLookupHeader'
@@ -28,6 +29,7 @@ function SkeletonGrid() {
 }
 
 export default function PartsLookup() {
+  const { t } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = (searchParams.get('mode') as 'vehicle' | 'number' | 'category') || 'vehicle'
   const q = searchParams.get('q') || ''
@@ -114,7 +116,7 @@ export default function PartsLookup() {
                       <span className="w-1.5 h-5 rounded-full bg-[#00E5FF]" />
                       {group.category.name}
                       <span className="text-gray-500 text-sm font-normal">
-                        ({group.parts.length} peças)
+                        ({group.parts.length} {t('peças')})
                       </span>
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -127,11 +129,11 @@ export default function PartsLookup() {
               </div>
             ) : !vehicleLoading && selectedVehicleId ? (
               <div className="text-center py-12 text-gray-500">
-                Nenhuma peça cadastrada para este veículo ainda.
+                {t('Nenhuma peça cadastrada para este veículo ainda.')}
               </div>
             ) : (
               <div className="text-center py-12 text-gray-500">
-                Selecione um veículo acima para ver as peças compatíveis.
+                {t('Selecione um veículo acima para ver as peças compatíveis.')}
               </div>
             )}
           </>
@@ -147,7 +149,7 @@ export default function PartsLookup() {
             {!searchLoading && searchResults && searchResults.parts.length > 0 ? (
               <>
                 <p className="text-gray-400 text-sm mb-4">
-                  {searchResults.total} resultado{searchResults.total !== 1 ? 's' : ''} para "{q}"
+                  {searchResults.total} {searchResults.total !== 1 ? t('resultados') : t('resultado')} {t('para')} "{q}"
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {searchResults.parts.map((part) => (
@@ -161,7 +163,7 @@ export default function PartsLookup() {
                       disabled={page <= 1}
                       className="px-4 py-2 rounded-lg bg-[#0A0A0F] border border-white/10 text-white text-sm disabled:opacity-30 hover:border-[#00E5FF]/30 transition-colors"
                     >
-                      Anterior
+                      {t('Anterior')}
                     </button>
                     <span className="px-4 py-2 text-gray-400 text-sm">
                       {page} / {searchResults.total_pages}
@@ -171,18 +173,18 @@ export default function PartsLookup() {
                       disabled={page >= searchResults.total_pages}
                       className="px-4 py-2 rounded-lg bg-[#0A0A0F] border border-white/10 text-white text-sm disabled:opacity-30 hover:border-[#00E5FF]/30 transition-colors"
                     >
-                      Próximo
+                      {t('Próximo')}
                     </button>
                   </div>
                 )}
               </>
             ) : !searchLoading && q ? (
               <div className="text-center py-12 text-gray-500">
-                Nenhuma peça encontrada para "{q}". Tente outro termo.
+                {t('Nenhuma peça encontrada para')} "{q}". {t('Tente outro termo.')}
               </div>
             ) : (
               <div className="text-center py-12 text-gray-500">
-                Digite um número OEM, part number ou nome da peça para buscar.
+                {t('Digite um número OEM, part number ou nome da peça para buscar.')}
               </div>
             )}
           </>
@@ -198,13 +200,13 @@ export default function PartsLookup() {
             {searchCategoryId && (
               <div className="mt-6">
                 <div className="flex items-center gap-4 mb-4">
-                  <h3 className="text-white font-semibold text-lg">Peças</h3>
+                  <h3 className="text-white font-semibold text-lg">{t('Peças')}</h3>
                   <select
                     value={searchBrandId}
                     onChange={(e) => setParam('brand_id', e.target.value)}
                     className="bg-[#0A0A0F] border border-white/10 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#00E5FF]"
                   >
-                    <option value="">Todas as marcas</option>
+                    <option value="">{t('Todas as marcas')}</option>
                     {brands?.map((b) => (
                       <option key={b.id} value={b.id}>{b.name}</option>
                     ))}
@@ -225,7 +227,7 @@ export default function PartsLookup() {
                           disabled={page <= 1}
                           className="px-4 py-2 rounded-lg bg-[#0A0A0F] border border-white/10 text-white text-sm disabled:opacity-30 hover:border-[#00E5FF]/30 transition-colors"
                         >
-                          Anterior
+                          {t('Anterior')}
                         </button>
                         <span className="px-4 py-2 text-gray-400 text-sm">
                           {page} / {categoryParts.total_pages}
@@ -235,14 +237,14 @@ export default function PartsLookup() {
                           disabled={page >= categoryParts.total_pages}
                           className="px-4 py-2 rounded-lg bg-[#0A0A0F] border border-white/10 text-white text-sm disabled:opacity-30 hover:border-[#00E5FF]/30 transition-colors"
                         >
-                          Próximo
+                          {t('Próximo')}
                         </button>
                       </div>
                     )}
                   </>
                 ) : !categoryLoading ? (
                   <div className="text-center py-12 text-gray-500">
-                    Nenhuma peça encontrada nesta categoria.
+                    {t('Nenhuma peça encontrada nesta categoria.')}
                   </div>
                 ) : null}
               </div>
