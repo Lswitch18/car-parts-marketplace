@@ -224,6 +224,8 @@ const translations: { [lang: string]: Translation } = {
     'Especificações': '仕様・スペック',
     'Veículos Compatíveis': '適合車両',
     'Peça não encontrada': 'パーツが見つかりませんでした',
+    'conversa': '会話',
+    'peça': 'パーツ',
   },
   en: {
     'Catálogo': 'Catalog',
@@ -444,6 +446,8 @@ const translations: { [lang: string]: Translation } = {
     'Especificações': 'Specifications',
     'Veículos Compatíveis': 'Compatible Vehicles',
     'Peça não encontrada': 'Part not found',
+    'conversa': 'conversation',
+    'peça': 'part',
   },
   pt: {
     'Catálogo': 'Catálogo',
@@ -664,6 +668,8 @@ const translations: { [lang: string]: Translation } = {
     'Especificações': 'Especificações',
     'Veículos Compatíveis': 'Veículos Compatíveis',
     'Peça não encontrada': 'Peça não encontrada',
+    'conversa': 'conversa',
+    'peça': 'peça',
   }
 }
 

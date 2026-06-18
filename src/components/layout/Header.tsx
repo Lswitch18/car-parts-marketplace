@@ -193,79 +193,36 @@ export default function Header() {
                   <Heart className="w-5 h-5" />
                 </Link>
 
-                {/* Messages dropdown */}
-                <div className="relative">
-                  <button
-                    id="header-messages-btn"
-                    onClick={() => setMessagesOpen(!messagesOpen)}
-                    onBlur={() => setTimeout(() => setMessagesOpen(false), 200)}
-                    className="p-2 rounded-lg transition-all relative"
-                    style={{ color: '#6B7280' }}
-                    onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
-                      ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
-                    }}
-                    onMouseLeave={(e) => {
-                      ;(e.currentTarget as HTMLElement).style.color = '#6B7280'
-                      ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                    }}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    {unreadCount > 0 && (
-                      <span
-                        className="absolute top-1 right-1 text-[10px] font-bold min-w-[16px] text-center rounded-full"
-                        style={{
-                          background: '#FF4B4B',
-                          color: '#FFFFFF',
-                          padding: '1px 4px',
-                          border: '2px solid rgba(5,5,8,0.9)',
-                        }}
-                      >
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </button>
-
-                  {messagesOpen && (
-                    <div
-                      className="absolute right-0 mt-2 w-60 rounded-xl overflow-hidden"
+                {/* Messages link */}
+                <Link
+                  id="header-messages-btn"
+                  to="/messages"
+                  className="p-2 rounded-lg transition-all relative block"
+                  style={{ color: '#6B7280' }}
+                  onMouseEnter={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                    ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                  }}
+                  onMouseLeave={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.color = '#6B7280'
+                    ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                  }}
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span
+                      className="absolute top-1 right-1 text-[10px] font-bold min-w-[16px] text-center rounded-full"
                       style={{
-                        background: 'rgba(10,10,15,0.95)',
-                        border: '1px solid rgba(13,117,255,0.2)',
-                        backdropFilter: 'blur(16px)',
-                        boxShadow: '0 16px 48px rgba(0,0,0,0.7)',
+                        background: '#FF4B4B',
+                        color: '#FFFFFF',
+                        padding: '1px 4px',
+                        border: '2px solid rgba(5,5,8,0.9)',
                       }}
                     >
-                      <div
-                        className="p-4"
-                        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
-                      >
-                        <h4 className="font-semibold text-white text-sm">{t('Mensagens')}</h4>
-                        <p className="text-xs mt-1" style={{ color: '#6B7280' }}>
-                          {unreadCount > 0
-                            ? t('analytics.unreadMessagesCount').replace('{count}', String(unreadCount))
-                            : t('Nenhuma mensagem nova')}
-                        </p>
-                      </div>
-                      <div className="p-2">
-                        <Link
-                          to="/messages"
-                          className="flex items-center justify-between w-full p-3 rounded-lg text-sm font-medium transition-all group"
-                          style={{ color: '#0D75FF' }}
-                          onMouseEnter={(e) =>
-                            ((e.currentTarget as HTMLElement).style.background = 'rgba(13,117,255,0.1)')
-                          }
-                          onMouseLeave={(e) =>
-                            ((e.currentTarget as HTMLElement).style.background = 'transparent')
-                          }
-                        >
-                          <span>{t('Ir para Mensagens')}</span>
-                          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
-                      </div>
-                    </div>
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
                   )}
-                </div>
+                </Link>
 
 
 
