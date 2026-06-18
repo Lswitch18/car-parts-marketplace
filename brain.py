@@ -151,9 +151,9 @@ FILES = {
         "hash": "259d538b4ccabf0bafd1cb596543f5ef"
     },
     "brain.py": {
-        "size": 335301,
-        "modified": 1781784956.0876453,
-        "hash": "76ef3b9f2da4fc3d7177126418ae6f68"
+        "size": 335147,
+        "modified": 1781785187.4596417,
+        "hash": "2ab7dec5b536cb4c605edcfb7a9e01b3"
     },
     "vite.config.js": {
         "size": 636,
@@ -821,9 +821,9 @@ FILES = {
         "hash": "8a1c33483bd973cc024c8eaf43779ab5"
     },
     "src/components/GaidLogo.tsx": {
-        "size": 10110,
-        "modified": 1781650901.7766154,
-        "hash": "ac51d206e5b1db839a2cddbac2eadf01"
+        "size": 1722,
+        "modified": 1781785319.1836417,
+        "hash": "99cd6cb257273d901fadafdb2dfd9aea"
     },
     "src/components/ExplodedCarScene.tsx": {
         "size": 9676,
