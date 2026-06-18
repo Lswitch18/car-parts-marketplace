@@ -5,16 +5,24 @@ import WorkerLayout from '../../components/mobile/WorkerLayout';
 import WorkerColetas from './WorkerColetas';
 import WorkerEntregas from './WorkerEntregas';
 import WorkerCadastro from './WorkerCadastro';
+import WorkerLogin from './WorkerLogin';
 
 export default function WorkerApp() {
   const [activeTab, setActiveTab] = useState('coletas');
   const [role, setRole] = useState<'coletor' | 'entregador' | 'admin'>('admin');
+  const [isDriverAuth, setIsDriverAuth] = useState(false);
+
+  useEffect(() => {
+    const isAuth = localStorage.getItem('driver_authenticated') === 'true';
+    setIsDriverAuth(isAuth);
+  }, []);
 
   const { data: perfil, isLoading, error } = useQuery({
     queryKey: ['worker', 'perfil'],
     queryFn: () => mobileApi.me(),
     retry: 1,
     retryDelay: 1000,
+    enabled: isDriverAuth, // Only load profile if driver authentication is active
   });
 
   console.log('[WorkerApp] render', { isLoading, error, perfil });
@@ -32,6 +40,10 @@ export default function WorkerApp() {
       }
     }
   }, [perfil]);
+
+  if (!isDriverAuth) {
+    return <WorkerLogin onLoginSuccess={() => setIsDriverAuth(true)} />;
+  }
 
   if (isLoading) {
     return (

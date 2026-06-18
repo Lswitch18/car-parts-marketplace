@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 // ═══════════════════════════════════════════════════════════════
 // 1. DATA VALIDATION LOGIC
@@ -122,22 +122,22 @@ describe('Driver Registration & Onboarding Validation', () => {
   });
 
   it('deve rejeitar cadastro sem nome', () => {
-    const p = { ...validProfile, name: '' };
+    const p: DriverProfileInput = { ...validProfile, name: '' };
     expect(validateDriverRegistration(p)).toBe('Nome completo é obrigatório');
   });
 
   it('deve rejeitar cadastro sem CNH', () => {
-    const p = { ...validProfile, cnh: ' ' };
+    const p: DriverProfileInput = { ...validProfile, cnh: ' ' };
     expect(validateDriverRegistration(p)).toBe('Número da CNH é obrigatório');
   });
 
   it('deve rejeitar cadastro sem foto do documento', () => {
-    const p = { ...validProfile, docPhoto: undefined };
+    const p: DriverProfileInput = { ...validProfile, docPhoto: undefined };
     expect(validateDriverRegistration(p)).toBe('Foto da CNH é obrigatória');
   });
 
   it('deve rejeitar cadastro sem biometria facial registrada', () => {
-    const p = { ...validProfile, faceTemplate: undefined };
+    const p: DriverProfileInput = { ...validProfile, faceTemplate: undefined };
     expect(validateDriverRegistration(p)).toBe('Biometria facial é obrigatória');
   });
 });
@@ -170,7 +170,7 @@ describe('Collection Security Interceptor (checkCollectionAuth)', () => {
   };
 
   it('deve direcionar para cadastro se biometria não existir localmente', () => {
-    const state = { ...mockState, registeredFaceTemplate: null };
+    const state: VerificationState = { ...mockState, registeredFaceTemplate: null };
     const auth = checkCollectionAuth(state);
     expect(auth.authorized).toBe(false);
     expect(auth.nextStep).toBe('register');
@@ -185,7 +185,7 @@ describe('Collection Security Interceptor (checkCollectionAuth)', () => {
   });
 
   it('deve exigir assinatura do recebedor após face check bem-sucedido', () => {
-    const state = { ...mockState, scannedFacePhoto: 'data:image/png;base64,scannedFace' };
+    const state: VerificationState = { ...mockState, scannedFacePhoto: 'data:image/png;base64,scannedFace' };
     const auth = checkCollectionAuth(state);
     expect(auth.authorized).toBe(false);
     expect(auth.nextStep).toBe('signature');
@@ -193,7 +193,7 @@ describe('Collection Security Interceptor (checkCollectionAuth)', () => {
   });
 
   it('deve autorizar coleta quando todas as etapas de segurança forem realizadas', () => {
-    const state = {
+    const state: VerificationState = {
       registeredFaceTemplate: 'data:image/png;base64,template',
       scannedFacePhoto: 'data:image/png;base64,scannedFace',
       scannedCode: 'PKG-123',
@@ -203,5 +203,40 @@ describe('Collection Security Interceptor (checkCollectionAuth)', () => {
     const auth = checkCollectionAuth(state);
     expect(auth.authorized).toBe(true);
     expect(auth.nextStep).toBe('confirm');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 4. DRIVER AUTHENTICATION LOGIC
+// ═══════════════════════════════════════════════════════════════
+
+function authenticateDriver(cnh: string, plate: string, registeredDriver: { cnh: string; plate: string } | null): boolean {
+  const cleanCnh = cnh.trim();
+  const cleanPlate = plate.trim().toUpperCase();
+  if (cleanCnh === '98765432100' && cleanPlate === 'XYZ-9876') {
+    return true; // Default pre-registered mock driver fallback
+  }
+  if (registeredDriver && registeredDriver.cnh === cleanCnh && registeredDriver.plate.toUpperCase() === cleanPlate) {
+    return true;
+  }
+  return false;
+}
+
+describe('Driver Authentication Logic', () => {
+  it('deve autenticar com as credenciais padrão pré-cadastradas', () => {
+    expect(authenticateDriver('98765432100', 'XYZ-9876', null)).toBe(true);
+  });
+
+  it('deve autenticar com credenciais de motorista personalizado cadastrado', () => {
+    const registered = { cnh: '11122233344', plate: 'KGB-007' };
+    expect(authenticateDriver('11122233344', 'KGB-007', registered)).toBe(true);
+    // Ignore case for plate
+    expect(authenticateDriver('11122233344', 'kgb-007', registered)).toBe(true);
+  });
+
+  it('deve rejeitar se CNH ou Placa estiverem incorretas', () => {
+    const registered = { cnh: '11122233344', plate: 'KGB-007' };
+    expect(authenticateDriver('11122233344', 'AAA-0000', registered)).toBe(false);
+    expect(authenticateDriver('00000000000', 'KGB-007', registered)).toBe(false);
   });
 });
