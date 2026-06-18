@@ -4,6 +4,27 @@ import GaidLogo from '../GaidLogo'
 import { useAuthStore } from '../../stores/authStore'
 import { useI18n } from '../../lib/i18n'
 
+const SE_BRANDS_BY_COUNTRY = [
+  { country: 'JAPÃO', brands: ['Toyota', 'Lexus', 'Honda', 'Acura', 'Nissan', 'Infiniti', 'Mazda', 'Subaru', 'Mitsubishi', 'Suzuki', 'Daihatsu', 'Isuzu', 'Hino', 'Mitsuoka'] },
+  { country: 'ALEMANHA', brands: ['BMW', 'MINI', 'Mercedes-Benz', 'Maybach', 'Smart', 'Audi', 'Volkswagen', 'Porsche', 'Opel', 'MAN', 'Alpina', 'RUF'] },
+  { country: 'ESTADOS UNIDOS', brands: ['Ford', 'Lincoln', 'Chevrolet', 'GMC', 'Cadillac', 'Buick', 'Chrysler', 'Dodge', 'Jeep', 'Ram', 'Tesla', 'Rivian', 'Lucid', 'Hummer', 'Pontiac', 'Oldsmobile', 'Saturn'] },
+  { country: 'COREIA DO SUL', brands: ['Hyundai', 'Kia', 'Genesis', 'Daewoo', 'SsangYong', 'KG Mobility'] },
+  { country: 'CHINA', brands: ['BYD', 'NIO', 'XPeng', 'Li Auto', 'Geely', 'Zeekr', 'Changan', 'Great Wall Motors (GWM)', 'Haval', 'Tank', 'ORA', 'Hongqi', 'Jetour', 'JAC', 'BAIC', 'SAIC', 'MG', 'Wuling', 'Dongfeng', 'Chery', 'Exeed'] },
+  { country: 'FRANÇA', brands: ['Renault', 'Peugeot', 'Citroën', 'DS Automobiles', 'Alpine', 'Bugatti'] },
+  { country: 'ITÁLIA', brands: ['Ferrari', 'Lamborghini', 'Maserati', 'Fiat', 'Abarth', 'Alfa Romeo', 'Lancia', 'Pagani', 'Iveco'] },
+  { country: 'REINO UNIDO', brands: ['Rolls-Royce', 'Bentley', 'Jaguar', 'Land Rover', 'Range Rover', 'Lotus', 'McLaren', 'Aston Martin', 'Morgan'] },
+  { country: 'SUÉCIA', brands: ['Volvo', 'Polestar', 'Koenigsegg', 'Saab'] },
+  { country: 'ESPANHA', brands: ['SEAT', 'Cupra'] },
+  { country: 'REPÚBLICA TCHECA', brands: ['Skoda'] },
+  { country: 'ROMÊNIA', brands: ['Dacia'] },
+  { country: 'ÍNDIA', brands: ['Tata', 'Mahindra', 'Force Motors'] },
+  { country: 'RÚSSIA', brands: ['Lada', 'GAZ', 'UAZ'] },
+  { country: 'TURQUIA', brands: ['TOGG'] },
+  { country: 'VIETNÃ', brands: ['VinFast'] },
+  { country: 'MALÁSIA', brands: ['Proton', 'Perodua'] },
+  { country: 'INDONÉSIA', brands: ['Esemka'] }
+]
+
 export default function Footer() {
   const { isAdmin } = useAuthStore()
   const { t } = useI18n()
@@ -156,6 +177,35 @@ export default function Footer() {
               </ul>
             </div>
           </div>
+
+          {/* Divider */}
+          <div className="border-t border-white/10 my-10" />
+
+          {/* Marcas por País */}
+          <div>
+            <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Marcas por País</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+              {SE_BRANDS_BY_COUNTRY.map(group => (
+                <div key={group.country}>
+                  <h4 className="font-semibold text-[#00E5FF] mb-2 text-xs uppercase tracking-wider">{group.country}</h4>
+                  <p className="text-gray-400 text-xs leading-relaxed flex flex-wrap gap-x-1 gap-y-0.5">
+                    {group.brands.map((brand, idx, arr) => (
+                      <span key={brand} className="inline-flex items-center">
+                        <Link
+                          to={`/catalog?brand=${brand.toLowerCase()}`}
+                          className="hover:text-[#0D75FF] transition-colors"
+                        >
+                          {brand}
+                        </Link>
+                        {idx < arr.length - 1 && <span className="ml-1 text-gray-600">•</span>}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
 
