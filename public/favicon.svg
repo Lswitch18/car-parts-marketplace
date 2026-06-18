@@ -1,28 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
   <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="#1A1A28"/>
-      <stop offset="100%" stop-color="#050508"/>
-    </radialGradient>
     <linearGradient id="metal" x1="20%" y1="0%" x2="80%" y2="100%">
       <stop offset="0%" stop-color="#FFFFFF"/>
       <stop offset="35%" stop-color="#C8D4E8"/>
       <stop offset="70%" stop-color="#90A0B8"/>
       <stop offset="100%" stop-color="#FFFFFF"/>
     </linearGradient>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="2.5" result="b1"/>
-      <feGaussianBlur stdDeviation="5" result="b2"/>
-      <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
   </defs>
 
-  <!-- Background -->
-  <circle cx="50" cy="50" r="49" fill="url(#bg)"/>
-
-  <!-- Blue neon ring -->
-  <circle cx="50" cy="50" r="46" stroke="#0D75FF" stroke-width="2.5" fill="none" filter="url(#glow)"/>
-  <circle cx="50" cy="50" r="43.5" stroke="rgba(13,117,255,0.25)" stroke-width="0.8" fill="none"/>
+  <!-- Background (solid black) -->
+  <circle cx="50" cy="50" r="49" fill="#000000"/>
 
   <!-- 8 gear teeth -->
   <rect x="44" y="11" width="12" height="13" rx="2" fill="url(#metal)" transform="rotate(0,50,50)"/>
@@ -38,7 +25,7 @@
   <circle cx="50" cy="50" r="30" fill="url(#metal)"/>
 
   <!-- Dark inner circle -->
-  <circle cx="50" cy="50" r="22" fill="url(#bg)"/>
+  <circle cx="50" cy="50" r="22" fill="#000000"/>
 
   <!-- G letterform -->
   <path d="M 50 29 A 21 21 0 1 0 71 50 L 71 45 L 56 45 L 56 51 L 65 51 A 15 15 0 1 1 50 35 Z" fill="url(#metal)"/>

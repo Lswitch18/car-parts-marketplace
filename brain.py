@@ -151,9 +151,9 @@ FILES = {
         "hash": "259d538b4ccabf0bafd1cb596543f5ef"
     },
     "brain.py": {
-        "size": 335147,
-        "modified": 1781785187.4596417,
-        "hash": "2ab7dec5b536cb4c605edcfb7a9e01b3"
+        "size": 335395,
+        "modified": 1781785936.1476414,
+        "hash": "08eda88aaaece080bd8b92e2f137b6e4"
     },
     "vite.config.js": {
         "size": 636,
@@ -1706,9 +1706,9 @@ FILES = {
         "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
     },
     "public/favicon.svg": {
-        "size": 2311,
-        "modified": 1779812772.646534,
-        "hash": "5b18c835821b3206ccbea6afbb512111"
+        "size": 1628,
+        "modified": 1781785920.7476416,
+        "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
     "public/sports_car.glb": {
         "size": 175100,
@@ -1836,9 +1836,9 @@ FILES = {
         "hash": "25f57fca992497ad3b6c68755a38f80e"
     },
     "public/icons/icon.svg": {
-        "size": 2342,
-        "modified": 1779813104.0505342,
-        "hash": "280b0dedc439407d2c658c181c2db252"
+        "size": 1628,
+        "modified": 1781785928.4876416,
+        "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
     "docker/owaspzap/Dockerfile": {
         "size": 168,
@@ -1961,19 +1961,19 @@ FILES = {
         "hash": "c2412069dd5f39d9b660d5f15d20c3fb"
     },
     "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": {
-        "size": 9793,
-        "modified": 1723050380.0,
-        "hash": "4e9584ecc16d1fc75afb798688ce576f"
+        "size": 31518,
+        "modified": 1781785910.5516431,
+        "hash": "f8e00e43d7e816d1e267d44650b57b29"
     },
     "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png": {
-        "size": 10455,
-        "modified": 1723050380.0,
-        "hash": "14cde87848553e24d7106f56eb8ceb6f"
+        "size": 6795,
+        "modified": 1781785910.487643,
+        "hash": "c75412157a7b60bbffa30d2d85eaa7a1"
     },
     "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
-        "size": 6644,
-        "modified": 1723050380.0,
-        "hash": "a3285eeaedda8201f04e7737b9df8421"
+        "size": 6795,
+        "modified": 1781785910.483643,
+        "hash": "c75412157a7b60bbffa30d2d85eaa7a1"
     },
     "android/app/src/main/res/layout/activity_main.xml": {
         "size": 535,
@@ -1981,19 +1981,19 @@ FILES = {
         "hash": "e90567494113cdcc5c7375afaa5c5c6a"
     },
     "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": {
-        "size": 2110,
-        "modified": 1723050380.0,
-        "hash": "5b77e8aec8b17eed320a97567c7cb8bf"
+        "size": 4325,
+        "modified": 1781785910.3116431,
+        "hash": "7aaf2e7bc874e18c928961897a767396"
     },
     "android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png": {
-        "size": 2725,
-        "modified": 1723050380.0,
-        "hash": "a49547a32c7d9b529af607b033811d81"
+        "size": 1701,
+        "modified": 1781785910.251643,
+        "hash": "73aa770bbc82d1d1becf853855e21c14"
     },
     "android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
-        "size": 1869,
-        "modified": 1723050380.0,
-        "hash": "7ed1b3739b83215d0c4a0b4a7f2dcab4"
+        "size": 1701,
+        "modified": 1781785910.247643,
+        "hash": "73aa770bbc82d1d1becf853855e21c14"
     },
     "android/app/src/main/res/drawable-land-hdpi/splash.png": {
         "size": 7705,
@@ -2016,19 +2016,19 @@ FILES = {
         "hash": "ec72d9bfef4584efc28998a0075e6799"
     },
     "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
-        "size": 15529,
-        "modified": 1723050380.0,
-        "hash": "ed3696b7c52d9747411a475dbe3fa34a"
+        "size": 54684,
+        "modified": 1781785910.719643,
+        "hash": "8e92f409e278dcc4107cb9a8ad2122df"
     },
     "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png": {
-        "size": 15916,
-        "modified": 1723050380.0,
-        "hash": "85addb4159ecd3f76f02fbacd5ec86de"
+        "size": 11896,
+        "modified": 1781785910.6076431,
+        "hash": "28ef6d9b0b7cb3a0c6926084c968367a"
     },
     "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
-        "size": 9441,
-        "modified": 1723050380.0,
-        "hash": "9e029293ab1ae8e3a6a7b7d0b7177e46"
+        "size": 11896,
+        "modified": 1781785910.599643,
+        "hash": "28ef6d9b0b7cb3a0c6926084c968367a"
     },
     "android/app/src/main/res/drawable-land-xxxhdpi/splash.png": {
         "size": 17683,
@@ -2036,19 +2036,19 @@ FILES = {
         "hash": "055a69553b16b0bf5f72094a2e459fc7"
     },
     "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": {
-        "size": 3450,
-        "modified": 1723050380.0,
-        "hash": "73b1e06d769fa08a9c3b8328cc15fd75"
+        "size": 8686,
+        "modified": 1781785910.371643,
+        "hash": "67c29921bcbe42ae5c7a6cd5069f97c9"
     },
     "android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png": {
-        "size": 4341,
-        "modified": 1723050380.0,
-        "hash": "f43e5674865a00186dd76183cf1f2f8e"
+        "size": 2669,
+        "modified": 1781785910.335643,
+        "hash": "42b776bf4f0f28d40d940e50e2c93aa9"
     },
     "android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
-        "size": 2786,
-        "modified": 1723050380.0,
-        "hash": "1956941339dd5fe36d5c66601c89a08d"
+        "size": 2669,
+        "modified": 1781785910.335643,
+        "hash": "42b776bf4f0f28d40d940e50e2c93aa9"
     },
     "android/app/src/main/res/drawable-land-xhdpi/splash.png": {
         "size": 9251,
@@ -2056,19 +2056,19 @@ FILES = {
         "hash": "b8c72969bc1f78aab71a76035360d4af"
     },
     "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": {
-        "size": 5036,
-        "modified": 1723050380.0,
-        "hash": "15cdded29b9877ac98c5931024c5da5d"
+        "size": 14617,
+        "modified": 1781785910.451643,
+        "hash": "7d8f2b3108c0579a7fb5ceeaeb914e9e"
     },
     "android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png": {
-        "size": 6593,
-        "modified": 1723050380.0,
-        "hash": "c890fa4af62a63486d5dea62441ce7ab"
+        "size": 3718,
+        "modified": 1781785910.4036431,
+        "hash": "e553acde7afed97006d19beeba0394a9"
     },
     "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
-        "size": 3981,
-        "modified": 1723050380.0,
-        "hash": "5689511ee4e41a367d0342f37ac48bdf"
+        "size": 3718,
+        "modified": 1781785910.395643,
+        "hash": "e553acde7afed97006d19beeba0394a9"
     },
     "android/app/src/main/res/drawable/splash.png": {
         "size": 4040,
@@ -2141,9 +2141,9 @@ FILES = {
         "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
     },
     "android/app/src/main/assets/public/favicon.svg": {
-        "size": 2311,
-        "modified": 1781753711.352591,
-        "hash": "5b18c835821b3206ccbea6afbb512111"
+        "size": 1628,
+        "modified": 1781785928.5676415,
+        "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
     "android/app/src/main/assets/public/cordova_plugins.js": {
         "size": 0,
@@ -2281,9 +2281,9 @@ FILES = {
         "hash": "25f57fca992497ad3b6c68755a38f80e"
     },
     "android/app/src/main/assets/public/icons/icon.svg": {
-        "size": 2342,
-        "modified": 1781753711.352591,
-        "hash": "280b0dedc439407d2c658c181c2db252"
+        "size": 1628,
+        "modified": 1781785928.5756414,
+        "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
     "android/app/src/main/assets/public/assets/index-BfPX5R3I.js": {
         "size": 1436709,
