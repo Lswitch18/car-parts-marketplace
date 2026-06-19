@@ -5,7 +5,7 @@ import { useI18n } from '@/modules/shared/lib/i18n';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { 
   Users, DollarSign, Star, Truck, Sparkles, 
-  ArrowRight, LogOut, Building2, Wallet
+  ArrowRight, LogOut, Building2, Wallet, Shield
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -168,6 +168,12 @@ export default function AdminDashboard() {
                 title: t('Contas a Pagar'),
                 desc: t('Administre despesas internas operacionais, folha de pagamento e centro de custos.'),
                 icon: Wallet
+              },
+              {
+                to: '/admin/transportation/drivers',
+                title: t('Motoristas (TMS)'),
+                desc: t('Controle biométrico de motoristas, aprovação de CNH e auditoria facial do App Worker.'),
+                icon: Shield
               }
             ].map((tool, idx) => (
               <Link 
