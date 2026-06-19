@@ -279,10 +279,11 @@ export default function Catalog() {
               ))}
               <button
                 onClick={clearFilters}
-                className="text-xs px-3 py-1.5 rounded-full transition-colors"
-                style={{ color: '#6B7280' }}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full transition-colors font-semibold hover:bg-red-500/20"
+                style={{ color: '#EF4444', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
               >
-                {t('Limpar tudo')}
+                <X className="w-3 h-3" />
+                {t('Limpar Filtros')}
               </button>
             </div>
           )}
@@ -490,10 +491,11 @@ export default function Catalog() {
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px', marginTop: '8px' }}>
                     <button
                       onClick={clearFilters}
-                      className="w-full py-2.5 rounded-xl text-xs font-semibold transition-all hover:bg-white/5"
-                      style={{ color: '#6B7280' }}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-semibold transition-all hover:bg-red-500/20"
+                      style={{ color: '#EF4444', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
                     >
-                      {t('catalog.cleanFilters')}
+                      <X className="w-4 h-4" />
+                      {t('Limpar Filtros')}
                     </button>
                   </div>
                 )}
