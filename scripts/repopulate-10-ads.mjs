@@ -24,16 +24,16 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 const ARTIFACTS_DIR = '/home/lswitch/.gemini/antigravity-ide/brain/8838d632-9683-4d98-9e48-f805608d363e'
 
 const partData = [
-  { filePrefix: 'steering_wheel_', title: 'Volante Racing Fibra de Carbono c/ Alcantara', price: 150000, category: 'interior' },
-  { filePrefix: 'exhaust_system_', title: 'Escapamento Cat-Back Titânio', price: 350000, category: 'exhaust' },
-  { filePrefix: 'intercooler_', title: 'Intercooler Front Mount Alumínio Polido', price: 120000, category: 'engine' },
-  { filePrefix: 'big_brake_kit_', title: 'Kit Freios Alta Performance 6-Pistões', price: 450000, category: 'brakes' },
-  { filePrefix: 'turbo_manifold_', title: 'Coletor de Escape Tubular Inox para Turbo', price: 200000, category: 'exhaust' },
-  { filePrefix: 'racing_seat_', title: 'Banco Concha Fibra de Carbono', price: 250000, category: 'interior' },
-  { filePrefix: 'forged_piston_', title: 'Kit Pistões e Bielas Forjadas Alta Taxa', price: 180000, category: 'engine' },
-  { filePrefix: 'carbon_hood_', title: 'Capô de Fibra de Carbono Vented JDM', price: 280000, category: 'body-kits' },
-  { filePrefix: 'sequential_gearbox_', title: 'Câmbio Sequencial Billet Motorsport', price: 2500000, category: 'transmission' },
-  { filePrefix: 'ecu_standalone_', title: 'Injeção Programável ECU Standalone', price: 400000, category: 'electronics' }
+  { filePrefix: 'steering_wheel_', title: 'カーボンファイバーレーシングステアリングホイール (アルカンターラ)', price: 150000, category: 'interior' },
+  { filePrefix: 'exhaust_system_', title: 'チタン製キャットバックエキゾーストシステム', price: 350000, category: 'exhaust' },
+  { filePrefix: 'intercooler_', title: 'ポリッシュドアルミニウム フロントマウントインタークーラー', price: 120000, category: 'engine' },
+  { filePrefix: 'big_brake_kit_', title: '高性能6ピストンビッグブレーキキット', price: 450000, category: 'brakes' },
+  { filePrefix: 'turbo_manifold_', title: 'ステンレス製ターボエキゾーストマニホールド', price: 200000, category: 'exhaust' },
+  { filePrefix: 'racing_seat_', title: 'カーボンファイバー製フルバケットシート', price: 250000, category: 'interior' },
+  { filePrefix: 'forged_piston_', title: '高圧縮鍛造ピストン＆コンロッドセット', price: 180000, category: 'engine' },
+  { filePrefix: 'carbon_hood_', title: 'JDM ベント付きカーボンファイバーボンネット', price: 280000, category: 'body-kits' },
+  { filePrefix: 'sequential_gearbox_', title: 'ビレットモータースポーツシーケンシャルギアボックス', price: 2500000, category: 'transmission' },
+  { filePrefix: 'ecu_standalone_', title: 'スタンドアローンフルコンECU', price: 400000, category: 'electronics' }
 ]
 
 async function main() {
@@ -54,20 +54,17 @@ async function main() {
   const { data: categories, error: catError } = await supabase.from('categories').select('id, slug')
   if (catError) throw catError
 
-  // Mapa de categorias (fallback para a primeira caso a slug não bata)
   const getCategoryId = (slug) => {
     const found = categories.find(c => c.slug === slug)
     return found ? found.id : categories[0].id
   }
 
-  // Get images from artifacts
   const artifactsFiles = readdirSync(ARTIFACTS_DIR).filter(f => f.endsWith('.png'))
   
   for (let i = 0; i < partData.length; i++) {
     const data = partData[i]
     const user = users[i % users.length]
     
-    // Find matching image file
     const file = artifactsFiles.find(f => f.startsWith(data.filePrefix))
     if (!file) {
       console.error(`❌ Arquivo de imagem para ${data.filePrefix} não encontrado!`)
@@ -104,7 +101,7 @@ async function main() {
       .insert({
         seller_id: user.id,
         title: data.title,
-        description: 'Peça de altíssima qualidade gerada automaticamente para testes. Fotos de estúdio reais do produto.',
+        description: 'スタジオで撮影された本物の製品写真です。最高品質のJDMパーツ。',
         price: data.price,
         condition: 'new',
         images: [publicUrl],
