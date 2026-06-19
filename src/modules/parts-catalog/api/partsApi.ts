@@ -1,3 +1,5 @@
+import { getCache, setCache } from '@/modules/shared/lib/redisCache';
+
 const PARTS_API = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/parts`;
 
 interface PartsFilters {
@@ -36,6 +38,18 @@ export async function fetchParts(params: PartsParams = {}) {
   if (filters.max_price) searchParams.set('max_price', String(filters.max_price));
   if (filters.search) searchParams.set('search', filters.search);
 
+  // 1. Criar a chave do Cache
+  const cacheKey = `catalog:${searchParams.toString()}`;
+
+  // 2. Tentar buscar no Redis (Read-Through Cache)
+  const cachedData = await getCache(cacheKey);
+  if (cachedData) {
+    console.log('⚡ Cache Hit! Carregamento via Redis.');
+    return cachedData;
+  }
+
+  // 3. Cache Miss: Buscar no Banco de Dados (Supabase)
+  console.log('🐌 Cache Miss. Buscando no Supabase...');
   const res = await fetch(`${PARTS_API}/list?${searchParams}`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('sb-access-token') || ''}`,
@@ -49,5 +63,10 @@ export async function fetchParts(params: PartsParams = {}) {
   }
 
   const json = await res.json();
-  return json.data;
+  const data = json.data;
+
+  // 4. Salvar no Redis por 1 hora (3600 segundos) para os próximos usuários
+  await setCache(cacheKey, data, 3600);
+
+  return data;
 }
