@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('../lib/supabase', () => ({
+vi.mock('@/modules/shared/lib/supabase', () => ({
   supabase: {
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: '123' } }, error: null }),
@@ -16,7 +16,7 @@ const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
 async function importModule() {
-  const { adminApi } = await import('../lib/adminApi');
+  const { adminApi } = await import('@/modules/transactions/api/adminApi');
   return adminApi;
 }
 

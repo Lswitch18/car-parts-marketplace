@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateFees, COMMISSION_RATE, STRIPE_FEE_RATE, STRIPE_FEE_FIXED } from '../lib/fees';
+import { calculateFees, COMMISSION_RATE, STRIPE_FEE_RATE, STRIPE_FEE_FIXED } from '@/modules/transactions/api/fees';
 
 describe('calculateFees', () => {
   it('calcula fees corretamente para ¥10000', () => {
