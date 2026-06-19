@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, FileText, Smartphone, Truck, ShieldCheck, Camera, CheckCircle, Mail, Download, X } from 'lucide-react';
-import BiometricScanner from '@/modules/logistics/components/mobile/BiometricScanner';
+import BiometricScanner from '@/modules/transportation/components/BiometricScanner';
 import { supabase } from '@/modules/shared/lib/supabase';
 
 interface DriverProfile {

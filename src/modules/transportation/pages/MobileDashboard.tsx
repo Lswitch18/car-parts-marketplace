@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/modules/identity/store/authStore';
-import { mobileApi } from '@/modules/logistics/api/mobileApi';
+import { mobileApi } from '@/modules/transportation/api/mobileApi';
 import { PackageSearch, Truck, Clock } from 'lucide-react';
 
 export default function MobileDashboard() {

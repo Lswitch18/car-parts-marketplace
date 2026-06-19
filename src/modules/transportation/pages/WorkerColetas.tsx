@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { mobileApi } from '@/modules/logistics/api/mobileApi';
+import { mobileApi } from '@/modules/transportation/api/mobileApi';
 import { getCurrentPosition } from '@/modules/shared/lib/geo';
 import { getCityCoords, haversineKm } from '@/modules/shared/lib/distance';
-import { useGpsTracking } from '@/modules/logistics/hooks/useGpsTracking';
-import ScannerCamera from '@/modules/logistics/components/mobile/ScannerCamera';
-import BiometricScanner from '@/modules/logistics/components/mobile/BiometricScanner';
-import SignaturePad from '@/modules/logistics/components/mobile/SignaturePad';
+import { useGpsTracking } from '@/modules/transportation/hooks/useGpsTracking';
+import ScannerCamera from '@/modules/transportation/components/ScannerCamera';
+import BiometricScanner from '@/modules/transportation/components/BiometricScanner';
+import SignaturePad from '@/modules/transportation/components/SignaturePad';
 import {
   MapPin, CheckCircle, Navigation, Clock, Box, AlertTriangle, ArrowRight,
   RefreshCw, ScanLine, UserCheck, PenTool

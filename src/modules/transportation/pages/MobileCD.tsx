@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { mobileApi } from '@/modules/logistics/api/mobileApi';
+import { mobileApi } from '@/modules/transportation/api/mobileApi';
 import { Warehouse, Search, Package, ChevronRight } from 'lucide-react';
 
 export default function MobileCD() {

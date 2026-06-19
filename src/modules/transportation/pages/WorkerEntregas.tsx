@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { mobileApi } from '@/modules/logistics/api/mobileApi';
+import { mobileApi } from '@/modules/transportation/api/mobileApi';
 import { getCurrentPosition } from '@/modules/shared/lib/geo';
-import ScannerCamera from '@/modules/logistics/components/mobile/ScannerCamera';
+import ScannerCamera from '@/modules/transportation/components/ScannerCamera';
 import {
   MapPin, CheckCircle, Navigation, Box, AlertTriangle, RefreshCw, Map,
   ScanLine, User, Pen,

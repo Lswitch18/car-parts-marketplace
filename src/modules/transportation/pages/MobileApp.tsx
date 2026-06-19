@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import MobileLayout from '@/modules/logistics/components/mobile/MobileLayout';
+import MobileLayout from '@/modules/transportation/components/MobileLayout';
 import MobileDashboard from './MobileDashboard';
 import MobileColetas from './MobileColetas';
 import MobileEntregas from './MobileEntregas';

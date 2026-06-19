@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { mobileApi } from '@/modules/logistics/api/mobileApi';
-import WorkerLayout from '@/modules/logistics/components/mobile/WorkerLayout';
+import { mobileApi } from '@/modules/transportation/api/mobileApi';
+import WorkerLayout from '@/modules/transportation/components/WorkerLayout';
 import WorkerColetas from './WorkerColetas';
 import WorkerEntregas from './WorkerEntregas';
 import WorkerCadastro from './WorkerCadastro';
