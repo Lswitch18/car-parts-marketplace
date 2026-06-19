@@ -17,6 +17,8 @@ import UserManagement from '@/modules/identity/pages/UserManagement'
 import ImageTo3D from '@/modules/parts-catalog/pages/ImageTo3D'
 import ReviewManagement from '@/modules/parts-catalog/pages/ReviewManagement'
 import AdminDashboard from '@/modules/identity/pages/AdminDashboard'
+import ContactsManagement from '@/modules/crm/pages/ContactsManagement'
+import AccountsPayable from '@/modules/finance/pages/AccountsPayable'
 import PWARegister from '@/modules/shared/components/PWARegister'
 import TransactionManagement from '@/modules/transactions/pages/TransactionManagement'
 import LogistixDashboard from '@/modules/logistics/pages/LogistixDashboard'
@@ -94,6 +96,8 @@ function App() {
           <Route path="transactions" element={<TransactionManagement />} />
           <Route path="reviews" element={<ReviewManagement />} />
           <Route path="image-to-3d" element={<ImageTo3D />} />
+          <Route path="crm/contacts" element={<ContactsManagement />} />
+          <Route path="finance/payable" element={<AccountsPayable />} />
         </Route>
 
         {/* App Mobile Logistix */}

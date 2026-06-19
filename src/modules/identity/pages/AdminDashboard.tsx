@@ -5,7 +5,7 @@ import { useI18n } from '@/modules/shared/lib/i18n';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { 
   Users, DollarSign, Star, Truck, Sparkles, 
-  ArrowRight, LogOut 
+  ArrowRight, LogOut, Building2, Wallet
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -156,6 +156,18 @@ export default function AdminDashboard() {
                 title: t('Gerador 3D AI'),
                 desc: t('Painel administrativo de renderização e modelagem de peças 2D para modelos interativos 3D.'),
                 icon: Sparkles
+              },
+              {
+                to: '/admin/crm/contacts',
+                title: t('Contatos (CRM)'),
+                desc: t('Gerencie clientes corporativos B2B, fornecedores logísticos e parceiros da plataforma.'),
+                icon: Building2
+              },
+              {
+                to: '/admin/finance/payable',
+                title: t('Contas a Pagar'),
+                desc: t('Administre despesas internas operacionais, folha de pagamento e centro de custos.'),
+                icon: Wallet
               }
             ].map((tool, idx) => (
               <Link 
