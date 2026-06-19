@@ -90,10 +90,12 @@ export default function Catalog() {
   const [sortBy, setSortBy] = useState('created_at')
   const [searchInput, setSearchInput] = useState(filters.search)
 
+  const activeFiltersCount = useMemo(() => Object.values(filters).filter(v => v).length, [filters])
+
   const { data: products = [], isLoading } = useQuery<ProductUI[]>({
     queryKey: ['products', 'catalog', filters],
-    staleTime: 30_000,
-    gcTime: 60_000,
+    staleTime: 300_000,
+    gcTime: 300_000,
     queryFn: async () => {
       try {
         const result = await fetchParts({
@@ -174,12 +176,9 @@ export default function Catalog() {
     setSearchInput('')
   }
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    updateFilter('search', searchInput)
+  const handleSearch = (query: string) => {
+    updateFilter('search', query)
   }
-
-  const activeFiltersCount = Object.values(filters).filter(v => v).length
 
   const conditionLabel = (c: string) => {
     if (c === 'new') return t('Novo')
@@ -242,30 +241,7 @@ export default function Catalog() {
             </div>
 
             {/* Search bar */}
-            <form onSubmit={handleSearch} className="flex-1 min-w-[280px] max-w-md">
-              <div
-                className="flex items-center gap-3 px-4 h-12 rounded-2xl transition-all"
-                style={{
-                  background: 'rgba(10,10,15,0.8)',
-                  border: '1px solid rgba(13,117,255,0.2)',
-                  boxShadow: '0 0 0 0 rgba(13,117,255,0)',
-                }}
-              >
-                <Search className="w-4 h-4 flex-shrink-0" style={{ color: '#6B7280' }} />
-                <input
-                  type="text"
-                  placeholder={t('Buscar peças, marcas...')}
-                  value={searchInput}
-                  onChange={e => setSearchInput(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-[#6B7280]"
-                />
-                {searchInput && (
-                  <button type="button" onClick={() => { setSearchInput(''); updateFilter('search', '') }}>
-                    <X className="w-4 h-4" style={{ color: '#6B7280' }} />
-                  </button>
-                )}
-              </div>
-            </form>
+            <SearchBar initialValue={filters.search} onSearch={handleSearch} t={t} />
           </div>
 
           {/* Active filter chips */}
@@ -771,5 +747,47 @@ export default function Catalog() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Otimização: Componente isolado para evitar re-render da página inteira ao digitar
+const SearchBar = ({ initialValue, onSearch, t }: { initialValue: string, onSearch: (q: string) => void, t: any }) => {
+  const [localSearch, setLocalSearch] = useState(initialValue)
+
+  // Sincroniza se o filtro for apagado globalmente
+  useMemo(() => {
+    setLocalSearch(initialValue)
+  }, [initialValue])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSearch(localSearch)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex-1 min-w-[280px] max-w-md">
+      <div
+        className="flex items-center gap-3 px-4 h-12 rounded-2xl transition-all"
+        style={{
+          background: 'rgba(10,10,15,0.8)',
+          border: '1px solid rgba(13,117,255,0.2)',
+          boxShadow: '0 0 0 0 rgba(13,117,255,0)',
+        }}
+      >
+        <Search className="w-4 h-4 flex-shrink-0" style={{ color: '#6B7280' }} />
+        <input
+          type="text"
+          placeholder={t('Buscar peças, marcas...')}
+          value={localSearch}
+          onChange={e => setLocalSearch(e.target.value)}
+          className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder:text-[#6B7280]"
+        />
+        {localSearch && (
+          <button type="button" onClick={() => { setLocalSearch(''); onSearch(''); }}>
+            <X className="w-4 h-4" style={{ color: '#6B7280' }} />
+          </button>
+        )}
+      </div>
+    </form>
   )
 }

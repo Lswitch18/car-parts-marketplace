@@ -95,7 +95,11 @@ export default function Home() {
         {/* Grid overlay */}
         <div className="absolute inset-0 grid-overlay opacity-60 pointer-events-none" />
 
-        <Suspense fallback={<div className="w-full h-full opacity-0" />}>
+        <Suspense fallback={
+          <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+            <div className="w-[50vw] h-[30vw] rounded-full blur-[120px] animate-pulse" style={{ background: 'rgba(13,117,255,0.12)' }} />
+          </div>
+        }>
           <HeroCarScene />
         </Suspense>
 
