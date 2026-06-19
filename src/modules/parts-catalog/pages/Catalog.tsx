@@ -101,7 +101,7 @@ export default function Catalog() {
         const result = await fetchParts({
           sort: sortBy,
           order: 'desc',
-          limit: 50,
+          limit: 20,
           filters: {
             brand_id: filters.brand ? (BRAND_UUIDS[filters.brand] || filters.brand) : undefined,
             model_id: filters.model ? (MODEL_UUIDS[filters.model] || filters.model) : undefined,
@@ -138,7 +138,7 @@ export default function Catalog() {
 
         query = query.order(sortBy, { ascending: false })
 
-        const { data, error } = await query.limit(50)
+        const { data, error } = await query.limit(20)
         if (error) throw error
         return data || []
       }
@@ -173,7 +173,6 @@ export default function Catalog() {
     })
     setSearchParams({})
     setExpandedBrand(null)
-    setSearchInput('')
   }
 
   const handleSearch = (query: string) => {

@@ -48,13 +48,18 @@ export async function fetchParts(params: PartsParams = {}) {
     return cachedData;
   }
 
+  const token = localStorage.getItem('sb-access-token');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   // 3. Cache Miss: Buscar no Banco de Dados (Supabase)
   console.log('🐌 Cache Miss. Buscando no Supabase...');
   const res = await fetch(`${PARTS_API}/list?${searchParams}`, {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('sb-access-token') || ''}`,
-      'Content-Type': 'application/json',
-    },
+    headers
   });
 
   if (!res.ok) {
