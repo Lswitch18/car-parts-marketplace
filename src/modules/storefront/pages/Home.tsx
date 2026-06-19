@@ -3,7 +3,8 @@ import { ArrowRight, Search, Shield, Truck, Star, Zap, CheckCircle, ChevronDown,
 import { useEffect, useRef, useState } from 'react'
 import { BRANDS } from '@/modules/shared/lib/constants'
 import { useI18n } from '@/modules/shared/lib/i18n'
-import HeroCarScene from '@/modules/parts-catalog/components/HeroCarScene'
+import { lazy, Suspense } from 'react'
+const HeroCarScene = lazy(() => import('@/modules/parts-catalog/components/HeroCarScene'))
 
 /* ── Intersection Observer scroll-reveal hook ── */
 function useReveal() {
@@ -94,7 +95,9 @@ export default function Home() {
         {/* Grid overlay */}
         <div className="absolute inset-0 grid-overlay opacity-60 pointer-events-none" />
 
-        <HeroCarScene />
+        <Suspense fallback={<div className="w-full h-full opacity-0" />}>
+          <HeroCarScene />
+        </Suspense>
 
         {/* Radial ambient glows */}
         <div className="absolute inset-0 pointer-events-none">
@@ -156,6 +159,7 @@ export default function Home() {
                   boxShadow: '0 0 24px rgba(13,117,255,0.5), 0 4px 16px rgba(0,0,0,0.4)',
                 }}
                 onMouseEnter={(e) => {
+                  import('@/modules/parts-catalog/pages/Catalog');
                   ;(e.currentTarget as HTMLElement).style.transform = 'translateY(-2px) scale(1.02)'
                   ;(e.currentTarget as HTMLElement).style.boxShadow =
                     '0 0 36px rgba(13,117,255,0.7), 0 8px 24px rgba(0,0,0,0.5)'
@@ -396,6 +400,7 @@ export default function Home() {
                   boxShadow: '0 0 30px rgba(13,117,255,0.4)',
                 }}
                 onMouseEnter={(e) => {
+                  import('@/modules/parts-catalog/pages/CreateListing');
                   const el = e.currentTarget as HTMLElement
                   el.style.transform = 'translateY(-2px) scale(1.02)'
                   el.style.boxShadow = '0 0 50px rgba(13,117,255,0.6)'
