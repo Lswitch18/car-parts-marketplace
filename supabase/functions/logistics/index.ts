@@ -205,7 +205,7 @@ async function handleLabelsPreview(req: Request, shipmentId: string) {
 
 // ─── OMS: DROPOFF ──────────────────────────────────────────────────────────
 
-async function registrarDropoff(body: any, userId: string) {
+async function registrarDropoff(body: any, user: any) {
   const { shipment_id, agencia_id } = body;
   if (!shipment_id || !agencia_id) return json({ error: 'shipment_id e agencia_id obrigatórios' }, 400);
 
@@ -221,12 +221,12 @@ async function registrarDropoff(body: any, userId: string) {
 
   if (error) return json({ error: error.message }, 400);
 
-  await supabase.from('admin_shipments').update({ etapa: 'DROPOFF', dropoff_agencia_id: agencia_id, dropoff_data: new Date().toISOString(), dropoff_confirmado_por: userId }).eq('id', shipment_id);
+  await supabase.from('admin_shipments').update({ etapa: 'DROPOFF', dropoff_agencia_id: agencia_id, dropoff_data: new Date().toISOString(), dropoff_confirmado_por: user.id }).eq('id', shipment_id);
 
   const { data: shipment } = await supabase.from('admin_shipments').select('pedido_id').eq('id', shipment_id).single();
   if (shipment) await trackingEvent(shipment.pedido_id, 'DROPOFF', `Recebido na agência ${agencia.nome}`, agencia.nome);
 
-  auditLog(userId, 'CREATE', 'admin_dropoffs', dropoff.id, agencia.nome);
+  auditLog(user.id, 'CREATE', 'admin_dropoffs', dropoff.id, agencia.nome);
   return json(dropoff, 201);
 }
 
@@ -450,7 +450,7 @@ Deno.serve(async (req) => {
     if (path === '/dropoff' && req.method === 'POST') {
       const user = await requireAdmin(req);
       if (!user) return json({ error: 'Não autorizado' }, 401);
-      return await registrarDropoff(body, user.id);
+      return await registrarDropoff(body, user);
     }
     if (path.startsWith('/dropoff')) {
       const agenciaId = segments[1] === 'agency' ? segments[2] : undefined;
@@ -602,7 +602,7 @@ Deno.serve(async (req) => {
       if (!motorista_id || latitude == null || longitude == null) return json({ error: 'motorista_id, latitude e longitude obrigatórios' }, 400);
 
       const { error } = await supabase.from('admin_gps_log').insert({
-        motorista_id, usuario_id: user.id,
+        motorista_id, usuario_id: authUser.id,
         latitude, longitude, precisao, velocidade, bateria,
       });
       if (error) return json({ error: error.message }, 400);
@@ -658,7 +658,7 @@ Deno.serve(async (req) => {
     }
 
     return json({ error: 'Rota não encontrada: ' + path }, 404);
-  } catch (err) {
+  } catch (err: any) {
     console.error('[Logistics]', err);
     return json({ error: 'Erro interno: ' + (err.message || '') }, 500);
   }

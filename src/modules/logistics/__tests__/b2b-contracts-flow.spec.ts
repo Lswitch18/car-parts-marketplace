@@ -14,8 +14,8 @@ if (typeof (globalThis as any).WebSocket === 'undefined') {
   (globalThis as any).WebSocket = MockWebSocket;
 }
 
-const supabaseUrl = 'https://clqubcryhbrjlupkgeva.supabase.co';
-const serviceRoleKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNscXViY3J5aGJyamx1cGtnZXZhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODIxMDg5MSwiZXhwIjoyMDkzNzg2ODkxfQ.fDmh4mjP-_loh3vEcSa0jNLy1apOuA5AL7xkFgvljxY';
+const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co';
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
   auth: {
