@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
+import DriverApp from './DriverApp'
+import StoreApp from './StoreApp'
 import './index.css'
 
 // TODO(security): diagnostic logs restricted to dev mode only — never expose DB URLs or key status in production
@@ -28,6 +30,9 @@ if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual'
 }
 
+const appMode = import.meta.env.VITE_APP_MODE;
+const RootComponent = appMode === 'driver' ? DriverApp : appMode === 'store' ? StoreApp : App;
+
 const root = document.getElementById('root');
 if (!root) {
   console.error('[main] #root element not found!');
@@ -38,7 +43,7 @@ if (!root) {
       <React.StrictMode>
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
-            <App />
+            <RootComponent />
           </BrowserRouter>
         </QueryClientProvider>
       </React.StrictMode>

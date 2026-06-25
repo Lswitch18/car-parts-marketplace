@@ -6,17 +6,22 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:driver": "VITE_APP_MODE=driver vite build",
+    "build:store": "VITE_APP_MODE=store vite build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
     "test": "vitest run",
     "preview": "vite preview",
     "cap:init": "cap init",
     "cap:sync": "vite build && cap sync",
+    "cap:sync:driver": "npm run build:driver && cap sync",
+    "cap:sync:store": "npm run build:store && cap sync",
     "cap:open": "cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^5.7.0",
     "@capacitor/core": "^5.7.0",
+    "@codetrix-studio/capacitor-google-auth": "^3.3.6",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@supabase/supabase-js": "^2.39.0",

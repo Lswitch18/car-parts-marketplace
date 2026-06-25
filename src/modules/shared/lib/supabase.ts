@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
+import { Capacitor } from '@capacitor/core'
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -27,6 +29,15 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 })
 
+// Inicializa o GoogleAuth para a web nativa se aplicável
+if (Capacitor.isNativePlatform()) {
+  GoogleAuth.initialize({
+    clientId: '618628258891-0k11mbjiuv3lrg8gsjlldv6p4qg1p06b.apps.googleusercontent.com',
+    scopes: ['profile', 'email'],
+    grantOfflineAccess: true,
+  });
+}
+
 export const getCurrentUser = async () => {
   const { data: { user } } = await supabase.auth.getUser()
   return user
@@ -45,14 +56,31 @@ export const getCurrentUserProfile = async () => {
 }
 
 export const signInWithGoogle = async () => {
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}`,
-    },
-  })
-  if (error) throw error
-  return data
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const googleUser = await GoogleAuth.signIn()
+      const idToken = googleUser.authentication.idToken
+      
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
+      })
+      if (error) throw error
+      return data
+    } catch (error) {
+      console.error('Error during native Google sign in', error)
+      throw error
+    }
+  } else {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}`,
+      },
+    })
+    if (error) throw error
+    return data
+  }
 }
 
 export const signOut = async () => {

@@ -40,11 +40,6 @@ FILES = {
         "modified": 1779247558.3445654,
         "hash": "437ba07746ffbdf36482738741926876"
     },
-    "ORCAMENTO_TESTE_PRODUCAO.pdf": {
-        "size": 18341,
-        "modified": 1780505726.8248115,
-        "hash": "6296713ec57cec0bd789ea1267f390d1"
-    },
     "Dockerfile.jenkins": {
         "size": 324,
         "modified": 1778343579.364174,
@@ -52,33 +47,28 @@ FILES = {
     },
     "package-lock.json": {
         "size": 262620,
-        "modified": 1781753231.0085938,
+        "modified": 1781895212.4677894,
         "hash": "ace18c7a1834eb42e4b09767f1be1125"
     },
-    "ORCAMENTO_PRODUCAO_US_East_vs_TOKYO.pdf": {
-        "size": 36345,
-        "modified": 1780506524.468828,
-        "hash": "f6e39166b1a1e2b94a25e87bd231d8cb"
+    "check_db.mjs": {
+        "size": 735,
+        "modified": 1781881895.1816523,
+        "hash": "04baca61c5fec2393c6e2a74cd11feb6"
     },
     "tsconfig.json": {
         "size": 657,
         "modified": 1781786690.4196227,
         "hash": "cee37d11245240fc77acac0975e29a5a"
     },
-    "BUILD-REPORT-GAID-2026-05-10.pdf": {
-        "size": 28895,
-        "modified": 1778404265.492443,
-        "hash": "bbbe36b59416696d97921cd0fff251df"
+    "jdk17.tar.gz": {
+        "size": 192205930,
+        "modified": 1705587186.0,
+        "hash": "dce1ea48af49d7186f0f01ca01883be3"
     },
     "fix-parts-images.sql": {
         "size": 2903,
         "modified": 1778552985.323125,
         "hash": "4df93db2d5a76911a1f7c0641809c380"
-    },
-    "SAGAWA-CONTRATO-GUIA.pdf": {
-        "size": 111404,
-        "modified": 1778596802.6554968,
-        "hash": "3348d53660f924b9ed60f15548b44d4a"
     },
     "relatorio-aws-eks.md": {
         "size": 4574,
@@ -95,20 +85,10 @@ FILES = {
         "modified": 1778291597.8668823,
         "hash": "c41117ce9a6e0788fb0fe1cf18656bfb"
     },
-    "RELATORIO_AWS_EKS.pdf": {
-        "size": 36560,
-        "modified": 1780505226.3608294,
-        "hash": "4275f1a968bac4418ac49af3907bb934"
-    },
     "build-output.log": {
         "size": 727,
         "modified": 1778687303.9864867,
         "hash": "e6b44c9af638bd4c3ea6c55725f3bc12"
-    },
-    "PROPOSTA_DAIG_AWS.pdf": {
-        "size": 40340,
-        "modified": 1780506631.696828,
-        "hash": "4ff11d6159d40c31c2c793e5b8923aa7"
     },
     "kimi-api": {
         "size": 74,
@@ -125,20 +105,10 @@ FILES = {
         "modified": 1778298212.6508818,
         "hash": "e51bb3d52ada002c343d2705697d97ef"
     },
-    "SPEC-SAGAWA.pdf": {
-        "size": 83058,
-        "modified": 1778596384.6394951,
-        "hash": "c877437e64814cb6afd94039de01eb3c"
-    },
     "docker-compose.jenkins.yml": {
         "size": 388,
         "modified": 1778344398.1961665,
         "hash": "d912f7ed728aeed7a71ad1bbb21448ab"
-    },
-    "PRESENTACAO-FASE1-PAGAMENTOS-LOGISTICA.pdf": {
-        "size": 48967,
-        "modified": 1778591469.351492,
-        "hash": "0c34aa3722f9b2ba7a4bb6dd8201223b"
     },
     "test-monitor.txt": {
         "size": 5,
@@ -146,19 +116,19 @@ FILES = {
         "hash": "d8e8fca2dc0f896fd7cb4cb0031ba249"
     },
     "vite.config.ts": {
-        "size": 539,
-        "modified": 1779999439.2327504,
-        "hash": "259d538b4ccabf0bafd1cb596543f5ef"
+        "size": 780,
+        "modified": 1781826790.2596216,
+        "hash": "032e540eecccbb9e444b4822baf20143"
     },
     "brain.py": {
-        "size": 335579,
-        "modified": 1781798407.4276235,
-        "hash": "0dc101a3512c3276bfd6586cd35bc712"
+        "size": 546171,
+        "modified": 1781899086.5086756,
+        "hash": "995dfc8a4a3e98ca6420cacd534fd73a"
     },
     "vite.config.js": {
-        "size": 636,
-        "modified": 1780149420.3851748,
-        "hash": "86cd72e1c988c0beed9d230d917a1213"
+        "size": 894,
+        "modified": 1781827040.8236232,
+        "hash": "7d08017742a3bb987ab43e555c183abe"
     },
     "update-parts-images.sql": {
         "size": 5338,
@@ -185,20 +155,15 @@ FILES = {
         "modified": 1778244136.1845484,
         "hash": "470cfd3ee10fbff840b377e769485f3e"
     },
-    "ORCAMENTO_TESTE_8H.pdf": {
-        "size": 31766,
-        "modified": 1780506390.5368273,
-        "hash": "dbe72d2128067fe2147e8f6fbf8004b0"
+    "build-apk.sh": {
+        "size": 957,
+        "modified": 1781898615.812672,
+        "hash": "72c5f7d8c8b2f4a3d96129d8e97810de"
     },
     "tsconfig.tsbuildinfo": {
-        "size": 5130,
-        "modified": 1781786811.019622,
-        "hash": "cefc7311895df186aa5065b2b44b110c"
-    },
-    "ORCAMENTO_AWS_TOKYO.pdf": {
-        "size": 29694,
-        "modified": 1780505587.028829,
-        "hash": "c5a5ea7f2f547d0ff6b28c5ea5dd79f9"
+        "size": 8111,
+        "modified": 1781879054.5736456,
+        "hash": "1067695d60d2d36e48eb0ce4cad37969"
     },
     "PESQUISA-LOGISTICA-JAP\u00c3O.md": {
         "size": 3492,
@@ -216,9 +181,9 @@ FILES = {
         "hash": "f802dae5e0536f33144c16601c33f35a"
     },
     "tsconfig.node.tsbuildinfo": {
-        "size": 141879,
-        "modified": 1780149420.6411748,
-        "hash": "b3ae9b220a79df6b625ecdd78ca86071"
+        "size": 142185,
+        "modified": 1781827040.8796232,
+        "hash": "3d0384155ccc31362f299e5a0148039f"
     },
     "index.html": {
         "size": 1955,
@@ -260,16 +225,6 @@ FILES = {
         "modified": 1778725157.6724253,
         "hash": "3eff4715f74a3b25716fb464ba705f82"
     },
-    "BUILD-REPORT-GAID-2026-05-10-PT.pdf": {
-        "size": 29584,
-        "modified": 1778404369.4324417,
-        "hash": "a282cba1050f614404b76e52df8294d7"
-    },
-    "RELATORIO_MELHORIAS.pdf": {
-        "size": 40587,
-        "modified": 1778731635.5084183,
-        "hash": "8be09cc5f625314500e26378cf7646d5"
-    },
     "update-ads-images.sql": {
         "size": 1690,
         "modified": 1778300106.6948752,
@@ -284,11 +239,6 @@ FILES = {
         "size": 3170,
         "modified": 1778697386.938484,
         "hash": "4a29bbdfabf749c2f16c0a1a24706300"
-    },
-    "BUILD-REPORT-GAID-2026-05-10-JA.pdf": {
-        "size": 61724,
-        "modified": 1778404369.4484417,
-        "hash": "dd8f5d27a1444451ecead6bb0a5d69b3"
     },
     "download-schema.sh": {
         "size": 1609,
@@ -320,25 +270,10 @@ FILES = {
         "modified": 1778731754.6844292,
         "hash": "48cb7c2829697ea03ae756297f310631"
     },
-    "docs/DIFERENCIAIS-TECNOLOGICOS.pdf": {
-        "size": 28728,
-        "modified": 1779761973.439381,
-        "hash": "3e95a9efc9d245ae96a0d3dc20a39441"
-    },
-    "docs/APRESENTACAO-INVESTIDOR copy.pdf": {
-        "size": 38500,
-        "modified": 1779762992.8874104,
-        "hash": "0525a8b3d7926b537531126eac72b644"
-    },
     "docs/SPEC-SAGAWA.md": {
         "size": 14733,
         "modified": 1778596367.7674787,
         "hash": "02d4a3fede86b7f89fd502ba50091bcd"
-    },
-    "docs/APRESENTACAO-INVESTIDOR.pdf": {
-        "size": 37395,
-        "modified": 1779763671.5833898,
-        "hash": "8c4a9015de20419814cdf1c645a2d6ea"
     },
     "docs/ANALISE-GAID.md": {
         "size": 21416,
@@ -395,20 +330,10 @@ FILES = {
         "modified": 1778404335.3084426,
         "hash": "a994d0b599d370c00c2809d6ab5b006a"
     },
-    "project-reports/BUILD-REPORT-GAID-2026-05-10.pdf": {
-        "size": 28895,
-        "modified": 1778404236.9364378,
-        "hash": "bbbe36b59416696d97921cd0fff251df"
-    },
     "project-reports/BUILD-REPORT-GAID-2026-05-10.md": {
         "size": 2505,
         "modified": 1778404118.3204377,
         "hash": "c77bf2e7adc2b82c7673e0000c1ca3be"
-    },
-    "project-reports/BUILD-REPORT-2026-05-10.pdf": {
-        "size": 33576,
-        "modified": 1778399583.8124416,
-        "hash": "02bdce0f748c29cdd7799ba5d596bf2a"
     },
     "project-reports/BUILD-REPORT-GAID-2026-05-10-PT.md": {
         "size": 2644,
@@ -420,16 +345,6 @@ FILES = {
         "modified": 1778403583.49244,
         "hash": "841e1ca7c78dd2481bc8c07c5ca93115"
     },
-    "project-reports/BUILD-REPORT-GAID-2026-05-10-PT.pdf": {
-        "size": 29584,
-        "modified": 1778404345.8684425,
-        "hash": "a282cba1050f614404b76e52df8294d7"
-    },
-    "project-reports/BUILD-REPORT-GAID-2026-05-10-JA.pdf": {
-        "size": 61724,
-        "modified": 1778404349.4684427,
-        "hash": "dd8f5d27a1444451ecead6bb0a5d69b3"
-    },
     "src/index.css": {
         "size": 14355,
         "modified": 1781650367.3686173,
@@ -437,678 +352,763 @@ FILES = {
     },
     "src/main.tsx": {
         "size": 2923,
-        "modified": 1781110213.8933635,
+        "modified": 1781833815.6836164,
         "hash": "71423dd91dfba9260d29d5b73aec3102"
     },
     "src/vite-env.d.ts": {
         "size": 201,
-        "modified": 1778244843.5325506,
+        "modified": 1781833815.7676163,
         "hash": "16c5173f27fbb846bae733ed9ec9f4cb"
     },
     "src/App.tsx": {
-        "size": 6082,
-        "modified": 1781644988.1126065,
-        "hash": "f5d26b82f1360881073e11ef0e970f72"
+        "size": 7000,
+        "modified": 1781836203.4716136,
+        "hash": "ac848b2c93baa2901c11698656c24d04"
     },
-    "src/stores/favoriteStore.ts": {
+    "src/modules/parts-catalog/store/favoriteStore.ts": {
         "size": 1217,
-        "modified": 1778767583.087173,
+        "modified": 1781833814.3716164,
         "hash": "f0469cc70c620df1bd35f1895178bae4"
     },
-    "src/stores/authStore.ts": {
-        "size": 12442,
-        "modified": 1780516220.1168249,
-        "hash": "a5181cf002226dcdecb940722c0c2185"
-    },
-    "src/pages/Home.tsx": {
-        "size": 26588,
-        "modified": 1781798256.115624,
-        "hash": "ef545eec49461c6060a0e49c9af56684"
-    },
-    "src/pages/CarList.tsx": {
-        "size": 14525,
-        "modified": 1779303795.2157018,
-        "hash": "1b4015b7f5d0f13c2f218a30809f9ee7"
-    },
-    "src/pages/ImmersiveExperience.tsx": {
-        "size": 16577,
-        "modified": 1779925177.8984015,
-        "hash": "fe3761e917d3cf47793a21cd2193e941"
-    },
-    "src/pages/Register.tsx": {
-        "size": 8678,
-        "modified": 1781702536.8645926,
-        "hash": "311ab3cc465d400a58f0e1656665944b"
-    },
-    "src/pages/Dashboard.tsx": {
-        "size": 26668,
-        "modified": 1781645421.5926042,
-        "hash": "7e1c88c145a5c51988a2ab272be19a36"
-    },
-    "src/pages/Login.tsx": {
-        "size": 6463,
-        "modified": 1780415954.3047264,
-        "hash": "ecae1d88b93f5ff0aab63a113206bc42"
-    },
-    "src/pages/Favorites.tsx": {
-        "size": 4155,
-        "modified": 1781210457.8124208,
-        "hash": "f2c221d2facfd6b14f5c041d9ae04c4d"
-    },
-    "src/pages/PartsLookup.tsx": {
-        "size": 11224,
-        "modified": 1781008877.738348,
-        "hash": "5ffc50da8da71a57cd1e43615711ad0d"
-    },
-    "src/pages/ProductDetail.tsx": {
-        "size": 9057,
-        "modified": 1781798245.5396235,
-        "hash": "434d4660efccbda5ea8c3c295086f395"
-    },
-    "src/pages/MotionFramePage.tsx": {
-        "size": 16241,
-        "modified": 1779132569.8575718,
-        "hash": "d16d1b5ffd4d3447b8077a4be4deaf35"
-    },
-    "src/pages/TrackingPublico.tsx": {
-        "size": 10590,
-        "modified": 1778811375.5306227,
-        "hash": "3a665197c27391ec3459d8e54b241d3f"
-    },
-    "src/pages/Catalog.tsx": {
-        "size": 35779,
-        "modified": 1781210355.9884214,
-        "hash": "1283ab868c1883115ff6513e21dec070"
-    },
-    "src/pages/CreateListing.tsx": {
-        "size": 19058,
-        "modified": 1780692580.256868,
-        "hash": "15a9f848d64475eb6ea89169fb7f0727"
-    },
-    "src/pages/Auctions.tsx": {
-        "size": 43041,
-        "modified": 1781210448.5244207,
-        "hash": "a8dcdad4370ab8b9b79d144b512c27b8"
-    },
-    "src/pages/Messages.tsx": {
-        "size": 23755,
-        "modified": 1781798231.9276237,
-        "hash": "17b0299312359104d2dca3804ddbb7c0"
-    },
-    "src/pages/HomeLanding.tsx": {
-        "size": 29563,
-        "modified": 1781798266.611624,
-        "hash": "fd348d1bb9953552f8e90a5dfa7d8865"
-    },
-    "src/pages/Profile.tsx": {
-        "size": 7532,
-        "modified": 1781264261.6920092,
-        "hash": "96c99da151dddd7214a91ac0533e76fa"
-    },
-    "src/pages/PaymentCheckout.tsx": {
-        "size": 18883,
-        "modified": 1781798278.651624,
-        "hash": "e0b3d7037afda2179586114f2b6df5f0"
-    },
-    "src/pages/mobile/WorkerCadastro.tsx": {
-        "size": 18218,
-        "modified": 1781754706.1565936,
-        "hash": "95941d36e7fba352c44e67ddf731379c"
-    },
-    "src/pages/mobile/WorkerColetas.tsx": {
-        "size": 26402,
-        "modified": 1781751896.9085946,
-        "hash": "d4a5daba257a03cdd66b5b8c0cd89235"
-    },
-    "src/pages/mobile/MobileApp.tsx": {
-        "size": 688,
-        "modified": 1778778853.0871668,
-        "hash": "1e6671c1d4ef428112c9c55566584ec3"
-    },
-    "src/pages/mobile/AgenciaPage.tsx": {
-        "size": 6846,
-        "modified": 1778810710.7786179,
-        "hash": "70f32d1b1d7c7a15480723a9c4a228e8"
-    },
-    "src/pages/mobile/MobileColetas.tsx": {
-        "size": 5634,
-        "modified": 1778778819.0671682,
-        "hash": "3ede193e0526ce35e81c6a6deb0b6371"
-    },
-    "src/pages/mobile/MobileDashboard.tsx": {
-        "size": 3927,
-        "modified": 1778778797.543169,
-        "hash": "d053cf5a5c27e2c37b6eea5477aef960"
-    },
-    "src/pages/mobile/MobileEntregas.tsx": {
-        "size": 6028,
-        "modified": 1778778833.283168,
-        "hash": "50721bc4906bbbf1aa92b36bd1150a51"
-    },
-    "src/pages/mobile/WorkerEntregas.tsx": {
-        "size": 18108,
-        "modified": 1778795832.0431657,
-        "hash": "786208ba938626562fa21518638ad9b9"
-    },
-    "src/pages/mobile/WorkerApp.tsx": {
-        "size": 3332,
-        "modified": 1781752463.212592,
-        "hash": "424b4be9e5cb60164e49ac397a1fc7bc"
-    },
-    "src/pages/mobile/QRInstallPage.tsx": {
-        "size": 2962,
-        "modified": 1778788050.6711714,
-        "hash": "4a3e80482e5c8a7ef397c2d7a935be90"
-    },
-    "src/pages/mobile/WorkerLogin.tsx": {
-        "size": 6511,
-        "modified": 1781752447.7005923,
-        "hash": "ec6e3236964b3295e653b288460a01e5"
-    },
-    "src/pages/mobile/MobileCD.tsx": {
-        "size": 4576,
-        "modified": 1778778845.4631674,
-        "hash": "8c52d3972f0c65fb3b44895d89e4f8b5"
-    },
-    "src/pages/admin/ImageTo3D.tsx": {
-        "size": 26591,
-        "modified": 1780677629.6928542,
-        "hash": "e2ceed2da84e82cfc39d38f82a284756"
-    },
-    "src/pages/admin/TransactionManagement.tsx": {
-        "size": 27161,
-        "modified": 1781648599.180603,
-        "hash": "da1ff2d4e4a987eaa5190b5cfc4deec0"
-    },
-    "src/pages/admin/LogistixDashboard.tsx": {
-        "size": 31706,
-        "modified": 1781798142.8156235,
-        "hash": "b02ad784cfd0b609eab095704e75d4f8"
-    },
-    "src/pages/admin/UserManagement.tsx": {
-        "size": 108472,
-        "modified": 1781717690.4845936,
-        "hash": "7ec6484cae13d7fd1867e3af94f01345"
-    },
-    "src/pages/admin/ReviewManagement.tsx": {
-        "size": 19096,
-        "modified": 1781722284.2245934,
-        "hash": "8e5661123e018743f35b133fa311a873"
-    },
-    "src/pages/admin/AdminDashboard.tsx": {
-        "size": 8550,
-        "modified": 1781634261.7446182,
-        "hash": "99cbfd2bae1bf856e926022c1f0203dd"
-    },
-    "src/pages/admin/logistix/OcorrenciasPage.tsx": {
-        "size": 9425,
-        "modified": 1781734544.184594,
-        "hash": "f275c6f288d05dcf9c0950aae15d40f5"
-    },
-    "src/pages/admin/logistix/PedidoDetail.tsx": {
-        "size": 8819,
-        "modified": 1781734544.2245939,
-        "hash": "e5a871a36ff264d9c6395d76d2bbb63a"
-    },
-    "src/pages/admin/logistix/ConfigPage.tsx": {
-        "size": 3833,
-        "modified": 1781734544.144594,
-        "hash": "72d3d66af83c839e82126c13a7ea1778"
-    },
-    "src/pages/admin/logistix/EstoquePage.tsx": {
-        "size": 9383,
-        "modified": 1781734544.160594,
-        "hash": "bb573870c1ba75759974b6f66babd952"
-    },
-    "src/pages/admin/logistix/UsuariosPage.tsx": {
-        "size": 25309,
-        "modified": 1781751434.6485913,
-        "hash": "36be77e08c953101f0c275bc4ccce1a5"
-    },
-    "src/pages/admin/logistix/ClientesPage.tsx": {
-        "size": 9897,
-        "modified": 1781734544.124594,
-        "hash": "f9f2928f64796c90660b9906ccb69bc3"
-    },
-    "src/pages/admin/logistix/RelatoriosPage.tsx": {
-        "size": 7631,
-        "modified": 1781734544.248594,
-        "hash": "9091ad8845218877b5fc48776523504d"
-    },
-    "src/pages/admin/logistix/EntregasPage.tsx": {
-        "size": 12654,
-        "modified": 1781734544.160594,
-        "hash": "ae4bf8dd4eaa8dc3b9d373e15f5cc7ed"
-    },
-    "src/pages/admin/logistix/RastreamentoPage.tsx": {
-        "size": 10634,
-        "modified": 1781734544.232594,
-        "hash": "61e5595e6f47537eb4f5d70399cbef6d"
-    },
-    "src/pages/admin/logistix/TrackingPage.tsx": {
-        "size": 6005,
-        "modified": 1781734544.2645938,
-        "hash": "805569d2e9ce0fb982cb2a00182c5c44"
-    },
-    "src/pages/admin/logistix/B2BPage.tsx": {
-        "size": 56569,
-        "modified": 1781734544.124594,
-        "hash": "17a1219c19c6d28cf5acf9c38bd53265"
-    },
-    "src/pages/admin/logistix/PedidosPage.tsx": {
-        "size": 17273,
-        "modified": 1781734544.2285938,
-        "hash": "0cfc5033b28315fa2d71e9883b0fe800"
-    },
-    "src/pages/admin/logistix/TerceirosPage.tsx": {
-        "size": 13487,
-        "modified": 1781734544.256594,
-        "hash": "6f2bfa6cb4ad86c87654ad2fe2e391d8"
-    },
-    "src/pages/admin/logistix/TransportesPage.tsx": {
-        "size": 19186,
-        "modified": 1781749389.632596,
-        "hash": "b7a2732a43b5f80bcbcfeaf67ecd91d2"
-    },
-    "src/pages/admin/logistix/ArmazensPage.tsx": {
-        "size": 13985,
-        "modified": 1781734544.104594,
-        "hash": "e2fe8648822d5f306ed3fdcd7ea61a11"
-    },
-    "src/pages/admin/logistix/TransferenciasPage.tsx": {
-        "size": 7059,
-        "modified": 1781734544.2645938,
-        "hash": "dd0b92c5d1ede1e4a2e4b5a85334c690"
-    },
-    "src/pages/admin/logistix/WMSPage.tsx": {
-        "size": 25491,
-        "modified": 1781798221.7636225,
-        "hash": "67993b90ad22d567735d0f5e31fc0709"
-    },
-    "src/pages/admin/logistix/MapaPage.tsx": {
-        "size": 10812,
-        "modified": 1781749430.0085964,
-        "hash": "04aa3b8a17bf2117ea28ce940a5f38db"
-    },
-    "src/pages/admin/logistix/ColetasPage.tsx": {
-        "size": 13213,
-        "modified": 1781749268.0285947,
-        "hash": "f77145e0c10d53fa01ff42c51846dfa2"
-    },
-    "src/pages/admin/logistix/DropoffPage.tsx": {
-        "size": 7823,
-        "modified": 1781749143.160593,
-        "hash": "118a15e13238c4d9e846e36cf791b440"
-    },
-    "src/pages/admin/logistix/Armazem3DPage.tsx": {
-        "size": 19137,
-        "modified": 1781798402.2956235,
-        "hash": "a872324e7044dac672eb196ca7a25017"
-    },
-    "src/pages/admin/logistix/EtiquetasPage.tsx": {
-        "size": 14950,
-        "modified": 1781798167.0956223,
-        "hash": "963d8179b4403e8347bef6c7d5887119"
-    },
-    "src/hooks/useAnalytics.ts": {
-        "size": 3869,
-        "modified": 1778395740.7964454,
-        "hash": "206fb7eb105a3b009425e3e002727199"
-    },
-    "src/hooks/useTranslation.ts": {
-        "size": 140,
-        "modified": 1778354941.8481557,
-        "hash": "fb27f181db37fe9bb71a1919b87aed3c"
-    },
-    "src/types/index.ts": {
-        "size": 4931,
-        "modified": 1781008792.8823493,
-        "hash": "25fcd169d4515aa48ca17ee3bf234b80"
-    },
-    "src/components/ParticleField.tsx": {
-        "size": 4442,
-        "modified": 1780149952.6651707,
-        "hash": "ca47f252b0c596ef97e2720e9cc7c480"
-    },
-    "src/components/PurchaseFlow.tsx": {
-        "size": 9766,
-        "modified": 1778767507.1831665,
-        "hash": "1538442a6826865d970fd883fc679b91"
-    },
-    "src/components/HeroCarScene.tsx": {
+    "src/modules/parts-catalog/pages/Favorites.tsx": {
+        "size": 4210,
+        "modified": 1781833814.3836164,
+        "hash": "7ca4bf41373e8ac063b15d07a363ce7a"
+    },
+    "src/modules/parts-catalog/pages/PartsLookup.tsx": {
+        "size": 11575,
+        "modified": 1781833814.3956163,
+        "hash": "cc7da5a78e29848e7c57c94ad5a406e4"
+    },
+    "src/modules/parts-catalog/pages/ProductDetail.tsx": {
+        "size": 9738,
+        "modified": 1781833814.4076164,
+        "hash": "7b793d94197ad2216aaeb1ac297bd1c0"
+    },
+    "src/modules/parts-catalog/pages/Catalog.tsx": {
+        "size": 36989,
+        "modified": 1781881720.8936543,
+        "hash": "cd2878045004479fb63547c7358594e7"
+    },
+    "src/modules/parts-catalog/pages/CreateListing.tsx": {
+        "size": 19135,
+        "modified": 1781833814.4196162,
+        "hash": "2e599154b316b02c363ee647215317b2"
+    },
+    "src/modules/parts-catalog/components/HeroCarScene.tsx": {
         "size": 6549,
-        "modified": 1781101820.1373572,
+        "modified": 1781833814.4316163,
         "hash": "d01e4bf5a1d5609384503f7c6af70723"
     },
-    "src/components/MotionFrameScene.tsx": {
+    "src/modules/parts-catalog/components/MotionFrameScene.tsx": {
         "size": 7735,
-        "modified": 1779132539.3815718,
+        "modified": 1781833814.4436164,
         "hash": "f56fd060d4a5128a573443726c61e9f3"
     },
-    "src/components/ScrollToTop.tsx": {
-        "size": 233,
-        "modified": 1781102513.5933175,
-        "hash": "8a142269a764ba36a68c6bf8ba7d0752"
+    "src/modules/parts-catalog/components/SafeImage.tsx": {
+        "size": 701,
+        "modified": 1781834833.279617,
+        "hash": "e7433ec42c3bb394c39d70699a8e2fb6"
     },
-    "src/components/DottedGlobe.tsx": {
-        "size": 3397,
-        "modified": 1780524417.908728,
-        "hash": "00a85cedfb2207bab6b22dd29ae03ba9"
-    },
-    "src/components/ProtectedRoute.tsx": {
-        "size": 2136,
-        "modified": 1780515850.6808288,
-        "hash": "6ba7fd30a3f9eb0adfc9004430e246c1"
-    },
-    "src/components/SafeImage.tsx": {
-        "size": 657,
-        "modified": 1781210338.5724216,
-        "hash": "eaca572a71a04246288c911329054a8c"
-    },
-    "src/components/PWARegister.tsx": {
-        "size": 226,
-        "modified": 1778781048.6911688,
-        "hash": "aa5ea86cfeb5cade1984e898e3c4c87a"
-    },
-    "src/components/ChatPopup.tsx": {
-        "size": 25281,
-        "modified": 1781644999.7525806,
-        "hash": "009cea3d1f29e540301ba95d5908403d"
-    },
-    "src/components/LanguageDetector.tsx": {
-        "size": 1932,
-        "modified": 1778257227.2765508,
-        "hash": "8a1c33483bd973cc024c8eaf43779ab5"
-    },
-    "src/components/GaidLogo.tsx": {
-        "size": 1722,
-        "modified": 1781785319.1836417,
-        "hash": "99cd6cb257273d901fadafdb2dfd9aea"
-    },
-    "src/components/ExplodedCarScene.tsx": {
+    "src/modules/parts-catalog/components/ExplodedCarScene.tsx": {
         "size": 9676,
-        "modified": 1779398634.8189712,
+        "modified": 1781833814.6676164,
         "hash": "590251456638b79f1d81d24a2e6ba18c"
     },
-    "src/components/SimulateSale.tsx": {
-        "size": 6206,
-        "modified": 1781210467.1044211,
-        "hash": "3c14e5afd957c218cbb56b6bee123c55"
+    "src/modules/parts-catalog/components/SimulateSale.tsx": {
+        "size": 6296,
+        "modified": 1781833814.6716163,
+        "hash": "d6569ceb6b284012171fee2c682c53ff"
     },
-    "src/components/ImmersiveCarScene.tsx": {
+    "src/modules/parts-catalog/components/ImmersiveCarScene.tsx": {
         "size": 16459,
-        "modified": 1779925201.622403,
+        "modified": 1781833814.7036164,
         "hash": "95e06322735d499aa081ffe4597f6a69"
     },
-    "src/components/mobile/SignaturePad.tsx": {
-        "size": 5809,
-        "modified": 1781750686.4725955,
-        "hash": "9e8b603e7d93b108b0a8eb1c2f1a4390"
+    "src/modules/parts-catalog/components/parts-lookup/VehicleSelector.tsx": {
+        "size": 5288,
+        "modified": 1781833814.4836164,
+        "hash": "9ae111fa32a92e380e178c2d49a9eeb9"
     },
-    "src/components/mobile/MobileLayout.tsx": {
-        "size": 2493,
-        "modified": 1778778776.4951692,
-        "hash": "2ac740a98552aecfd4624d1f11f5b8b5"
+    "src/modules/parts-catalog/components/parts-lookup/PartCard.tsx": {
+        "size": 3258,
+        "modified": 1781833814.4876163,
+        "hash": "fb831f829fc60505ed5ffb68ddc74f53"
     },
-    "src/components/mobile/BiometricScanner.tsx": {
-        "size": 7230,
-        "modified": 1781749988.1605892,
-        "hash": "cc77a335471e35cfd7eee2ab639ca9d4"
+    "src/modules/parts-catalog/components/parts-lookup/PartsLookupHeader.tsx": {
+        "size": 1516,
+        "modified": 1781833814.4876163,
+        "hash": "09d90c38eb5604d9c55b22e7d59e805f"
     },
-    "src/components/mobile/ScannerCamera.tsx": {
-        "size": 10401,
-        "modified": 1778806619.118621,
-        "hash": "f2922a7e0de50cabada51825f9789b44"
+    "src/modules/parts-catalog/components/parts-lookup/SearchInput.tsx": {
+        "size": 1108,
+        "modified": 1781833814.4876163,
+        "hash": "4b6853a162fa4fa83322df228146702a"
     },
-    "src/components/mobile/WorkerLayout.tsx": {
-        "size": 2912,
-        "modified": 1781750703.9845927,
-        "hash": "b576f9f038fe5d4dc55503b354d67976"
-    },
-    "src/components/layout/Header.tsx": {
-        "size": 23319,
-        "modified": 1781631087.7966154,
-        "hash": "1f2ca327f3d07855e0680bd2c4a2db61"
-    },
-    "src/components/layout/Footer.tsx": {
-        "size": 7642,
-        "modified": 1781062700.7359352,
-        "hash": "2cfeedd974695ad1ca6d015873ee170a"
-    },
-    "src/components/layout/Layout.tsx": {
-        "size": 328,
-        "modified": 1780431453.424724,
-        "hash": "cef19e0f82fb9135db8639ecffcbcc46"
-    },
-    "src/components/parts-lookup/VehicleSelector.tsx": {
-        "size": 5137,
-        "modified": 1781008834.1943486,
-        "hash": "7fb376d03d66b59295beeb3d494e951c"
-    },
-    "src/components/parts-lookup/PartCard.tsx": {
-        "size": 3247,
-        "modified": 1781008842.9623487,
-        "hash": "300440301130dd450d610b5e5a6864d8"
-    },
-    "src/components/parts-lookup/PartsLookupHeader.tsx": {
-        "size": 1415,
-        "modified": 1781008826.4143481,
-        "hash": "f14f3f03ec0d0f24417d9321ee769799"
-    },
-    "src/components/parts-lookup/SearchInput.tsx": {
-        "size": 1025,
-        "modified": 1781008857.5063486,
-        "hash": "eef0122a74226c5b966030e7b03905e0"
-    },
-    "src/components/parts-lookup/FitmentBadge.tsx": {
+    "src/modules/parts-catalog/components/parts-lookup/FitmentBadge.tsx": {
         "size": 593,
-        "modified": 1781008858.7903485,
+        "modified": 1781833814.4956164,
         "hash": "7f7c155f404dadd2434dd1c26461360e"
     },
-    "src/components/parts-lookup/PartDetailDrawer.tsx": {
-        "size": 5768,
-        "modified": 1781008851.314349,
-        "hash": "a75222054b1ead3fdedd4ad0f5adf46d"
+    "src/modules/parts-catalog/components/parts-lookup/PartDetailDrawer.tsx": {
+        "size": 5923,
+        "modified": 1781833814.5996163,
+        "hash": "39ffc64fad2054f0441735b56cc64fc8"
     },
-    "src/components/parts-lookup/CategoryGrid.tsx": {
-        "size": 2132,
-        "modified": 1781008855.5503488,
-        "hash": "7be52be47d65f86a09ea1fe5950f5b22"
+    "src/modules/parts-catalog/components/parts-lookup/CategoryGrid.tsx": {
+        "size": 2149,
+        "modified": 1781833814.5996163,
+        "hash": "6d69b5dc6d445b09227a610d7e4742c3"
     },
-    "src/components/logistix/ErrorState.tsx": {
+    "src/modules/parts-catalog/__tests__/partsApi.test.ts": {
+        "size": 630,
+        "modified": 1781836862.4596114,
+        "hash": "61417a9ce665f825c97611fc28298264"
+    },
+    "src/modules/parts-catalog/api/partsApi.ts": {
+        "size": 2405,
+        "modified": 1781881373.0856524,
+        "hash": "0b8ee066a132a4ba9efe19caa214d77d"
+    },
+    "src/modules/chat/pages/Messages.tsx": {
+        "size": 24959,
+        "modified": 1781833814.7116163,
+        "hash": "b56654d4f9ebb9d6a7a3df6d4399cb8f"
+    },
+    "src/modules/chat/components/ChatPopup.tsx": {
+        "size": 25331,
+        "modified": 1781833814.7116163,
+        "hash": "f8ea219e15c9427285c132fe8e16945c"
+    },
+    "src/modules/chat/__tests__/chatLogic.test.ts": {
+        "size": 373,
+        "modified": 1781836884.7876108,
+        "hash": "a5a5819c55b57a7202a59dc0161c7a5a"
+    },
+    "src/modules/logistics/pages/TrackingPublico.tsx": {
+        "size": 10607,
+        "modified": 1781833814.7156162,
+        "hash": "4ddf0d06d20981bdd3e298b8506d5ed7"
+    },
+    "src/modules/logistics/pages/LogistixDashboard.tsx": {
+        "size": 32347,
+        "modified": 1781833814.7156162,
+        "hash": "9a49a54a7a8469fc1e8e9b155a729b39"
+    },
+    "src/modules/logistics/pages/admin/OcorrenciasPage.tsx": {
+        "size": 9439,
+        "modified": 1781833814.7196164,
+        "hash": "fdb01f6809eabb8b71099ca7bc5cd5ae"
+    },
+    "src/modules/logistics/pages/admin/PedidoDetail.tsx": {
+        "size": 8833,
+        "modified": 1781833814.7196164,
+        "hash": "f94114c8394af7ae2d3e5fd0c614399e"
+    },
+    "src/modules/logistics/pages/admin/ConfigPage.tsx": {
+        "size": 3847,
+        "modified": 1781833814.7356164,
+        "hash": "13bb1162448519742dc6cb463f041a14"
+    },
+    "src/modules/logistics/pages/admin/EstoquePage.tsx": {
+        "size": 9397,
+        "modified": 1781833814.7356164,
+        "hash": "908ff1c13f25a156dca97219e6836a4c"
+    },
+    "src/modules/logistics/pages/admin/UsuariosPage.tsx": {
+        "size": 15737,
+        "modified": 1781836189.047613,
+        "hash": "587d2d1475b3c39ac8279b3617897479"
+    },
+    "src/modules/logistics/pages/admin/ClientesPage.tsx": {
+        "size": 9911,
+        "modified": 1781833814.7396164,
+        "hash": "fed2b3c56a49f976566d54f33b77a740"
+    },
+    "src/modules/logistics/pages/admin/RelatoriosPage.tsx": {
+        "size": 7653,
+        "modified": 1781833814.7556164,
+        "hash": "39de34422252693cd3f8f89d0212efc9"
+    },
+    "src/modules/logistics/pages/admin/EntregasPage.tsx": {
+        "size": 12668,
+        "modified": 1781833814.7756164,
+        "hash": "c57825e40e37630b81c9a531e48ae587"
+    },
+    "src/modules/logistics/pages/admin/RastreamentoPage.tsx": {
+        "size": 10634,
+        "modified": 1781833814.7836163,
+        "hash": "61e5595e6f47537eb4f5d70399cbef6d"
+    },
+    "src/modules/logistics/pages/admin/TrackingPage.tsx": {
+        "size": 6027,
+        "modified": 1781833814.8116164,
+        "hash": "a0e37a1ee6ba15affb3434abc145b728"
+    },
+    "src/modules/logistics/pages/admin/B2BPage.tsx": {
+        "size": 56577,
+        "modified": 1781833814.8196163,
+        "hash": "79aeb211caafd1eb8f59f8c68b7ce84c"
+    },
+    "src/modules/logistics/pages/admin/PedidosPage.tsx": {
+        "size": 17298,
+        "modified": 1781833814.8196163,
+        "hash": "5df1dae73223e902fb817f99f32b9063"
+    },
+    "src/modules/logistics/pages/admin/TerceirosPage.tsx": {
+        "size": 13509,
+        "modified": 1781833814.8396163,
+        "hash": "cec03a3afd4915732e1e9dd655b14de2"
+    },
+    "src/modules/logistics/pages/admin/TransportesPage.tsx": {
+        "size": 19235,
+        "modified": 1781833814.8396163,
+        "hash": "e6bc7fdd850b2202925c249331ddcba0"
+    },
+    "src/modules/logistics/pages/admin/ArmazensPage.tsx": {
+        "size": 13999,
+        "modified": 1781833814.8436162,
+        "hash": "9cec39142559149493e2ef652d390c47"
+    },
+    "src/modules/logistics/pages/admin/TransferenciasPage.tsx": {
+        "size": 7073,
+        "modified": 1781833814.8436162,
+        "hash": "1ef90f6c112473b170e711a790c18c02"
+    },
+    "src/modules/logistics/pages/admin/WMSPage.tsx": {
+        "size": 25526,
+        "modified": 1781833814.8476164,
+        "hash": "1f438281dc456e44688127c0bcad47e0"
+    },
+    "src/modules/logistics/pages/admin/MapaPage.tsx": {
+        "size": 10839,
+        "modified": 1781833814.8516164,
+        "hash": "0b95430588402e7012e8cf0b7630ec91"
+    },
+    "src/modules/logistics/pages/admin/ColetasPage.tsx": {
+        "size": 13243,
+        "modified": 1781833814.8676164,
+        "hash": "491aa094039824af612fd9b8c906fde7"
+    },
+    "src/modules/logistics/pages/admin/DropoffPage.tsx": {
+        "size": 7858,
+        "modified": 1781833814.8676164,
+        "hash": "f29330e47276148f02653fb567eb4aa1"
+    },
+    "src/modules/logistics/pages/admin/Armazem3DPage.tsx": {
+        "size": 19162,
+        "modified": 1781833814.8676164,
+        "hash": "ba22a188d8b961103155f11f5e210922"
+    },
+    "src/modules/logistics/pages/admin/EtiquetasPage.tsx": {
+        "size": 14983,
+        "modified": 1781833814.8716164,
+        "hash": "1eb8c5c0c7e4e8e3cff679ab7f97f9f4"
+    },
+    "src/modules/logistics/components/ErrorState.tsx": {
         "size": 1492,
-        "modified": 1780001348.9207532,
+        "modified": 1781833814.8756163,
         "hash": "ed41e47cc06abe3b013701a65dc62202"
     },
-    "src/components/logistix/WarehouseScene.tsx": {
+    "src/modules/logistics/components/WarehouseScene.tsx": {
         "size": 16262,
-        "modified": 1781798394.5316236,
+        "modified": 1781833814.9116163,
         "hash": "d183a7048e8e387a7a5038dc91c430eb"
     },
-    "src/components/logistix/ZoneBottomSheet.tsx": {
+    "src/modules/logistics/components/ZoneBottomSheet.tsx": {
         "size": 7019,
-        "modified": 1780001457.6087527,
+        "modified": 1781833814.9236164,
         "hash": "2947e0d3116fea50e105561d2a5ec7d3"
     },
-    "src/components/logistix/NotificationCenter.tsx": {
-        "size": 6170,
-        "modified": 1780001379.3727534,
-        "hash": "9176264a2bd7fe191760ca498ac609bf"
+    "src/modules/logistics/components/NotificationCenter.tsx": {
+        "size": 6187,
+        "modified": 1781833814.9516163,
+        "hash": "93f85d17a20059cf9d0aeffb25eebc77"
     },
-    "src/components/logistix/PageHeader.tsx": {
+    "src/modules/logistics/components/PageHeader.tsx": {
         "size": 2171,
-        "modified": 1780000690.0407524,
+        "modified": 1781833814.9556162,
         "hash": "460e46b1d7a146fafe63f9457c268847"
     },
-    "src/components/logistix/GlobalSearch.tsx": {
-        "size": 9405,
-        "modified": 1780001420.6327536,
-        "hash": "edb6543281c8b1c454214f530ffa61b2"
+    "src/modules/logistics/components/GlobalSearch.tsx": {
+        "size": 9422,
+        "modified": 1781833814.9796164,
+        "hash": "69aa32819264745d2c55f5df709fc321"
     },
-    "src/components/logistix/GestureHint.tsx": {
+    "src/modules/logistics/components/GestureHint.tsx": {
         "size": 3077,
-        "modified": 1780001479.7527528,
+        "modified": 1781833814.9836164,
         "hash": "ecf3042b35ee432fcef3d98b8fca6b79"
     },
-    "src/components/logistix/EmptyState.tsx": {
+    "src/modules/logistics/components/EmptyState.tsx": {
         "size": 1723,
-        "modified": 1780000702.4407525,
+        "modified": 1781833815.0116162,
         "hash": "06dcf3448e991750997c506c5d6fcd5b"
     },
-    "src/components/admin/LabelPrint.tsx": {
-        "size": 4519,
-        "modified": 1778792618.8551664,
-        "hash": "9a1d211aa7d8e4d268d70cb57b7a19fe"
+    "src/modules/logistics/__tests__/logisticsApi.test.ts": {
+        "size": 3265,
+        "modified": 1781833815.0196164,
+        "hash": "8a36ec306189fdb54df4c13037ecd364"
     },
-    "src/components/admin/analytics/RevenueChart.tsx": {
-        "size": 3055,
-        "modified": 1778354942.6961555,
-        "hash": "44d6bc36e14a7ecf5d90782a0b87cdb6"
+    "src/modules/logistics/__tests__/b2b-contracts-flow.spec.ts": {
+        "size": 3793,
+        "modified": 1781879268.9536479,
+        "hash": "037e7a58527a1b0681614311ddee2e3c"
     },
-    "src/components/admin/analytics/index.ts": {
-        "size": 259,
-        "modified": 1778354086.600169,
-        "hash": "9652cdcc58c56a93bc72779c241629c2"
+    "src/modules/logistics/api/logisticsApi.ts": {
+        "size": 6075,
+        "modified": 1781833815.1156163,
+        "hash": "8d26cf7ea0fedd771a3cda81b6681c4b"
     },
-    "src/components/admin/analytics/TopSellersChart.tsx": {
-        "size": 2865,
-        "modified": 1778354943.1801555,
-        "hash": "4be28578005c2a94e597698b87bceed2"
+    "src/modules/reputation/pages/ReviewManagement.tsx": {
+        "size": 19130,
+        "modified": 1781833815.1156163,
+        "hash": "16afc9e97d7b6356e0b0eaf4b3316501"
     },
-    "src/components/admin/analytics/TransactionStatus.tsx": {
-        "size": 3361,
-        "modified": 1778354944.1001554,
-        "hash": "049fb5fb6e81750b5e1bd50cb5944458"
+    "src/modules/reputation/__tests__/reviewRules.test.ts": {
+        "size": 674,
+        "modified": 1781836880.0396109,
+        "hash": "50d07ced92eaa03e3cce3a8eeef6d671"
     },
-    "src/components/admin/analytics/CategoryChart.tsx": {
-        "size": 2754,
-        "modified": 1778354942.2681556,
-        "hash": "311c1d2659e8e6afe09b6bd768876c62"
+    "src/modules/transportation/pages/WorkerCadastro.tsx": {
+        "size": 18241,
+        "modified": 1781833815.1396163,
+        "hash": "b0a819e6f4fe05ba4c717928b196ee5a"
     },
-    "src/components/admin/analytics/UserGrowthChart.tsx": {
-        "size": 3600,
-        "modified": 1778354943.7201555,
-        "hash": "0093b5d6432518096b867ed5ccc7285a"
+    "src/modules/transportation/pages/WorkerColetas.tsx": {
+        "size": 26500,
+        "modified": 1781833815.1436164,
+        "hash": "9b8597031520cfd30fba097370392e97"
     },
-    "src/lib/distance.ts": {
-        "size": 2429,
-        "modified": 1778796029.4951649,
-        "hash": "2da14f9ba9199fab5659dbbb443f236c"
+    "src/modules/transportation/pages/MobileApp.tsx": {
+        "size": 700,
+        "modified": 1781833815.1436164,
+        "hash": "8f9f7ae7c96855441ef3f4e9eeae75dc"
     },
-    "src/lib/logisticsApi.ts": {
-        "size": 6056,
-        "modified": 1781793909.9116273,
-        "hash": "9fdb2eff58690d649fff9ab3582e0e29"
+    "src/modules/transportation/pages/AgenciaPage.tsx": {
+        "size": 6871,
+        "modified": 1781833815.1476164,
+        "hash": "710821a1cacac00a56369ab4b503960a"
     },
-    "src/lib/constants.ts": {
-        "size": 7465,
-        "modified": 1779930990.9144092,
-        "hash": "323671edfccf176315300fb429031fe9"
+    "src/modules/transportation/pages/MobileColetas.tsx": {
+        "size": 5653,
+        "modified": 1781833815.1476164,
+        "hash": "3832043adb1c6d78ad2f677a71614fb2"
     },
-    "src/lib/supabaseErrorHandler.ts": {
-        "size": 3247,
-        "modified": 1781108016.3573623,
-        "hash": "539e3c52a7bbfb3ad096f46bed9b62bb"
+    "src/modules/transportation/pages/MobileDashboard.tsx": {
+        "size": 3958,
+        "modified": 1781833815.1516163,
+        "hash": "d1f9320b98fb34cb8a79c14ff904fc33"
     },
-    "src/lib/supabase.ts": {
-        "size": 5029,
-        "modified": 1781108006.985362,
-        "hash": "fb8d8de32c9fd4726df718fcc0c32a18"
+    "src/modules/transportation/pages/MobileEntregas.tsx": {
+        "size": 6047,
+        "modified": 1781833815.1596162,
+        "hash": "bed8ab455c8342bb2f6898a32a8b65b8"
     },
-    "src/lib/partsApi.ts": {
-        "size": 1700,
-        "modified": 1779924978.4744,
-        "hash": "42b3ea11e64986434af0ba478fcb779e"
+    "src/modules/transportation/pages/WorkerEntregas.tsx": {
+        "size": 18150,
+        "modified": 1781833815.1596162,
+        "hash": "be102e93cdf63e956b3fec238e510ad2"
     },
-    "src/lib/adminApi.ts": {
-        "size": 8086,
-        "modified": 1781659770.0446143,
-        "hash": "9cf922688ea50ff268ec1f67cd57d516"
+    "src/modules/transportation/pages/WorkerApp.tsx": {
+        "size": 3363,
+        "modified": 1781833815.1676164,
+        "hash": "3dca57e5eb66437561c788ed5e4b2f8a"
     },
-    "src/lib/fees.ts": {
-        "size": 1030,
-        "modified": 1778764662.6271725,
-        "hash": "3e1c050f1f7fc0ddb0f84a9e98ed26d7"
+    "src/modules/transportation/pages/QRInstallPage.tsx": {
+        "size": 2952,
+        "modified": 1781833815.1716163,
+        "hash": "fbf1b91b8b4ed5234c6671f9660cf967"
     },
-    "src/lib/useGpsTracking.ts": {
-        "size": 2550,
-        "modified": 1778811701.7266285,
-        "hash": "0a00bf6cf92a899d241f5094b99e56cc"
+    "src/modules/transportation/pages/WorkerLogin.tsx": {
+        "size": 6511,
+        "modified": 1781833815.1796165,
+        "hash": "ec6e3236964b3295e653b288460a01e5"
     },
-    "src/lib/api.ts": {
-        "size": 10815,
-        "modified": 1781203942.7444277,
-        "hash": "c693a2c10eac1a6f04b3fcd6e69be2da"
+    "src/modules/transportation/pages/MobileCD.tsx": {
+        "size": 4595,
+        "modified": 1781833815.1876163,
+        "hash": "6641b2eb181cc6061bde26be42205f05"
     },
-    "src/lib/postal.ts": {
-        "size": 2854,
-        "modified": 1781264250.5440092,
-        "hash": "29bcae62c9dea6f34cae102e6c0630b3"
+    "src/modules/transportation/pages/admin/DriverApprovalsPage.tsx": {
+        "size": 8510,
+        "modified": 1781836150.6396117,
+        "hash": "8bf3a56c1a54fd255bdcce01f2ebd5c2"
     },
-    "src/lib/mobileApi.ts": {
-        "size": 3544,
-        "modified": 1778792598.9631677,
-        "hash": "a951d654b4ea0744ea9fe0e684d8103f"
+    "src/modules/transportation/hooks/useGpsTracking.ts": {
+        "size": 2572,
+        "modified": 1781833815.1876163,
+        "hash": "4c0b459e4aee09fc51698ff7f5339ba9"
     },
-    "src/lib/countryFlags.ts": {
-        "size": 953,
-        "modified": 1781014257.7343452,
-        "hash": "fabce2eafaeb1a77b2f5584bf23be2f3"
+    "src/modules/transportation/components/SignaturePad.tsx": {
+        "size": 5809,
+        "modified": 1781833815.1996164,
+        "hash": "9e8b603e7d93b108b0a8eb1c2f1a4390"
     },
-    "src/lib/geo.ts": {
-        "size": 458,
-        "modified": 1778781065.839169,
-        "hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
+    "src/modules/transportation/components/MobileLayout.tsx": {
+        "size": 2505,
+        "modified": 1781833815.2036164,
+        "hash": "b0f1395435bd66046d88a78773a31e8d"
     },
-    "src/lib/i18n.tsx": {
-        "size": 19458,
-        "modified": 1780517525.3248265,
-        "hash": "99ccc641bcffd9c7e99857a531bb6acb"
+    "src/modules/transportation/components/BiometricScanner.tsx": {
+        "size": 7230,
+        "modified": 1781833815.2156162,
+        "hash": "cc77a335471e35cfd7eee2ab639ca9d4"
     },
-    "src/__tests__/logisticsApi.test.ts": {
-        "size": 3234,
-        "modified": 1781726379.4085944,
-        "hash": "580670f1a79acd84c70c33704a037567"
+    "src/modules/transportation/components/ScannerCamera.tsx": {
+        "size": 10401,
+        "modified": 1781833815.2316163,
+        "hash": "f2922a7e0de50cabada51825f9789b44"
     },
-    "src/__tests__/api-crud.spec.ts": {
-        "size": 18006,
-        "modified": 1781786581.6596231,
-        "hash": "64a8408b7014aa65d1d01283def41dd3"
+    "src/modules/transportation/components/WorkerLayout.tsx": {
+        "size": 2924,
+        "modified": 1781833815.2796164,
+        "hash": "5df1cbb4a38c8ab55e7ec9e0c9c08f83"
     },
-    "src/__tests__/driver-biometrics.test.ts": {
+    "src/modules/transportation/__tests__/driver-biometrics.test.ts": {
         "size": 10550,
-        "modified": 1781754386.3565931,
+        "modified": 1781833815.0276163,
         "hash": "790d7ea2d65279b3828bafae26be866f"
     },
-    "src/__tests__/adminApi.test.ts": {
-        "size": 11362,
-        "modified": 1781718704.18459,
-        "hash": "ba9c47013816e7e1099f653c36b26dfe"
+    "src/modules/transportation/api/mobileApi.ts": {
+        "size": 3563,
+        "modified": 1781833815.2796164,
+        "hash": "155489eacbb71507c73cd87ee547a2c3"
     },
-    "src/__tests__/integration.spec.ts": {
-        "size": 11969,
-        "modified": 1780416102.9806638,
-        "hash": "d56c7c0e9b4f72c1d3db0ce2a866c0fb"
+    "src/modules/finance/pages/AccountsPayable.tsx": {
+        "size": 2340,
+        "modified": 1781833815.2876163,
+        "hash": "f1cf120a37c2d6cebceaf254bca00415"
     },
-    "src/__tests__/b2b-contracts-flow.spec.ts": {
-        "size": 3900,
-        "modified": 1781733454.3125944,
-        "hash": "d03c240533dfa43a5d43cffa12f06768"
+    "src/modules/finance/__tests__/financeApi.test.ts": {
+        "size": 513,
+        "modified": 1781836864.5996113,
+        "hash": "e48725915cf51cca6bbb970755fadc3f"
     },
-    "src/__tests__/fees.test.ts": {
-        "size": 1427,
-        "modified": 1778767322.8071747,
-        "hash": "254ec59b0d802a1ab337c5a750b1f717"
+    "src/modules/transactions/pages/PaymentCheckout.tsx": {
+        "size": 18987,
+        "modified": 1781833815.2996163,
+        "hash": "56fb509b97de1573b60d183cda1d8e27"
     },
-    "src/__tests__/auctions-integration.test.ts": {
+    "src/modules/transactions/components/PurchaseFlow.tsx": {
+        "size": 9800,
+        "modified": 1781833815.3356164,
+        "hash": "cdf9938f9960ec976f1f093f2302d6c8"
+    },
+    "src/modules/transactions/components/LabelPrint.tsx": {
+        "size": 4519,
+        "modified": 1781833815.3356164,
+        "hash": "9a1d211aa7d8e4d268d70cb57b7a19fe"
+    },
+    "src/modules/transactions/components/analytics/RevenueChart.tsx": {
+        "size": 3063,
+        "modified": 1781833815.3156164,
+        "hash": "5c98956d05e642afba6c756e2bd60a33"
+    },
+    "src/modules/transactions/components/analytics/index.ts": {
+        "size": 259,
+        "modified": 1781833815.3196163,
+        "hash": "9652cdcc58c56a93bc72779c241629c2"
+    },
+    "src/modules/transactions/components/analytics/TopSellersChart.tsx": {
+        "size": 2873,
+        "modified": 1781833815.3196163,
+        "hash": "80d42e21d208557e7151fe1970e828bd"
+    },
+    "src/modules/transactions/components/analytics/TransactionStatus.tsx": {
+        "size": 3369,
+        "modified": 1781833815.3196163,
+        "hash": "7ca3c2bc0f0faf70e46eac49a88a978b"
+    },
+    "src/modules/transactions/components/analytics/CategoryChart.tsx": {
+        "size": 2762,
+        "modified": 1781833815.3316164,
+        "hash": "7d4461d674fa86c339bde7a9cbd597ea"
+    },
+    "src/modules/transactions/components/analytics/UserGrowthChart.tsx": {
+        "size": 3608,
+        "modified": 1781833815.3316164,
+        "hash": "89d458cfc575829f4f50e2fc401cb7ef"
+    },
+    "src/modules/transactions/__tests__/adminApi.test.ts": {
+        "size": 11396,
+        "modified": 1781833815.3396163,
+        "hash": "093734d6fdd0cd2d5a0bcdae9f8cbe1f"
+    },
+    "src/modules/transactions/__tests__/fees.test.ts": {
+        "size": 1447,
+        "modified": 1781833815.3436162,
+        "hash": "12a0ec6e6c6493252e5dad4ddb93c0c0"
+    },
+    "src/modules/transactions/api/adminApi.ts": {
+        "size": 8105,
+        "modified": 1781833815.3796163,
+        "hash": "4a6e421150d484766774f4c0520bc045"
+    },
+    "src/modules/transactions/api/fees.ts": {
+        "size": 1030,
+        "modified": 1781833815.3836164,
+        "hash": "3e1c050f1f7fc0ddb0f84a9e98ed26d7"
+    },
+    "src/modules/transactions/api/api.ts": {
+        "size": 10890,
+        "modified": 1781833815.3876164,
+        "hash": "6a3562007acec0a2a2d163c693618580"
+    },
+    "src/modules/storefront/pages/Home.tsx": {
+        "size": 27289,
+        "modified": 1781880638.8816385,
+        "hash": "2e9dc8963252af828672f06235fed258"
+    },
+    "src/modules/storefront/pages/HomeLanding.tsx": {
+        "size": 29584,
+        "modified": 1781833815.3996162,
+        "hash": "e124f13338763ab5497ff49af75d2cf7"
+    },
+    "src/modules/storefront/__tests__/homeLogic.test.ts": {
+        "size": 345,
+        "modified": 1781836901.1996121,
+        "hash": "66ce47bd513e04b748f3058103c0cb77"
+    },
+    "src/modules/backoffice/pages/Dashboard.tsx": {
+        "size": 26766,
+        "modified": 1781833815.4116163,
+        "hash": "258bfeec113828651eff0abfc2467040"
+    },
+    "src/modules/backoffice/pages/TransactionManagement.tsx": {
+        "size": 27212,
+        "modified": 1781833815.2996163,
+        "hash": "f99b90b178a596979cb6f89ee0400ddd"
+    },
+    "src/modules/backoffice/pages/UserManagement.tsx": {
+        "size": 108523,
+        "modified": 1781833815.4716163,
+        "hash": "e43a81622565cabda0b1964967e14c5d"
+    },
+    "src/modules/backoffice/pages/AdminDashboard.tsx": {
+        "size": 9418,
+        "modified": 1781836229.0756123,
+        "hash": "b996a14fe3eca3decad69a13a0a071f8"
+    },
+    "src/modules/backoffice/__tests__/dashboardUtils.test.ts": {
+        "size": 457,
+        "modified": 1781836903.2796123,
+        "hash": "b74ed8ab565fc333b6c77d952719be44"
+    },
+    "src/modules/visualization3d/pages/ImageTo3D.tsx": {
+        "size": 26602,
+        "modified": 1781833815.4316163,
+        "hash": "986e64a416d1458c256e8de82b88d908"
+    },
+    "src/modules/visualization3d/pages/ImmersiveExperience.tsx": {
+        "size": 16598,
+        "modified": 1781833815.4316163,
+        "hash": "9938dc796ad6b81dd727e111cf098470"
+    },
+    "src/modules/visualization3d/pages/MotionFramePage.tsx": {
+        "size": 16262,
+        "modified": 1781833815.4316163,
+        "hash": "f8c2da4aebb38d55f47d4cd762a1179c"
+    },
+    "src/modules/visualization3d/__tests__/3dHelpers.test.ts": {
+        "size": 344,
+        "modified": 1781836905.5076125,
+        "hash": "af0e269d0711cc43982c7e4f5f491ced"
+    },
+    "src/modules/vehicles/pages/CarList.tsx": {
+        "size": 14525,
+        "modified": 1781833814.3796163,
+        "hash": "1b4015b7f5d0f13c2f218a30809f9ee7"
+    },
+    "src/modules/vehicles/__tests__/vehiclesApi.test.ts": {
+        "size": 352,
+        "modified": 1781836882.3196108,
+        "hash": "122958ec3267a92737a9a67ef3efad9d"
+    },
+    "src/modules/identity/store/authStore.ts": {
+        "size": 12484,
+        "modified": 1781833815.4316163,
+        "hash": "fafeeffaa980b99bf4c77546551b29c7"
+    },
+    "src/modules/identity/pages/Register.tsx": {
+        "size": 8721,
+        "modified": 1781833815.4476163,
+        "hash": "51d381c3c1b0166259b80af40d2904e9"
+    },
+    "src/modules/identity/pages/Login.tsx": {
+        "size": 6506,
+        "modified": 1781833815.4556162,
+        "hash": "ea780af7db900c5fcefc68d57fa09645"
+    },
+    "src/modules/identity/pages/Profile.tsx": {
+        "size": 7575,
+        "modified": 1781833815.4796164,
+        "hash": "64713df36da7746f220c1d46cf865ea0"
+    },
+    "src/modules/identity/components/ProtectedRoute.tsx": {
+        "size": 2151,
+        "modified": 1781833815.4796164,
+        "hash": "a5faba47b03bb152180b4f8973a6c12d"
+    },
+    "src/modules/identity/__tests__/authStore.test.ts": {
+        "size": 647,
+        "modified": 1781836860.3596113,
+        "hash": "9d447c506d672e921386e48b128f352f"
+    },
+    "src/modules/auctions/pages/Auctions.tsx": {
+        "size": 43139,
+        "modified": 1781833815.4916162,
+        "hash": "aed6d63a81ef62eb40c3d3ba823537e3"
+    },
+    "src/modules/auctions/__tests__/auctions-integration.test.ts": {
         "size": 7833,
-        "modified": 1780692713.3328671,
+        "modified": 1781833815.5076163,
         "hash": "398e9ea1b7963df415a164b9ab8a865b"
     },
-    "src/__tests__/auctions.test.ts": {
+    "src/modules/auctions/__tests__/auctions.test.ts": {
         "size": 10636,
-        "modified": 1780692713.3528671,
+        "modified": 1781833815.5116162,
         "hash": "374eb166fb571eeeb03bfabd217b18df"
+    },
+    "src/modules/shared/hooks/useAnalytics.ts": {
+        "size": 3889,
+        "modified": 1781833815.5116162,
+        "hash": "9eb10c99b707037cc7ed26d2054066ac"
+    },
+    "src/modules/shared/hooks/useTranslation.ts": {
+        "size": 154,
+        "modified": 1781833815.5116162,
+        "hash": "2225a787c2609e89d409c881bf8f1180"
+    },
+    "src/modules/shared/types/index.ts": {
+        "size": 4931,
+        "modified": 1781833815.5116162,
+        "hash": "25fcd169d4515aa48ca17ee3bf234b80"
+    },
+    "src/modules/shared/components/ParticleField.tsx": {
+        "size": 4442,
+        "modified": 1781833815.5156164,
+        "hash": "ca47f252b0c596ef97e2720e9cc7c480"
+    },
+    "src/modules/shared/components/ScrollToTop.tsx": {
+        "size": 233,
+        "modified": 1781833815.5156164,
+        "hash": "8a142269a764ba36a68c6bf8ba7d0752"
+    },
+    "src/modules/shared/components/DottedGlobe.tsx": {
+        "size": 3397,
+        "modified": 1781833815.5316164,
+        "hash": "00a85cedfb2207bab6b22dd29ae03ba9"
+    },
+    "src/modules/shared/components/AutoTranslateText.tsx": {
+        "size": 3209,
+        "modified": 1781833815.5836163,
+        "hash": "5fea57b348f9fe488cda2e38fddb36d0"
+    },
+    "src/modules/shared/components/PWARegister.tsx": {
+        "size": 226,
+        "modified": 1781833815.5836163,
+        "hash": "aa5ea86cfeb5cade1984e898e3c4c87a"
+    },
+    "src/modules/shared/components/LanguageDetector.tsx": {
+        "size": 1946,
+        "modified": 1781833815.5876164,
+        "hash": "10d28731bb7b2ae999ff494a2d55d787"
+    },
+    "src/modules/shared/components/GaidLogo.tsx": {
+        "size": 1722,
+        "modified": 1781833815.5916164,
+        "hash": "99cd6cb257273d901fadafdb2dfd9aea"
+    },
+    "src/modules/shared/components/GlobalLoader.tsx": {
+        "size": 275,
+        "modified": 1781834801.8196177,
+        "hash": "2e46567db62489269c1fe96ab883cba9"
+    },
+    "src/modules/shared/components/layout/Header.tsx": {
+        "size": 20144,
+        "modified": 1781833815.5476162,
+        "hash": "fe96026aee218b90d5f68aa7179c0343"
+    },
+    "src/modules/shared/components/layout/Footer.tsx": {
+        "size": 9782,
+        "modified": 1781833815.5516164,
+        "hash": "2a6ec436de56058916065df627affb0d"
+    },
+    "src/modules/shared/components/layout/Layout.tsx": {
+        "size": 651,
+        "modified": 1781833815.5596163,
+        "hash": "74102e7111f48fd604c84bd61fb3f519"
+    },
+    "src/modules/shared/lib/distance.ts": {
+        "size": 2429,
+        "modified": 1781833815.6116164,
+        "hash": "2da14f9ba9199fab5659dbbb443f236c"
+    },
+    "src/modules/shared/lib/redisCache.ts": {
+        "size": 1421,
+        "modified": 1781835237.4436154,
+        "hash": "14ccf1edd6f7cd9698d951d677a9ec4b"
+    },
+    "src/modules/shared/lib/constants.ts": {
+        "size": 7465,
+        "modified": 1781833815.6196163,
+        "hash": "323671edfccf176315300fb429031fe9"
+    },
+    "src/modules/shared/lib/supabaseErrorHandler.ts": {
+        "size": 3247,
+        "modified": 1781833815.6396163,
+        "hash": "539e3c52a7bbfb3ad096f46bed9b62bb"
+    },
+    "src/modules/shared/lib/supabase.ts": {
+        "size": 5029,
+        "modified": 1781833815.6396163,
+        "hash": "fb8d8de32c9fd4726df718fcc0c32a18"
+    },
+    "src/modules/shared/lib/postal.ts": {
+        "size": 2854,
+        "modified": 1781833815.6476164,
+        "hash": "29bcae62c9dea6f34cae102e6c0630b3"
+    },
+    "src/modules/shared/lib/countryFlags.ts": {
+        "size": 953,
+        "modified": 1781833815.6516163,
+        "hash": "fabce2eafaeb1a77b2f5584bf23be2f3"
+    },
+    "src/modules/shared/lib/geo.ts": {
+        "size": 458,
+        "modified": 1781833815.6676164,
+        "hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
+    },
+    "src/modules/shared/lib/i18n.tsx": {
+        "size": 45217,
+        "modified": 1781833815.6676164,
+        "hash": "0d86ac508c9ae3e306d2fcb5b9653750"
+    },
+    "src/modules/shared/__tests__/api-crud.spec.ts": {
+        "size": 18006,
+        "modified": 1781833815.6716163,
+        "hash": "64a8408b7014aa65d1d01283def41dd3"
+    },
+    "src/modules/shared/__tests__/integration.spec.ts": {
+        "size": 11969,
+        "modified": 1781833815.6756163,
+        "hash": "d56c7c0e9b4f72c1d3db0ce2a866c0fb"
+    },
+    "src/modules/shared/__tests__/redisCache.test.ts": {
+        "size": 308,
+        "modified": 1781836896.9956114,
+        "hash": "35b9b03cc1ae79a536c617c4d3b51922"
+    },
+    "src/modules/crm/pages/ContactsManagement.tsx": {
+        "size": 2295,
+        "modified": 1781833815.6796165,
+        "hash": "28b80c48b5b8ae28cbe619cdf303ba66"
+    },
+    "src/modules/crm/__tests__/crmApi.test.ts": {
+        "size": 318,
+        "modified": 1781836899.0316117,
+        "hash": "c30efc13f054072be027188cbb0bbaeb"
     },
     "supabase/seed-parts.sql": {
         "size": 7808,
@@ -1119,6 +1119,11 @@ FILES = {
         "size": 53293,
         "modified": 1781113338.5653625,
         "hash": "480a793734bce8a9e15ef4621382efe9"
+    },
+    "supabase/snapshot-20260618_230210-schema.sql": {
+        "size": 0,
+        "modified": 1781834538.4356184,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "supabase/seed-manufacturers-v3.sql": {
         "size": 50498,
@@ -1261,9 +1266,9 @@ FILES = {
         "hash": "18fd4823093eadba1ed0252b47a9140d"
     },
     "supabase/functions/logistics/index.ts": {
-        "size": 30042,
-        "modified": 1781798357.9196236,
-        "hash": "b7c7d3254983f582baf9a1329176baf2"
+        "size": 30045,
+        "modified": 1781878914.2656476,
+        "hash": "29acee2fc1a3879055d8d6574b5a2952"
     },
     "supabase/functions/logistics/_shared/cors.ts": {
         "size": 561,
@@ -1515,40 +1520,25 @@ FILES = {
         "modified": 1781113119.469357,
         "hash": "da3d2490bdd0e2abecd4473a812a0d41"
     },
-    "artifacts/contrato-yamato.pdf": {
-        "size": 19179,
-        "modified": 1781730628.5085936,
-        "hash": "41596d53c167bcaad3d7da9504313611"
-    },
-    "artifacts/contrato-yamato-pt.pdf": {
-        "size": 19179,
-        "modified": 1781731337.1045873,
-        "hash": "65c763e4deacf057238a804c10c91a62"
-    },
-    "artifacts/contrato-yamato-en.pdf": {
-        "size": 18193,
-        "modified": 1781731340.4245872,
-        "hash": "2212fc293f81f096d5e50a614a84515e"
-    },
-    "artifacts/contrato-yamato-ja.pdf": {
-        "size": 46238,
-        "modified": 1781731346.020587,
-        "hash": "626450ed2c52f1dcb19fe74dc9f44b8b"
-    },
     "scripts/enrich-parts-db.cjs": {
         "size": 5855,
         "modified": 1781010544.0063496,
         "hash": "662a2b9b09846a1fc3ecdcec5d5dd5a8"
     },
     "scripts/upload-and-update-images.mjs": {
-        "size": 3957,
-        "modified": 1781178888.2333448,
-        "hash": "3a9c029550c05b5835f0d36ce0dd37fb"
+        "size": 3969,
+        "modified": 1781879266.4656475,
+        "hash": "310e85b9a23e348f2d8fad1b0f4983bd"
+    },
+    "scripts/disaster-recovery-backup.sh": {
+        "size": 2676,
+        "modified": 1781834578.5396187,
+        "hash": "423a48cb919f49345eca6b51567097eb"
     },
     "scripts/snapshot-and-upload.mjs": {
-        "size": 4221,
-        "modified": 1781113103.8693576,
-        "hash": "63d02d6978583c104bccc02870fcf3c5"
+        "size": 4233,
+        "modified": 1781879264.2856472,
+        "hash": "adf78689ef7e1ab4a2910be8ed777fb2"
     },
     "scripts/createUsers.ts": {
         "size": 1845,
@@ -1580,10 +1570,20 @@ FILES = {
         "modified": 1778328853.2944913,
         "hash": "b7c6fb47f0b6a617956505fa59667254"
     },
+    "scripts/repopulate-10-ads.mjs": {
+        "size": 5131,
+        "modified": 1781885310.5536513,
+        "hash": "ab8e334cc5c27e6d4522b2930a585279"
+    },
     "scripts/fetch-car-images.py": {
         "size": 11281,
         "modified": 1778551956.5625997,
         "hash": "ff7933b403e38f894a7bb8408f7906aa"
+    },
+    "scripts/list-part-images.js": {
+        "size": 878,
+        "modified": 1781819096.459624,
+        "hash": "f9d4f26a14be5fe520e715e988261fd7"
     },
     "scripts/generate_contract_pdf.py": {
         "size": 11681,
@@ -1591,14 +1591,19 @@ FILES = {
         "hash": "398b26e30499f0f9806dd5cc21fbd9d4"
     },
     "scripts/setup_driver_and_packages.mjs": {
-        "size": 6712,
-        "modified": 1781787468.4476185,
-        "hash": "abef7594e624935795d882e2daba8c68"
+        "size": 6725,
+        "modified": 1781879261.8536472,
+        "hash": "60829be2ee5cd6a686f0099b7170ad59"
     },
     "scripts/monitor.py": {
         "size": 4652,
         "modified": 1780505104.144829,
         "hash": "a49c0de489e638600ebcf3e7426a4ffc"
+    },
+    "scripts/upload-new-parts-images.mjs": {
+        "size": 3782,
+        "modified": 1781879259.325647,
+        "hash": "ab1b45af4d3526d23eb10fa32fa1e434"
     },
     "scripts/md2pdf_convert.py": {
         "size": 7620,
@@ -1775,6 +1780,11 @@ FILES = {
         "modified": 1779247220.2605689,
         "hash": "2a6181dbb4859544e4f29dd5f4e15e34"
     },
+    "public/parts-images/engine-vr38dett.png": {
+        "size": 814060,
+        "modified": 1781819128.4596236,
+        "hash": "5b4c1ff506df8dafcf346648d7128a77"
+    },
     "public/parts-images/wheels-work-meister.png": {
         "size": 623485,
         "modified": 1781110471.889363,
@@ -1795,6 +1805,16 @@ FILES = {
         "modified": 1781178844.0133464,
         "hash": "2f9aefe52cf24d10ef3ea6250eb600c0"
     },
+    "public/parts-images/bodykit-supra.png": {
+        "size": 719854,
+        "modified": 1781818972.6716266,
+        "hash": "67ea65ebffd756f4abef36cf327fe8e0"
+    },
+    "public/parts-images/turbo-rx7.png": {
+        "size": 803188,
+        "modified": 1781818990.8916264,
+        "hash": "be931c02eb313b688d0039b40a2c14f0"
+    },
     "public/parts-images/wheels-bbs-ria-18.png": {
         "size": 615946,
         "modified": 1781178844.0333464,
@@ -1805,6 +1825,11 @@ FILES = {
         "modified": 1781178844.0013463,
         "hash": "b7d83f37d5e2da9313c47ad03f9a233d"
     },
+    "public/parts-images/coilovers-wrx.png": {
+        "size": 807436,
+        "modified": 1781819008.0036263,
+        "hash": "3b6524cf91aeb0da5d4e1873b8eeffce"
+    },
     "public/parts-images/turbo-td06h-25g-evo.png": {
         "size": 83,
         "modified": 1781185731.681347,
@@ -1814,6 +1839,11 @@ FILES = {
         "size": 459126,
         "modified": 1781110471.9013631,
         "hash": "33ee38f097ca00147f00e8d43f9cd354"
+    },
+    "public/parts-images/wheels-mugen.png": {
+        "size": 734901,
+        "modified": 1781819025.3436263,
+        "hash": "d0f576718868545576dad96cd607d9ff"
     },
     "public/parts-images/engine-13b-rew.png": {
         "size": 806181,
@@ -1855,6 +1885,376 @@ FILES = {
         "modified": 1780441861.5847313,
         "hash": "86091df21fd0c5572a38dc20b97c252a"
     },
+    "jdk-17.0.10+7/bin/jhsdb": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "07e9a6a35bc5ca1b2f09f4566d28a2c1"
+    },
+    "jdk-17.0.10+7/bin/jarsigner": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "9d4b2214e02a2e7226b1aef6112ec293"
+    },
+    "jdk-17.0.10+7/bin/jstat": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "84da49601e0c83621a2961a5f8b47c21"
+    },
+    "jdk-17.0.10+7/bin/jcmd": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "f53ba8c59e78e694bd8140c4698584bb"
+    },
+    "jdk-17.0.10+7/bin/jlink": {
+        "size": 16368,
+        "modified": 1705445889.0,
+        "hash": "d03d3d09e20fcdd7e85f6b10bc63b399"
+    },
+    "jdk-17.0.10+7/bin/jshell": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "7a45f8e71a1d6e6f86afad3937f98f58"
+    },
+    "jdk-17.0.10+7/bin/jconsole": {
+        "size": 16400,
+        "modified": 1705445889.0,
+        "hash": "5ba802d34e99f0d56c8243ed60f15d42"
+    },
+    "jdk-17.0.10+7/bin/javap": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "36e58bbcd12e861ca55136262da10caa"
+    },
+    "jdk-17.0.10+7/bin/jmap": {
+        "size": 16368,
+        "modified": 1705445889.0,
+        "hash": "2e3b026bf9bfe23da9a8c7d3e3a010b0"
+    },
+    "jdk-17.0.10+7/bin/java": {
+        "size": 16320,
+        "modified": 1705445889.0,
+        "hash": "fc57c47d78b00876a8cdd86b847857dc"
+    },
+    "jdk-17.0.10+7/bin/jps": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "13b00ec8d07d5c8c7d1858bb654b5466"
+    },
+    "jdk-17.0.10+7/bin/jrunscript": {
+        "size": 16376,
+        "modified": 1705445889.0,
+        "hash": "ce3a452096c5c8784e83ee26119b22b6"
+    },
+    "jdk-17.0.10+7/bin/jpackage": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "14ece03849b4aa1930c6003f70e716af"
+    },
+    "jdk-17.0.10+7/bin/jdeprscan": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "80001bab92ee885061865dd74a67c079"
+    },
+    "jdk-17.0.10+7/bin/rmiregistry": {
+        "size": 16344,
+        "modified": 1705445889.0,
+        "hash": "58ab7e41e1c732760bf7fa0e57b7d3d4"
+    },
+    "jdk-17.0.10+7/bin/serialver": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "8f5f44e788581b5cee91500e70b0faf6"
+    },
+    "jdk-17.0.10+7/bin/jimage": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "9a4939385bbb4054e1475312071e3998"
+    },
+    "jdk-17.0.10+7/bin/javadoc": {
+        "size": 16368,
+        "modified": 1705445889.0,
+        "hash": "4ff09b63b3af2d408f533259b76d9813"
+    },
+    "jdk-17.0.10+7/bin/jmod": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "3292ddbaf0374e39c53d92130a9aba51"
+    },
+    "jdk-17.0.10+7/bin/jstatd": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "91e98d1bf87bb98293f6d5d053775af4"
+    },
+    "jdk-17.0.10+7/bin/jdeps": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "f947f6726fd3d1546227b2b5a6bc6d6f"
+    },
+    "jdk-17.0.10+7/bin/jstack": {
+        "size": 16368,
+        "modified": 1705445889.0,
+        "hash": "1c3edd1f3e7febaf918ea1fdaf2ae599"
+    },
+    "jdk-17.0.10+7/bin/javac": {
+        "size": 16368,
+        "modified": 1705445889.0,
+        "hash": "398753056e06e8025204a7e9570c36f9"
+    },
+    "jdk-17.0.10+7/bin/jar": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "bc8931838921d231252ec4d46275784d"
+    },
+    "jdk-17.0.10+7/bin/jdb": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "a2f78a4c38d4250c34f1221ce66c91f8"
+    },
+    "jdk-17.0.10+7/bin/jinfo": {
+        "size": 16368,
+        "modified": 1705445889.0,
+        "hash": "decd04548d86b3508d7649bc237ab43e"
+    },
+    "jdk-17.0.10+7/bin/keytool": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "cdf89aa5c50d7460c65c55a5c4142201"
+    },
+    "jdk-17.0.10+7/bin/jfr": {
+        "size": 16336,
+        "modified": 1705445889.0,
+        "hash": "72fcf93c1a05a3f7c89adf36882eaa17"
+    },
+    "jdk-17.0.10+7/lib/libsplashscreen.so": {
+        "size": 460696,
+        "modified": 1705445889.0,
+        "hash": "e25bfc582d547a0ceac8116b8eb11138"
+    },
+    "jdk-17.0.10+7/lib/tzdb.dat": {
+        "size": 103785,
+        "modified": 1705445889.0,
+        "hash": "2fd920c56de68f65493ba6962fd079e1"
+    },
+    "jdk-17.0.10+7/lib/libfontmanager.so": {
+        "size": 2523256,
+        "modified": 1705445889.0,
+        "hash": "a2befaa782d8e5d4e7663e1c88c025cc"
+    },
+    "jdk-17.0.10+7/lib/psfontj2d.properties": {
+        "size": 11390,
+        "modified": 1705445889.0,
+        "hash": "17b15d370018acc01550175882c7da91"
+    },
+    "jdk-17.0.10+7/lib/libawt_xawt.so": {
+        "size": 486832,
+        "modified": 1705445889.0,
+        "hash": "db6394f734ac2e98b3d985037ab5977b"
+    },
+    "jdk-17.0.10+7/lib/liblcms.so": {
+        "size": 589496,
+        "modified": 1705445889.0,
+        "hash": "6abbd4ad97e830b933922a4c5daf050c"
+    },
+    "jdk-17.0.10+7/lib/libinstrument.so": {
+        "size": 54304,
+        "modified": 1705445889.0,
+        "hash": "2f9906a0860774c1e1a24e8b22ed2046"
+    },
+    "jdk-17.0.10+7/lib/libawt_headless.so": {
+        "size": 46504,
+        "modified": 1705445889.0,
+        "hash": "76f49b1f9d59fb528d41591bc41bcad2"
+    },
+    "jdk-17.0.10+7/lib/libmanagement_ext.so": {
+        "size": 37016,
+        "modified": 1705445889.0,
+        "hash": "9727b52703f53b94de19b34f1c689cd1"
+    },
+    "jdk-17.0.10+7/lib/libzip.so": {
+        "size": 128376,
+        "modified": 1705445889.0,
+        "hash": "8a78a9220b8d91764546963849553728"
+    },
+    "jdk-17.0.10+7/lib/libsctp.so": {
+        "size": 36016,
+        "modified": 1705445889.0,
+        "hash": "0571eda75c4093c2534b57cbecdf796c"
+    },
+    "jdk-17.0.10+7/lib/psfont.properties.ja": {
+        "size": 3793,
+        "modified": 1705445889.0,
+        "hash": "d4c735bf5756759a1c3bc8de408629fc"
+    },
+    "jdk-17.0.10+7/lib/libj2pcsc.so": {
+        "size": 21488,
+        "modified": 1705445889.0,
+        "hash": "7ff1e92d055a833fdcd7b8d4ec74d66f"
+    },
+    "jdk-17.0.10+7/lib/jexec": {
+        "size": 16584,
+        "modified": 1705445889.0,
+        "hash": "d42ff63296c7a63d8f6456ebfa575e9c"
+    },
+    "jdk-17.0.10+7/lib/libj2pkcs11.so": {
+        "size": 96232,
+        "modified": 1705445889.0,
+        "hash": "33159031d2c1326ef52fb549b045e42f"
+    },
+    "jdk-17.0.10+7/lib/librmi.so": {
+        "size": 15328,
+        "modified": 1705445889.0,
+        "hash": "0e32593558f6a997c6ac6e79d2c5aac7"
+    },
+    "jdk-17.0.10+7/lib/jvm.cfg": {
+        "size": 29,
+        "modified": 1705445889.0,
+        "hash": "7ce21bdcfa333c231d74a77394206302"
+    },
+    "jdk-17.0.10+7/lib/modules": {
+        "size": 129748384,
+        "modified": 1705445889.0,
+        "hash": "37dcb8bdb86bea2d32fd3b39c7553f05"
+    },
+    "jdk-17.0.10+7/lib/libj2gss.so": {
+        "size": 50896,
+        "modified": 1705445889.0,
+        "hash": "df887949acf8249d5df85278a8530aaf"
+    },
+    "jdk-17.0.10+7/lib/libverify.so": {
+        "size": 64336,
+        "modified": 1705445889.0,
+        "hash": "d329c0af44320217e22819eae0ad5745"
+    },
+    "jdk-17.0.10+7/lib/classlist": {
+        "size": 71443,
+        "modified": 1705445889.0,
+        "hash": "3cc1197ebe8c117480e0c1bf21a0c3a0"
+    },
+    "jdk-17.0.10+7/lib/jrt-fs.jar": {
+        "size": 110511,
+        "modified": 1705445889.0,
+        "hash": "4ca63ad0b880abb833c4435b2e9e9d6a"
+    },
+    "jdk-17.0.10+7/lib/libsyslookup.so": {
+        "size": 15232,
+        "modified": 1705445889.0,
+        "hash": "dbec172632ebf3ef3fa960f208bdf3d9"
+    },
+    "jdk-17.0.10+7/lib/libprefs.so": {
+        "size": 15784,
+        "modified": 1705445889.0,
+        "hash": "df2c4d8bb95999e7dc9a08c06e3a68c4"
+    },
+    "jdk-17.0.10+7/lib/libjawt.so": {
+        "size": 15600,
+        "modified": 1705445889.0,
+        "hash": "6addf36d8bb862cf9de1f54d86fb069b"
+    },
+    "jdk-17.0.10+7/lib/libjli.so": {
+        "size": 120336,
+        "modified": 1705445889.0,
+        "hash": "3d1994a0ce589b12b749cd58ffbe0397"
+    },
+    "jdk-17.0.10+7/lib/src.zip": {
+        "size": 51299127,
+        "modified": 1705445889.0,
+        "hash": "bc9ddd68e33d8c7ba492f0c967e6ec8e"
+    },
+    "jdk-17.0.10+7/lib/libjaas.so": {
+        "size": 15616,
+        "modified": 1705445889.0,
+        "hash": "c3daa8af877efdd5e242f899e42b821a"
+    },
+    "jdk-17.0.10+7/lib/libmlib_image.so": {
+        "size": 606952,
+        "modified": 1705445889.0,
+        "hash": "d60faaa362f08d0b3f3d7ce9413b6619"
+    },
+    "jdk-17.0.10+7/lib/libjdwp.so": {
+        "size": 289744,
+        "modified": 1705445889.0,
+        "hash": "096870282d809c1a9dd13aaa4dfd74d6"
+    },
+    "jdk-17.0.10+7/lib/jspawnhelper": {
+        "size": 21904,
+        "modified": 1705445889.0,
+        "hash": "955c5ad0e1890282366fc3ea919ffc45"
+    },
+    "jdk-17.0.10+7/lib/libnet.so": {
+        "size": 108848,
+        "modified": 1705445889.0,
+        "hash": "b6badd455c5ec6557ab50b8f98eb514e"
+    },
+    "jdk-17.0.10+7/lib/ct.sym": {
+        "size": 8301486,
+        "modified": 1705445889.0,
+        "hash": "125bd585b7a7cd5a942a42fb70aece42"
+    },
+    "jdk-17.0.10+7/lib/libmanagement_agent.so": {
+        "size": 15608,
+        "modified": 1705445889.0,
+        "hash": "40df48ad20962b00bcf1ad50bc592c32"
+    },
+    "jdk-17.0.10+7/lib/libmanagement.so": {
+        "size": 29296,
+        "modified": 1705445889.0,
+        "hash": "8274e6a0bff63b966f8b9aa4f6592cdf"
+    },
+    "jdk-17.0.10+7/lib/libjsig.so": {
+        "size": 16560,
+        "modified": 1705445889.0,
+        "hash": "d2477a879dad6138238e58e6615af4b7"
+    },
+    "jdk-17.0.10+7/lib/libjavajpeg.so": {
+        "size": 239768,
+        "modified": 1705445889.0,
+        "hash": "49098a0d345d27d00a07839abf5dc551"
+    },
+    "jdk-17.0.10+7/lib/libdt_socket.so": {
+        "size": 35928,
+        "modified": 1705445889.0,
+        "hash": "2986dfb552ed3548d0dd5f1e0944297f"
+    },
+    "jdk-17.0.10+7/lib/server/classes_nocoops.jsa": {
+        "size": 6118400,
+        "modified": 1781895875.2877882,
+        "hash": "5753caf860cdabfee4eb87a0754ebb1a"
+    },
+    "jdk-17.0.10+7/lib/server/libjvm.so": {
+        "size": 23980272,
+        "modified": 1705445889.0,
+        "hash": "c1b66d1e0368fd147ab2cca215ec8dd6"
+    },
+    "jdk-17.0.10+7/lib/security/cacerts": {
+        "size": 170269,
+        "modified": 1705445889.0,
+        "hash": "1b20b7738d1d78a6f892a9da9a8c107b"
+    },
+    "jdk-17.0.10+7/lib/security/blocked.certs": {
+        "size": 2488,
+        "modified": 1705445889.0,
+        "hash": "19e78890d61c0dfc65b291341c08beba"
+    },
+    "jdk-17.0.10+7/lib/security/public_suffix_list.dat": {
+        "size": 229405,
+        "modified": 1705445889.0,
+        "hash": "beebcd1d32044e926333caa1950afb7f"
+    },
+    "jdk-17.0.10+7/lib/security/default.policy": {
+        "size": 10012,
+        "modified": 1705445889.0,
+        "hash": "a596f42ce07c48365e81d2d06c029114"
+    },
+    "jdk-17.0.10+7/lib/jfr/profile.jfc": {
+        "size": 35974,
+        "modified": 1705445889.0,
+        "hash": "dd3edd73b3dfee9ccd2f62a48a8d0978"
+    },
+    "jdk-17.0.10+7/lib/jfr/default.jfc": {
+        "size": 36014,
+        "modified": 1705445889.0,
+        "hash": "31e2d129dc3cae567d253a94fa285944"
+    },
     "android/gradlew": {
         "size": 8495,
         "modified": 1723050380.0,
@@ -1867,7 +2267,7 @@ FILES = {
     },
     "android/capacitor.settings.gradle": {
         "size": 207,
-        "modified": 1781753714.980594,
+        "modified": 1781898752.7126727,
         "hash": "455ebb7f9fe84a6974da6bdae43097c2"
     },
     "android/settings.gradle": {
@@ -1897,7 +2297,7 @@ FILES = {
     },
     "android/app/capacitor.build.gradle": {
         "size": 370,
-        "modified": 1781753714.980594,
+        "modified": 1781898752.7126727,
         "hash": "5081a3b5bf8a1befe041807f0e2eb79c"
     },
     "android/app/build.gradle": {
@@ -2022,7 +2422,7 @@ FILES = {
     },
     "android/app/src/main/res/xml/config.xml": {
         "size": 185,
-        "modified": 1781799720.7556303,
+        "modified": 1781898752.7086725,
         "hash": "ec72d9bfef4584efc28998a0075e6799"
     },
     "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
@@ -2107,233 +2507,4618 @@ FILES = {
     },
     "android/app/src/main/assets/capacitor.plugins.json": {
         "size": 3,
-        "modified": 1781799720.8756301,
+        "modified": 1781898752.4006727,
         "hash": "58e0494c51d30eb3494f7c9198986bb9"
     },
     "android/app/src/main/assets/capacitor.config.json": {
         "size": 142,
-        "modified": 1781799720.5516303,
+        "modified": 1781898752.3166726,
         "hash": "9ee46545d40629809417185e20dbb082"
     },
     "android/app/src/main/assets/public/carbon_frame_bike.glb": {
         "size": 3395040,
-        "modified": 1781799719.7596302,
+        "modified": 1781898751.8886726,
         "hash": "6939cbc923d371c27adabed8953c3752"
     },
     "android/app/src/main/assets/public/sports_car_exploded.obj": {
         "size": 1605,
-        "modified": 1781799719.2396302,
+        "modified": 1781898751.6806726,
         "hash": "0b724b1e2778dd472e934eff44c62f95"
     },
     "android/app/src/main/assets/public/labels-data.json": {
         "size": 688,
-        "modified": 1781799719.67963,
+        "modified": 1781898751.8646727,
         "hash": "a2c2827ed070688d2f9c81de2f14016b"
     },
     "android/app/src/main/assets/public/logo.png": {
         "size": 257349,
-        "modified": 1781799719.5796301,
+        "modified": 1781898751.8326726,
         "hash": "c6710a20397a98be214c10db97f81bdf"
     },
     "android/app/src/main/assets/public/cordova.js": {
         "size": 0,
-        "modified": 1781799720.67563,
+        "modified": 1781898752.7086725,
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "android/app/src/main/assets/public/test-qr.html": {
         "size": 3649,
-        "modified": 1781799719.19563,
+        "modified": 1781898751.6766727,
         "hash": "291a28bd3fd27ab219ed32fc4968a3e7"
     },
     "android/app/src/main/assets/public/icons.svg": {
         "size": 5031,
-        "modified": 1781799719.7036302,
+        "modified": 1781898751.8726726,
         "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
     },
     "android/app/src/main/assets/public/favicon.svg": {
         "size": 1628,
-        "modified": 1781799719.71563,
+        "modified": 1781898751.8766725,
         "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
     "android/app/src/main/assets/public/cordova_plugins.js": {
         "size": 0,
-        "modified": 1781799720.67963,
+        "modified": 1781898752.7086725,
         "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "android/app/src/main/assets/public/sports_car.glb": {
         "size": 175100,
-        "modified": 1781799719.2996302,
+        "modified": 1781898751.6846726,
         "hash": "95e354532b4e6224434674758605ab4d"
     },
     "android/app/src/main/assets/public/lamborghini_aventador.glb": {
         "size": 1928792,
-        "modified": 1781799719.6676302,
+        "modified": 1781898751.8606727,
         "hash": "35c9c832ae53b5811c613ecc10980f6b"
     },
     "android/app/src/main/assets/public/manifest.json": {
         "size": 564,
-        "modified": 1781799719.5716302,
+        "modified": 1781898751.8286726,
         "hash": "253035b6489559ab8246752910130b45"
     },
     "android/app/src/main/assets/public/car_engine_scan.glb": {
         "size": 30500176,
-        "modified": 1781799720.0796301,
+        "modified": 1781898752.0766726,
         "hash": "c328d301056572cce00d86d510888bb7"
     },
     "android/app/src/main/assets/public/index.html": {
         "size": 2388,
-        "modified": 1781799719.6996303,
-        "hash": "e8974ec18eaabff154ea37f6dee57e53"
+        "modified": 1781898751.8646727,
+        "hash": "739fafbba4f3a7daa830779e44f09ba4"
     },
     "android/app/src/main/assets/public/engineering_car_exploded.obj": {
         "size": 2804,
-        "modified": 1781799719.71563,
+        "modified": 1781898751.8806727,
         "hash": "cf2beec2dbd261aa7efe3c517ff75782"
     },
     "android/app/src/main/assets/public/sw.js": {
         "size": 747,
-        "modified": 1781799719.23563,
+        "modified": 1781898751.6806726,
         "hash": "18a93c312d310813263c6eafe978a45f"
     },
     "android/app/src/main/assets/public/test-labels.html": {
         "size": 14249,
-        "modified": 1781799719.23563,
+        "modified": 1781898751.6766727,
         "hash": "c89c10a05ea0c3c638700eade53daa40"
     },
     "android/app/src/main/assets/public/wheel_hydraulics.glb": {
         "size": 7828704,
-        "modified": 1781799719.0556302,
+        "modified": 1781898751.5806725,
         "hash": "6dc69bb15750868ae76e2791191a5c04"
     },
     "android/app/src/main/assets/public/toy_car.glb": {
         "size": 5422412,
-        "modified": 1781799719.1636302,
+        "modified": 1781898751.5966725,
         "hash": "7bee65587717abc2a905f47890a6e0a8"
     },
     "android/app/src/main/assets/public/car_model.glb": {
         "size": 433948,
-        "modified": 1781799719.82763,
+        "modified": 1781898751.8926725,
         "hash": "de32f1c72cf9616d9bb3357662cb5742"
     },
     "android/app/src/main/assets/public/littlest_tokyo.glb": {
         "size": 4133072,
-        "modified": 1781799719.6156301,
+        "modified": 1781898751.8526726,
         "hash": "2a6181dbb4859544e4f29dd5f4e15e34"
+    },
+    "android/app/src/main/assets/public/parts-images/engine-vr38dett.png": {
+        "size": 814060,
+        "modified": 1781898751.7606726,
+        "hash": "5b4c1ff506df8dafcf346648d7128a77"
     },
     "android/app/src/main/assets/public/parts-images/wheels-work-meister.png": {
         "size": 623485,
-        "modified": 1781799719.3916302,
+        "modified": 1781898751.6966727,
         "hash": "8a869bb29dc07b09065764daef69f940"
     },
     "android/app/src/main/assets/public/parts-images/bodykit-top-secret-s15.png": {
         "size": 691131,
-        "modified": 1781799719.56363,
+        "modified": 1781898751.8086727,
         "hash": "3d8e7375d2af48573e83a9bf2d27e54c"
     },
     "android/app/src/main/assets/public/parts-images/engine-2jzgte.png": {
         "size": 660772,
-        "modified": 1781799719.50763,
+        "modified": 1781898751.7686727,
         "hash": "9ae1bb8f8e43a6b5f425385c40f3282a"
     },
     "android/app/src/main/assets/public/parts-images/suspension-tein-monosport-nsx.png": {
         "size": 551113,
-        "modified": 1781799719.45563,
+        "modified": 1781898751.7446725,
         "hash": "2f9aefe52cf24d10ef3ea6250eb600c0"
+    },
+    "android/app/src/main/assets/public/parts-images/bodykit-supra.png": {
+        "size": 719854,
+        "modified": 1781898751.8126726,
+        "hash": "67ea65ebffd756f4abef36cf327fe8e0"
+    },
+    "android/app/src/main/assets/public/parts-images/turbo-rx7.png": {
+        "size": 803188,
+        "modified": 1781898751.7286725,
+        "hash": "be931c02eb313b688d0039b40a2c14f0"
     },
     "android/app/src/main/assets/public/parts-images/wheels-bbs-ria-18.png": {
         "size": 615946,
-        "modified": 1781799719.41963,
+        "modified": 1781898751.7126727,
         "hash": "fec87ee57394de6778c0efc4bca50d74"
     },
     "android/app/src/main/assets/public/parts-images/turbo-hks-gt3540.png": {
         "size": 720636,
-        "modified": 1781799719.4476302,
+        "modified": 1781898751.7326727,
         "hash": "b7d83f37d5e2da9313c47ad03f9a233d"
+    },
+    "android/app/src/main/assets/public/parts-images/coilovers-wrx.png": {
+        "size": 807436,
+        "modified": 1781898751.7806726,
+        "hash": "3b6524cf91aeb0da5d4e1873b8eeffce"
     },
     "android/app/src/main/assets/public/parts-images/turbo-td06h-25g-evo.png": {
         "size": 83,
-        "modified": 1781799719.4236302,
+        "modified": 1781898751.7166727,
         "hash": "a067956b1223828cad62392c4c6f8c5d"
     },
     "android/app/src/main/assets/public/parts-images/exhaust-hks-hipower.png": {
         "size": 459126,
-        "modified": 1781799719.4996302,
+        "modified": 1781898751.7566726,
         "hash": "33ee38f097ca00147f00e8d43f9cd354"
+    },
+    "android/app/src/main/assets/public/parts-images/wheels-mugen.png": {
+        "size": 734901,
+        "modified": 1781898751.7126727,
+        "hash": "d0f576718868545576dad96cd607d9ff"
     },
     "android/app/src/main/assets/public/parts-images/engine-13b-rew.png": {
         "size": 806181,
-        "modified": 1781799719.50763,
+        "modified": 1781898751.7766726,
         "hash": "e4184eecfe1860dd4133902c45748eed"
     },
     "android/app/src/main/assets/public/parts-images/alternator-skyline-r34.png": {
         "size": 91,
-        "modified": 1781799719.56763,
+        "modified": 1781898751.8286726,
         "hash": "ffaa5d3aca3e5c617b9ec79ae9ef20bf"
     },
     "android/app/src/main/assets/public/parts-images/sparkplugs-ngk-iridium-ix.png": {
         "size": 87,
-        "modified": 1781799719.4956303,
+        "modified": 1781898751.7526727,
         "hash": "70072573bff8bd63af3d3dbffc83a38a"
     },
     "android/app/src/main/assets/public/parts-images/bodykit-veilside-rx7.png": {
         "size": 695623,
-        "modified": 1781799719.53163,
+        "modified": 1781898751.7966726,
         "hash": "d57a8d5ae16fee295750bd9e65ff08fe"
     },
     "android/app/src/main/assets/public/parts-images/engine-rb26dett.png": {
         "size": 723540,
-        "modified": 1781799719.5036302,
+        "modified": 1781898751.7646725,
         "hash": "42c3e26c0beb8fad88763a6929eb9300"
     },
     "android/app/src/main/assets/public/parts-images/brakes-brembo-gt-s2000.png": {
         "size": 628515,
-        "modified": 1781799719.5196302,
+        "modified": 1781898751.7886727,
         "hash": "25f57fca992497ad3b6c68755a38f80e"
     },
     "android/app/src/main/assets/public/icons/icon.svg": {
         "size": 1628,
-        "modified": 1781799719.7076302,
+        "modified": 1781898751.8766725,
         "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
     },
-    "android/app/src/main/assets/public/assets/WarehouseScene-dX9wZAMi.js": {
-        "size": 8516,
-        "modified": 1781799720.4796302,
-        "hash": "972ce039baa6980f0e81210f1c36d741"
+    "android/app/src/main/assets/public/assets/postal-CqLGOBPZ.js": {
+        "size": 1194,
+        "modified": 1781898752.1606727,
+        "hash": "7502e527fce3af83ad20b2a0fad1edfa"
+    },
+    "android/app/src/main/assets/public/assets/search-CtfFj_-o.js": {
+        "size": 336,
+        "modified": 1781898752.1526725,
+        "hash": "98ba7503cdf1f970370de084edf38c88"
+    },
+    "android/app/src/main/assets/public/assets/index-CyHf9W-C.css": {
+        "size": 112527,
+        "modified": 1781898752.1806726,
+        "hash": "f05eecd5d083e5b269bcf1afe3d5e34f"
+    },
+    "android/app/src/main/assets/public/assets/Messages-q8Jkm4tW.js": {
+        "size": 14550,
+        "modified": 1781898752.2526727,
+        "hash": "d91e64b7d0a561b3cb9626fc86caa647"
+    },
+    "android/app/src/main/assets/public/assets/WorkerApp-Sq35x4so.js": {
+        "size": 72402,
+        "modified": 1781898752.2206726,
+        "hash": "45093d01efe9b54cc6c94f0d91dca05d"
+    },
+    "android/app/src/main/assets/public/assets/shield-DZUuMOGB.js": {
+        "size": 321,
+        "modified": 1781898752.1486726,
+        "hash": "c3f3dd45eec41b18a45d34437b75b19c"
+    },
+    "android/app/src/main/assets/public/assets/PartsLookup-B4REz5qF.js": {
+        "size": 22423,
+        "modified": 1781898752.2446725,
+        "hash": "3a3b469888081fd30b985073fd8a4e86"
+    },
+    "android/app/src/main/assets/public/assets/CarList-BzpMAJjJ.js": {
+        "size": 10703,
+        "modified": 1781898752.2926726,
+        "hash": "46d4aecb78fe6aae95e1043088ff650a"
+    },
+    "android/app/src/main/assets/public/assets/shield-alert-Q2XFWdFu.js": {
+        "size": 401,
+        "modified": 1781898752.1486726,
+        "hash": "c22f09d21ddb5cfdcc2cd4cc6ac95953"
+    },
+    "android/app/src/main/assets/public/assets/check-circle-CEhBik0y.js": {
+        "size": 361,
+        "modified": 1781898752.1966727,
+        "hash": "9f02b9a611d90349abd3c2e5cbf2e402"
+    },
+    "android/app/src/main/assets/public/assets/refresh-cw-BT0hQVAm.js": {
+        "size": 489,
+        "modified": 1781898752.1566727,
+        "hash": "882d5fbcc192a5485ef7a9cbed2afc20"
+    },
+    "android/app/src/main/assets/public/assets/browser-CjSdxGTc.js": {
+        "size": 24082,
+        "modified": 1781898752.2086725,
+        "hash": "d00a01a92950bdd14b8ecb2b57e45e2d"
+    },
+    "android/app/src/main/assets/public/assets/AgenciaPage-B97_YGKn.js": {
+        "size": 5810,
+        "modified": 1781898752.3046727,
+        "hash": "cce7cf3c1875b7bace299df86fc4defe"
     },
     "android/app/src/main/assets/public/assets/vendor-supabase-CW1GYbG4.js": {
         "size": 206616,
-        "modified": 1781799720.1516302,
+        "modified": 1781898752.1126726,
         "hash": "c85a19de208797cd0fd5db639a35151e"
     },
-    "android/app/src/main/assets/public/assets/vendor-query-DWBpmHC9.js": {
+    "android/app/src/main/assets/public/assets/cpu-D1wwi6Ar.js": {
+        "size": 658,
+        "modified": 1781898752.1926725,
+        "hash": "b222dc33f629e77238ca6fdaab8e1f46"
+    },
+    "android/app/src/main/assets/public/assets/star-C18k0dzO.js": {
+        "size": 379,
+        "modified": 1781898752.1366725,
+        "hash": "f295820acb6ae2fdf9ab4ca16a1b3d08"
+    },
+    "android/app/src/main/assets/public/assets/ImageTo3D-Bm4N0tlo.js": {
+        "size": 17046,
+        "modified": 1781898752.2646725,
+        "hash": "1ebba52ea17a4a99ce54e69ebd880dac"
+    },
+    "android/app/src/main/assets/public/assets/credit-card-ClJbSbO_.js": {
+        "size": 375,
+        "modified": 1781898752.1886725,
+        "hash": "65d3e677bf46c3431268165bb6ffa8da"
+    },
+    "android/app/src/main/assets/public/assets/building-DVgDIZI5.js": {
+        "size": 711,
+        "modified": 1781898752.2046726,
+        "hash": "9ab654c7566bf8c7642ffe7afa34f5bb"
+    },
+    "android/app/src/main/assets/public/assets/LogistixDashboard-Dgihpmma.css": {
+        "size": 15037,
+        "modified": 1781898752.2566726,
+        "hash": "7b943679edfb7ad4f9398a27ae63fbd5"
+    },
+    "android/app/src/main/assets/public/assets/UserManagement-C2h8pYJ4.js": {
+        "size": 66819,
+        "modified": 1781898752.2246726,
+        "hash": "cc7b34a610374110a10c3aa55c1fe571"
+    },
+    "android/app/src/main/assets/public/assets/chevron-right-rVJGAOE5.js": {
+        "size": 298,
+        "modified": 1781898752.1966727,
+        "hash": "db4731123d85eaac4d0035863a154128"
+    },
+    "android/app/src/main/assets/public/assets/WarehouseScene-DtPkning.js": {
+        "size": 8516,
+        "modified": 1781898752.2246726,
+        "hash": "0d2d8923ca87c5c6a53608d0fdceb452"
+    },
+    "android/app/src/main/assets/public/assets/vendor-query-CcJiKrtF.js": {
         "size": 42192,
-        "modified": 1781799720.2196302,
-        "hash": "0a81d5ca4a5d721eea81902f0a6402a6"
+        "modified": 1781898752.1206727,
+        "hash": "2ac3c7449440acef95944a5c23eba798"
     },
-    "android/app/src/main/assets/public/assets/vendor-three-1CdULahT.js": {
+    "android/app/src/main/assets/public/assets/LogistixDashboard-CPwKXT_S.js": {
+        "size": 859173,
+        "modified": 1781898752.2606726,
+        "hash": "5da322e54c6fe63ed18fa7ce24a9d828"
+    },
+    "android/app/src/main/assets/public/assets/vendor-three-DMVp3SPY.js": {
         "size": 1112105,
-        "modified": 1781799720.1476302,
-        "hash": "93ddf82137d38f056e27e0cda2edd45c"
+        "modified": 1781898752.1086726,
+        "hash": "d18e6587e44153ad534b26314cf31f85"
     },
-    "android/app/src/main/assets/public/assets/index-DrZCnl-s.css": {
-        "size": 127144,
-        "modified": 1781799720.3956301,
-        "hash": "95fa5f264069d97ccfc56fe742479a31"
+    "android/app/src/main/assets/public/assets/download-C9HyfQAb.js": {
+        "size": 431,
+        "modified": 1781898752.1886725,
+        "hash": "3a5cc2a90e3c89ceeae4356476852b09"
     },
-    "android/app/src/main/assets/public/assets/index-ySgPz8Na.js": {
-        "size": 374867,
-        "modified": 1781799720.32363,
-        "hash": "c872f20a0251de07f3330c33bd2925ab"
+    "android/app/src/main/assets/public/assets/DriverApprovalsPage-9oztNCGY.js": {
+        "size": 5832,
+        "modified": 1781898752.2806726,
+        "hash": "24210fe933dfa2d4422308b2a149e006"
     },
-    "android/app/src/main/assets/public/assets/vendor-react-Ct1SiH8I.js": {
+    "android/app/src/main/assets/public/assets/ImmersiveExperience-EVfwon09.js": {
+        "size": 21031,
+        "modified": 1781898752.2646725,
+        "hash": "839fa872888f72904804eb5ab357e4ba"
+    },
+    "android/app/src/main/assets/public/assets/TransactionManagement-CnRgZdCM.js": {
+        "size": 19067,
+        "modified": 1781898752.2246726,
+        "hash": "385bcf277a9a8daf660ec0244c372071"
+    },
+    "android/app/src/main/assets/public/assets/vendor-react-o1vseovg.js": {
         "size": 163243,
-        "modified": 1781799720.21563,
-        "hash": "98e98b3b89c4445cc8be13f7b8022ec6"
+        "modified": 1781898752.1166725,
+        "hash": "6617a501791b3647bd64421dcabfa385"
     },
-    "android/app/src/main/assets/public/assets/index-DCwxopNf.js": {
-        "size": 1452709,
-        "modified": 1781799720.4796302,
-        "hash": "0f847bd5369a876fc80abe0beb6d6bd9"
+    "android/app/src/main/assets/public/assets/Catalog-COBpeitd.js": {
+        "size": 25235,
+        "modified": 1781898752.2886727,
+        "hash": "739173a3afec7fe2a8b03cdfa5f228ea"
+    },
+    "android/app/src/main/assets/public/assets/Dashboard-TXcugrxz.js": {
+        "size": 18433,
+        "modified": 1781898752.2846725,
+        "hash": "dbe8ca8758a585d9d1140a14ad96dfb7"
+    },
+    "android/app/src/main/assets/public/assets/shield-check-CHf7e8qD.js": {
+        "size": 368,
+        "modified": 1781898752.1446726,
+        "hash": "27a70f2751072a477254e27a7bc955d9"
+    },
+    "android/app/src/main/assets/public/assets/HeroCarScene-BWurobqy.js": {
+        "size": 3414,
+        "modified": 1781898752.2726727,
+        "hash": "6079bad03df246ccb0378a07e5959b78"
+    },
+    "android/app/src/main/assets/public/assets/fees-BI62ZOgC.js": {
+        "size": 230,
+        "modified": 1781898752.1846726,
+        "hash": "1bf7dec697bb7ba01968365c2407b859"
+    },
+    "android/app/src/main/assets/public/assets/api-DvHJFHT5.js": {
+        "size": 4915,
+        "modified": 1781898752.2166727,
+        "hash": "faee202fbccc4f836de4419a76da37ae"
+    },
+    "android/app/src/main/assets/public/assets/ProductDetail-DmF7djf7.js": {
+        "size": 7689,
+        "modified": 1781898752.2406726,
+        "hash": "f9bb6923cd0baad9b24710d96ecb3a1e"
+    },
+    "android/app/src/main/assets/public/assets/alert-triangle-DI0Y0y9h.js": {
+        "size": 434,
+        "modified": 1781898752.2166727,
+        "hash": "5bdbbef144704f853835bd75edb0c202"
+    },
+    "android/app/src/main/assets/public/assets/Login-Br4XDYX2.js": {
+        "size": 4928,
+        "modified": 1781898752.2606726,
+        "hash": "d6d22c1731c67e1d95439fc302a2ec64"
+    },
+    "android/app/src/main/assets/public/assets/MotionFramePage-yUgZrYUA.js": {
+        "size": 17018,
+        "modified": 1781898752.2486727,
+        "hash": "f607dd4f44563379ede2df5a3ceee0aa"
+    },
+    "android/app/src/main/assets/public/assets/ContactsManagement-Db178E4m.js": {
+        "size": 2427,
+        "modified": 1781898752.2886727,
+        "hash": "6d98f3c0dd47bf03b088dd1f09ddc701"
+    },
+    "android/app/src/main/assets/public/assets/SafeImage-CzlyKICq.js": {
+        "size": 454,
+        "modified": 1781898752.2286725,
+        "hash": "03d32f1d1cf7d4eea7ab58ae2ea2c29f"
+    },
+    "android/app/src/main/assets/public/assets/truck-C3B1mZfh.js": {
+        "size": 521,
+        "modified": 1781898752.1286726,
+        "hash": "dabaded231c118fd829485ae04b277f0"
+    },
+    "android/app/src/main/assets/public/assets/supabaseErrorHandler-nMzqtk3d.js": {
+        "size": 1737,
+        "modified": 1781898752.1326725,
+        "hash": "5b8d28de8bbef05e56435561f8394a73"
+    },
+    "android/app/src/main/assets/public/assets/Register-CulRrtSD.js": {
+        "size": 6070,
+        "modified": 1781898752.2326727,
+        "hash": "65ec2674536bc1c36c5e57cabfc09277"
+    },
+    "android/app/src/main/assets/public/assets/TrackingPublico-C7WW174q.js": {
+        "size": 8622,
+        "modified": 1781898752.2286725,
+        "hash": "c8c909193fba09b0cd6995713ac9abc4"
+    },
+    "android/app/src/main/assets/public/assets/index-qniMJp_e.js": {
+        "size": 88771,
+        "modified": 1781898752.1766727,
+        "hash": "79dc56b32c7c3b32c903692f3643168e"
+    },
+    "android/app/src/main/assets/public/assets/file-text-uDYcakHo.js": {
+        "size": 565,
+        "modified": 1781898752.1846726,
+        "hash": "4891942356f6eca601c1eccbca8ce6ca"
+    },
+    "android/app/src/main/assets/public/assets/warehouse-C-fCmB6c.js": {
+        "size": 999,
+        "modified": 1781898752.1006727,
+        "hash": "642cfdfa5872ca865a07d4f3190d1d01"
+    },
+    "android/app/src/main/assets/public/assets/pen-line-DrFOcVs0.js": {
+        "size": 696,
+        "modified": 1781898752.1766727,
+        "hash": "f2660277f02bf0ae6694a54da4fe323c"
+    },
+    "android/app/src/main/assets/public/assets/mobileApi-C4y3r356.js": {
+        "size": 2712,
+        "modified": 1781898752.1766727,
+        "hash": "296d7fb76325c8a0a31ba50db2e4ef01"
+    },
+    "android/app/src/main/assets/public/assets/camera-Cl_5SF4f.js": {
+        "size": 417,
+        "modified": 1781898752.2006726,
+        "hash": "7299b2d6ffaf4310bb5b6cc586f6b508"
+    },
+    "android/app/src/main/assets/public/assets/shopping-bag-D-Uq7ToH.js": {
+        "size": 419,
+        "modified": 1781898752.1446726,
+        "hash": "71b3e7e304af552a0d636902900acb1c"
+    },
+    "android/app/src/main/assets/public/assets/Auctions-CceXZggp.js": {
+        "size": 27594,
+        "modified": 1781898752.2966726,
+        "hash": "1659f0cc1c75c3d4d30fa2ae99f34efd"
+    },
+    "android/app/src/main/assets/public/assets/eye-B-NaQPse.js": {
+        "size": 363,
+        "modified": 1781898752.1886725,
+        "hash": "e897952b61c2e5356720d5214a9f1b00"
+    },
+    "android/app/src/main/assets/public/assets/wrench-D--DZX0P.js": {
+        "size": 431,
+        "modified": 1781898752.1006727,
+        "hash": "328b8f63ef9673670a9e40318f108c89"
+    },
+    "android/app/src/main/assets/public/assets/ReviewManagement-DfUiwork.js": {
+        "size": 14562,
+        "modified": 1781898752.2286725,
+        "hash": "5ade5ee7d8c9d0f72353cbcf346ff90b"
+    },
+    "android/app/src/main/assets/public/assets/arrow-left-CpNY6d6R.js": {
+        "size": 333,
+        "modified": 1781898752.2166727,
+        "hash": "e704f88d8c4db65f1cd5a0faac7cd85b"
+    },
+    "android/app/src/main/assets/public/assets/arrow-up-down-DCI4FDED.js": {
+        "size": 412,
+        "modified": 1781898752.2126727,
+        "hash": "e6338e7c560d6e1b678d78ee79e569f7"
+    },
+    "android/app/src/main/assets/public/assets/scan-line-MeAqKhjL.js": {
+        "size": 1924,
+        "modified": 1781898752.1526725,
+        "hash": "35e9e5dae4e3bf12fba19f3a788b4b56"
+    },
+    "android/app/src/main/assets/public/assets/alert-circle-M60rpYZY.js": {
+        "size": 418,
+        "modified": 1781898752.2206726,
+        "hash": "a608d2808602b57b7310079fc3c4a4a6"
+    },
+    "android/app/src/main/assets/public/assets/check-Dt8vIGPC.js": {
+        "size": 288,
+        "modified": 1781898752.1966727,
+        "hash": "e78d00b50201ee865b6ba68123dc2298"
+    },
+    "android/app/src/main/assets/public/assets/user-check-BPPi7UTy.js": {
+        "size": 422,
+        "modified": 1781898752.1286726,
+        "hash": "01c1ee059f71c27146c5cb91935c6e64"
+    },
+    "android/app/src/main/assets/public/assets/QRInstallPage-B06kH__q.js": {
+        "size": 3189,
+        "modified": 1781898752.2326727,
+        "hash": "988fb7f2c44c09aa91c548eaccb0ce23"
+    },
+    "android/app/src/main/assets/public/assets/users-CYTxX6_4.js": {
+        "size": 473,
+        "modified": 1781898752.1286726,
+        "hash": "431ee1efe31c891e7c431383e047994e"
+    },
+    "android/app/src/main/assets/public/assets/play-CQZO5PaV.js": {
+        "size": 787,
+        "modified": 1781898752.1646726,
+        "hash": "41058948b821826ce85eeef6dd233b3c"
+    },
+    "android/app/src/main/assets/public/assets/lock-DiCFS241.js": {
+        "size": 375,
+        "modified": 1781898752.1766727,
+        "hash": "8634be206f918619bf95ff39ab04d843"
+    },
+    "android/app/src/main/assets/public/assets/dollar-sign-C_3nUMig.js": {
+        "size": 387,
+        "modified": 1781898752.1886725,
+        "hash": "32be9b526acb478e5c58b316298a9346"
+    },
+    "android/app/src/main/assets/public/assets/clock-BaxTIKA7.js": {
+        "size": 347,
+        "modified": 1781898752.1966727,
+        "hash": "3fd08208d014a43438c6633149af6484"
+    },
+    "android/app/src/main/assets/public/assets/adminApi-CzgGPYaM.js": {
+        "size": 4224,
+        "modified": 1781898752.2206726,
+        "hash": "d3fec937b36147d593fd500982f5a874"
+    },
+    "android/app/src/main/assets/public/assets/arrow-right-ByTmEj3-.js": {
+        "size": 333,
+        "modified": 1781898752.2126727,
+        "hash": "5ec85a56563ae360f8f12e0857561f1e"
+    },
+    "android/app/src/main/assets/public/assets/sliders-8YQ468xC.js": {
+        "size": 743,
+        "modified": 1781898752.1406727,
+        "hash": "066a217b3ddc8e72c0fbf8fa7a8b3e03"
+    },
+    "android/app/src/main/assets/public/assets/compass-BDV3cYFZ.js": {
+        "size": 391,
+        "modified": 1781898752.1926725,
+        "hash": "87d23c6bbbea5330af5daf0fc0ec75c2"
+    },
+    "android/app/src/main/assets/public/assets/send-CrV7T4cl.js": {
+        "size": 336,
+        "modified": 1781898752.1526725,
+        "hash": "e351a79519682c9a03e2441d84ad8687"
+    },
+    "android/app/src/main/assets/public/assets/Favorites-wRAtK6qU.js": {
+        "size": 3102,
+        "modified": 1781898752.2726727,
+        "hash": "f3c7942266c9b8d311c87fea3c8d90d5"
+    },
+    "android/app/src/main/assets/public/assets/Home-D_4gZhOY.js": {
+        "size": 16005,
+        "modified": 1781898752.2686727,
+        "hash": "11751b09b095c63b5b376fc4b5f8023f"
+    },
+    "android/app/src/main/assets/public/assets/favoriteStore-gCbBJX3y.js": {
+        "size": 4162,
+        "modified": 1781898752.1846726,
+        "hash": "34d5f7eab5039cd88d1e40e0ffbd48c4"
+    },
+    "android/app/src/main/assets/public/assets/Profile-CD0BiaOV.js": {
+        "size": 5203,
+        "modified": 1781898752.2366726,
+        "hash": "8a522b8c20498a94df7c30a3f658662c"
+    },
+    "android/app/src/main/assets/public/assets/constants-jR7OYzPt.js": {
+        "size": 6304,
+        "modified": 1781898752.1926725,
+        "hash": "e66aee066ef0edac8e5e37473420fdbd"
+    },
+    "android/app/src/main/assets/public/assets/AutoTranslateText-DKBZDOCZ.js": {
+        "size": 1953,
+        "modified": 1781898752.2966726,
+        "hash": "78cd88be9564793b5a651d0bb81cfbfd"
+    },
+    "android/app/src/main/assets/public/assets/trash-2-B_3pKvoG.js": {
+        "size": 526,
+        "modified": 1781898752.1326725,
+        "hash": "e42f451c2270c2a998c426705c63ff8d"
+    },
+    "android/app/src/main/assets/public/assets/MobileApp-CiiBxMjL.js": {
+        "size": 17768,
+        "modified": 1781898752.2526727,
+        "hash": "4f5d8aa78896f348588fb1dd973400d8"
+    },
+    "android/app/src/main/assets/public/assets/building-2-BapPBJAY.js": {
+        "size": 607,
+        "modified": 1781898752.2086725,
+        "hash": "e8aa3d1ae4691f5498868a898c0bcca2"
+    },
+    "android/app/src/main/assets/public/assets/AdminDashboard-DrKnddA6.js": {
+        "size": 7272,
+        "modified": 1781898752.3086727,
+        "hash": "2f57b35ff05401aff81c3e7c7d889283"
+    },
+    "android/app/src/main/assets/public/assets/zap-Do-e7wRb.js": {
+        "size": 322,
+        "modified": 1781898752.0886726,
+        "hash": "78f70d17a250f6cc6c3bbcb6c2e2101c"
+    },
+    "android/app/src/main/assets/public/assets/gavel-B86LJNRh.js": {
+        "size": 470,
+        "modified": 1781898752.1806726,
+        "hash": "632fc74212277d29c94a545479699122"
+    },
+    "android/app/src/main/assets/public/assets/award-C3pEBn0j.js": {
+        "size": 359,
+        "modified": 1781898752.2086725,
+        "hash": "5f78f7b626e8a3988ec6599e74ec4921"
+    },
+    "android/app/src/main/assets/public/assets/plus-DsIYjeOI.js": {
+        "size": 322,
+        "modified": 1781898752.1646726,
+        "hash": "a2c12e55c13388ed3a263c203c1aefee"
+    },
+    "android/app/src/main/assets/public/assets/index-BuEbyRhT.js": {
+        "size": 374867,
+        "modified": 1781898752.1806726,
+        "hash": "5e3e41e1a526007db8572abd5a4e1c62"
+    },
+    "android/app/src/main/assets/public/assets/PaymentCheckout-B7gpYd9D.js": {
+        "size": 13970,
+        "modified": 1781898752.2446725,
+        "hash": "52c807cbd1d630d6da0208a4ce3fa7a7"
+    },
+    "android/app/src/main/assets/public/assets/trending-up-zKvDopqw.js": {
+        "size": 373,
+        "modified": 1781898752.1286726,
+        "hash": "ba2cafd0ef0fc1dba3243ea0aa350f9f"
+    },
+    "android/app/src/main/assets/public/assets/rotate-ccw-B7cOWrC7.js": {
+        "size": 368,
+        "modified": 1781898752.1566727,
+        "hash": "9ffa5c28762ae071ea59b29bade0f6ba"
+    },
+    "android/app/src/main/assets/public/assets/save-9jCOBiS8.js": {
+        "size": 449,
+        "modified": 1781898752.1526725,
+        "hash": "68b41baba5f91d24342031e51bbc5a08"
+    },
+    "android/app/src/main/assets/public/assets/AccountsPayable-DQhYi3xU.js": {
+        "size": 2734,
+        "modified": 1781898752.3086727,
+        "hash": "9ada66ad2b56f25fc8335d18821ef754"
+    },
+    "android/app/src/main/assets/public/assets/CreateListing-D1cVcU1t.js": {
+        "size": 11556,
+        "modified": 1781898752.2846725,
+        "hash": "8ab8cdf34b9198b44bc40a41f6f305f0"
+    },
+    "android/app/src/main/assets/public/assets/logisticsApi-CjI6FEWi.js": {
+        "size": 3041,
+        "modified": 1781898752.1766727,
+        "hash": "90fdad5474373ed191832e035cd231b4"
+    },
+    "android/app/src/main/assets/public/assets/upload-Dlk8RqFL.js": {
+        "size": 426,
+        "modified": 1781898752.1286726,
+        "hash": "407e12c700029e6690880cc6509b742b"
+    },
+    "android/app/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin": {
+        "size": 54827,
+        "modified": 1781898843.5486727,
+        "hash": "cc8218d2bbf761cb739af2533e17c6bc"
+    },
+    "android/app/build/generated/res/pngs/debug/drawable-anydpi-v24/ic_launcher_foreground.xml": {
+        "size": 1880,
+        "modified": 1781895385.6437888,
+        "hash": "53a6c064d1f26ae56bf3803c51c7af2e"
+    },
+    "android/app/build/outputs/logs/manifest-merger-debug-report.txt": {
+        "size": 40103,
+        "modified": 1781895393.5317895,
+        "hash": "0ee15b7338c5e5bbde2671d86632648b"
+    },
+    "android/app/build/outputs/apk/debug/output-metadata.json": {
+        "size": 375,
+        "modified": 1781899084.3806758,
+        "hash": "201b02f380a1dea2e1d1be256307923c"
+    },
+    "android/app/build/outputs/apk/debug/app-debug.apk": {
+        "size": 57217889,
+        "modified": 1781899038.8126736,
+        "hash": "6d75ee48e294e4554b088ca5e1b968a3"
+    },
+    "android/app/build/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt": {
+        "size": 669,
+        "modified": 1781899033.0526736,
+        "hash": "c40cb597be01e26f87a05e92a7de5d7e"
+    },
+    "android/app/build/intermediates/incremental/packageDebug/tmp/debug/zip-cache/javaResources0": {
+        "size": 4336,
+        "modified": 1781899038.8406737,
+        "hash": "b6d24554a5ab9a0c70cf078471067aff"
+    },
+    "android/app/build/intermediates/incremental/packageDebug/tmp/debug/zip-cache/androidResources": {
+        "size": 40414,
+        "modified": 1781899038.8406737,
+        "hash": "370b45c7aee337b1163d35085234c584"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/merge-state": {
+        "size": 11502,
+        "modified": 1781899010.948672,
+        "hash": "b5a7a4767cc6e2b39bc4a31576650f5e"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/WGHv_s8f9REZyX6HaNjkNWo+CpE=": {
+        "size": 764869,
+        "modified": 1781899011.076672,
+        "hash": "cdf738447804817712f273b736bd40b7"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/_gbILwZT+h3lvLxV4_6U25sPwps=": {
+        "size": 40157,
+        "modified": 1781899011.1366723,
+        "hash": "64c54b5cf3cc657fcc04bbec3235ff71"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/k0sbIX_UrzogQ+LMo4g6gq6f4r0=": {
+        "size": 963,
+        "modified": 1781899011.2206721,
+        "hash": "da3588af3bb0c9122dbae3d733dddf53"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/SM5vuREe+N_Ub5z1Z12+JCN1pVA=": {
+        "size": 31906,
+        "modified": 1781899011.148672,
+        "hash": "46325e36a7aa89dab4bb34e2cefba29a"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/+FI_7Q+iOAMjQ80QCffMuy9NZPU=": {
+        "size": 9612,
+        "modified": 1781899011.1246722,
+        "hash": "f95d6faa7437620379d49784b215994c"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/XdS3swBsE3puGFKNKmP07ltSgUc=": {
+        "size": 33350,
+        "modified": 1781899011.116672,
+        "hash": "2f696b1a56683b872e265e4dec37012b"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/0c0sie_v8VCIoG1xN_eWG3H1Fyw=": {
+        "size": 14592,
+        "modified": 1781899011.1246722,
+        "hash": "b3e7ff55f97fa499babab642f214b336"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/FHCjKQAlJKg8Avu5Ex+hUMn8XoI=": {
+        "size": 55298,
+        "modified": 1781899011.112672,
+        "hash": "b83403f2b639cc6e7a6f9c0681d69367"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/2wia5xn1v1XINAmLt+rM2fc2EDo=": {
+        "size": 3696,
+        "modified": 1781899011.1606722,
+        "hash": "0df216848898856e5374e7ad7addedd5"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/k2QNTChQjhkEL+wEEe+aHE9KcOs=": {
+        "size": 41621,
+        "modified": 1781899011.0886722,
+        "hash": "616e75d81af40091954268c941dd6cd3"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/jmGeTZuc0Caafp5grTd8Nc3ixKw=": {
+        "size": 19520,
+        "modified": 1781899011.184672,
+        "hash": "7aad79016f327ae9cfd0b560b0b47558"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/4e9rhYLl0ns0RR+YLKyk1fqj_DE=": {
+        "size": 1476653,
+        "modified": 1781899011.184672,
+        "hash": "9ba1873872fe1406d39bc40683050c45"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/W8wH5QVEreEhGYz9ZJRxcdQLHC4=": {
+        "size": 19555,
+        "modified": 1781899011.116672,
+        "hash": "3c11e904951b6d4ae1f0c09c2fd33e28"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/p1sHOYIJdiKIH0hgkzJDkIPFXH8=": {
+        "size": 6282,
+        "modified": 1781899011.1726723,
+        "hash": "9e7da29c234333f4d245d8baa48e1746"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/NESkU7lsq+MEmzYCLpE7WfKOeSc=": {
+        "size": 142451,
+        "modified": 1781899011.2686722,
+        "hash": "9a7aae1c64f595e1d9c9a13f82e5c05e"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/zBfE0LrjUsYkwSlgq41v9lf_K9w=": {
+        "size": 199805,
+        "modified": 1781899011.1366723,
+        "hash": "953521b6aa8e513bb9d36fe1d4151e17"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/FgNvxpn_Lc0Y6nBEGT_R6OA2D5Y=": {
+        "size": 69360,
+        "modified": 1781899011.0726721,
+        "hash": "3731baa48dc38455bdbb4997ba63c735"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/Nu+70qpqvhi79djKP1Gws9UMp_c=": {
+        "size": 31413,
+        "modified": 1781899011.1006722,
+        "hash": "fca718e99e97cb52f4c8c0ada2c74e72"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/TTOyeePm8X03zvm_jEoGDTVKKOE=": {
+        "size": 68237,
+        "modified": 1781899011.1086721,
+        "hash": "205a99f36ede374239d7f32629a419c8"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/laPPfnbU2DdrznGhIg20rBOKTWE=": {
+        "size": 33627,
+        "modified": 1781899011.112672,
+        "hash": "1e4d689047e2ee2cc76b7203626e9c33"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/U1p7Y3Yhjl+c1qb+RrU9EX1Sop0=": {
+        "size": 143185,
+        "modified": 1781899011.1006722,
+        "hash": "ede4060c03c11282f79d436dc8bfc54c"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/SEHPgX7bcve+UBdfCK7gF1Khz5k=": {
+        "size": 1670469,
+        "modified": 1781899011.2686722,
+        "hash": "2b3d65e24952649bf7534017c64b435e"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/JYCojfQBdZSCT00mxzUxeByA9tc=": {
+        "size": 17536,
+        "modified": 1781899011.2686722,
+        "hash": "f4fb462172517b46b6cd90003508515a"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/asf31yXcysREyUNoh2l+LQMVz7Q=": {
+        "size": 6788,
+        "modified": 1781899011.1606722,
+        "hash": "16c6d6331d0988860ac20e6e84a4b200"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/qBDucIBHWK6IDFbJ1R32DkWiRIo=": {
+        "size": 77192,
+        "modified": 1781899011.1086721,
+        "hash": "ee099e0e1341957df6849ee0e464f650"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/voIQjFfF+Y1v_tRWOlpmd2CSKhY=": {
+        "size": 221491,
+        "modified": 1781899011.2686722,
+        "hash": "af45a8873880f027f47d573e1483a6dc"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/dGva5O9kIa_lIt6QrxXtbczRDjQ=": {
+        "size": 11504,
+        "modified": 1781899011.1006722,
+        "hash": "d3d338969c3cd4ad53a888753da3b580"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/_IRFB4dG0BYDeAYPx4O5T_6kVL4=": {
+        "size": 969,
+        "modified": 1781899011.184672,
+        "hash": "2097cb28602f5a6320bcc1bd74914db9"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/UzzZWO9N6zCDphM_DjsdQWmGeG8=": {
+        "size": 22964,
+        "modified": 1781899011.1006722,
+        "hash": "fcc40ced54fd9f501531860648c6d844"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/uwvUXLZllUo8Ab32jq5iXR8bPkw=": {
+        "size": 25987,
+        "modified": 1781899011.1726723,
+        "hash": "409aee996eabfb4f23428b2d6026d6aa"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/AbufCsqdvW2asnyO8J3L5lsTte0=": {
+        "size": 6270,
+        "modified": 1781899011.1646721,
+        "hash": "7d37171c4843b64c0ed40cc3e23d336e"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/e8jqncDMO47lrgZ5CjWer7zYU8Q=": {
+        "size": 20559,
+        "modified": 1781899011.1366723,
+        "hash": "afa43b15d046b1ae56f4a3d1bd44ae38"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/jLyEOCNww55I9H_SoZoSW_JMTOo=": {
+        "size": 52314,
+        "modified": 1781899011.1246722,
+        "hash": "2d1b4c15f17d8c1b5fef67713253b140"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/QYUlzTGvTSX1CH_tIK_OMSOJfA8=": {
+        "size": 287242,
+        "modified": 1781899011.0886722,
+        "hash": "b977c14d433a6172e2619fe4f405decc"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/8+qwLknPLlw8fgUcEVCxdYw0bf4=": {
+        "size": 11657,
+        "modified": 1781899011.1726723,
+        "hash": "2212d240dfe1e8a7598ee1170ccc316d"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/528+FdwGYDaSinDw4fQhePOmxcU=": {
+        "size": 7661,
+        "modified": 1781899011.1606722,
+        "hash": "35076b6f638faca00c217e98a0385344"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/qb3UtJoGSnqE99pfrU1mnefYohc=": {
+        "size": 41698,
+        "modified": 1781899011.1246722,
+        "hash": "f4ab4b0b90304821ac171ba2d55b00f1"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/PgOcQIxmXY_ZJchGMm9x_unJUWw=": {
+        "size": 150131,
+        "modified": 1781899011.112672,
+        "hash": "574c52e4c83eed39f71ae6ba04f66ed1"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/1vpFmnj_bgpZPPAjOkTgT4Nj3S0=": {
+        "size": 28409,
+        "modified": 1781899011.0886722,
+        "hash": "1f3e420fa3520a7d578e8d7d349a6188"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/gmsZIIiOua4jD2rkD9jlgg0LJOg=": {
+        "size": 47432,
+        "modified": 1781899011.1606722,
+        "hash": "62cbd07260e71bcee5b2c1dde6303d5f"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/lRljQG1xW0uQQwvrbdTL+XIbH1E=": {
+        "size": 1242435,
+        "modified": 1781899011.148672,
+        "hash": "11dcf96a67b7e02a800f1c8143111742"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/zLCm7nYl6yMIeVMI0WCRruPBA3s=": {
+        "size": 35177,
+        "modified": 1781899011.116672,
+        "hash": "ccb6f0c5e0adc11059c3d609a2fd15d6"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/hqbacSYGxIPw5LOrbdiTGhVLRRM=": {
+        "size": 34311,
+        "modified": 1781899011.112672,
+        "hash": "b2c4ca697b192f36b59099cb35cdf196"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/ivF+la1yeonY8O4jhEUM+9O7KgM=": {
+        "size": 18379,
+        "modified": 1781899011.116672,
+        "hash": "d4a6223b9a4662eb0394882a18a6e418"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/1e7gHsYCuUbTUC4p6H_c3Gs19Kc=": {
+        "size": 42953,
+        "modified": 1781899011.148672,
+        "hash": "2fdca6c8f8c7c7bcf05fb199f7d58631"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/FZvQMZ8b1Y5FvvrP_IhJGnL91go=": {
+        "size": 55218,
+        "modified": 1781899011.1726723,
+        "hash": "01c8f61d745ba9b73967a569db7a7d96"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/uBdXNMJ36buTgLbAHP87tO1qHdw=": {
+        "size": 2336,
+        "modified": 1781899011.112672,
+        "hash": "76145035148c5ffbf408b41ee8d58da7"
+    },
+    "android/app/build/intermediates/incremental/debug-mergeJavaRes/zip-cache/QeZQ_P0lPmzii96PKGcOqGP3pOI=": {
+        "size": 3149,
+        "modified": 1781899011.2886722,
+        "hash": "2178c2b8a4772361ebd09348c60381f4"
+    },
+    "android/app/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties": {
+        "size": 6358,
+        "modified": 1781895387.279789,
+        "hash": "6901445576164ed08f08df10333ac934"
+    },
+    "android/app/build/intermediates/incremental/debug/packageDebugResources/merger.xml": {
+        "size": 8615,
+        "modified": 1781895387.279789,
+        "hash": "86fdd77fc506e2e0bdce064edccf2cbb"
+    },
+    "android/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir/values/values.xml": {
+        "size": 1072,
+        "modified": 1781895387.127789,
+        "hash": "ce2a8c61a9fd552ce8fbabab490dd1d4"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/compile-file-map.properties": {
+        "size": 6429,
+        "modified": 1781895386.415789,
+        "hash": "5c356cce72c563f79ef27212da12964d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merger.xml": {
+        "size": 619547,
+        "modified": 1781895386.523789,
+        "hash": "135e2eb7ca4ecbe15f427fb634edcc6d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-gl/values-gl.xml": {
+        "size": 3786,
+        "modified": 1781895386.191789,
+        "hash": "8b25064ea371c41698aa30c9e99cae16"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-nl/values-nl.xml": {
+        "size": 3755,
+        "modified": 1781895386.1437888,
+        "hash": "d4c06f7fac23ab36b805194188c3e8c7"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v28/values-v28.xml": {
+        "size": 597,
+        "modified": 1781895385.803789,
+        "hash": "b94802e76376915a878fa74307988774"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-lt/values-lt.xml": {
+        "size": 3891,
+        "modified": 1781895386.007789,
+        "hash": "19f518dc7f5b7a7a8deb3a694bc4b3b8"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-tr/values-tr.xml": {
+        "size": 3723,
+        "modified": 1781895385.9797888,
+        "hash": "bd3cf802f47a018aa08770d72770168c"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v21/values-v21.xml": {
+        "size": 19683,
+        "modified": 1781895385.767789,
+        "hash": "c1675a2be7cf17eade24facc6a9da794"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-is/values-is.xml": {
+        "size": 3704,
+        "modified": 1781895385.7397888,
+        "hash": "2a27838c35f7a576e628eb9afeda3aa8"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-as/values-as.xml": {
+        "size": 4424,
+        "modified": 1781895385.7637887,
+        "hash": "b07870ef124bac3c1ca684677816787b"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v22/values-v22.xml": {
+        "size": 777,
+        "modified": 1781895385.7797887,
+        "hash": "c2e3b39139beb0954fa479daa9ee6df3"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v23/values-v23.xml": {
+        "size": 3240,
+        "modified": 1781895385.7757888,
+        "hash": "33b27318f6613bb6439dbd176e1fcccb"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ms/values-ms.xml": {
+        "size": 3735,
+        "modified": 1781895386.0757887,
+        "hash": "6870d7e64a50ef6ae6ebab289907e4b3"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-si/values-si.xml": {
+        "size": 4308,
+        "modified": 1781895385.823789,
+        "hash": "38fd901fb75cc9937db3f5f8b6b34f6d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ml/values-ml.xml": {
+        "size": 4493,
+        "modified": 1781895386.0517888,
+        "hash": "32b42403c3db7c497d22a48a3d2e3f7a"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values/values.xml": {
+        "size": 177213,
+        "modified": 1781895385.6517887,
+        "hash": "2150117d5d4bf4fc9fb92314c0b952f6"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ro/values-ro.xml": {
+        "size": 3803,
+        "modified": 1781895385.7997887,
+        "hash": "030ab3c1b3ed3a35e6efc07ad29f3fc1"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-da/values-da.xml": {
+        "size": 3691,
+        "modified": 1781895385.9757888,
+        "hash": "4194f793cf3296da0befe832e398b3b3"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ru/values-ru.xml": {
+        "size": 4044,
+        "modified": 1781895385.8117888,
+        "hash": "2e1ed6be3e6e40285bbcdcb768f653c5"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-xlarge-v4/values-xlarge-v4.xml": {
+        "size": 481,
+        "modified": 1781895385.9637887,
+        "hash": "7fbe3cf69a7483066df730c9714f8aa5"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pt/values-pt.xml": {
+        "size": 3783,
+        "modified": 1781895385.6837888,
+        "hash": "fb0ffd91f8a16f3e628627edb2b24807"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-es-rUS/values-es-rUS.xml": {
+        "size": 3754,
+        "modified": 1781895385.7717888,
+        "hash": "4fc170796e41dffdf2c112bcd24390f2"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sw600dp-v13/values-sw600dp-v13.xml": {
+        "size": 619,
+        "modified": 1781895385.8077888,
+        "hash": "421fd9af804c0aaf856d32314ab50bfe"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ka/values-ka.xml": {
+        "size": 4275,
+        "modified": 1781895385.8277888,
+        "hash": "d8b359c7f72ea01da3fe55a93ed575fa"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-vi/values-vi.xml": {
+        "size": 3833,
+        "modified": 1781895386.1077888,
+        "hash": "889e67572000a97f64ac2aeb30f3a742"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-te/values-te.xml": {
+        "size": 4493,
+        "modified": 1781895385.951789,
+        "hash": "35bc7c06f73761a41874b0cd6b060132"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-mr/values-mr.xml": {
+        "size": 4248,
+        "modified": 1781895386.0677888,
+        "hash": "dd5c2fa56775c57d628d4d0ba754bc23"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v16/values-v16.xml": {
+        "size": 302,
+        "modified": 1781895385.7157888,
+        "hash": "3c106f8cbe759663b407a16084400087"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ur/values-ur.xml": {
+        "size": 4027,
+        "modified": 1781895386.043789,
+        "hash": "15984671bbc8859c51e42bea52bd188f"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-nb/values-nb.xml": {
+        "size": 3665,
+        "modified": 1781895386.1077888,
+        "hash": "28cb148c1682099fd9e61d09415c8025"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-land/values-land.xml": {
+        "size": 272,
+        "modified": 1781895386.1797888,
+        "hash": "dc367dfcd06475ef4bbc8c5a43c89a5e"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-kn/values-kn.xml": {
+        "size": 4476,
+        "modified": 1781895385.8917887,
+        "hash": "6e14bccd69d60e59072affd987f9f342"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-am/values-am.xml": {
+        "size": 3909,
+        "modified": 1781895385.7437887,
+        "hash": "7cb90aff8177bfa122da4577db2780c4"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pa/values-pa.xml": {
+        "size": 4139,
+        "modified": 1781895386.1957889,
+        "hash": "0aa0305843460f010436cd68099c86d9"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-gu/values-gu.xml": {
+        "size": 4158,
+        "modified": 1781895386.191789,
+        "hash": "32a8c5b18d027a31bcc0b0a70d4c58c6"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zh-rCN/values-zh-rCN.xml": {
+        "size": 3688,
+        "modified": 1781895386.1477888,
+        "hash": "13b88556b569daf3cea25c9cad9124ff"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v31/values-v31.xml": {
+        "size": 710,
+        "modified": 1781895385.823789,
+        "hash": "7f50c8e458f361bddd5e82a8fb5021b7"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sw/values-sw.xml": {
+        "size": 3718,
+        "modified": 1781895385.911789,
+        "hash": "008fc0c4f01ffdc319027baaf45fbece"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-my/values-my.xml": {
+        "size": 4515,
+        "modified": 1781895386.0917888,
+        "hash": "d738fb47ab57fc6023a69f55a075d0e6"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ne/values-ne.xml": {
+        "size": 4398,
+        "modified": 1781895386.131789,
+        "hash": "89aa30bfac9f0efdfacdfea0ff39b7c2"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-el/values-el.xml": {
+        "size": 4179,
+        "modified": 1781895386.0837889,
+        "hash": "78e15e238fa9e20b11eaf2d0e3ce5dc9"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sq/values-sq.xml": {
+        "size": 3755,
+        "modified": 1781895385.8477888,
+        "hash": "4a782e96d689bbd662bbc35c1d16da93"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zu/values-zu.xml": {
+        "size": 3714,
+        "modified": 1781895385.7917888,
+        "hash": "fbaaa30358eb8c49a39c70d7c9967440"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hu/values-hu.xml": {
+        "size": 3830,
+        "modified": 1781895385.7077887,
+        "hash": "e4c4b45b40568de6f181886f65fdf417"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-large-v4/values-large-v4.xml": {
+        "size": 760,
+        "modified": 1781895386.167789,
+        "hash": "3bd54b52df49585c13be56ab9310efdd"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fr-rCA/values-fr-rCA.xml": {
+        "size": 3789,
+        "modified": 1781895386.0677888,
+        "hash": "b8c4382bbee9e5ea67fc4d0f793b80c2"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zh-rHK/values-zh-rHK.xml": {
+        "size": 3691,
+        "modified": 1781895385.7357888,
+        "hash": "10d0848235f172e5d005cf3b6ddeda7d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v17/values-v17.xml": {
+        "size": 3553,
+        "modified": 1781895385.7237887,
+        "hash": "d13484569adfc2901dc744aaba407907"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-tl/values-tl.xml": {
+        "size": 3775,
+        "modified": 1781895385.9597888,
+        "hash": "8a7a08483cebf61bb286eebb30508111"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-watch-v21/values-watch-v21.xml": {
+        "size": 737,
+        "modified": 1781895385.691789,
+        "hash": "f5ebf28b49429b57b900e507d3e1460f"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-az/values-az.xml": {
+        "size": 3790,
+        "modified": 1781895385.783789,
+        "hash": "fd416146613f418455d02707e6265344"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ar/values-ar.xml": {
+        "size": 3882,
+        "modified": 1781895385.7597888,
+        "hash": "54f55e2fe17089b261e1278398599868"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-th/values-th.xml": {
+        "size": 4066,
+        "modified": 1781895385.9597888,
+        "hash": "ffc95c79000027b6f970a43aafb6f6af"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-port/values-port.xml": {
+        "size": 119,
+        "modified": 1781895386.115789,
+        "hash": "bfce5014f3af863450510f1f60f9cc69"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pt-rPT/values-pt-rPT.xml": {
+        "size": 3774,
+        "modified": 1781895385.7877889,
+        "hash": "72e7b09f091b75512a188ed56aa7c323"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-es/values-es.xml": {
+        "size": 3777,
+        "modified": 1781895386.095789,
+        "hash": "7187a2abf6d34bd12ca10aede6a0bb05"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-cs/values-cs.xml": {
+        "size": 3760,
+        "modified": 1781895385.9357889,
+        "hash": "1b20bf80c36ca26771232015c1c57e3b"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-uz/values-uz.xml": {
+        "size": 3719,
+        "modified": 1781895386.059789,
+        "hash": "20e50a17ec3f56702512aaec2cd15907"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-watch-v20/values-watch-v20.xml": {
+        "size": 566,
+        "modified": 1781895385.691789,
+        "hash": "887e933c0fe338dfad0cee41fe401b05"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-it/values-it.xml": {
+        "size": 3739,
+        "modified": 1781895385.7437887,
+        "hash": "f9e5a6ae0b3d6f0746a3b4a3409ab3bc"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-h720dp-v13/values-h720dp-v13.xml": {
+        "size": 130,
+        "modified": 1781895385.9437888,
+        "hash": "c518f0eab03d706646df660beeb920cf"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sl/values-sl.xml": {
+        "size": 3769,
+        "modified": 1781895385.8357887,
+        "hash": "4d36670c97abd988dce00b7413942e00"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v26/values-v26.xml": {
+        "size": 897,
+        "modified": 1781895385.7957888,
+        "hash": "0bca8b7144d6dbce33f9eb6af89e861d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v25/values-v25.xml": {
+        "size": 427,
+        "modified": 1781895385.783789,
+        "hash": "b30b6713309ea252e30aba30461c7a02"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v18/values-v18.xml": {
+        "size": 112,
+        "modified": 1781895385.7197888,
+        "hash": "51dd9315a5636040cd276c04275adb86"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rAU/values-en-rAU.xml": {
+        "size": 3675,
+        "modified": 1781895385.9917889,
+        "hash": "705e9de2de3627f12d34ef1ec01329f5"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rIN/values-en-rIN.xml": {
+        "size": 3675,
+        "modified": 1781895386.023789,
+        "hash": "705e9de2de3627f12d34ef1ec01329f5"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v27/values-v27.xml": {
+        "size": 601,
+        "modified": 1781895385.7917888,
+        "hash": "70444fe750f2f0a13c043d0b5c649f9f"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sv/values-sv.xml": {
+        "size": 3727,
+        "modified": 1781895385.8877888,
+        "hash": "6106cd261cc96bbe188106fec4473a9f"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-mn/values-mn.xml": {
+        "size": 4026,
+        "modified": 1781895386.059789,
+        "hash": "8da7a4156f6f0b895afc195ff6e5cf41"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ta/values-ta.xml": {
+        "size": 4516,
+        "modified": 1781895385.911789,
+        "hash": "94d3915bfbc3b1fed1645a632742a604"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-in/values-in.xml": {
+        "size": 3733,
+        "modified": 1781895385.727789,
+        "hash": "fce08a01bceead475ce8ac9e762bd312"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-lo/values-lo.xml": {
+        "size": 4155,
+        "modified": 1781895385.9997888,
+        "hash": "d1cc0393474f0669eb7ad778417a64cc"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hy/values-hy.xml": {
+        "size": 4005,
+        "modified": 1781895385.711789,
+        "hash": "0357c7731df6a67846e9728e6f3e1ec6"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fa/values-fa.xml": {
+        "size": 3989,
+        "modified": 1781895386.131789,
+        "hash": "5e5267b9e58316bfd4c7a4263118e88d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-bn/values-bn.xml": {
+        "size": 4348,
+        "modified": 1781895385.819789,
+        "hash": "ac495c2ee6baff849e8bc42a44d14a2a"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-kk/values-kk.xml": {
+        "size": 3954,
+        "modified": 1781895385.8717887,
+        "hash": "6d9961d5b7b675a6bab292c0d5be4ef8"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ldltr-v21/values-ldltr-v21.xml": {
+        "size": 176,
+        "modified": 1781895385.7237887,
+        "hash": "4bb116916ea31eec6fe245869b742323"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sk/values-sk.xml": {
+        "size": 3790,
+        "modified": 1781895385.8317888,
+        "hash": "63f70ba0bc9786ddc3994870527cbc60"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hdpi-v4/values-hdpi-v4.xml": {
+        "size": 340,
+        "modified": 1781895386.171789,
+        "hash": "95360fb3b373e2f955d061bbe5183912"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-zh-rTW/values-zh-rTW.xml": {
+        "size": 3692,
+        "modified": 1781895386.0917888,
+        "hash": "3b8787d3cc94dc6ae143b0b8ce4d8cdf"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-af/values-af.xml": {
+        "size": 3701,
+        "modified": 1781895385.7317889,
+        "hash": "db78e8dd7c8b2bba312fc6bf84078672"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v29/values-v29.xml": {
+        "size": 477,
+        "modified": 1781895385.7957888,
+        "hash": "a5f0cbab412167fd8fa19db1e00fadf0"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-bs/values-bs.xml": {
+        "size": 3763,
+        "modified": 1781895385.819789,
+        "hash": "6b3d8b4b2859a2c7b167adf137566bd6"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pl/values-pl.xml": {
+        "size": 3779,
+        "modified": 1781895386.2037888,
+        "hash": "def1dfd7f4e9a412d2aeb54f9a807cf9"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-v24/values-v24.xml": {
+        "size": 355,
+        "modified": 1781895385.7877889,
+        "hash": "73722485bd832bb75e47b423294de946"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-night-v8/values-night-v8.xml": {
+        "size": 870,
+        "modified": 1781895386.119789,
+        "hash": "e9e10a8a1a1638cdad5c5bed3fbc1bdb"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ky/values-ky.xml": {
+        "size": 4026,
+        "modified": 1781895385.9237888,
+        "hash": "2fce853f64c99b292145c34f013fd986"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-km/values-km.xml": {
+        "size": 4259,
+        "modified": 1781895385.8717887,
+        "hash": "13ef066f76faaf4469c9a73ece7c71f2"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ko/values-ko.xml": {
+        "size": 3740,
+        "modified": 1781895385.8997889,
+        "hash": "3ccbb32b1828edd28ec060b58e61213b"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ca/values-ca.xml": {
+        "size": 3761,
+        "modified": 1781895385.855789,
+        "hash": "ca60ffa760bf3ec7e8023fa53090737c"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-or/values-or.xml": {
+        "size": 4507,
+        "modified": 1781895386.1837888,
+        "hash": "5288afc5d0c5a80991bd974a658e1d65"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-de/values-de.xml": {
+        "size": 3768,
+        "modified": 1781895385.9997888,
+        "hash": "9a94279958f9ece8030a268cd30fe8e2"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fr/values-fr.xml": {
+        "size": 3782,
+        "modified": 1781895386.167789,
+        "hash": "4aebd1cec7c77238e41d567297fcc6e6"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rXC/values-en-rXC.xml": {
+        "size": 14717,
+        "modified": 1781895386.1597888,
+        "hash": "e0d9f7164093449babe8ba0990ee9c2c"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-et/values-et.xml": {
+        "size": 3769,
+        "modified": 1781895386.099789,
+        "hash": "51040a1a2c9b233319e240b0ba26b0cb"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hr/values-hr.xml": {
+        "size": 3751,
+        "modified": 1781895385.6997888,
+        "hash": "1de92ce981225bc0bf8ac5d2e665c08e"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-be/values-be.xml": {
+        "size": 4069,
+        "modified": 1781895385.8077888,
+        "hash": "7d55d72de1bbc124a1fe5e3063a1cdb3"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-bg/values-bg.xml": {
+        "size": 4117,
+        "modified": 1781895385.8157887,
+        "hash": "d8ec2be5e9964516ed50535a173b9d83"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-pt-rBR/values-pt-rBR.xml": {
+        "size": 3783,
+        "modified": 1781895385.9277887,
+        "hash": "fb0ffd91f8a16f3e628627edb2b24807"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-iw/values-iw.xml": {
+        "size": 3862,
+        "modified": 1781895385.7517889,
+        "hash": "63e018b1dc4d67ef38a8fe701c05bf42"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-ja/values-ja.xml": {
+        "size": 3762,
+        "modified": 1781895385.7797887,
+        "hash": "f5117dfbabbe2e5c55d6df64ff1551fd"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-uk/values-uk.xml": {
+        "size": 4041,
+        "modified": 1781895386.0357888,
+        "hash": "834f6f288cb0be590f19552e2f8011cc"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-hi/values-hi.xml": {
+        "size": 4243,
+        "modified": 1781895385.6797888,
+        "hash": "fc1b63b27bdaec2d8372aaab82998d31"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-eu/values-eu.xml": {
+        "size": 3773,
+        "modified": 1781895386.099789,
+        "hash": "48650b88b6b4525b6b14bd10e7bd6e1d"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-b+sr+Latn/values-b+sr+Latn.xml": {
+        "size": 3773,
+        "modified": 1781895385.7557888,
+        "hash": "a474d474f7e12f6cca5af64ac02c0765"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-mk/values-mk.xml": {
+        "size": 4021,
+        "modified": 1781895386.0517888,
+        "hash": "73a71f5eee4638afaf115fde287f1ce8"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-lv/values-lv.xml": {
+        "size": 3986,
+        "modified": 1781895386.0157888,
+        "hash": "84e48c4107d10288abd1ece26d4386ec"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rGB/values-en-rGB.xml": {
+        "size": 3675,
+        "modified": 1781895386.1797888,
+        "hash": "705e9de2de3627f12d34ef1ec01329f5"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-fi/values-fi.xml": {
+        "size": 3723,
+        "modified": 1781895386.1477888,
+        "hash": "b90030ac9d559cdf6ce0e4c2500c6f8e"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-sr/values-sr.xml": {
+        "size": 4056,
+        "modified": 1781895385.855789,
+        "hash": "5da283b63c5d087d269dda963fbf1a22"
+    },
+    "android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir/values-en-rCA/values-en-rCA.xml": {
+        "size": 3674,
+        "modified": 1781895385.819789,
+        "hash": "06767c300756eec28243ca7ed87bf95e"
+    },
+    "android/app/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml": {
+        "size": 482,
+        "modified": 1781899023.7246735,
+        "hash": "8be853ecc47bb5ed0bfaeba19738cc3e"
+    },
+    "android/app/build/intermediates/incremental/mergeDebugShaders/merger.xml": {
+        "size": 482,
+        "modified": 1781898842.0446727,
+        "hash": "d58c96ae8d202b8047bd581312c6e4f2"
+    },
+    "android/app/build/intermediates/incremental/mergeDebugAssets/merger.xml": {
+        "size": 23182,
+        "modified": 1781898845.6206727,
+        "hash": "cbd572fa723ad0c4c805dc21775ef811"
+    },
+    "android/app/build/intermediates/merged_manifests/debug/output-metadata.json": {
+        "size": 394,
+        "modified": 1781895394.5157897,
+        "hash": "4ece2742ad89b022a53065f18289a6ab"
+    },
+    "android/app/build/intermediates/merged_manifests/debug/AndroidManifest.xml": {
+        "size": 3665,
+        "modified": 1781895394.5157897,
+        "hash": "f74b08e9a3360dc50443a1f31ffe175d"
+    },
+    "android/app/build/intermediates/dex/debug/mergeProjectDexDebug/6/classes.dex": {
+        "size": 552,
+        "modified": 1781899023.3966737,
+        "hash": "66c6f34120ac7e73d99ac9e189906ab1"
+    },
+    "android/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex": {
+        "size": 160720,
+        "modified": 1781899023.5286736,
+        "hash": "02c4493a78cc80a08f8ecc8d80b8c1dc"
+    },
+    "android/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex": {
+        "size": 6861276,
+        "modified": 1781899022.2726734,
+        "hash": "f90a1f54aae2a2f6b8dca150dd322e4e"
+    },
+    "android/app/build/intermediates/dex/debug/mergeLibDexDebug/0/classes.dex": {
+        "size": 193892,
+        "modified": 1781899023.3326735,
+        "hash": "b177dc4f8cf3d8507c10b1d03343c6dc"
+    },
+    "android/app/build/intermediates/merged_manifest/debug/AndroidManifest.xml": {
+        "size": 3665,
+        "modified": 1781895393.5317895,
+        "hash": "f74b08e9a3360dc50443a1f31ffe175d"
+    },
+    "android/app/build/intermediates/dex_number_of_buckets_file/debug/out": {
+        "size": 1,
+        "modified": 1781898855.6966724,
+        "hash": "c4ca4238a0b923820dcc509a6f75849b"
+    },
+    "android/app/build/intermediates/source_set_path_map/debug/file-map.txt": {
+        "size": 4912,
+        "modified": 1781895384.6557887,
+        "hash": "e9daeed7fe865cd216795d86578eca29"
+    },
+    "android/app/build/intermediates/project_dex_archive/debug/out/8dba9792c0b25fb6b51cfac95a284cf2e8d01a3e0545c2f07b946a37b9dfbd4a_0.jar": {
+        "size": 40408,
+        "modified": 1781898867.6206713,
+        "hash": "4954b15621fc2df2ce2c96ae2f572406"
+    },
+    "android/app/build/intermediates/project_dex_archive/debug/out/com/daig/logistix/express/MainActivity.dex": {
+        "size": 552,
+        "modified": 1781898863.1566713,
+        "hash": "66c6f34120ac7e73d99ac9e189906ab1"
+    },
+    "android/app/build/intermediates/navigation_json/debug/navigation.json": {
+        "size": 2,
+        "modified": 1781895390.7717893,
+        "hash": "d751713988987e9331980363e24189ce"
+    },
+    "android/app/build/intermediates/annotation_processor_list/debug/annotationProcessors.json": {
+        "size": 2,
+        "modified": 1781895380.6317885,
+        "hash": "99914b932bd37a50b983c5e7c90ae93b"
+    },
+    "android/app/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt": {
+        "size": 13323,
+        "modified": 1781895393.5317895,
+        "hash": "935f0611a47607406ab28d2e06d4f26b"
+    },
+    "android/app/build/intermediates/signing_config_versions/debug/signing-config-versions.json": {
+        "size": 95,
+        "modified": 1781899029.8086736,
+        "hash": "b979f475ac47d523a52c3cb01d6f154d"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-land-xxhdpi-v4/splash.png": {
+        "size": 13984,
+        "modified": 1723050380.0,
+        "hash": "f87e988387b07d843905f38b084929fb"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-mdpi-v4/ic_launcher_foreground.png": {
+        "size": 4325,
+        "modified": 1781785910.311643,
+        "hash": "7aaf2e7bc874e18c928961897a767396"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-mdpi-v4/ic_launcher_round.png": {
+        "size": 1701,
+        "modified": 1781785910.251643,
+        "hash": "73aa770bbc82d1d1becf853855e21c14"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-mdpi-v4/ic_launcher.png": {
+        "size": 1701,
+        "modified": 1781785910.247643,
+        "hash": "73aa770bbc82d1d1becf853855e21c14"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-port-xhdpi-v4/splash.png": {
+        "size": 9875,
+        "modified": 1723050380.0,
+        "hash": "df100b2a36bdb98b711cca58941728de"
+    },
+    "android/app/build/intermediates/packaged_res/debug/values/values.xml": {
+        "size": 1072,
+        "modified": 1781895387.127788,
+        "hash": "ce2a8c61a9fd552ce8fbabab490dd1d4"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-anydpi-v26/ic_launcher.xml": {
+        "size": 265,
+        "modified": 1723050380.0,
+        "hash": "c2412069dd5f39d9b660d5f15d20c3fb"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-anydpi-v26/ic_launcher_round.xml": {
+        "size": 265,
+        "modified": 1723050380.0,
+        "hash": "c2412069dd5f39d9b660d5f15d20c3fb"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-port-xxxhdpi-v4/splash.png": {
+        "size": 17489,
+        "modified": 1723050380.0,
+        "hash": "b5b1b22b59abe686c1df0d74a423d034"
+    },
+    "android/app/build/intermediates/packaged_res/debug/layout/activity_main.xml": {
+        "size": 535,
+        "modified": 1723050380.0,
+        "hash": "e90567494113cdcc5c7375afaa5c5c6a"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-hdpi-v4/ic_launcher_foreground.png": {
+        "size": 8686,
+        "modified": 1781785910.371643,
+        "hash": "67c29921bcbe42ae5c7a6cd5069f97c9"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-hdpi-v4/ic_launcher_round.png": {
+        "size": 2669,
+        "modified": 1781785910.335643,
+        "hash": "42b776bf4f0f28d40d940e50e2c93aa9"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-hdpi-v4/ic_launcher.png": {
+        "size": 2669,
+        "modified": 1781785910.335643,
+        "hash": "42b776bf4f0f28d40d940e50e2c93aa9"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xxxhdpi-v4/ic_launcher_foreground.png": {
+        "size": 54684,
+        "modified": 1781785910.719643,
+        "hash": "8e92f409e278dcc4107cb9a8ad2122df"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xxxhdpi-v4/ic_launcher_round.png": {
+        "size": 11896,
+        "modified": 1781785910.607643,
+        "hash": "28ef6d9b0b7cb3a0c6926084c968367a"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xxxhdpi-v4/ic_launcher.png": {
+        "size": 11896,
+        "modified": 1781785910.599643,
+        "hash": "28ef6d9b0b7cb3a0c6926084c968367a"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-land-mdpi-v4/splash.png": {
+        "size": 4040,
+        "modified": 1723050380.0,
+        "hash": "acc976d4a36479233371a53021525c0c"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-v24/ic_launcher_foreground.xml": {
+        "size": 1880,
+        "modified": 1723050380.0,
+        "hash": "53a6c064d1f26ae56bf3803c51c7af2e"
+    },
+    "android/app/build/intermediates/packaged_res/debug/xml/file_paths.xml": {
+        "size": 213,
+        "modified": 1723050380.0,
+        "hash": "7d26940811a3a4901e3ae59629b36242"
+    },
+    "android/app/build/intermediates/packaged_res/debug/xml/config.xml": {
+        "size": 185,
+        "modified": 1781895309.163788,
+        "hash": "ec72d9bfef4584efc28998a0075e6799"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-land-hdpi-v4/splash.png": {
+        "size": 7705,
+        "modified": 1723050380.0,
+        "hash": "f7a80786dd355bd39014e58027aa6e19"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-land-xxxhdpi-v4/splash.png": {
+        "size": 17683,
+        "modified": 1723050380.0,
+        "hash": "055a69553b16b0bf5f72094a2e459fc7"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable/splash.png": {
+        "size": 4040,
+        "modified": 1723050380.0,
+        "hash": "acc976d4a36479233371a53021525c0c"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable/ic_launcher_background.xml": {
+        "size": 5606,
+        "modified": 1723050380.0,
+        "hash": "04116413bdb242080a5cb731e7c192e5"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-port-mdpi-v4/splash.png": {
+        "size": 4096,
+        "modified": 1723050380.0,
+        "hash": "d855a76a5070c8e6fcfd83a27549bdce"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xxhdpi-v4/ic_launcher_foreground.png": {
+        "size": 31518,
+        "modified": 1781785910.551643,
+        "hash": "f8e00e43d7e816d1e267d44650b57b29"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xxhdpi-v4/ic_launcher_round.png": {
+        "size": 6795,
+        "modified": 1781785910.487643,
+        "hash": "c75412157a7b60bbffa30d2d85eaa7a1"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xxhdpi-v4/ic_launcher.png": {
+        "size": 6795,
+        "modified": 1781785910.483643,
+        "hash": "c75412157a7b60bbffa30d2d85eaa7a1"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-port-xxhdpi-v4/splash.png": {
+        "size": 13346,
+        "modified": 1723050380.0,
+        "hash": "2c1b668364e815256f67b71dcdfa4d6e"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-land-xhdpi-v4/splash.png": {
+        "size": 9251,
+        "modified": 1723050380.0,
+        "hash": "b8c72969bc1f78aab71a76035360d4af"
+    },
+    "android/app/build/intermediates/packaged_res/debug/drawable-port-hdpi-v4/splash.png": {
+        "size": 7934,
+        "modified": 1723050380.0,
+        "hash": "5eb10d16c81338abe8bbc033d49638a8"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xhdpi-v4/ic_launcher_foreground.png": {
+        "size": 14617,
+        "modified": 1781785910.451643,
+        "hash": "7d8f2b3108c0579a7fb5ceeaeb914e9e"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xhdpi-v4/ic_launcher_round.png": {
+        "size": 3718,
+        "modified": 1781785910.403643,
+        "hash": "e553acde7afed97006d19beeba0394a9"
+    },
+    "android/app/build/intermediates/packaged_res/debug/mipmap-xhdpi-v4/ic_launcher.png": {
+        "size": 3718,
+        "modified": 1781785910.395643,
+        "hash": "e553acde7afed97006d19beeba0394a9"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-et.json": {
+        "size": 2875,
+        "modified": 1781895386.3277888,
+        "hash": "2495d4e4aeef76d22d01d4cae69a1c95"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ka.json": {
+        "size": 2869,
+        "modified": 1781895386.2557888,
+        "hash": "5347270706d7e529add6eaff7e3d464b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-kk.json": {
+        "size": 2869,
+        "modified": 1781895386.2757888,
+        "hash": "8a9a07caa790e7edbe40a7b751face43"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-it.json": {
+        "size": 2873,
+        "modified": 1781895386.2957888,
+        "hash": "aca8161e9ce9afe3aa5b5be7d238f4d6"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-nl.json": {
+        "size": 2873,
+        "modified": 1781895386.267789,
+        "hash": "baddb71f20673e7474e5fe02d5c1058f"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-zu.json": {
+        "size": 2871,
+        "modified": 1781895386.319789,
+        "hash": "8bf3aeddf770ad8230d4cda0bea3cd97"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values.json": {
+        "size": 47675,
+        "modified": 1781895386.2877889,
+        "hash": "e9a1c7e281e8423417bc810be77de36d"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-da.json": {
+        "size": 2863,
+        "modified": 1781895386.387789,
+        "hash": "09e0da50ae0dcc0e41d892db4e51131b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ca.json": {
+        "size": 2873,
+        "modified": 1781895386.3277888,
+        "hash": "8538226d4e4b9f9207c3e022eb58e3bc"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-fa.json": {
+        "size": 2873,
+        "modified": 1781895386.299789,
+        "hash": "8cd2b4ae482ad27382141d11e8a1ec7d"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v16.json": {
+        "size": 1492,
+        "modified": 1781895386.319789,
+        "hash": "8297eaa6a1331d7125dfa503033b4617"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-el.json": {
+        "size": 2877,
+        "modified": 1781895386.319789,
+        "hash": "97a63b5f7b88c14ab19410b6038f67af"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-te.json": {
+        "size": 2881,
+        "modified": 1781895386.299789,
+        "hash": "39975ab34a96024b6e86c75c26fcbede"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ta.json": {
+        "size": 2879,
+        "modified": 1781895386.387789,
+        "hash": "bfe01da098bf56ad1e18e3dbca52dd5b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-vi.json": {
+        "size": 2871,
+        "modified": 1781895386.2877889,
+        "hash": "c17a83fa5002535b462a3d9a4dc516ec"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sv.json": {
+        "size": 2871,
+        "modified": 1781895386.387789,
+        "hash": "e92bd405ea2c118c1135d5a8f6bd1e56"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-xlarge-v4.json": {
+        "size": 762,
+        "modified": 1781895386.2877889,
+        "hash": "7aaeeb49a7d89db94c64a6c4ad6f2a8b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-kn.json": {
+        "size": 2877,
+        "modified": 1781895386.267789,
+        "hash": "8b509080daf1d324e654906c2a8d48fc"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-es-rUS.json": {
+        "size": 2893,
+        "modified": 1781895386.3277888,
+        "hash": "4ea8a481526ea20f9118b8982013897a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-pl.json": {
+        "size": 2869,
+        "modified": 1781895386.2517889,
+        "hash": "97609c43903194ba5d6b11b6e105bd23"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ar.json": {
+        "size": 2867,
+        "modified": 1781895386.267789,
+        "hash": "b08334ef2005743fb8f36e2b9c961f2a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-uz.json": {
+        "size": 2867,
+        "modified": 1781895386.395789,
+        "hash": "0099a3e7c7ea224bce90067fbd0745ac"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-or.json": {
+        "size": 2883,
+        "modified": 1781895386.299789,
+        "hash": "8fdfc380e15edf3c424c7ea1b7de49ac"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-fr.json": {
+        "size": 2875,
+        "modified": 1781895386.299789,
+        "hash": "92f770f42ebf3b4b6bcdd0a4f48ec254"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v25.json": {
+        "size": 755,
+        "modified": 1781895386.3277888,
+        "hash": "3d20ab936d93a502aae2298f2a3c74eb"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ur.json": {
+        "size": 2875,
+        "modified": 1781895386.3277888,
+        "hash": "0e069d5989b95ac8a0c0b09376093441"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-nb.json": {
+        "size": 2861,
+        "modified": 1781895386.395789,
+        "hash": "3cdbdda3a74d3916bd7cfd516970cf18"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-es.json": {
+        "size": 2871,
+        "modified": 1781895386.3997889,
+        "hash": "2b4ca1491437d1c0af383aef993607a3"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-hdpi-v4.json": {
+        "size": 720,
+        "modified": 1781895386.3277888,
+        "hash": "c57b1b934609c50a0a809264a10ddc22"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-en-rAU.json": {
+        "size": 2889,
+        "modified": 1781895386.319789,
+        "hash": "5d9dab5f275e50e13ff6bd7651892279"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-night-v8.json": {
+        "size": 1667,
+        "modified": 1781895386.2957888,
+        "hash": "aae3e35783450c630ed5399e9793084e"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-en-rGB.json": {
+        "size": 2889,
+        "modified": 1781895386.387789,
+        "hash": "b564cbc3f2ed3a8944c0bf46393c4075"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-tl.json": {
+        "size": 2875,
+        "modified": 1781895386.387789,
+        "hash": "c3a7798d4ab3e561e33bd96f91dba90c"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v24.json": {
+        "size": 680,
+        "modified": 1781895386.319789,
+        "hash": "7175aa1910a980c777ddbb5934597c4a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ky.json": {
+        "size": 2875,
+        "modified": 1781895386.3277888,
+        "hash": "e6b5d625bb0f681cd06e5cb37a243453"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ne.json": {
+        "size": 2877,
+        "modified": 1781895386.395789,
+        "hash": "4ee79450fc711e2669bcdd78dcd1b7b0"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-b+sr+Latn.json": {
+        "size": 2917,
+        "modified": 1781895386.2757888,
+        "hash": "108312c0cb84ee0c07e883c719e6ed94"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ja.json": {
+        "size": 2851,
+        "modified": 1781895386.3277888,
+        "hash": "7181d32740091dfb16d14baebf0381eb"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-km.json": {
+        "size": 2867,
+        "modified": 1781895386.2757888,
+        "hash": "fe675cd3b33d665e0099b09592cea3c9"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-land.json": {
+        "size": 697,
+        "modified": 1781895386.267789,
+        "hash": "74dc7887e0b1982a2fe017f2eb36ea1f"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v17.json": {
+        "size": 1028,
+        "modified": 1781895386.2877889,
+        "hash": "76e701c00663a7a175a45107fd086d28"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-pt-rBR.json": {
+        "size": 2897,
+        "modified": 1781895386.387789,
+        "hash": "2e4dae42f062ebbecff339b847321cba"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sr.json": {
+        "size": 2875,
+        "modified": 1781895386.2757888,
+        "hash": "634c9615b889310d766a9bb081bc065b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-lt.json": {
+        "size": 2879,
+        "modified": 1781895386.2957888,
+        "hash": "b636c4f50715ca2a047ff43341718df7"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-uk.json": {
+        "size": 2873,
+        "modified": 1781895386.407789,
+        "hash": "da26d05e6d340204ee268a8119abc968"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ko.json": {
+        "size": 2845,
+        "modified": 1781895386.339789,
+        "hash": "7a153e78eeefa3f3300f9df5abbbb61b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-cs.json": {
+        "size": 2871,
+        "modified": 1781895386.339789,
+        "hash": "ffe9e4dc2810efe5719d63d7dcb20e0f"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ldltr-v21.json": {
+        "size": 688,
+        "modified": 1781895386.3277888,
+        "hash": "4f2e5b11340348c8cb1574e0a3a44036"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v31.json": {
+        "size": 730,
+        "modified": 1781895386.319789,
+        "hash": "c550156f8217ca6064ae1846d2397a65"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v28.json": {
+        "size": 756,
+        "modified": 1781895386.3997889,
+        "hash": "8ff6efe43fbdd461859008cbb0df2164"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-pt.json": {
+        "size": 2873,
+        "modified": 1781895386.3277888,
+        "hash": "9c43b8e3ecb71283037811a01caf3c0c"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v26.json": {
+        "size": 794,
+        "modified": 1781895386.387789,
+        "hash": "02041075d11b4f414ba63b753ce1423d"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-in.json": {
+        "size": 2871,
+        "modified": 1781895386.3077888,
+        "hash": "dd1c64b77dbc3339ed39ecac04b3af4a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-bs.json": {
+        "size": 2873,
+        "modified": 1781895386.2757888,
+        "hash": "838f54a83c8a907b8d1891173e8a2f65"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-h720dp-v13.json": {
+        "size": 691,
+        "modified": 1781895386.3277888,
+        "hash": "510aed57adc18e60cfe62e409b75fbc2"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-watch-v20.json": {
+        "size": 763,
+        "modified": 1781895386.319789,
+        "hash": "19cf1b9b86dd2a88905d3119e7302046"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-bn.json": {
+        "size": 2877,
+        "modified": 1781895386.3477888,
+        "hash": "e620adc9e2bd03deb63616f54ea33966"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v23.json": {
+        "size": 970,
+        "modified": 1781895386.319789,
+        "hash": "afd0aa762530c3b672053ff8764a8872"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-zh-rHK.json": {
+        "size": 2867,
+        "modified": 1781895386.319789,
+        "hash": "fc80337c29d5d80676e89f3f126d2484"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sw600dp-v13.json": {
+        "size": 800,
+        "modified": 1781895386.339789,
+        "hash": "ba18a064783a15330ee14cb8ca71d488"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-en-rXC.json": {
+        "size": 2960,
+        "modified": 1781895386.339789,
+        "hash": "694bc2e99a253da1ce92f740c9ee3698"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-port.json": {
+        "size": 667,
+        "modified": 1781895386.3077888,
+        "hash": "6c4a9540045ffc8b4f6cd47b5fe836db"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/debug.json": {
+        "size": 314780,
+        "modified": 1781895386.3837888,
+        "hash": "2faaf0890fad28d85d8903f4b3bf0485"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-mk.json": {
+        "size": 2871,
+        "modified": 1781895386.391789,
+        "hash": "69b92c5b49e4935d25f1a636b81c7050"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ms.json": {
+        "size": 2873,
+        "modified": 1781895386.387789,
+        "hash": "7c1d4d33daacea67a48f40c35a5e5c17"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-de.json": {
+        "size": 2875,
+        "modified": 1781895386.267789,
+        "hash": "f08ca2ab71a8be529cfcfe5bc93cdfd6"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-gu.json": {
+        "size": 2867,
+        "modified": 1781895386.319789,
+        "hash": "955c3b693b746e7c247c8333cc9aa73d"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sk.json": {
+        "size": 2871,
+        "modified": 1781895386.2517889,
+        "hash": "15870095378f968a476f309c6fa21e1e"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-bg.json": {
+        "size": 2877,
+        "modified": 1781895386.3997889,
+        "hash": "d6dd9c7098614070a899a12480cea9d8"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-si.json": {
+        "size": 2875,
+        "modified": 1781895386.407789,
+        "hash": "7d48ca85f3e107e5fdc52f5a97d6ac31"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-th.json": {
+        "size": 2865,
+        "modified": 1781895386.3277888,
+        "hash": "b7a951fb690ad08e960212b14c19326b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v29.json": {
+        "size": 729,
+        "modified": 1781895386.2957888,
+        "hash": "f6c0f9e78c99226638e3ce0d72d5ecc5"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-zh-rCN.json": {
+        "size": 2869,
+        "modified": 1781895386.2557888,
+        "hash": "a6d95fe2f3bdc6ed284021070e1554cc"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-gl.json": {
+        "size": 2871,
+        "modified": 1781895386.3077888,
+        "hash": "00c2fd72cb4720066a0e9646a5943778"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v27.json": {
+        "size": 763,
+        "modified": 1781895386.339789,
+        "hash": "bfd8dffaa734cf397c82fcfc50400067"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v22.json": {
+        "size": 756,
+        "modified": 1781895386.299789,
+        "hash": "c637cb1b06b59883ffc60fdad0e4d47a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-fi.json": {
+        "size": 2865,
+        "modified": 1781895386.3997889,
+        "hash": "a61a3a7545ad2e42475f8e930b7c46f7"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-am.json": {
+        "size": 2851,
+        "modified": 1781895386.407789,
+        "hash": "bcf74aa7abcd289f81b1bee9a9d6ddbb"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-be.json": {
+        "size": 2873,
+        "modified": 1781895386.267789,
+        "hash": "a2155162fb6250d82ae07c819392c225"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-tr.json": {
+        "size": 2869,
+        "modified": 1781895386.395789,
+        "hash": "c62dc845b0a53e2697e45e5da51b0630"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sw.json": {
+        "size": 2869,
+        "modified": 1781895386.407789,
+        "hash": "6904a55306deec0d3e122deebd9a42ea"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v21.json": {
+        "size": 6335,
+        "modified": 1781895386.2957888,
+        "hash": "d4188902b962f6175772f502b6fffa0b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sq.json": {
+        "size": 2869,
+        "modified": 1781895386.319789,
+        "hash": "611b6f76695e09e3bbdae67e3d7a7743"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-en-rIN.json": {
+        "size": 2889,
+        "modified": 1781895386.3997889,
+        "hash": "13a00c36f94513e903a2827ae54c4c44"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ru.json": {
+        "size": 2871,
+        "modified": 1781895386.2877889,
+        "hash": "1be1a607ac8b8d78f0b444e13b457d9c"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-hi.json": {
+        "size": 2873,
+        "modified": 1781895386.3077888,
+        "hash": "ed5ac37978c93b4b032781485d24901a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-eu.json": {
+        "size": 2871,
+        "modified": 1781895386.3077888,
+        "hash": "6483efffd34cfec25e0f21e6899c65b3"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-af.json": {
+        "size": 2867,
+        "modified": 1781895386.2757888,
+        "hash": "a4fe4c54d5c865a619df3227754044cc"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-sl.json": {
+        "size": 2871,
+        "modified": 1781895386.2757888,
+        "hash": "f1a653246a6494f7a28dc4d0330c752f"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-my.json": {
+        "size": 2881,
+        "modified": 1781895386.2877889,
+        "hash": "4624573b9e725d82020e31ac4f2bfdf2"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-fr-rCA.json": {
+        "size": 2901,
+        "modified": 1781895386.3997889,
+        "hash": "4f395f788433c583c178272b2e30d0e9"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-large-v4.json": {
+        "size": 806,
+        "modified": 1781895386.267789,
+        "hash": "34104196a19714512cb0db8783906a82"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-hu.json": {
+        "size": 2873,
+        "modified": 1781895386.3077888,
+        "hash": "3c9c41e5d506ed3edc8ef716570eac27"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-pt-rPT.json": {
+        "size": 2895,
+        "modified": 1781895386.267789,
+        "hash": "4096abbe6ae84af39c9163bb44b66710"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-iw.json": {
+        "size": 2865,
+        "modified": 1781895386.3477888,
+        "hash": "0b1e47260bcfe440716c09583201070e"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-as.json": {
+        "size": 2875,
+        "modified": 1781895386.319789,
+        "hash": "4ff1c4c3f2f441d660d214f06ebf835b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-hy.json": {
+        "size": 2867,
+        "modified": 1781895386.319789,
+        "hash": "e178b8aa744b3cad2e7d60fb8f3d1c2e"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-is.json": {
+        "size": 2865,
+        "modified": 1781895386.299789,
+        "hash": "0c802df13f12ad768915e1afb2f503ec"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-az.json": {
+        "size": 2877,
+        "modified": 1781895386.3277888,
+        "hash": "b78ee0a1578735189fcf3bc4e2b466a8"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-hr.json": {
+        "size": 2869,
+        "modified": 1781895386.339789,
+        "hash": "6cd0c0afbf9636634a5b3994dab8109b"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-watch-v21.json": {
+        "size": 764,
+        "modified": 1781895386.3277888,
+        "hash": "40de7cea4aba64f8235679b031a3473a"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-mr.json": {
+        "size": 2875,
+        "modified": 1781895386.3277888,
+        "hash": "1b557bede5f125899d21dd796f6815c8"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ro.json": {
+        "size": 2875,
+        "modified": 1781895386.319789,
+        "hash": "ed5cc64cf62c514b41717a98a3460de9"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-lo.json": {
+        "size": 2867,
+        "modified": 1781895386.3997889,
+        "hash": "f06fe0b389ef26ebd8f8c6ec758a4706"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-zh-rTW.json": {
+        "size": 2867,
+        "modified": 1781895386.3277888,
+        "hash": "7e0e8aaf6b5d4450ac221e48ddde6071"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-lv.json": {
+        "size": 2893,
+        "modified": 1781895386.3077888,
+        "hash": "53731d0b25cb25592ce253f8e047f18c"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-pa.json": {
+        "size": 2867,
+        "modified": 1781895386.3277888,
+        "hash": "1040631874c24d084cade3acebcd81f4"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-en-rCA.json": {
+        "size": 2889,
+        "modified": 1781895386.395789,
+        "hash": "ddc7c3f3d2eaff6ad0945f6a2ae34a86"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-v18.json": {
+        "size": 662,
+        "modified": 1781895386.3837888,
+        "hash": "1a67af408cf79d2341201929d476e07e"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-ml.json": {
+        "size": 2879,
+        "modified": 1781895386.339789,
+        "hash": "797414d9905873502c6b5c5987ad57e0"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/multi-v2/values-mn.json": {
+        "size": 2869,
+        "modified": 1781895386.3997889,
+        "hash": "df73aefb2f4d4bbfb5690ee0a9e8c6e1"
+    },
+    "android/app/build/intermediates/merged_res_blame_folder/debug/out/single/debug.json": {
+        "size": 6863,
+        "modified": 1781895386.415789,
+        "hash": "700505da4d10e75d7773b4c3251a2c3a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/native-bridge.js.jar": {
+        "size": 11458,
+        "modified": 1781898846.4446728,
+        "hash": "c0dee997013a04fc99a952d3960845eb"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/capacitor.config.json.jar": {
+        "size": 265,
+        "modified": 1781898846.4406726,
+        "hash": "d400f0219ab0080e9c790a27b991f272"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/capacitor.plugins.json.jar": {
+        "size": 161,
+        "modified": 1781898846.5366728,
+        "hash": "5594dce87c49756847bdccccf43a2b2a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/sports_car_exploded.obj.jar": {
+        "size": 731,
+        "modified": 1781898848.8086727,
+        "hash": "2aa2e75726182618f1db49141e0e1021"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/logo.png.jar": {
+        "size": 257491,
+        "modified": 1781898848.6766727,
+        "hash": "85518e672aed1d0aad1bc1cdf40a1571"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/labels-data.json.jar": {
+        "size": 379,
+        "modified": 1781898847.9726727,
+        "hash": "ee9bbe95809d67e42305dce9d7cea887"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/cordova.js.jar": {
+        "size": 148,
+        "modified": 1781898847.9406726,
+        "hash": "a3aa2e5f9e338b46b6473e952177d21f"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/icons.svg.jar": {
+        "size": 2381,
+        "modified": 1781898847.9566727,
+        "hash": "c37bc75c648cf624adba7db3badcdcfd"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/car_engine_scan.glb.jar": {
+        "size": 24823460,
+        "modified": 1781898851.7406728,
+        "hash": "fb84dae5448969998b87d2daf16ad337"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/sports_car.glb.jar": {
+        "size": 46166,
+        "modified": 1781898848.8046727,
+        "hash": "f0c541d56d3381c3432e419ff9555161"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/engineering_car_exploded.obj.jar": {
+        "size": 1150,
+        "modified": 1781898847.9486728,
+        "hash": "e3a858f6e0e6d9d7e17542b980b1ffeb"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/cordova_plugins.js.jar": {
+        "size": 164,
+        "modified": 1781898847.9446728,
+        "hash": "edf8bf4f06494342b4cfeb799aeac1e3"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/littlest_tokyo.glb.jar": {
+        "size": 3679607,
+        "modified": 1781898848.6646729,
+        "hash": "fb32c1b81fd8ad8b02048f0cf7a4b855"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/carbon_frame_bike.glb.jar": {
+        "size": 2636578,
+        "modified": 1781898847.9366727,
+        "hash": "ad6e41e4fc412c9c9e3be8a96e192eb2"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/toy_car.glb.jar": {
+        "size": 4470525,
+        "modified": 1781898849.6246727,
+        "hash": "c9cc9a547ef6fe2a9a3ff5732dd3159a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/test-labels.html.jar": {
+        "size": 5257,
+        "modified": 1781898848.8206728,
+        "hash": "11622b50d75630f74914571a73a7ac02"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/manifest.json.jar": {
+        "size": 438,
+        "modified": 1781898848.6846728,
+        "hash": "1a818e7245dfca6dcfd721c130dbd22b"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/index.html.jar": {
+        "size": 1230,
+        "modified": 1781898847.9646728,
+        "hash": "d2dbf76a573008f30f255ef7ce672fe2"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/car_model.glb.jar": {
+        "size": 153315,
+        "modified": 1781898847.0926728,
+        "hash": "89deb7bae53567b1a954aef2279a8f2c"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/lamborghini_aventador.glb.jar": {
+        "size": 1518597,
+        "modified": 1781898848.1806726,
+        "hash": "9ddb3539d28bd8a1f5208a27cb7c8e3d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/favicon.svg.jar": {
+        "size": 615,
+        "modified": 1781898847.9486728,
+        "hash": "10852f22ef593fac0ef4a18a058bbafe"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/sw.js.jar": {
+        "size": 518,
+        "modified": 1781898848.8086727,
+        "hash": "0f825d8908d4d531b55d805046d334bc"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/wheel_hydraulics.glb.jar": {
+        "size": 3635588,
+        "modified": 1781898850.3406727,
+        "hash": "28aad804d3745b386f5fadb8ec99c615"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/test-qr.html.jar": {
+        "size": 1872,
+        "modified": 1781898848.8206728,
+        "hash": "f198679d2f2f81d43b391115fc44f72a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/turbo-hks-gt3540.png.jar": {
+        "size": 720828,
+        "modified": 1781898848.7726727,
+        "hash": "160f66be56202e4a3aeefeb8a3550cf5"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/engine-13b-rew.png.jar": {
+        "size": 806369,
+        "modified": 1781898848.7206728,
+        "hash": "53dad2a28a2453b57ebb24cba37df1b3"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/turbo-rx7.png.jar": {
+        "size": 803366,
+        "modified": 1781898848.7726727,
+        "hash": "a7a262056d4f07c00e054d965760c700"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/engine-vr38dett.png.jar": {
+        "size": 814250,
+        "modified": 1781898848.7406728,
+        "hash": "964339c03c660cef3772c32ab4cb86db"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/wheels-bbs-ria-18.png.jar": {
+        "size": 616140,
+        "modified": 1781898848.7806728,
+        "hash": "f0534ca310c0b2735f45def093d0388e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/bodykit-top-secret-s15.png.jar": {
+        "size": 691335,
+        "modified": 1781898848.6926727,
+        "hash": "fffd44936b6c4499ea45c400ccaa0d71"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/turbo-td06h-25g-evo.png.jar": {
+        "size": 281,
+        "modified": 1781898848.7806728,
+        "hash": "c5a734d2e063a361db9a340d8fa625db"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/engine-2jzgte.png.jar": {
+        "size": 660958,
+        "modified": 1781898848.7366726,
+        "hash": "1efcc2aecd49e826dbf85c5039e6a977"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/suspension-tein-monosport-nsx.png.jar": {
+        "size": 551331,
+        "modified": 1781898848.7606728,
+        "hash": "762120f86ba7961bee0362f727176ea2"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/sparkplugs-ngk-iridium-ix.png.jar": {
+        "size": 297,
+        "modified": 1781898848.7566729,
+        "hash": "6a305e11a1674f88ee505b9920f8b0cd"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/bodykit-veilside-rx7.png.jar": {
+        "size": 695823,
+        "modified": 1781898848.7046728,
+        "hash": "048a56e30fef44d47d37a4ccc95cf149"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/alternator-skyline-r34.png.jar": {
+        "size": 295,
+        "modified": 1781898848.6846728,
+        "hash": "2ed6c6f58d715872f38ae283905aa7cf"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/engine-rb26dett.png.jar": {
+        "size": 723730,
+        "modified": 1781898848.7406728,
+        "hash": "75b055d2e9e5fa1671aa3edb829a7ab4"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/brakes-brembo-gt-s2000.png.jar": {
+        "size": 628719,
+        "modified": 1781898848.7126727,
+        "hash": "ba27060c4b3dd2b99fd636454129ef3d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/exhaust-hks-hipower.png.jar": {
+        "size": 459324,
+        "modified": 1781898848.7526727,
+        "hash": "e12efb94635a25a490848c1090fb91fb"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/bodykit-supra.png.jar": {
+        "size": 720040,
+        "modified": 1781898848.6926727,
+        "hash": "bd4bfec91ae5afd7033d9bcad65ce452"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/wheels-mugen.png.jar": {
+        "size": 735085,
+        "modified": 1781898848.7886727,
+        "hash": "d6115c0f9ad029b130d78779f1dda1e8"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/coilovers-wrx.png.jar": {
+        "size": 807622,
+        "modified": 1781898848.7126727,
+        "hash": "1decec46314092469b623e4ddf9bd68c"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/parts-images/wheels-work-meister.png.jar": {
+        "size": 623683,
+        "modified": 1781898848.7966728,
+        "hash": "b98f5ec1997c83c4073c79bc359cfbd7"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/icons/icon.svg.jar": {
+        "size": 621,
+        "modified": 1781898847.9566727,
+        "hash": "b0b901822ba4cd2c7e09f5fe2d3ba65d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/arrow-up-down-DCI4FDED.js.jar": {
+        "size": 469,
+        "modified": 1781898846.5766728,
+        "hash": "e7e522c7a552b9ea41bec0157e496e5e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Home-D_4gZhOY.js.jar": {
+        "size": 5611,
+        "modified": 1781898846.6926727,
+        "hash": "6325a12bf71c0d016d3fa0551d814b0a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/send-CrV7T4cl.js.jar": {
+        "size": 420,
+        "modified": 1781898846.8166728,
+        "hash": "5e323fbef1430be2085fbc7f9498ccb5"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Auctions-CceXZggp.js.jar": {
+        "size": 9395,
+        "modified": 1781898846.5726728,
+        "hash": "77e7cbf487cf73f1860787f3f2f8aed1"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/browser-CjSdxGTc.js.jar": {
+        "size": 10461,
+        "modified": 1781898846.5966728,
+        "hash": "7706c8743fff9f444eb59dfabed1dcdd"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/logisticsApi-CjI6FEWi.js.jar": {
+        "size": 1495,
+        "modified": 1781898846.7366726,
+        "hash": "48f54a58c5432ce3fbeb5d8aa9eb6392"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/pen-line-DrFOcVs0.js.jar": {
+        "size": 520,
+        "modified": 1781898846.7806728,
+        "hash": "8c45647e1e042fd76886f2139f5406f5"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/vendor-three-DMVp3SPY.js.jar": {
+        "size": 370403,
+        "modified": 1781898847.0566728,
+        "hash": "2e785b61f5c2b6d856e941021ec0803b"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/clock-BaxTIKA7.js.jar": {
+        "size": 425,
+        "modified": 1781898846.6526728,
+        "hash": "c3de039a03976bc2b5cc346283ab68fd"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/vendor-react-o1vseovg.js.jar": {
+        "size": 62440,
+        "modified": 1781898846.8766727,
+        "hash": "83705c9879d0b05721c653afb2cb08b8"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/PaymentCheckout-B7gpYd9D.js.jar": {
+        "size": 4812,
+        "modified": 1781898846.7806728,
+        "hash": "e2ff5c883795337bf7e336bf4e5a54f5"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/arrow-right-ByTmEj3-.js.jar": {
+        "size": 434,
+        "modified": 1781898846.5686727,
+        "hash": "b74f3783d00924e3bad5b1152aa7523e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/arrow-left-CpNY6d6R.js.jar": {
+        "size": 431,
+        "modified": 1781898846.5526729,
+        "hash": "50fe169a57873eec0969ccbf45b2a397"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/ReviewManagement-DfUiwork.js.jar": {
+        "size": 4396,
+        "modified": 1781898846.8086727,
+        "hash": "18569f310082f8c3646d788f24da3f76"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/favoriteStore-gCbBJX3y.js.jar": {
+        "size": 1809,
+        "modified": 1781898846.6846728,
+        "hash": "8c42a2f9ff685c3c58d52298e8f4ce24"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/AccountsPayable-DQhYi3xU.js.jar": {
+        "size": 1202,
+        "modified": 1781898846.5126727,
+        "hash": "2b5f41f892d60e0c4265cdc595f42b64"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/index-qniMJp_e.js.jar": {
+        "size": 30448,
+        "modified": 1781898846.7326727,
+        "hash": "060896ef0c1858a8114b9da0c0ecb39d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/cpu-D1wwi6Ar.js.jar": {
+        "size": 517,
+        "modified": 1781898846.6726727,
+        "hash": "ae217d62832c988fe23c8fe04f2d7e2d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/UserManagement-C2h8pYJ4.js.jar": {
+        "size": 15651,
+        "modified": 1781898846.8726728,
+        "hash": "71c95eb57293ae7daaac18b6df3bae27"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/QRInstallPage-B06kH__q.js.jar": {
+        "size": 1592,
+        "modified": 1781898846.8046727,
+        "hash": "aa7c8fa7b13600cee79ad36a1e7e8246"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Profile-CD0BiaOV.js.jar": {
+        "size": 1892,
+        "modified": 1781898846.8046727,
+        "hash": "62896b005c7d5e0e66f1c9e52adbdae1"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/building-2-BapPBJAY.js.jar": {
+        "size": 525,
+        "modified": 1781898846.6046727,
+        "hash": "745c5726e97843140bdb7dd6a9b81961"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/check-circle-CEhBik0y.js.jar": {
+        "size": 454,
+        "modified": 1781898846.6206727,
+        "hash": "82067026484ecc02b27ba04cde2c871c"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/alert-circle-M60rpYZY.js.jar": {
+        "size": 460,
+        "modified": 1781898846.5366728,
+        "hash": "654a9b55463d0239f163e3f3fc8985cd"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/file-text-uDYcakHo.js.jar": {
+        "size": 524,
+        "modified": 1781898846.6926727,
+        "hash": "4e0c2508470f6ef312240530e412fda0"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/credit-card-ClJbSbO_.js.jar": {
+        "size": 455,
+        "modified": 1781898846.6726727,
+        "hash": "67b35c90afd2be526c1829f38f5b9aab"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/adminApi-CzgGPYaM.js.jar": {
+        "size": 1412,
+        "modified": 1781898846.5286727,
+        "hash": "64648333056e07fdc4930e5d2fd43e03"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/rotate-ccw-B7cOWrC7.js.jar": {
+        "size": 451,
+        "modified": 1781898846.8166728,
+        "hash": "6989141e8d6da55c60c5ed07ae180250"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/building-DVgDIZI5.js.jar": {
+        "size": 535,
+        "modified": 1781898846.6086729,
+        "hash": "af993ae77f43c2f9cae8e5f5ec9ca8e0"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/refresh-cw-BT0hQVAm.js.jar": {
+        "size": 489,
+        "modified": 1781898846.8086727,
+        "hash": "8d4719673c61fb60c1d32e547d3601fc"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/api-DvHJFHT5.js.jar": {
+        "size": 1565,
+        "modified": 1781898846.5526729,
+        "hash": "73a1db70ca5e7dfddf6123ad11a41205"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/play-CQZO5PaV.js.jar": {
+        "size": 547,
+        "modified": 1781898846.7926729,
+        "hash": "fc0d24bf89348543349ce72356c09960"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/check-Dt8vIGPC.js.jar": {
+        "size": 399,
+        "modified": 1781898846.6326728,
+        "hash": "ce1cb8aa8ff4c192520a914fc27714dc"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/alert-triangle-DI0Y0y9h.js.jar": {
+        "size": 487,
+        "modified": 1781898846.5566728,
+        "hash": "429ea64a20a3dec6374166d7275ffeda"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/shield-check-CHf7e8qD.js.jar": {
+        "size": 458,
+        "modified": 1781898846.8206728,
+        "hash": "9eeaf6b11a1afbb92b88d23d798b9b1e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/PartsLookup-B4REz5qF.js.jar": {
+        "size": 6617,
+        "modified": 1781898846.7806728,
+        "hash": "00a165606f842ba385a0ccf540adf5f0"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/SafeImage-CzlyKICq.js.jar": {
+        "size": 483,
+        "modified": 1781898846.8086727,
+        "hash": "23863d1adb4cb608e501ec2ba95715ee"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/chevron-right-rVJGAOE5.js.jar": {
+        "size": 418,
+        "modified": 1781898846.6406727,
+        "hash": "4667d7853fe7ad554411b7ce8260932e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/index-CyHf9W-C.css.jar": {
+        "size": 21886,
+        "modified": 1781898846.7126727,
+        "hash": "63b47c1fecd20a2d5bbb823f49d5f4e7"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Messages-q8Jkm4tW.js.jar": {
+        "size": 5556,
+        "modified": 1781898846.7566729,
+        "hash": "27bd4bd9b3f7d829b9470cace30942f4"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/gavel-B86LJNRh.js.jar": {
+        "size": 473,
+        "modified": 1781898846.6926727,
+        "hash": "303262b08314bee8210258b8d96f31e5"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/trending-up-zKvDopqw.js.jar": {
+        "size": 451,
+        "modified": 1781898846.8406727,
+        "hash": "3eccc3203fe1287b09627e68d469e599"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/fees-BI62ZOgC.js.jar": {
+        "size": 353,
+        "modified": 1781898846.6926727,
+        "hash": "1b3603abc4d66bfd598414f091b5f622"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/mobileApi-C4y3r356.js.jar": {
+        "size": 1413,
+        "modified": 1781898846.7606728,
+        "hash": "53ae1efb61074ef66ec5884003228460"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/AgenciaPage-B97_YGKn.js.jar": {
+        "size": 2470,
+        "modified": 1781898846.5406728,
+        "hash": "0c02ee285456b20a9a28b841f4d8ca4d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/WarehouseScene-DtPkning.js.jar": {
+        "size": 3115,
+        "modified": 1781898846.8926728,
+        "hash": "5b7cf98cf6e87e3e88fec7a668d82e23"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/DriverApprovalsPage-9oztNCGY.js.jar": {
+        "size": 2344,
+        "modified": 1781898846.6846728,
+        "hash": "9cdbcb4679e8d77d9bb29ac5ff994bc6"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/AdminDashboard-DrKnddA6.js.jar": {
+        "size": 3054,
+        "modified": 1781898846.5366728,
+        "hash": "fc33764618d0d0eccd7b5dbb64c7b73a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/eye-B-NaQPse.js.jar": {
+        "size": 434,
+        "modified": 1781898846.6806726,
+        "hash": "b109d4966f19d685f725bac5c75195df"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/compass-BDV3cYFZ.js.jar": {
+        "size": 453,
+        "modified": 1781898846.6486728,
+        "hash": "3ce5914392c9d0b26d51682d310a1bc3"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/ProductDetail-DmF7djf7.js.jar": {
+        "size": 3042,
+        "modified": 1781898846.8006728,
+        "hash": "9c6f7ba2f6dc695021cb3fd4d754a2f4"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/trash-2-B_3pKvoG.js.jar": {
+        "size": 507,
+        "modified": 1781898846.8406727,
+        "hash": "f15923f28116ead6cff88934f704ca8b"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/download-C9HyfQAb.js.jar": {
+        "size": 480,
+        "modified": 1781898846.6766727,
+        "hash": "3695d140ea2b76641424b16f27f61f7e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/upload-Dlk8RqFL.js.jar": {
+        "size": 474,
+        "modified": 1781898846.8526728,
+        "hash": "535a6ef915d0fceaca41aba7a2270c05"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/sliders-8YQ468xC.js.jar": {
+        "size": 538,
+        "modified": 1781898846.8326728,
+        "hash": "061bfc902235cfda47a3b002aa86910b"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/supabaseErrorHandler-nMzqtk3d.js.jar": {
+        "size": 1111,
+        "modified": 1781898846.8286726,
+        "hash": "e0e50a125bdec446c1a751bb7a8f54d5"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/ContactsManagement-Db178E4m.js.jar": {
+        "size": 1001,
+        "modified": 1781898846.6526728,
+        "hash": "5f8518df245a5db4e60ffc3ecd585874"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/vendor-query-CcJiKrtF.js.jar": {
+        "size": 15292,
+        "modified": 1781898846.8566728,
+        "hash": "28e62c3c50748e53267a198a321cb2ba"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/MobileApp-CiiBxMjL.js.jar": {
+        "size": 4860,
+        "modified": 1781898846.7686727,
+        "hash": "4738dcfde43ccbfd9a9d830894ddb66d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/shield-alert-Q2XFWdFu.js.jar": {
+        "size": 465,
+        "modified": 1781898846.8206728,
+        "hash": "6ce7bbfe1b3e39d95ab57165c9ac6e36"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/vendor-supabase-CW1GYbG4.js.jar": {
+        "size": 64625,
+        "modified": 1781898846.8806727,
+        "hash": "6315ce7478230a60479b899731722d84"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/LogistixDashboard-Dgihpmma.css.jar": {
+        "size": 7035,
+        "modified": 1781898846.7566729,
+        "hash": "31fbd6f07c3583ac7945fd92427d7754"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Login-Br4XDYX2.js.jar": {
+        "size": 2158,
+        "modified": 1781898846.7366726,
+        "hash": "ce12ba105a601685c219fb600849ee7f"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Register-CulRrtSD.js.jar": {
+        "size": 2078,
+        "modified": 1781898846.8086727,
+        "hash": "52f94060372118096a51f5b6ef0a8a84"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/constants-jR7OYzPt.js.jar": {
+        "size": 3412,
+        "modified": 1781898846.6566727,
+        "hash": "d88736ec5580f8277f7c78f4eb9877c8"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/ImmersiveExperience-EVfwon09.js.jar": {
+        "size": 7011,
+        "modified": 1781898846.7006729,
+        "hash": "2f2f3d776e8c3597ef32ac1d13745ebf"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/user-check-BPPi7UTy.js.jar": {
+        "size": 485,
+        "modified": 1781898846.8526728,
+        "hash": "d3e4128113dee982c022d155513af8d8"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/dollar-sign-C_3nUMig.js.jar": {
+        "size": 463,
+        "modified": 1781898846.6806726,
+        "hash": "1501ab238b2461a351d876bdfe262368"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/postal-CqLGOBPZ.js.jar": {
+        "size": 700,
+        "modified": 1781898846.7926729,
+        "hash": "8505e0e5f499521d4086a662af70c964"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/HeroCarScene-BWurobqy.js.jar": {
+        "size": 1907,
+        "modified": 1781898846.6926727,
+        "hash": "6c7a233dd4b02b83a55097d171bb4a83"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/scan-line-MeAqKhjL.js.jar": {
+        "size": 830,
+        "modified": 1781898846.8206728,
+        "hash": "01f430129ec7f0a7bdc3d3942b088c66"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Favorites-wRAtK6qU.js.jar": {
+        "size": 1525,
+        "modified": 1781898846.6846728,
+        "hash": "cbfa35b54c73d90169623b91af99c2c6"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Catalog-COBpeitd.js.jar": {
+        "size": 8102,
+        "modified": 1781898846.6406727,
+        "hash": "fcd2f644914b3543e5d994f788e91146"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/CarList-BzpMAJjJ.js.jar": {
+        "size": 3998,
+        "modified": 1781898846.6126728,
+        "hash": "e3fd65335378373c55442f15898ac8a8"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/search-CtfFj_-o.js.jar": {
+        "size": 426,
+        "modified": 1781898846.8166728,
+        "hash": "a57e90cbaff216f4c99e22f3774ba659"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/TransactionManagement-CnRgZdCM.js.jar": {
+        "size": 4948,
+        "modified": 1781898846.8366728,
+        "hash": "f4975694b2754581b1ceed469fc8835e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/camera-Cl_5SF4f.js.jar": {
+        "size": 469,
+        "modified": 1781898846.6126728,
+        "hash": "0adfe28b91f4de2c49b1dedfdb75f167"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/users-CYTxX6_4.js.jar": {
+        "size": 480,
+        "modified": 1781898846.8566728,
+        "hash": "f9f51dd44a7ee85ee70f609fc0baea5d"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/warehouse-C-fCmB6c.js.jar": {
+        "size": 619,
+        "modified": 1781898846.8886728,
+        "hash": "5ee82a7db19c125c32ee7e360df4f3f8"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/AutoTranslateText-DKBZDOCZ.js.jar": {
+        "size": 1061,
+        "modified": 1781898846.5766728,
+        "hash": "1676223ed927e2ede13f5a8e1deb676e"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/Dashboard-TXcugrxz.js.jar": {
+        "size": 5394,
+        "modified": 1781898846.6766727,
+        "hash": "9187d5b93065ca1163b6688dcb6f2171"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/index-BuEbyRhT.js.jar": {
+        "size": 128164,
+        "modified": 1781898846.7446728,
+        "hash": "a3102eb51a6a4d211d2ad762ec7bab7c"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/CreateListing-D1cVcU1t.js.jar": {
+        "size": 3703,
+        "modified": 1781898846.6766727,
+        "hash": "b1c77ed824b980c6d16b58a41bf023e9"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/ImageTo3D-Bm4N0tlo.js.jar": {
+        "size": 6495,
+        "modified": 1781898846.6926727,
+        "hash": "c81b6b343743153a9431e0d99e646c0f"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/save-9jCOBiS8.js.jar": {
+        "size": 470,
+        "modified": 1781898846.8086727,
+        "hash": "d835e6114f86c3521271d3aa26d2e0dc"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/plus-DsIYjeOI.js.jar": {
+        "size": 409,
+        "modified": 1781898846.7926729,
+        "hash": "a1ce96fe4b28f1aa9a19723586753efa"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/LogistixDashboard-CPwKXT_S.js.jar": {
+        "size": 264030,
+        "modified": 1781898846.8046727,
+        "hash": "7cfd8279d39289e38941e53e10b3430a"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/MotionFramePage-yUgZrYUA.js.jar": {
+        "size": 5744,
+        "modified": 1781898846.7686727,
+        "hash": "65cfa4fc923c73e0c3a5e3fac4e5ee87"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/lock-DiCFS241.js.jar": {
+        "size": 446,
+        "modified": 1781898846.7326727,
+        "hash": "44da0ef635ce44446440130c23ce4d5f"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/award-C3pEBn0j.js.jar": {
+        "size": 445,
+        "modified": 1781898846.5926728,
+        "hash": "801fb0972821226fb7eb3cecc5e450a2"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/TrackingPublico-C7WW174q.js.jar": {
+        "size": 3234,
+        "modified": 1781898846.8446727,
+        "hash": "05232c61ccf5bbe578e514f0449ebbb7"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/shopping-bag-D-Uq7ToH.js.jar": {
+        "size": 474,
+        "modified": 1781898846.8206728,
+        "hash": "7753723b287f5376d78b3d59d1a0c050"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/star-C18k0dzO.js.jar": {
+        "size": 445,
+        "modified": 1781898846.8286726,
+        "hash": "3f36a6dbce8c1e7214db768d079950ce"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/truck-C3B1mZfh.js.jar": {
+        "size": 503,
+        "modified": 1781898846.8406727,
+        "hash": "e571c0524079641ececf7798875c7513"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/shield-DZUuMOGB.js.jar": {
+        "size": 423,
+        "modified": 1781898846.8206728,
+        "hash": "6ab5c40c227e6b748a1252074fd23993"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/WorkerApp-Sq35x4so.js.jar": {
+        "size": 20904,
+        "modified": 1781898846.9086728,
+        "hash": "5d81d2ff05b578ac870a7a3d80e7ab1f"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/wrench-D--DZX0P.js.jar": {
+        "size": 468,
+        "modified": 1781898846.9086728,
+        "hash": "6c35283d57af9979e4ff63f69445eb52"
+    },
+    "android/app/build/intermediates/compressed_assets/debug/out/assets/public/assets/zap-Do-e7wRb.js.jar": {
+        "size": 412,
+        "modified": 1781898846.9086728,
+        "hash": "b94772b3ccb3170a3f2ca854a9444f4a"
+    },
+    "android/app/build/intermediates/merged_java_res/debug/base.jar": {
+        "size": 21379,
+        "modified": 1781899010.544672,
+        "hash": "7f4a57f71393a1aa8a1bc034f760e2a4"
+    },
+    "android/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar": {
+        "size": 302980,
+        "modified": 1781895398.12779,
+        "hash": "d7d0caf57913c0002cacae12c07ac284"
+    },
+    "android/app/build/intermediates/dex_archive_input_jar_hashes/debug/out": {
+        "size": 838,
+        "modified": 1781898855.8246725,
+        "hash": "633cf79221a45ab1724212fed4812ba4"
+    },
+    "android/app/build/intermediates/packaged_manifests/debug/output-metadata.json": {
+        "size": 396,
+        "modified": 1781895394.5997896,
+        "hash": "b14669deccc9837879a60194f3d8261f"
+    },
+    "android/app/build/intermediates/packaged_manifests/debug/AndroidManifest.xml": {
+        "size": 3665,
+        "modified": 1781895394.5957897,
+        "hash": "f74b08e9a3360dc50443a1f31ffe175d"
+    },
+    "android/app/build/intermediates/compatible_screen_manifest/debug/output-metadata.json": {
+        "size": 201,
+        "modified": 1781895390.7637894,
+        "hash": "8a3670ec97834c5dd79e32bbdb14a775"
+    },
+    "android/app/build/intermediates/app_metadata/debug/app-metadata.properties": {
+        "size": 56,
+        "modified": 1781899029.7046735,
+        "hash": "20929960dc0e7e58957f26f898ca1138"
+    },
+    "android/app/build/intermediates/runtime_symbol_list/debug/R.txt": {
+        "size": 93966,
+        "modified": 1781895397.89179,
+        "hash": "ca637a937e48777d8d59fbfd3fb0d712"
+    },
+    "android/app/build/intermediates/desugar_graph/debug/out/otherProjects/jar_93375275b3cd7184cb4307cedb0c1bb220e91610395458a022c23605037b589a_bucket_0/graph.bin": {
+        "size": 235,
+        "modified": 1781898863.1766715,
+        "hash": "99ac946b05b2ae2211a1250f1a700392"
+    },
+    "android/app/build/intermediates/desugar_graph/debug/out/otherProjects/jar_32dc24253b87f6b627ad8bb9e909da2a1b3fa07a7722d54ba3227d64cb2b4ede_bucket_0/graph.bin": {
+        "size": 2194,
+        "modified": 1781898882.720671,
+        "hash": "d7b51f2976f8c342a08db4804ffed56c"
+    },
+    "android/app/build/intermediates/desugar_graph/debug/out/currentProject/jar_c629541fc01887d7e812bbe10c283a9afa2ca1bec311fa2c0d3458b369d16228_bucket_0/graph.bin": {
+        "size": 235,
+        "modified": 1781898867.6206713,
+        "hash": "99ac946b05b2ae2211a1250f1a700392"
+    },
+    "android/app/build/intermediates/desugar_graph/debug/out/currentProject/dirs_bucket_0/graph.bin": {
+        "size": 1968,
+        "modified": 1781898863.1766715,
+        "hash": "5d98dcc87a844d2caa896d2bb4f21078"
+    },
+    "android/app/build/intermediates/javac/debug/classes/com/daig/logistix/express/MainActivity.class": {
+        "size": 328,
+        "modified": 1781898843.2006729,
+        "hash": "68a1f2a142fcaf2dfa16d5316206ae73"
+    },
+    "android/app/build/intermediates/apk_ide_redirect_file/debug/redirect.txt": {
+        "size": 78,
+        "modified": 1781899084.6206756,
+        "hash": "20c7f1221665c60d0038ac046e51327c"
+    },
+    "android/app/build/intermediates/processed_res/debug/out/output-metadata.json": {
+        "size": 391,
+        "modified": 1781895398.13979,
+        "hash": "75a5ba5f11900cbfaa379eedc838994d"
+    },
+    "android/app/build/intermediates/processed_res/debug/out/resources-debug.ap_": {
+        "size": 807442,
+        "modified": 1781895397.89579,
+        "hash": "f2abd7c84ac69828557244ccf857a2ba"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-port-mdpi_splash.png.flat": {
+        "size": 4232,
+        "modified": 1781895390.2157893,
+        "hash": "8fed6ef7260a4c742a93fe4649dcc3b8"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-hdpi_ic_launcher_foreground.png.flat": {
+        "size": 8844,
+        "modified": 1781895390.1437893,
+        "hash": "48dbb1b8be3036d638fa3a0c7d3f8ca9"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-vi_values-vi.arsc.flat": {
+        "size": 2740,
+        "modified": 1781895390.1557894,
+        "hash": "c154380daf5b5d814e7406cb2c18bede"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-fr-rCA_values-fr-rCA.arsc.flat": {
+        "size": 2812,
+        "modified": 1781895390.1237893,
+        "hash": "5be91acdbcc7e9cf3c146c41933b7119"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-en-rGB_values-en-rGB.arsc.flat": {
+        "size": 2700,
+        "modified": 1781895390.0357893,
+        "hash": "6505031d8da6a7db269162244dc33a54"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ms_values-ms.arsc.flat": {
+        "size": 2644,
+        "modified": 1781895389.9237893,
+        "hash": "de81607c6fd406377abf4915f27150b0"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-land_values-land.arsc.flat": {
+        "size": 400,
+        "modified": 1781895390.1917894,
+        "hash": "cb0dfca70b068f18a3d50830912dac6b"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xxhdpi_ic_launcher_round.png.flat": {
+        "size": 6944,
+        "modified": 1781895390.2237895,
+        "hash": "12291bc36c3bd0fd2cf28ccdfca65b97"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-or_values-or.arsc.flat": {
+        "size": 3416,
+        "modified": 1781895390.0397894,
+        "hash": "17f93bdb8588db7b6dce796f413ac397"
+    },
+    "android/app/build/intermediates/merged_res/debug/layout_activity_main.xml.flat": {
+        "size": 764,
+        "modified": 1781895390.2477894,
+        "hash": "5869dda13fde568446c2335d2b1fbf0b"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-port-xxxhdpi_splash.png.flat": {
+        "size": 17632,
+        "modified": 1781895390.2237895,
+        "hash": "cfd73d6f1cd0841bf05e6e7c27ac9efa"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-pt_values-pt.arsc.flat": {
+        "size": 2692,
+        "modified": 1781895389.7517893,
+        "hash": "97ebf89d772c8ce59a5069e1117774ab"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-et_values-et.arsc.flat": {
+        "size": 2676,
+        "modified": 1781895390.1437893,
+        "hash": "9c5288a232c57cbd0e9b63a17f43917d"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-km_values-km.arsc.flat": {
+        "size": 3168,
+        "modified": 1781895389.7877893,
+        "hash": "12a609d60684b27aaa40fac5972daaf3"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-port-xhdpi_splash.png.flat": {
+        "size": 10012,
+        "modified": 1781895390.2237895,
+        "hash": "2e66595c5019e4101bb0aa7e3af34e0a"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-en-rCA_values-en-rCA.arsc.flat": {
+        "size": 2696,
+        "modified": 1781895389.7477894,
+        "hash": "c91d47538951051339b93b00d15335c6"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-pl_values-pl.arsc.flat": {
+        "size": 2688,
+        "modified": 1781895390.0517893,
+        "hash": "d718ebe7450e06a0a905748318f2cc31"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-bg_values-bg.arsc.flat": {
+        "size": 3024,
+        "modified": 1781895389.9437892,
+        "hash": "128956257aca4a1eab1265fa4569bdcf"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ur_values-ur.arsc.flat": {
+        "size": 2936,
+        "modified": 1781895390.0917892,
+        "hash": "2c5434f78110730f264ec59136f4a0ae"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-port_values-port.arsc.flat": {
+        "size": 252,
+        "modified": 1781895390.1597893,
+        "hash": "fa63d1ac7d636b441662a8c736821265"
+    },
+    "android/app/build/intermediates/merged_res/debug/xml_config.xml.flat": {
+        "size": 332,
+        "modified": 1781895390.2037892,
+        "hash": "d2faa617b64f22ce2a1bcae576b04ab5"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-uk_values-uk.arsc.flat": {
+        "size": 2948,
+        "modified": 1781895389.8837893,
+        "hash": "6650d6fe43149bfa5835294ea7749d09"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-si_values-si.arsc.flat": {
+        "size": 3216,
+        "modified": 1781895389.7517893,
+        "hash": "b4dd01593221fb1c99ee62635d5952de"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v29_values-v29.arsc.flat": {
+        "size": 616,
+        "modified": 1781895389.9237893,
+        "hash": "b253f4c5a56c6e10698b73114a4556e6"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-pt-rPT_values-pt-rPT.arsc.flat": {
+        "size": 2796,
+        "modified": 1781895389.9117894,
+        "hash": "4899f244fa9385b9c16211d8a45677f4"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-en-rIN_values-en-rIN.arsc.flat": {
+        "size": 2700,
+        "modified": 1781895390.0877893,
+        "hash": "6fbec3492a56a3d2055d7779585a019d"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-anydpi-v24_ic_launcher_foreground.xml.flat": {
+        "size": 3024,
+        "modified": 1781895390.2397892,
+        "hash": "752a48b97830dbeb9220b559a64535df"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xxxhdpi_ic_launcher_round.png.flat": {
+        "size": 12044,
+        "modified": 1781895390.2477894,
+        "hash": "13b6e966cdb9d5854132ca5fa1bba7e5"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-pa_values-pa.arsc.flat": {
+        "size": 3048,
+        "modified": 1781895390.1997893,
+        "hash": "4de7eb5a217c0cfe9da6449c7b9d76b6"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-mr_values-mr.arsc.flat": {
+        "size": 3156,
+        "modified": 1781895389.9197893,
+        "hash": "a278af9d6837044ed3424a77ec043174"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-large-v4_values-large-v4.arsc.flat": {
+        "size": 888,
+        "modified": 1781895390.0237894,
+        "hash": "5c40db83164cf0a4320afd1356e1ee17"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-da_values-da.arsc.flat": {
+        "size": 2600,
+        "modified": 1781895389.8557894,
+        "hash": "5dc80b9c071a0156ea92d3c235bed608"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-nl_values-nl.arsc.flat": {
+        "size": 2664,
+        "modified": 1781895390.1677895,
+        "hash": "f56d9ccbe9350b97ec4263b23d7231f8"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ar_values-ar.arsc.flat": {
+        "size": 2788,
+        "modified": 1781895389.8317893,
+        "hash": "74be895f0381856ef6fcf08b95edf985"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-en-rXC_values-en-rXC.arsc.flat": {
+        "size": 13956,
+        "modified": 1781895390.0117893,
+        "hash": "65055b240f8190bc8bce39df4ad5094b"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-fr_values-fr.arsc.flat": {
+        "size": 2688,
+        "modified": 1781895390.1797893,
+        "hash": "3b158a9837ba35295008733913fef389"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-night-v8_values-night-v8.arsc.flat": {
+        "size": 1136,
+        "modified": 1781895389.9717894,
+        "hash": "94cc681fa7248b2b6e40ec48fc1d7ebf"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-hdpi_ic_launcher.png.flat": {
+        "size": 2808,
+        "modified": 1781895390.0917892,
+        "hash": "d7749a0ec01e0ff3f3647e35833bdb70"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v22_values-v22.arsc.flat": {
+        "size": 936,
+        "modified": 1781895389.8877892,
+        "hash": "3214c850a1fee671be1fdc624638a03f"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-anydpi-v26_ic_launcher.xml.flat": {
+        "size": 460,
+        "modified": 1781895390.1357894,
+        "hash": "6e779abcedaeda3006e41e6659023874"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-mdpi_ic_launcher.png.flat": {
+        "size": 1840,
+        "modified": 1781895390.1357894,
+        "hash": "0e3ee672d7de28f8c5d6e37dcda58d51"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-es-rUS_values-es-rUS.arsc.flat": {
+        "size": 2776,
+        "modified": 1781895389.6677892,
+        "hash": "d5646f7c9e49c475ca2e3676c11b0e46"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xhdpi_ic_launcher.png.flat": {
+        "size": 3856,
+        "modified": 1781895390.1397893,
+        "hash": "82ecb3770cb79d50d296402545590eea"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-pt-rBR_values-pt-rBR.arsc.flat": {
+        "size": 2808,
+        "modified": 1781895390.0357893,
+        "hash": "557a1af766e5e74d22fa9f3fa67011a1"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-anydpi-v26_ic_launcher_round.xml.flat": {
+        "size": 472,
+        "modified": 1781895390.2117894,
+        "hash": "464077133a019761da99019ff02a0b9d"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sq_values-sq.arsc.flat": {
+        "size": 2664,
+        "modified": 1781895389.7677894,
+        "hash": "f726a68a59d36b0d96bc7f341939889f"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-en-rAU_values-en-rAU.arsc.flat": {
+        "size": 2700,
+        "modified": 1781895389.8677893,
+        "hash": "cfae0a4fea48706680f1df258bad118a"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v16_values-v16.arsc.flat": {
+        "size": 484,
+        "modified": 1781895389.7677894,
+        "hash": "84ce353d32b600591aac050f3fc6aa52"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-hr_values-hr.arsc.flat": {
+        "size": 2660,
+        "modified": 1781895389.5717893,
+        "hash": "0b426383ebf841801b3069068bfb9e6f"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ky_values-ky.arsc.flat": {
+        "size": 2932,
+        "modified": 1781895389.8237894,
+        "hash": "1415f2dfaf3d509185df86a72ce5a819"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-hi_values-hi.arsc.flat": {
+        "size": 3152,
+        "modified": 1781895389.5277894,
+        "hash": "ca8d9598ec5a392f4767368fc5366f4e"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-kn_values-kn.arsc.flat": {
+        "size": 3388,
+        "modified": 1781895389.8037894,
+        "hash": "0bff7f52665370172ff09b690e728869"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-hy_values-hy.arsc.flat": {
+        "size": 2912,
+        "modified": 1781895389.5877893,
+        "hash": "cc59d833ca30cc638303c2628ecdff9c"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-te_values-te.arsc.flat": {
+        "size": 3404,
+        "modified": 1781895389.8397894,
+        "hash": "bc0cf5da72b0183a8cf8e40843bc7157"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v17_values-v17.arsc.flat": {
+        "size": 3696,
+        "modified": 1781895389.7837894,
+        "hash": "6bfd1089f71bdd47e399f8a6a976da5b"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-land-xxhdpi_splash.png.flat": {
+        "size": 14120,
+        "modified": 1781895390.1397893,
+        "hash": "a2dcc9b97dcba673a240664bb2d3daa8"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ko_values-ko.arsc.flat": {
+        "size": 2648,
+        "modified": 1781895390.0157893,
+        "hash": "ae2da415a1ccf3c55e162c0ebfa9ba69"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-th_values-th.arsc.flat": {
+        "size": 2972,
+        "modified": 1781895390.0437894,
+        "hash": "c123f8431b3d4304df12d03416cfebe9"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xxhdpi_ic_launcher_foreground.png.flat": {
+        "size": 31680,
+        "modified": 1781895390.1437893,
+        "hash": "7da49daa9267da72fba4d3c015b9c76a"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sl_values-sl.arsc.flat": {
+        "size": 2676,
+        "modified": 1781895389.9797893,
+        "hash": "2f16e7603b4d1c38d26ee6a66a2d5814"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-port-xxhdpi_splash.png.flat": {
+        "size": 13484,
+        "modified": 1781895390.2477894,
+        "hash": "2201a6450cceab6c2376b4b8dc9adc1e"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-port-hdpi_splash.png.flat": {
+        "size": 8072,
+        "modified": 1781895390.1437893,
+        "hash": "21e4d7cb34b8d02d907d452e3ede10a5"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-tl_values-tl.arsc.flat": {
+        "size": 2684,
+        "modified": 1781895389.8557894,
+        "hash": "31736a8ce1c7e057f4c857fc91d1a821"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v28_values-v28.arsc.flat": {
+        "size": 748,
+        "modified": 1781895389.9357893,
+        "hash": "d089e4b7d015ab0995c4511cd3a5a6cc"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-is_values-is.arsc.flat": {
+        "size": 2612,
+        "modified": 1781895389.6157892,
+        "hash": "14f180bfdd385f26b87f0e94ed2aa9e3"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-am_values-am.arsc.flat": {
+        "size": 2816,
+        "modified": 1781895389.6277893,
+        "hash": "f68e547ab0b7bd2e2d37002dc936be05"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-land-xhdpi_splash.png.flat": {
+        "size": 9388,
+        "modified": 1781895390.2237895,
+        "hash": "2f84cdbe679eb138c7d2ef7c1e7d9279"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ta_values-ta.arsc.flat": {
+        "size": 3424,
+        "modified": 1781895390.0317893,
+        "hash": "7038b4ccdc149f0982f027e79242921b"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable_splash.png.flat": {
+        "size": 4156,
+        "modified": 1781895390.0917892,
+        "hash": "9b40437e5a528f283603f98f0ac635af"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-gl_values-gl.arsc.flat": {
+        "size": 2692,
+        "modified": 1781895390.1997893,
+        "hash": "1904ccf99921a3b390e4b703894fd187"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-xlarge-v4_values-xlarge-v4.arsc.flat": {
+        "size": 584,
+        "modified": 1781895390.0517893,
+        "hash": "4ac8931b5e2a0e2991373bcdd79b393c"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-lv_values-lv.arsc.flat": {
+        "size": 2892,
+        "modified": 1781895389.8837893,
+        "hash": "654a0a51c4297f92dfef133e15eed1b6"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-hu_values-hu.arsc.flat": {
+        "size": 2736,
+        "modified": 1781895389.7677894,
+        "hash": "5f748972a0e7a95892610a2715f29025"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xhdpi_ic_launcher_round.png.flat": {
+        "size": 3868,
+        "modified": 1781895390.2237895,
+        "hash": "8a9a02f5722f1d169ef118120dd79699"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v27_values-v27.arsc.flat": {
+        "size": 764,
+        "modified": 1781895389.6997893,
+        "hash": "79deb8b6044f6a124c6660bc2b5b1e5b"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-de_values-de.arsc.flat": {
+        "size": 2676,
+        "modified": 1781895390.0717893,
+        "hash": "fc2454b4505ca71b63323b0fe593cc94"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ka_values-ka.arsc.flat": {
+        "size": 3184,
+        "modified": 1781895389.9637892,
+        "hash": "bb457233e20c6dc285a1c23b8410faf0"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v25_values-v25.arsc.flat": {
+        "size": 584,
+        "modified": 1781895389.6877892,
+        "hash": "8eb828ec63173f331a635a368d7b33bb"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ldltr-v21_values-ldltr-v21.arsc.flat": {
+        "size": 344,
+        "modified": 1781895389.5877893,
+        "hash": "bf98f70edf3b8009ca0ae16e7512c551"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ro_values-ro.arsc.flat": {
+        "size": 2712,
+        "modified": 1781895389.7197893,
+        "hash": "e3cb1a58f97aaa80c5771287bd9b1e07"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-my_values-my.arsc.flat": {
+        "size": 3424,
+        "modified": 1781895390.1357894,
+        "hash": "a985a2c548a1f137eb6a89d61fab3a45"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sw600dp-v13_values-sw600dp-v13.arsc.flat": {
+        "size": 776,
+        "modified": 1781895389.7237892,
+        "hash": "b798ed1712b67b2d961caa8f75df2bc0"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xxhdpi_ic_launcher.png.flat": {
+        "size": 6932,
+        "modified": 1781895390.0917892,
+        "hash": "d813bd6b9e17ee45415946269067f645"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-zu_values-zu.arsc.flat": {
+        "size": 2620,
+        "modified": 1781895389.9197893,
+        "hash": "1b93f98e776705d483f194163149d053"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sr_values-sr.arsc.flat": {
+        "size": 2964,
+        "modified": 1781895389.7797892,
+        "hash": "c81d2fff0f318fd0f80300ab913a7046"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-kk_values-kk.arsc.flat": {
+        "size": 2860,
+        "modified": 1781895389.9957893,
+        "hash": "32a38f1a81f7a9146bc52108424c84fb"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-mdpi_ic_launcher_foreground.png.flat": {
+        "size": 4484,
+        "modified": 1781895390.2237895,
+        "hash": "a3a3d19458c72f362bcc311adcb810f9"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-h720dp-v13_values-h720dp-v13.arsc.flat": {
+        "size": 284,
+        "modified": 1781895390.0397894,
+        "hash": "172affb33da2f176e59ed8fd4a4f9256"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xxxhdpi_ic_launcher_foreground.png.flat": {
+        "size": 54844,
+        "modified": 1781895390.2197893,
+        "hash": "285e90e2a36fac053672c79f8cc30c19"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ru_values-ru.arsc.flat": {
+        "size": 2952,
+        "modified": 1781895389.7317894,
+        "hash": "8604846e9c1b70d12e4d398db603b273"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-bs_values-bs.arsc.flat": {
+        "size": 2672,
+        "modified": 1781895389.9517894,
+        "hash": "1b13271b83180d00c0ecbe4b3544f420"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-as_values-as.arsc.flat": {
+        "size": 3336,
+        "modified": 1781895389.6597893,
+        "hash": "3cf556470a65e6cd7807c0a7a8ba45d6"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v18_values-v18.arsc.flat": {
+        "size": 248,
+        "modified": 1781895389.5877893,
+        "hash": "120735069a152daf65ec92763af6d3a4"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-lo_values-lo.arsc.flat": {
+        "size": 3064,
+        "modified": 1781895389.8757894,
+        "hash": "20932891fda72c9b6627a070ac8243fc"
+    },
+    "android/app/build/intermediates/merged_res/debug/xml_file_paths.xml.flat": {
+        "size": 332,
+        "modified": 1781895390.2237895,
+        "hash": "46f57b522589953e1470cdf92a8e4fda"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sk_values-sk.arsc.flat": {
+        "size": 2696,
+        "modified": 1781895389.7557893,
+        "hash": "ee6b177baeb2f7c0dce098f928dee745"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ja_values-ja.arsc.flat": {
+        "size": 2668,
+        "modified": 1781895389.6837893,
+        "hash": "2ebc99e1be7f06fc31f7c9c0e46aa961"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-land-mdpi_splash.png.flat": {
+        "size": 4176,
+        "modified": 1781895390.1397893,
+        "hash": "6c04bd9385fd480cc1f4687f0d394f58"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ca_values-ca.arsc.flat": {
+        "size": 2668,
+        "modified": 1781895389.9797893,
+        "hash": "6ab0c433103a991918e2b12b1f9a8f00"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-cs_values-cs.arsc.flat": {
+        "size": 2668,
+        "modified": 1781895389.8317893,
+        "hash": "1aba46f01c58f2642d1aae564592e6e2"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xxxhdpi_ic_launcher.png.flat": {
+        "size": 12032,
+        "modified": 1781895390.1437893,
+        "hash": "29ca6771a8f2673a8acb7e9d026f7ecc"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-bn_values-bn.arsc.flat": {
+        "size": 3256,
+        "modified": 1781895389.7357893,
+        "hash": "bcd6dcb42188a8ad67fc211060255986"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-in_values-in.arsc.flat": {
+        "size": 2640,
+        "modified": 1781895389.7917893,
+        "hash": "d708f23ca6d9930ca6b9ee39ec5a8a32"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-af_values-af.arsc.flat": {
+        "size": 2608,
+        "modified": 1781895389.5957892,
+        "hash": "c499dfe86518799e5de529880c606238"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-nb_values-nb.arsc.flat": {
+        "size": 2572,
+        "modified": 1781895389.9637892,
+        "hash": "7686617b328c6071e9993efb97d302ee"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-fi_values-fi.arsc.flat": {
+        "size": 2632,
+        "modified": 1781895390.1757894,
+        "hash": "a2b834375d33a94c009c646bd816b517"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v26_values-v26.arsc.flat": {
+        "size": 1056,
+        "modified": 1781895389.7037892,
+        "hash": "0ae647a4de1627041af27b7ea663fe58"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v24_values-v24.arsc.flat": {
+        "size": 520,
+        "modified": 1781895389.6917894,
+        "hash": "d58bff550a64af3719a8cb402fbb6905"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-hdpi_ic_launcher_round.png.flat": {
+        "size": 2820,
+        "modified": 1781895390.1437893,
+        "hash": "6e46761df6f51a3e8674239e966fd24d"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-hdpi-v4_values-hdpi-v4.arsc.flat": {
+        "size": 488,
+        "modified": 1781895390.1877894,
+        "hash": "1a26ac54b7c9b20cce1f8ba2d8b1f677"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-mk_values-mk.arsc.flat": {
+        "size": 2928,
+        "modified": 1781895389.8997893,
+        "hash": "5dd726a0da96c3d672d66ea2a40393c4"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ne_values-ne.arsc.flat": {
+        "size": 3308,
+        "modified": 1781895390.1637893,
+        "hash": "7292afe74c9103ad9454f315449bb6e0"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-zh-rCN_values-zh-rCN.arsc.flat": {
+        "size": 2712,
+        "modified": 1781895389.9877894,
+        "hash": "89b9a260e7c51c7d5fbd5d998c9e0be3"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-es_values-es.arsc.flat": {
+        "size": 2684,
+        "modified": 1781895389.9477894,
+        "hash": "639c520eb2d9a758f265710775e6e317"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sv_values-sv.arsc.flat": {
+        "size": 2636,
+        "modified": 1781895390.0157893,
+        "hash": "3fc0e07e3e2fc3c2ed1241f324f82b4c"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-iw_values-iw.arsc.flat": {
+        "size": 2768,
+        "modified": 1781895389.8237894,
+        "hash": "e0494a5987dbabe73a26592d2de5914f"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-sw_values-sw.arsc.flat": {
+        "size": 2624,
+        "modified": 1781895389.8157892,
+        "hash": "5a18aa816b5b67246ffda11184774ffe"
+    },
+    "android/app/build/intermediates/merged_res/debug/values_values.arsc.flat": {
+        "size": 190384,
+        "modified": 1781895389.7437892,
+        "hash": "af47aec8999b25293bc0fa3d95205fb5"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-uz_values-uz.arsc.flat": {
+        "size": 2628,
+        "modified": 1781895390.1157894,
+        "hash": "5b51dc77eab04d54a01d15d429e3784b"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v31_values-v31.arsc.flat": {
+        "size": 844,
+        "modified": 1781895389.9557893,
+        "hash": "3383777d5d0d8c4303d8982cc9a343eb"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-lt_values-lt.arsc.flat": {
+        "size": 2800,
+        "modified": 1781895390.0837893,
+        "hash": "aaf90f10f602d7c6daf6cc1eb89dba15"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v23_values-v23.arsc.flat": {
+        "size": 3452,
+        "modified": 1781895389.8837893,
+        "hash": "432db88434874687ecebaad516345f5b"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-az_values-az.arsc.flat": {
+        "size": 2696,
+        "modified": 1781895389.8997893,
+        "hash": "d8db6ca7f3fb112eefea3ccc8909ab5b"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-ml_values-ml.arsc.flat": {
+        "size": 3404,
+        "modified": 1781895390.1037893,
+        "hash": "e7e03b7eb59f7f79f2ffa1f08afffed1"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable_ic_launcher_background.xml.flat": {
+        "size": 10772,
+        "modified": 1781895390.2117894,
+        "hash": "2916b8fa049b5d05499d967c357a1a39"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-zh-rTW_values-zh-rTW.arsc.flat": {
+        "size": 2716,
+        "modified": 1781895389.9397893,
+        "hash": "a50bd54b9e53675ce8694b6ac45eaeb2"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-el_values-el.arsc.flat": {
+        "size": 3088,
+        "modified": 1781895390.1277893,
+        "hash": "4a4a0eb9c6cb8f69c2ea0ecc570775fa"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-it_values-it.arsc.flat": {
+        "size": 2644,
+        "modified": 1781895389.8157892,
+        "hash": "596a6a075560a767a2c2132fcd4a104d"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-b+sr+Latn_values-b+sr+Latn.arsc.flat": {
+        "size": 2880,
+        "modified": 1781895389.6477892,
+        "hash": "d433ee1ebc038e1485cc4b50f7bf10c9"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-zh-rHK_values-zh-rHK.arsc.flat": {
+        "size": 2716,
+        "modified": 1781895389.8037894,
+        "hash": "6d0cf6d788b9fff0b38605f420c56d98"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-mn_values-mn.arsc.flat": {
+        "size": 2932,
+        "modified": 1781895389.9117894,
+        "hash": "fd8163223b00f526ee8d4997392430cc"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-mdpi_ic_launcher_round.png.flat": {
+        "size": 1852,
+        "modified": 1781895390.0957894,
+        "hash": "5c731b880def26a8383c85d73e90c138"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-land-hdpi_splash.png.flat": {
+        "size": 7844,
+        "modified": 1781895390.1397893,
+        "hash": "fc6be12640a0cdb6028a741d9ef9ac91"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-eu_values-eu.arsc.flat": {
+        "size": 2680,
+        "modified": 1781895389.9597893,
+        "hash": "b21b2c8d01fc7693ef7b710a33b8b13b"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-v21_values-v21.arsc.flat": {
+        "size": 20628,
+        "modified": 1781895389.8717892,
+        "hash": "a4776783a46567d5afabb5c7422859be"
+    },
+    "android/app/build/intermediates/merged_res/debug/mipmap-xhdpi_ic_launcher_foreground.png.flat": {
+        "size": 14776,
+        "modified": 1781895390.2237895,
+        "hash": "978131e29bd09d4ee3a5a27a3cf08311"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-gu_values-gu.arsc.flat": {
+        "size": 3068,
+        "modified": 1781895390.0477893,
+        "hash": "62aca2390abeec15f0029fa55b71a276"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-be_values-be.arsc.flat": {
+        "size": 2976,
+        "modified": 1781895389.9357893,
+        "hash": "b5de683b56220ff46eec3ca9f028cb9e"
+    },
+    "android/app/build/intermediates/merged_res/debug/drawable-land-xxxhdpi_splash.png.flat": {
+        "size": 17824,
+        "modified": 1781895390.0957894,
+        "hash": "720206ac115ce5d35e1d7ab272a2a6e6"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-watch-v20_values-watch-v20.arsc.flat": {
+        "size": 728,
+        "modified": 1781895389.7557893,
+        "hash": "2393e4ba0ad39fa73e6715b11c5bafd8"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-fa_values-fa.arsc.flat": {
+        "size": 2896,
+        "modified": 1781895389.9797893,
+        "hash": "7cf0a270330a9a5a15ba42d67fc4b28c"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-watch-v21_values-watch-v21.arsc.flat": {
+        "size": 904,
+        "modified": 1781895389.5597892,
+        "hash": "5f32873d31baabc5253475015ed848fd"
+    },
+    "android/app/build/intermediates/merged_res/debug/values-tr_values-tr.arsc.flat": {
+        "size": 2632,
+        "modified": 1781895390.0597894,
+        "hash": "25249a59bc883e54b623f4f3fbb7eaec"
+    },
+    "android/app/build/intermediates/local_only_symbol_list/debug/R-def.txt": {
+        "size": 448,
+        "modified": 1781895390.5597894,
+        "hash": "f6959644fe143e62943dff8df6838353"
+    },
+    "android/app/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt": {
+        "size": 54182,
+        "modified": 1781895398.13979,
+        "hash": "4defa69087e7f40b014c606362708122"
+    },
+    "android/app/build/intermediates/sub_project_dex_archive/debug/out/fe8b751c4925345cb78a2c92d3275c216ca6538ec4d5b0bee18666c0d9bb73b6_0.jar": {
+        "size": 85948,
+        "modified": 1781898882.684671,
+        "hash": "b6726416d6de1954e00b54f06c17e38a"
+    },
+    "android/app/build/intermediates/assets/debug/native-bridge.js": {
+        "size": 51793,
+        "modified": 1781753192.184593,
+        "hash": "d8da3611a08192897b5a9e7994913475"
+    },
+    "android/app/build/intermediates/assets/debug/capacitor.plugins.json": {
+        "size": 3,
+        "modified": 1781898752.400672,
+        "hash": "58e0494c51d30eb3494f7c9198986bb9"
+    },
+    "android/app/build/intermediates/assets/debug/capacitor.config.json": {
+        "size": 142,
+        "modified": 1781898752.316672,
+        "hash": "9ee46545d40629809417185e20dbb082"
+    },
+    "android/app/build/intermediates/assets/debug/public/carbon_frame_bike.glb": {
+        "size": 3395040,
+        "modified": 1781898751.888672,
+        "hash": "6939cbc923d371c27adabed8953c3752"
+    },
+    "android/app/build/intermediates/assets/debug/public/sports_car_exploded.obj": {
+        "size": 1605,
+        "modified": 1781898751.680672,
+        "hash": "0b724b1e2778dd472e934eff44c62f95"
+    },
+    "android/app/build/intermediates/assets/debug/public/labels-data.json": {
+        "size": 688,
+        "modified": 1781898751.864672,
+        "hash": "a2c2827ed070688d2f9c81de2f14016b"
+    },
+    "android/app/build/intermediates/assets/debug/public/logo.png": {
+        "size": 257349,
+        "modified": 1781898751.832672,
+        "hash": "c6710a20397a98be214c10db97f81bdf"
+    },
+    "android/app/build/intermediates/assets/debug/public/cordova.js": {
+        "size": 0,
+        "modified": 1781898752.708672,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "android/app/build/intermediates/assets/debug/public/test-qr.html": {
+        "size": 3649,
+        "modified": 1781898751.676672,
+        "hash": "291a28bd3fd27ab219ed32fc4968a3e7"
+    },
+    "android/app/build/intermediates/assets/debug/public/icons.svg": {
+        "size": 5031,
+        "modified": 1781898751.872672,
+        "hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+    },
+    "android/app/build/intermediates/assets/debug/public/favicon.svg": {
+        "size": 1628,
+        "modified": 1781898751.876672,
+        "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
+    },
+    "android/app/build/intermediates/assets/debug/public/cordova_plugins.js": {
+        "size": 0,
+        "modified": 1781898752.708672,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "android/app/build/intermediates/assets/debug/public/sports_car.glb": {
+        "size": 175100,
+        "modified": 1781898751.684672,
+        "hash": "95e354532b4e6224434674758605ab4d"
+    },
+    "android/app/build/intermediates/assets/debug/public/lamborghini_aventador.glb": {
+        "size": 1928792,
+        "modified": 1781898751.860672,
+        "hash": "35c9c832ae53b5811c613ecc10980f6b"
+    },
+    "android/app/build/intermediates/assets/debug/public/manifest.json": {
+        "size": 564,
+        "modified": 1781898751.828672,
+        "hash": "253035b6489559ab8246752910130b45"
+    },
+    "android/app/build/intermediates/assets/debug/public/car_engine_scan.glb": {
+        "size": 30500176,
+        "modified": 1781898752.076672,
+        "hash": "c328d301056572cce00d86d510888bb7"
+    },
+    "android/app/build/intermediates/assets/debug/public/index.html": {
+        "size": 2388,
+        "modified": 1781898751.864672,
+        "hash": "739fafbba4f3a7daa830779e44f09ba4"
+    },
+    "android/app/build/intermediates/assets/debug/public/engineering_car_exploded.obj": {
+        "size": 2804,
+        "modified": 1781898751.880672,
+        "hash": "cf2beec2dbd261aa7efe3c517ff75782"
+    },
+    "android/app/build/intermediates/assets/debug/public/sw.js": {
+        "size": 747,
+        "modified": 1781898751.680672,
+        "hash": "18a93c312d310813263c6eafe978a45f"
+    },
+    "android/app/build/intermediates/assets/debug/public/test-labels.html": {
+        "size": 14249,
+        "modified": 1781898751.676672,
+        "hash": "c89c10a05ea0c3c638700eade53daa40"
+    },
+    "android/app/build/intermediates/assets/debug/public/wheel_hydraulics.glb": {
+        "size": 7828704,
+        "modified": 1781898751.580672,
+        "hash": "6dc69bb15750868ae76e2791191a5c04"
+    },
+    "android/app/build/intermediates/assets/debug/public/toy_car.glb": {
+        "size": 5422412,
+        "modified": 1781898751.596672,
+        "hash": "7bee65587717abc2a905f47890a6e0a8"
+    },
+    "android/app/build/intermediates/assets/debug/public/car_model.glb": {
+        "size": 433948,
+        "modified": 1781898751.892672,
+        "hash": "de32f1c72cf9616d9bb3357662cb5742"
+    },
+    "android/app/build/intermediates/assets/debug/public/littlest_tokyo.glb": {
+        "size": 4133072,
+        "modified": 1781898751.852672,
+        "hash": "2a6181dbb4859544e4f29dd5f4e15e34"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/engine-vr38dett.png": {
+        "size": 814060,
+        "modified": 1781898751.760672,
+        "hash": "5b4c1ff506df8dafcf346648d7128a77"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/wheels-work-meister.png": {
+        "size": 623485,
+        "modified": 1781898751.696672,
+        "hash": "8a869bb29dc07b09065764daef69f940"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/bodykit-top-secret-s15.png": {
+        "size": 691131,
+        "modified": 1781898751.808672,
+        "hash": "3d8e7375d2af48573e83a9bf2d27e54c"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/engine-2jzgte.png": {
+        "size": 660772,
+        "modified": 1781898751.768672,
+        "hash": "9ae1bb8f8e43a6b5f425385c40f3282a"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/suspension-tein-monosport-nsx.png": {
+        "size": 551113,
+        "modified": 1781898751.744672,
+        "hash": "2f9aefe52cf24d10ef3ea6250eb600c0"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/bodykit-supra.png": {
+        "size": 719854,
+        "modified": 1781898751.812672,
+        "hash": "67ea65ebffd756f4abef36cf327fe8e0"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/turbo-rx7.png": {
+        "size": 803188,
+        "modified": 1781898751.728672,
+        "hash": "be931c02eb313b688d0039b40a2c14f0"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/wheels-bbs-ria-18.png": {
+        "size": 615946,
+        "modified": 1781898751.712672,
+        "hash": "fec87ee57394de6778c0efc4bca50d74"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/turbo-hks-gt3540.png": {
+        "size": 720636,
+        "modified": 1781898751.732672,
+        "hash": "b7d83f37d5e2da9313c47ad03f9a233d"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/coilovers-wrx.png": {
+        "size": 807436,
+        "modified": 1781898751.780672,
+        "hash": "3b6524cf91aeb0da5d4e1873b8eeffce"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/turbo-td06h-25g-evo.png": {
+        "size": 83,
+        "modified": 1781898751.716672,
+        "hash": "a067956b1223828cad62392c4c6f8c5d"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/exhaust-hks-hipower.png": {
+        "size": 459126,
+        "modified": 1781898751.756672,
+        "hash": "33ee38f097ca00147f00e8d43f9cd354"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/wheels-mugen.png": {
+        "size": 734901,
+        "modified": 1781898751.712672,
+        "hash": "d0f576718868545576dad96cd607d9ff"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/engine-13b-rew.png": {
+        "size": 806181,
+        "modified": 1781898751.776672,
+        "hash": "e4184eecfe1860dd4133902c45748eed"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/alternator-skyline-r34.png": {
+        "size": 91,
+        "modified": 1781898751.828672,
+        "hash": "ffaa5d3aca3e5c617b9ec79ae9ef20bf"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/sparkplugs-ngk-iridium-ix.png": {
+        "size": 87,
+        "modified": 1781898751.752672,
+        "hash": "70072573bff8bd63af3d3dbffc83a38a"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/bodykit-veilside-rx7.png": {
+        "size": 695623,
+        "modified": 1781898751.796672,
+        "hash": "d57a8d5ae16fee295750bd9e65ff08fe"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/engine-rb26dett.png": {
+        "size": 723540,
+        "modified": 1781898751.764672,
+        "hash": "42c3e26c0beb8fad88763a6929eb9300"
+    },
+    "android/app/build/intermediates/assets/debug/public/parts-images/brakes-brembo-gt-s2000.png": {
+        "size": 628515,
+        "modified": 1781898751.788672,
+        "hash": "25f57fca992497ad3b6c68755a38f80e"
+    },
+    "android/app/build/intermediates/assets/debug/public/icons/icon.svg": {
+        "size": 1628,
+        "modified": 1781898751.876672,
+        "hash": "cff7ef2f7ac7f88ec09c3a8f51c455e2"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/postal-CqLGOBPZ.js": {
+        "size": 1194,
+        "modified": 1781898752.160672,
+        "hash": "7502e527fce3af83ad20b2a0fad1edfa"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/search-CtfFj_-o.js": {
+        "size": 336,
+        "modified": 1781898752.152672,
+        "hash": "98ba7503cdf1f970370de084edf38c88"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/index-CyHf9W-C.css": {
+        "size": 112527,
+        "modified": 1781898752.180672,
+        "hash": "f05eecd5d083e5b269bcf1afe3d5e34f"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Messages-q8Jkm4tW.js": {
+        "size": 14550,
+        "modified": 1781898752.252672,
+        "hash": "d91e64b7d0a561b3cb9626fc86caa647"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/WorkerApp-Sq35x4so.js": {
+        "size": 72402,
+        "modified": 1781898752.220672,
+        "hash": "45093d01efe9b54cc6c94f0d91dca05d"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/shield-DZUuMOGB.js": {
+        "size": 321,
+        "modified": 1781898752.148672,
+        "hash": "c3f3dd45eec41b18a45d34437b75b19c"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/PartsLookup-B4REz5qF.js": {
+        "size": 22423,
+        "modified": 1781898752.244672,
+        "hash": "3a3b469888081fd30b985073fd8a4e86"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/CarList-BzpMAJjJ.js": {
+        "size": 10703,
+        "modified": 1781898752.292672,
+        "hash": "46d4aecb78fe6aae95e1043088ff650a"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/shield-alert-Q2XFWdFu.js": {
+        "size": 401,
+        "modified": 1781898752.148672,
+        "hash": "c22f09d21ddb5cfdcc2cd4cc6ac95953"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/check-circle-CEhBik0y.js": {
+        "size": 361,
+        "modified": 1781898752.196672,
+        "hash": "9f02b9a611d90349abd3c2e5cbf2e402"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/refresh-cw-BT0hQVAm.js": {
+        "size": 489,
+        "modified": 1781898752.156672,
+        "hash": "882d5fbcc192a5485ef7a9cbed2afc20"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/browser-CjSdxGTc.js": {
+        "size": 24082,
+        "modified": 1781898752.208672,
+        "hash": "d00a01a92950bdd14b8ecb2b57e45e2d"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/AgenciaPage-B97_YGKn.js": {
+        "size": 5810,
+        "modified": 1781898752.304672,
+        "hash": "cce7cf3c1875b7bace299df86fc4defe"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/vendor-supabase-CW1GYbG4.js": {
+        "size": 206616,
+        "modified": 1781898752.112672,
+        "hash": "c85a19de208797cd0fd5db639a35151e"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/cpu-D1wwi6Ar.js": {
+        "size": 658,
+        "modified": 1781898752.192672,
+        "hash": "b222dc33f629e77238ca6fdaab8e1f46"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/star-C18k0dzO.js": {
+        "size": 379,
+        "modified": 1781898752.136672,
+        "hash": "f295820acb6ae2fdf9ab4ca16a1b3d08"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/ImageTo3D-Bm4N0tlo.js": {
+        "size": 17046,
+        "modified": 1781898752.264672,
+        "hash": "1ebba52ea17a4a99ce54e69ebd880dac"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/credit-card-ClJbSbO_.js": {
+        "size": 375,
+        "modified": 1781898752.188672,
+        "hash": "65d3e677bf46c3431268165bb6ffa8da"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/building-DVgDIZI5.js": {
+        "size": 711,
+        "modified": 1781898752.204672,
+        "hash": "9ab654c7566bf8c7642ffe7afa34f5bb"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/LogistixDashboard-Dgihpmma.css": {
+        "size": 15037,
+        "modified": 1781898752.256672,
+        "hash": "7b943679edfb7ad4f9398a27ae63fbd5"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/UserManagement-C2h8pYJ4.js": {
+        "size": 66819,
+        "modified": 1781898752.224672,
+        "hash": "cc7b34a610374110a10c3aa55c1fe571"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/chevron-right-rVJGAOE5.js": {
+        "size": 298,
+        "modified": 1781898752.196672,
+        "hash": "db4731123d85eaac4d0035863a154128"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/WarehouseScene-DtPkning.js": {
+        "size": 8516,
+        "modified": 1781898752.224672,
+        "hash": "0d2d8923ca87c5c6a53608d0fdceb452"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/vendor-query-CcJiKrtF.js": {
+        "size": 42192,
+        "modified": 1781898752.120672,
+        "hash": "2ac3c7449440acef95944a5c23eba798"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/LogistixDashboard-CPwKXT_S.js": {
+        "size": 859173,
+        "modified": 1781898752.260672,
+        "hash": "5da322e54c6fe63ed18fa7ce24a9d828"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/vendor-three-DMVp3SPY.js": {
+        "size": 1112105,
+        "modified": 1781898752.108672,
+        "hash": "d18e6587e44153ad534b26314cf31f85"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/download-C9HyfQAb.js": {
+        "size": 431,
+        "modified": 1781898752.188672,
+        "hash": "3a5cc2a90e3c89ceeae4356476852b09"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/DriverApprovalsPage-9oztNCGY.js": {
+        "size": 5832,
+        "modified": 1781898752.280672,
+        "hash": "24210fe933dfa2d4422308b2a149e006"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/ImmersiveExperience-EVfwon09.js": {
+        "size": 21031,
+        "modified": 1781898752.264672,
+        "hash": "839fa872888f72904804eb5ab357e4ba"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/TransactionManagement-CnRgZdCM.js": {
+        "size": 19067,
+        "modified": 1781898752.224672,
+        "hash": "385bcf277a9a8daf660ec0244c372071"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/vendor-react-o1vseovg.js": {
+        "size": 163243,
+        "modified": 1781898752.116672,
+        "hash": "6617a501791b3647bd64421dcabfa385"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Catalog-COBpeitd.js": {
+        "size": 25235,
+        "modified": 1781898752.288672,
+        "hash": "739173a3afec7fe2a8b03cdfa5f228ea"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Dashboard-TXcugrxz.js": {
+        "size": 18433,
+        "modified": 1781898752.284672,
+        "hash": "dbe8ca8758a585d9d1140a14ad96dfb7"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/shield-check-CHf7e8qD.js": {
+        "size": 368,
+        "modified": 1781898752.144672,
+        "hash": "27a70f2751072a477254e27a7bc955d9"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/HeroCarScene-BWurobqy.js": {
+        "size": 3414,
+        "modified": 1781898752.272672,
+        "hash": "6079bad03df246ccb0378a07e5959b78"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/fees-BI62ZOgC.js": {
+        "size": 230,
+        "modified": 1781898752.184672,
+        "hash": "1bf7dec697bb7ba01968365c2407b859"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/api-DvHJFHT5.js": {
+        "size": 4915,
+        "modified": 1781898752.216672,
+        "hash": "faee202fbccc4f836de4419a76da37ae"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/ProductDetail-DmF7djf7.js": {
+        "size": 7689,
+        "modified": 1781898752.240672,
+        "hash": "f9bb6923cd0baad9b24710d96ecb3a1e"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/alert-triangle-DI0Y0y9h.js": {
+        "size": 434,
+        "modified": 1781898752.216672,
+        "hash": "5bdbbef144704f853835bd75edb0c202"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Login-Br4XDYX2.js": {
+        "size": 4928,
+        "modified": 1781898752.260672,
+        "hash": "d6d22c1731c67e1d95439fc302a2ec64"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/MotionFramePage-yUgZrYUA.js": {
+        "size": 17018,
+        "modified": 1781898752.248672,
+        "hash": "f607dd4f44563379ede2df5a3ceee0aa"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/ContactsManagement-Db178E4m.js": {
+        "size": 2427,
+        "modified": 1781898752.288672,
+        "hash": "6d98f3c0dd47bf03b088dd1f09ddc701"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/SafeImage-CzlyKICq.js": {
+        "size": 454,
+        "modified": 1781898752.228672,
+        "hash": "03d32f1d1cf7d4eea7ab58ae2ea2c29f"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/truck-C3B1mZfh.js": {
+        "size": 521,
+        "modified": 1781898752.128672,
+        "hash": "dabaded231c118fd829485ae04b277f0"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/supabaseErrorHandler-nMzqtk3d.js": {
+        "size": 1737,
+        "modified": 1781898752.132672,
+        "hash": "5b8d28de8bbef05e56435561f8394a73"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Register-CulRrtSD.js": {
+        "size": 6070,
+        "modified": 1781898752.232672,
+        "hash": "65ec2674536bc1c36c5e57cabfc09277"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/TrackingPublico-C7WW174q.js": {
+        "size": 8622,
+        "modified": 1781898752.228672,
+        "hash": "c8c909193fba09b0cd6995713ac9abc4"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/index-qniMJp_e.js": {
+        "size": 88771,
+        "modified": 1781898752.176672,
+        "hash": "79dc56b32c7c3b32c903692f3643168e"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/file-text-uDYcakHo.js": {
+        "size": 565,
+        "modified": 1781898752.184672,
+        "hash": "4891942356f6eca601c1eccbca8ce6ca"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/warehouse-C-fCmB6c.js": {
+        "size": 999,
+        "modified": 1781898752.100672,
+        "hash": "642cfdfa5872ca865a07d4f3190d1d01"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/pen-line-DrFOcVs0.js": {
+        "size": 696,
+        "modified": 1781898752.176672,
+        "hash": "f2660277f02bf0ae6694a54da4fe323c"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/mobileApi-C4y3r356.js": {
+        "size": 2712,
+        "modified": 1781898752.176672,
+        "hash": "296d7fb76325c8a0a31ba50db2e4ef01"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/camera-Cl_5SF4f.js": {
+        "size": 417,
+        "modified": 1781898752.200672,
+        "hash": "7299b2d6ffaf4310bb5b6cc586f6b508"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/shopping-bag-D-Uq7ToH.js": {
+        "size": 419,
+        "modified": 1781898752.144672,
+        "hash": "71b3e7e304af552a0d636902900acb1c"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Auctions-CceXZggp.js": {
+        "size": 27594,
+        "modified": 1781898752.296672,
+        "hash": "1659f0cc1c75c3d4d30fa2ae99f34efd"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/eye-B-NaQPse.js": {
+        "size": 363,
+        "modified": 1781898752.188672,
+        "hash": "e897952b61c2e5356720d5214a9f1b00"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/wrench-D--DZX0P.js": {
+        "size": 431,
+        "modified": 1781898752.100672,
+        "hash": "328b8f63ef9673670a9e40318f108c89"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/ReviewManagement-DfUiwork.js": {
+        "size": 14562,
+        "modified": 1781898752.228672,
+        "hash": "5ade5ee7d8c9d0f72353cbcf346ff90b"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/arrow-left-CpNY6d6R.js": {
+        "size": 333,
+        "modified": 1781898752.216672,
+        "hash": "e704f88d8c4db65f1cd5a0faac7cd85b"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/arrow-up-down-DCI4FDED.js": {
+        "size": 412,
+        "modified": 1781898752.212672,
+        "hash": "e6338e7c560d6e1b678d78ee79e569f7"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/scan-line-MeAqKhjL.js": {
+        "size": 1924,
+        "modified": 1781898752.152672,
+        "hash": "35e9e5dae4e3bf12fba19f3a788b4b56"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/alert-circle-M60rpYZY.js": {
+        "size": 418,
+        "modified": 1781898752.220672,
+        "hash": "a608d2808602b57b7310079fc3c4a4a6"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/check-Dt8vIGPC.js": {
+        "size": 288,
+        "modified": 1781898752.196672,
+        "hash": "e78d00b50201ee865b6ba68123dc2298"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/user-check-BPPi7UTy.js": {
+        "size": 422,
+        "modified": 1781898752.128672,
+        "hash": "01c1ee059f71c27146c5cb91935c6e64"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/QRInstallPage-B06kH__q.js": {
+        "size": 3189,
+        "modified": 1781898752.232672,
+        "hash": "988fb7f2c44c09aa91c548eaccb0ce23"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/users-CYTxX6_4.js": {
+        "size": 473,
+        "modified": 1781898752.128672,
+        "hash": "431ee1efe31c891e7c431383e047994e"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/play-CQZO5PaV.js": {
+        "size": 787,
+        "modified": 1781898752.164672,
+        "hash": "41058948b821826ce85eeef6dd233b3c"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/lock-DiCFS241.js": {
+        "size": 375,
+        "modified": 1781898752.176672,
+        "hash": "8634be206f918619bf95ff39ab04d843"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/dollar-sign-C_3nUMig.js": {
+        "size": 387,
+        "modified": 1781898752.188672,
+        "hash": "32be9b526acb478e5c58b316298a9346"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/clock-BaxTIKA7.js": {
+        "size": 347,
+        "modified": 1781898752.196672,
+        "hash": "3fd08208d014a43438c6633149af6484"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/adminApi-CzgGPYaM.js": {
+        "size": 4224,
+        "modified": 1781898752.220672,
+        "hash": "d3fec937b36147d593fd500982f5a874"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/arrow-right-ByTmEj3-.js": {
+        "size": 333,
+        "modified": 1781898752.212672,
+        "hash": "5ec85a56563ae360f8f12e0857561f1e"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/sliders-8YQ468xC.js": {
+        "size": 743,
+        "modified": 1781898752.140672,
+        "hash": "066a217b3ddc8e72c0fbf8fa7a8b3e03"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/compass-BDV3cYFZ.js": {
+        "size": 391,
+        "modified": 1781898752.192672,
+        "hash": "87d23c6bbbea5330af5daf0fc0ec75c2"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/send-CrV7T4cl.js": {
+        "size": 336,
+        "modified": 1781898752.152672,
+        "hash": "e351a79519682c9a03e2441d84ad8687"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Favorites-wRAtK6qU.js": {
+        "size": 3102,
+        "modified": 1781898752.272672,
+        "hash": "f3c7942266c9b8d311c87fea3c8d90d5"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Home-D_4gZhOY.js": {
+        "size": 16005,
+        "modified": 1781898752.268672,
+        "hash": "11751b09b095c63b5b376fc4b5f8023f"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/favoriteStore-gCbBJX3y.js": {
+        "size": 4162,
+        "modified": 1781898752.184672,
+        "hash": "34d5f7eab5039cd88d1e40e0ffbd48c4"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/Profile-CD0BiaOV.js": {
+        "size": 5203,
+        "modified": 1781898752.236672,
+        "hash": "8a522b8c20498a94df7c30a3f658662c"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/constants-jR7OYzPt.js": {
+        "size": 6304,
+        "modified": 1781898752.192672,
+        "hash": "e66aee066ef0edac8e5e37473420fdbd"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/AutoTranslateText-DKBZDOCZ.js": {
+        "size": 1953,
+        "modified": 1781898752.296672,
+        "hash": "78cd88be9564793b5a651d0bb81cfbfd"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/trash-2-B_3pKvoG.js": {
+        "size": 526,
+        "modified": 1781898752.132672,
+        "hash": "e42f451c2270c2a998c426705c63ff8d"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/MobileApp-CiiBxMjL.js": {
+        "size": 17768,
+        "modified": 1781898752.252672,
+        "hash": "4f5d8aa78896f348588fb1dd973400d8"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/building-2-BapPBJAY.js": {
+        "size": 607,
+        "modified": 1781898752.208672,
+        "hash": "e8aa3d1ae4691f5498868a898c0bcca2"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/AdminDashboard-DrKnddA6.js": {
+        "size": 7272,
+        "modified": 1781898752.308672,
+        "hash": "2f57b35ff05401aff81c3e7c7d889283"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/zap-Do-e7wRb.js": {
+        "size": 322,
+        "modified": 1781898752.088672,
+        "hash": "78f70d17a250f6cc6c3bbcb6c2e2101c"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/gavel-B86LJNRh.js": {
+        "size": 470,
+        "modified": 1781898752.180672,
+        "hash": "632fc74212277d29c94a545479699122"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/award-C3pEBn0j.js": {
+        "size": 359,
+        "modified": 1781898752.208672,
+        "hash": "5f78f7b626e8a3988ec6599e74ec4921"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/plus-DsIYjeOI.js": {
+        "size": 322,
+        "modified": 1781898752.164672,
+        "hash": "a2c12e55c13388ed3a263c203c1aefee"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/index-BuEbyRhT.js": {
+        "size": 374867,
+        "modified": 1781898752.180672,
+        "hash": "5e3e41e1a526007db8572abd5a4e1c62"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/PaymentCheckout-B7gpYd9D.js": {
+        "size": 13970,
+        "modified": 1781898752.244672,
+        "hash": "52c807cbd1d630d6da0208a4ce3fa7a7"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/trending-up-zKvDopqw.js": {
+        "size": 373,
+        "modified": 1781898752.128672,
+        "hash": "ba2cafd0ef0fc1dba3243ea0aa350f9f"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/rotate-ccw-B7cOWrC7.js": {
+        "size": 368,
+        "modified": 1781898752.156672,
+        "hash": "9ffa5c28762ae071ea59b29bade0f6ba"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/save-9jCOBiS8.js": {
+        "size": 449,
+        "modified": 1781898752.152672,
+        "hash": "68b41baba5f91d24342031e51bbc5a08"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/AccountsPayable-DQhYi3xU.js": {
+        "size": 2734,
+        "modified": 1781898752.308672,
+        "hash": "9ada66ad2b56f25fc8335d18821ef754"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/CreateListing-D1cVcU1t.js": {
+        "size": 11556,
+        "modified": 1781898752.284672,
+        "hash": "8ab8cdf34b9198b44bc40a41f6f305f0"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/logisticsApi-CjI6FEWi.js": {
+        "size": 3041,
+        "modified": 1781898752.176672,
+        "hash": "90fdad5474373ed191832e035cd231b4"
+    },
+    "android/app/build/intermediates/assets/debug/public/assets/upload-Dlk8RqFL.js": {
+        "size": 426,
+        "modified": 1781898752.128672,
+        "hash": "407e12c700029e6690880cc6509b742b"
     },
     "android/gradle/wrapper/gradle-wrapper.jar": {
         "size": 61608,
@@ -2341,24 +7126,144 @@ FILES = {
         "hash": "170c925dafbbae1435254dc44918e52d"
     },
     "android/gradle/wrapper/gradle-wrapper.properties": {
-        "size": 223,
-        "modified": 1723050380.0,
-        "hash": "938e46512cc480624d2bc7923de2e95f"
+        "size": 221,
+        "modified": 1781894668.007787,
+        "hash": "49e586d3492644c9062c60599c2534a8"
     },
     "android/capacitor-cordova-android-plugins/cordova.variables.gradle": {
         "size": 312,
-        "modified": 1781799721.23563,
+        "modified": 1781898752.7166727,
         "hash": "299becb7733b8720b74d289e3cb837f1"
     },
     "android/capacitor-cordova-android-plugins/build.gradle": {
         "size": 1668,
-        "modified": 1781799721.2236302,
+        "modified": 1781898752.7166727,
         "hash": "5a522043da5fc6333024de5e59682b6f"
     },
     "android/capacitor-cordova-android-plugins/src/main/AndroidManifest.xml": {
         "size": 210,
-        "modified": 1781799721.23563,
+        "modified": 1781898752.7166727,
         "hash": "2b19f034114933f743294245f3ef79b6"
+    },
+    "android/capacitor-cordova-android-plugins/build/outputs/logs/manifest-merger-debug-report.txt": {
+        "size": 2647,
+        "modified": 1781898808.0526726,
+        "hash": "26c83865da5503b74504e771d9cd2d52"
+    },
+    "android/capacitor-cordova-android-plugins/build/outputs/aar/capacitor-cordova-android-plugins-debug.aar": {
+        "size": 784,
+        "modified": 1781899119.3726754,
+        "hash": "ff9eb4651f6d815699e82fcaf73d15c2"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/incremental/debug-mergeJavaRes/merge-state": {
+        "size": 478,
+        "modified": 1781899119.3006754,
+        "hash": "9cac7fa9baa39d2796fbf87a8d0d650a"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties": {
+        "size": 30,
+        "modified": 1781898805.7886724,
+        "hash": "20216296f90418b0e4313389bfdf5cee"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/incremental/debug/packageDebugResources/merger.xml": {
+        "size": 2056,
+        "modified": 1781898806.1486726,
+        "hash": "75e68acdeeef7ff1b91c1d11f62a89e2"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml": {
+        "size": 542,
+        "modified": 1781899024.0286736,
+        "hash": "b82b2afd2ddf16cfb31729afcf17f0d2"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/incremental/mergeDebugShaders/merger.xml": {
+        "size": 542,
+        "modified": 1781898843.8726728,
+        "hash": "c2db1907a88c0547892ab6f98599d750"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/incremental/packageDebugAssets/merger.xml": {
+        "size": 808,
+        "modified": 1781898844.0006728,
+        "hash": "a2e0b5d8bc8420eb3ae12a28afa12119"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/merged_manifest/debug/AndroidManifest.xml": {
+        "size": 314,
+        "modified": 1781898808.0526726,
+        "hash": "b04cc3cd11eab6bf0cda01fe20b1c446"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/navigation_json/debug/navigation.json": {
+        "size": 2,
+        "modified": 1781898807.1846726,
+        "hash": "d751713988987e9331980363e24189ce"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/annotation_processor_list/debug/annotationProcessors.json": {
+        "size": 2,
+        "modified": 1781898841.9566727,
+        "hash": "99914b932bd37a50b983c5e7c90ae93b"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/manifest_merge_blame_file/debug/manifest-merger-blame-debug-report.txt": {
+        "size": 557,
+        "modified": 1781898808.0526726,
+        "hash": "7af4827323468f62b45cd8de9ecdd209"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/output-metadata.json": {
+        "size": 364,
+        "modified": 1781898808.2806726,
+        "hash": "f44ecf5f5656176ca09d2916514dc81c"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/aapt_friendly_merged_manifests/debug/aapt/AndroidManifest.xml": {
+        "size": 314,
+        "modified": 1781898808.0526726,
+        "hash": "b04cc3cd11eab6bf0cda01fe20b1c446"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/merged_java_res/debug/feature-capacitor-cordova-android-plugins.jar": {
+        "size": 22,
+        "modified": 1781899119.3006754,
+        "hash": "76cdb2bad9582d23c1f6f4d868218d6c"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/aar_main_jar/debug/classes.jar": {
+        "size": 22,
+        "modified": 1781899119.3326755,
+        "hash": "76cdb2bad9582d23c1f6f4d868218d6c"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/compile_r_class_jar/debug/R.jar": {
+        "size": 330,
+        "modified": 1781898840.8086727,
+        "hash": "1017f01b210bb7e336415ee86af724a6"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/runtime_library_classes_jar/debug/classes.jar": {
+        "size": 22,
+        "modified": 1781898852.8486729,
+        "hash": "76cdb2bad9582d23c1f6f4d868218d6c"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/compile_symbol_list/debug/R.txt": {
+        "size": 0,
+        "modified": 1781898840.7486727,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/aar_metadata/debug/aar-metadata.properties": {
+        "size": 121,
+        "modified": 1781898802.0926726,
+        "hash": "7ebe645b69b5e14ed71d3b01e72722e0"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/compile_library_classes_jar/debug/classes.jar": {
+        "size": 330,
+        "modified": 1781898842.1006727,
+        "hash": "1017f01b210bb7e336415ee86af724a6"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/local_only_symbol_list/debug/R-def.txt": {
+        "size": 55,
+        "modified": 1781898808.0446725,
+        "hash": "0d0b46f22b4eb74c53258e2408087dee"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/symbol_list_with_package_name/debug/package-aware-r.txt": {
+        "size": 34,
+        "modified": 1781898840.8966727,
+        "hash": "d49228441ff82f862e430aa9fe27c69f"
+    },
+    "android/capacitor-cordova-android-plugins/build/intermediates/annotations_typedef_file/debug/typedefs.txt": {
+        "size": 0,
+        "modified": 1781899119.1206753,
+        "hash": "d41d8cd98f00b204e9800998ecf8427e"
     },
     "venv/pyvenv.cfg": {
         "size": 178,
@@ -8987,4 +13892,4 @@ FILES = {
     }
 }
 
-last_updated = "2026-06-18"
+last_updated = "2026-06-19"

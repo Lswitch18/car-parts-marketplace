@@ -93,7 +93,7 @@ export default function Auctions() {
       const data = await api.auctions.active() as AuctionItem[]
       setAuctions(data)
     } catch (err: any) {
-      setError(err.message || 'Erro ao carregar leilões')
+      setError(err.message || t('Erro ao carregar leilões'))
     } finally {
       setLoading(false)
     }
@@ -111,7 +111,7 @@ export default function Auctions() {
           ...a, current_bid: b.amount, bid_count: a.bid_count + 1
         } : a))
         setGlobalFeed(prev => [
-          { text: `🔨 Novo lance: ¥${b.amount.toLocaleString('ja-JP')}`, ts: Date.now() },
+          { text: `🔨 ${t('Novo lance:')} ¥${b.amount.toLocaleString('ja-JP')}`, ts: Date.now() },
           ...prev.slice(0, 6)
         ])
         if (selectedAuction?.id === b.part_id) {
@@ -163,14 +163,14 @@ export default function Auctions() {
     const amt = parseFloat(bidAmount)
     const min = Math.ceil(selectedAuction.current_bid * 1.05)
     if (isNaN(amt) || amt < min) {
-      setBidError(`Lance mínimo: ¥${min.toLocaleString('ja-JP')}`); setSubmittingBid(false); return
+      setBidError(`${t('Lance mínimo:')} ¥${min.toLocaleString('ja-JP')}`); setSubmittingBid(false); return
     }
     try {
       await api.auctions.bid({ auction_id: selectedAuction.id, amount: amt })
-      setBidSuccess('✅ Lance registrado com sucesso!')
+      setBidSuccess(`✅ ${t('Lance registrado com sucesso!')}`)
       setBidAmount('')
       loadAuctionDetails(selectedAuction.id)
-    } catch (err: any) { setBidError(err.message || 'Erro ao enviar lance.') }
+    } catch (err: any) { setBidError(err.message || t('Erro ao enviar lance.')) }
     finally { setSubmittingBid(false) }
   }
 
@@ -193,7 +193,7 @@ export default function Auctions() {
       })
       window.location.href = checkout.url
     } catch (err: any) {
-      alert(err.message || 'Erro ao processar compra')
+      alert(err.message || t('Erro ao processar compra'))
     } finally { setBuying(false) }
   }
 
@@ -203,7 +203,7 @@ export default function Auctions() {
     try {
       const { data: transactions } = await api.transactions.list({ role: 'buyer', status: 'pending' }) as any
       const tx = transactions?.find((t: any) => t.part_id === auction.id)
-      if (!tx) { alert('Transação não encontrada'); return }
+      if (!tx) { alert(t('Transação não encontrada')); return }
       const checkout = await api.stripe.createCheckout({
         transaction_id: tx.id,
         part_id: auction.id,
@@ -215,13 +215,13 @@ export default function Auctions() {
       })
       window.location.href = checkout.url
     } catch (err: any) {
-      alert(err.message || 'Erro ao redirecionar para pagamento')
+      alert(err.message || t('Erro ao redirecionar para pagamento'))
     }
   }
 
   // ─── Formatters ───────────────────────────────────────────────
   const formatTime = (ms: number) => {
-    if (ms <= 0) return 'Encerrado'
+    if (ms <= 0) return t('Encerrado')
     const s = Math.floor((ms / 1000) % 60)
     const m = Math.floor((ms / 60000) % 60)
     const h = Math.floor((ms / 3600000) % 24)
@@ -273,7 +273,7 @@ export default function Auctions() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E5FF] opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E5FF]" />
           </span>
-          Transmissão Ao Vivo · {auctions.length} {t('Ativos')}
+          {t('Transmissão Ao Vivo')} · {auctions.length} {t('Ativos')}
         </div>
 
         <h1
@@ -290,7 +290,7 @@ export default function Auctions() {
               backgroundClip: 'text',
             }}
           >
-            Leilões{' '}
+            {t('Leilões')}{' '}
           </span>
           <span
             className="animate-gradient-shift"
@@ -302,13 +302,11 @@ export default function Auctions() {
               backgroundClip: 'text',
               animationDelay: '0.3s',
             }}
-          >
-            Ao Vivo
-          </span>
+          >{t('Ao Vivo')}</span>
         </h1>
         <p className="text-text-secondary text-base md:text-xl max-w-2xl leading-relaxed">
-          Dispute em tempo real as peças automotivas mais raras do Japão.{' '}
-          <span style={{ color: '#0D75FF' }}>Lances atualizam instantaneamente</span> para todos os participantes.
+          {t('Dispute em tempo real as peças automotivas mais raras do Japão.')}{' '}
+          <span style={{ color: '#0D75FF' }}>{t('Lances atualizam instantaneamente')}</span> {t('para todos os participantes.')}
         </p>
 
         {/* Global feed ticker */}
@@ -343,7 +341,7 @@ export default function Auctions() {
                 <Gavel className="w-4 h-4 text-[#0D75FF]" />
               </div>
             </div>
-            <p className="text-text-secondary text-sm font-medium tracking-wide">Sincronizando feed ao vivo...</p>
+            <p className="text-text-secondary text-sm font-medium tracking-wide">{t('Sincronizando feed ao vivo...')}</p>
           </div>
         )}
 
@@ -354,9 +352,9 @@ export default function Auctions() {
             style={{ background: 'rgba(255,75,75,0.05)', border: '1px solid rgba(255,75,75,0.2)' }}
           >
             <AlertTriangle className="w-14 h-14 text-[#FF4B4B] mx-auto mb-4" />
-            <p className="text-white font-bold text-lg mb-2">Não foi possível carregar</p>
+            <p className="text-white font-bold text-lg mb-2">{t('Não foi possível carregar')}</p>
             <p className="text-text-secondary text-sm mb-6">{error}</p>
-            <button onClick={fetchAuctions} className="btn-neon">Tentar Novamente</button>
+            <button onClick={fetchAuctions} className="btn-neon">{t('Tentar Novamente')}</button>
           </div>
         )}
 
@@ -372,9 +370,9 @@ export default function Auctions() {
             >
               <Gavel className="w-9 h-9 text-[#0D75FF]" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Nenhum leilão ativo</h3>
-            <p className="text-text-secondary text-sm mb-8">Seja o primeiro a anunciar sua peça no leilão ao vivo.</p>
-            <Link to="/create-listing" className="btn-neon">Anunciar Peça</Link>
+            <h3 className="text-xl font-bold text-white mb-2">{t('Nenhum leilão ativo')}</h3>
+            <p className="text-text-secondary text-sm mb-8">{t('Seja o primeiro a anunciar sua peça no leilão ao vivo.')}</p>
+            <Link to="/create-listing" className="btn-neon">{t('Anunciar Peça')}</Link>
           </div>
         )}
 
@@ -483,7 +481,7 @@ export default function Auctions() {
                       >
                         <User className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-xs text-text-secondary truncate">{auction.seller?.full_name || 'Vendedor'}</span>
+                      <span className="text-xs text-text-secondary truncate">{auction.seller?.full_name || t('Vendedor')}</span>
                       <div className="ml-auto flex items-center gap-0.5 text-[11px] text-[#FFB800]">
                         <Star className="w-3 h-3 fill-[#FFB800]" />
                         <span>{auction.seller?.rating?.toFixed(1) || '5.0'}</span>
@@ -493,7 +491,7 @@ export default function Auctions() {
                     {/* Price + CTA */}
                     <div className="flex items-end justify-between gap-3">
                       <div>
-                        <p className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Lance Atual</p>
+                        <p className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">{t('Lance Atual')}</p>
                         <p
                           className="font-display font-extrabold"
                           style={{
@@ -509,7 +507,7 @@ export default function Auctions() {
                       </div>
                       <button className="btn-neon text-sm px-4 py-2">
                         <Gavel className="w-3.5 h-3.5" />
-                        <span>Dar Lance</span>
+                        <span>{t('Dar Lance')}</span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -524,7 +522,7 @@ export default function Auctions() {
                       >
                         <span className="flex items-center gap-1.5">
                           <ShoppingBag className="w-3 h-3" />
-                          {buying ? 'Processando...' : 'Comprar Agora'}
+                          {buying ? t('Processando...') : t('Comprar Agora')}
                         </span>
                         <span className="font-bold">¥{auction.buy_now_price.toLocaleString('ja-JP')}</span>
                       </button>
@@ -597,7 +595,7 @@ export default function Auctions() {
                       className="w-4 h-4"
                       style={{ color: isEndingSoon(selectedAuction.time_remaining) ? '#FF4B4B' : '#00E5FF' }}
                     />
-                    <span className="text-xs text-text-secondary font-medium">Encerra em</span>
+                    <span className="text-xs text-text-secondary font-medium">{t('Encerra em')}</span>
                   </div>
                   <span
                     className="font-display font-extrabold text-lg tabular-nums"
@@ -620,7 +618,7 @@ export default function Auctions() {
                   </span>
                 </div>
                 <h2 className="font-display font-black text-2xl text-white mb-3 leading-tight">{selectedAuction.title}</h2>
-                <p className="text-text-secondary text-sm leading-relaxed line-clamp-3">{selectedAuction.description || 'Sem descrição disponível.'}</p>
+                <p className="text-text-secondary text-sm leading-relaxed line-clamp-3">{selectedAuction.description || t('Sem descrição disponível.')}</p>
               </div>
             </div>
 
@@ -633,7 +631,7 @@ export default function Auctions() {
                 style={{ background: 'rgba(13,117,255,0.04)', border: '1px solid rgba(13,117,255,0.12)' }}
               >
                 <div>
-                  <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">Lance Atual</p>
+                  <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">{t('Lance Atual')}</p>
                   <p
                     className={`font-display font-black text-3xl tabular-nums ${priceFlash ? 'animate-price-flash' : ''}`}
                     style={{
@@ -647,7 +645,7 @@ export default function Auctions() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">Total de Lances</p>
+                  <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">{t('Total de Lances')}</p>
                   <p
                     className={`font-display font-black text-3xl tabular-nums ${bidCountFlash ? 'animate-price-flash' : ''}`}
                     style={{ color: '#00E5FF', textShadow: '0 0 16px rgba(0,229,255,0.4)' }}
@@ -664,11 +662,11 @@ export default function Auctions() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00E5FF] opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00E5FF]" />
                   </span>
-                  Feed de Lances Ao Vivo
+                  {t('Feed de Lances Ao Vivo')}
                 </h3>
                 <div ref={feedRef} className="space-y-2 max-h-44 overflow-y-auto pr-1">
                   {recentBids.length === 0 && (
-                    <p className="text-xs text-text-muted text-center py-6">Nenhum lance ainda. Seja o primeiro!</p>
+                    <p className="text-xs text-text-muted text-center py-6">{t('Nenhum lance ainda. Seja o primeiro!')}</p>
                   )}
                   {recentBids.map((bid, i) => {
                     const isNew = newBidIds.has(bid.id)
@@ -710,14 +708,14 @@ export default function Auctions() {
                             )}
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-white">{bid.bidder?.full_name || 'Licitante'}</p>
+                            <p className="text-xs font-semibold text-white">{bid.bidder?.full_name || t('Licitante')}</p>
                             {i === 0 && (
                               <span
                                 className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
                                 style={{ background: 'rgba(0,229,255,0.15)', color: '#00E5FF' }}
                               >
                                 <Award className="w-2.5 h-2.5" />
-                                Líder
+                                {t('Líder')}
                               </span>
                             )}
                           </div>
@@ -751,9 +749,9 @@ export default function Auctions() {
                         style={{ background: 'rgba(0,229,255,0.06)', border: '1px solid rgba(0,229,255,0.2)' }}
                       >
                         <Award className="w-10 h-10 text-[#00E5FF] mx-auto mb-3" />
-                        <p className="font-display font-bold text-white text-lg mb-1">🎉 Você venceu!</p>
+                        <p className="font-display font-bold text-white text-lg mb-1">🎉 {t('Você venceu!')}</p>
                         <p className="text-text-secondary text-sm mb-5">
-                          Complete o pagamento de <span className="text-white font-bold">¥{selectedAuction.current_bid.toLocaleString('ja-JP')}</span> para garantir sua peça.
+                          {t('Complete o pagamento de')} <span className="text-white font-bold">¥{selectedAuction.current_bid.toLocaleString('ja-JP')}</span> {t('para garantir sua peça.')}
                         </p>
                         <button
                           onClick={() => handlePayWinner(selectedAuction)}
@@ -765,7 +763,7 @@ export default function Auctions() {
                           }}
                         >
                           <CreditCard className="w-5 h-5" />
-                          Pagar Agora
+                          {t('Pagar Agora')}
                           <ArrowRight className="w-4 h-4" />
                         </button>
                       </div>
@@ -781,7 +779,7 @@ export default function Auctions() {
                       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
                     >
                       <Clock className="w-8 h-8 text-text-muted mx-auto mb-3" />
-                      <p className="text-text-secondary text-sm">Este leilão foi encerrado.</p>
+                      <p className="text-text-secondary text-sm">{t('Este leilão foi encerrado.')}</p>
                     </div>
                   )
                 }
@@ -792,7 +790,7 @@ export default function Auctions() {
                     <form onSubmit={handlePlaceBid} className="space-y-3">
                       <div>
                         <label className="block text-xs text-text-secondary font-semibold mb-2 uppercase tracking-wider">
-                          Seu Lance — Mín: ¥{Math.ceil(selectedAuction.current_bid * 1.05).toLocaleString('ja-JP')}
+                          {t('Seu Lance — Mín:')} ¥{Math.ceil(selectedAuction.current_bid * 1.05).toLocaleString('ja-JP')}
                         </label>
                         <div className="relative">
                           <span
@@ -849,7 +847,7 @@ export default function Auctions() {
                         }}
                       >
                         <Gavel className="w-5 h-5" />
-                        {submittingBid ? 'Registrando...' : 'Dar Lance Ao Vivo'}
+                        {submittingBid ? 'Registrando...' : t('Dar Lance') + ' Ao Vivo'}
                         <ArrowRight className="w-4 h-4" />
                       </button>
                     </form>

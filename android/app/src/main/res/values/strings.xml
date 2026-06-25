@@ -4,4 +4,5 @@
     <string name="title_activity_main">DAIG Logistix Express</string>
     <string name="package_name">com.daig.logistix.express</string>
     <string name="custom_url_scheme">com.daig.logistix.express</string>
+    <string name="server_client_id">618628258891-0k11mbjiuv3lrg8gsjlldv6p4qg1p06b.apps.googleusercontent.com</string>
 </resources>
