@@ -26,29 +26,42 @@ export default function CreateListing() {
   useEffect(() => {
     if (!user) return
     
-    // Empresa não verificada já bloqueia na entrada
-    if (user.account_type !== 'pessoa_fisica' && !user.store_verified) {
-      setShowUnverifiedModal(true)
-      return
-    }
-
-    // Pessoa física conta quantas já publicou
     if (user.account_type === 'pessoa_fisica') {
+      // Pessoa física: contar no mês atual (limite de 50)
+      const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
       supabase
         .from('parts')
         .select('*', { count: 'exact', head: true })
         .eq('seller_id', user.id)
-        .in('status', ['active', 'sold'])
+        .gte('created_at', startOfMonth)
         .then(({ count, error }) => {
           if (!error && count !== null) {
             setPartsCount(count)
-            if (count >= 10) {
+            if (count >= 50) {
               setShowLimitModal(true)
             }
           }
         })
+      return
     }
-  })
+
+    if (user.account_type !== 'pessoa_fisica' && !user.store_verified) {
+      // Empresa não verificada: contar total (limite de 20)
+      supabase
+        .from('parts')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user.id)
+        .then(({ count, error }) => {
+          if (!error && count !== null) {
+            setPartsCount(count)
+            if (count >= 20) {
+              setShowUnverifiedModal(true)
+            }
+          }
+        })
+      return
+    }
+  }, [user])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -185,18 +198,21 @@ export default function CreateListing() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="card max-w-md w-full p-8 text-center">
-          <div className="w-16 h-16 bg-[#ff3d00]/10 text-[#ff3d00] rounded-full flex items-center justify-center mx-auto mb-4">
-            <Gavel className="w-8 h-8" />
+          <div className="w-16 h-16 bg-[#0D75FF]/10 text-[#0D75FF] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Sparkles className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-text mb-2">{t('Loja em Verificação')}</h2>
+          <h2 className="text-2xl font-bold text-text mb-2">{t('Valide sua Empresa')}</h2>
           <p className="text-text-secondary mb-6">
-            {user.store_status === 'pending' 
-              ? t('Sua solicitação de loja está em análise. Assim que for aprovada, você poderá criar anúncios ilimitados.')
-              : t('Você precisa solicitar a verificação da sua loja para poder vender peças.')}
+            {t('Você atingiu o limite de 20 peças gratuitas para teste. Para continuar vendendo de forma ilimitada, valide sua empresa através do nosso plano Premium (¥ 4.500 JPY/mês).')}
           </p>
-          <button onClick={() => navigate('/catalog')} className="w-full bg-[#ff3d00] hover:bg-[#e63600] text-white py-3 rounded-lg font-medium transition-colors">
-            {t('Voltar ao Catálogo')}
-          </button>
+          <div className="space-y-3">
+            <button onClick={() => navigate('/subscription')} className="w-full bg-[#0D75FF] hover:bg-blue-600 text-white py-3 rounded-lg font-medium transition-colors">
+              {t('Ver Planos')}
+            </button>
+            <button onClick={() => navigate('/catalog')} className="w-full bg-surface border border-border hover:bg-surface-hover text-text py-3 rounded-lg font-medium transition-colors">
+              {t('Voltar ao Catálogo')}
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -206,17 +222,14 @@ export default function CreateListing() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="card max-w-md w-full p-8 text-center">
-          <div className="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Upload className="w-8 h-8" />
+          <div className="w-16 h-16 bg-[#ff3d00]/10 text-[#ff3d00] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Gavel className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-text mb-2">{t('Limite Atingido')}</h2>
+          <h2 className="text-2xl font-bold text-text mb-2">{t('Limite Mensal Atingido')}</h2>
           <p className="text-text-secondary mb-6">
-            {t('Como pessoa física, você pode anunciar até 10 peças (você já usou todas). Para continuar vendendo, atualize sua conta para uma Empresa Verificada.')}
+            {t('Como usuário comum (pessoa física), você atingiu o limite de 50 peças gratuitas deste mês. Tente novamente no próximo mês.')}
           </p>
           <div className="space-y-3">
-            <button onClick={() => navigate('/onboarding')} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
-              {t('Verificar como Empresa')}
-            </button>
             <button onClick={() => navigate('/dashboard')} className="w-full bg-surface border border-border hover:bg-surface-hover text-text py-3 rounded-lg font-medium transition-colors">
               {t('Voltar ao Dashboard')}
             </button>

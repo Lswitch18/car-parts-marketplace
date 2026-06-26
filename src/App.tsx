@@ -38,6 +38,7 @@ const WorkerApp = lazy(() => import('@/modules/transportation/pages/WorkerApp'))
 const QRInstallPage = lazy(() => import('@/modules/transportation/pages/QRInstallPage'))
 const AgenciaPage = lazy(() => import('@/modules/transportation/pages/AgenciaPage'))
 const MotionFramePage = lazy(() => import('@/modules/visualization3d/pages/MotionFramePage'))
+const Subscription = lazy(() => import('@/modules/identity/pages/Subscription'))
 const ImmersiveExperience = lazy(() => import('@/modules/visualization3d/pages/ImmersiveExperience'))
 const Auctions = lazy(() => import('@/modules/auctions/pages/Auctions'))
 const PartsLookup = lazy(() => import('@/modules/parts-catalog/pages/PartsLookup'))
@@ -96,6 +97,7 @@ function App() {
                 <Route path="messages" element={<Messages />} />
                 <Route path="checkout/:id" element={<PaymentCheckout />} />
                 <Route path="motion-frame" element={<MotionFramePage />} />
+                <Route path="subscription" element={<Subscription />} />
               </Route>
             </Route>
           </Route>
