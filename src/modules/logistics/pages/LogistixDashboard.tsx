@@ -249,7 +249,7 @@ export default function LogistixDashboard() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] bg-transparent text-text font-sans overflow-hidden relative antialiased -m-8">
+    <div className="flex h-[calc(100vh-4rem)] lg:h-[calc(100vh-6rem)] bg-transparent text-text font-sans overflow-hidden relative antialiased -m-4 md:-m-6 lg:-m-8">
       {sidebarOpen && (
         <div className="fixed inset-0 z-30 bg-black/60 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
       )}
@@ -402,7 +402,7 @@ export default function LogistixDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
                   <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Status das Entregas</h3>
-                  <div className="relative h-[180px] flex items-center justify-center min-w-0">
+                  <div className="relative h-[180px] w-full min-h-[180px] flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={donutData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} dataKey="value" strokeWidth={0}>
@@ -429,7 +429,7 @@ export default function LogistixDashboard() {
 
                 <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
                   <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Performance no Prazo</h3>
-                  <div className="h-[180px] min-w-0">
+                  <div className="h-[180px] w-full min-h-[180px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={performance || []}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />

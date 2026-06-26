@@ -643,9 +643,9 @@ export default function UserManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white p-6 flex flex-col items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-2 border-black border-t-transparent rounded-full mb-3" />
-        <span className="text-xs uppercase tracking-widest font-black text-black">Carregando painel...</span>
+      <div className="min-h-screen bg-[#0A0A0A] p-6 flex flex-col items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-2 border-[#333] border-t-transparent rounded-full mb-3" />
+        <span className="text-xs uppercase tracking-widest font-black text-[#EDEDED]">Carregando painel...</span>
       </div>
     );
   }
@@ -669,7 +669,7 @@ export default function UserManagement() {
     return (
       <div className="flex flex-wrap gap-1">
         {list.map(p => (
-          <span key={p} className="text-[10px] font-mono bg-slate-100 border border-black/10 px-1.5 py-0.5 rounded text-black font-bold">
+          <span key={p} className="text-[10px] font-mono bg-slate-100 border border-[#333]/10 px-1.5 py-0.5 rounded text-[#EDEDED] font-bold">
             {p}
           </span>
         ))}
@@ -693,7 +693,7 @@ export default function UserManagement() {
           {activeTab === 'users' && (
             <button 
               onClick={() => setShowCreateUserModal(true)}
-              className="bg-white hover:bg-white/90 text-black text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+              className="bg-[#0A0A0A] hover:bg-[#0A0A0A]/90 text-[#EDEDED] text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
             >
               <Plus size={16} /> {t('Add User')}
             </button>
@@ -701,7 +701,7 @@ export default function UserManagement() {
           {activeTab === 'cargos' && (
             <button 
               onClick={handleOpenCreateCargo}
-              className="bg-white hover:bg-white/90 text-black text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+              className="bg-[#0A0A0A] hover:bg-[#0A0A0A]/90 text-[#EDEDED] text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
             >
               <Plus size={16} /> {t('Add Role')}
             </button>
@@ -709,7 +709,7 @@ export default function UserManagement() {
           {activeTab === 'setores' && (
             <button 
               onClick={handleOpenCreateSetor}
-              className="bg-white hover:bg-white/90 text-black text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+              className="bg-[#0A0A0A] hover:bg-[#0A0A0A]/90 text-[#EDEDED] text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
             >
               <Plus size={16} /> {t('Add Department')}
             </button>
@@ -780,11 +780,6 @@ export default function UserManagement() {
         >
           <span className="flex items-center gap-2">
             <ShieldAlert size={16} /> {t('Verifications')}
-            {pendingVerificationsCount > 0 && (
-              <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-1">
-                {pendingVerificationsCount}
-              </span>
-            )}
           </span>
         </button>
       </div>
@@ -860,7 +855,7 @@ export default function UserManagement() {
                       filteredUsers.map((u) => (
                         <tr 
                           key={u.id} 
-                          className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                          className="hover:bg-[#0A0A0A]/[0.02] transition-colors cursor-pointer group"
                           onClick={(e) => {
                             const target = e.target as HTMLElement;
                             if (target.closest('button') || target.closest('a') || target.closest('select') || target.closest('input')) {
@@ -886,10 +881,10 @@ export default function UserManagement() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`text-[10px] font-medium uppercase tracking-widest px-2 py-0.5 rounded-full border ${
                               u.role === 'admin' 
-                                ? 'bg-white text-black border-transparent' 
+                                ? 'bg-[#0A0A0A] text-[#EDEDED] border-transparent' 
                                 : u.role === 'seller'
                                 ? 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20'
-                                : 'bg-white/5 text-white/70 border-white/10'
+                                : 'bg-[#0A0A0A]/5 text-white/70 border-white/10'
                             }`}>
                               {u.role === 'admin' ? t('Admin') : u.role === 'seller' ? t('Vendedor') : t('Comprador')}
                             </span>
@@ -910,7 +905,7 @@ export default function UserManagement() {
                               className={`px-2 py-1 text-[10px] font-medium uppercase tracking-widest rounded-full border transition-colors ${
                                 u.is_verified 
                                   ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20' 
-                                  : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30 hover:text-white/80'
+                                  : 'bg-[#0A0A0A]/5 text-white/40 border-white/10 hover:border-white/30 hover:text-white/80'
                               }`}
                             >
                               {u.is_verified ? t('Sim') : t('Não')}
@@ -937,7 +932,7 @@ export default function UserManagement() {
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                             <button
                               onClick={() => handleOpenUserDetails(u)}
-                              className="bg-transparent hover:bg-white/10 text-white/70 hover:text-white p-1.5 rounded border border-white/10 transition-all inline-flex items-center"
+                              className="bg-transparent hover:bg-[#0A0A0A]/10 text-white/70 hover:text-white p-1.5 rounded border border-white/10 transition-all inline-flex items-center"
                               title={t('Editar Usuário')}
                             >
                               <Edit3 size={14} />
@@ -947,7 +942,7 @@ export default function UserManagement() {
                               className={`p-1.5 rounded border transition-all inline-flex items-center ${
                                 u.status === 'blocked'
                                   ? 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
-                                  : 'bg-transparent hover:bg-white/10 text-white/70 hover:text-white border-white/10'
+                                  : 'bg-transparent hover:bg-[#0A0A0A]/10 text-white/70 hover:text-white border-white/10'
                               }`}
                               title={u.status === 'blocked' ? t('Desbloquear Usuário') : t('Bloquear Usuário')}
                             >
@@ -958,7 +953,7 @@ export default function UserManagement() {
                                 setDeletingUser(u);
                                 setDeleteConfirmationText('');
                               }}
-                              className="bg-white hover:bg-red-600 hover:text-white text-red-600 hover:border-red-600 font-bold p-1.5 rounded border border-red-600 transition-all inline-flex items-center"
+                              className="bg-[#0A0A0A] hover:bg-red-600 hover:text-white text-red-600 hover:border-red-600 font-bold p-1.5 rounded border border-red-600 transition-all inline-flex items-center"
                               title={t('Excluir Usuário')}
                             >
                               <Trash2 size={14} />
@@ -976,10 +971,10 @@ export default function UserManagement() {
           {/* Quick Actions Sidebar Section */}
           <div className="lg:col-span-3 space-y-6">
             {/* Card 2: Quick Assign Permissions */}
-            <div className="bg-slate-50 border-2 border-black rounded-xl p-5 space-y-4">
-              <div className="flex items-center gap-2 border-b border-black/10 pb-3">
+            <div className="bg-[#111] border-2 border-[#333] rounded-xl p-5 space-y-4">
+              <div className="flex items-center gap-2 border-b border-[#333]/10 pb-3">
                 <Zap size={18} />
-                <h3 className="text-xs font-black uppercase tracking-wider text-black">{t('Atribuição Rápida')}</h3>
+                <h3 className="text-xs font-black uppercase tracking-wider text-[#EDEDED]">{t('Atribuição Rápida')}</h3>
               </div>
 
               <form onSubmit={handleQuickPermSubmit} className="space-y-3.5">
@@ -988,7 +983,7 @@ export default function UserManagement() {
                   <select
                     value={quickPermForm.userId}
                     onChange={(e) => setQuickPermForm({ ...quickPermForm, userId: e.target.value })}
-                    className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border border-[#333]/20 focus:border-[#333] rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">{t('Selecione...')}</option>
                     {users.map(u => (
@@ -1002,7 +997,7 @@ export default function UserManagement() {
                   <select
                     value={quickPermForm.cargoId}
                     onChange={(e) => setQuickPermForm({ ...quickPermForm, cargoId: e.target.value })}
-                    className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border border-[#333]/20 focus:border-[#333] rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">{t('Selecione...')}</option>
                     {cargos.map(c => (
@@ -1014,7 +1009,7 @@ export default function UserManagement() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-white hover:bg-slate-100 text-black font-black py-2.5 rounded-lg text-[10px] uppercase tracking-widest transition-all border-2 border-black flex items-center justify-center gap-1.5 shadow-sm"
+                  className="w-full bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-black py-2.5 rounded-lg text-[10px] uppercase tracking-widest transition-all border-2 border-[#333] flex items-center justify-center gap-1.5 shadow-sm"
                 >
                   <Zap size={12} /> {t('Aplicar Cargo')}
                 </button>
@@ -1022,10 +1017,10 @@ export default function UserManagement() {
             </div>
 
             {/* Card 3: Send Confirmation Email */}
-            <div className="bg-slate-50 border-2 border-black rounded-xl p-5 space-y-4">
-              <div className="flex items-center gap-2 border-b border-black/10 pb-3">
+            <div className="bg-[#111] border-2 border-[#333] rounded-xl p-5 space-y-4">
+              <div className="flex items-center gap-2 border-b border-[#333]/10 pb-3">
                 <Mail size={18} />
-                <h3 className="text-xs font-black uppercase tracking-wider text-black">{t('E-mail de Confirmação')}</h3>
+                <h3 className="text-xs font-black uppercase tracking-wider text-[#EDEDED]">{t('E-mail de Confirmação')}</h3>
               </div>
 
               <div className="space-y-3.5">
@@ -1034,7 +1029,7 @@ export default function UserManagement() {
                   <select
                     value={emailConfirmUserId}
                     onChange={(e) => setEmailConfirmUserId(e.target.value)}
-                    className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border border-[#333]/20 focus:border-[#333] rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">{t('Selecione...')}</option>
                     {users.map(u => (
@@ -1047,10 +1042,10 @@ export default function UserManagement() {
                   type="button"
                   disabled={sendingEmail || !emailConfirmUserId}
                   onClick={handleSendConfirmationEmail}
-                  className="w-full bg-white hover:bg-slate-100 text-black font-black py-2.5 rounded-lg text-[10px] uppercase tracking-widest transition-all border-2 border-black flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
+                  className="w-full bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-black py-2.5 rounded-lg text-[10px] uppercase tracking-widest transition-all border-2 border-[#333] flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50"
                 >
                   {sendingEmail ? (
-                    <div className="animate-spin w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full" />
+                    <div className="animate-spin w-3.5 h-3.5 border-2 border-[#333] border-t-transparent rounded-full" />
                   ) : (
                     <Send size={12} />
                   )}
@@ -1067,16 +1062,16 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {activeTab === 'cargos' && (
         <div className="max-w-7xl mx-auto space-y-6">
-          <div className="bg-white border-2 border-black rounded-xl overflow-hidden shadow-xs">
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-black/15">
-                <thead className="bg-slate-50">
+                <thead className="bg-[#111]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Cargo')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Setor')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Nível')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Permissões Atribuídas')}</th>
-                    <th className="px-6 py-4 text-right text-xs font-black text-black uppercase tracking-wider">{t('Ações')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Cargo')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Setor')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Nível')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Permissões Atribuídas')}</th>
+                    <th className="px-6 py-4 text-right text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Ações')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/10">
@@ -1088,15 +1083,15 @@ export default function UserManagement() {
                     </tr>
                   ) : (
                     cargos.map((cargoItem) => (
-                      <tr key={cargoItem.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-black">
+                      <tr key={cargoItem.id} className="hover:bg-[#111] transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-[#EDEDED]">
                           {cargoItem.nome}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 font-bold">
                           {cargoItem.setor?.nome || <span className="text-slate-400 font-normal italic">Sem setor</span>}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 border border-black/15 rounded font-black">
+                          <span className="text-xs font-mono bg-slate-100 px-2 py-0.5 border border-[#333]/15 rounded font-black">
                             Lvl {cargoItem.nivel || 1}
                           </span>
                         </td>
@@ -1106,14 +1101,14 @@ export default function UserManagement() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                           <button
                             onClick={() => handleOpenEditCargo(cargoItem)}
-                            className="bg-white hover:bg-black hover:text-white text-black font-bold p-1.5 rounded border border-black transition-all inline-flex items-center"
+                            className="bg-[#0A0A0A] hover:bg-black hover:text-white text-[#EDEDED] font-bold p-1.5 rounded border border-[#333] transition-all inline-flex items-center"
                             title="Editar Cargo"
                           >
                             <Edit3 size={14} />
                           </button>
                           <button
                             onClick={() => handleDeleteCargo(cargoItem.id)}
-                            className="bg-white hover:bg-red-600 hover:text-white text-black font-bold p-1.5 rounded border border-black hover:border-red-600 transition-all inline-flex items-center"
+                            className="bg-[#0A0A0A] hover:bg-red-600 hover:text-white text-[#EDEDED] font-bold p-1.5 rounded border border-[#333] hover:border-red-600 transition-all inline-flex items-center"
                             title="Excluir Cargo"
                           >
                             <Trash2 size={14} />
@@ -1134,14 +1129,14 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {activeTab === 'setores' && (
         <div className="max-w-7xl mx-auto space-y-6">
-          <div className="bg-white border-2 border-black rounded-xl overflow-hidden shadow-xs">
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-xl overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-black/15">
-                <thead className="bg-slate-50">
+                <thead className="bg-[#111]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Setor / Departamento')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Código ID')}</th>
-                    <th className="px-6 py-4 text-right text-xs font-black text-black uppercase tracking-wider">{t('Ações')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Setor / Departamento')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Código ID')}</th>
+                    <th className="px-6 py-4 text-right text-xs font-black text-[#EDEDED] uppercase tracking-wider">{t('Ações')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-black/10">
@@ -1153,8 +1148,8 @@ export default function UserManagement() {
                     </tr>
                   ) : (
                     setores.map((setorItem) => (
-                      <tr key={setorItem.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-black">
+                      <tr key={setorItem.id} className="hover:bg-[#111] transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-[#EDEDED]">
                           {setorItem.nome}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-slate-500">
@@ -1163,14 +1158,14 @@ export default function UserManagement() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                           <button
                             onClick={() => handleOpenEditSetor(setorItem)}
-                            className="bg-white hover:bg-black hover:text-white text-black font-bold p-1.5 rounded border border-black transition-all inline-flex items-center"
+                            className="bg-[#0A0A0A] hover:bg-black hover:text-white text-[#EDEDED] font-bold p-1.5 rounded border border-[#333] transition-all inline-flex items-center"
                             title="Editar Setor"
                           >
                             <Edit3 size={14} />
                           </button>
                           <button
                             onClick={() => handleDeleteSetor(setorItem.id)}
-                            className="bg-white hover:bg-red-600 hover:text-white text-black font-bold p-1.5 rounded border border-black hover:border-red-600 transition-all inline-flex items-center"
+                            className="bg-[#0A0A0A] hover:bg-red-600 hover:text-white text-[#EDEDED] font-bold p-1.5 rounded border border-[#333] hover:border-red-600 transition-all inline-flex items-center"
                             title="Excluir Setor"
                           >
                             <Trash2 size={14} />
@@ -1217,7 +1212,7 @@ export default function UserManagement() {
                   </tr>
                 ) : (
                   users.filter(u => u.store_status === 'pending' || (u.account_type !== 'pessoa_fisica' && !u.onboarding_completed)).map(u => (
-                    <tr key={u.id} className="hover:bg-white/[0.02] transition-colors">
+                    <tr key={u.id} className="hover:bg-[#0A0A0A]/[0.02] transition-colors">
                       <td className="p-4">
                         <div className="font-medium text-sm text-white/90">{u.store_name || t('Não informado')}</div>
                         <div className="text-xs text-white/50 uppercase tracking-wider mt-1">
@@ -1309,15 +1304,15 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-black rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-5 border-b-2 border-black/15 flex justify-between items-center bg-slate-50">
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b-2 border-[#333]/15 flex justify-between items-center bg-[#111]">
               <div className="flex items-center gap-2">
                 <Sliders size={18} />
-                <h2 className="text-md font-black text-black uppercase tracking-wider">{t('Modificar Perfil e Nível de Acesso')}</h2>
+                <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{t('Modificar Perfil e Nível de Acesso')}</h2>
               </div>
               <button 
                 onClick={() => setSelectedUser(null)} 
-                className="text-slate-500 hover:text-black text-xl font-bold p-1"
+                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold p-1"
               >
                 ✕
               </button>
@@ -1325,16 +1320,16 @@ export default function UserManagement() {
 
             <div className="p-6 space-y-6 overflow-y-auto flex-1">
               {/* Header profile info */}
-              <div className="flex items-center space-x-4 border-b border-black/10 pb-4">
+              <div className="flex items-center space-x-4 border-b border-[#333]/10 pb-4">
                 {selectedUser.avatar_url ? (
-                  <img src={selectedUser.avatar_url} alt="" className="w-14 h-14 rounded-full object-cover border-2 border-black" />
+                  <img src={selectedUser.avatar_url} alt="" className="w-14 h-14 rounded-full object-cover border-2 border-[#333]" />
                 ) : (
-                  <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-xl font-black text-slate-800 border-2 border-black">
+                  <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-xl font-black text-slate-800 border-2 border-[#333]">
                     {(selectedUser.full_name || 'U')[0].toUpperCase()}
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-black text-black">{selectedUser.full_name || 'Sem nome'}</h3>
+                  <h3 className="text-lg font-black text-[#EDEDED]">{selectedUser.full_name || 'Sem nome'}</h3>
                   <p className="text-xs text-slate-500 font-bold">{selectedUser.email}</p>
                 </div>
               </div>
@@ -1346,7 +1341,7 @@ export default function UserManagement() {
                   <select
                     value={selectedUser.role || 'user'}
                     onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="user">{t('Usuário Comum')}</option>
                     <option value="seller">{t('Vendedor')}</option>
@@ -1360,7 +1355,7 @@ export default function UserManagement() {
                   <select
                     value={selectedUser.account_type || 'pessoa_fisica'}
                     onChange={(e) => setSelectedUser({ ...selectedUser, account_type: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="pessoa_fisica">{t('Pessoa Física')}</option>
                     <option value="empresa">{t('Empresa (Desmanche, Loja)')}</option>
@@ -1373,7 +1368,7 @@ export default function UserManagement() {
                   <select
                     value={selectedUser.status || 'ativo'}
                     onChange={(e) => setSelectedUser({ ...selectedUser, status: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="ativo">{t('Ativo')}</option>
                     <option value="inativo">{t('Inativo')}</option>
@@ -1389,7 +1384,7 @@ export default function UserManagement() {
                   <select
                     value={selectedUser.setor_id || ''}
                     onChange={(e) => setSelectedUser({ ...selectedUser, setor_id: e.target.value || null })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">{t('Nenhum Setor')}</option>
                     {setores.map(s => (
@@ -1404,7 +1399,7 @@ export default function UserManagement() {
                   <select
                     value={selectedUser.cargo_id || ''}
                     onChange={(e) => setSelectedUser({ ...selectedUser, cargo_id: e.target.value || null })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">{t('Nenhum Cargo')}</option>
                     {cargos
@@ -1417,8 +1412,8 @@ export default function UserManagement() {
               </div>
 
               {/* Rich User Profile Metadata */}
-              <div className="border border-black/10 p-4 rounded-xl space-y-4">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-black/5 pb-1">{t('Dados Pessoais e Operacionais')}</span>
+              <div className="border border-[#333]/10 p-4 rounded-xl space-y-4">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-[#333]/5 pb-1">{t('Dados Pessoais e Operacionais')}</span>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -1427,7 +1422,7 @@ export default function UserManagement() {
                       type="text"
                       value={selectedUser.full_name || ''}
                       onChange={(e) => setSelectedUser({ ...selectedUser, full_name: e.target.value })}
-                      className="w-full bg-white border border-black/20 rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none focus:border-black"
+                      className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none focus:border-[#333]"
                     />
                   </div>
 
@@ -1437,7 +1432,7 @@ export default function UserManagement() {
                       type="text"
                       value={selectedUser.phone || ''}
                       onChange={(e) => setSelectedUser({ ...selectedUser, phone: e.target.value })}
-                      className="w-full bg-white border border-black/20 rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none focus:border-black"
+                      className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none focus:border-[#333]"
                     />
                   </div>
                 </div>
@@ -1449,7 +1444,7 @@ export default function UserManagement() {
                       type="date"
                       value={selectedUser.birthdate || ''}
                       onChange={(e) => setSelectedUser({ ...selectedUser, birthdate: e.target.value })}
-                      className="w-full bg-white border border-black/20 rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none focus:border-black"
+                      className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none focus:border-[#333]"
                     />
                   </div>
 
@@ -1459,7 +1454,7 @@ export default function UserManagement() {
                       type="text"
                       value={selectedUser.cep || ''}
                       onChange={(e) => setSelectedUser({ ...selectedUser, cep: e.target.value })}
-                      className="w-full bg-white border border-black/20 rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none focus:border-black"
+                      className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none focus:border-[#333]"
                     />
                   </div>
                 </div>
@@ -1470,7 +1465,7 @@ export default function UserManagement() {
                     type="text"
                     value={selectedUser.address || ''}
                     onChange={(e) => setSelectedUser({ ...selectedUser, address: e.target.value })}
-                    className="w-full bg-white border border-black/20 rounded-lg px-3 py-2 text-xs text-black font-bold focus:outline-none focus:border-black"
+                    className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-3 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none focus:border-[#333]"
                   />
                 </div>
 
@@ -1480,7 +1475,7 @@ export default function UserManagement() {
                     <select
                       value={selectedUser.card_brand || ''}
                       onChange={(e) => setSelectedUser({ ...selectedUser, card_brand: e.target.value })}
-                      className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-2.5 py-2 text-xs text-black font-bold focus:outline-none"
+                      className="w-full bg-[#0A0A0A] border border-[#333]/20 focus:border-[#333] rounded-lg px-2.5 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none"
                     >
                       <option value="">{t('Selecione...')}</option>
                       <option value="visa">Visa</option>
@@ -1495,7 +1490,7 @@ export default function UserManagement() {
                     <select
                       value={selectedUser.payment_method || ''}
                       onChange={(e) => setSelectedUser({ ...selectedUser, payment_method: e.target.value })}
-                      className="w-full bg-white border border-black/20 focus:border-black rounded-lg px-2.5 py-2 text-xs text-black font-bold focus:outline-none"
+                      className="w-full bg-[#0A0A0A] border border-[#333]/20 focus:border-[#333] rounded-lg px-2.5 py-2 text-xs text-[#EDEDED] font-bold focus:outline-none"
                     >
                       <option value="">{t('Selecione...')}</option>
                       <option value="credit_card">Cartão de Crédito</option>
@@ -1506,56 +1501,56 @@ export default function UserManagement() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-3 border border-black/10 rounded-xl bg-slate-50">
+                <div className="flex items-center justify-between p-3 border border-[#333]/10 rounded-xl bg-[#111]">
                   <div>
-                    <span className="text-xs font-black uppercase tracking-tight text-black">{t('E-mail Confirmado')}</span>
+                    <span className="text-xs font-black uppercase tracking-tight text-[#EDEDED]">{t('E-mail Confirmado')}</span>
                     <p className="text-[10px] text-slate-500 mt-0.5">{t('Marcar e-mail como validado na base de dados.')}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setSelectedUser({ ...selectedUser, email_verified: !selectedUser.email_verified })}
-                    className={`w-10 h-5 rounded-full p-0.5 transition-colors border border-black/20 ${selectedUser.email_verified ? 'bg-black' : 'bg-slate-200'}`}
+                    className={`w-10 h-5 rounded-full p-0.5 transition-colors border border-[#333]/20 ${selectedUser.email_verified ? 'bg-black' : 'bg-slate-200'}`}
                   >
-                    <div className={`w-4 h-4 rounded-full bg-white transition-transform ${selectedUser.email_verified ? 'translate-x-5' : 'translate-x-0'}`} />
+                    <div className={`w-4 h-4 rounded-full bg-[#0A0A0A] transition-transform ${selectedUser.email_verified ? 'translate-x-5' : 'translate-x-0'}`} />
                   </button>
                 </div>
               </div>
 
               {/* Verified toggler */}
-              <div className="flex items-center justify-between p-4 border-2 border-black rounded-xl bg-slate-50">
+              <div className="flex items-center justify-between p-4 border-2 border-[#333] rounded-xl bg-[#111]">
                 <div>
-                  <span className="text-sm font-black uppercase tracking-tight text-black">{t('Selo de Verificação Oficial')}</span>
+                  <span className="text-sm font-black uppercase tracking-tight text-[#EDEDED]">{t('Selo de Verificação Oficial')}</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">{t('Destacar este usuário como verificado e confiável.')}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectedUser({ ...selectedUser, is_verified: !selectedUser.is_verified })}
-                  className={`w-12 h-6 rounded-full p-0.5 transition-colors border border-black/20 ${selectedUser.is_verified ? 'bg-black' : 'bg-slate-200'}`}
+                  className={`w-12 h-6 rounded-full p-0.5 transition-colors border border-[#333]/20 ${selectedUser.is_verified ? 'bg-black' : 'bg-slate-200'}`}
                 >
-                  <div className={`w-5 h-5 rounded-full bg-white transition-transform ${selectedUser.is_verified ? 'translate-x-6' : 'translate-x-0'}`} />
+                  <div className={`w-5 h-5 rounded-full bg-[#0A0A0A] transition-transform ${selectedUser.is_verified ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Store Verified toggler */}
-              <div className="flex items-center justify-between p-4 border-2 border-black rounded-xl bg-slate-50">
+              <div className="flex items-center justify-between p-4 border-2 border-[#333] rounded-xl bg-[#111]">
                 <div>
-                  <span className="text-sm font-black uppercase tracking-tight text-black">{t('Store Verify (Empresa Oficial)')}</span>
+                  <span className="text-sm font-black uppercase tracking-tight text-[#EDEDED]">{t('Store Verify (Empresa Oficial)')}</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">{t('Habilitar loja para venda de peças ilimitadas.')}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectedUser({ ...selectedUser, store_verified: !selectedUser.store_verified })}
-                  className={`w-12 h-6 rounded-full p-0.5 transition-colors border border-black/20 ${selectedUser.store_verified ? 'bg-black' : 'bg-slate-200'}`}
+                  className={`w-12 h-6 rounded-full p-0.5 transition-colors border border-[#333]/20 ${selectedUser.store_verified ? 'bg-black' : 'bg-slate-200'}`}
                 >
-                  <div className={`w-5 h-5 rounded-full bg-white transition-transform ${selectedUser.store_verified ? 'translate-x-6' : 'translate-x-0'}`} />
+                  <div className={`w-5 h-5 rounded-full bg-[#0A0A0A] transition-transform ${selectedUser.store_verified ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Effective permissions view */}
               {selectedUser.cargo_id && (
-                <div className="border border-black/10 p-4 rounded-xl space-y-2.5">
+                <div className="border border-[#333]/10 p-4 rounded-xl space-y-2.5">
                   <span className="text-xs font-black uppercase tracking-wider text-slate-500 block">{t('Permissões Efetivas do Cargo')}</span>
-                  <div className="bg-slate-50 p-3 rounded-lg">
+                  <div className="bg-[#111] p-3 rounded-lg">
                     {(() => {
                       const selectedCargo = cargos.find(c => c.id === selectedUser.cargo_id);
                       if (!selectedCargo) return <span className="text-xs text-slate-400">{t('Nenhuma permissão associada')}</span>;
@@ -1581,7 +1576,7 @@ export default function UserManagement() {
                             const desc = PREDEFINED_PERMISSIONS.find(pm => pm.id === p);
                             return (
                               <div key={p} className="flex items-start gap-2">
-                                <CheckSquare size={14} className="text-black shrink-0 mt-0.5" />
+                                <CheckSquare size={14} className="text-[#EDEDED] shrink-0 mt-0.5" />
                                 <div>
                                   <span className="text-xs font-black block">{desc?.label || p}</span>
                                   <span className="text-[10px] text-slate-500 block font-medium leading-tight mt-0.5">{desc?.desc}</span>
@@ -1597,13 +1592,13 @@ export default function UserManagement() {
               )}
 
               {/* Interactive Card: User Ads & Moderation */}
-              <div className="border-2 border-black p-4 rounded-xl space-y-3 bg-white">
-                <div className="flex items-center justify-between border-b border-black/5 pb-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-black flex items-center gap-1.5">
+              <div className="border-2 border-[#333] p-4 rounded-xl space-y-3 bg-[#0A0A0A]">
+                <div className="flex items-center justify-between border-b border-[#333]/5 pb-2">
+                  <span className="text-xs font-black uppercase tracking-wider text-[#EDEDED] flex items-center gap-1.5">
                     <FolderTree size={14} />
                     {t('Anúncios & Moderação')}
                   </span>
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-100 border border-black/10">
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-100 border border-[#333]/10">
                     {userParts.length} {userParts.length === 1 ? t('Anúncio') : t('Anúncios')}
                   </span>
                 </div>
@@ -1614,9 +1609,9 @@ export default function UserManagement() {
                   <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1">
                     {userParts.map((part: any) => {
                       return (
-                        <div key={part.id} className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-black/10 hover:border-black/20 bg-slate-50 transition-colors">
+                        <div key={part.id} className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-[#333]/10 hover:border-[#333]/20 bg-[#111] transition-colors">
                           <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-10 h-10 rounded bg-slate-200 overflow-hidden shrink-0 border border-black/5">
+                            <div className="w-10 h-10 rounded bg-slate-200 overflow-hidden shrink-0 border border-[#333]/5">
                               {part.images?.[0] ? (
                                 <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
                               ) : (
@@ -1624,7 +1619,7 @@ export default function UserManagement() {
                               )}
                             </div>
                             <div className="min-w-0">
-                              <span className="text-xs font-black block truncate text-black">{part.title}</span>
+                              <span className="text-xs font-black block truncate text-[#EDEDED]">{part.title}</span>
                               <span className="text-[10px] font-bold text-daig-blue block">¥ {part.price?.toLocaleString('ja-JP')}</span>
                             </div>
                           </div>
@@ -1660,7 +1655,7 @@ export default function UserManagement() {
                                   alert("Erro ao atualizar status do anúncio: " + error.message);
                                 }
                               }}
-                              className={`text-[10px] font-black uppercase rounded border-2 border-black px-1.5 py-1 bg-white text-black focus:outline-none cursor-pointer ${
+                              className={`text-[10px] font-black uppercase rounded border-2 border-[#333] px-1.5 py-1 bg-[#0A0A0A] text-[#EDEDED] focus:outline-none cursor-pointer ${
                                 part.status === 'active' 
                                   ? 'border-green-600 text-green-700 bg-green-50/50' 
                                   : part.status === 'sold'
@@ -1721,18 +1716,18 @@ export default function UserManagement() {
               {/* Warehouse permissions (Logistix integration) */}
               <div>
                 <span className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-2">{t('Vincular Acesso a Armazéns (Logistix WMS)')}</span>
-                <div className="grid grid-cols-2 gap-2 border-2 border-black rounded-xl p-4 bg-slate-50 max-h-40 overflow-y-auto">
+                <div className="grid grid-cols-2 gap-2 border-2 border-[#333] rounded-xl p-4 bg-[#111] max-h-40 overflow-y-auto">
                   {armazens.map(a => {
                     const isChecked = userArmazens.some(ua => ua.armazem_id === a.id);
                     return (
-                      <label key={a.id} className="flex items-center gap-2.5 p-1.5 rounded hover:bg-slate-100 cursor-pointer transition-colors">
+                      <label key={a.id} className="flex items-center gap-2.5 p-1.5 rounded hover:bg-[#1A1A1A] cursor-pointer transition-colors">
                         <input 
                           type="checkbox" 
                           checked={isChecked}
                           onChange={() => handleWarehouseToggle(a.id)}
-                          className="h-4 w-4 rounded border-black border-2 text-black focus:ring-black"
+                          className="h-4 w-4 rounded border-[#333] border-2 text-[#EDEDED] focus:ring-black"
                         />
-                        <span className="text-xs font-bold text-black">{a.nome}</span>
+                        <span className="text-xs font-bold text-[#EDEDED]">{a.nome}</span>
                       </label>
                     );
                   })}
@@ -1740,11 +1735,11 @@ export default function UserManagement() {
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t-2 border-black/15 flex justify-end gap-3">
+            <div className="p-4 bg-[#111] border-t-2 border-[#333]/15 flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setSelectedUser(null)}
-                className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+                className="bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333]/20"
               >
                 {t('Cancelar')}
               </button>
@@ -1752,7 +1747,7 @@ export default function UserManagement() {
                 type="button"
                 disabled={submitting}
                 onClick={handleSaveUserDetails}
-                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-black disabled:opacity-50"
+                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333] disabled:opacity-50"
               >
                 {submitting ? t('Salvando...') : t('Gravar Alterações')}
               </button>
@@ -1766,12 +1761,12 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {showCargoModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-black rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-5 border-b-2 border-black/15 flex justify-between items-center bg-slate-50">
-              <h2 className="text-md font-black text-black uppercase tracking-wider">{editingCargo ? t('Editar Cargo') : t('Cadastrar Novo Cargo')}</h2>
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b-2 border-[#333]/15 flex justify-between items-center bg-[#111]">
+              <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{editingCargo ? t('Editar Cargo') : t('Cadastrar Novo Cargo')}</h2>
               <button 
                 onClick={() => setShowCargoModal(false)} 
-                className="text-slate-500 hover:text-black text-xl font-bold"
+                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold"
               >
                 ✕
               </button>
@@ -1785,7 +1780,7 @@ export default function UserManagement() {
                   value={cargoForm.nome}
                   onChange={(e) => setCargoForm({ ...cargoForm, nome: e.target.value })}
                   placeholder="Ex: Supervisor de Logística"
-                  className="w-full px-3 py-2 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                  className="w-full px-3 py-2 bg-[#0A0A0A] border-2 border-[#333] rounded-lg text-sm text-[#EDEDED] focus:outline-none font-bold"
                 />
               </div>
 
@@ -1798,7 +1793,7 @@ export default function UserManagement() {
                     max="10"
                     value={cargoForm.nivel}
                     onChange={(e) => setCargoForm({ ...cargoForm, nivel: parseInt(e.target.value) || 1 })}
-                    className="w-full px-3 py-2 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                    className="w-full px-3 py-2 bg-[#0A0A0A] border-2 border-[#333] rounded-lg text-sm text-[#EDEDED] focus:outline-none font-bold"
                   />
                 </div>
 
@@ -1807,7 +1802,7 @@ export default function UserManagement() {
                   <select
                     value={cargoForm.setor_id}
                     onChange={(e) => setCargoForm({ ...cargoForm, setor_id: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">Selecione um Setor...</option>
                     {setores.map(s => (
@@ -1820,7 +1815,7 @@ export default function UserManagement() {
               {/* Permissions selector list */}
               <div>
                 <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-2">{t('Atribuição de Permissões')}</label>
-                <div className="border-2 border-black rounded-xl p-3 bg-slate-50 divide-y divide-black/10 max-h-60 overflow-y-auto">
+                <div className="border-2 border-[#333] rounded-xl p-3 bg-[#111] divide-y divide-black/10 max-h-60 overflow-y-auto">
                   {PREDEFINED_PERMISSIONS.map(p => {
                     const isChecked = cargoForm.permissoes.includes(p.id);
                     return (
@@ -1830,10 +1825,10 @@ export default function UserManagement() {
                           id={`perm-chk-${p.id}`}
                           checked={isChecked}
                           onChange={() => handleCargoPermissionToggle(p.id)}
-                          className="h-4 w-4 rounded border-black border-2 text-black focus:ring-black mt-0.5"
+                          className="h-4 w-4 rounded border-[#333] border-2 text-[#EDEDED] focus:ring-black mt-0.5"
                         />
                         <label htmlFor={`perm-chk-${p.id}`} className="cursor-pointer">
-                          <span className="text-xs font-black block text-black">{p.label}</span>
+                          <span className="text-xs font-black block text-[#EDEDED]">{p.label}</span>
                           <span className="text-[10px] text-slate-500 block font-medium leading-tight mt-0.5">{p.desc}</span>
                         </label>
                       </div>
@@ -1843,11 +1838,11 @@ export default function UserManagement() {
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t-2 border-black/15 flex justify-end gap-3">
+            <div className="p-4 bg-[#111] border-t-2 border-[#333]/15 flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setShowCargoModal(false)}
-                className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+                className="bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333]/20"
               >
                 {t('Cancelar')}
               </button>
@@ -1855,7 +1850,7 @@ export default function UserManagement() {
                 type="button"
                 disabled={submitting}
                 onClick={handleSaveCargo}
-                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-black disabled:opacity-50"
+                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333] disabled:opacity-50"
               >
                 {submitting ? t('Processando...') : t('Salvar Cargo')}
               </button>
@@ -1869,12 +1864,12 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {showSetorModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-black rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
-            <div className="p-5 border-b-2 border-black/15 flex justify-between items-center bg-slate-50">
-              <h2 className="text-md font-black text-black uppercase tracking-wider">{editingSetor ? t('Editar Setor') : t('Cadastrar Setor')}</h2>
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-5 border-b-2 border-[#333]/15 flex justify-between items-center bg-[#111]">
+              <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{editingSetor ? t('Editar Setor') : t('Cadastrar Setor')}</h2>
               <button 
                 onClick={() => setShowSetorModal(false)} 
-                className="text-slate-500 hover:text-black text-xl font-bold"
+                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold"
               >
                 ✕
               </button>
@@ -1888,16 +1883,16 @@ export default function UserManagement() {
                   value={setorForm.nome}
                   onChange={(e) => setSetorForm({ nome: e.target.value })}
                   placeholder="Ex: Recursos Humanos"
-                  className="w-full px-3 py-2.5 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                  className="w-full px-3 py-2.5 bg-[#0A0A0A] border-2 border-[#333] rounded-lg text-sm text-[#EDEDED] focus:outline-none font-bold"
                 />
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t-2 border-black/15 flex justify-end gap-3">
+            <div className="p-4 bg-[#111] border-t-2 border-[#333]/15 flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setShowSetorModal(false)}
-                className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+                className="bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333]/20"
               >
                 {t('Cancelar')}
               </button>
@@ -1905,7 +1900,7 @@ export default function UserManagement() {
                 type="button"
                 disabled={submitting}
                 onClick={handleSaveSetor}
-                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-black disabled:opacity-50"
+                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333] disabled:opacity-50"
               >
                 {submitting ? t('Processando...') : t('Salvar Setor')}
               </button>
@@ -1919,12 +1914,12 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {showCreateUserModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-black rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
-            <div className="p-5 border-b-2 border-black/15 flex justify-between items-center bg-slate-50">
-              <h2 className="text-md font-black text-black uppercase tracking-wider">{t('Cadastrar Novo Usuário')}</h2>
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-5 border-b-2 border-[#333]/15 flex justify-between items-center bg-[#111]">
+              <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{t('Cadastrar Novo Usuário')}</h2>
               <button 
                 onClick={() => setShowCreateUserModal(false)} 
-                className="text-slate-500 hover:text-black text-xl font-bold"
+                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold"
               >
                 ✕
               </button>
@@ -1943,7 +1938,7 @@ export default function UserManagement() {
                   value={newUserForm.nome}
                   onChange={(e) => setNewUserForm({ ...newUserForm, nome: e.target.value })}
                   placeholder="Ex: Roberto Carlos"
-                  className="w-full px-3 py-2.5 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                  className="w-full px-3 py-2.5 bg-[#0A0A0A] border-2 border-[#333] rounded-lg text-sm text-[#EDEDED] focus:outline-none font-bold"
                 />
               </div>
 
@@ -1955,7 +1950,7 @@ export default function UserManagement() {
                   value={newUserForm.email}
                   onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
                   placeholder="Ex: roberto@empresa.com"
-                  className="w-full px-3 py-2.5 bg-white border-2 border-black rounded-lg text-sm text-black focus:outline-none font-bold"
+                  className="w-full px-3 py-2.5 bg-[#0A0A0A] border-2 border-[#333] rounded-lg text-sm text-[#EDEDED] focus:outline-none font-bold"
                 />
               </div>
 
@@ -1965,7 +1960,7 @@ export default function UserManagement() {
                   <select
                     value={newUserForm.role}
                     onChange={(e) => setNewUserForm({ ...newUserForm, role: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="user">Comprador</option>
                     <option value="seller">Vendedor</option>
@@ -1978,7 +1973,7 @@ export default function UserManagement() {
                   <select
                     value={newUserForm.setor_id}
                     onChange={(e) => setNewUserForm({ ...newUserForm, setor_id: e.target.value })}
-                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                   >
                     <option value="">{t('Nenhum')}</option>
                     {setores.map(s => (
@@ -1993,7 +1988,7 @@ export default function UserManagement() {
                 <select
                   value={newUserForm.cargo_id}
                   onChange={(e) => setNewUserForm({ ...newUserForm, cargo_id: e.target.value })}
-                  className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                  className="w-full bg-[#0A0A0A] border-2 border-[#333] rounded-lg px-3 py-2.5 text-sm text-[#EDEDED] font-bold focus:outline-none"
                 >
                   <option value="">{t('Nenhum')}</option>
                   {cargos
@@ -2004,18 +1999,18 @@ export default function UserManagement() {
                 </select>
               </div>
 
-              <div className="p-4 bg-slate-50 -mx-6 -mb-6 border-t-2 border-black/15 flex justify-end gap-3 px-6 py-4">
+              <div className="p-4 bg-[#111] -mx-6 -mb-6 border-t-2 border-[#333]/15 flex justify-end gap-3 px-6 py-4">
                 <button
                   type="button"
                   onClick={() => setShowCreateUserModal(false)}
-                  className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+                  className="bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333]/20"
                 >
                   {t('Cancelar')}
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-black disabled:opacity-50"
+                  className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333] disabled:opacity-50"
                 >
                   {submitting ? t('Processando...') : t('Adicionar Usuário')}
                 </button>
@@ -2030,7 +2025,7 @@ export default function UserManagement() {
       {/* ---------------------------------------------------- */}
       {deletingUser && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-red-600 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+          <div className="bg-[#0A0A0A] border-2 border-red-600 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="p-5 border-b-2 border-red-600/15 flex justify-between items-center bg-red-50">
               <div className="flex items-center gap-2 text-red-600">
@@ -2042,7 +2037,7 @@ export default function UserManagement() {
                   setDeletingUser(null);
                   setDeleteConfirmationText('');
                 }} 
-                className="text-red-600 hover:text-black text-xl font-bold"
+                className="text-red-600 hover:text-[#EDEDED] text-xl font-bold"
               >
                 ✕
               </button>
@@ -2052,7 +2047,7 @@ export default function UserManagement() {
             <div className="p-6 space-y-4">
               <p className="text-sm text-slate-700 font-medium leading-relaxed">
                 Esta ação é <span className="font-bold text-red-600 uppercase">definitiva</span> e não pode ser desfeita.
-                O usuário <strong className="font-bold text-black">{deletingUser.full_name || 'Sem Nome'}</strong> (<span className="font-mono text-xs">{deletingUser.email}</span>) será excluído permanentemente da plataforma, perdendo todos os acessos imediatos.
+                O usuário <strong className="font-bold text-[#EDEDED]">{deletingUser.full_name || 'Sem Nome'}</strong> (<span className="font-mono text-xs">{deletingUser.email}</span>) será excluído permanentemente da plataforma, perdendo todos os acessos imediatos.
               </p>
 
               <div className="bg-red-50 border border-red-200 p-4 rounded-xl space-y-2">
@@ -2064,7 +2059,7 @@ export default function UserManagement() {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  Para confirmar, digite <span className="font-mono bg-slate-100 px-1 py-0.5 rounded text-black font-bold">{deletingUser.email}</span> no campo abaixo:
+                  Para confirmar, digite <span className="font-mono bg-slate-100 px-1 py-0.5 rounded text-[#EDEDED] font-bold">{deletingUser.email}</span> no campo abaixo:
                 </label>
                 <input
                   type="text"
@@ -2072,20 +2067,20 @@ export default function UserManagement() {
                   value={deleteConfirmationText}
                   onChange={(e) => setDeleteConfirmationText(e.target.value)}
                   placeholder={deletingUser.email}
-                  className="w-full px-3 py-2.5 bg-white border-2 border-red-200 focus:border-red-600 rounded-lg text-sm text-black focus:outline-none font-bold placeholder-slate-300"
+                  className="w-full px-3 py-2.5 bg-[#0A0A0A] border-2 border-red-200 focus:border-red-600 rounded-lg text-sm text-[#EDEDED] focus:outline-none font-bold placeholder-slate-300"
                 />
               </div>
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-slate-50 border-t border-black/10 flex justify-end gap-3">
+            <div className="p-4 bg-[#111] border-t border-[#333]/10 flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => {
                   setDeletingUser(null);
                   setDeleteConfirmationText('');
                 }}
-                className="bg-white hover:bg-slate-100 text-black font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-black/20"
+                className="bg-[#0A0A0A] hover:bg-[#1A1A1A] text-[#EDEDED] font-bold px-4 py-2 rounded-lg text-xs uppercase tracking-widest border border-[#333]/20"
               >
                 {t('Cancelar')}
               </button>
@@ -2104,10 +2099,10 @@ export default function UserManagement() {
 
       {selectedUserParts && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white border-2 border-black rounded-xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-black/10 flex justify-between items-center bg-slate-50">
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-xl max-w-2xl w-full max-h-[80vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-[#333]/10 flex justify-between items-center bg-[#111]">
               <div>
-                <h3 className="text-black font-black text-lg">
+                <h3 className="text-[#EDEDED] font-black text-lg">
                   {t('Anúncios de')} {selectedUserPartsOwner}
                 </h3>
                 <p className="text-slate-500 text-xs mt-0.5">
@@ -2116,7 +2111,7 @@ export default function UserManagement() {
               </div>
               <button 
                 onClick={() => { setSelectedUserParts(null); setSelectedUserPartsOwner(''); }}
-                className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-black transition-colors"
+                className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-[#EDEDED] transition-colors"
               >
                 <X size={20} />
               </button>
@@ -2129,24 +2124,24 @@ export default function UserManagement() {
                 selectedUserParts.map((part: any) => (
                   <div key={part.id} className="py-4 first:pt-0 last:pb-0 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-12 h-12 rounded-lg bg-slate-100 flex-shrink-0 overflow-hidden border border-black/10">
+                      <div className="w-12 h-12 rounded-lg bg-slate-100 flex-shrink-0 overflow-hidden border border-[#333]/10">
                         {part.images?.[0] ? (
                           <img src={part.images[0]} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs font-bold bg-slate-50">
+                          <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs font-bold bg-[#111]">
                             No Img
                           </div>
                         )}
                       </div>
                       <div className="min-w-0">
-                        <h4 className="text-black font-black text-sm truncate">{part.title}</h4>
+                        <h4 className="text-[#EDEDED] font-black text-sm truncate">{part.title}</h4>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 rounded border ${
                             part.status === 'active' 
                               ? 'bg-green-50 text-green-700 border-green-200' 
                               : part.status === 'sold'
                               ? 'bg-blue-50 text-blue-700 border-blue-200'
-                              : 'bg-slate-50 text-slate-500 border-slate-200'
+                              : 'bg-[#111] text-slate-500 border-slate-200'
                           }`}>
                             {part.status}
                           </span>
@@ -2161,7 +2156,7 @@ export default function UserManagement() {
                       href={`/product/${part.id}`} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="bg-white hover:bg-slate-50 text-black border border-black/20 font-bold px-3 py-1.5 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center gap-1"
+                      className="bg-[#0A0A0A] hover:bg-[#111] text-[#EDEDED] border border-[#333]/20 font-bold px-3 py-1.5 rounded-lg text-xs uppercase tracking-wider transition-all flex items-center gap-1"
                     >
                       <Eye size={12} /> {t('Ver anúncio')}
                     </a>
@@ -2170,7 +2165,7 @@ export default function UserManagement() {
               )}
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-black/10 flex justify-end">
+            <div className="p-4 bg-[#111] border-t border-[#333]/10 flex justify-end">
               <button
                 type="button"
                 onClick={() => { setSelectedUserParts(null); setSelectedUserPartsOwner(''); }}
@@ -2185,17 +2180,17 @@ export default function UserManagement() {
 
       {activeModUser && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-black rounded-xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-black/10 flex justify-between items-center bg-slate-50">
+          <div className="bg-[#0A0A0A] border-2 border-[#333] rounded-xl max-w-md w-full shadow-2xl overflow-hidden flex flex-col">
+            <div className="p-5 border-b border-[#333]/10 flex justify-between items-center bg-[#111]">
               <div className="flex items-center gap-2">
-                <Sliders size={18} className="text-black" />
-                <h3 className="text-black font-black text-sm uppercase tracking-wider">
+                <Sliders size={18} className="text-[#EDEDED]" />
+                <h3 className="text-[#EDEDED] font-black text-sm uppercase tracking-wider">
                   {t('Painel de Moderação Rápida')}
                 </h3>
               </div>
               <button 
                 onClick={() => setActiveModUser(null)}
-                className="text-slate-500 hover:text-black font-bold p-1 text-lg"
+                className="text-slate-500 hover:text-[#EDEDED] font-bold p-1 text-lg"
               >
                 ✕
               </button>
@@ -2203,16 +2198,16 @@ export default function UserManagement() {
 
             <div className="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
               {/* Profile Card Header */}
-              <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-black/15">
+              <div className="flex items-center space-x-3 p-3 bg-[#111] rounded-xl border border-[#333]/15">
                 {activeModUser.avatar_url ? (
-                  <img src={activeModUser.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover border border-black/10" />
+                  <img src={activeModUser.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover border border-[#333]/10" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-sm font-black text-slate-800 border border-black/10">
+                  <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center text-sm font-black text-slate-800 border border-[#333]/10">
                     {(activeModUser.full_name || 'U')[0].toUpperCase()}
                   </div>
                 )}
                 <div className="min-w-0">
-                  <h4 className="text-sm font-black text-black truncate">{activeModUser.full_name || t('Sem nome')}</h4>
+                  <h4 className="text-sm font-black text-[#EDEDED] truncate">{activeModUser.full_name || t('Sem nome')}</h4>
                   <p className="text-xs text-slate-500 truncate font-semibold">{activeModUser.email}</p>
                 </div>
               </div>
@@ -2234,7 +2229,7 @@ export default function UserManagement() {
                         alert(t('Erro ao atualizar status: ') + err.message);
                       }
                     }}
-                    className="w-full bg-white border border-black/20 rounded-lg px-2 py-1.5 text-xs text-black font-black focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-2 py-1.5 text-xs text-[#EDEDED] font-black focus:outline-none"
                   >
                     <option value="ativo">{t('Ativo')}</option>
                     <option value="inativo">{t('Inativo')}</option>
@@ -2258,7 +2253,7 @@ export default function UserManagement() {
                         alert(t('Erro ao atualizar nível: ') + err.message);
                       }
                     }}
-                    className="w-full bg-white border border-black/20 rounded-lg px-2 py-1.5 text-xs text-black font-black focus:outline-none"
+                    className="w-full bg-[#0A0A0A] border border-[#333]/20 rounded-lg px-2 py-1.5 text-xs text-[#EDEDED] font-black focus:outline-none"
                   >
                     <option value="user">{t('Comprador')}</option>
                     <option value="seller">{t('Vendedor')}</option>
@@ -2268,9 +2263,9 @@ export default function UserManagement() {
               </div>
 
               {/* Selo de Verificação Toggle */}
-              <div className="flex items-center justify-between p-3 border border-black/10 rounded-xl bg-slate-50">
+              <div className="flex items-center justify-between p-3 border border-[#333]/10 rounded-xl bg-[#111]">
                 <div>
-                  <span className="text-xs font-black uppercase tracking-tight text-black">{t('Verificação Oficial')}</span>
+                  <span className="text-xs font-black uppercase tracking-tight text-[#EDEDED]">{t('Verificação Oficial')}</span>
                   <p className="text-[10px] text-slate-500 leading-tight mt-0.5">{t('Destacar usuário com selo de confiança.')}</p>
                 </div>
                 <button
@@ -2285,17 +2280,17 @@ export default function UserManagement() {
                       alert(t('Erro ao alternar verificação: ') + err.message);
                     }
                   }}
-                  className={`w-10 h-5 rounded-full p-0.5 transition-colors border border-black/20 ${activeModUser.is_verified ? 'bg-black' : 'bg-slate-200'}`}
+                  className={`w-10 h-5 rounded-full p-0.5 transition-colors border border-[#333]/20 ${activeModUser.is_verified ? 'bg-black' : 'bg-slate-200'}`}
                 >
-                  <div className={`w-4 h-4 rounded-full bg-white transition-transform ${activeModUser.is_verified ? 'translate-x-5' : 'translate-x-0'}`} />
+                  <div className={`w-4 h-4 rounded-full bg-[#0A0A0A] transition-transform ${activeModUser.is_verified ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Personal Data & Address Summary */}
-              <div className="border border-black/10 rounded-xl p-4 bg-slate-50 space-y-2.5">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-black/5 pb-1">{t('Dados Pessoais & Endereço')}</span>
+              <div className="border border-[#333]/10 rounded-xl p-4 bg-[#111] space-y-2.5">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-[#333]/5 pb-1">{t('Dados Pessoais & Endereço')}</span>
                 
-                <div className="grid grid-cols-2 gap-2 text-xs text-black">
+                <div className="grid grid-cols-2 gap-2 text-xs text-[#EDEDED]">
                   <div>
                     <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Telefone')}</span>
                     <span className="font-bold">{activeModUser.phone || t('Não cadastrado')}</span>
@@ -2313,14 +2308,14 @@ export default function UserManagement() {
               </div>
 
               {/* Financial & Activity Summary */}
-              <div className="border border-black/10 rounded-xl p-4 bg-slate-50 space-y-3">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-black/5 pb-1">{t('Resumo de Transações')}</span>
+              <div className="border border-[#333]/10 rounded-xl p-4 bg-[#111] space-y-3">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-[#333]/5 pb-1">{t('Resumo de Transações')}</span>
                 
                 <div className="grid grid-cols-2 gap-4">
                   {/* Sales summary */}
-                  <div className="bg-white p-2.5 rounded-lg border border-black/10">
+                  <div className="bg-[#0A0A0A] p-2.5 rounded-lg border border-[#333]/10">
                     <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Vendas Confirmadas')}</span>
-                    <span className="text-sm font-black text-black block mt-0.5">
+                    <span className="text-sm font-black text-[#EDEDED] block mt-0.5">
                       ¥ {(activeModUser.totalSalesValue || 0).toLocaleString('ja-JP')}
                     </span>
                     <span className="text-[10px] text-slate-500 font-bold block mt-0.5">
@@ -2329,9 +2324,9 @@ export default function UserManagement() {
                   </div>
 
                   {/* Purchases spent summary */}
-                  <div className="bg-white p-2.5 rounded-lg border border-black/10">
+                  <div className="bg-[#0A0A0A] p-2.5 rounded-lg border border-[#333]/10">
                     <span className="text-[10px] font-black uppercase text-slate-400 block">{t('Total Gasto (Compras)')}</span>
-                    <span className="text-sm font-black text-black block mt-0.5">
+                    <span className="text-sm font-black text-[#EDEDED] block mt-0.5">
                       ¥ {(activeModUser.totalSpent || 0).toLocaleString('ja-JP')}
                     </span>
                     <span className="text-[10px] text-slate-500 font-bold block mt-0.5">
@@ -2346,7 +2341,7 @@ export default function UserManagement() {
                   <div className="flex flex-wrap gap-1.5">
                     {activeModUser.couriers && activeModUser.couriers.length > 0 ? (
                       activeModUser.couriers.map((courier: string) => (
-                        <span key={courier} className="text-[9px] font-black uppercase bg-slate-100 border border-black/15 text-black px-2 py-0.5 rounded-full">
+                        <span key={courier} className="text-[9px] font-black uppercase bg-slate-100 border border-[#333]/15 text-[#EDEDED] px-2 py-0.5 rounded-full">
                           🚚 {courier}
                         </span>
                       ))
@@ -2358,7 +2353,7 @@ export default function UserManagement() {
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-black/10 flex justify-end">
+            <div className="p-4 bg-[#111] border-t border-[#333]/10 flex justify-end">
               <button
                 type="button"
                 onClick={() => setActiveModUser(null)}

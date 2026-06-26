@@ -175,7 +175,7 @@ export default function TransactionManagement() {
         <div className="flex items-center justify-center py-10">
           <button 
             onClick={() => window.location.reload()}
-            className="bg-white hover:bg-white/90 text-black px-4 py-2 rounded-lg font-medium transition-colors"
+            className="bg-[#0A0A0A] hover:bg-[#0A0A0A]/90 text-[#EDEDED] px-4 py-2 rounded-lg font-medium transition-colors"
           >
             {t('Tentar novamente')}
           </button>
@@ -430,7 +430,7 @@ export default function TransactionManagement() {
         return (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
             <div className="bg-surface border border-border rounded-xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in duration-200">
-              <div className="p-6 border-b border-border flex justify-between items-center bg-slate-50">
+              <div className="p-6 border-b border-border flex justify-between items-center bg-[#111]">
                 <h2 className="text-lg font-bold text-text">{t('Detalhes da Transação')}</h2>
                 <button 
                   onClick={() => setSelectedTransaction(null)} 
@@ -523,7 +523,7 @@ export default function TransactionManagement() {
                   </div>
                 </div>
               </div>
-              <div className="p-4 bg-slate-50 border-t border-border flex justify-end">
+              <div className="p-4 bg-[#111] border-t border-border flex justify-end">
                 <button
                   onClick={() => setSelectedTransaction(null)}
                   className="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold px-4 py-2 rounded-lg text-sm"
