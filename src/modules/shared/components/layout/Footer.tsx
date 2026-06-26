@@ -13,13 +13,7 @@ const SE_BRANDS_BY_COUNTRY = [
   { country: 'フランス', brands: ['Renault', 'Peugeot', 'Citroën', 'DS Automobiles', 'Alpine', 'Bugatti'] },
   { country: 'イタリア', brands: ['Ferrari', 'Lamborghini', 'Maserati', 'Fiat', 'Abarth', 'Alfa Romeo', 'Lancia', 'Pagani', 'Iveco'] },
   { country: 'イギリス', brands: ['Rolls-Royce', 'Bentley', 'Jaguar', 'Land Rover', 'Range Rover', 'Lotus', 'McLaren', 'Aston Martin', 'Morgan'] },
-  { country: 'スウェーデン', brands: ['Volvo', 'Polestar', 'Koenigsegg', 'Saab'] },
-  { country: 'インド', brands: ['Tata', 'Mahindra', 'Force Motors'] },
-  { country: 'ロシア', brands: ['Lada', 'GAZ', 'UAZ'] },
-  { country: 'トルコ', brands: ['TOGG'] },
-  { country: 'ベトナム', brands: ['VinFast'] },
-  { country: 'マレーシア', brands: ['Proton', 'Perodua'] },
-  { country: 'インドネシア', brands: ['Esemka'] }
+  { country: 'スウェーデン', brands: ['Volvo', 'Polestar', 'Koenigsegg', 'Saab'] }
 ]
 
 export default function Footer() {
