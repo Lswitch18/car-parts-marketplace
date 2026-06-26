@@ -53,12 +53,14 @@ function App() {
   // Redirecionar baseado na role após login
   useEffect(() => {
     if (!initialized || loading || !user) return
-    // Only redirect when user lands on login or register pages (public entry points)
-    const redirectRoutes = ['/login', '/register']
+    // Only redirect when user lands on login or register pages (public entry points) or root
+    const redirectRoutes = ['/login', '/register', '/']
     if (!redirectRoutes.includes(location.pathname)) return
 
     if (user.role === 'admin') {
       navigate('/admin/dashboard', { replace: true })
+    } else if (!user.onboarding_completed) {
+      navigate('/onboarding', { replace: true })
     } else if (user.role === 'seller') {
       navigate('/dashboard', { replace: true })
     } else {
