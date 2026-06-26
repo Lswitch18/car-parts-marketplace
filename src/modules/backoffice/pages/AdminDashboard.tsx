@@ -58,7 +58,7 @@ export default function AdminDashboard() {
 
         // Actionable Alerts Orchestration
         const alerts = [];
-        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} Company Verifications pending (B2B)`, ctx: 'Identity', action: 'Review', path: '/admin/users' });
+        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} Company Verifications pending (B2B)`, ctx: 'Identity', action: 'Review', path: '/admin/crm/contacts' });
         if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `High volume of pending shipments (${pendingShip})`, ctx: 'Logistics', action: 'Fulfill', path: '/admin/logistix' });
         if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: '1 Open Transaction Dispute requires mediation', ctx: 'Finance', action: 'Resolve', path: '/admin/transactions' });
         if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} reviews need moderation`, ctx: 'Trust', action: 'Moderate', path: '/admin/reviews' });
@@ -117,29 +117,34 @@ export default function AdminDashboard() {
           {/* Finance & Usage */}
           <div>
             <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">Financial Pulse (30d)</h3>
-            <div 
-              onClick={() => navigate('/admin/finance/payable')}
-              className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group cursor-pointer hover:bg-[#111] hover:border-[#444] transition-all"
-            >
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group transition-all">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
                   Revenue & Escrow
-                  <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" />
                 </span>
-                <button className="h-7 px-3 bg-[#1A1A1A] text-[#EDEDED] border border-[#333] text-[12px] font-medium rounded-md group-hover:bg-[#2A2A2A] transition-colors">
-                  Details
+                <button 
+                  onClick={() => navigate('/admin/finance/payable')}
+                  className="h-7 px-3 bg-[#1A1A1A] text-[#EDEDED] border border-[#333] text-[12px] font-medium rounded-md hover:bg-[#2A2A2A] transition-colors flex items-center gap-1"
+                >
+                  Payable <ArrowUpRight size={12} />
                 </button>
               </div>
               
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div 
+                  onClick={() => navigate('/admin/transactions')}
+                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all"
+                >
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border-[3px] border-green-500"></div>
                     <span className="text-[13px] text-[#888]">Total GMV</span>
                   </div>
                   <span className="text-[13px] font-mono text-green-400">{loading ? '...' : formatMoney(financeStats.gmv)}</span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div 
+                  onClick={() => navigate('/admin/finance/payable')}
+                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all"
+                >
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border-[3px] border-blue-500"></div>
                     <span className="text-[13px] text-[#888]">Retained in Escrow</span>
@@ -154,39 +159,44 @@ export default function AdminDashboard() {
           {/* Community & Roles Breakdown */}
           <div>
             <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">Community (Roles)</h3>
-            <div 
-              onClick={() => navigate('/admin/users')}
-              className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group cursor-pointer hover:bg-[#111] hover:border-[#444] transition-all"
-            >
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group transition-all">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
                   Total Active Users
-                  <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" />
                 </span>
-                <span className="text-[14px] font-bold text-white group-hover:text-blue-400 transition-colors">{loading ? '...' : identityStats?.totalUsers}</span>
+                <span className="text-[14px] font-bold text-white transition-colors">{loading ? '...' : identityStats?.totalUsers}</span>
               </div>
               
-              <div className="space-y-4 pt-2 border-t border-[#222]">
-                <div className="flex items-center justify-between">
+              <div className="space-y-1 pt-2 border-t border-[#222]">
+                <div 
+                  onClick={() => navigate('/admin/users')}
+                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all group/item"
+                >
                   <div className="flex items-center gap-2">
-                    <Users size={14} className="text-[#888]" />
-                    <span className="text-[13px] text-[#888]">Buyers (B2C)</span>
+                    <Users size={14} className="text-[#888] group-hover/item:text-white transition-colors" />
+                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">Buyers (B2C)</span>
                   </div>
-                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : identityStats?.roles?.buyer}</span>
+                  <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.buyer}</span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div 
+                  onClick={() => navigate('/admin/crm/contacts')}
+                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all group/item"
+                >
                   <div className="flex items-center gap-2">
                     <Users size={14} className="text-purple-500" />
-                    <span className="text-[13px] text-[#888]">Sellers (B2B)</span>
+                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">Sellers (B2B)</span>
                   </div>
-                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : identityStats?.roles?.seller}</span>
+                  <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.seller}</span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div 
+                  onClick={() => navigate('/admin/users')}
+                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all group/item"
+                >
                   <div className="flex items-center gap-2">
                     <Users size={14} className="text-red-500" />
-                    <span className="text-[13px] text-[#888]">Administrators</span>
+                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">Administrators</span>
                   </div>
-                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : identityStats?.roles?.admin}</span>
+                  <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.admin}</span>
                 </div>
               </div>
             </div>
@@ -209,15 +219,15 @@ export default function AdminDashboard() {
                     <p className="text-[13px] text-[#EDEDED] leading-snug">{alert.msg}</p>
                   </div>
                   {alert.action && alert.path && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                       <button 
-                         onClick={() => navigate(alert.path)}
-                         className="flex items-center gap-1 text-[11px] font-semibold bg-[#222] text-[#DDD] px-2 py-1 rounded border border-[#333] hover:bg-[#333] transition-colors"
-                       >
-                         {alert.action}
-                         <ArrowRight size={10} />
-                       </button>
-                    </div>
+                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <button 
+                          onClick={() => navigate(alert.path)}
+                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#222] text-[#DDD] px-2 py-1 rounded border border-[#333] hover:bg-[#333] transition-colors"
+                        >
+                          {alert.action}
+                          <ArrowRight size={10} />
+                        </button>
+                     </div>
                   )}
                 </div>
               ))}
@@ -231,25 +241,32 @@ export default function AdminDashboard() {
           <div className="space-y-4">
             
             {/* Platform Pulse */}
-            <div 
-              onClick={() => navigate('/admin/image-to-3d')}
-              className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:bg-[#111] hover:border-[#444] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start gap-4 group"
-            >
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0 group-hover:bg-[#222] transition-colors">
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition-all">
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
                   <TrendingUp size={20} className="text-purple-400" />
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span className="flex items-center gap-2">Listings & AI Engine <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" /></span>
-                    <button className="text-[#666] group-hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                    <span>Listings & AI Engine</span>
+                    <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Total Listings (Anúncios)</div>
+                     <div 
+                       onClick={() => navigate('/catalog')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          Total Listings (Anúncios) <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : platformStats.newListings}</div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">3D Renders in Queue</div>
+                     <div 
+                       onClick={() => navigate('/admin/image-to-3d')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          3D Renders in Queue <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-purple-400">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">jobs</span></div>
                      </div>
                   </div>
@@ -257,29 +274,41 @@ export default function AdminDashboard() {
             </div>
 
             {/* Trust & Safety Pulse */}
-            <div 
-               onClick={() => navigate('/admin/reviews')}
-               className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:bg-[#111] hover:border-[#444] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start gap-4 group"
-            >
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0 group-hover:bg-[#222] transition-colors">
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition-all">
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
                   <ShieldAlert size={20} className="text-blue-400" />
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span className="flex items-center gap-2">Trust, Validation & Reputation <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" /></span>
-                    <button className="text-[#666] group-hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                    <span>Trust, Validation & Reputation</span>
+                    <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Company Val. (B2B)</div>
+                     <div 
+                       onClick={() => navigate('/admin/crm/contacts')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          Company Val. (B2B) <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.pendingKYC} <span className="text-[11px] text-[#666]">pending</span></div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Flagged Reviews</div>
+                     <div 
+                       onClick={() => navigate('/admin/reviews')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          Flagged Reviews <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.flaggedReviews} <span className="text-[11px] text-[#666]">(&lt;3 stars)</span></div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1 group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Open Disputes</div>
+                     <div 
+                       onClick={() => navigate('/admin/transactions')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1 hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          Open Disputes <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : trustStats.openDisputes}</div>
                      </div>
                   </div>
@@ -287,25 +316,32 @@ export default function AdminDashboard() {
             </div>
 
             {/* Logistics Pulse */}
-            <div 
-               onClick={() => navigate('/admin/logistix')}
-               className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:bg-[#111] hover:border-[#444] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start gap-4 group"
-            >
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0 group-hover:bg-[#222] transition-colors">
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition-all">
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
                   <Package size={20} className="text-orange-400" />
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span className="flex items-center gap-2">Logistics & WMS Pulse <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" /></span>
-                    <button className="text-[#666] group-hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                    <span>Logistics & WMS Pulse</span>
+                    <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Pending Shipments</div>
+                     <div 
+                       onClick={() => navigate('/admin/logistix')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          Pending Shipments <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : logisticsStats.pendingShipments}</div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Delayed / Exception</div>
+                     <div 
+                       onClick={() => navigate('/admin/logistix')}
+                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
+                     >
+                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
+                          Delayed / Exception <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                        </div>
                         <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : logisticsStats.delayed}</div>
                      </div>
                   </div>
