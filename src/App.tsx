@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { I18nProvider } from '@/modules/shared/lib/i18n'
 import Layout from '@/modules/shared/components/layout/Layout'
 import ProtectedRoute from '@/modules/identity/components/ProtectedRoute'
+import OnboardingGuard from '@/modules/identity/components/OnboardingGuard'
 import ScrollToTop from '@/modules/shared/components/ScrollToTop'
 import PWARegister from '@/modules/shared/components/PWARegister'
 import GlobalLoader from '@/modules/shared/components/GlobalLoader'
@@ -18,6 +19,7 @@ const Login = lazy(() => import('@/modules/identity/pages/Login'))
 const Register = lazy(() => import('@/modules/identity/pages/Register'))
 const Dashboard = lazy(() => import('@/modules/backoffice/pages/Dashboard'))
 const CreateListing = lazy(() => import('@/modules/parts-catalog/pages/CreateListing'))
+const Onboarding = lazy(() => import('@/modules/identity/pages/Onboarding'))
 const Profile = lazy(() => import('@/modules/identity/pages/Profile'))
 const Favorites = lazy(() => import('@/modules/parts-catalog/pages/Favorites'))
 const Messages = lazy(() => import('@/modules/chat/pages/Messages'))
@@ -83,13 +85,16 @@ function App() {
             
             {/* Rotas Protegidas (Exigem Login) */}
             <Route element={<ProtectedRoute />}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="create-listing" element={<CreateListing />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="favorites" element={<Favorites />} />
-              <Route path="messages" element={<Messages />} />
-              <Route path="checkout/:id" element={<PaymentCheckout />} />
-              <Route path="motion-frame" element={<MotionFramePage />} />
+              <Route path="onboarding" element={<Onboarding />} />
+              <Route element={<OnboardingGuard />}>
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="create-listing" element={<CreateListing />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="favorites" element={<Favorites />} />
+                <Route path="messages" element={<Messages />} />
+                <Route path="checkout/:id" element={<PaymentCheckout />} />
+                <Route path="motion-frame" element={<MotionFramePage />} />
+              </Route>
             </Route>
           </Route>
 

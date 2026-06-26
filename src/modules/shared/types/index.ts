@@ -17,6 +17,18 @@ export interface User {
   role?: string
   created_at: string
   updated_at?: string
+  // Onboarding
+  onboarding_completed?: boolean
+  account_type?: 'pessoa_fisica' | 'oficina' | 'desmanche' | 'concessionaria' | 'loja_pecas' | 'importadora'
+  // Store Verify
+  store_verified?: boolean
+  store_type?: string
+  store_name?: string
+  store_document?: string
+  store_status?: 'none' | 'pending' | 'approved' | 'rejected'
+  store_requested_at?: string
+  store_approved_at?: string
+  store_rejected_reason?: string
 }
 
 export interface Product {

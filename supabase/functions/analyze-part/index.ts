@@ -1,4 +1,4 @@
-import { successResponse, errorResponse, corsHeaders } from '../utils/base.ts';
+import { successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
 
 /**
  * Analyze Part Edge Function
@@ -8,6 +8,10 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders() });
   }
+
+  // Security: Require auth to protect API quotas
+  const { response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
   try {
     const { image } = await req.json();

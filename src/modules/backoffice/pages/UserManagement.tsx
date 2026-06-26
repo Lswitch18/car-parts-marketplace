@@ -398,6 +398,8 @@ export default function UserManagement() {
         status: selectedUser.status || 'ativo',
         role: selectedUser.role,
         is_verified: selectedUser.is_verified,
+        store_verified: selectedUser.store_verified,
+        account_type: selectedUser.account_type,
         address: selectedUser.address || '',
         cep: selectedUser.cep || '',
         birthdate: selectedUser.birthdate || null,
@@ -1221,6 +1223,19 @@ export default function UserManagement() {
                   </select>
                 </div>
 
+                {/* Account Type */}
+                <div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('Tipo de Conta (Onboarding)')}</label>
+                  <select
+                    value={selectedUser.account_type || 'pessoa_fisica'}
+                    onChange={(e) => setSelectedUser({ ...selectedUser, account_type: e.target.value })}
+                    className="w-full bg-white border-2 border-black rounded-lg px-3 py-2.5 text-sm text-black font-bold focus:outline-none"
+                  >
+                    <option value="pessoa_fisica">{t('Pessoa Física')}</option>
+                    <option value="empresa">{t('Empresa (Desmanche, Loja)')}</option>
+                  </select>
+                </div>
+
                 {/* Status */}
                 <div>
                   <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">{t('Status da Conta')}</label>
@@ -1387,6 +1402,21 @@ export default function UserManagement() {
                   className={`w-12 h-6 rounded-full p-0.5 transition-colors border border-black/20 ${selectedUser.is_verified ? 'bg-black' : 'bg-slate-200'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${selectedUser.is_verified ? 'translate-x-6' : 'translate-x-0'}`} />
+                </button>
+              </div>
+
+              {/* Store Verified toggler */}
+              <div className="flex items-center justify-between p-4 border-2 border-black rounded-xl bg-slate-50">
+                <div>
+                  <span className="text-sm font-black uppercase tracking-tight text-black">{t('Store Verify (Empresa Oficial)')}</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">{t('Habilitar loja para venda de peças ilimitadas.')}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedUser({ ...selectedUser, store_verified: !selectedUser.store_verified })}
+                  className={`w-12 h-6 rounded-full p-0.5 transition-colors border border-black/20 ${selectedUser.store_verified ? 'bg-black' : 'bg-slate-200'}`}
+                >
+                  <div className={`w-5 h-5 rounded-full bg-white transition-transform ${selectedUser.store_verified ? 'translate-x-6' : 'translate-x-0'}`} />
                 </button>
               </div>
 

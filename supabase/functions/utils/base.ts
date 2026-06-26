@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { rateLimit } from './redis.ts';
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -44,6 +45,37 @@ export async function verifyToken(token: string) {
   return user;
 }
 
+export async function requireAuth(req: Request) {
+  const rlResponse = await checkRateLimit(req, 100, 60);
+  if (rlResponse) {
+    return { user: null, response: rlResponse };
+  }
+
+  const token = getAuthUser(req);
+  if (!token) {
+    return {
+      user: null,
+      response: new Response(JSON.stringify(unauthorizedResponse()), {
+        status: 401,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      })
+    };
+  }
+
+  const user = await verifyToken(token);
+  if (!user) {
+    return {
+      user: null,
+      response: new Response(JSON.stringify(errorResponse('Token inválido ou expirado')), {
+        status: 401,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      })
+    };
+  }
+
+  return { user, response: null };
+}
+
 export function getUuidFromBody(body: unknown, field: string): string | null {
   const value = body?.[field];
   if (!value || typeof value !== 'string') return null;
@@ -62,4 +94,16 @@ export function corsHeaders() {
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   };
+}
+
+export async function checkRateLimit(req: Request, max: number = 100, window: number = 60): Promise<Response | null> {
+  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
+  const allowed = await rateLimit(ip, max, window);
+  if (!allowed) {
+    return new Response(JSON.stringify(errorResponse('Too many requests. Please try again later.')), {
+      status: 429,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json', 'Retry-After': String(window) },
+    });
+  }
+  return null;
 }

@@ -1,8 +1,20 @@
-import { supabase, successResponse, errorResponse, corsHeaders } from '../utils/base.ts';
+import { supabase, successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders() });
+  }
+
+  // Security: Require admin auth for financial and analytics data
+  const { user, response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+  if (profile?.role !== 'admin') {
+    return new Response(JSON.stringify(errorResponse('Acesso negado. Requer privilégios de administrador.')), {
+      status: 403,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
 
   try {

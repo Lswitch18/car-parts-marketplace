@@ -1,4 +1,4 @@
-import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken } from '../utils/base.ts';
+import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken, requireAuth } from '../utils/base.ts';
 
 const COMMISSION_RATE = 0.10;
 const STRIPE_FEE_RATE = 0.029;
@@ -20,16 +20,7 @@ function calculateFees(amount: number) {
   };
 }
 
-/** Extrai o token JWT do header Authorization */
-function requireAuth(req: Request): Response | null {
-  const token = getAuthUser(req);
-  if (!token) {
-    return new Response(JSON.stringify(errorResponse('Token required')), {
-      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
-  return null; // authenticated
-}
+// requireAuth foi movido para utils/base.ts
 
 // ─── Router ────────────────────────────────────────────────────
 Deno.serve(async (req) => {
@@ -229,15 +220,33 @@ async function listAuctions(req: Request) {
 
 // ─── POST /auctions/create ─────────────────────────────────────
 async function createAuction(req: Request, body: Record<string, unknown>) {
-  const authErr = requireAuth(req);
-  if (authErr) return authErr;
+  const { user, response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
-  const user = await verifyToken(getAuthUser(req)!);
-  if (!user) {
-    return new Response(JSON.stringify(errorResponse('Invalid token')), {
-      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+  // --- Regras de Negócio de Criação ---
+  const { data: profile } = await supabase.from('profiles').select('account_type, store_verified').eq('id', user.id).single();
+  
+  if (profile?.account_type !== 'pessoa_fisica' && !profile?.store_verified) {
+    return new Response(JSON.stringify(errorResponse('Sua loja precisa ser verificada antes de criar anúncios')), {
+      status: 403,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
   }
+
+  if (profile?.account_type === 'pessoa_fisica') {
+    const { count } = await supabase.from('parts')
+      .select('*', { count: 'exact', head: true })
+      .eq('seller_id', user.id)
+      .in('status', ['active', 'sold']);
+      
+    if (count !== null && count >= 10) {
+      return new Response(JSON.stringify(errorResponse('Limite de 10 peças atingido para Pessoa Física. Atualize para conta Empresa.')), {
+        status: 403,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+  }
+  // --- Fim Regras ---
 
   const {
     title, description, starting_bid, buy_now_price,
@@ -292,15 +301,8 @@ async function createAuction(req: Request, body: Record<string, unknown>) {
 
 // ─── POST /auctions/bid ────────────────────────────────────────
 async function placeBid(req: Request, body: Record<string, unknown>) {
-  const authErr = requireAuth(req);
-  if (authErr) return authErr;
-
-  const user = await verifyToken(getAuthUser(req)!);
-  if (!user) {
-    return new Response(JSON.stringify(errorResponse('Invalid token')), {
-      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
+  const { user, response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
   const { auction_id, amount } = body;
   if (!auction_id || !amount) {
@@ -342,8 +344,8 @@ async function placeBid(req: Request, body: Record<string, unknown>) {
 
 // ─── POST /auctions/resolve ────────────────────────────────────
 async function resolveAuction(req: Request, body: Record<string, unknown>) {
-  const authErr = requireAuth(req);
-  if (authErr) return authErr;
+  const { response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
   const { auction_id } = body;
   if (!auction_id) {
@@ -375,8 +377,8 @@ async function resolveAuction(req: Request, body: Record<string, unknown>) {
 
 // ─── POST /auctions/resolve-all ────────────────────────────────
 async function resolveAllExpired(req: Request) {
-  const authErr = requireAuth(req);
-  if (authErr) return authErr;
+  const { response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
   const now = new Date().toISOString();
 
@@ -408,15 +410,8 @@ async function resolveAllExpired(req: Request) {
 
 // ─── POST /auctions/buy-now ────────────────────────────────────
 async function buyNow(req: Request, body: Record<string, unknown>) {
-  const authErr = requireAuth(req);
-  if (authErr) return authErr;
-
-  const user = await verifyToken(getAuthUser(req)!);
-  if (!user) {
-    return new Response(JSON.stringify(errorResponse('Invalid token')), {
-      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
+  const { user, response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
   const { auction_id } = body;
   if (!auction_id) {
@@ -453,15 +448,8 @@ async function buyNow(req: Request, body: Record<string, unknown>) {
 
 // ─── POST /auctions/pay ────────────────────────────────────────
 async function payAuctionWinner(req: Request, body: Record<string, unknown>) {
-  const authErr = requireAuth(req);
-  if (authErr) return authErr;
-
-  const user = await verifyToken(getAuthUser(req)!);
-  if (!user) {
-    return new Response(JSON.stringify(errorResponse('Invalid token')), {
-      status: 401, headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
+  const { user, response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
   const { transaction_id } = body;
   if (!transaction_id) {

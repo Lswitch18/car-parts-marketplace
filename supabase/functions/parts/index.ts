@@ -1,4 +1,4 @@
-import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken } from '../utils/base.ts';
+import { supabase, successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
 import { redisGet, redisSet, cacheKey } from '../utils/redis.ts';
 
 interface PartFilters {
@@ -57,8 +57,7 @@ Deno.serve(async (req) => {
     }
 
     if (req.method === 'POST') {
-      const body = await req.json();
-      return await createPart(body);
+      return await createPart(req);
     }
 
     return new Response(JSON.stringify(errorResponse('Endpoint não encontrado')), {
@@ -168,24 +167,37 @@ async function getPart(partId: string) {
   });
 }
 
-async function createPart(body: unknown) {
-  const token = getAuthUser(new Request('http://localhost'));
-  if (!token) {
-    return new Response(JSON.stringify(errorResponse('Token required')), {
-      status: 401,
-      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
+async function createPart(req: Request) {
+  const { user, response: authRes } = await requireAuth(req);
+  if (authRes) return authRes;
 
-  const user = await verifyToken(token);
-  if (!user) {
-    return new Response(JSON.stringify(errorResponse('Invalid token')), {
-      status: 401,
-      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-    });
-  }
-
+  const body = await req.json();
   const { title, description, price, condition, brand_id, category_id, model_id, images } = body as Record<string, unknown>;
+
+  // --- Regras de Negócio de Criação ---
+  const { data: profile } = await supabase.from('profiles').select('account_type, store_verified').eq('id', user.id).single();
+  
+  if (profile?.account_type !== 'pessoa_fisica' && !profile?.store_verified) {
+    return new Response(JSON.stringify(errorResponse('Sua loja precisa ser verificada antes de criar anúncios')), {
+      status: 403,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (profile?.account_type === 'pessoa_fisica') {
+    const { count } = await supabase.from('parts')
+      .select('*', { count: 'exact', head: true })
+      .eq('seller_id', user.id)
+      .in('status', ['active', 'sold']);
+      
+    if (count !== null && count >= 10) {
+      return new Response(JSON.stringify(errorResponse('Limite de 10 peças atingido para Pessoa Física. Atualize para conta Empresa.')), {
+        status: 403,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+  }
+  // --- Fim Regras ---
 
   if (!title || typeof title !== 'string' || title.length < 3) {
     return new Response(JSON.stringify(errorResponse('Título é obrigatório (mín 3 caracteres)')), {

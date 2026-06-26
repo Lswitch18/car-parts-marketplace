@@ -43,3 +43,25 @@ export function cacheKey(params: Record<string, string | undefined>): string {
     .join('&');
   return `parts:${sorted || 'all'}`;
 }
+
+export async function rateLimit(ip: string, maxRequests: number = 100, windowSeconds: number = 60): Promise<boolean> {
+  if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return true; // fail-open se redis ausente
+  
+  try {
+    const key = `rl_${ip}`;
+    const res = await fetch(`${UPSTASH_REDIS_REST_URL}/incr/${key}`, {
+      headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` },
+    });
+    const { result } = await res.json();
+    
+    if (result === 1) {
+      await fetch(`${UPSTASH_REDIS_REST_URL}/expire/${key}/${windowSeconds}`, {
+        headers: { Authorization: `Bearer ${UPSTASH_REDIS_REST_TOKEN}` },
+      });
+    }
+    
+    return result <= maxRequests;
+  } catch {
+    return true; // fail-open em caso de erro no Redis
+  }
+}

@@ -12,6 +12,8 @@ function corsHeaders() {
   };
 }
 
+import { checkRateLimit } from '../utils/base.ts';
+
 function json(data: unknown, status = 200) {
   const wrapped = status >= 200 && status < 300
     ? { success: true, data }
@@ -285,6 +287,9 @@ async function handleDashboard(req: Request, path: string) {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders() });
 
+  const rlResponse = await checkRateLimit(req, 100, 60);
+  if (rlResponse) return rlResponse;
+
   const url = new URL(req.url);
   const path = url.pathname.replace(/^(\/functions\/v1)?\/admin/, '').replace(/\/$/, '');
   const body = req.method === 'GET' || req.method === 'DELETE' ? {} : await req.json().catch(() => ({}));
@@ -437,6 +442,8 @@ Deno.serve(async (req) => {
         if (body.status !== undefined) updates.status = body.status;
         if (body.role !== undefined) updates.role = body.role;
         if (body.is_verified !== undefined) updates.is_verified = body.is_verified;
+        if (body.store_verified !== undefined) updates.store_verified = body.store_verified;
+        if (body.account_type !== undefined) updates.account_type = body.account_type;
         if (body.address !== undefined) updates.address = body.address;
         if (body.cep !== undefined) updates.cep = body.cep;
         if (body.birthdate !== undefined) updates.birthdate = body.birthdate;

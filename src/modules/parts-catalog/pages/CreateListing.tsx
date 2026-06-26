@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '@/modules/identity/store/authStore'
@@ -18,6 +18,37 @@ export default function CreateListing() {
   const [analyzing, setAnalyzing] = useState(false)
   const [aiEnabled, setAiEnabled] = useState(true)
   const [isAuction, setIsAuction] = useState(false)
+  const [partsCount, setPartsCount] = useState<number | null>(null)
+  const [showLimitModal, setShowLimitModal] = useState(false)
+  const [showUnverifiedModal, setShowUnverifiedModal] = useState(false)
+
+  // Fetch count when user loads
+  useEffect(() => {
+    if (!user) return
+    
+    // Empresa não verificada já bloqueia na entrada
+    if (user.account_type !== 'pessoa_fisica' && !user.store_verified) {
+      setShowUnverifiedModal(true)
+      return
+    }
+
+    // Pessoa física conta quantas já publicou
+    if (user.account_type === 'pessoa_fisica') {
+      supabase
+        .from('parts')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user.id)
+        .in('status', ['active', 'sold'])
+        .then(({ count, error }) => {
+          if (!error && count !== null) {
+            setPartsCount(count)
+            if (count >= 10) {
+              setShowLimitModal(true)
+            }
+          }
+        })
+    }
+  })
 
   const [formData, setFormData] = useState({
     title: '',
@@ -147,6 +178,52 @@ export default function CreateListing() {
   if (!user) {
     navigate('/login')
     return null
+  }
+
+  // --- Regras de Bloqueio Modal ---
+  if (showUnverifiedModal) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="card max-w-md w-full p-8 text-center">
+          <div className="w-16 h-16 bg-[#ff3d00]/10 text-[#ff3d00] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Gavel className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-bold text-text mb-2">{t('Loja em Verificação')}</h2>
+          <p className="text-text-secondary mb-6">
+            {user.store_status === 'pending' 
+              ? t('Sua solicitação de loja está em análise. Assim que for aprovada, você poderá criar anúncios ilimitados.')
+              : t('Você precisa solicitar a verificação da sua loja para poder vender peças.')}
+          </p>
+          <button onClick={() => navigate('/catalog')} className="w-full bg-[#ff3d00] hover:bg-[#e63600] text-white py-3 rounded-lg font-medium transition-colors">
+            {t('Voltar ao Catálogo')}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (showLimitModal) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="card max-w-md w-full p-8 text-center">
+          <div className="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Upload className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-bold text-text mb-2">{t('Limite Atingido')}</h2>
+          <p className="text-text-secondary mb-6">
+            {t('Como pessoa física, você pode anunciar até 10 peças (você já usou todas). Para continuar vendendo, atualize sua conta para uma Empresa Verificada.')}
+          </p>
+          <div className="space-y-3">
+            <button onClick={() => navigate('/onboarding')} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors">
+              {t('Verificar como Empresa')}
+            </button>
+            <button onClick={() => navigate('/dashboard')} className="w-full bg-surface border border-border hover:bg-surface-hover text-text py-3 rounded-lg font-medium transition-colors">
+              {t('Voltar ao Dashboard')}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
