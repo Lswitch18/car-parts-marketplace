@@ -678,41 +678,40 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black p-6 md:p-10 font-sans antialiased">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-black/15 pb-6">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Header Actions */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-black uppercase tracking-widest text-slate-500">Sistema Operacional</span>
-          <h1 className="text-4xl font-black uppercase tracking-tight text-black mt-1">
-            {t('Controle de Permissões')}
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            {t('User & Access Management')}
           </h1>
-          <p className="text-slate-600 text-sm mt-1">{t('Gestão interna de setores, atribuições de cargos e níveis de acesso ao banco.')}</p>
+          <p className="text-white/50 text-sm mt-1">{t('Manage roles, permissions, departments, and account verifications.')}</p>
         </div>
 
         {/* Action Button depending on current tab */}
-        <div>
+        <div className="flex items-center gap-3">
           {activeTab === 'users' && (
             <button 
               onClick={() => setShowCreateUserModal(true)}
-              className="bg-black hover:bg-neutral-800 text-white font-bold px-4 py-2.5 rounded-lg text-xs uppercase tracking-widest transition-all border-2 border-black flex items-center gap-2 shadow-sm"
+              className="bg-white hover:bg-white/90 text-black text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
             >
-              <Plus size={14} strokeWidth={3} /> {t('Novo Usuário')}
+              <Plus size={16} /> {t('Add User')}
             </button>
           )}
           {activeTab === 'cargos' && (
             <button 
               onClick={handleOpenCreateCargo}
-              className="bg-black hover:bg-neutral-800 text-white font-bold px-4 py-2.5 rounded-lg text-xs uppercase tracking-widest transition-all border-2 border-black flex items-center gap-2 shadow-sm"
+              className="bg-white hover:bg-white/90 text-black text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
             >
-              <Plus size={14} strokeWidth={3} /> {t('Novo Cargo')}
+              <Plus size={16} /> {t('Add Role')}
             </button>
           )}
           {activeTab === 'setores' && (
             <button 
               onClick={handleOpenCreateSetor}
-              className="bg-black hover:bg-neutral-800 text-white font-bold px-4 py-2.5 rounded-lg text-xs uppercase tracking-widest transition-all border-2 border-black flex items-center gap-2 shadow-sm"
+              className="bg-white hover:bg-white/90 text-black text-sm font-medium px-4 py-2 rounded-md transition-colors flex items-center gap-2"
             >
-              <Plus size={14} strokeWidth={3} /> {t('Novo Setor')}
+              <Plus size={16} /> {t('Add Department')}
             </button>
           )}
         </div>
@@ -720,59 +719,73 @@ export default function UserManagement() {
 
       {/* Messages */}
       {error && (
-        <div className="max-w-7xl mx-auto bg-red-50 border-2 border-black text-black p-4 mb-6 rounded-lg flex items-start gap-3 animate-in fade-in duration-200">
-          <ShieldAlert className="text-red-600 shrink-0 mt-0.5" size={18} />
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg flex items-start gap-3">
+          <ShieldAlert className="shrink-0 mt-0.5" size={18} />
           <div>
-            <span className="font-bold text-xs uppercase tracking-wider block mb-0.5">Erro detectado</span>
-            <p className="text-sm font-medium">{error}</p>
+            <span className="font-semibold text-sm block mb-0.5">Error detected</span>
+            <p className="text-sm">{error}</p>
           </div>
         </div>
       )}
 
       {successMsg && (
-        <div className="max-w-7xl mx-auto bg-slate-50 border-2 border-black text-black p-4 mb-6 rounded-lg flex items-start gap-3 animate-in fade-in duration-200">
-          <Check className="text-black shrink-0 mt-0.5" size={18} strokeWidth={3} />
+        <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-lg flex items-start gap-3">
+          <Check className="shrink-0 mt-0.5" size={18} />
           <div>
-            <span className="font-bold text-xs uppercase tracking-wider block mb-0.5">Operação Concluída</span>
-            <p className="text-sm font-medium">{successMsg}</p>
+            <span className="font-semibold text-sm block mb-0.5">Success</span>
+            <p className="text-sm">{successMsg}</p>
           </div>
         </div>
       )}
 
       {/* Tabs Navigation */}
-      <div className="max-w-7xl mx-auto mb-8 flex border-b-2 border-black">
+      <div className="flex border-b border-white/10 gap-6">
         <button
           onClick={() => { setActiveTab('users'); setError(null); }}
-          className={`px-6 py-3 font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all border-t-2 border-x-2 -mb-[2px] rounded-t-lg ${
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
             activeTab === 'users' 
-              ? 'bg-white border-black text-black border-b-white' 
-              : 'bg-slate-50 border-transparent text-slate-500 hover:text-black border-b-black'
+              ? 'border-white text-white' 
+              : 'border-transparent text-white/50 hover:text-white/80'
           }`}
         >
-          <Users size={14} />
-          {t('Usuários')}
+          <span className="flex items-center gap-2"><Users size={16} /> {t('Users')}</span>
         </button>
         <button
           onClick={() => { setActiveTab('cargos'); setError(null); }}
-          className={`px-6 py-3 font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all border-t-2 border-x-2 -mb-[2px] rounded-t-lg ${
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
             activeTab === 'cargos' 
-              ? 'bg-white border-black text-black border-b-white' 
-              : 'bg-slate-50 border-transparent text-slate-500 hover:text-black border-b-black'
+              ? 'border-white text-white' 
+              : 'border-transparent text-white/50 hover:text-white/80'
           }`}
         >
-          <Briefcase size={14} />
-          {t('Cargos & Roles')}
+          <span className="flex items-center gap-2"><Briefcase size={16} /> {t('Roles')}</span>
         </button>
         <button
           onClick={() => { setActiveTab('setores'); setError(null); }}
-          className={`px-6 py-3 font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all border-t-2 border-x-2 -mb-[2px] rounded-t-lg ${
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
             activeTab === 'setores' 
-              ? 'bg-white border-black text-black border-b-white' 
-              : 'bg-slate-50 border-transparent text-slate-500 hover:text-black border-b-black'
+              ? 'border-white text-white' 
+              : 'border-transparent text-white/50 hover:text-white/80'
           }`}
         >
-          <FolderTree size={14} />
-          {t('Setores')}
+          <span className="flex items-center gap-2"><FolderTree size={16} /> {t('Departments')}</span>
+        </button>
+        <button
+          onClick={() => { setActiveTab('verificacoes'); setError(null); }}
+          className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
+            activeTab === 'verificacoes' 
+              ? 'border-white text-white' 
+              : 'border-transparent text-white/50 hover:text-white/80'
+          }`}
+        >
+          <span className="flex items-center gap-2">
+            <ShieldAlert size={16} /> {t('Verifications')}
+            {pendingVerificationsCount > 0 && (
+              <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-1">
+                {pendingVerificationsCount}
+              </span>
+            )}
+          </span>
         </button>
       </div>
 
@@ -780,19 +793,19 @@ export default function UserManagement() {
       {/* TAB: USERS WITH ACTION SIDEBAR */}
       {/* ---------------------------------------------------- */}
       {activeTab === 'users' && (
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main User List Section */}
           <div className="lg:col-span-9 space-y-6">
             {/* Filters Bar */}
-            <div className="bg-slate-50 border-2 border-black rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
+            <div className="bg-[#111] border border-white/10 rounded-xl p-4 flex flex-col md:flex-row items-center gap-4">
               <div className="relative w-full md:flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" size={18} />
                 <input
                   type="text"
                   placeholder={t('Pesquisar usuários por nome ou email...')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-black/15 focus:border-black rounded-lg text-sm text-black placeholder-slate-400 focus:outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-2 bg-[#1A1A1A] border border-white/10 focus:border-white/30 rounded-lg text-sm text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-white/30 transition-all"
                 />
               </div>
 
@@ -800,7 +813,7 @@ export default function UserManagement() {
                 <select
                   value={filterRole}
                   onChange={(e) => setFilterRole(e.target.value)}
-                  className="w-full md:w-44 bg-white border-2 border-black/15 focus:border-black rounded-lg px-3 py-2.5 text-xs font-bold text-black focus:outline-none"
+                  className="w-full md:w-44 bg-[#1A1A1A] border border-white/10 focus:border-white/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-all"
                 >
                   <option value="">{t('Todas as Roles')}</option>
                   <option value="user">{t('Usuário')}</option>
@@ -811,7 +824,7 @@ export default function UserManagement() {
                 <select
                   value={filterSetor}
                   onChange={(e) => setFilterSetor(e.target.value)}
-                  className="w-full md:w-48 bg-white border-2 border-black/15 focus:border-black rounded-lg px-3 py-2.5 text-xs font-bold text-black focus:outline-none"
+                  className="w-full md:w-48 bg-[#1A1A1A] border border-white/10 focus:border-white/30 rounded-lg px-3 py-2 text-sm text-white focus:outline-none transition-all"
                 >
                   <option value="">{t('Todos os Setores')}</option>
                   {setores.map(s => (
@@ -822,24 +835,24 @@ export default function UserManagement() {
             </div>
 
             {/* Users Table */}
-            <div className="bg-white border-2 border-black rounded-xl overflow-hidden shadow-xs">
+            <div className="bg-[#111] border border-white/10 rounded-xl overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-black/15">
-                  <thead className="bg-slate-50">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-[#1A1A1A] border-b border-white/10">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Colaborador')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Email')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Role')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Setor / Cargo')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Verificado')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-black uppercase tracking-wider">{t('Anúncios')}</th>
-                      <th className="px-6 py-4 text-right text-xs font-black text-black uppercase tracking-wider">{t('Ações')}</th>
+                      <th className="px-6 py-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Colaborador')}</th>
+                      <th className="px-6 py-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Email')}</th>
+                      <th className="px-6 py-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Role')}</th>
+                      <th className="px-6 py-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Setor / Cargo')}</th>
+                      <th className="px-6 py-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Verificado')}</th>
+                      <th className="px-6 py-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Anúncios')}</th>
+                      <th className="px-6 py-4 text-right text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Ações')}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-black/10">
+                  <tbody className="divide-y divide-white/10">
                     {filteredUsers.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-6 py-12 text-center text-slate-400 text-sm font-semibold uppercase tracking-wider">
+                        <td colSpan={7} className="px-6 py-12 text-center text-white/40 text-sm font-medium">
                           {t('Nenhum usuário localizado')}
                         </td>
                       </tr>
@@ -847,7 +860,7 @@ export default function UserManagement() {
                       filteredUsers.map((u) => (
                         <tr 
                           key={u.id} 
-                          className="hover:bg-slate-50 transition-colors cursor-pointer"
+                          className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
                           onClick={(e) => {
                             const target = e.target as HTMLElement;
                             if (target.closest('button') || target.closest('a') || target.closest('select') || target.closest('input')) {
@@ -856,48 +869,48 @@ export default function UserManagement() {
                             setActiveModUser(u);
                           }}
                         >
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-black flex items-center space-x-3">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white flex items-center space-x-3">
                             {u.avatar_url ? (
-                              <img src={u.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover border border-black/10" />
+                              <img src={u.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover border border-white/10" />
                             ) : (
-                              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-black text-slate-880 border border-black/10">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#10B981] to-[#059669] flex items-center justify-center text-xs font-bold text-white shadow-sm">
                                 {(u.full_name || 'U')[0].toUpperCase()}
                               </div>
                             )}
                             <div className="flex flex-col">
-                              <span className="text-sm font-black">{u.full_name || 'Sem nome'}</span>
-                              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{u.status || 'ativo'}</span>
+                              <span className="text-sm font-medium text-white/90">{u.full_name || 'Sem nome'}</span>
+                              <span className="text-[10px] text-white/50 uppercase tracking-wider">{u.status || 'ativo'}</span>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 font-medium">{u.email}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white/70">{u.email}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${
+                            <span className={`text-[10px] font-medium uppercase tracking-widest px-2 py-0.5 rounded-full border ${
                               u.role === 'admin' 
-                                ? 'bg-black text-white border-black' 
+                                ? 'bg-white text-black border-transparent' 
                                 : u.role === 'seller'
-                                ? 'bg-slate-100 text-black border-black/20'
-                                : 'bg-white text-slate-600 border-black/10'
+                                ? 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20'
+                                : 'bg-white/5 text-white/70 border-white/10'
                             }`}>
                               {u.role === 'admin' ? t('Admin') : u.role === 'seller' ? t('Vendedor') : t('Comprador')}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-600 font-bold">
+                          <td className="px-6 py-4 whitespace-nowrap text-xs text-white/70">
                             {u.setor?.nome || u.cargo?.nome ? (
                               <div className="flex flex-col gap-0.5">
-                                <span className="text-black font-black">{u.cargo?.nome || '—'}</span>
-                                <span className="text-[10px] text-slate-500 font-normal uppercase tracking-wider">{u.setor?.nome || '—'}</span>
+                                <span className="text-white/90 font-medium">{u.cargo?.nome || '—'}</span>
+                                <span className="text-[10px] text-white/40 uppercase tracking-wider">{u.setor?.nome || '—'}</span>
                               </div>
                             ) : (
-                              <span className="text-slate-400 font-normal italic">{t('Sem atribuição')}</span>
+                              <span className="text-white/30 italic">{t('Sem atribuição')}</span>
                             )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <button
                               onClick={() => toggleUserVerificationDirect(u.id, u.is_verified || false)}
-                              className={`px-2 py-1 text-[10px] font-black uppercase tracking-widest rounded border transition-colors ${
+                              className={`px-2 py-1 text-[10px] font-medium uppercase tracking-widest rounded-full border transition-colors ${
                                 u.is_verified 
-                                  ? 'bg-black text-white border-black' 
-                                  : 'bg-white text-slate-400 border-slate-200 hover:border-black hover:text-black'
+                                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20' 
+                                  : 'bg-white/5 text-white/40 border-white/10 hover:border-white/30 hover:text-white/80'
                               }`}
                             >
                               {u.is_verified ? t('Sim') : t('Não')}
@@ -906,25 +919,25 @@ export default function UserManagement() {
                           <td className="px-6 py-4 whitespace-nowrap">
                             {u.partsCount > 0 ? (
                               <div className="flex flex-col">
-                                <span className="text-xs font-bold text-black">{u.partsCount} {u.partsCount === 1 ? t('anúncio') : t('anúncios')}</span>
+                                <span className="text-xs font-medium text-white/90">{u.partsCount} {u.partsCount === 1 ? t('anúncio') : t('anúncios')}</span>
                                 <button 
                                   onClick={() => {
                                     setSelectedUserParts(u.parts || []);
                                     setSelectedUserPartsOwner(u.full_name || u.email);
                                   }} 
-                                  className="text-daig-blue hover:underline text-[10px] text-left font-black uppercase tracking-wider mt-0.5 flex items-center gap-1"
+                                  className="text-blue-400 hover:text-blue-300 hover:underline text-[10px] text-left uppercase tracking-wider mt-0.5 flex items-center gap-1 transition-colors"
                                 >
                                   <Eye size={10} /> {t('Ver todos')}
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-slate-400 text-xs italic">{t('Nenhum')}</span>
+                              <span className="text-white/30 text-xs italic">{t('Nenhum')}</span>
                             )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
                             <button
                               onClick={() => handleOpenUserDetails(u)}
-                              className="bg-white hover:bg-black hover:text-white text-black font-bold p-1.5 rounded border border-black transition-all inline-flex items-center"
+                              className="bg-transparent hover:bg-white/10 text-white/70 hover:text-white p-1.5 rounded border border-white/10 transition-all inline-flex items-center"
                               title={t('Editar Usuário')}
                             >
                               <Edit3 size={14} />
@@ -933,8 +946,8 @@ export default function UserManagement() {
                               onClick={() => handleToggleBlockUser(u.id, u.status || 'ativo')}
                               className={`p-1.5 rounded border transition-all inline-flex items-center ${
                                 u.status === 'blocked'
-                                  ? 'bg-red-50 text-red-600 border-red-600 hover:bg-red-100'
-                                  : 'bg-white hover:bg-neutral-800 hover:text-white text-black border-black/20 hover:border-black'
+                                  ? 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
+                                  : 'bg-transparent hover:bg-white/10 text-white/70 hover:text-white border-white/10'
                               }`}
                               title={u.status === 'blocked' ? t('Desbloquear Usuário') : t('Bloquear Usuário')}
                             >
@@ -1177,59 +1190,59 @@ export default function UserManagement() {
       {/* TAB: VERIFICAÇÕES DE LOJA / ONBOARDING */}
       {/* ---------------------------------------------------- */}
       {activeTab === 'verificacoes' && (
-        <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[8px_8px_0px_rgba(0,0,0,1)] animate-in fade-in zoom-in-95 duration-200">
+        <div className="bg-[#111] border border-white/10 rounded-xl p-6 shadow-sm animate-in fade-in zoom-in-95 duration-200">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-black uppercase tracking-wider flex items-center gap-2">
-              <ShieldAlert className="text-[#0D75FF]" />
+            <h2 className="text-lg font-semibold text-white tracking-wider flex items-center gap-2">
+              <ShieldAlert className="text-blue-400" />
               {t('Verificações e Onboarding')}
             </h2>
           </div>
 
-          <div className="overflow-x-auto border-2 border-black rounded-lg">
+          <div className="overflow-x-auto border border-white/10 rounded-lg bg-[#0A0A0A]">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-100 border-b-2 border-black">
-                  <th className="p-3 text-xs font-black uppercase tracking-wider">{t('Empresa')}</th>
-                  <th className="p-3 text-xs font-black uppercase tracking-wider">{t('Contato')}</th>
-                  <th className="p-3 text-xs font-black uppercase tracking-wider">{t('Status')}</th>
-                  <th className="p-3 text-xs font-black uppercase tracking-wider text-right">{t('Ações')}</th>
+                <tr className="bg-[#1A1A1A] border-b border-white/10">
+                  <th className="p-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Empresa')}</th>
+                  <th className="p-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Contato')}</th>
+                  <th className="p-4 text-xs font-semibold text-white/70 uppercase tracking-wider">{t('Status')}</th>
+                  <th className="p-4 text-xs font-semibold text-white/70 uppercase tracking-wider text-right">{t('Ações')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y-2 divide-black/10">
+              <tbody className="divide-y divide-white/10">
                 {users.filter(u => u.store_status === 'pending' || (u.account_type !== 'pessoa_fisica' && !u.onboarding_completed)).length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-8 text-center text-slate-500 font-bold">
+                    <td colSpan={4} className="p-8 text-center text-white/40 font-medium">
                       {t('Nenhuma verificação pendente.')}
                     </td>
                   </tr>
                 ) : (
                   users.filter(u => u.store_status === 'pending' || (u.account_type !== 'pessoa_fisica' && !u.onboarding_completed)).map(u => (
-                    <tr key={u.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="p-3">
-                        <div className="font-bold text-sm text-black">{u.store_name || t('Não informado')}</div>
-                        <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">
+                    <tr key={u.id} className="hover:bg-white/[0.02] transition-colors">
+                      <td className="p-4">
+                        <div className="font-medium text-sm text-white/90">{u.store_name || t('Não informado')}</div>
+                        <div className="text-xs text-white/50 uppercase tracking-wider mt-1">
                           {u.store_type || u.account_type} • CNPJ: {u.store_document || t('N/A')}
                         </div>
                       </td>
-                      <td className="p-3">
-                        <div className="text-sm font-bold text-black">{u.full_name || t('Sem nome')}</div>
-                        <div className="text-xs text-slate-500">{u.email}</div>
-                        {u.phone && <div className="text-xs text-slate-500">{u.phone}</div>}
+                      <td className="p-4">
+                        <div className="text-sm font-medium text-white/90">{u.full_name || t('Sem nome')}</div>
+                        <div className="text-xs text-white/50">{u.email}</div>
+                        {u.phone && <div className="text-xs text-white/50">{u.phone}</div>}
                       </td>
-                      <td className="p-3">
+                      <td className="p-4">
                         {u.store_status === 'pending' ? (
-                          <span className="inline-flex items-center gap-1 bg-[#ff3d00]/10 text-[#ff3d00] font-black uppercase text-[10px] px-2.5 py-1 rounded-full border-2 border-[#ff3d00]/20 tracking-wider">
+                          <span className="inline-flex items-center gap-1 bg-orange-500/10 text-orange-400 font-medium uppercase text-[10px] px-2.5 py-1 rounded-full border border-orange-500/20 tracking-wider">
                             <ShieldAlert size={12} /> {t('Aguardando')}
                           </span>
                         ) : !u.onboarding_completed ? (
-                          <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 font-black uppercase text-[10px] px-2.5 py-1 rounded-full border-2 border-yellow-300 tracking-wider">
+                          <span className="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-400 font-medium uppercase text-[10px] px-2.5 py-1 rounded-full border border-yellow-500/20 tracking-wider">
                             {t('Incompleto')}
                           </span>
                         ) : (
-                          <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">{u.store_status || t('N/A')}</span>
+                          <span className="text-[10px] font-medium uppercase text-white/40 tracking-wider">{u.store_status || t('N/A')}</span>
                         )}
                       </td>
-                      <td className="p-3 text-right">
+                      <td className="p-4 text-right">
                         {u.store_status === 'pending' && (
                           <div className="flex justify-end gap-2">
                             <button
@@ -1250,10 +1263,10 @@ export default function UserManagement() {
                                   setLoading(false);
                                 }
                               }}
-                              className="bg-[#10B981] hover:bg-[#059669] text-white p-2 rounded-lg transition-colors border-2 border-black"
+                              className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 p-2 rounded-md transition-colors border border-emerald-500/20"
                               title={t('Aprovar Loja')}
                             >
-                              <Check size={16} strokeWidth={3} />
+                              <Check size={16} />
                             </button>
                             <button
                               onClick={async () => {
@@ -1274,10 +1287,10 @@ export default function UserManagement() {
                                   }
                                 }
                               }}
-                              className="bg-[#EF4444] hover:bg-[#DC2626] text-white p-2 rounded-lg transition-colors border-2 border-black"
+                              className="bg-red-500/10 hover:bg-red-500/20 text-red-400 p-2 rounded-md transition-colors border border-red-500/20"
                               title={t('Rejeitar Loja')}
                             >
-                              <X size={16} strokeWidth={3} />
+                              <X size={16} />
                             </button>
                           </div>
                         )}

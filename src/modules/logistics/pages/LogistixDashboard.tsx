@@ -249,7 +249,7 @@ export default function LogistixDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-background text-text font-sans overflow-hidden relative border-t border-border antialiased">
+    <div className="flex h-[calc(100vh-8rem)] bg-transparent text-text font-sans overflow-hidden relative antialiased -m-8">
       {sidebarOpen && (
         <div className="fixed inset-0 z-30 bg-black/60 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
       )}
@@ -336,9 +336,9 @@ export default function LogistixDashboard() {
         </div>
       </aside>
 
-      {/* Main Content Pane - White background */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-background relative z-10">
-        <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-border bg-surface">
+      {/* Main Content Pane */}
+      <main className="flex-1 flex flex-col overflow-hidden bg-transparent relative z-10">
+        <header className="h-[74px] flex items-center justify-between px-6 flex-shrink-0 gap-4 border-b border-border bg-transparent">
           <div className="flex items-center gap-3 min-w-0">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text hover:bg-background flex-shrink-0">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -370,7 +370,7 @@ export default function LogistixDashboard() {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto bg-background p-4 lg:p-6">
+        <div className="flex-1 overflow-y-auto bg-transparent p-4 lg:p-6">
           {activeNav === 'dashboard' ? (
             <div className="space-y-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">

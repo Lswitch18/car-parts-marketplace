@@ -160,24 +160,22 @@ export default function TransactionManagement() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background p-6">
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
-        </div>
+      <div className="flex items-center justify-center py-20 animate-in fade-in duration-500">
+        <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background p-6">
-        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-          <p className="font-bold">{error}</p>
+      <div className="animate-in fade-in duration-500">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 mb-6 rounded-lg" role="alert">
+          <p className="font-semibold">{error}</p>
         </div>
-        <div className="flex items-center justify-center py-20">
+        <div className="flex items-center justify-center py-10">
           <button 
             onClick={() => window.location.reload()}
-            className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg"
+            className="bg-white hover:bg-white/90 text-black px-4 py-2 rounded-lg font-medium transition-colors"
           >
             {t('Tentar novamente')}
           </button>
@@ -204,8 +202,8 @@ export default function TransactionManagement() {
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="bg-surface border border-border rounded-lg p-6 mb-6">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-border pb-4 mb-4">
           <div>
             <h1 className="font-display text-2xl font-bold text-text">
