@@ -131,9 +131,9 @@ FILES = {
         "hash": "032e540eecccbb9e444b4822baf20143"
     },
     "brain.py": {
-        "size": 590121,
-        "modified": 1782488236.4331589,
-        "hash": "9bdbd4b62cdaf8c6c88a44739ffb0f96"
+        "size": 590308,
+        "modified": 1782488980.445159,
+        "hash": "a8f9549546710e9dab209d8d7998a9e7"
     },
     "vite.config.js": {
         "size": 894,
@@ -956,14 +956,14 @@ FILES = {
         "hash": "fafeeffaa980b99bf4c77546551b29c7"
     },
     "src/modules/identity/pages/Register.tsx": {
-        "size": 8721,
-        "modified": 1781833815.4476163,
-        "hash": "51d381c3c1b0166259b80af40d2904e9"
+        "size": 10352,
+        "modified": 1782488971.3011606,
+        "hash": "abb09fbf86cd0c8ae1b8b7b2ae06259b"
     },
     "src/modules/identity/pages/Login.tsx": {
-        "size": 6506,
-        "modified": 1781833815.4556162,
-        "hash": "ea780af7db900c5fcefc68d57fa09645"
+        "size": 6584,
+        "modified": 1782488991.3691595,
+        "hash": "b96d668f24b944e62c825bed5e57f891"
     },
     "src/modules/identity/pages/Profile.tsx": {
         "size": 7575,
