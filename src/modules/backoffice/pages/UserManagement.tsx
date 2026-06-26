@@ -44,7 +44,7 @@ export default function UserManagement() {
   const { t } = useI18n();
 
   // Navigation
-  const [activeTab, setActiveTab] = useState<'users' | 'cargos' | 'setores'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'cargos' | 'setores' | 'verificacoes'>('users');
 
   // Loading & Error States
   const [loading, setLoading] = useState(true);
@@ -1169,6 +1169,124 @@ export default function UserManagement() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------------------------------------------- */}
+      {/* TAB: VERIFICAÇÕES DE LOJA / ONBOARDING */}
+      {/* ---------------------------------------------------- */}
+      {activeTab === 'verificacoes' && (
+        <div className="bg-white border-2 border-black rounded-xl p-6 shadow-[8px_8px_0px_rgba(0,0,0,1)] animate-in fade-in zoom-in-95 duration-200">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-lg font-black uppercase tracking-wider flex items-center gap-2">
+              <ShieldAlert className="text-[#0D75FF]" />
+              {t('Verificações e Onboarding')}
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto border-2 border-black rounded-lg">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-100 border-b-2 border-black">
+                  <th className="p-3 text-xs font-black uppercase tracking-wider">{t('Empresa')}</th>
+                  <th className="p-3 text-xs font-black uppercase tracking-wider">{t('Contato')}</th>
+                  <th className="p-3 text-xs font-black uppercase tracking-wider">{t('Status')}</th>
+                  <th className="p-3 text-xs font-black uppercase tracking-wider text-right">{t('Ações')}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-2 divide-black/10">
+                {users.filter(u => u.store_status === 'pending' || (u.account_type !== 'pessoa_fisica' && !u.onboarding_completed)).length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-slate-500 font-bold">
+                      {t('Nenhuma verificação pendente.')}
+                    </td>
+                  </tr>
+                ) : (
+                  users.filter(u => u.store_status === 'pending' || (u.account_type !== 'pessoa_fisica' && !u.onboarding_completed)).map(u => (
+                    <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-3">
+                        <div className="font-bold text-sm text-black">{u.store_name || t('Não informado')}</div>
+                        <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-1">
+                          {u.store_type || u.account_type} • CNPJ: {u.store_document || t('N/A')}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="text-sm font-bold text-black">{u.full_name || t('Sem nome')}</div>
+                        <div className="text-xs text-slate-500">{u.email}</div>
+                        {u.phone && <div className="text-xs text-slate-500">{u.phone}</div>}
+                      </td>
+                      <td className="p-3">
+                        {u.store_status === 'pending' ? (
+                          <span className="inline-flex items-center gap-1 bg-[#ff3d00]/10 text-[#ff3d00] font-black uppercase text-[10px] px-2.5 py-1 rounded-full border-2 border-[#ff3d00]/20 tracking-wider">
+                            <ShieldAlert size={12} /> {t('Aguardando')}
+                          </span>
+                        ) : !u.onboarding_completed ? (
+                          <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 font-black uppercase text-[10px] px-2.5 py-1 rounded-full border-2 border-yellow-300 tracking-wider">
+                            {t('Incompleto')}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">{u.store_status || t('N/A')}</span>
+                        )}
+                      </td>
+                      <td className="p-3 text-right">
+                        {u.store_status === 'pending' && (
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={async () => {
+                                if (!window.confirm(t('Tem certeza que deseja aprovar esta loja?'))) return;
+                                try {
+                                  setLoading(true);
+                                  await adminApi.usuarios.update(u.id, { 
+                                    store_status: 'approved', 
+                                    store_verified: true, 
+                                    store_approved_at: new Date().toISOString() 
+                                  });
+                                  setSuccessMsg(t('Loja aprovada com sucesso.'));
+                                  await adminApi.usuarios.list().then(updatedUsers => setUsers(updatedUsers));
+                                } catch (err: any) {
+                                  setError(err.message || t('Erro ao aprovar loja.'));
+                                } finally {
+                                  setLoading(false);
+                                }
+                              }}
+                              className="bg-[#10B981] hover:bg-[#059669] text-white p-2 rounded-lg transition-colors border-2 border-black"
+                              title={t('Aprovar Loja')}
+                            >
+                              <Check size={16} strokeWidth={3} />
+                            </button>
+                            <button
+                              onClick={async () => {
+                                const reason = prompt(t('Motivo da rejeição:'));
+                                if (reason !== null) {
+                                  try {
+                                    setLoading(true);
+                                    await adminApi.usuarios.update(u.id, { 
+                                      store_status: 'rejected', 
+                                      store_rejected_reason: reason 
+                                    });
+                                    setSuccessMsg(t('Loja rejeitada.'));
+                                    await adminApi.usuarios.list().then(updatedUsers => setUsers(updatedUsers));
+                                  } catch (err: any) {
+                                    setError(err.message || t('Erro ao rejeitar loja.'));
+                                  } finally {
+                                    setLoading(false);
+                                  }
+                                }
+                              }}
+                              className="bg-[#EF4444] hover:bg-[#DC2626] text-white p-2 rounded-lg transition-colors border-2 border-black"
+                              title={t('Rejeitar Loja')}
+                            >
+                              <X size={16} strokeWidth={3} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
