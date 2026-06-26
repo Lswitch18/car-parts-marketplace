@@ -378,15 +378,18 @@ export default function Header() {
             )}
           </nav>
 
-          {/* ── Mobile hamburger ── */}
-          <button
-            id="header-mobile-menu-btn"
-            className="md:hidden p-2 rounded-lg transition-all"
-            onClick={() => setMenuOpen(!menuOpen)}
-            style={{ color: '#B0B5C0', background: 'rgba(255,255,255,0.04)' }}
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* ── Mobile Actions ── */}
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageDetector mobileCompact={true} />
+            <button
+              id="header-mobile-menu-btn"
+              className="p-2 rounded-lg transition-all"
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{ color: '#B0B5C0', background: 'rgba(255,255,255,0.04)' }}
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
