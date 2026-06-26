@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { getIdentityPulse } from '@/modules/identity/api/identityAdminApi';
 import { getPartsPulse } from '@/modules/parts-catalog/api/partsAdminApi';
 import { 
-  Search, Filter, ChevronDown, CheckCircle2, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, ShieldAlert, Users
+  Search, Filter, ChevronDown, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, ShieldAlert, Users, ArrowRight, ArrowUpRight
 } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   
   // Real stats state
@@ -25,15 +26,12 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
 
-        // 1. Modular Monolith Fetch: Identity
         const idPulse = await getIdentityPulse();
         setIdentityStats(idPulse);
 
-        // 2. Modular Monolith Fetch: Parts Catalog
         const pPulse = await getPartsPulse();
         setPlatformStats({ pending3D: 14, newListings: pPulse.totalListings || 0 });
 
-        // 3. Finance & Transactions
         const { data: txData } = await supabase.from('transactions').select('amount, status');
         let gmv = 0;
         let escrow = 0;
@@ -48,11 +46,9 @@ export default function AdminDashboard() {
         });
         setFinanceStats({ gmv, escrow, activeOrders });
 
-        // 4. Logistics
         const { count: pendingShip } = await supabase.from('transactions').select('id', { count: 'exact', head: true }).eq('fulfillment_status', 'pending');
         setLogisticsStats({ pendingShipments: pendingShip || 0, delayed: 2 }); 
 
-        // 5. Trust & Safety (Reviews)
         const { count: flaggedRev } = await supabase.from('reviews').select('id', { count: 'exact', head: true }).lt('rating', 3);
         setTrustStats({ 
           pendingKYC: idPulse.pendingStoreValidations || 0, 
@@ -62,13 +58,13 @@ export default function AdminDashboard() {
 
         // Actionable Alerts Orchestration
         const alerts = [];
-        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} Company Verifications pending (B2B)`, ctx: 'Identity' });
-        if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `High volume of pending shipments (${pendingShip})`, ctx: 'Logistics' });
-        if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: '1 Open Transaction Dispute requires mediation', ctx: 'Finance' });
-        if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} reviews need moderation`, ctx: 'Trust' });
+        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} Company Verifications pending (B2B)`, ctx: 'Identity', action: 'Review', path: '/admin/users' });
+        if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `High volume of pending shipments (${pendingShip})`, ctx: 'Logistics', action: 'Fulfill', path: '/admin/logistix' });
+        if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: '1 Open Transaction Dispute requires mediation', ctx: 'Finance', action: 'Resolve', path: '/admin/transactions' });
+        if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} reviews need moderation`, ctx: 'Trust', action: 'Moderate', path: '/admin/reviews' });
         
         if (alerts.length === 0) {
-           alerts.push({ type: 'info', msg: 'All systems operational. Edge caches warmed up.', ctx: 'System' });
+           alerts.push({ type: 'info', msg: 'All systems operational. Edge caches warmed up.', ctx: 'System', action: null, path: null });
         }
         setRecentAlerts(alerts);
 
@@ -88,7 +84,7 @@ export default function AdminDashboard() {
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
 
   return (
-    <div className="max-w-[1200px] mx-auto p-4 md:p-6 space-y-6 md:space-y-8 text-[#EDEDED] font-sans">
+    <div className="max-w-[1200px] mx-auto p-4 md:p-6 space-y-6 md:space-y-8 text-[#EDEDED] font-sans pb-20">
       
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
@@ -117,13 +113,20 @@ export default function AdminDashboard() {
         
         {/* Left Column (Finance, Community & Alerts) */}
         <div className="w-full lg:w-[340px] shrink-0 space-y-6">
+          
           {/* Finance & Usage */}
           <div>
             <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">Financial Pulse (30d)</h3>
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative">
+            <div 
+              onClick={() => navigate('/admin/finance/payable')}
+              className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group cursor-pointer hover:bg-[#111] hover:border-[#444] transition-all"
+            >
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[14px] font-medium text-[#EDEDED]">Revenue & Escrow</span>
-                <button className="h-7 px-3 bg-[#111] text-[#EDEDED] border border-[#333] text-[12px] font-medium rounded-md hover:bg-[#222] transition-colors">
+                <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
+                  Revenue & Escrow
+                  <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </span>
+                <button className="h-7 px-3 bg-[#1A1A1A] text-[#EDEDED] border border-[#333] text-[12px] font-medium rounded-md group-hover:bg-[#2A2A2A] transition-colors">
                   Details
                 </button>
               </div>
@@ -151,10 +154,16 @@ export default function AdminDashboard() {
           {/* Community & Roles Breakdown */}
           <div>
             <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">Community (Roles)</h3>
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative">
+            <div 
+              onClick={() => navigate('/admin/users')}
+              className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group cursor-pointer hover:bg-[#111] hover:border-[#444] transition-all"
+            >
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[14px] font-medium text-[#EDEDED]">Total Active Users</span>
-                <span className="text-[14px] font-bold text-white">{loading ? '...' : identityStats?.totalUsers}</span>
+                <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
+                  Total Active Users
+                  <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </span>
+                <span className="text-[14px] font-bold text-white group-hover:text-blue-400 transition-colors">{loading ? '...' : identityStats?.totalUsers}</span>
               </div>
               
               <div className="space-y-4 pt-2 border-t border-[#222]">
@@ -191,14 +200,25 @@ export default function AdminDashboard() {
                 <div className="text-[13px] text-[#666] text-center py-4">Syncing alerts...</div>
               )}
               {recentAlerts.map((alert, idx) => (
-                <div key={idx} className="flex items-start gap-3 p-3 bg-[#111] border border-[#222] rounded-lg">
-                  {alert.type === 'critical' && <AlertTriangle size={16} className="text-red-500 mt-0.5" />}
-                  {alert.type === 'warning' && <AlertTriangle size={16} className="text-orange-500 mt-0.5" />}
-                  {alert.type === 'info' && <Info size={16} className="text-blue-500 mt-0.5" />}
-                  <div>
+                <div key={idx} className="flex items-start gap-3 p-3 bg-[#111] border border-[#222] rounded-lg relative overflow-hidden group">
+                  {alert.type === 'critical' && <AlertTriangle size={16} className="text-red-500 mt-0.5 shrink-0" />}
+                  {alert.type === 'warning' && <AlertTriangle size={16} className="text-orange-500 mt-0.5 shrink-0" />}
+                  {alert.type === 'info' && <Info size={16} className="text-blue-500 mt-0.5 shrink-0" />}
+                  <div className="flex-1 min-w-0 pr-16">
                     <div className="text-[11px] font-bold text-[#888] uppercase tracking-wider mb-1">{alert.ctx}</div>
                     <p className="text-[13px] text-[#EDEDED] leading-snug">{alert.msg}</p>
                   </div>
+                  {alert.action && alert.path && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                       <button 
+                         onClick={() => navigate(alert.path)}
+                         className="flex items-center gap-1 text-[11px] font-semibold bg-[#222] text-[#DDD] px-2 py-1 rounded border border-[#333] hover:bg-[#333] transition-colors"
+                       >
+                         {alert.action}
+                         <ArrowRight size={10} />
+                       </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -211,21 +231,24 @@ export default function AdminDashboard() {
           <div className="space-y-4">
             
             {/* Platform Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:border-[#444] transition-colors flex flex-col sm:flex-row sm:items-start gap-4 group">
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
+            <div 
+              onClick={() => navigate('/admin/image-to-3d')}
+              className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:bg-[#111] hover:border-[#444] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start gap-4 group"
+            >
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0 group-hover:bg-[#222] transition-colors">
                   <TrendingUp size={20} className="text-purple-400" />
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    Listings & Platform Health
-                    <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                    <span className="flex items-center gap-2">Listings & AI Engine <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" /></span>
+                    <button className="text-[#666] group-hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
                         <div className="text-[12px] text-[#888] mb-1 truncate">Total Listings (Anúncios)</div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : platformStats.newListings}</div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
                         <div className="text-[12px] text-[#888] mb-1 truncate">3D Renders in Queue</div>
                         <div className="text-[18px] font-mono text-purple-400">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">jobs</span></div>
                      </div>
@@ -234,25 +257,28 @@ export default function AdminDashboard() {
             </div>
 
             {/* Trust & Safety Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:border-[#444] transition-colors flex flex-col sm:flex-row sm:items-start gap-4 group">
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
+            <div 
+               onClick={() => navigate('/admin/reviews')}
+               className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:bg-[#111] hover:border-[#444] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start gap-4 group"
+            >
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0 group-hover:bg-[#222] transition-colors">
                   <ShieldAlert size={20} className="text-blue-400" />
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    Trust, Validation & Reputation
-                    <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                    <span className="flex items-center gap-2">Trust, Validation & Reputation <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" /></span>
+                    <button className="text-[#666] group-hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1 truncate">Company Validation (B2B)</div>
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Company Val. (B2B)</div>
                         <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.pendingKYC} <span className="text-[11px] text-[#666]">pending</span></div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
                         <div className="text-[12px] text-[#888] mb-1 truncate">Flagged Reviews</div>
                         <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.flaggedReviews} <span className="text-[11px] text-[#666]">(&lt;3 stars)</span></div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1 group-hover:bg-[#1A1A1A] transition-colors">
                         <div className="text-[12px] text-[#888] mb-1 truncate">Open Disputes</div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : trustStats.openDisputes}</div>
                      </div>
@@ -261,21 +287,24 @@ export default function AdminDashboard() {
             </div>
 
             {/* Logistics Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:border-[#444] transition-colors flex flex-col sm:flex-row sm:items-start gap-4 group">
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
+            <div 
+               onClick={() => navigate('/admin/logistix')}
+               className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:bg-[#111] hover:border-[#444] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-start gap-4 group"
+            >
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0 group-hover:bg-[#222] transition-colors">
                   <Package size={20} className="text-orange-400" />
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    Logistics & WMS Pulse
-                    <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                    <span className="flex items-center gap-2">Logistics & WMS Pulse <ArrowUpRight size={14} className="text-[#666] opacity-0 group-hover:opacity-100 transition-opacity" /></span>
+                    <button className="text-[#666] group-hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
                         <div className="text-[12px] text-[#888] mb-1 truncate">Pending Shipments</div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : logisticsStats.pendingShipments}</div>
                      </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg group-hover:bg-[#1A1A1A] transition-colors">
                         <div className="text-[12px] text-[#888] mb-1 truncate">Delayed / Exception</div>
                         <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : logisticsStats.delayed}</div>
                      </div>
