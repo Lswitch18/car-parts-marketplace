@@ -62,24 +62,30 @@ export default function Onboarding() {
   const [fullName, setFullName] = useState(user?.full_name || '')
   const [saving, setSaving] = useState(false)
 
-  const handleFinish = async () => {
+  const handleFinish = async (skip: boolean | React.MouseEvent = false) => {
+    const isSkip = typeof skip === 'boolean' ? skip : false;
     setSaving(true)
     try {
       const updates: Record<string, unknown> = {
         onboarding_completed: true,
-        full_name: fullName || user?.full_name,
-        phone: phone || user?.phone,
       }
 
-      if (accountType === 'pessoa_fisica') {
-        updates.account_type = 'pessoa_fisica'
+      if (!isSkip) {
+        updates.full_name = fullName || user?.full_name
+        updates.phone = phone || user?.phone
+
+        if (accountType === 'pessoa_fisica') {
+          updates.account_type = 'pessoa_fisica'
+        } else {
+          updates.account_type = storeType
+          updates.store_type = storeType
+          updates.store_name = storeName
+          updates.store_document = storeDocument
+          updates.store_status = 'pending'
+          updates.store_requested_at = new Date().toISOString()
+        }
       } else {
-        updates.account_type = storeType
-        updates.store_type = storeType
-        updates.store_name = storeName
-        updates.store_document = storeDocument
-        updates.store_status = 'pending'
-        updates.store_requested_at = new Date().toISOString()
+        updates.account_type = 'pessoa_fisica'
       }
 
       const { error } = await supabase
@@ -436,12 +442,22 @@ export default function Onboarding() {
               {!saving && <ChevronRight className="w-5 h-5" />}
             </button>
 
-            <button
-              onClick={() => setStep(1)}
-              className="w-full text-white/50 hover:text-white text-sm py-3 transition-colors flex items-center justify-center gap-2 group"
-            >
-              <span className="transition-transform group-hover:-translate-x-1">←</span> {t('Voltar')}
-            </button>
+            <div className="flex items-center justify-between mt-4">
+              <button
+                onClick={() => setStep(1)}
+                className="w-1/2 text-white/50 hover:text-white text-sm py-3 transition-colors flex items-center justify-center gap-2 group"
+              >
+                <span className="transition-transform group-hover:-translate-x-1">←</span> {t('Voltar')}
+              </button>
+
+              <button
+                onClick={() => handleFinish(true)}
+                disabled={saving}
+                className="w-1/2 text-white/50 hover:text-white text-sm py-3 transition-colors flex items-center justify-center group"
+              >
+                {t('Pular')} <span className="transition-transform group-hover:translate-x-1 ml-2">→</span>
+              </button>
+            </div>
           </div>
         </div>
       </OnboardingLayout>
