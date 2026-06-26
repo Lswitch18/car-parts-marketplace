@@ -70,27 +70,63 @@ export default function Onboarding() {
   // ─── Step 0: Welcome ────────────────────────────────────────
   if (step === 0) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <div className="w-full max-w-lg text-center">
-          <div className="mb-8">
-            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#ff3d00] to-[#ff6d00] flex items-center justify-center shadow-lg shadow-[#ff3d00]/20"
-              style={{ animation: 'pulse 2s infinite' }}>
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 grid-overlay opacity-40 pointer-events-none" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.08) 50%, transparent 100%)',
+          }}
+        />
+        <div className="w-full max-w-lg text-center relative z-10">
+          <div
+            className="rounded-3xl p-10 mb-8"
+            style={{
+              background: 'rgba(10,10,15,0.6)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(13,117,255,0.2)',
+              boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+            }}
+          >
+            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center transition-transform"
+              style={{ 
+                background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+                boxShadow: '0 0 40px rgba(13,117,255,0.4)',
+                animation: 'pulse 3s infinite'
+              }}>
               <Sparkles className="w-12 h-12 text-white" />
             </div>
-            <h1 className="font-display text-4xl font-bold text-text mb-3">
-              {t('Bem-vindo ao GAID')} 🎉
+            <h1 className="font-display text-4xl font-bold text-white mb-3" style={{ letterSpacing: '-0.02em' }}>
+              {t('Bem-vindo à')}{' '}
+              <span className="neon-text">DAIG</span> 🎉
             </h1>
-            <p className="text-text-secondary text-lg leading-relaxed max-w-md mx-auto">
+            <p className="text-lg leading-relaxed max-w-md mx-auto" style={{ color: '#8892A4' }}>
               {t('O maior marketplace de peças automotivas JDM do Japão. Vamos configurar sua conta em poucos segundos.')}
             </p>
           </div>
 
           <button
             onClick={() => setStep(1)}
-            className="inline-flex items-center gap-2 bg-[#ff3d00] hover:bg-[#e63600] text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:scale-105 shadow-lg shadow-[#ff3d00]/25"
+            className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300"
+            style={{
+              background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+              boxShadow: '0 0 30px rgba(13,117,255,0.4)',
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.transform = 'translateY(-2px) scale(1.02)'
+              el.style.boxShadow = '0 0 50px rgba(13,117,255,0.6)'
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.transform = ''
+              el.style.boxShadow = '0 0 30px rgba(13,117,255,0.4)'
+            }}
           >
             {t('Começar')}
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6" />
           </button>
         </div>
       </div>
@@ -101,69 +137,94 @@ export default function Onboarding() {
   if (step === 1) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <div className="w-full max-w-2xl">
-          <div className="text-center mb-8">
-            <p className="text-[#ff3d00] font-medium text-sm mb-2 uppercase tracking-wider">{t('Passo 1 de 3')}</p>
-            <h1 className="font-display text-3xl font-bold text-text mb-2">
+        <div className="w-full max-w-2xl relative z-10">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4"
+              style={{ border: '1px solid rgba(13,117,255,0.2)', background: 'rgba(13,117,255,0.06)' }}>
+              <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#0D75FF' }}>
+                {t('Passo 1 de 3')}
+              </span>
+            </div>
+            <h1 className="font-display text-4xl font-bold text-white mb-3">
               {t('Quem é você?')}
             </h1>
-            <p className="text-text-secondary">
+            <p className="text-lg" style={{ color: '#8892A4' }}>
               {t('Escolha o tipo de conta que melhor representa você')}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Pessoa Física */}
             <button
               onClick={() => { setAccountType('pessoa_fisica'); setStep(2) }}
-              className="group relative p-6 rounded-2xl border-2 transition-all text-left hover:scale-[1.02]"
+              className="group relative p-8 rounded-2xl border transition-all text-left overflow-hidden"
               style={{
-                borderColor: 'rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.03)',
+                borderColor: 'rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.02)',
+                backdropFilter: 'blur(12px)',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#ff3d00'
-                e.currentTarget.style.background = 'rgba(255,61,0,0.05)'
+                e.currentTarget.style.borderColor = 'rgba(13,117,255,0.5)'
+                e.currentTarget.style.background = 'rgba(13,117,255,0.05)'
+                e.currentTarget.style.transform = 'translateY(-4px)'
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(13,117,255,0.15)'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-                e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.02)'
+                e.currentTarget.style.transform = ''
+                e.currentTarget.style.boxShadow = ''
               }}
             >
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
-                <User className="w-7 h-7 text-white" />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110"
+                style={{ 
+                  background: 'linear-gradient(135deg, #0D75FF 0%, #0050c2 100%)',
+                  boxShadow: '0 0 24px rgba(13,117,255,0.3)'
+                }}>
+                <User className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-text mb-1">{t('Pessoa Física')}</h3>
-              <p className="text-text-secondary text-sm leading-relaxed">
-                {t('Quero comprar peças e/ou vender como pessoa física (até 10 peças)')}
+              <h3 className="text-2xl font-bold text-white mb-2">{t('Pessoa Física')}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: '#8892A4' }}>
+                {t('Quero comprar e vender peças na plataforma')}
               </p>
             </button>
 
             {/* Empresa */}
             <button
               onClick={() => { setAccountType('empresa'); setStep(2) }}
-              className="group relative p-6 rounded-2xl border-2 transition-all text-left hover:scale-[1.02]"
+              className="group relative p-8 rounded-2xl border transition-all text-left overflow-hidden"
               style={{
-                borderColor: 'rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.03)',
+                borderColor: 'rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.02)',
+                backdropFilter: 'blur(12px)',
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.borderColor = '#00E5FF'
-                e.currentTarget.style.background = 'rgba(0,229,255,0.05)'
+                e.currentTarget.style.borderColor = 'rgba(112,0,255,0.5)'
+                e.currentTarget.style.background = 'rgba(112,0,255,0.05)'
+                e.currentTarget.style.transform = 'translateY(-4px)'
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(112,0,255,0.15)'
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-                e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.02)'
+                e.currentTarget.style.transform = ''
+                e.currentTarget.style.boxShadow = ''
               }}
             >
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#00E5FF] to-[#0091EA] flex items-center justify-center mb-4 shadow-lg shadow-[#00E5FF]/20">
-                <Building2 className="w-7 h-7 text-white" />
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110"
+                style={{ 
+                  background: 'linear-gradient(135deg, #7000FF 0%, #45009d 100%)',
+                  boxShadow: '0 0 24px rgba(112,0,255,0.3)'
+                }}>
+                <Building2 className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-text mb-1">{t('Empresa')}</h3>
-              <p className="text-text-secondary text-sm leading-relaxed">
-                {t('Oficina, desmanche, concessionária, loja de peças ou importadora')}
+              <h3 className="text-2xl font-bold text-white mb-2">{t('Empresa')}</h3>
+              <p className="text-sm leading-relaxed mb-4" style={{ color: '#8892A4' }}>
+                {t('Sou empresa e quero usar a DAIG como vitrine para vender minhas peças')}
               </p>
-              <span className="inline-block mt-2 text-xs font-medium text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full"
+                style={{ background: 'rgba(112,0,255,0.15)', color: '#b388ff', border: '1px solid rgba(112,0,255,0.3)' }}>
+                <Sparkles className="w-3 h-3" />
                 {t('Vendas ilimitadas')}
               </span>
             </button>
@@ -179,20 +240,34 @@ export default function Onboarding() {
 
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <div className="w-full max-w-lg">
-          <div className="text-center mb-8">
-            <p className="text-[#ff3d00] font-medium text-sm mb-2 uppercase tracking-wider">{t('Passo 2 de 3')}</p>
-            <h1 className="font-display text-3xl font-bold text-text mb-2">
+        <div className="w-full max-w-lg relative z-10">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4"
+              style={{ border: '1px solid rgba(13,117,255,0.2)', background: 'rgba(13,117,255,0.06)' }}>
+              <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#0D75FF' }}>
+                {t('Passo 2 de 3')}
+              </span>
+            </div>
+            <h1 className="font-display text-4xl font-bold text-white mb-3">
               {isEmpresa ? t('Dados da Empresa') : t('Seus Dados')}
             </h1>
-            <p className="text-text-secondary">
+            <p className="text-lg" style={{ color: '#8892A4' }}>
               {isEmpresa
                 ? t('Preencha os dados para solicitar verificação da sua loja')
                 : t('Confirme suas informações básicas')}
             </p>
           </div>
 
-          <div className="card p-6 space-y-4">
+          <div 
+            className="rounded-3xl p-8 space-y-5"
+            style={{
+              background: 'rgba(10,10,15,0.6)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 32px 64px rgba(0,0,0,0.4)',
+            }}
+          >
             {/* Nome */}
             <div>
               <label className="block text-text-secondary text-sm mb-1.5">{t('Nome completo')}</label>
@@ -231,16 +306,24 @@ export default function Onboarding() {
                           key={type.id}
                           type="button"
                           onClick={() => setStoreType(type.id)}
-                          className="flex items-center gap-3 p-3 rounded-lg border-2 text-left transition-all"
+                          className="flex items-center gap-4 p-4 rounded-xl border transition-all hover:bg-white/5"
                           style={{
-                            borderColor: selected ? '#00E5FF' : 'rgba(255,255,255,0.1)',
-                            background: selected ? 'rgba(0,229,255,0.08)' : 'transparent',
+                            borderColor: selected ? '#7000FF' : 'rgba(255,255,255,0.08)',
+                            background: selected ? 'rgba(112,0,255,0.1)' : 'transparent',
+                            boxShadow: selected ? '0 0 20px rgba(112,0,255,0.2)' : 'none',
                           }}
                         >
-                          <Icon className="w-5 h-5 flex-shrink-0" style={{ color: selected ? '#00E5FF' : '#888' }} />
-                          <div>
-                            <p className="text-sm font-medium text-text">{t(type.label)}</p>
-                            <p className="text-xs text-text-secondary">{t(type.desc)}</p>
+                          <div 
+                            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                            style={{ 
+                              background: selected ? '#7000FF' : 'rgba(255,255,255,0.05)',
+                            }}
+                          >
+                            <Icon className="w-5 h-5" style={{ color: selected ? '#FFFFFF' : '#8892A4' }} />
+                          </div>
+                          <div className="text-left">
+                            <p className="text-sm font-semibold text-white mb-0.5">{t(type.label)}</p>
+                            <p className="text-xs" style={{ color: '#8892A4' }}>{t(type.desc)}</p>
                           </div>
                         </button>
                       )
@@ -279,7 +362,22 @@ export default function Onboarding() {
             <button
               onClick={handleFinish}
               disabled={saving || (isEmpresa && (!storeType || !storeName || !storeDocument))}
-              className="w-full bg-[#ff3d00] hover:bg-[#e63600] text-white py-3.5 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full text-white py-4 mt-2 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+                boxShadow: '0 0 24px rgba(13,117,255,0.4)',
+              }}
+              onMouseEnter={(e) => {
+                if(saving || (isEmpresa && (!storeType || !storeName || !storeDocument))) return;
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = 'translateY(-2px)'
+                el.style.boxShadow = '0 0 40px rgba(13,117,255,0.6)'
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement
+                el.style.transform = ''
+                el.style.boxShadow = '0 0 24px rgba(13,117,255,0.4)'
+              }}
             >
               {saving
                 ? t('Salvando...')
@@ -304,36 +402,73 @@ export default function Onboarding() {
 
   // ─── Step 3: Done! ──────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-lg text-center">
-        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/20">
-          <CheckCircle className="w-10 h-10 text-white" />
-        </div>
-
-        <h1 className="font-display text-3xl font-bold text-text mb-3">
-          {t('Tudo pronto!')} 🚀
-        </h1>
-
-        <p className="text-text-secondary text-lg mb-8 leading-relaxed max-w-md mx-auto">
-          {accountType === 'empresa'
-            ? t('Sua solicitação de verificação foi enviada! Você será notificado quando sua loja for aprovada. Enquanto isso, explore nosso catálogo.')
-            : t('Sua conta está configurada. Explore o catálogo de peças JDM e encontre o que você precisa!')}
-        </p>
-
-        {accountType === 'empresa' && (
-          <div className="inline-flex items-center gap-2 bg-[#00E5FF]/10 text-[#00E5FF] px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <div className="w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse" />
-            {t('Verificação pendente')}
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 grid-overlay opacity-40 pointer-events-none" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.08) 50%, transparent 100%)',
+        }}
+      />
+      
+      <div className="w-full max-w-lg text-center relative z-10">
+        <div
+          className="rounded-3xl p-10 mb-8"
+          style={{
+            background: 'rgba(10,10,15,0.6)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(13,117,255,0.2)',
+            boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+          }}
+        >
+          <div className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center"
+            style={{ 
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+              boxShadow: '0 0 40px rgba(16,185,129,0.4)',
+            }}>
+            <CheckCircle className="w-12 h-12 text-white" />
           </div>
-        )}
 
-        <div>
+          <h1 className="font-display text-4xl font-bold text-white mb-3" style={{ letterSpacing: '-0.02em' }}>
+            {t('Tudo pronto!')} 🚀
+          </h1>
+
+          <p className="text-lg mb-8 leading-relaxed max-w-md mx-auto" style={{ color: '#8892A4' }}>
+            {accountType === 'empresa'
+              ? t('Sua solicitação de verificação foi enviada! Você será notificado quando sua loja for aprovada. Enquanto isso, explore nosso catálogo.')
+              : t('Sua conta está configurada. Explore o catálogo de peças JDM e encontre o que você precisa!')}
+          </p>
+
+          {accountType === 'empresa' && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
+              style={{ background: 'rgba(13,117,255,0.15)', color: '#0D75FF', border: '1px solid rgba(13,117,255,0.3)' }}>
+              <div className="w-2 h-2 rounded-full bg-[#0D75FF] animate-pulse" />
+              {t('Verificação pendente')}
+            </div>
+          )}
+
           <button
             onClick={goToCatalog}
-            className="inline-flex items-center gap-2 bg-[#ff3d00] hover:bg-[#e63600] text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all hover:scale-105 shadow-lg shadow-[#ff3d00]/25"
+            className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300"
+            style={{
+              background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
+              boxShadow: '0 0 30px rgba(13,117,255,0.4)',
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.transform = 'translateY(-2px)'
+              el.style.boxShadow = '0 0 50px rgba(13,117,255,0.6)'
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.transform = ''
+              el.style.boxShadow = '0 0 30px rgba(13,117,255,0.4)'
+            }}
           >
             {t('Explorar Catálogo')}
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-6 h-6" />
           </button>
         </div>
       </div>
