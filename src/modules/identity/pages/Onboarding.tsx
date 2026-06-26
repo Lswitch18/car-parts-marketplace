@@ -6,11 +6,11 @@ import { useI18n } from '@/modules/shared/lib/i18n'
 import { User, Building2, Wrench, Car, Package, Globe, ChevronRight, CheckCircle, Sparkles, Store } from 'lucide-react'
 
 const STORE_TYPES = [
-  { id: 'oficina', label: 'Oficina Mecânica', icon: Wrench, desc: 'Reparo e manutenção de veículos' },
-  { id: 'desmanche', label: 'Desmanche', icon: Car, desc: 'Desmontagem e revenda de peças usadas' },
-  { id: 'concessionaria', label: 'Concessionária / Revenda', icon: Store, desc: 'Venda de veículos e peças originais' },
-  { id: 'loja_pecas', label: 'Loja de Peças', icon: Package, desc: 'Comércio especializado em autopeças' },
-  { id: 'importadora', label: 'Importadora', icon: Globe, desc: 'Importação e distribuição de peças' },
+  { id: 'oficina', label: 'Oficina Mecânica', icon: Wrench, desc: 'Reparo e manutenção de veículos', color: '#F59E0B' }, // Amber
+  { id: 'desmanche', label: 'Desmanche', icon: Car, desc: 'Desmontagem e revenda de peças usadas', color: '#EF4444' }, // Red
+  { id: 'concessionaria', label: 'Concessionária / Revenda', icon: Store, desc: 'Venda de veículos e peças originais', color: '#0D75FF' }, // DAIG Blue
+  { id: 'loja_pecas', label: 'Loja de Peças', icon: Package, desc: 'Comércio especializado em autopeças', color: '#10B981' }, // Emerald
+  { id: 'importadora', label: 'Importadora', icon: Globe, desc: 'Importação e distribuição de peças', color: '#8B5CF6' }, // Violet
 ] as const
 
 const OnboardingLayout = ({ children, t }: { children: React.ReactNode, t: any }) => (
@@ -298,24 +298,24 @@ export default function Onboarding() {
           >
             {/* Nome */}
             <div>
-              <label className="block text-text-secondary text-sm mb-1.5">{t('Nome completo')}</label>
+              <label className="block text-white/70 text-sm font-medium mb-1.5">{t('Nome completo')}</label>
               <input
                 type="text"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
-                className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text placeholder-text-secondary"
+                className="w-full px-4 py-3.5 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#0D75FF] focus:ring-1 focus:ring-[#0D75FF] transition-all"
                 placeholder={t('Seu nome completo')}
               />
             </div>
 
             {/* Telefone */}
             <div>
-              <label className="block text-text-secondary text-sm mb-1.5">{t('Telefone')}</label>
+              <label className="block text-white/70 text-sm font-medium mb-1.5">{t('Telefone')}</label>
               <input
                 type="tel"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text placeholder-text-secondary"
+                className="w-full px-4 py-3.5 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#0D75FF] focus:ring-1 focus:ring-[#0D75FF] transition-all"
                 placeholder="+81 90 1234 5678"
               />
             </div>
@@ -324,8 +324,8 @@ export default function Onboarding() {
               <>
                 {/* Tipo de empresa */}
                 <div>
-                  <label className="block text-text-secondary text-sm mb-1.5">{t('Tipo de empresa')}</label>
-                  <div className="grid grid-cols-1 gap-2">
+                  <label className="block text-white/70 text-sm font-medium mb-2">{t('Qual o seu tipo de negócio?')}</label>
+                  <div className="grid grid-cols-1 gap-3">
                     {STORE_TYPES.map(type => {
                       const Icon = type.icon
                       const selected = storeType === type.id
@@ -334,25 +334,45 @@ export default function Onboarding() {
                           key={type.id}
                           type="button"
                           onClick={() => setStoreType(type.id)}
-                          className="flex items-center gap-4 p-4 rounded-xl border transition-all hover:bg-white/5"
+                          className="group flex items-center gap-4 p-4 rounded-xl border transition-all overflow-hidden relative"
                           style={{
-                            borderColor: selected ? '#7000FF' : 'rgba(255,255,255,0.08)',
-                            background: selected ? 'rgba(112,0,255,0.1)' : 'transparent',
-                            boxShadow: selected ? '0 0 20px rgba(112,0,255,0.2)' : 'none',
+                            borderColor: selected ? type.color : 'rgba(255,255,255,0.08)',
+                            background: selected ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.2)',
+                            boxShadow: selected ? `0 0 24px ${type.color}33, inset 0 0 12px ${type.color}15` : 'none',
                           }}
                         >
+                          {/* Selected Glow Background */}
+                          {selected && (
+                            <div className="absolute inset-0 opacity-20 pointer-events-none"
+                              style={{ background: `linear-gradient(90deg, transparent 0%, ${type.color} 100%)` }} />
+                          )}
+                          
+                          {/* Hover Glow */}
+                          <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"
+                            style={{ background: type.color }} />
+
                           <div 
-                            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
+                            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all z-10"
                             style={{ 
-                              background: selected ? '#7000FF' : 'rgba(255,255,255,0.05)',
+                              background: selected ? type.color : 'rgba(255,255,255,0.03)',
+                              boxShadow: selected ? `0 0 20px ${type.color}66` : 'none',
+                              border: `1px solid ${selected ? type.color : 'rgba(255,255,255,0.1)'}`
                             }}
                           >
-                            <Icon className="w-5 h-5" style={{ color: selected ? '#FFFFFF' : '#8892A4' }} />
+                            <Icon className={`w-6 h-6 transition-transform ${selected ? 'scale-110' : 'group-hover:scale-110'}`} style={{ color: selected ? '#FFFFFF' : type.color }} />
                           </div>
-                          <div className="text-left">
-                            <p className="text-sm font-semibold text-white mb-0.5">{t(type.label)}</p>
-                            <p className="text-xs" style={{ color: '#8892A4' }}>{t(type.desc)}</p>
+                          
+                          <div className="text-left relative z-10">
+                            <p className="text-sm font-bold text-white mb-0.5">{t(type.label)}</p>
+                            <p className="text-xs" style={{ color: selected ? 'rgba(255,255,255,0.9)' : '#8892A4' }}>{t(type.desc)}</p>
                           </div>
+
+                          {/* Selected Checkmark */}
+                          {selected && (
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 z-10">
+                              <CheckCircle className="w-5 h-5 text-white drop-shadow-md animate-in fade-in zoom-in duration-300" />
+                            </div>
+                          )}
                         </button>
                       )
                     })}
@@ -361,12 +381,12 @@ export default function Onboarding() {
 
                 {/* Nome da empresa */}
                 <div>
-                  <label className="block text-text-secondary text-sm mb-1.5">{t('Nome da empresa')}</label>
+                  <label className="block text-white/70 text-sm font-medium mb-1.5">{t('Nome da empresa')}</label>
                   <input
                     type="text"
                     value={storeName}
                     onChange={e => setStoreName(e.target.value)}
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text placeholder-text-secondary"
+                    className="w-full px-4 py-3.5 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#0D75FF] focus:ring-1 focus:ring-[#0D75FF] transition-all"
                     placeholder={t('Nome comercial')}
                     required
                   />
@@ -374,12 +394,12 @@ export default function Onboarding() {
 
                 {/* CNPJ / Registro */}
                 <div>
-                  <label className="block text-text-secondary text-sm mb-1.5">{t('CNPJ / Registro Comercial')}</label>
+                  <label className="block text-white/70 text-sm font-medium mb-1.5">{t('CNPJ / Registro Comercial')}</label>
                   <input
                     type="text"
                     value={storeDocument}
                     onChange={e => setStoreDocument(e.target.value)}
-                    className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text placeholder-text-secondary"
+                    className="w-full px-4 py-3.5 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#0D75FF] focus:ring-1 focus:ring-[#0D75FF] transition-all"
                     placeholder={t('Número do documento')}
                     required
                   />
@@ -418,9 +438,9 @@ export default function Onboarding() {
 
             <button
               onClick={() => setStep(1)}
-              className="w-full text-text-secondary hover:text-text text-sm py-2 transition-colors"
+              className="w-full text-white/50 hover:text-white text-sm py-3 transition-colors flex items-center justify-center gap-2 group"
             >
-              ← {t('Voltar')}
+              <span className="transition-transform group-hover:-translate-x-1">←</span> {t('Voltar')}
             </button>
           </div>
         </div>
