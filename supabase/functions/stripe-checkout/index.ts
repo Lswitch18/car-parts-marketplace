@@ -18,6 +18,29 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 };
 
+// ── Rate Limiting (Anti-DDoS) In-Memory per Isolate ──
+const rateLimitMap = new Map<string, { count: number; expires: number }>();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 30;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  let record = rateLimitMap.get(ip);
+  if (!record || record.expires < now) {
+    record = { count: 1, expires: now + RATE_LIMIT_WINDOW_MS };
+    rateLimitMap.set(ip, record);
+    // Cleanup old records to prevent memory leaks
+    if (rateLimitMap.size > 1000) {
+      for (const [key, val] of rateLimitMap.entries()) {
+        if (val.expires < now) rateLimitMap.delete(key);
+      }
+    }
+    return false;
+  }
+  record.count++;
+  return record.count > MAX_REQUESTS_PER_WINDOW;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -26,6 +49,16 @@ Deno.serve(async (req) => {
   // Security: Require auth for all stripe operations
   const { response: authRes } = await requireAuth(req);
   if (authRes) return authRes;
+
+  // Security: Anti-DDoS / Rate Limiting
+  const clientIp = req.headers.get('x-forwarded-for') || 'unknown-ip';
+  if (isRateLimited(clientIp)) {
+    console.warn(`Rate limit exceeded for IP: ${clientIp}`);
+    return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
+      status: 429,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
 
   try {
     const url = new URL(req.url);

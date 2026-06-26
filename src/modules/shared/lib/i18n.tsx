@@ -903,10 +903,19 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(() => {
-    // Always default to Japanese ('ja') as requested
+  const [language, setLanguageState] = useState<Language>(() => {
+    const saved = localStorage.getItem('daig-language');
+    if (saved === 'pt' || saved === 'en' || saved === 'ja') {
+      return saved as Language;
+    }
+    // Default to Japanese ('ja') as requested
     return 'ja'
   })
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('daig-language', lang);
+  }
 
   const t = (key: string): string => {
     return translations[language]?.[key] || key

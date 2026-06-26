@@ -28,10 +28,11 @@ const UserManagement = lazy(() => import('@/modules/backoffice/pages/UserManagem
 const ImageTo3D = lazy(() => import('@/modules/visualization3d/pages/ImageTo3D'))
 const ReviewManagement = lazy(() => import('@/modules/reputation/pages/ReviewManagement'))
 const AdminDashboard = lazy(() => import('@/modules/backoffice/pages/AdminDashboard'))
+const LogistixDashboard = lazy(() => import('@/modules/logistics/pages/LogistixDashboard'))
+const TransactionManagement = lazy(() => import('@/modules/backoffice/pages/TransactionManagement'))
+const AdminLayout = lazy(() => import('@/modules/backoffice/components/AdminLayout'))
 const ContactsManagement = lazy(() => import('@/modules/crm/pages/ContactsManagement'))
 const AccountsPayable = lazy(() => import('@/modules/finance/pages/AccountsPayable'))
-const TransactionManagement = lazy(() => import('@/modules/backoffice/pages/TransactionManagement'))
-const LogistixDashboard = lazy(() => import('@/modules/logistics/pages/LogistixDashboard'))
 const TrackingPublico = lazy(() => import('@/modules/logistics/pages/TrackingPublico'))
 const MobileApp = lazy(() => import('@/modules/transportation/pages/MobileApp'))
 const WorkerApp = lazy(() => import('@/modules/transportation/pages/WorkerApp'))
@@ -103,16 +104,18 @@ function App() {
           </Route>
 
           <Route path="/admin" element={<ProtectedRoute requireAdmin />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="logistix" element={<LogistixDashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="transactions" element={<TransactionManagement />} />
-            <Route path="reviews" element={<ReviewManagement />} />
-            <Route path="image-to-3d" element={<ImageTo3D />} />
-            <Route path="crm/contacts" element={<ContactsManagement />} />
-            <Route path="finance/payable" element={<AccountsPayable />} />
-            <Route path="transportation/drivers" element={<DriverApprovalsPage />} />
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="logistix" element={<LogistixDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="transactions" element={<TransactionManagement />} />
+              <Route path="reviews" element={<ReviewManagement />} />
+              <Route path="image-to-3d" element={<ImageTo3D />} />
+              <Route path="crm/contacts" element={<ContactsManagement />} />
+              <Route path="finance/payable" element={<AccountsPayable />} />
+              <Route path="transportation/drivers" element={<DriverApprovalsPage />} />
+            </Route>
           </Route>
 
           {/* App Mobile Logistix */}

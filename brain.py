@@ -95,11 +95,6 @@ FILES = {
         "modified": 1778687303.9864867,
         "hash": "e6b44c9af638bd4c3ea6c55725f3bc12"
     },
-    "kimi-api": {
-        "size": 74,
-        "modified": 1778686412.8664868,
-        "hash": "920ccd1ed128cd62e9f8157e146c7080"
-    },
     "1781038598234.png:Zone.Identifier": {
         "size": 61,
         "modified": 1781038701.97546,
@@ -131,9 +126,9 @@ FILES = {
         "hash": "032e540eecccbb9e444b4822baf20143"
     },
     "brain.py": {
-        "size": 590308,
-        "modified": 1782488980.445159,
-        "hash": "a8f9549546710e9dab209d8d7998a9e7"
+        "size": 591346,
+        "modified": 1782503061.2152479,
+        "hash": "0846dd484f68d1e6eb60388e15ace64b"
     },
     "vite.config.js": {
         "size": 894,
@@ -381,9 +376,9 @@ FILES = {
         "hash": "16c5173f27fbb846bae733ed9ec9f4cb"
     },
     "src/App.tsx": {
-        "size": 7309,
-        "modified": 1782487758.309159,
-        "hash": "e065907e3b698e5cdf6d7aedd42b9b00"
+        "size": 7743,
+        "modified": 1782493835.6131577,
+        "hash": "38b3f72f8c65fc3d604bc81528f93a62"
     },
     "src/modules/parts-catalog/store/favoriteStore.ts": {
         "size": 1217,
@@ -411,9 +406,9 @@ FILES = {
         "hash": "cd2878045004479fb63547c7358594e7"
     },
     "src/modules/parts-catalog/pages/CreateListing.tsx": {
-        "size": 22505,
-        "modified": 1782487799.7571604,
-        "hash": "d5865f7d55f32d7ccb62bea491c5eca0"
+        "size": 22934,
+        "modified": 1782491890.5131595,
+        "hash": "c2074c97b401e10f0f8ae967ca209f1c"
     },
     "src/modules/parts-catalog/components/HeroCarScene.tsx": {
         "size": 6549,
@@ -485,6 +480,11 @@ FILES = {
         "modified": 1781836862.4596114,
         "hash": "61417a9ce665f825c97611fc28298264"
     },
+    "src/modules/parts-catalog/api/partsAdminApi.ts": {
+        "size": 575,
+        "modified": 1782498691.9632468,
+        "hash": "e0446b0d6add480935a1f5795422ad1d"
+    },
     "src/modules/parts-catalog/api/partsApi.ts": {
         "size": 2405,
         "modified": 1781881373.0856524,
@@ -511,9 +511,9 @@ FILES = {
         "hash": "4ddf0d06d20981bdd3e298b8506d5ed7"
     },
     "src/modules/logistics/pages/LogistixDashboard.tsx": {
-        "size": 32347,
-        "modified": 1781833814.7156162,
-        "hash": "9a49a54a7a8469fc1e8e9b155a729b39"
+        "size": 32395,
+        "modified": 1782501442.4192479,
+        "hash": "4bcdb0a8326dbe845b3d6042f72c185c"
     },
     "src/modules/logistics/pages/admin/OcorrenciasPage.tsx": {
         "size": 9439,
@@ -901,19 +901,24 @@ FILES = {
         "hash": "258bfeec113828651eff0abfc2467040"
     },
     "src/modules/backoffice/pages/TransactionManagement.tsx": {
-        "size": 27212,
-        "modified": 1781833815.2996163,
-        "hash": "f99b90b178a596979cb6f89ee0400ddd"
+        "size": 27228,
+        "modified": 1782501442.395248,
+        "hash": "b77ea3ffa6639082bca6c1c835ab44b9"
     },
     "src/modules/backoffice/pages/UserManagement.tsx": {
-        "size": 110445,
-        "modified": 1782488118.601159,
-        "hash": "9ae10cc8639a5ab94fc6e6dce7659374"
+        "size": 118031,
+        "modified": 1782501442.375248,
+        "hash": "dc41fda1302ad29b4c8ff2f0ce5787e6"
     },
     "src/modules/backoffice/pages/AdminDashboard.tsx": {
-        "size": 9418,
-        "modified": 1781836229.0756123,
-        "hash": "b996a14fe3eca3decad69a13a0a071f8"
+        "size": 21534,
+        "modified": 1782500499.6312478,
+        "hash": "44d1143ef10d5a7f6c4ad4222a412668"
+    },
+    "src/modules/backoffice/components/AdminLayout.tsx": {
+        "size": 9723,
+        "modified": 1782498754.1272469,
+        "hash": "7b4f9f5d1d4e13d3ea5fbb62fdb235e3"
     },
     "src/modules/backoffice/__tests__/dashboardUtils.test.ts": {
         "size": 457,
@@ -965,15 +970,20 @@ FILES = {
         "modified": 1782488991.3691595,
         "hash": "b96d668f24b944e62c825bed5e57f891"
     },
+    "src/modules/identity/pages/Subscription.tsx": {
+        "size": 6948,
+        "modified": 1782491928.6491592,
+        "hash": "10ed3bbc91fa9e99bd25c2d14f5a0186"
+    },
     "src/modules/identity/pages/Profile.tsx": {
         "size": 7575,
         "modified": 1781833815.4796164,
         "hash": "64713df36da7746f220c1d46cf865ea0"
     },
     "src/modules/identity/pages/Onboarding.tsx": {
-        "size": 15414,
-        "modified": 1782487687.2931554,
-        "hash": "f5010462e90d1677b33b8ea1889510f5"
+        "size": 25668,
+        "modified": 1782492340.5531576,
+        "hash": "b843908a02cbba156cd7454ae95fc6fb"
     },
     "src/modules/identity/components/OnboardingGuard.tsx": {
         "size": 682,
@@ -989,6 +999,11 @@ FILES = {
         "size": 647,
         "modified": 1781836860.3596113,
         "hash": "9d447c506d672e921386e48b128f352f"
+    },
+    "src/modules/identity/api/identityAdminApi.ts": {
+        "size": 1359,
+        "modified": 1782498694.043247,
+        "hash": "e2f33f6b9c2bc8f5899178fb7ec1a2ad"
     },
     "src/modules/auctions/pages/Auctions.tsx": {
         "size": 43362,
@@ -1066,9 +1081,9 @@ FILES = {
         "hash": "92a7feb808453e82f0fcc25e1d1a5782"
     },
     "src/modules/shared/components/layout/Header.tsx": {
-        "size": 20281,
-        "modified": 1782480921.0211604,
-        "hash": "abbcafce669e86db8cdc13622fc425e0"
+        "size": 20463,
+        "modified": 1782502700.1992483,
+        "hash": "937c53a689d13af903f10d1c2c39a190"
     },
     "src/modules/shared/components/layout/Footer.tsx": {
         "size": 9428,
@@ -1091,9 +1106,9 @@ FILES = {
         "hash": "14ccf1edd6f7cd9698d951d677a9ec4b"
     },
     "src/modules/shared/lib/constants.ts": {
-        "size": 7465,
-        "modified": 1781833815.6196163,
-        "hash": "323671edfccf176315300fb429031fe9"
+        "size": 7045,
+        "modified": 1782502676.4352486,
+        "hash": "2eb607582f357a932b4a1159f9d83e58"
     },
     "src/modules/shared/lib/supabaseErrorHandler.ts": {
         "size": 3247,
@@ -1121,9 +1136,9 @@ FILES = {
         "hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
     },
     "src/modules/shared/lib/i18n.tsx": {
-        "size": 47509,
-        "modified": 1782407337.988145,
-        "hash": "b895219ed17141ffa8f35f049cefaaa6"
+        "size": 47790,
+        "modified": 1782494658.7251604,
+        "hash": "03600c8051fba4791afab101e0cda88c"
     },
     "src/modules/shared/__tests__/api-crud.spec.ts": {
         "size": 18006,
@@ -1141,9 +1156,9 @@ FILES = {
         "hash": "35b9b03cc1ae79a536c617c4d3b51922"
     },
     "src/modules/crm/pages/ContactsManagement.tsx": {
-        "size": 2295,
-        "modified": 1781833815.6796165,
-        "hash": "28b80c48b5b8ae28cbe619cdf303ba66"
+        "size": 17948,
+        "modified": 1782500080.8792477,
+        "hash": "5c443c2bdafc18f2a47e5e0b2169409b"
     },
     "src/modules/crm/__tests__/crmApi.test.ts": {
         "size": 318,
@@ -1366,9 +1381,9 @@ FILES = {
         "hash": "f3aa9abd59f80224c977fd50d6004b37"
     },
     "supabase/functions/stripe-checkout/index.ts": {
-        "size": 14866,
-        "modified": 1782487903.145158,
-        "hash": "dc8c09420fcdcb3d11ef73f178502b9f"
+        "size": 16030,
+        "modified": 1782504302.6632476,
+        "hash": "e8c1baa4f84aabf3c6be5b90d15d7241"
     },
     "supabase/functions/parts-lookup/index.ts": {
         "size": 7623,
@@ -2475,6 +2490,11 @@ FILES = {
         "modified": 1723050380.0,
         "hash": "117105d2f2ee718eb485a07574a219b6"
     },
+    "scripts/dark_mode.py": {
+        "size": 1884,
+        "modified": 1782501423.427248,
+        "hash": "cfd0833ea14e80032a63ab469edaa4aa"
+    },
     "scripts/enrich-parts-db.cjs": {
         "size": 5855,
         "modified": 1781010544.0063496,
@@ -2534,6 +2554,11 @@ FILES = {
         "size": 5131,
         "modified": 1781885310.5536513,
         "hash": "ab8e334cc5c27e6d4522b2930a585279"
+    },
+    "scripts/owasp-pipeline.sh": {
+        "size": 1954,
+        "modified": 1782503056.111248,
+        "hash": "719466d4e19d0da305bdb9416bd05b4a"
     },
     "scripts/fetch-car-images.py": {
         "size": 11281,
@@ -2704,6 +2729,11 @@ FILES = {
         "size": 30500176,
         "modified": 1779161890.2499304,
         "hash": "c328d301056572cce00d86d510888bb7"
+    },
+    "public/onboarding_marketing_hero.png": {
+        "size": 844701,
+        "modified": 1782490447.445157,
+        "hash": "a0019c966aa54ab5fb88cea7dc0e96a0"
     },
     "public/engineering_car_exploded.obj": {
         "size": 2804,

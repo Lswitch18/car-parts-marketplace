@@ -404,10 +404,11 @@ export default function Header() {
           }}
         >
           <div className="px-4 py-4 space-y-1">
-
-
-
-
+            {/* Language Selector in Mobile Drawer */}
+            <div className="mb-4 pb-4 border-b border-white/5">
+              <LanguageDetector />
+            </div>
+            
             {showAuthSkeleton ? (
               <div
                 style={{
