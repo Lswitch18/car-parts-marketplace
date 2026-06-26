@@ -13,6 +13,42 @@ const STORE_TYPES = [
   { id: 'importadora', label: 'Importadora', icon: Globe, desc: 'Importação e distribuição de peças' },
 ] as const
 
+const OnboardingLayout = ({ children, t }: { children: React.ReactNode, t: any }) => (
+  <div className="min-h-screen bg-background flex">
+    {/* Left Banner - Only on Desktop */}
+    <div className="hidden lg:flex lg:w-[45%] relative bg-black overflow-hidden flex-col justify-end">
+      <img 
+        src="/onboarding_marketing_hero.png" 
+        className="absolute inset-0 w-full h-full object-cover opacity-80 transition-transform duration-[20s] hover:scale-110" 
+        alt="DAIG Marketplace" 
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+      <div className="absolute inset-0 bg-[#0D75FF]/10 mix-blend-overlay" />
+      
+      <div className="relative z-10 p-12 lg:p-16">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
+          style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)' }}>
+          <Sparkles className="w-4 h-4 text-[#00E5FF]" />
+          <span className="text-sm font-semibold text-white tracking-widest uppercase">{t('DAIG for Business')}</span>
+        </div>
+        <h2 className="font-display text-5xl font-bold text-white mb-4 leading-tight">
+          {t('O marketplace')}<br/>{t('de')} <span className="neon-text">{t('alta performance.')}</span>
+        </h2>
+        <p className="text-xl text-white/70 max-w-lg">
+          {t('Conectamos oficinas, desmanches e entusiastas do mercado JDM em todo o Japão.')}
+        </p>
+      </div>
+    </div>
+
+    {/* Right Content */}
+    <div className="w-full lg:w-[55%] flex items-center justify-center px-4 relative overflow-hidden bg-background">
+      <div className="absolute inset-0 grid-overlay opacity-40 pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,117,255,0.12) 0%, rgba(112,0,255,0.06) 50%, transparent 100%)' }} />
+      {children}
+    </div>
+  </div>
+)
+
 export default function Onboarding() {
   const { t } = useI18n()
   const navigate = useNavigate()
@@ -70,15 +106,7 @@ export default function Onboarding() {
   // ─── Step 0: Welcome ────────────────────────────────────────
   if (step === 0) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 grid-overlay opacity-40 pointer-events-none" />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.08) 50%, transparent 100%)',
-          }}
-        />
+      <OnboardingLayout t={t}>
         <div className="w-full max-w-lg text-center relative z-10">
           <div
             className="rounded-3xl p-10 mb-8"
@@ -129,14 +157,14 @@ export default function Onboarding() {
             <ChevronRight className="w-6 h-6" />
           </button>
         </div>
-      </div>
+      </OnboardingLayout>
     )
   }
 
   // ─── Step 1: Account Type ───────────────────────────────────
   if (step === 1) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <OnboardingLayout t={t}>
         <div className="w-full max-w-2xl relative z-10">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4"
@@ -230,7 +258,7 @@ export default function Onboarding() {
             </button>
           </div>
         </div>
-      </div>
+      </OnboardingLayout>
     )
   }
 
@@ -239,7 +267,7 @@ export default function Onboarding() {
     const isEmpresa = accountType === 'empresa'
 
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <OnboardingLayout t={t}>
         <div className="w-full max-w-lg relative z-10">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4"
@@ -396,22 +424,13 @@ export default function Onboarding() {
             </button>
           </div>
         </div>
-      </div>
+      </OnboardingLayout>
     )
   }
 
   // ─── Step 3: Done! ──────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 grid-overlay opacity-40 pointer-events-none" />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.08) 50%, transparent 100%)',
-        }}
-      />
-      
+    <OnboardingLayout t={t}>
       <div className="w-full max-w-lg text-center relative z-10">
         <div
           className="rounded-3xl p-10 mb-8"
@@ -472,6 +491,6 @@ export default function Onboarding() {
           </button>
         </div>
       </div>
-    </div>
+    </OnboardingLayout>
   )
 }
