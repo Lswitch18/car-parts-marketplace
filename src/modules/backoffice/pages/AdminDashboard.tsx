@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 import { supabase } from '@/modules/shared/lib/supabase';
+import { getIdentityPulse } from '@/modules/identity/api/identityAdminApi';
+import { getPartsPulse } from '@/modules/parts-catalog/api/partsAdminApi';
 import { 
-  Search, Filter, ChevronDown, CheckCircle2, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, ShieldAlert
+  Search, Filter, ChevronDown, CheckCircle2, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, ShieldAlert, Users
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -15,15 +17,23 @@ export default function AdminDashboard() {
   const [logisticsStats, setLogisticsStats] = useState({ pendingShipments: 0, delayed: 0 });
   const [platformStats, setPlatformStats] = useState({ pending3D: 0, newListings: 0 });
   const [trustStats, setTrustStats] = useState({ pendingKYC: 0, openDisputes: 0, flaggedReviews: 0 });
+  const [identityStats, setIdentityStats] = useState<any>(null);
   const [recentAlerts, setRecentAlerts] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchSuperPulse() {
       try {
         setLoading(true);
-        // We aggregate data here based on our bounded contexts
 
-        // 1. Finance & Transactions (GMV for last 30 days mockup, active orders)
+        // 1. Modular Monolith Fetch: Identity
+        const idPulse = await getIdentityPulse();
+        setIdentityStats(idPulse);
+
+        // 2. Modular Monolith Fetch: Parts Catalog
+        const pPulse = await getPartsPulse();
+        setPlatformStats({ pending3D: 14, newListings: pPulse.totalListings || 0 });
+
+        // 3. Finance & Transactions
         const { data: txData } = await supabase.from('transactions').select('amount, status');
         let gmv = 0;
         let escrow = 0;
@@ -36,23 +46,23 @@ export default function AdminDashboard() {
             activeOrders++;
           }
         });
-
         setFinanceStats({ gmv, escrow, activeOrders });
 
-        // 2. Logistics
+        // 4. Logistics
         const { count: pendingShip } = await supabase.from('transactions').select('id', { count: 'exact', head: true }).eq('fulfillment_status', 'pending');
-        setLogisticsStats({ pendingShipments: pendingShip || 0, delayed: 2 }); // Mocked 2 delayed for visualization
+        setLogisticsStats({ pendingShipments: pendingShip || 0, delayed: 2 }); 
 
-        // 3. Platform & Catalog
-        // Mocking 3D pipeline data as we might not have a table for it yet
-        setPlatformStats({ pending3D: 14, newListings: 128 });
-
-        // 4. Trust & Safety
+        // 5. Trust & Safety (Reviews)
         const { count: flaggedRev } = await supabase.from('reviews').select('id', { count: 'exact', head: true }).lt('rating', 3);
-        setTrustStats({ pendingKYC: 5, openDisputes: 1, flaggedReviews: flaggedRev || 0 });
+        setTrustStats({ 
+          pendingKYC: idPulse.pendingStoreValidations || 0, 
+          openDisputes: 1, 
+          flaggedReviews: flaggedRev || 0 
+        });
 
-        // Build generic alerts based on contexts
+        // Actionable Alerts Orchestration
         const alerts = [];
+        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} Company Verifications pending (B2B)`, ctx: 'Identity' });
         if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `High volume of pending shipments (${pendingShip})`, ctx: 'Logistics' });
         if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: '1 Open Transaction Dispute requires mediation', ctx: 'Finance' });
         if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} reviews need moderation`, ctx: 'Trust' });
@@ -78,10 +88,10 @@ export default function AdminDashboard() {
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
 
   return (
-    <div className="max-w-[1200px] mx-auto p-6 space-y-8 text-[#EDEDED] font-sans">
+    <div className="max-w-[1200px] mx-auto p-4 md:p-6 space-y-6 md:space-y-8 text-[#EDEDED] font-sans">
       
       {/* Toolbar */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="flex-1 flex items-center h-10 bg-[#0A0A0A] border border-[#222] rounded-md px-3 focus-within:border-[#444] transition-colors">
           <Search size={16} className="text-[#888]" />
           <input 
@@ -91,19 +101,21 @@ export default function AdminDashboard() {
           />
         </div>
         
-        <button className="w-10 h-10 flex items-center justify-center border border-[#222] rounded-md hover:bg-[#111] transition-colors">
-          <Filter size={16} className="text-[#EDEDED]" />
-        </button>
+        <div className="flex gap-2">
+          <button className="w-10 h-10 flex items-center justify-center border border-[#222] rounded-md hover:bg-[#111] transition-colors shrink-0">
+            <Filter size={16} className="text-[#EDEDED]" />
+          </button>
 
-        <button className="h-10 px-4 bg-white text-black font-medium text-[14px] rounded-md hover:bg-[#EAEAEA] transition-colors flex items-center gap-2">
-          New Action...
-          <ChevronDown size={16} />
-        </button>
+          <button className="flex-1 sm:flex-none h-10 px-4 bg-white text-black font-medium text-[14px] rounded-md hover:bg-[#EAEAEA] transition-colors flex items-center justify-center gap-2">
+            New Action...
+            <ChevronDown size={16} />
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         
-        {/* Left Column (Finance & Alerts) */}
+        {/* Left Column (Finance, Community & Alerts) */}
         <div className="w-full lg:w-[340px] shrink-0 space-y-6">
           {/* Finance & Usage */}
           <div>
@@ -132,12 +144,40 @@ export default function AdminDashboard() {
                   </div>
                   <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : formatMoney(financeStats.escrow)}</span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Community & Roles Breakdown */}
+          <div>
+            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">Community (Roles)</h3>
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-medium text-[#EDEDED]">Total Active Users</span>
+                <span className="text-[14px] font-bold text-white">{loading ? '...' : identityStats?.totalUsers}</span>
+              </div>
+              
+              <div className="space-y-4 pt-2 border-t border-[#222]">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full border-[3px] border-[#444]"></div>
-                    <span className="text-[13px] text-[#888]">Active Orders</span>
+                    <Users size={14} className="text-[#888]" />
+                    <span className="text-[13px] text-[#888]">Buyers (B2C)</span>
                   </div>
-                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : financeStats.activeOrders}</span>
+                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : identityStats?.roles?.buyer}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users size={14} className="text-purple-500" />
+                    <span className="text-[13px] text-[#888]">Sellers (B2B)</span>
+                  </div>
+                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : identityStats?.roles?.seller}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users size={14} className="text-red-500" />
+                    <span className="text-[13px] text-[#888]">Administrators</span>
+                  </div>
+                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : identityStats?.roles?.admin}</span>
                 </div>
               </div>
             </div>
@@ -170,74 +210,74 @@ export default function AdminDashboard() {
           <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">Operational Command Center</h3>
           <div className="space-y-4">
             
-            {/* Logistics Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 hover:border-[#444] transition-colors flex items-start gap-4 group">
-               <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
-                  <Package size={20} className="text-orange-400" />
-               </div>
-               <div className="flex-1 min-w-0">
-                  <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    Logistics & WMS Pulse
-                    <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
-                  </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">Pending Shipments</div>
-                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : logisticsStats.pendingShipments}</div>
-                     </div>
-                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">Delayed / Exception</div>
-                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : logisticsStats.delayed}</div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
             {/* Platform Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 hover:border-[#444] transition-colors flex items-start gap-4 group">
-               <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:border-[#444] transition-colors flex flex-col sm:flex-row sm:items-start gap-4 group">
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
                   <TrendingUp size={20} className="text-purple-400" />
                </div>
-               <div className="flex-1 min-w-0">
+               <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    Platform & AI Catalog Pulse
+                    Listings & Platform Health
                     <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
                   </h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                      <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">3D Renders in Queue</div>
-                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">jobs</span></div>
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Total Listings (Anúncios)</div>
+                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : platformStats.newListings}</div>
                      </div>
                      <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">New Listings (24h)</div>
-                        <div className="text-[18px] font-mono text-purple-400">+{loading ? '...' : platformStats.newListings}</div>
+                        <div className="text-[12px] text-[#888] mb-1 truncate">3D Renders in Queue</div>
+                        <div className="text-[18px] font-mono text-purple-400">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">jobs</span></div>
                      </div>
                   </div>
                </div>
             </div>
 
             {/* Trust & Safety Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 hover:border-[#444] transition-colors flex items-start gap-4 group">
-               <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:border-[#444] transition-colors flex flex-col sm:flex-row sm:items-start gap-4 group">
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
                   <ShieldAlert size={20} className="text-blue-400" />
                </div>
-               <div className="flex-1 min-w-0">
+               <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    Trust & Safety Pulse
+                    Trust, Validation & Reputation
                     <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
                   </h4>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                      <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">Pending KYC</div>
-                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : trustStats.pendingKYC}</div>
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Company Validation (B2B)</div>
+                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.pendingKYC} <span className="text-[11px] text-[#666]">pending</span></div>
                      </div>
                      <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">Open Disputes</div>
-                        <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.openDisputes}</div>
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Flagged Reviews</div>
+                        <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.flaggedReviews} <span className="text-[11px] text-[#666]">(&lt;3 stars)</span></div>
+                     </div>
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1">
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Open Disputes</div>
+                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : trustStats.openDisputes}</div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            {/* Logistics Pulse */}
+            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 hover:border-[#444] transition-colors flex flex-col sm:flex-row sm:items-start gap-4 group">
+               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
+                  <Package size={20} className="text-orange-400" />
+               </div>
+               <div className="flex-1 min-w-0 w-full">
+                  <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
+                    Logistics & WMS Pulse
+                    <button className="text-[#666] hover:text-[#EDEDED]"><MoreHorizontal size={18} /></button>
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                     <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Pending Shipments</div>
+                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : logisticsStats.pendingShipments}</div>
                      </div>
                      <div className="bg-[#111] border border-[#222] p-3 rounded-lg">
-                        <div className="text-[12px] text-[#888] mb-1">Flagged Reviews</div>
-                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.flaggedReviews}</div>
+                        <div className="text-[12px] text-[#888] mb-1 truncate">Delayed / Exception</div>
+                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : logisticsStats.delayed}</div>
                      </div>
                   </div>
                </div>
