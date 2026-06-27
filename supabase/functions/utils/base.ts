@@ -76,7 +76,7 @@ export async function requireAuth(req: Request) {
   return { user, response: null };
 }
 
-export function getUuidFromBody(body: unknown, field: string): string | null {
+export function getUuidFromBody(body: any, field: string): string | null {
   const value = body?.[field];
   if (!value || typeof value !== 'string') return null;
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
