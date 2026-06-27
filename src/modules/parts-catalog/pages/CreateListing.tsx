@@ -123,15 +123,8 @@ export default function CreateListing() {
     
     try {
       setAnalyzing(true)
-      setGenerating3D(true)
       
-      const analysisPromise = api.ai.analyzePart(images[0])
-      const generate3DPromise = api.ai.generate3D(images[0]).catch(e => {
-        console.error("3D init fail", e)
-        return null
-      })
-      
-      const [data, gen3DData] = await Promise.all([analysisPromise, generate3DPromise]) as [any, any]
+      const data = await api.ai.analyzePart(images[0])
       
       setFormData(prev => ({
         ...prev,
@@ -142,7 +135,20 @@ export default function CreateListing() {
         model: data.model || prev.model,
         category: data.category || prev.category,
       }))
+      
+      setAnalyzing(false)
 
+      if (data.is_car_part === false) {
+        alert(t('A imagem não parece ser uma peça automotiva válida. O modelo 3D não será gerado.'))
+        return
+      }
+
+      setGenerating3D(true)
+      const gen3DData = await api.ai.generate3D(images[0]).catch(e => {
+        console.error("3D init fail", e)
+        return null
+      })
+      
       if (gen3DData?.id) {
          poll3DStatus(gen3DData.id)
       } else {

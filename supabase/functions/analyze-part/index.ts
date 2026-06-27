@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: "Identifique esta peça automotiva. Retorne APENAS um JSON com os campos: title (título comercial otimizado para vendas e SEO), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível detalhado), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada e persuasiva focada em conversão, mencionando estado visual da peça se possível) e estimated_price (valor numérico sugerido em Reais, realista para o mercado de peças JDM). Se não tiver certeza exata, faça a melhor estimativa possível para o mercado de peças usadas automotivas." },
+            { text: "Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa como animal, pessoa, paisagem), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios ou com valores genéricos." },
             { inline_data: { mime_type: "image/jpeg", data: image.split(',')[1] || image } }
           ]
         }],
