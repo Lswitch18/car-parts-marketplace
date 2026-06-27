@@ -40,7 +40,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#000000] text-[#EDEDED] font-sans antialiased relative">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#000000] text-[#EDEDED] font-sans antialiased relative">
       
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between h-14 px-4 bg-[#000000] border-b border-[#222] shrink-0 sticky top-0 z-30">

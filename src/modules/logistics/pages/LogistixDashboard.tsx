@@ -249,7 +249,7 @@ export default function LogistixDashboard() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] lg:h-[calc(100vh-6rem)] bg-transparent text-text font-sans overflow-hidden relative antialiased -m-4 md:-m-6 lg:-m-8">
+    <div className="flex h-[calc(100vh-3.5rem)] bg-transparent text-text font-sans overflow-hidden relative antialiased w-full">
       {sidebarOpen && (
         <div className="fixed inset-0 z-30 bg-black/60 lg:hidden backdrop-blur-xs" onClick={() => setSidebarOpen(false)} />
       )}
@@ -383,7 +383,7 @@ export default function LogistixDashboard() {
               </div>
 
               {/* KPIs Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {kpisLoading ? Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="animate-pulse bg-surface border border-border rounded-xl h-[130px] skeleton" />
                 )) : (
