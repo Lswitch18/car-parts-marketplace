@@ -131,7 +131,7 @@ export default function CreateListing() {
     try {
       setAnalyzing(true)
       
-      const data = await api.ai.analyzePart(images[0])
+      const data = await api.ai.analyzePart(images[0]) as any
       
       const newTitle = data.title || formData.title
       setFormData(prev => ({
@@ -155,7 +155,7 @@ export default function CreateListing() {
       const gen3DData = await api.ai.generate3D(images[0]).catch(e => {
         console.error("3D init fail", e)
         return null
-      })
+      }) as any
       
       if (gen3DData?.id) {
          poll3DStatus(gen3DData.id, newTitle)
