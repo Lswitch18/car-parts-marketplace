@@ -89,7 +89,7 @@ export default function CreateListing() {
     auctionDurationHours: '72',
   })
 
-  const poll3DStatus = (predictionId: string) => {
+  const poll3DStatus = (predictionId: string, title: string) => {
     let attempts = 0
     if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
 
@@ -107,6 +107,13 @@ export default function CreateListing() {
           if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
           setModel3DUrl(res.output)
           setGenerating3D(false)
+          
+          // Save to Google Drive automatically
+          try {
+            await api.ai.saveToDrive(res.output, title)
+          } catch (err) {
+            console.error('Falha ao salvar no Google Drive:', err)
+          }
         } else if (res.status === 'failed' || res.status === 'canceled') {
           if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
           setGenerating3D(false)
@@ -126,9 +133,10 @@ export default function CreateListing() {
       
       const data = await api.ai.analyzePart(images[0])
       
+      const newTitle = data.title || formData.title
       setFormData(prev => ({
         ...prev,
-        title: data.title || prev.title,
+        title: newTitle,
         description: data.description || prev.description,
         price: data.estimated_price?.toString() || prev.price,
         brand: data.brand || prev.brand,
@@ -150,7 +158,7 @@ export default function CreateListing() {
       })
       
       if (gen3DData?.id) {
-         poll3DStatus(gen3DData.id)
+         poll3DStatus(gen3DData.id, newTitle)
       } else {
          setGenerating3D(false)
       }
