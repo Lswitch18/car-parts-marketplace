@@ -41,13 +41,16 @@ async function handleStartPrediction(image: string, apiKey: string | undefined) 
     });
   }
 
-  const res = await fetch('https://api.replicate.com/v1/models/camenduru/tripo-sr/predictions', {
+  const res = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ input: { image } }),
+    body: JSON.stringify({ 
+      version: 'e0d3fe8abce3ba86497ea3530d9eae59af7b2231b6c82bedfc32b0732d35ec3a',
+      input: { image_path: image } 
+    }),
   });
 
   if (!res.ok) {
