@@ -26,8 +26,8 @@ Deno.serve(async (req: Request) => {
       throw new Error('A chave de API do Gemini não está configurada no Supabase.');
     }
 
-    // Integração real com Gemini API (Usando Gemini 1.5 Pro)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
+    // Integração real com Gemini API (Usando Gemini 2.5 Pro)
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,8 +46,14 @@ Deno.serve(async (req: Request) => {
     });
 
     const result = await response.json();
+    if (!response.ok) {
+      console.error('Gemini API Error:', result);
+      throw new Error(`Erro na API Gemini: ${result.error?.message || 'Erro desconhecido'}`);
+    }
+    
     if (!result.candidates || result.candidates.length === 0) {
-      throw new Error('Falha ao gerar análise com Gemini Pro');
+      console.error('Unexpected Gemini Response:', result);
+      throw new Error('A API do Gemini retornou uma resposta vazia ou inesperada.');
     }
     
     const aiText = result.candidates[0].content.parts[0].text;
