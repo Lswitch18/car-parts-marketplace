@@ -143,6 +143,7 @@ export default function AdminLayout() {
                       {item.badge}
                     </span>
                   )}
+                  {/* @ts-ignore */}
                   {item.arrow && (
                     <ChevronRight size={14} className="text-[#666]" />
                   )}

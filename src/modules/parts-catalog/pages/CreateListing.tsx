@@ -56,7 +56,7 @@ export default function CreateListing() {
       return
     }
 
-    if (user.account_type !== 'pessoa_fisica' && !user.store_verified) {
+    if ((user.account_type as string) !== 'pessoa_fisica' && !user.store_verified) {
       // Empresa não verificada: contar total (limite de 20)
       supabase
         .from('parts')
