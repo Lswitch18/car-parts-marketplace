@@ -41,7 +41,7 @@ async function handleStartPrediction(image: string, apiKey: string | undefined) 
     });
   }
 
-  const res = await fetch('https://api.replicate.com/v1/models/stabilityai/triposr/predictions', {
+  const res = await fetch('https://api.replicate.com/v1/models/camenduru/tripo-sr/predictions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiKey}`,
