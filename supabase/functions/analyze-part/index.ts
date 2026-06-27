@@ -23,19 +23,7 @@ Deno.serve(async (req: Request) => {
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     
     if (!GEMINI_API_KEY) {
-      // Mock para quando a chave não estiver configurada
-      console.log('GEMINI_API_KEY não configurada. Retornando dados mockados.');
-      return new Response(JSON.stringify(successResponse({
-        title: 'Turbina Garrett GT35 (Identificado via IA)',
-        brand: 'nissan',
-        model: 'Skyline GT-R',
-        category: 'engine',
-        condition: 'excellent',
-        description: 'Turbina de alta performance identificada automaticamente. Compatível com motores RB26.',
-        price: 4500
-      }, 'Análise concluída (Modo Demonstração)')), {
-        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
-      });
+      throw new Error('A chave de API do Gemini não está configurada no Supabase.');
     }
 
     // Integração real com Gemini API (Usando Gemini 1.5 Pro)
