@@ -267,6 +267,8 @@ export const api = {
 
   ai: {
     analyzePart: (image: string) => fetchApi('/analyze-part', { method: 'POST', body: JSON.stringify({ image }) }),
+    generate3D: (image: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ image }) }),
+    check3DStatus: (id: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ id }) }),
   },
 
   partsLookup: {

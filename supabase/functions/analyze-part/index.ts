@@ -38,8 +38,8 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    // Integração real com Gemini API
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    // Integração real com Gemini API (Usando Gemini 1.5 Pro)
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify({
         contents: [{
           parts: [
-            { text: "Identifique esta peça automotiva. Retorne APENAS um JSON com os campos: title (título comercial), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (breve descrição técnica) e estimated_price (valor numérico sugerido em Reais). Se não tiver certeza, chute os valores mais prováveis para o mercado JDM." },
+            { text: "Identifique esta peça automotiva. Retorne APENAS um JSON com os campos: title (título comercial otimizado para vendas e SEO), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível detalhado), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada e persuasiva focada em conversão, mencionando estado visual da peça se possível) e estimated_price (valor numérico sugerido em Reais, realista para o mercado de peças JDM). Se não tiver certeza exata, faça a melhor estimativa possível para o mercado de peças usadas automotivas." },
             { inline_data: { mime_type: "image/jpeg", data: image.split(',')[1] || image } }
           ]
         }],
@@ -58,6 +58,10 @@ Deno.serve(async (req: Request) => {
     });
 
     const result = await response.json();
+    if (!result.candidates || result.candidates.length === 0) {
+      throw new Error('Falha ao gerar análise com Gemini Pro');
+    }
+    
     const aiText = result.candidates[0].content.parts[0].text;
     const aiData = JSON.parse(aiText);
 

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '@/modules/shared/lib/constants'
-import { Upload, X, Loader2, Sparkles, Gavel } from 'lucide-react'
+import { Upload, X, Loader2, Sparkles, Gavel, Box } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { api } from '@/modules/transactions/api/api'
 
@@ -16,11 +16,22 @@ export default function CreateListing() {
   const [imageFiles, setImageFiles] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
   const [analyzing, setAnalyzing] = useState(false)
+  const [generating3D, setGenerating3D] = useState(false)
+  const [model3DUrl, setModel3DUrl] = useState<string | null>(null)
+  const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  
   const [aiEnabled, setAiEnabled] = useState(true)
   const [isAuction, setIsAuction] = useState(false)
   const [partsCount, setPartsCount] = useState<number | null>(null)
   const [showLimitModal, setShowLimitModal] = useState(false)
   const [showUnverifiedModal, setShowUnverifiedModal] = useState(false)
+
+  // Clear interval on unmount
+  useEffect(() => {
+    return () => {
+      if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
+    }
+  }, [])
 
   // Fetch count when user loads
   useEffect(() => {
@@ -78,12 +89,49 @@ export default function CreateListing() {
     auctionDurationHours: '72',
   })
 
+  const poll3DStatus = (predictionId: string) => {
+    let attempts = 0
+    if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
+
+    checkIntervalRef.current = setInterval(async () => {
+      try {
+        attempts++
+        if (attempts > 60) { // Timeout 3 mins
+          if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
+          setGenerating3D(false)
+          return
+        }
+        
+        const res = await api.ai.check3DStatus(predictionId) as any
+        if (res.status === 'succeeded' && res.output) {
+          if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
+          setModel3DUrl(res.output)
+          setGenerating3D(false)
+        } else if (res.status === 'failed' || res.status === 'canceled') {
+          if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
+          setGenerating3D(false)
+          console.error("Geração 3D falhou", res.error)
+        }
+      } catch (err) {
+        console.error('Erro no check3D:', err)
+      }
+    }, 3000)
+  }
+
   const analyzeWithAI = async () => {
     if (images.length === 0) return
     
     try {
       setAnalyzing(true)
-      const data = await api.ai.analyzePart(images[0]) as any
+      setGenerating3D(true)
+      
+      const analysisPromise = api.ai.analyzePart(images[0])
+      const generate3DPromise = api.ai.generate3D(images[0]).catch(e => {
+        console.error("3D init fail", e)
+        return null
+      })
+      
+      const [data, gen3DData] = await Promise.all([analysisPromise, generate3DPromise]) as [any, any]
       
       setFormData(prev => ({
         ...prev,
@@ -94,9 +142,16 @@ export default function CreateListing() {
         model: data.model || prev.model,
         category: data.category || prev.category,
       }))
+
+      if (gen3DData?.id) {
+         poll3DStatus(gen3DData.id)
+      } else {
+         setGenerating3D(false)
+      }
     } catch (error) {
       console.error('Erro na análise de IA:', error)
       alert(t('Não foi possível analisar a imagem. Tente preencher manualmente.'))
+      setGenerating3D(false)
     } finally {
       setAnalyzing(false)
     }
@@ -154,6 +209,7 @@ export default function CreateListing() {
           category_id: CATEGORY_UUIDS[formData.category],
           condition: formData.condition,
           images: uploadedUrls,
+          model_3d_url: model3DUrl,
           status: 'active',
         });
 
@@ -290,25 +346,42 @@ export default function CreateListing() {
               </div>
 
               {images.length > 0 && aiEnabled && (
-                <div className="mt-4">
+                <div className="mt-4 flex flex-col sm:flex-row gap-3">
                   <button
                     type="button"
                     onClick={analyzeWithAI}
-                    disabled={analyzing}
-                    className="flex items-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-2 rounded-lg transition-all"
+                    disabled={analyzing || generating3D}
+                    className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-3 rounded-lg transition-all"
                   >
                     {analyzing ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span className="text-sm font-medium">{t('IA Analisando...')}</span>
+                        <span className="text-sm font-medium">{t('Gemini Pro Analisando...')}</span>
                       </>
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4" />
-                        <span className="text-sm font-medium">{t('Preencher automaticamente com IA')}</span>
+                        <span className="text-sm font-medium">{t('Análise Gemini + Geração 3D')}</span>
                       </>
                     )}
                   </button>
+                  
+                  {/* Status do 3D Engine */}
+                  {(generating3D || model3DUrl) && (
+                    <div className="flex-1 flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-lg">
+                      {generating3D ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-purple-500" />
+                          <span className="text-sm font-medium text-purple-400">{t('Renderizando 3D (TripoSR)...')}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Box className="w-4 h-4 text-green-500" />
+                          <span className="text-sm font-medium text-green-400">{t('Modelo 3D Gerado com Sucesso!')}</span>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
