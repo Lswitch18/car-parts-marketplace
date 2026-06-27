@@ -85,7 +85,12 @@ PROJECT_INFO = {{
         "auth": "Supabase Auth + role admin no profile",
         "seed_login": "admin@logistix.com / adminadmin"
     }},
-    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"]
+    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"],
+    "ai_features": {{
+        "validation": "Validação de peças com Gemini 2.5 Pro",
+        "3d_generation": "Geração de modelos 3D (.glb) com TripoSR via Replicate API",
+        "storage": "Upload automático de modelos 3D gerados para o Google Drive"
+    }}
 }}
 
 FILES = {json.dumps(files_info, indent=4)}
