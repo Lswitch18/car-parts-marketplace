@@ -77,16 +77,16 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          supabase functions deploy analyze-part --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy generate-3d --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy parts --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy users --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy transactions --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy auctions --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy categories --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy brands --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy stripe-checkout --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          supabase functions deploy stripe-webhook --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy analyze-part --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy generate-3d --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy parts --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy users --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy transactions --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy auctions --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy categories --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy brands --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy stripe-checkout --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy stripe-webhook --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
 
       - name: Deploy Database Migrations
         env:
