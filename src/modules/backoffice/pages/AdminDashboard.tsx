@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 import { supabase } from '@/modules/shared/lib/supabase';
+import { useI18n } from '@/modules/shared/lib/i18n';
 import { getIdentityPulse } from '@/modules/identity/api/identityAdminApi';
 import { getPartsPulse } from '@/modules/parts-catalog/api/partsAdminApi';
 import { 
@@ -11,6 +12,7 @@ import {
 export default function AdminDashboard() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
   
   // Real stats state
@@ -58,13 +60,13 @@ export default function AdminDashboard() {
 
         // Actionable Alerts Orchestration
         const alerts = [];
-        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} Company Verifications pending (B2B)`, ctx: 'Identity', action: 'Review', path: '/admin/crm/contacts' });
-        if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `High volume of pending shipments (${pendingShip})`, ctx: 'Logistics', action: 'Fulfill', path: '/admin/logistix' });
-        if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: '1 Open Transaction Dispute requires mediation', ctx: 'Finance', action: 'Resolve', path: '/admin/transactions' });
-        if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} reviews need moderation`, ctx: 'Trust', action: 'Moderate', path: '/admin/reviews' });
+        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} ${t('Company Verifications pending (B2B)')}`, ctx: t('Identity'), action: t('Review'), path: '/admin/crm/contacts' });
+        if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `${t('High volume of pending shipments')} (${pendingShip})`, ctx: t('Logistics'), action: t('Fulfill'), path: '/admin/logistix' });
+        if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: t('1 Open Transaction Dispute requires mediation'), ctx: t('Finance'), action: t('Resolve'), path: '/admin/transactions' });
+        if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} ${t('reviews need moderation')}`, ctx: t('Trust'), action: t('Moderate'), path: '/admin/reviews' });
         
         if (alerts.length === 0) {
-           alerts.push({ type: 'info', msg: 'All systems operational. Edge caches warmed up.', ctx: 'System', action: null, path: null });
+           alerts.push({ type: 'info', msg: t('All systems operational. Edge caches warmed up.'), ctx: t('System'), action: null, path: null });
         }
         setRecentAlerts(alerts);
 
@@ -92,7 +94,7 @@ export default function AdminDashboard() {
           <Search size={16} className="text-[#888]" />
           <input 
             type="text" 
-            placeholder="Search Orders, Users, or Shipments..." 
+            placeholder={t("Search Orders, Users, or Shipments...")}
             className="bg-transparent border-none outline-none text-[14px] ml-2 w-full placeholder:text-[#666]"
           />
         </div>
@@ -103,7 +105,7 @@ export default function AdminDashboard() {
           </button>
 
           <button className="flex-1 sm:flex-none h-10 px-4 bg-white text-black font-medium text-[14px] rounded-md hover:bg-[#EAEAEA] transition-colors flex items-center justify-center gap-2">
-            New Action...
+            {t('New Action...')}
             <ChevronDown size={16} />
           </button>
         </div>
@@ -116,17 +118,17 @@ export default function AdminDashboard() {
           
           {/* Finance & Usage */}
           <div>
-            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">Financial Pulse (30d)</h3>
+            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">{t('Financial Pulse (30d)')}</h3>
             <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group transition-all">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
-                  Revenue & Escrow
+                  {t('Revenue & Escrow')}
                 </span>
                 <button 
                   onClick={() => navigate('/admin/finance/payable')}
                   className="h-7 px-3 bg-[#1A1A1A] text-[#EDEDED] border border-[#333] text-[12px] font-medium rounded-md hover:bg-[#2A2A2A] transition-colors flex items-center gap-1"
                 >
-                  Payable <ArrowUpRight size={12} />
+                  {t('Payable')} <ArrowUpRight size={12} />
                 </button>
               </div>
               
@@ -137,7 +139,7 @@ export default function AdminDashboard() {
                 >
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border-[3px] border-green-500"></div>
-                    <span className="text-[13px] text-[#888]">Total GMV</span>
+                    <span className="text-[13px] text-[#888]">{t('Total GMV')}</span>
                   </div>
                   <span className="text-[13px] font-mono text-green-400">{loading ? '...' : formatMoney(financeStats.gmv)}</span>
                 </div>
@@ -147,7 +149,7 @@ export default function AdminDashboard() {
                 >
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full border-[3px] border-blue-500"></div>
-                    <span className="text-[13px] text-[#888]">Retained in Escrow</span>
+                    <span className="text-[13px] text-[#888]">{t('Retained in Escrow')}</span>
                     <Info size={12} className="text-[#444]" />
                   </div>
                   <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : formatMoney(financeStats.escrow)}</span>
@@ -158,11 +160,11 @@ export default function AdminDashboard() {
 
           {/* Community & Roles Breakdown */}
           <div>
-            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">Community (Roles)</h3>
+            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">{t('Community (Roles)')}</h3>
             <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group transition-all">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
-                  Total Active Users
+                  {t('Total Active Users')}
                 </span>
                 <span className="text-[14px] font-bold text-white transition-colors">{loading ? '...' : identityStats?.totalUsers}</span>
               </div>
@@ -174,7 +176,7 @@ export default function AdminDashboard() {
                 >
                   <div className="flex items-center gap-2">
                     <Users size={14} className="text-[#888] group-hover/item:text-white transition-colors" />
-                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">Buyers (B2C)</span>
+                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">{t('Buyers (B2C)')}</span>
                   </div>
                   <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.buyer}</span>
                 </div>
@@ -184,7 +186,7 @@ export default function AdminDashboard() {
                 >
                   <div className="flex items-center gap-2">
                     <Users size={14} className="text-purple-500" />
-                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">Sellers (B2B)</span>
+                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">{t('Sellers (B2B)')}</span>
                   </div>
                   <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.seller}</span>
                 </div>
@@ -194,7 +196,7 @@ export default function AdminDashboard() {
                 >
                   <div className="flex items-center gap-2">
                     <Users size={14} className="text-red-500" />
-                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">Administrators</span>
+                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">{t('Administrators')}</span>
                   </div>
                   <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.admin}</span>
                 </div>
@@ -204,10 +206,10 @@ export default function AdminDashboard() {
 
           {/* Actionable Alerts */}
           <div>
-            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">Actionable Alerts</h3>
+            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">{t('Actionable Alerts')}</h3>
             <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm space-y-3">
               {recentAlerts.length === 0 && loading && (
-                <div className="text-[13px] text-[#666] text-center py-4">Syncing alerts...</div>
+                <div className="text-[13px] text-[#666] text-center py-4">{t('Syncing alerts...')}</div>
               )}
               {recentAlerts.map((alert, idx) => (
                 <div key={idx} className="flex items-start gap-3 p-3 bg-[#111] border border-[#222] rounded-lg relative overflow-hidden group">
@@ -237,7 +239,7 @@ export default function AdminDashboard() {
 
         {/* Right Column (Operational Pillars) */}
         <div className="flex-1">
-          <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">Operational Command Center</h3>
+          <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">{t('Operational Command Center')}</h3>
           <div className="space-y-4">
             
             {/* Platform Pulse */}
@@ -247,7 +249,7 @@ export default function AdminDashboard() {
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span>Listings & AI Engine</span>
+                    <span>{t('Listings & AI Engine')}</span>
                     <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -256,7 +258,7 @@ export default function AdminDashboard() {
                        className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          Total Listings (Anúncios) <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('Total Listings (Anúncios)')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : platformStats.newListings}</div>
                      </div>
@@ -265,9 +267,9 @@ export default function AdminDashboard() {
                        className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          3D Renders in Queue <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('3D Renders in Queue')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
-                        <div className="text-[18px] font-mono text-purple-400">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">jobs</span></div>
+                        <div className="text-[18px] font-mono text-purple-400">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">{t('jobs')}</span></div>
                      </div>
                   </div>
                </div>
@@ -280,7 +282,7 @@ export default function AdminDashboard() {
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span>Trust, Validation & Reputation</span>
+                    <span>{t('Trust, Validation & Reputation')}</span>
                     <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -289,25 +291,25 @@ export default function AdminDashboard() {
                        className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          Company Val. (B2B) <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('Company Val. (B2B)')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
-                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.pendingKYC} <span className="text-[11px] text-[#666]">pending</span></div>
+                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.pendingKYC} <span className="text-[11px] text-[#666]">{t('pending')}</span></div>
                      </div>
                      <div 
                        onClick={() => navigate('/admin/reviews')}
                        className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          Flagged Reviews <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('Flagged Reviews')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
-                        <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.flaggedReviews} <span className="text-[11px] text-[#666]">(&lt;3 stars)</span></div>
+                        <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.flaggedReviews} <span className="text-[11px] text-[#666]">{t('(<3 stars)')}</span></div>
                      </div>
                      <div 
                        onClick={() => navigate('/admin/transactions')}
                        className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1 hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          Open Disputes <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('Open Disputes')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : trustStats.openDisputes}</div>
                      </div>
@@ -322,7 +324,7 @@ export default function AdminDashboard() {
                </div>
                <div className="flex-1 min-w-0 w-full">
                   <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span>Logistics & WMS Pulse</span>
+                    <span>{t('Logistics & WMS Pulse')}</span>
                     <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -331,7 +333,7 @@ export default function AdminDashboard() {
                        className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          Pending Shipments <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('Pending Shipments')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
                         <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : logisticsStats.pendingShipments}</div>
                      </div>
@@ -340,7 +342,7 @@ export default function AdminDashboard() {
                        className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
                      >
                         <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          Delayed / Exception <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
+                          {t('Delayed / Exception')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
                         </div>
                         <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : logisticsStats.delayed}</div>
                      </div>
