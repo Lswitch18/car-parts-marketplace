@@ -43,37 +43,37 @@ interface NavGroup {
   items: { id: string; label: string }[];
 }
 
-const NAV_GROUPS: NavGroup[] = [
-  { icon: LayoutDashboard, label: 'Dashboard', id: 'dashboard', items: [] },
-  { icon: Package, label: 'Pedidos', id: 'grupo_pedidos', items: [
-    { id: 'pedidos', label: 'Pedidos' },
-    { id: 'entregas', label: 'Entregas' },
-    { id: 'coletas', label: 'Coletas' },
-    { id: 'transferencias', label: 'Transferências' },
+const getNavGroups = (t: (key: string) => string): NavGroup[] => [
+  { icon: LayoutDashboard, label: t('Dashboard'), id: 'dashboard', items: [] },
+  { icon: Package, label: t('Pedidos'), id: 'grupo_pedidos', items: [
+    { id: 'pedidos', label: t('Pedidos') },
+    { id: 'entregas', label: t('Entregas') },
+    { id: 'coletas', label: t('Coletas') },
+    { id: 'transferencias', label: t('Transferências') },
   ]},
-  { icon: Warehouse, label: 'Armazéns', id: 'grupo_armazens', items: [
-    { id: 'armazens', label: 'Centros de Distribuição' },
-    { id: 'estoque', label: 'Estoque' },
-    { id: 'wms', label: 'WMS' },
-    { id: 'b2b', label: 'Integração B2B' },
-    { id: 'armazem3d', label: 'Armazém 3D' },
+  { icon: Warehouse, label: t('Armazéns'), id: 'grupo_armazens', items: [
+    { id: 'armazens', label: t('Centros de Distribuição') },
+    { id: 'estoque', label: t('Estoque') },
+    { id: 'wms', label: t('WMS') },
+    { id: 'b2b', label: t('Integração B2B') },
+    { id: 'armazem3d', label: t('Armazém 3D') },
   ]},
-  { icon: MapPin, label: 'Rastreamento', id: 'grupo_rastreamento', items: [
-    { id: 'rastreamento', label: 'Rastreamento' },
-    { id: 'mapa', label: 'Mapa GPS' },
+  { icon: MapPin, label: t('Rastreamento'), id: 'grupo_rastreamento', items: [
+    { id: 'rastreamento', label: t('Rastreamento') },
+    { id: 'mapa', label: t('Mapa GPS') },
   ]},
-  { icon: Truck, label: 'Operações', id: 'grupo_operacoes', items: [
-    { id: 'etiquetas', label: 'Etiquetas' },
-    { id: 'transportes', label: 'Transportes' },
-    { id: 'dropoffs', label: 'Drop-offs' },
-    { id: 'terceiros', label: 'Terceiros' },
+  { icon: Truck, label: t('Operações'), id: 'grupo_operacoes', items: [
+    { id: 'etiquetas', label: t('Etiquetas') },
+    { id: 'transportes', label: t('Transportes') },
+    { id: 'dropoffs', label: t('Drop-offs') },
+    { id: 'terceiros', label: t('Terceiros') },
   ]},
-  { icon: BarChart3, label: 'Relatórios', id: 'relatorios', items: [] },
-  { icon: Settings, label: 'Administração', id: 'grupo_admin', items: [
-    { id: 'ocorrencias', label: 'Ocorrências' },
-    { id: 'usuarios', label: 'Usuários' },
-    { id: 'clientes', label: 'Clientes' },
-    { id: 'config', label: 'Configurações' },
+  { icon: BarChart3, label: t('Relatórios'), id: 'relatorios', items: [] },
+  { icon: Settings, label: t('Administração'), id: 'grupo_admin', items: [
+    { id: 'ocorrencias', label: t('Ocorrências') },
+    { id: 'usuarios', label: t('Usuários') },
+    { id: 'clientes', label: t('Clientes') },
+    { id: 'config', label: t('Configurações') },
   ]},
 ];
 
@@ -97,7 +97,7 @@ function KpiCard({ title, value, icon: Icon, color, trend, onClick }: { title: s
       <p className="text-2xl font-black leading-none text-text mb-2">{value}</p>
       {trend && (
         <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
-          {trend} vs mês anterior
+          {trend} {title !== 'Taxa de Entrega' && title !== 'Lucro Mensal' ? 'vs mês anterior' : ''}
         </p>
       )}
     </button>
@@ -192,7 +192,7 @@ export default function LogistixDashboard() {
   const mesAtual = today.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' });
   const dataLabel = `01/${mesAtual} - ${today.toLocaleDateString('pt-BR')}`;
 
-  const donutData = (statusData || []).map(d => ({ name: STATUS_LABEL[d.status] || d.status, value: d.count }));
+  const donutData = (statusData || []).map(d => ({ name: t(STATUS_LABEL[d.status] || d.status), value: d.count }));
   const totalPedidos = (donutData || []).reduce((s, d) => s + d.value, 0);
 
   const { data: armazensList } = useQuery({
@@ -209,14 +209,14 @@ export default function LogistixDashboard() {
   const atividadeFeed = [
     ...(recentOrders || []).slice(0, 3).map((o: any) => ({
       tipo: 'pedido' as const,
-      label: `Pedido ${o.codigo}`,
-      desc: `${o.cliente} · ${o.status}`,
+      label: `${t('Pedido')} ${o.codigo}`,
+      desc: `${o.cliente} · ${t(o.status)}`,
       cor: STATUS_COLOR[o.status] || '#000000',
       hora: o.previsao || '',
     })),
     ...(ocorrencias || []).slice(0, 2).map((o: any) => ({
       tipo: 'ocorrencia' as const,
-      label: `Ocorrência: ${o.tipo}`,
+      label: `${t('Ocorrência')}: ${o.tipo}`,
       desc: o.descricao?.slice(0, 40) || '',
       cor: '#000000',
       hora: o.created_at || '',
@@ -227,22 +227,22 @@ export default function LogistixDashboard() {
     return (
       <div className="flex flex-wrap gap-2">
         <button onClick={() => onNavigate('coletas')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
-          + Nova Coleta
+          + {t('Nova Coleta')}
         </button>
         <button onClick={() => onNavigate('etiquetas')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
-          + Gerar Etiquetas
+          + {t('Gerar Etiquetas')}
         </button>
         <button onClick={() => onNavigate('pedidos')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
-          + Novo Pedido
+          + {t('Novo Pedido')}
         </button>
         <button onClick={() => onNavigate('transferencias')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
-          + Transferência
+          + {t('Transferência')}
         </button>
         <button onClick={() => onNavigate('ocorrencias')} className="flex items-center gap-2 h-10 px-4 bg-surface hover:bg-slate-900/50 text-text rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-border shadow-xs">
-          + Ocorrência
+          + {t('Ocorrência')}
         </button>
         <button onClick={() => onNavigate('armazem3d')} className="flex items-center gap-2 h-10 px-4 bg-primary hover:bg-primary-dark text-black rounded-lg text-xs font-black uppercase tracking-widest transition-all border border-primary/50 shadow-xs neon-border">
-          ⊞ Armazém 3D
+          ⊞ {t('Armazém 3D')}
         </button>
       </div>
     );
@@ -264,12 +264,12 @@ export default function LogistixDashboard() {
           </Link>
           <div>
             <h1 className="font-sans text-lg font-black leading-tight tracking-wider uppercase text-text neon-text-cyan">LOGISTIX</h1>
-            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Painel Operacional</span>
+            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">{t('Painel Operacional')}</span>
           </div>
         </div>
 
         <nav className="flex-1 px-4 py-4 overflow-y-auto space-y-1 relative z-10">
-          {NAV_GROUPS.map(group => (
+          {getNavGroups(t).map(group => (
             <div key={group.id}>
               {group.items.length === 0 ? (
                 <button
@@ -354,7 +354,7 @@ export default function LogistixDashboard() {
           <div className="flex items-center gap-3">
             <div className="hidden lg:flex items-center bg-background rounded-lg h-10 w-[260px] px-3 border border-border">
               <Search size={16} className="text-text-muted mr-2" />
-              <input type="text" placeholder="Buscar no sistema..." className="bg-transparent border-none outline-none text-text text-xs w-full font-bold placeholder:text-text-muted" />
+              <input type="text" placeholder={t("Buscar no sistema...")} className="bg-transparent border-none outline-none text-text text-xs w-full font-bold placeholder:text-text-muted" />
             </div>
             <div className="relative flex-shrink-0">
               <button onClick={() => setNotificacaoOpen(!notificacaoOpen)} className="w-10 h-10 rounded-lg border border-border bg-surface flex items-center justify-center text-text hover:bg-background transition-all relative">
@@ -388,12 +388,12 @@ export default function LogistixDashboard() {
                   <div key={i} className="animate-pulse bg-surface border border-border rounded-xl h-[130px] skeleton" />
                 )) : (
                   <>
-                    <KpiCard title="Pedidos Totais" value={kpis?.total ?? 0} icon={Package} color="var(--daig-cyan)" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
-                    <KpiCard title="Entregas Concluídas" value={kpis?.concluidas ?? 0} icon={CheckCircle} color="var(--daig-cyan)" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
-                    <KpiCard title="Atrasos" value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="var(--daig-cyan)" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
-                    <KpiCard title="Taxa de Entrega" value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="var(--daig-cyan)" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Receita Mensal" value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="var(--daig-cyan)" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
-                    <KpiCard title="Lucro Mensal" value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color="var(--daig-cyan)" trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title={t("Pedidos Totais")} value={kpis?.total ?? 0} icon={Package} color="var(--daig-cyan)" trend="+18.2%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title={t("Entregas Concluídas")} value={kpis?.concluidas ?? 0} icon={CheckCircle} color="var(--daig-cyan)" trend="+22.7%" onClick={() => setActiveNav('entregas')} />
+                    <KpiCard title={t("Atrasos")} value={kpis?.atrasos ?? 0} icon={AlertTriangle} color="var(--daig-cyan)" trend="-15.3%" onClick={() => setActiveNav('pedidos')} />
+                    <KpiCard title={t("Taxa de Entrega")} value={`${kpis?.taxa ?? 0}%`} icon={Percent} color="var(--daig-cyan)" trend="+5.7%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title={t("Receita Mensal")} value={`¥ ${Number(kpis?.receita_mensal || 0).toLocaleString('ja-JP')}`} icon={DollarSign} color="var(--daig-cyan)" trend="+18.2%" onClick={() => setActiveNav('relatorios')} />
+                    <KpiCard title={t("Lucro Mensal")} value={`¥ ${Number(kpis?.lucro_mensal || 0).toLocaleString('ja-JP')}`} icon={TrendingUp} color="var(--daig-cyan)" trend={`${kpis?.margem || '0'}%`} onClick={() => setActiveNav('relatorios')} />
                   </>
                 )}
               </div>
@@ -401,7 +401,7 @@ export default function LogistixDashboard() {
               {/* Operations Charts & CD occupancy */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Status das Entregas</h3>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">{t('Status das Entregas')}</h3>
                   <div className="relative h-[180px] w-full min-h-[180px] flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -413,7 +413,7 @@ export default function LogistixDashboard() {
                     </ResponsiveContainer>
                     <div className="absolute flex flex-col items-center">
                       <span className="text-xl font-black text-text">{totalPedidos}</span>
-                      <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">Total</span>
+                      <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider">{t('Total')}</span>
                     </div>
                   </div>
                   <div className="space-y-3 mt-4">
@@ -428,7 +428,7 @@ export default function LogistixDashboard() {
                 </div>
 
                 <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Performance no Prazo</h3>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">{t('Performance no Prazo')}</h3>
                   <div className="h-[180px] w-full min-h-[180px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={performance || []}>
@@ -442,13 +442,13 @@ export default function LogistixDashboard() {
                     </ResponsiveContainer>
                   </div>
                   <div className="flex justify-center gap-6 mt-4">
-                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary"><span className="w-4 h-0.5 bg-cyan-400" /> No prazo</div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary"><span className="w-4 h-0.5 bg-purple-500" /> Em atraso</div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary"><span className="w-4 h-0.5 bg-cyan-400" /> {t('No prazo')}</div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-text-secondary"><span className="w-4 h-0.5 bg-purple-500" /> {t('Em atraso')}</div>
                   </div>
                 </div>
 
                 <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Capacidade dos CDs</h3>
+                  <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">{t('Capacidade dos CDs')}</h3>
                   <div className="space-y-4">
                     {CD_list.map(a => (
                       <button key={a.nome} onClick={() => { setActiveNav('armazem3d'); }} className="w-full text-left group">
@@ -465,16 +465,16 @@ export default function LogistixDashboard() {
                       </button>
                     ))}
                   </div>
-                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-5 h-10 rounded-lg border border-border bg-surface text-text text-xs font-black uppercase tracking-widest hover:bg-slate-900/50 transition-all">Ver galpões em 3D</button>
+                  <button onClick={() => setActiveNav('armazem3d')} className="w-full mt-5 h-10 rounded-lg border border-border bg-surface text-text text-xs font-black uppercase tracking-widest hover:bg-slate-900/50 transition-all">{t('Ver galpões em 3D')}</button>
                 </div>
               </div>
 
               {/* Activity feeds */}
               <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
-                <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Feed de Eventos Operacionais</h3>
+                <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">{t('Feed de Eventos Operacionais')}</h3>
                 <div className="space-y-1">
                   {atividadeFeed.length === 0 ? (
-                    <p className="text-xs text-text-muted font-bold uppercase tracking-wider py-6 text-center">Nenhum evento registrado</p>
+                    <p className="text-xs text-text-muted font-bold uppercase tracking-wider py-6 text-center">{t('Nenhum evento registrado')}</p>
                   ) : (
                     atividadeFeed.map((item, i) => (
                       <div key={i} className="flex items-center gap-3 py-3 border-b border-border last:border-0">
@@ -492,11 +492,11 @@ export default function LogistixDashboard() {
 
               {/* Recent Orders table */}
               <div className="bg-surface border border-border rounded-xl p-5 shadow-xs">
-                <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">Remessas Recentes</h3>
+                <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary mb-4">{t('Remessas Recentes')}</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left divide-y divide-border">
                     <thead><tr>
-                      {['Código', 'Cliente', 'Origem CD', 'Destino', 'Status', 'Previsão'].map(h => (
+                      {[t('Código'), t('Cliente'), t('Origem CD'), t('Destino'), t('Status'), t('Previsão')].map(h => (
                         <th key={h} className="text-xs font-black text-text uppercase tracking-wider pb-3">{h}</th>
                       ))}
                     </tr></thead>
@@ -516,13 +516,13 @@ export default function LogistixDashboard() {
                         </tr>
                       ))}
                       {(!recentOrders || recentOrders.length === 0) && (
-                        <tr><td colSpan={6} className="text-center py-8 text-text-muted text-xs font-bold uppercase tracking-wider">Nenhum pedido recente</td></tr>
+                        <tr><td colSpan={6} className="text-center py-8 text-text-muted text-xs font-bold uppercase tracking-wider">{t('Nenhum pedido recente')}</td></tr>
                       )}
                     </tbody>
                   </table>
                 </div>
                 <div className="text-center mt-5">
-                  <button onClick={() => setActiveNav('pedidos')} className="text-xs font-black text-text-secondary hover:text-text uppercase tracking-widest transition-all">Ver todas as remessas</button>
+                  <button onClick={() => setActiveNav('pedidos')} className="text-xs font-black text-text-secondary hover:text-text uppercase tracking-widest transition-all">{t('Ver todas as remessas')}</button>
                 </div>
               </div>
             </div>
