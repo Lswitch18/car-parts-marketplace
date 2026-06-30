@@ -285,7 +285,7 @@ export const api = {
             'Authorization': 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
           },
           body: JSON.stringify({
-            model: 'llava',
+            model: 'moondream',
             messages: [{ role: 'user', content: prompt, images: [base64Image] }],
             format: 'json',
             stream: false
