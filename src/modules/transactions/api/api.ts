@@ -278,12 +278,11 @@ export const api = {
       const signal = AbortSignal.timeout(600000); // 10 minutos
       
       try {
-        const response = await fetch('https://ripe-areas-stand.loca.lt/api/chat', {
+        const response = await fetch('https://property-legitimate-chain-ease.trycloudflare.com/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic YXBpOk0zdW4wbTNAQDE5OTE4',
-            'Bypass-Tunnel-Reminder': 'true'
+            'Authorization': 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
           },
           body: JSON.stringify({
             model: 'llava',
