@@ -19,6 +19,8 @@ export default function CreateListing() {
   const [generating3D, setGenerating3D] = useState(false)
   const [model3DUrl, setModel3DUrl] = useState<string | null>(null)
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const [aiProgress, setAiProgress] = useState(0)
   
   const [aiEnabled, setAiEnabled] = useState(true)
   const [isAuction, setIsAuction] = useState(false)
@@ -30,6 +32,7 @@ export default function CreateListing() {
   useEffect(() => {
     return () => {
       if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
     }
   }, [])
 
@@ -130,6 +133,10 @@ export default function CreateListing() {
     
     try {
       setAnalyzing(true)
+      setAiProgress(0)
+      progressIntervalRef.current = setInterval(() => {
+        setAiProgress(prev => (prev < 95 ? prev + (Math.random() * 1.5) : prev))
+      }, 1500)
       
       const data = await api.ai.analyzePart(images[0]) as any
       
@@ -167,7 +174,12 @@ export default function CreateListing() {
       alert(t('Não foi possível analisar a imagem. Tente preencher manualmente.'))
       setGenerating3D(false)
     } finally {
-      setAnalyzing(false)
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
+      setAiProgress(100)
+      setTimeout(() => {
+        setAnalyzing(false)
+        setAiProgress(0)
+      }, 800)
     }
   }
 
@@ -361,24 +373,40 @@ export default function CreateListing() {
 
               {images.length > 0 && aiEnabled && (
                 <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    onClick={analyzeWithAI}
-                    disabled={analyzing || generating3D}
-                    className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-3 rounded-lg transition-all"
-                  >
-                    {analyzing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span className="text-sm font-medium">{t('Gemini Pro Analisando...')}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-4 h-4" />
-                        <span className="text-sm font-medium">{t('Análise Gemini + Geração 3D')}</span>
-                      </>
-                    )}
-                  </button>
+                  {!analyzing ? (
+                    <button
+                      type="button"
+                      onClick={analyzeWithAI}
+                      disabled={generating3D}
+                      className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-3 rounded-lg transition-all"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span className="text-sm font-medium">{t('Análise de IA (Auto Preenchimento)')}</span>
+                    </button>
+                  ) : (
+                    <div className="flex-1 relative overflow-hidden bg-surface border border-primary/30 px-4 py-3 rounded-lg flex flex-col justify-center transition-all">
+                      <div className="flex justify-between items-center mb-2 relative z-10">
+                        <div className="flex items-center space-x-2">
+                          <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                          <span className="text-sm font-medium text-primary">
+                            {aiProgress < 20 ? t('Lendo imagem e textura...') : 
+                             aiProgress < 45 ? t('Identificando peça e montadora...') : 
+                             aiProgress < 75 ? t('Buscando especificações...') : 
+                             aiProgress < 96 ? t('Consultando valor de mercado...') :
+                             t('Finalizando...')}
+                          </span>
+                        </div>
+                        <span className="text-xs font-bold text-primary">{Math.min(100, Math.round(aiProgress))}%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-primary/10 rounded-full overflow-hidden relative z-10 shadow-inner">
+                        <div 
+                          className="h-full bg-gradient-to-r from-[#0D75FF] to-[#00f0ff] transition-all duration-500 ease-out shadow-[0_0_8px_rgba(0,240,255,0.8)]"
+                          style={{ width: `${Math.min(100, aiProgress)}%` }}
+                        ></div>
+                      </div>
+                      <div className="absolute inset-0 bg-primary/5 animate-pulse rounded-lg"></div>
+                    </div>
+                  )}
                   
                   {/* Status do 3D Engine */}
                   {(generating3D || model3DUrl) && (
