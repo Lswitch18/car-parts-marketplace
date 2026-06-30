@@ -329,8 +329,35 @@ export const api = {
           }
         }
 
-        return JSON.parse(fullContent || '{}');
+        console.log('[analyzePart] Full content received from AI:', fullContent);
+
+        // Remove markdown blocks if the AI wraps the JSON
+        let cleanContent = fullContent.trim();
+        if (cleanContent.startsWith('```json')) {
+          cleanContent = cleanContent.replace(/^```json/, '').replace(/```$/, '').trim();
+        } else if (cleanContent.startsWith('```')) {
+          cleanContent = cleanContent.replace(/^```/, '').replace(/```$/, '').trim();
+        }
+
+        console.log('[analyzePart] Cleaned content for parsing:', cleanContent);
+
+        let parsedData: any = {};
+        try {
+          parsedData = JSON.parse(cleanContent || '{}');
+          
+          // Normalize text to match internal UUID lookup maps (lowercase, trimmed)
+          if (typeof parsedData.brand === 'string') parsedData.brand = parsedData.brand.toLowerCase().trim();
+          if (typeof parsedData.category === 'string') parsedData.category = parsedData.category.toLowerCase().trim();
+          
+          console.log('[analyzePart] Successfully parsed and normalized JSON:', parsedData);
+        } catch (parseError) {
+          console.error('[analyzePart] JSON Parse Error:', parseError);
+          console.error('[analyzePart] Raw content that failed to parse:', cleanContent);
+        }
+
+        return parsedData;
       } catch (err: any) {
+        console.error('[analyzePart] Request failed:', err);
         throw new Error(err.message || 'Falha ao processar na VPS');
       }
     },

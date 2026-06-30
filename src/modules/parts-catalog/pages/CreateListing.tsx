@@ -144,21 +144,31 @@ export default function CreateListing() {
       
       setAnalyzing(false)
 
+      console.log('[analyzeWithAI] Raw AI response:', data)
+
       if (data.is_car_part === false) {
+        console.warn('[analyzeWithAI] AI determined this is not a car part.')
         setAiError(t('A imagem não parece ser uma peça automotiva válida. O cadastro foi bloqueado e a imagem removida.'))
         removeImage(0)
         return
       }
 
       const newTitle = data.title || formData.title
+      
+      const newFormData = {
+        title: newTitle,
+        description: data.description || formData.description,
+        price: data.estimated_price?.toString() || formData.price,
+        brand: data.brand || formData.brand,
+        model: data.model || formData.model,
+        category: data.category || formData.category,
+      }
+      
+      console.log('[analyzeWithAI] Preenchendo campos com:', newFormData)
+      
       setFormData(prev => ({
         ...prev,
-        title: newTitle,
-        description: data.description || prev.description,
-        price: data.estimated_price?.toString() || prev.price,
-        brand: data.brand || prev.brand,
-        model: data.model || prev.model,
-        category: data.category || prev.category,
+        ...newFormData
       }))
 
       setGenerating3D(true)
