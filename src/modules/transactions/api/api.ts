@@ -275,7 +275,7 @@ export const api = {
     analyzePart: async (image: string) => {
       const prompt = "Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa como animal, pessoa, paisagem), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios ou com valores genéricos.";
       const base64Image = image.split(',')[1] || image;
-      const signal = AbortSignal.timeout(180000); // 3 minutos
+      const signal = AbortSignal.timeout(600000); // 10 minutos
       
       try {
         const response = await fetch('https://property-legitimate-chain-ease.trycloudflare.com/api/chat', {
