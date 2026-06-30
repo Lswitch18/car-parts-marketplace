@@ -1116,7 +1116,16 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     if (saved === 'pt' || saved === 'en' || saved === 'ja') {
       return saved as Language;
     }
-    // Default to Japanese ('ja') as requested
+    
+    // Tenta usar o idioma do navegador
+    if (typeof navigator !== 'undefined' && navigator.language) {
+      const browserLang = navigator.language.split('-')[0];
+      if (browserLang === 'pt' || browserLang === 'en' || browserLang === 'ja') {
+        return browserLang as Language;
+      }
+    }
+
+    // Default para Japonês caso não ache
     return 'ja'
   })
 

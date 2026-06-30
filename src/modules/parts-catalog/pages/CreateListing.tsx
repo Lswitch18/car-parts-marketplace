@@ -21,6 +21,7 @@ export default function CreateListing() {
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [aiProgress, setAiProgress] = useState(0)
+  const [aiError, setAiError] = useState<string | null>(null)
   
   const [aiEnabled, setAiEnabled] = useState(true)
   const [isAuction, setIsAuction] = useState(false)
@@ -132,6 +133,7 @@ export default function CreateListing() {
     if (images.length === 0) return
     
     try {
+      setAiError(null)
       setAnalyzing(true)
       setAiProgress(0)
       progressIntervalRef.current = setInterval(() => {
@@ -140,6 +142,14 @@ export default function CreateListing() {
       
       const data = await api.ai.analyzePart(images[0], language) as any
       
+      setAnalyzing(false)
+
+      if (data.is_car_part === false) {
+        setAiError(t('A imagem não parece ser uma peça automotiva válida. O cadastro foi bloqueado e a imagem removida.'))
+        removeImage(0)
+        return
+      }
+
       const newTitle = data.title || formData.title
       setFormData(prev => ({
         ...prev,
@@ -150,13 +160,6 @@ export default function CreateListing() {
         model: data.model || prev.model,
         category: data.category || prev.category,
       }))
-      
-      setAnalyzing(false)
-
-      if (data.is_car_part === false) {
-        alert(t('A imagem não parece ser uma peça automotiva válida. O modelo 3D não será gerado.'))
-        return
-      }
 
       setGenerating3D(true)
       const gen3DData = await api.ai.generate3D(images[0]).catch(e => {
@@ -393,6 +396,13 @@ export default function CreateListing() {
                   <Upload className="w-6 h-6 text-text-secondary" />
                 </label>
               </div>
+
+              {aiError && (
+                <div className="mt-4 p-4 bg-error/10 border border-error/20 rounded-lg flex items-start gap-3 text-error">
+                  <X className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm font-medium">{aiError}</p>
+                </div>
+              )}
 
               {images.length > 0 && aiEnabled && (
                 <div className="mt-4 flex flex-col sm:flex-row gap-3">
