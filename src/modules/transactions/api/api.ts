@@ -271,8 +271,34 @@ export const api = {
   },
 
   ai: {
-    // Configura 3 minutos (180000ms) de timeout para aguardar a IA processar a imagem na VPS (CPU)
-    analyzePart: (image: string) => fetchApi('/analyze-part', { method: 'POST', body: JSON.stringify({ image }), timeout: 180000 }),
+    // Envio direto à VPS contornando timeout de 546 do Supabase Edge
+    analyzePart: async (image: string) => {
+      const prompt = "Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa como animal, pessoa, paisagem), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios ou com valores genéricos.";
+      const base64Image = image.split(',')[1] || image;
+      const signal = AbortSignal.timeout(180000); // 3 minutos
+      
+      try {
+        const response = await fetch('https://property-legitimate-chain-ease.trycloudflare.com/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+          },
+          body: JSON.stringify({
+            model: 'llava',
+            messages: [{ role: 'user', content: prompt, images: [base64Image] }],
+            format: 'json',
+            stream: false
+          }),
+          signal
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Erro na IA');
+        return JSON.parse(result.message?.content || '{}');
+      } catch (err: any) {
+        throw new Error(err.message || 'Falha ao processar na VPS');
+      }
+    },
     generate3D: (image: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ image }) }),
     check3DStatus: (id: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ id }) }),
     saveToDrive: (modelUrl: string, title: string) => fetchApi('/save-to-drive', { method: 'POST', body: JSON.stringify({ modelUrl, title }) }),
