@@ -278,11 +278,11 @@ export const api = {
       const signal = AbortSignal.timeout(600000); // 10 minutos
       
       try {
-        const response = await fetch('https://property-legitimate-chain-ease.trycloudflare.com/api/chat', {
+        const response = await fetch(import.meta.env.VITE_OLLAMA_API_URL || 'https://property-legitimate-chain-ease.trycloudflare.com/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
           },
           body: JSON.stringify({
             model: 'moondream',
