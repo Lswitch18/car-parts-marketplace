@@ -285,7 +285,7 @@ export const api = {
             'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
           },
           body: JSON.stringify({
-            model: 'moondream',
+            model: 'llava',
             messages: [{ role: 'user', content: prompt, images: [base64Image] }],
             format: 'json',
             stream: true
