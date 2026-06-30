@@ -7,14 +7,19 @@ interface ApiOptions {
   headers?: Record<string, string>;
   method?: string;
   body?: string;
+  timeout?: number; // Timeout em milissegundos
 }
 
 async function fetchApi<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token;
   
+  // Se um timeout for especificado, usamos o AbortSignal
+  const signal = options.timeout ? AbortSignal.timeout(options.timeout) : undefined;
+  
   const response = await fetch(`${FUNCTIONS_URL}${endpoint}`, {
     ...options,
+    signal,
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -266,7 +271,8 @@ export const api = {
   },
 
   ai: {
-    analyzePart: (image: string) => fetchApi('/analyze-part', { method: 'POST', body: JSON.stringify({ image }) }),
+    // Configura 3 minutos (180000ms) de timeout para aguardar a IA processar a imagem na VPS (CPU)
+    analyzePart: (image: string) => fetchApi('/analyze-part', { method: 'POST', body: JSON.stringify({ image }), timeout: 180000 }),
     generate3D: (image: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ image }) }),
     check3DStatus: (id: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ id }) }),
     saveToDrive: (modelUrl: string, title: string) => fetchApi('/save-to-drive', { method: 'POST', body: JSON.stringify({ modelUrl, title }) }),
