@@ -288,13 +288,42 @@ export const api = {
             model: 'moondream',
             messages: [{ role: 'user', content: prompt, images: [base64Image] }],
             format: 'json',
-            stream: false
+            stream: true
           }),
           signal
         });
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error || 'Erro na IA');
-        return JSON.parse(result.message?.content || '{}');
+
+        if (!response.ok) {
+          const errRes = await response.json().catch(() => ({}));
+          throw new Error(errRes.error || 'Erro na IA (HTTP ' + response.status + ')');
+        }
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let fullContent = '';
+
+        if (reader) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            
+            // Ollama envia múltiplas linhas JSON no stream
+            const lines = chunk.split('\n').filter(l => l.trim());
+            for (const line of lines) {
+              try {
+                const parsed = JSON.parse(line);
+                if (parsed.message?.content) {
+                  fullContent += parsed.message.content;
+                }
+              } catch (e) {
+                console.warn('Erro ao parsear chunk:', line);
+              }
+            }
+          }
+        }
+
+        return JSON.parse(fullContent || '{}');
       } catch (err: any) {
         throw new Error(err.message || 'Falha ao processar na VPS');
       }
