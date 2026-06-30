@@ -278,7 +278,7 @@ export const api = {
       const signal = AbortSignal.timeout(600000); // 10 minutos
       
       try {
-        const response = await fetch(import.meta.env.VITE_OLLAMA_API_URL || 'https://property-legitimate-chain-ease.trycloudflare.com/api/chat', {
+        const response = await fetch(import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -301,16 +301,22 @@ export const api = {
         const reader = response.body?.getReader();
         const decoder = new TextDecoder();
         let fullContent = '';
+        let buffer = '';
 
         if (reader) {
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
-            const chunk = decoder.decode(value, { stream: true });
             
-            // Ollama envia múltiplas linhas JSON no stream
-            const lines = chunk.split('\n').filter(l => l.trim());
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            
+            // A última linha pode estar incompleta (cortada no meio do chunk)
+            // Removemos ela do array de linhas e deixamos no buffer para a próxima iteração
+            buffer = lines.pop() || '';
+
             for (const line of lines) {
+              if (!line.trim()) continue;
               try {
                 const parsed = JSON.parse(line);
                 if (parsed.message?.content) {

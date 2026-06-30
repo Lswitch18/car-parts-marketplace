@@ -21,7 +21,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const AI_PROVIDER = Deno.env.get('AI_PROVIDER') || 'gemini'; // 'gemini' or 'ollama'
-    const OLLAMA_API_URL = Deno.env.get('OLLAMA_API_URL') || 'http://201.46.120.192/api/chat';
+    const OLLAMA_API_URL = Deno.env.get('OLLAMA_API_URL') || 'https://201.46.120.192.nip.io/api/chat';
     const OLLAMA_AUTH_TOKEN = Deno.env.get('OLLAMA_AUTH_TOKEN'); // For Basic Auth (e.g., base64(user:pass))
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
     
