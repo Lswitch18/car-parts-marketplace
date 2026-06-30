@@ -272,7 +272,8 @@ export default function CreateListing() {
           const img = new window.Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            const MAX_SIZE = 512;
+            // REDUZIDO PARA 256 PARA ACELERAR O PROCESSAMENTO NO OLLAMA VIA CPU
+            const MAX_SIZE = 256;
             let width = img.width;
             let height = img.height;
             if (width > height) {
