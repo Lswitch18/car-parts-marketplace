@@ -15107,4 +15107,22 @@ FILES = {
     }
 }
 
-last_updated = "2026-06-26"
+last_updated = "2026-06-30"
+
+# ==========================================
+# PROGRESSO: 30 de Junho de 2026
+# ==========================================
+# 1. Integração da IA Visual (Ollama)
+# - Resolvido timeout da API de IA configurando a requisição para HTTP Stream (`stream: true`)
+# - Com a ativação do stream, o Vercel/Cloudflare recebem os Headers HTTP instantaneamente
+# - Isso evita o Timeout Idle de 100 segundos da Cloudflare 
+# - A IA "moondream" processa silenciosamente as imagens na CPU e devolve os dados perfeitamente.
+#
+# 2. Deploy da VPS e Configurações:
+# - Modelo `moondream` (1.8B) baixado e funcional na VPS
+# - Variáveis de Ambiente da VPS (`VITE_OLLAMA_API_URL`, `VITE_OLLAMA_API_AUTH`) adicionadas no `.env` e Vercel
+#
+# PRÓXIMOS PASSOS (TODO):
+# 1. Barra de progresso UI: Criar uma barra de progresso premium, fluida e animada no Front-end que espere os ~95s e reaja à stream.
+# 2. Internacionalização (i18n) na IA: Passar o idioma selecionado no `daig.jp` para o prompt da IA, forçando-a a retornar `title` e `description` na língua correta (ex: Japonês, Inglês, PT).
+# 3. Restrição de Imagens (is_car_part): Melhorar o bloqueio de imagens que não são peças de carro. A IA já avalia `is_car_part`, mas precisamos integrar isso com uma UI clara de erro que aborte a postagem e limpe a imagem se for detectado algo inválido.

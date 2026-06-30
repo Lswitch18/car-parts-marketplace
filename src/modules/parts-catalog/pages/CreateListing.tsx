@@ -9,7 +9,7 @@ import { useI18n } from '@/modules/shared/lib/i18n'
 import { api } from '@/modules/transactions/api/api'
 
 export default function CreateListing() {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const [images, setImages] = useState<string[]>([])
@@ -138,7 +138,7 @@ export default function CreateListing() {
         setAiProgress(prev => (prev < 95 ? prev + (Math.random() * 1.5) : prev))
       }, 1500)
       
-      const data = await api.ai.analyzePart(images[0]) as any
+      const data = await api.ai.analyzePart(images[0], language) as any
       
       const newTitle = data.title || formData.title
       setFormData(prev => ({

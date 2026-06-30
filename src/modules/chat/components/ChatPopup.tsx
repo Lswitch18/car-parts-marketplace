@@ -4,6 +4,7 @@ import { supabase } from '@/modules/shared/lib/supabase'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { MessageCircle, X, Send, User, Minimize2, Maximize2, Package, DollarSign, Check, ShoppingCart, ArrowRight } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
+import { useI18n } from '@/modules/shared/lib/i18n'
 
 interface ChatPopupProps {
   initialProductId?: string
@@ -48,6 +49,7 @@ interface Conversation {
 
 export default function ChatPopup({ initialProductId, initialSellerId, onClose }: ChatPopupProps) {
   const { user } = useAuthStore()
+  const { t } = useI18n()
   const [isOpen, setIsOpen] = useState(() => localStorage.getItem('chat_isOpen') === 'true')
   const [isMinimized, setIsMinimized] = useState(() => localStorage.getItem('chat_isMinimized') === 'true')
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -80,7 +82,7 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
 
   const suggestAiResponse = async () => {
     if (messages.length === 0) {
-      setNewMessage('Olá! Tenho interesse no seu produto.')
+      setNewMessage(t('Olá! Tenho interesse no seu produto.'))
       return
     }
     
@@ -92,19 +94,19 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
     
     let suggestion = ''
     if (isLastMe) {
-      suggestion = 'Olá! Aguardo seu retorno para fecharmos.'
+      suggestion = t('Olá! Aguardo seu retorno para fecharmos.')
     } else {
       const content = lastMsg.content.toLowerCase()
       if (content.includes('dispon') || content.includes('disponivel')) {
-        suggestion = 'Olá! Sim, está disponível. Gostaria de fazer uma proposta?'
+        suggestion = t('Olá! Sim, está disponível. Gostaria de fazer uma proposta?')
       } else if (content.includes('preço') || content.includes('valor') || content.includes('prop')) {
-        suggestion = 'Obrigado pela oferta. O preço já está no limite, mas posso fazer um pequeno desconto se fechar hoje.'
+        suggestion = t('Obrigado pela oferta. O preço já está no limite, mas posso fazer um pequeno desconto se fechar hoje.')
       } else if (content.includes('envio') || content.includes('entreg')) {
-        suggestion = 'Consigo enviar amanhã mesmo via Yamato Transport com rastreamento completo.'
+        suggestion = t('Consigo enviar amanhã mesmo via Yamato Transport com rastreamento completo.')
       } else if (content.includes('confirm') || content.includes('pagar')) {
-        suggestion = 'Excelente! Acabei de confirmar a proposta de preço. Pode realizar o pagamento.'
+        suggestion = t('Excelente! Acabei de confirmar a proposta de preço. Pode realizar o pagamento.')
       } else {
-        suggestion = 'Perfeito. Como prefere seguir com a negociação?'
+        suggestion = t('Perfeito. Como prefere seguir com a negociação?')
       }
     }
     
