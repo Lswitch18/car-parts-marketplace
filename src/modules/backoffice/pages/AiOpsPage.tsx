@@ -172,22 +172,43 @@ export default function AiOpsPage() {
                       totalHddGb: data.totalHddGb
                     });
                   } else if (data.type === 'log') {
-                    setServerLogs(prev => {
-                      const newLogs = prev + data.line + '\n';
-                      const linesArr = newLogs.trim().split('\n');
-                      if (linesArr.length > 200) {
-                        return linesArr.slice(linesArr.length - 200).join('\n') + '\n';
-                      }
-                      return newLogs;
-                    });
                     const text = data.line.toLowerCase();
+                    
+                    let cleanMsg = '';
                     if (text.includes('decoding image')) {
-                      setFrontendStatusMessage(t('Imagem sendo lida... (Isso pode levar alguns minutos)'));
+                      cleanMsg = t('🔄 Lendo e processando a imagem... (CPU em uso intensivio)');
                     } else if (text.includes('image decoded')) {
-                      setFrontendStatusMessage(t('Procurando modelo, marca, montadora e ano para carros compatíveis...'));
+                      cleanMsg = t('✅ Imagem decodificada. Procurando modelo, marca, montadora e ano de carros compatíveis...');
                     } else if (text.includes('prompt eval time')) {
-                      setFrontendStatusMessage(t('Finalizando e estruturando a resposta...'));
+                      cleanMsg = t('🧠 Finalizando a análise visual e estruturando a resposta...');
+                    } else if (text.includes('eval time =')) {
+                      cleanMsg = t('✨ Análise concluída com sucesso!');
+                    } else if (text.includes('llama_server started')) {
+                      cleanMsg = t('🚀 Motor Ollama iniciado e pronto.');
+                    } else if (text.includes('llama_model_loader: loaded meta data')) {
+                      cleanMsg = t('📦 Carregando modelo na memória...');
                     }
+
+                    if (cleanMsg) {
+                      setFrontendStatusMessage(cleanMsg);
+                      
+                      const timestamp = new Date().toLocaleTimeString();
+                      const formattedLine = `[${timestamp}] ${cleanMsg}`;
+                      
+                      setServerLogs(prev => {
+                        const lines = prev.trim().split('\n');
+                        const lastLine = lines[lines.length - 1] || '';
+                        if (lastLine.includes(cleanMsg)) return prev;
+
+                        const newLogs = prev + formattedLine + '\n';
+                        const linesArr = newLogs.trim().split('\n');
+                        if (linesArr.length > 50) {
+                          return linesArr.slice(linesArr.length - 50).join('\n') + '\n';
+                        }
+                        return newLogs;
+                      });
+                    }
+
                     if (logsRef.current) {
                       logsRef.current.scrollTop = logsRef.current.scrollHeight;
                     }
@@ -922,7 +943,7 @@ export default function AiOpsPage() {
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
             <div className="w-3 h-3 rounded-full bg-green-500/80" />
-            <span className="ml-2 text-[11px] font-mono text-[#666]">journalctl -u ollama -f</span>
+            <span className="ml-2 text-[11px] font-mono text-[#666]">{t('AI Analysis Pipeline Status')}</span>
           </div>
           <div 
             ref={logsRef}
