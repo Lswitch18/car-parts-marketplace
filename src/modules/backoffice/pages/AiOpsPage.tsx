@@ -176,8 +176,8 @@ export default function AiOpsPage() {
                     const text = data.line.toLowerCase();
                     
                     let cleanMsg = '';
-                    if (text.includes('decoding image')) {
-                      cleanMsg = t('🔄 Lendo e processando a imagem... (CPU em uso intensivio)');
+                    if (text.includes('decoding image') || text.includes('encoding mtmd batch')) {
+                      cleanMsg = t('🔄 Lendo e processando a imagem... (CPU em uso intensivo)');
                     } else if (text.includes('image decoded')) {
                       cleanMsg = t('✅ Imagem decodificada. Procurando modelo, marca, montadora e ano de carros compatíveis...');
                     } else if (text.includes('prompt eval time')) {
@@ -188,6 +188,8 @@ export default function AiOpsPage() {
                       cleanMsg = t('🚀 Motor Ollama iniciado e pronto.');
                     } else if (text.includes('llama_model_loader: loaded meta data')) {
                       cleanMsg = t('📦 Carregando modelo na memória...');
+                    } else if (text.includes('| 500 |') && text.includes('post') && text.includes('/api/chat')) {
+                      cleanMsg = t('❌ Falha no motor de IA (Timeout ou Erro 500) ao tentar processar a imagem.');
                     }
 
                     if (cleanMsg) {
