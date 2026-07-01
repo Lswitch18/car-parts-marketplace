@@ -149,6 +149,7 @@ export default function AiOpsPage() {
         let buffer = '';
 
         if (reader) {
+          setServerLogs(`[${new Date().toLocaleTimeString()}] 🟢 Conectado ao canal de métricas e logs.\n[${new Date().toLocaleTimeString()}] ⏳ Aguardando eventos do motor de IA...\n`);
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
