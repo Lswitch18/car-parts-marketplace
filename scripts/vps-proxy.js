@@ -3,16 +3,12 @@ const https = require('https');
 const os = require('os');
 const { spawn, exec } = require('child_process');
 
-const PORT = 3000;
+const PORT = 3002;
 const OLLAMA_HOST = '127.0.0.1';
 const OLLAMA_PORT = 11434;
 
-// Simple CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+// Simple CORS headers (handled by Nginx now)
+const corsHeaders = {};
 
 // Helper to calculate CPU usage
 let lastCpuInfo = getCpuInfo();
