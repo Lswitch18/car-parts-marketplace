@@ -4,7 +4,7 @@ import { api } from '@/modules/transactions/api/api';
 import {
   Brain, Upload, Zap, Trash2, RefreshCw, CheckCircle2, XCircle,
   Clock, Activity, Server, Cpu, ImageIcon, ChevronDown, ChevronUp,
-  AlertTriangle, Copy, Check
+  AlertTriangle, Copy, Check, HardDrive, Download
 } from 'lucide-react';
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -83,7 +83,14 @@ export default function AiOpsPage() {
     lastChecked: null,
   });
 
+  // Model Manager state
+  const [downloadModelName, setDownloadModelName] = useState<string>('');
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [downloadProgress, setDownloadProgress] = useState<{ status: string, pct: number } | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
   // Playground state
+  const [selectedModel, setSelectedModel] = useState<string>('qwen3-vl:2b');
   const [playgroundImage, setPlaygroundImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
@@ -101,27 +108,95 @@ export default function AiOpsPage() {
   // Server Logs state
   const [serverLogs, setServerLogs] = useState<string>('');
   const [logsError, setLogsError] = useState<string | null>(null);
+  const [serverMetrics, setServerMetrics] = useState<{
+    memoryPercent: string;
+    usedMemMb: number;
+    totalMemMb: number;
+    cpuPercent: string;
+  } | null>(null);
+  const logsRef = useRef<HTMLDivElement>(null);
 
-  // ── Server Logs ────────────────────────────────────────────────────
+  // ── Server Logs Stream ─────────────────────────────────────────────
 
-  const fetchLogs = useCallback(async () => {
-    try {
-      const logs = await api.ai.fetchOllamaLogs();
-      setServerLogs(logs);
-      setLogsError(null);
-    } catch (err: any) {
-      setLogsError(err.message || t('Failed to fetch server logs'));
-    }
-  }, [t]);
-
-  // Auto-poll logs every 3 seconds
   useEffect(() => {
-    fetchLogs();
-    const interval = setInterval(fetchLogs, 3000);
-    return () => clearInterval(interval);
-  }, [fetchLogs]);
+    const abortController = new AbortController();
+    
+    const startStream = async () => {
+      try {
+        const baseUrl = import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat';
+        const logsUrl = baseUrl.replace(/\/api\/chat\/?$/, '/api/logs');
+        
+        const response = await fetch(logsUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+          },
+          signal: abortController.signal
+        });
 
-  // ── Health Check ───────────────────────────────────────────────────
+        if (!response.ok) {
+          throw new Error('Falha ao conectar no micro-serviço de logs');
+        }
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        if (reader) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.substring(6));
+                  if (data.type === 'metrics') {
+                    setServerMetrics({
+                      memoryPercent: data.memoryPercent,
+                      usedMemMb: data.usedMemMb,
+                      totalMemMb: data.totalMemMb,
+                      cpuPercent: data.cpuPercent
+                    });
+                  } else if (data.type === 'log') {
+                    setServerLogs(prev => {
+                      const newLogs = prev + data.line + '\n';
+                      const linesArr = newLogs.trim().split('\n');
+                      if (linesArr.length > 200) {
+                        return linesArr.slice(linesArr.length - 200).join('\n') + '\n';
+                      }
+                      return newLogs;
+                    });
+                    if (logsRef.current) {
+                      logsRef.current.scrollTop = logsRef.current.scrollHeight;
+                    }
+                  }
+                } catch (e) {
+                  // ignore
+                }
+              }
+            }
+          }
+        }
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          setLogsError(err.message || 'Stream connection lost');
+        }
+      }
+    };
+
+    startStream();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  // ── Health Check & Model List ──────────────────────────────────────
 
   const runHealthCheck = useCallback(async () => {
     setHealth(prev => ({ ...prev, status: 'checking', latencyMs: null }));
@@ -163,6 +238,11 @@ export default function AiOpsPage() {
         models,
         lastChecked: new Date().toISOString(),
       }));
+
+      // Set default selected model if we have models and it's not set or doesn't exist
+      if (models.length > 0 && !models.includes(selectedModel)) {
+        setSelectedModel(models.includes('qwen3-vl:2b') ? 'qwen3-vl:2b' : models[0]);
+      }
     } catch (err: any) {
       const elapsed = Math.round(performance.now() - start);
       setHealth(prev => ({
@@ -173,18 +253,71 @@ export default function AiOpsPage() {
         lastChecked: new Date().toISOString(),
       }));
     }
-  }, []);
+  }, [selectedModel]);
+
+  // Initial health check
+  useEffect(() => {
+    runHealthCheck();
+  }, [runHealthCheck]);
+
+  // ── Model Manager (Download) ───────────────────────────────────────
+
+  const handleDownloadModel = async () => {
+    if (!downloadModelName.trim() || isDownloading) return;
+    setIsDownloading(true);
+    setDownloadError(null);
+    setDownloadProgress({ status: t('Starting...'), pct: 0 });
+
+    try {
+      const response = await api.ai.pullModel(downloadModelName.trim());
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (line.trim()) {
+              try {
+                const data = JSON.parse(line);
+                if (data.status) {
+                  const pct = data.total && data.completed ? Math.round((data.completed / data.total) * 100) : 0;
+                  setDownloadProgress({ status: data.status, pct });
+                }
+              } catch (e) { }
+            }
+          }
+        }
+      }
+      setDownloadProgress({ status: t('Completed!'), pct: 100 });
+      setDownloadModelName('');
+      setTimeout(() => {
+        setDownloadProgress(null);
+        runHealthCheck();
+      }, 3000);
+    } catch (err: any) {
+      setDownloadError(err.message || t('Download failed'));
+      setDownloadProgress(null);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // ── Playground ─────────────────────────────────────────────────────
 
   const handleImageUpload = useCallback(async (file: File) => {
-    // Validate file type (allow-list: only images)
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       setAnalysisError(t('Invalid file type. Only JPEG, PNG, WebP and GIF are allowed.'));
       return;
     }
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       setAnalysisError(t('File too large. Maximum size is 10MB.'));
       return;
@@ -218,7 +351,7 @@ export default function AiOpsPage() {
 
     const start = performance.now();
     try {
-      const result = await api.ai.analyzePart(playgroundImage, 'pt');
+      const result = await api.ai.analyzePart(playgroundImage, 'pt', selectedModel);
       const elapsed = Math.round(performance.now() - start);
       setAnalysisLatency(elapsed);
 
@@ -226,7 +359,6 @@ export default function AiOpsPage() {
       setAnalysisRawJson(rawStr);
       setAnalysisResult(result);
 
-      // Save to log (non-sensitive: only AI classification results)
       const entry: AnalysisLogEntry = {
         id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
@@ -271,7 +403,7 @@ export default function AiOpsPage() {
     } finally {
       setAnalyzing(false);
     }
-  }, [playgroundImage, t]);
+  }, [playgroundImage, selectedModel, t]);
 
   const copyJson = useCallback(() => {
     navigator.clipboard.writeText(analysisRawJson);
@@ -356,23 +488,18 @@ export default function AiOpsPage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {/* Status */}
           <div className="bg-[#111] border border-[#222] rounded-lg p-3">
             <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Status')}</div>
             <div className={`text-[15px] font-semibold ${statusColor(health.status)}`}>
               {statusLabel(health.status)}
             </div>
           </div>
-
-          {/* Latency */}
           <div className="bg-[#111] border border-[#222] rounded-lg p-3">
             <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Latency')}</div>
             <div className="text-[15px] font-mono text-white">
               {health.latencyMs !== null ? `${health.latencyMs}ms` : '—'}
             </div>
           </div>
-
-          {/* Models */}
           <div className="bg-[#111] border border-[#222] rounded-lg p-3">
             <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Models')}</div>
             <div className="text-[13px] text-[#EDEDED]">
@@ -381,8 +508,6 @@ export default function AiOpsPage() {
                 : health.status === 'online' ? t('None loaded') : '—'}
             </div>
           </div>
-
-          {/* Server */}
           <div className="bg-[#111] border border-[#222] rounded-lg p-3">
             <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Endpoint')}</div>
             <div className="text-[12px] text-[#AAA] font-mono truncate" title={health.serverUrl}>
@@ -397,6 +522,50 @@ export default function AiOpsPage() {
             {t('Last checked')}: {new Date(health.lastChecked).toLocaleTimeString()}
           </div>
         )}
+
+        {/* --- Model Downloader --- */}
+        <div className="mt-5 pt-4 border-t border-[#222]">
+          <h3 className="text-[13px] font-semibold text-white mb-2">{t('Download New Model')}</h3>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="relative flex-1 w-full">
+              <input
+                type="text"
+                value={downloadModelName}
+                onChange={(e) => setDownloadModelName(e.target.value)}
+                placeholder={t('e.g., llama3.2-vision, gemma2')}
+                className="w-full h-9 bg-[#111] border border-[#333] rounded-lg px-3 text-[13px] text-[#EDEDED] placeholder-[#555] focus:border-indigo-500 focus:outline-none transition-colors"
+                disabled={isDownloading}
+              />
+            </div>
+            <button
+              onClick={handleDownloadModel}
+              disabled={isDownloading || !downloadModelName.trim()}
+              className="w-full sm:w-auto h-9 px-4 bg-[#1A1A1A] border border-[#333] rounded-lg text-[13px] font-medium text-[#EDEDED] hover:bg-[#2A2A2A] hover:border-[#444] disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+            >
+              {isDownloading ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+              {isDownloading ? t('Downloading...') : t('Pull Model')}
+            </button>
+          </div>
+          
+          {downloadError && (
+            <div className="mt-3 text-[12px] text-red-400">{downloadError}</div>
+          )}
+
+          {downloadProgress && (
+            <div className="mt-3">
+              <div className="flex justify-between text-[11px] text-[#888] mb-1">
+                <span>{downloadProgress.status}</span>
+                {downloadProgress.pct > 0 && <span>{downloadProgress.pct}%</span>}
+              </div>
+              <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-300"
+                  style={{ width: `${downloadProgress.pct}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
@@ -416,6 +585,24 @@ export default function AiOpsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Left: Upload + Controls */}
           <div className="space-y-4">
+            {/* Model Selector */}
+            <div className="bg-[#111] border border-[#222] rounded-lg p-3">
+              <label className="block text-[11px] text-[#666] uppercase tracking-wider mb-2">{t('Select AI Model')}</label>
+              <select
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                className="w-full h-9 bg-[#1A1A1A] border border-[#333] rounded-md px-2 text-[13px] text-[#EDEDED] focus:border-violet-500 focus:outline-none cursor-pointer"
+              >
+                {health.models.length > 0 ? (
+                  health.models.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))
+                ) : (
+                  <option value="qwen3-vl:2b">qwen3-vl:2b</option>
+                )}
+              </select>
+            </div>
+
             {/* Drop Zone */}
             <div
               onDragOver={(e) => e.preventDefault()}
@@ -472,7 +659,6 @@ export default function AiOpsPage() {
               />
             </div>
 
-            {/* Analyze Button */}
             <button
               onClick={runAnalysis}
               disabled={!playgroundImage || analyzing}
@@ -491,7 +677,6 @@ export default function AiOpsPage() {
               )}
             </button>
 
-            {/* Metrics */}
             {analysisLatency !== null && (
               <div className="flex items-center gap-4 px-3 py-2 bg-[#111] border border-[#222] rounded-lg">
                 <div className="flex items-center gap-1.5">
@@ -515,7 +700,6 @@ export default function AiOpsPage() {
               </div>
             )}
 
-            {/* Error */}
             {analysisError && (
               <div className="flex items-start gap-2 px-3 py-2.5 bg-red-500/5 border border-red-500/20 rounded-lg">
                 <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
@@ -528,7 +712,6 @@ export default function AiOpsPage() {
           <div className="space-y-4">
             {analysisResult ? (
               <>
-                {/* Formatted Result */}
                 <div className="bg-[#111] border border-[#222] rounded-lg p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="text-[13px] font-semibold text-white">{t('Analysis Result')}</h3>
@@ -558,7 +741,6 @@ export default function AiOpsPage() {
                   </div>
                 </div>
 
-                {/* Raw JSON Toggle */}
                 <div className="bg-[#111] border border-[#222] rounded-lg overflow-hidden">
                   <button
                     onClick={() => setShowRawJson(!showRawJson)}
@@ -606,7 +788,95 @@ export default function AiOpsPage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 3 — Analysis Log
+          SECTION 3 — Server Logs & Metrics
+          ═══════════════════════════════════════════════════════════════ */}
+      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-pink-500 via-rose-500 to-red-500" />
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <Server size={16} className="text-pink-400" />
+            <h2 className="text-[15px] font-semibold text-white">{t('Server Metrics & Live Logs')}</h2>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+              <span className="text-[10px] font-bold text-pink-400">STREAMING</span>
+            </div>
+          </div>
+
+          {/* Metrics Visualization */}
+          {serverMetrics && (
+            <div className="flex items-center gap-6">
+              {/* CPU */}
+              <div className="flex items-center gap-3">
+                <Cpu size={14} className="text-[#888]" />
+                <div className="w-32">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] text-[#888] font-mono">CPU</span>
+                    <span className="text-[10px] text-[#EDEDED] font-mono">{serverMetrics.cpuPercent}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-1000 ${parseFloat(serverMetrics.cpuPercent) > 80 ? 'bg-red-500' : parseFloat(serverMetrics.cpuPercent) > 50 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                      style={{ width: `${serverMetrics.cpuPercent}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* RAM */}
+              <div className="flex items-center gap-3">
+                <HardDrive size={14} className="text-[#888]" />
+                <div className="w-32">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[10px] text-[#888] font-mono">RAM ({serverMetrics.usedMemMb}MB)</span>
+                    <span className="text-[10px] text-[#EDEDED] font-mono">{serverMetrics.memoryPercent}%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full rounded-full transition-all duration-1000 ${parseFloat(serverMetrics.memoryPercent) > 85 ? 'bg-red-500' : parseFloat(serverMetrics.memoryPercent) > 60 ? 'bg-yellow-500' : 'bg-blue-500'}`}
+                      style={{ width: `${serverMetrics.memoryPercent}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {logsError && (
+          <div className="mb-4 flex items-start gap-2 px-3 py-2.5 bg-red-500/5 border border-red-500/20 rounded-lg">
+            <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
+            <p className="text-[12px] text-red-300">{logsError}</p>
+          </div>
+        )}
+
+        <div className="bg-[#050505] border border-[#222] rounded-lg overflow-hidden flex flex-col h-[300px]">
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#111] border-b border-[#222] shrink-0">
+            <div className="w-3 h-3 rounded-full bg-red-500/80" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            <span className="ml-2 text-[11px] font-mono text-[#666]">journalctl -u ollama -f</span>
+          </div>
+          <div 
+            ref={logsRef}
+            className="p-4 overflow-x-auto overflow-y-auto flex-1 scroll-smooth"
+          >
+            {serverLogs ? (
+              <pre className="text-[12px] font-mono text-green-400 whitespace-pre-wrap break-words leading-relaxed">
+                {serverLogs}
+              </pre>
+            ) : (
+              <div className="flex items-center justify-center h-full text-[#555] text-[13px] font-mono">
+                <RefreshCw size={14} className="animate-spin mr-2" />
+                {t('Connecting to real-time log stream...')}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 4 — Analysis Log History
           ═══════════════════════════════════════════════════════════════ */}
       <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500" />
@@ -614,7 +884,7 @@ export default function AiOpsPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Activity size={16} className="text-cyan-400" />
-            <h2 className="text-[15px] font-semibold text-white">{t('Analysis Log')}</h2>
+            <h2 className="text-[15px] font-semibold text-white">{t('Analysis History')}</h2>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#222] text-[#888] border border-[#333]">
               {logEntries.length} {t('entries')}
             </span>
@@ -625,7 +895,7 @@ export default function AiOpsPage() {
               className="h-7 px-3 bg-[#1A1A1A] border border-[#333] rounded-lg text-[11px] font-medium text-[#888] hover:text-red-400 hover:border-red-500/30 transition-all flex items-center gap-1.5"
             >
               <Trash2 size={11} />
-              {t('Clear Log')}
+              {t('Clear History')}
             </button>
           )}
         </div>
@@ -646,14 +916,11 @@ export default function AiOpsPage() {
                   onClick={() => setExpandedLogId(expandedLogId === entry.id ? null : entry.id)}
                   className="w-full flex items-center gap-3 px-3 py-2.5 text-left"
                 >
-                  {/* Thumbnail */}
                   <img
                     src={entry.thumbnail}
                     alt=""
                     className="w-9 h-9 rounded-md object-cover border border-[#333] shrink-0"
                   />
-
-                  {/* Info */}
                   <div className="flex-1 min-w-0 flex items-center gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-[12px] text-[#EDEDED] truncate">{entry.title}</p>
@@ -662,21 +929,18 @@ export default function AiOpsPage() {
                       </p>
                     </div>
 
-                    {/* is_car_part badge */}
                     <div className="shrink-0">
                       {entry.isCarPart === true && <CheckCircle2 size={14} className="text-green-400" />}
                       {entry.isCarPart === false && <XCircle size={14} className="text-red-400" />}
                       {entry.isCarPart === null && <AlertTriangle size={14} className="text-yellow-400" />}
                     </div>
 
-                    {/* Latency */}
                     <span className={`text-[11px] font-mono shrink-0 ${
                       entry.latencyMs < 5000 ? 'text-green-400' : entry.latencyMs < 15000 ? 'text-yellow-400' : 'text-red-400'
                     }`}>
                       {(entry.latencyMs / 1000).toFixed(1)}s
                     </span>
 
-                    {/* JSON valid */}
                     <div className="shrink-0">
                       {entry.jsonValid ? (
                         <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">JSON ✓</span>
@@ -685,7 +949,6 @@ export default function AiOpsPage() {
                       )}
                     </div>
 
-                    {/* Timestamp */}
                     <span className="text-[10px] text-[#555] shrink-0 hidden sm:block">
                       {new Date(entry.timestamp).toLocaleString()}
                     </span>
@@ -697,7 +960,6 @@ export default function AiOpsPage() {
                   </div>
                 </button>
 
-                {/* Expanded raw JSON */}
                 {expandedLogId === entry.id && (
                   <div className="px-3 pb-3 border-t border-[#222]">
                     <pre className="text-[10px] font-mono text-[#AAA] bg-[#0A0A0A] border border-[#222] rounded-lg p-2 mt-2 overflow-x-auto max-h-[200px] overflow-y-auto whitespace-pre-wrap break-words">
@@ -709,52 +971,6 @@ export default function AiOpsPage() {
             ))}
           </div>
         )}
-      </div>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 4 — Server Logs
-          ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-pink-500 via-rose-500 to-red-500" />
-
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Server size={16} className="text-pink-400" />
-            <h2 className="text-[15px] font-semibold text-white">{t('Server Logs (Live)')}</h2>
-            <div className="flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
-              <span className="text-[10px] font-bold text-pink-400">AUTO-UPDATE</span>
-            </div>
-          </div>
-        </div>
-
-        {logsError && (
-          <div className="mb-4 flex items-start gap-2 px-3 py-2.5 bg-red-500/5 border border-red-500/20 rounded-lg">
-            <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
-            <p className="text-[12px] text-red-300">{logsError}</p>
-          </div>
-        )}
-
-        <div className="bg-[#050505] border border-[#222] rounded-lg overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-2 bg-[#111] border-b border-[#222]">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-            <span className="ml-2 text-[11px] font-mono text-[#666]">journalctl -u ollama</span>
-          </div>
-          <div className="p-4 overflow-x-auto overflow-y-auto max-h-[400px]">
-            {serverLogs ? (
-              <pre className="text-[12px] font-mono text-green-400 whitespace-pre-wrap break-words leading-relaxed">
-                {serverLogs}
-              </pre>
-            ) : (
-              <div className="flex items-center justify-center py-10 text-[#555] text-[13px] font-mono">
-                <RefreshCw size={14} className="animate-spin mr-2" />
-                {t('Connecting to server...')}
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

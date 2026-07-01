@@ -272,7 +272,7 @@ export const api = {
 
   ai: {
     // Envio direto à VPS contornando timeout de 546 do Supabase Edge
-    analyzePart: async (image: string, language: string = 'pt') => {
+    analyzePart: async (image: string, language: string = 'pt', modelName: string = 'qwen3-vl:2b') => {
       const prompt = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa como animal, pessoa, paisagem), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios ou com valores genéricos. IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código '${language}'.`;
       const base64Image = image.split(',')[1] || image;
       const signal = AbortSignal.timeout(600000); // 10 minutos
@@ -285,7 +285,7 @@ export const api = {
             'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
           },
           body: JSON.stringify({
-            model: 'qwen3-vl:2b',
+            model: modelName,
             messages: [{ role: 'user', content: prompt, images: [base64Image] }],
             format: 'json',
             stream: true
@@ -384,6 +384,26 @@ export const api = {
         console.error('[fetchOllamaLogs] Request failed:', err);
         throw new Error(err.message || 'Falha ao conectar no micro-serviço de logs');
       }
+    },
+    
+    pullModel: async (modelName: string) => {
+      const baseUrl = import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat';
+      const pullUrl = baseUrl.replace(/\/api\/chat\/?$/, '/api/pull');
+      
+      const response = await fetch(pullUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+        },
+        body: JSON.stringify({ name: modelName, stream: true })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Falha ao iniciar download (HTTP ' + response.status + ')');
+      }
+      
+      return response;
     },
     
     generate3D: (image: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ image }) }),
