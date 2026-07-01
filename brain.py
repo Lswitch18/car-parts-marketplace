@@ -31,7 +31,17 @@ PROJECT_INFO = {
         "auth": "Supabase Auth + role admin no profile",
         "seed_login": "admin@logistix.com / adminadmin"
     },
-    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"]
+    "ai_ops": {
+        "description": "Análise visual de peças automotivas com motor Ollama (Moondream2) hospedado em VPS.",
+        "features": [
+            "Reconhecimento avançado de imagem via AI",
+            "Correção automática Case-Sensitive de Marcas e Modelos contra banco do projeto",
+            "Fallback aleatório inteligente em caso de modelos não reconhecidos",
+            "Caching com Upstash Redis (Serverless) para otimização de CPU",
+            "Monitoramento de Logs SSE em Tempo Real com detecção de Timeouts/Erros 500"
+        ]
+    },
+    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins", "AI Ops"]
 }
 
 FILES = {
