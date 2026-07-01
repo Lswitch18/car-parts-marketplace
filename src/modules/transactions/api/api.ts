@@ -1,5 +1,6 @@
 import { supabase } from '@/modules/shared/lib/supabase';
 import { BRANDS } from '@/modules/shared/lib/constants';
+import { getCache, setCache } from '@/modules/shared/lib/redisCache';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
@@ -276,6 +277,23 @@ export const api = {
     analyzePart: async (image: string, language: string = 'pt', modelName: string = 'qwen3-vl:2b') => {
       const prompt = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa como animal, pessoa, paisagem), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios ou com valores genéricos. IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código '${language}'.`;
       const base64Image = image.split(',')[1] || image;
+      
+      let cacheKey = '';
+      try {
+        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + modelName + language));
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        cacheKey = `ai_analysis_${hashHex}`;
+
+        const cached = await getCache(cacheKey);
+        if (cached) {
+          console.log('[analyzePart] Cache HIT for key:', cacheKey);
+          return cached;
+        }
+      } catch (e) {
+        console.warn('Cache check error:', e);
+      }
+
       const signal = AbortSignal.timeout(600000); // 10 minutos
       
       try {
@@ -384,6 +402,10 @@ export const api = {
           parsedData._raw_ai_response = originalParsedData;
           
           console.log('[analyzePart] Successfully parsed and normalized JSON:', parsedData);
+          
+          if (cacheKey) {
+            await setCache(cacheKey, parsedData, 60 * 60 * 24 * 7).catch(console.warn); // Cache for 7 days
+          }
         } catch (parseError) {
           console.error('[analyzePart] JSON Parse Error:', parseError);
           console.error('[analyzePart] Raw content that failed to parse:', cleanContent);
