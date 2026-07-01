@@ -44,6 +44,7 @@ const ImmersiveExperience = lazy(() => import('@/modules/visualization3d/pages/I
 const Auctions = lazy(() => import('@/modules/auctions/pages/Auctions'))
 const PartsLookup = lazy(() => import('@/modules/parts-catalog/pages/PartsLookup'))
 const DriverApprovalsPage = lazy(() => import('@/modules/transportation/pages/admin/DriverApprovalsPage'))
+const AiOpsPage = lazy(() => import('@/modules/backoffice/pages/AiOpsPage'))
 
 function App() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -115,6 +116,7 @@ function App() {
               <Route path="crm/contacts" element={<ContactsManagement />} />
               <Route path="finance/payable" element={<AccountsPayable />} />
               <Route path="transportation/drivers" element={<DriverApprovalsPage />} />
+              <Route path="ai-ops" element={<AiOpsPage />} />
             </Route>
           </Route>
 
