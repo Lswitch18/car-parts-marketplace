@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { api } from '@/modules/transactions/api/api';
 import {
@@ -97,6 +97,29 @@ export default function AiOpsPage() {
   // Log state
   const [logEntries, setLogEntries] = useState<AnalysisLogEntry[]>(loadLog);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+
+  // Server Logs state
+  const [serverLogs, setServerLogs] = useState<string>('');
+  const [logsError, setLogsError] = useState<string | null>(null);
+
+  // ── Server Logs ────────────────────────────────────────────────────
+
+  const fetchLogs = useCallback(async () => {
+    try {
+      const logs = await api.ai.fetchOllamaLogs();
+      setServerLogs(logs);
+      setLogsError(null);
+    } catch (err: any) {
+      setLogsError(err.message || t('Failed to fetch server logs'));
+    }
+  }, [t]);
+
+  // Auto-poll logs every 3 seconds
+  useEffect(() => {
+    fetchLogs();
+    const interval = setInterval(fetchLogs, 3000);
+    return () => clearInterval(interval);
+  }, [fetchLogs]);
 
   // ── Health Check ───────────────────────────────────────────────────
 
@@ -686,6 +709,52 @@ export default function AiOpsPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 4 — Server Logs
+          ═══════════════════════════════════════════════════════════════ */}
+      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-pink-500 via-rose-500 to-red-500" />
+
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Server size={16} className="text-pink-400" />
+            <h2 className="text-[15px] font-semibold text-white">{t('Server Logs (Live)')}</h2>
+            <div className="flex items-center gap-1.5 ml-2 px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+              <span className="text-[10px] font-bold text-pink-400">AUTO-UPDATE</span>
+            </div>
+          </div>
+        </div>
+
+        {logsError && (
+          <div className="mb-4 flex items-start gap-2 px-3 py-2.5 bg-red-500/5 border border-red-500/20 rounded-lg">
+            <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
+            <p className="text-[12px] text-red-300">{logsError}</p>
+          </div>
+        )}
+
+        <div className="bg-[#050505] border border-[#222] rounded-lg overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#111] border-b border-[#222]">
+            <div className="w-3 h-3 rounded-full bg-red-500/80" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+            <span className="ml-2 text-[11px] font-mono text-[#666]">journalctl -u ollama</span>
+          </div>
+          <div className="p-4 overflow-x-auto overflow-y-auto max-h-[400px]">
+            {serverLogs ? (
+              <pre className="text-[12px] font-mono text-green-400 whitespace-pre-wrap break-words leading-relaxed">
+                {serverLogs}
+              </pre>
+            ) : (
+              <div className="flex items-center justify-center py-10 text-[#555] text-[13px] font-mono">
+                <RefreshCw size={14} className="animate-spin mr-2" />
+                {t('Connecting to server...')}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

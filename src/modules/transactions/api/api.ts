@@ -285,7 +285,7 @@ export const api = {
             'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
           },
           body: JSON.stringify({
-            model: 'llava',
+            model: 'qwen3-vl:2b',
             messages: [{ role: 'user', content: prompt, images: [base64Image] }],
             format: 'json',
             stream: true
@@ -361,6 +361,31 @@ export const api = {
         throw new Error(err.message || 'Falha ao processar na VPS');
       }
     },
+    
+    fetchOllamaLogs: async () => {
+      const baseUrl = import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat';
+      const logsUrl = baseUrl.replace(/\/api\/chat\/?$/, '/api/logs');
+      
+      try {
+        const response = await fetch(logsUrl, {
+          method: 'GET',
+          headers: {
+            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Falha ao buscar logs (HTTP ' + response.status + ')');
+        }
+        
+        const data = await response.json();
+        return data.logs || '';
+      } catch (err: any) {
+        console.error('[fetchOllamaLogs] Request failed:', err);
+        throw new Error(err.message || 'Falha ao conectar no micro-serviço de logs');
+      }
+    },
+    
     generate3D: (image: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ image }) }),
     check3DStatus: (id: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ id }) }),
     saveToDrive: (modelUrl: string, title: string) => fetchApi('/save-to-drive', { method: 'POST', body: JSON.stringify({ modelUrl, title }) }),
