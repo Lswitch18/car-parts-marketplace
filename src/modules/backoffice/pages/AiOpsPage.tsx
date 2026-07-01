@@ -25,6 +25,7 @@ interface HealthStatus {
   status: 'idle' | 'checking' | 'online' | 'offline' | 'timeout';
   latencyMs: number | null;
   models: string[];
+  runningModels?: string[];
   serverUrl: string;
   lastChecked: string | null;
 }
@@ -79,6 +80,7 @@ export default function AiOpsPage() {
     status: 'idle',
     latencyMs: null,
     models: [],
+    runningModels: [],
     serverUrl: import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat',
     lastChecked: null,
   });
@@ -93,6 +95,7 @@ export default function AiOpsPage() {
   const [selectedModel, setSelectedModel] = useState<string>('qwen3-vl:2b');
   const [playgroundImage, setPlaygroundImage] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [frontendStatusMessage, setFrontendStatusMessage] = useState<string>('');
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [analysisRawJson, setAnalysisRawJson] = useState<string>('');
   const [analysisLatency, setAnalysisLatency] = useState<number | null>(null);
@@ -177,6 +180,14 @@ export default function AiOpsPage() {
                       }
                       return newLogs;
                     });
+                    const text = data.line.toLowerCase();
+                    if (text.includes('decoding image')) {
+                      setFrontendStatusMessage(t('Imagem sendo lida... (Isso pode levar alguns minutos)'));
+                    } else if (text.includes('image decoded')) {
+                      setFrontendStatusMessage(t('Procurando modelo, marca, montadora e ano para carros compatíveis...'));
+                    } else if (text.includes('prompt eval time')) {
+                      setFrontendStatusMessage(t('Finalizando e estruturando a resposta...'));
+                    }
                     if (logsRef.current) {
                       logsRef.current.scrollTop = logsRef.current.scrollHeight;
                     }
@@ -214,11 +225,18 @@ export default function AiOpsPage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-      const res = await fetch(`${ollamaBase}/api/tags`, {
-        method: 'GET',
-        headers: { 'Authorization': authHeader },
-        signal: controller.signal,
-      });
+      const [res, psRes] = await Promise.all([
+        fetch(`${ollamaBase}/api/tags`, {
+          method: 'GET',
+          headers: { 'Authorization': authHeader },
+          signal: controller.signal,
+        }),
+        fetch(`${ollamaBase}/api/ps`, {
+          method: 'GET',
+          headers: { 'Authorization': authHeader },
+          signal: controller.signal,
+        }).catch(() => null)
+      ]);
       clearTimeout(timeoutId);
 
       const elapsed = Math.round(performance.now() - start);
@@ -229,6 +247,7 @@ export default function AiOpsPage() {
           status: 'offline',
           latencyMs: elapsed,
           models: [],
+          runningModels: [],
           lastChecked: new Date().toISOString(),
         }));
         return;
@@ -237,11 +256,18 @@ export default function AiOpsPage() {
       const data = await res.json();
       const models = (data.models || []).map((m: any) => m.name || m.model || 'unknown');
 
+      let runningModels: string[] = [];
+      if (psRes && psRes.ok) {
+        const psData = await psRes.json();
+        runningModels = (psData.models || []).map((m: any) => m.name || m.model || 'unknown');
+      }
+
       setHealth(prev => ({
         ...prev,
         status: 'online',
         latencyMs: elapsed,
         models,
+        runningModels,
         lastChecked: new Date().toISOString(),
       }));
 
@@ -256,6 +282,7 @@ export default function AiOpsPage() {
         status: err.name === 'AbortError' ? 'timeout' : 'offline',
         latencyMs: elapsed,
         models: [],
+        runningModels: [],
         lastChecked: new Date().toISOString(),
       }));
     }
@@ -351,6 +378,7 @@ export default function AiOpsPage() {
   const runAnalysis = useCallback(async () => {
     if (!playgroundImage) return;
     setAnalyzing(true);
+    setFrontendStatusMessage(t('Imagem recebida. Iniciando análise...'));
     setAnalysisError(null);
     setAnalysisResult(null);
     setAnalysisRawJson('');
@@ -593,7 +621,14 @@ export default function AiOpsPage() {
           <div className="space-y-4">
             {/* Model Selector */}
             <div className="bg-[#111] border border-[#222] rounded-lg p-3">
-              <label className="block text-[11px] text-[#666] uppercase tracking-wider mb-2">{t('Select AI Model')}</label>
+              <label className="flex items-center justify-between text-[11px] text-[#666] uppercase tracking-wider mb-2">
+                <span>{t('Select AI Model')}</span>
+                {health.runningModels?.includes(selectedModel) && (
+                  <span className="text-green-400 font-bold tracking-normal bg-green-400/10 px-1.5 py-0.5 rounded text-[9px]">
+                    {t('LOADED IN RAM')}
+                  </span>
+                )}
+              </label>
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
@@ -668,18 +703,25 @@ export default function AiOpsPage() {
             <button
               onClick={runAnalysis}
               disabled={!playgroundImage || analyzing}
-              className="w-full h-10 bg-gradient-to-r from-violet-600 to-indigo-500 text-white font-semibold text-[14px] rounded-lg hover:from-violet-500 hover:to-indigo-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20"
+              className="w-full min-h-10 bg-gradient-to-r from-violet-600 to-indigo-500 text-white font-semibold text-[14px] rounded-lg hover:from-violet-500 hover:to-indigo-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex flex-col items-center justify-center gap-1 shadow-lg shadow-violet-500/20 py-2"
             >
               {analyzing ? (
                 <>
-                  <Cpu size={16} className="animate-spin" />
-                  {t('Analyzing...')}
+                  <div className="flex items-center gap-2">
+                    <Cpu size={16} className="animate-spin" />
+                    <span>{t('Analyzing...')}</span>
+                  </div>
+                  {frontendStatusMessage && (
+                    <span className="text-[11px] font-normal opacity-90 text-center max-w-[90%]">
+                      {frontendStatusMessage}
+                    </span>
+                  )}
                 </>
               ) : (
-                <>
+                <div className="flex items-center gap-2">
                   <Brain size={16} />
-                  {t('Run AI Analysis')}
-                </>
+                  <span>{t('Run AI Analysis')}</span>
+                </div>
               )}
             </button>
 
