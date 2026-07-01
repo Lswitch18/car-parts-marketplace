@@ -1,4 +1,5 @@
 import { supabase } from '@/modules/shared/lib/supabase';
+import { BRANDS } from '@/modules/shared/lib/constants';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
@@ -348,6 +349,31 @@ export const api = {
           // Normalize text to match internal UUID lookup maps (lowercase, trimmed)
           if (typeof parsedData.brand === 'string') parsedData.brand = parsedData.brand.toLowerCase().trim();
           if (typeof parsedData.category === 'string') parsedData.category = parsedData.category.toLowerCase().trim();
+          
+          // Verify and correct the model against the project's predefined list
+          if (typeof parsedData.model === 'string' && parsedData.model.trim()) {
+            const rawModel = parsedData.model.trim().toLowerCase();
+            const allValidModels = BRANDS.flatMap(b => b.models);
+            
+            // Try to find an exact case-insensitive match
+            const matchedModel = allValidModels.find(m => m.toLowerCase() === rawModel);
+            
+            if (matchedModel) {
+              parsedData.model = matchedModel; // Correct case-sensitivity
+            } else {
+              // Try to find a partial match (e.g. AI says "Skyline" and valid is "Skyline R34")
+              const partialMatch = allValidModels.find(m => 
+                m.toLowerCase().includes(rawModel) || rawModel.includes(m.toLowerCase())
+              );
+              
+              if (partialMatch) {
+                parsedData.model = partialMatch;
+              } else {
+                // If model is not in the project, nullify it as requested
+                parsedData.model = null;
+              }
+            }
+          }
           
           console.log('[analyzePart] Successfully parsed and normalized JSON:', parsedData);
         } catch (parseError) {
