@@ -4,7 +4,7 @@ import { api } from '@/modules/transactions/api/api';
 import {
   Brain, Upload, Zap, Trash2, RefreshCw, CheckCircle2, XCircle,
   Clock, Activity, Server, Cpu, ImageIcon, ChevronDown, ChevronUp,
-  AlertTriangle, Copy, Check, HardDrive, Download
+  AlertTriangle, Copy, Check, HardDrive, Download, Database
 } from 'lucide-react';
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -113,6 +113,9 @@ export default function AiOpsPage() {
     usedMemMb: number;
     totalMemMb: number;
     cpuPercent: string;
+    hddPercent?: string;
+    usedHddGb?: number;
+    totalHddGb?: number;
   } | null>(null);
   const logsRef = useRef<HTMLDivElement>(null);
 
@@ -160,7 +163,10 @@ export default function AiOpsPage() {
                       memoryPercent: data.memoryPercent,
                       usedMemMb: data.usedMemMb,
                       totalMemMb: data.totalMemMb,
-                      cpuPercent: data.cpuPercent
+                      cpuPercent: data.cpuPercent,
+                      hddPercent: data.hddPercent,
+                      usedHddGb: data.usedHddGb,
+                      totalHddGb: data.totalHddGb
                     });
                   } else if (data.type === 'log') {
                     setServerLogs(prev => {
@@ -839,6 +845,25 @@ export default function AiOpsPage() {
                   </div>
                 </div>
               </div>
+
+              {/* HDD */}
+              {serverMetrics.hddPercent && (
+                <div className="flex items-center gap-3">
+                  <Database size={14} className="text-[#888]" />
+                  <div className="w-32">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] text-[#888] font-mono">HDD ({serverMetrics.usedHddGb}GB)</span>
+                      <span className="text-[10px] text-[#EDEDED] font-mono">{serverMetrics.hddPercent}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${parseFloat(serverMetrics.hddPercent) > 90 ? 'bg-red-500' : parseFloat(serverMetrics.hddPercent) > 75 ? 'bg-yellow-500' : 'bg-cyan-500'}`}
+                        style={{ width: `${serverMetrics.hddPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

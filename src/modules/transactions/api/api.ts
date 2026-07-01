@@ -396,7 +396,7 @@ export const api = {
           'Content-Type': 'application/json',
           'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
         },
-        body: JSON.stringify({ name: modelName, stream: true })
+        body: JSON.stringify({ model: modelName, stream: true })
       });
       
       if (!response.ok) {
