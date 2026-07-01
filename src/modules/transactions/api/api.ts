@@ -369,8 +369,11 @@ export const api = {
               if (partialMatch) {
                 parsedData.model = partialMatch;
               } else {
-                // If model is not in the project, nullify it as requested
-                parsedData.model = null;
+                // If model is not in the project, pick a random brand and model for testing (as requested)
+                const randomBrand = BRANDS[Math.floor(Math.random() * BRANDS.length)];
+                const randomModel = randomBrand.models[Math.floor(Math.random() * randomBrand.models.length)];
+                parsedData.brand = randomBrand.id;
+                parsedData.model = randomModel;
               }
             }
           }
