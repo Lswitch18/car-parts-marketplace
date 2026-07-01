@@ -15107,7 +15107,7 @@ FILES = {
     }
 }
 
-last_updated = "2026-06-30"
+last_updated = "2026-07-01"
 
 # ==========================================
 # PROGRESSO: 30 de Junho de 2026
@@ -15122,7 +15122,20 @@ last_updated = "2026-06-30"
 # - Modelo `moondream` (1.8B) baixado e funcional na VPS
 # - Variáveis de Ambiente da VPS (`VITE_OLLAMA_API_URL`, `VITE_OLLAMA_API_AUTH`) adicionadas no `.env` e Vercel
 #
+# ==========================================
+# PROGRESSO: 1 de Julho de 2026
+# ==========================================
+# 1. Painel de Operações de IA (AI Ops Dashboard)
+# - Implementado streaming de logs do servidor em tempo real no frontend usando SSE (Server-Sent Events) acoplado ao `journalctl -f`.
+# - Adicionado monitoramento e visualização gráfica de métricas da VPS (CPU/RAM) integrados via API customizada em Node.js (`/api/logs`).
+# - Configurado o Nginx (`proxy_buffering off`) para viabilizar e garantir o envio contínuo da stream de logs via proxy reverso.
+#
+# 2. Gerenciador Inteligente de Modelos (Ollama)
+# - O painel agora lista e permite trocar dinamicamente a IA que analisa imagens (com suporte direto via endpoint `/api/tags`).
+# - Criada a ferramenta para baixar (`pull`) novos modelos diretamente do frontend sem uso do terminal, mostrando o progresso (bytes/s) em uma UI fluida.
+# - Atualizada a IA base padronizada para `qwen3-vl:2b`, um modelo leve e adequado à limitação de ~5.8GB de RAM da VPS.
+#
 # PRÓXIMOS PASSOS (TODO):
-# 1. Barra de progresso UI: Criar uma barra de progresso premium, fluida e animada no Front-end que espere os ~95s e reaja à stream.
+# 1. Barra de progresso UI: Criar uma barra de progresso premium, fluida e animada no Front-end que espere os ~95s e reaja à stream na página principal de listagem.
 # 2. Internacionalização (i18n) na IA: Passar o idioma selecionado no `daig.jp` para o prompt da IA, forçando-a a retornar `title` e `description` na língua correta (ex: Japonês, Inglês, PT).
 # 3. Restrição de Imagens (is_car_part): Melhorar o bloqueio de imagens que não são peças de carro. A IA já avalia `is_car_part`, mas precisamos integrar isso com uma UI clara de erro que aborte a postagem e limpe a imagem se for detectado algo inválido.
