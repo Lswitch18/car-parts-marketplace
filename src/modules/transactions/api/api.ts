@@ -343,8 +343,10 @@ export const api = {
         console.log('[analyzePart] Cleaned content for parsing:', cleanContent);
 
         let parsedData: any = {};
+        let originalParsedData: any = {};
         try {
           parsedData = JSON.parse(cleanContent || '{}');
+          originalParsedData = JSON.parse(JSON.stringify(parsedData)); // Deep copy to preserve original state
           
           // Normalize text to match internal UUID lookup maps (lowercase, trimmed)
           if (typeof parsedData.brand === 'string') parsedData.brand = parsedData.brand.toLowerCase().trim();
@@ -377,6 +379,9 @@ export const api = {
               }
             }
           }
+          
+          // Attach the original uncorrected AI response to the final object for debugging/visibility in UI
+          parsedData._raw_ai_response = originalParsedData;
           
           console.log('[analyzePart] Successfully parsed and normalized JSON:', parsedData);
         } catch (parseError) {
