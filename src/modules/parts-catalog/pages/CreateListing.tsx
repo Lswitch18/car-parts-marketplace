@@ -4,9 +4,10 @@ import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '@/modules/shared/lib/constants'
-import { Upload, X, Loader2, Sparkles, Gavel, Box } from 'lucide-react'
+import { Upload, X, Loader2, Sparkles, Gavel, Box, CheckCircle } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { api } from '@/modules/transactions/api/api'
+import { manufacturerApi } from '@/modules/parts-catalog/api/manufacturerApi'
 
 export default function CreateListing() {
   const { t, language } = useI18n()
@@ -22,6 +23,8 @@ export default function CreateListing() {
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [aiProgress, setAiProgress] = useState(0)
   const [aiError, setAiError] = useState<string | null>(null)
+  const [partNumber, setPartNumber] = useState<string | null>(null)
+  const [isOfficialData, setIsOfficialData] = useState(false)
   
   const [aiEnabled, setAiEnabled] = useState(true)
   const [isAuction, setIsAuction] = useState(false)
@@ -155,13 +158,42 @@ export default function CreateListing() {
 
       const newTitle = data.title || formData.title
       
-      const newFormData = {
+      let newFormData = {
         title: newTitle,
         description: data.description || formData.description,
         price: data.estimated_price?.toString() || formData.price,
         brand: data.brand || formData.brand,
         model: data.model || formData.model,
         category: data.category || formData.category,
+      }
+
+      if (data.part_number) {
+        setPartNumber(data.part_number)
+        console.log('[analyzeWithAI] Código OEM / Part Number detectado:', data.part_number)
+        
+        // Simular a UI avisando que vai buscar os dados oficiais
+        setAiProgress(96)
+        
+        try {
+          const officialData = await manufacturerApi.lookupPartNumber(data.part_number)
+          if (officialData) {
+            setIsOfficialData(true)
+            newFormData = {
+              title: officialData.title,
+              description: officialData.description,
+              price: officialData.estimated_price?.toString() || newFormData.price,
+              brand: officialData.brand || newFormData.brand,
+              model: officialData.model || newFormData.model,
+              category: officialData.category || newFormData.category,
+            }
+            console.log('[analyzeWithAI] Dados substituídos pelo catálogo oficial:', newFormData)
+          }
+        } catch (e) {
+          console.warn('[analyzeWithAI] Falha ao buscar no catálogo do fabricante', e)
+        }
+      } else {
+        setPartNumber(null)
+        setIsOfficialData(false)
       }
       
       console.log('[analyzeWithAI] Preenchendo campos com:', newFormData)
@@ -468,6 +500,26 @@ export default function CreateListing() {
                       )}
                     </div>
                   )}
+                </div>
+              )}
+              
+              {partNumber && (
+                <div className={`mt-4 p-4 rounded-lg border flex items-start gap-3 transition-colors ${isOfficialData ? 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff]' : 'bg-surface border-border text-text'}`}>
+                  {isOfficialData ? (
+                    <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <Sparkles className="w-5 h-5 flex-shrink-0 mt-0.5 text-primary" />
+                  )}
+                  <div>
+                    <h3 className="text-sm font-semibold mb-1">
+                      {isOfficialData ? t('Dados Oficiais do Fabricante') : t('Part Number Identificado')}
+                    </h3>
+                    <p className="text-sm opacity-80">
+                      {isOfficialData 
+                        ? t(`O código OEM ${partNumber} foi validado no catálogo do fabricante. As especificações abaixo são 100% precisas.`) 
+                        : t(`O código ${partNumber} foi lido pela IA, porém não foi encontrado na base oficial. Os dados abaixo são estimativas.`)}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
