@@ -31,7 +31,7 @@ PROJECT_INFO = {
         "auth": "Supabase Auth + role admin no profile",
         "seed_login": "admin@logistix.com / adminadmin"
     },
-    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins"]
+    "modules": ["Marketplace", "Admin WMS (Logistix)", "Pagamentos Stripe", "Analytics GAID", "i18n multi-idioma", "CI/CD Jenkins", "AI Vision (OpenRouter/Qwen3-VL)", "AI Web Scraper (Perplexity)"]
 }
 
 FILES = {
