@@ -203,6 +203,8 @@ export default function CreateListing() {
         ...newFormData
       }))
 
+      // 3D Generation is temporarily disabled.
+      /*
       setGenerating3D(true)
       
       // Resize image specifically for 3D generation to avoid 400 Bad Request (Payload Too Large)
@@ -252,6 +254,7 @@ export default function CreateListing() {
         console.error("Failed to resize image for 3D", err);
         setGenerating3D(false);
       }
+      */
     } catch (error) {
       console.error('Erro na análise de IA:', error)
       alert(t('Não foi possível analisar a imagem. Tente preencher manualmente.'))

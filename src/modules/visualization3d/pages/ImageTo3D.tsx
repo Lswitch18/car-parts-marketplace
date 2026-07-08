@@ -422,10 +422,11 @@ export default function ImageTo3D() {
                     </button>
                     <button 
                       onClick={runRealGeneration}
-                      className="btn-neon"
+                      className="btn-neon opacity-50 cursor-not-allowed"
+                      disabled={true}
                     >
                       <Play className="w-4 h-4" />
-                      Iniciar Escaneamento AI
+                      Geração 3D Temporariamente Desabilitada
                     </button>
                   </div>
                 )}
