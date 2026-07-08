@@ -409,7 +409,7 @@ export default function AiOpsPage() {
 
     const start = performance.now();
     try {
-      const result = await api.ai.analyzePart(playgroundImage, 'pt', selectedModel);
+      const result = await api.ai.analyzePart(playgroundImage, 'pt');
       const elapsed = Math.round(performance.now() - start);
       setAnalysisLatency(elapsed);
 

@@ -273,17 +273,17 @@ export const api = {
   },
 
   ai: {
-    // Envio direto à VPS contornando timeout de 546 do Supabase Edge
-    analyzePart: async (image: string, language: string = 'pt', modelName: string = 'qwen3-vl:2b') => {
+    // Análise de imagem via OpenRouter (suporta modelos multimodais com visão)
+    analyzePart: async (image: string, language: string = 'pt') => {
       const prompt = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa como animal, pessoa, paisagem), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios ou com valores genéricos. IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código '${language}'.`;
       const base64Image = image.split(',')[1] || image;
       
       let cacheKey = '';
       try {
-        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + modelName + language));
+        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + language));
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        cacheKey = `ai_analysis_${hashHex}`;
+        cacheKey = `ai_analysis_or_${hashHex}`;
 
         const cached = await getCache(cacheKey);
         if (cached) {
@@ -294,61 +294,52 @@ export const api = {
         console.warn('Cache check error:', e);
       }
 
-      const signal = AbortSignal.timeout(600000); // 10 minutos
+      const signal = AbortSignal.timeout(120000); // 2 minutos
+      const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
+
+      if (!apiKey) {
+        throw new Error('VITE_OPENROUTER_API_KEY não configurada.');
+      }
       
       try {
-        const response = await fetch(import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat', {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': window.location.origin,
+            'X-OpenRouter-Title': 'Car Parts Marketplace'
           },
           body: JSON.stringify({
-            model: modelName,
-            messages: [{ role: 'user', content: prompt, images: [base64Image] }],
-            format: 'json',
-            stream: true
+            model: 'qwen/qwen3-vl-235b-a22b-instruct',
+            messages: [
+              {
+                role: 'user',
+                content: [
+                  { type: 'text', text: prompt },
+                  {
+                    type: 'image_url',
+                    image_url: { url: `data:image/jpeg;base64,${base64Image}` }
+                  }
+                ]
+              }
+            ],
+            response_format: { type: 'json_object' },
+            temperature: 0.1,
+            max_tokens: 1024,
           }),
           signal
         });
 
         if (!response.ok) {
           const errRes = await response.json().catch(() => ({}));
-          throw new Error(errRes.error || 'Erro na IA (HTTP ' + response.status + ')');
+          throw new Error((errRes as any).error?.message || 'Erro na IA via OpenRouter (HTTP ' + response.status + ')');
         }
 
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-        let fullContent = '';
-        let buffer = '';
+        const result = await response.json() as any;
+        const fullContent = result.choices?.[0]?.message?.content || '{}';
 
-        if (reader) {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            
-            // A última linha pode estar incompleta (cortada no meio do chunk)
-            // Removemos ela do array de linhas e deixamos no buffer para a próxima iteração
-            buffer = lines.pop() || '';
-
-            for (const line of lines) {
-              if (!line.trim()) continue;
-              try {
-                const parsed = JSON.parse(line);
-                if (parsed.message?.content) {
-                  fullContent += parsed.message.content;
-                }
-              } catch (e) {
-                console.warn('Erro ao parsear chunk:', line);
-              }
-            }
-          }
-        }
-
-        console.log('[analyzePart] Full content received from AI:', fullContent);
+        console.log('[analyzePart] Full content received from OpenRouter:', fullContent);
 
         // Remove markdown blocks if the AI wraps the JSON
         let cleanContent = fullContent.trim();
@@ -364,7 +355,7 @@ export const api = {
         let originalParsedData: any = {};
         try {
           parsedData = JSON.parse(cleanContent || '{}');
-          originalParsedData = JSON.parse(JSON.stringify(parsedData)); // Deep copy to preserve original state
+          originalParsedData = JSON.parse(JSON.stringify(parsedData));
           
           // Normalize text to match internal UUID lookup maps (lowercase, trimmed)
           if (typeof parsedData.brand === 'string') parsedData.brand = parsedData.brand.toLowerCase().trim();
@@ -375,13 +366,11 @@ export const api = {
             const rawModel = parsedData.model.trim().toLowerCase();
             const allValidModels = BRANDS.flatMap(b => b.models);
             
-            // Try to find an exact case-insensitive match
             const matchedModel = allValidModels.find(m => m.toLowerCase() === rawModel);
             
             if (matchedModel) {
-              parsedData.model = matchedModel; // Correct case-sensitivity
+              parsedData.model = matchedModel;
             } else {
-              // Try to find a partial match (e.g. AI says "Skyline" and valid is "Skyline R34")
               const partialMatch = allValidModels.find(m => 
                 m.toLowerCase().includes(rawModel) || rawModel.includes(m.toLowerCase())
               );
@@ -389,7 +378,6 @@ export const api = {
               if (partialMatch) {
                 parsedData.model = partialMatch;
               } else {
-                // If model is not in the project, pick a random brand and model for testing (as requested)
                 const randomBrand = BRANDS[Math.floor(Math.random() * BRANDS.length)];
                 const randomModel = randomBrand.models[Math.floor(Math.random() * randomBrand.models.length)];
                 parsedData.brand = randomBrand.id;
@@ -398,13 +386,12 @@ export const api = {
             }
           }
           
-          // Attach the original uncorrected AI response to the final object for debugging/visibility in UI
           parsedData._raw_ai_response = originalParsedData;
           
           console.log('[analyzePart] Successfully parsed and normalized JSON:', parsedData);
           
           if (cacheKey) {
-            await setCache(cacheKey, parsedData, 60 * 60 * 24 * 7).catch(console.warn); // Cache for 7 days
+            await setCache(cacheKey, parsedData, 60 * 60 * 24 * 7).catch(console.warn);
           }
         } catch (parseError) {
           console.error('[analyzePart] JSON Parse Error:', parseError);
@@ -413,8 +400,8 @@ export const api = {
 
         return parsedData;
       } catch (err: any) {
-        console.error('[analyzePart] Request failed:', err);
-        throw new Error(err.message || 'Falha ao processar na VPS');
+        console.error('[analyzePart] OpenRouter request failed:', err);
+        throw new Error(err.message || 'Falha na análise via OpenRouter');
       }
     },
     

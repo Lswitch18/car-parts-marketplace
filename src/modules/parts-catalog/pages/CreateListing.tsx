@@ -272,8 +272,8 @@ export default function CreateListing() {
           const img = new window.Image();
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            // REDUZIDO PARA 256 PARA ACELERAR O PROCESSAMENTO NO OLLAMA VIA CPU
-            const MAX_SIZE = 256;
+            // 1024px — qualidade adequada para análise via OpenRouter/Gemini
+            const MAX_SIZE = 1024;
             let width = img.width;
             let height = img.height;
             if (width > height) {
