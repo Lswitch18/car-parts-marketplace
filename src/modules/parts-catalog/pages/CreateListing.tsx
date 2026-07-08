@@ -204,15 +204,53 @@ export default function CreateListing() {
       }))
 
       setGenerating3D(true)
-      const gen3DData = await api.ai.generate3D(images[0]).catch(e => {
-        console.error("3D init fail", e)
-        return null
-      }) as any
       
-      if (gen3DData?.id) {
-         poll3DStatus(gen3DData.id, newTitle)
-      } else {
-         setGenerating3D(false)
+      // Resize image specifically for 3D generation to avoid 400 Bad Request (Payload Too Large)
+      // The 1024px image is great for OCR, but too heavy for the Edge Function / Replicate API payload.
+      const resizeFor3D = async (base64Str: string): Promise<string> => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_3D_SIZE = 512;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+              if (width > MAX_3D_SIZE) {
+                height *= MAX_3D_SIZE / width;
+                width = MAX_3D_SIZE;
+              }
+            } else {
+              if (height > MAX_3D_SIZE) {
+                width *= MAX_3D_SIZE / height;
+                height = MAX_3D_SIZE;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx?.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.7));
+          };
+          img.src = base64Str;
+        });
+      };
+
+      try {
+        const imageFor3D = await resizeFor3D(images[0]);
+        const gen3DData = await api.ai.generate3D(imageFor3D).catch(e => {
+          console.error("3D init fail", e);
+          return null;
+        }) as any;
+        
+        if (gen3DData?.id) {
+           poll3DStatus(gen3DData.id, newTitle);
+        } else {
+           setGenerating3D(false);
+        }
+      } catch (err) {
+        console.error("Failed to resize image for 3D", err);
+        setGenerating3D(false);
       }
     } catch (error) {
       console.error('Erro na análise de IA:', error)
