@@ -1,7 +1,7 @@
-# 1. Instalar dependências necessárias
-# !pip install fastapi uvicorn nest-asyncio pydantic
-# !wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-# !dpkg -i cloudflared-linux-amd64.deb
+# ==============================================================================
+# BLUEPRINT DO PIPELINE DE ANÁLISE DE IA DO GAID
+# Este arquivo serve como referência de arquitetura, prompts e fluxos do backend.
+# ==============================================================================
 
 import subprocess
 import threading
@@ -14,66 +14,95 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class RequestData(BaseModel):
-    prompt: str
-    image: str # Imagem em base64
+    image: str       # Imagem em base64
+    language: str    # Idioma de retorno (pt, en, ja)
+    vin: str = None  # Número de chassi/VIN opcional para validação cruzada
 
 @app.post("/analyze")
 async def analyze_part(data: RequestData):
-    print("Chegou uma requisição!")
+    print(f"Nova requisição recebida! Chassi informado: {data.vin}")
     
-    # === FASE 1: VISÃO (OCR E CLASSIFICAÇÃO) ===
-    # Utilizamos o Qwen3-VL (agora via OpenRouter) para ler a imagem.
-    # NOVO PROMPT DE VISÃO:
-    """
-    Analise esta imagem de uma peça automotiva.
-    Procure ativamente por números de série, OEM, códigos impressos ou em etiquetas na peça.
-    Retorne um JSON estrito:
+    # --------------------------------------------------------------------------
+    # FASE 1: VISÃO COMPUTACIONAL REDUNDANTE (Qwen3-VL + Gemini 3.5 Flash)
+    # --------------------------------------------------------------------------
+    # O Qwen3-VL faz a primeira análise. Se a confiança for menor que 95%,
+    # o Gemini 3.5 Flash é acionado para dupla validação e concordância.
+    
+    # PROMPT DE VISÃO (Qwen3-VL & Gemini 3.5 Flash):
+    prompt_vision = """
+    Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
     {
-      "is_car_part": boolean,
-      "part_number": string | null, // NOVO: O código lido na peça
-      "title": string,
-      "brand": string,
+      "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
+      "part_number": string | null (o código OEM, part number ou número de série impresso ou na etiqueta),
+      "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+      "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
       "category": string,
-      "description": string,
-      "estimated_price": number
-    }
-    """
-    
-    # === FASE 2: CATÁLOGO OFICIAL (WEB SCRAPER AI) ===
-    # Se a Fase 1 retornar um 'part_number', nós disparamos uma segunda
-    # chamada de IA (ex: Perplexity Sonar Online ou Gemini Flash) com acesso à internet.
-    # NOVO PROMPT DE CATÁLOGO:
-    """
-    Você é um Web Scraper especializado em catálogos de autopeças (Bosch eCat, Denso, Honda, etc).
-    Pesquise na sua base e na internet o Part Number (Número OEM): "{part_number}".
-    Retorne APENAS um JSON:
-    {
-      "part_number": string,
-      "brand": string,
-      "model": string,
       "title": string,
-      "category": string,
-      "description": string,
-      "estimated_price": number
+      "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+      "estimated_price": number,
+      "confidence_score": number
     }
+    IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código especificado.
     """
-    
-    # Exemplo simulando a união das duas fases:
-    import asyncio
-    await asyncio.sleep(2) 
-    
-    resultado = '{"is_car_part": true, "part_number": "0280158117", "title": "Bico Injetor Bosch", "brand": "bosch", "category": "engine", "estimated_price": 450}'
-    return {"content": resultado}
 
-# 2. Iniciar o Cloudflare Tunnel em segundo plano
+    # --------------------------------------------------------------------------
+    # FASE 2: CATÁLOGO OFICIAL E BUSCA NA WEB (Perplexity Sonar Online)
+    # --------------------------------------------------------------------------
+    # Se um 'part_number' for detectado na Fase 1, o Perplexity faz a busca na web
+    # em tempo real em catálogos de autopeças oficiais.
+    
+    # PROMPT DO WEB SCRAPER (Perplexity):
+    prompt_scraper = """
+    Você é um Web Scraper especializado em catálogos oficiais de autopeças.
+    Sua missão é pesquisar na internet o Part Number (Número OEM): "{part_number}" do fabricante "{brand}".
+
+    Retorne APENAS um JSON válido e estrito contendo:
+    {
+      "found": boolean,
+      "part_number": string (o código oficial),
+      "brand": string (marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan),
+      "model": string (modelo de CARRO/VEÍCULO compatível, ex: fit, aqua, prius. NÃO retorne o nome do modelo da própria peça),
+      "category": string,
+      "title": string,
+      "description": string (descrição técnica extremamente detalhada e completa. Busque e inclua obrigatoriamente especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões, polaridade e se suporta stop-start no caso de baterias. Além disso, DEVE listar de forma legível e clara os principais modelos de carros e marcas compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+      "estimated_price": number,
+      "source_url": string | null
+    }
+    """
+
+    # --------------------------------------------------------------------------
+    # FASE 3: DECIFRADOR E CRUZAMENTO DE CHASSI (VIN DECODER)
+    # --------------------------------------------------------------------------
+    # Se o usuário fornecer o Chassi/VIN, o backend decodifica localmente a marca e ano.
+    # Se a marca do chassi (ex: Honda) for compatível com a peça (mencionada na descrição ou marca),
+    # o backend ajusta automaticamente a sugestão principal do formulário (ex: para Honda Fit/N-VAN) 
+    # e evita o conflito de marca, marcando 95%+ de confiança!
+    
+    # Simulação da resposta da API
+    import asyncio
+    await asyncio.sleep(1)
+    
+    resultado_mock = {
+        "is_car_part": True,
+        "part_number": "023000-0670",
+        "brand": "honda",
+        "model": "N-VAN",
+        "category": "cooling-system",
+        "title": "Radiador Honda N-VAN (JJ1/JJ2)",
+        "description": "Radiador de água original do motor fabricado pela DENSO compatível com Honda N-VAN (chassis JJ1/JJ2) de 660cc. Código OEM equivalente Honda: 19010-6F6-003.",
+        "estimated_price": 12000,
+        "confidence_score": 0.99,
+        "source": "web_lookup"
+    }
+    return resultado_mock
+
+# Iniciar o Cloudflare Tunnel em segundo plano para o Colab
 def start_tunnel():
-    # Isso vai criar uma URL que aponta para a porta 8000
     process = subprocess.Popen(['cloudflared', 'tunnel', '--url', 'http://127.0.0.1:8000'], 
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in iter(process.stdout.readline, b''):
         line_str = line.decode('utf-8')
         if "trycloudflare.com" in line_str:
-            # Extrai e imprime apenas a URL pública
             url = [word for word in line_str.split() if "trycloudflare.com" in word][0]
             print("\n" + "="*60)
             print(f"✅ SUA URL DO COLAB: {url}/analyze")
@@ -82,7 +111,7 @@ def start_tunnel():
 
 threading.Thread(target=start_tunnel, daemon=True).start()
 
-# 3. Subir a API FastAPI
+# Subir a API FastAPI
 nest_asyncio.apply()
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
