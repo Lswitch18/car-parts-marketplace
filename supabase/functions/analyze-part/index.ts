@@ -429,11 +429,33 @@ Retorne APENAS um JSON válido e estrito contendo:
         console.log(`[analyze-part] Chassi resolvido para montadora: ${vinBrand}. Ano: ${vinYear}`);
         const cleanVinBrand = vinBrand.toLowerCase().trim();
         const cleanPartBrand = finalData.brand?.toLowerCase().trim() || '';
+        const cleanDescription = finalData.description?.toLowerCase() || '';
 
-        const brandsMatch = cleanPartBrand.includes(cleanVinBrand) || cleanVinBrand.includes(cleanPartBrand);
-        if (brandsMatch) {
-          console.log('[analyze-part] Chassi da montadora bate com o fabricante da peça! Incrementando confiança.');
+        const isCompatibleWithVinBrand = 
+          cleanPartBrand.includes(cleanVinBrand) || 
+          cleanVinBrand.includes(cleanPartBrand) ||
+          cleanDescription.includes(cleanVinBrand);
+
+        if (isCompatibleWithVinBrand) {
+          console.log('[analyze-part] Peça é compatível com a montadora do Chassi! Ajustando sugestão principal para a montadora do chassi.');
+          
+          if (!cleanPartBrand.includes(cleanVinBrand) && !cleanVinBrand.includes(cleanPartBrand)) {
+            finalData.brand = cleanVinBrand;
+            if (cleanVinBrand === 'honda' && cleanDescription.includes('fit')) {
+              finalData.model = 'Fit';
+            } else if (cleanVinBrand === 'toyota' && cleanDescription.includes('prius')) {
+              finalData.model = 'Prius';
+            } else if (cleanVinBrand === 'nissan' && cleanDescription.includes('note')) {
+              finalData.model = 'Note';
+            } else if (cleanVinBrand === 'honda' && cleanDescription.includes('n-van')) {
+              finalData.model = 'N-VAN';
+            } else if (cleanVinBrand === 'honda' && cleanDescription.includes('n-box')) {
+              finalData.model = 'N-BOX';
+            }
+          }
+
           finalData.confidence_score = Math.min(0.99, Math.max(finalData.confidence_score || 0.5, 0.95));
+          finalData.brand_mismatch = false;
           finalData.fallback_used = true;
           if (vinYear) {
             finalData.description = `${finalData.description || ''}\n[Compatibilidade Confirmada via Chassi: ${vinBrand.toUpperCase()} ${vinYear}]`.trim();
