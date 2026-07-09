@@ -325,10 +325,8 @@ export const api = {
               if (partialMatch) {
                 parsedData.model = partialMatch;
               } else {
-                const randomBrand = BRANDS[Math.floor(Math.random() * BRANDS.length)];
-                const randomModel = randomBrand.models[Math.floor(Math.random() * randomBrand.models.length)];
-                parsedData.brand = randomBrand.id;
-                parsedData.model = randomModel;
+                // Se não bater com o mapeamento fixo, mantém o modelo e marca sugeridos pela IA
+                console.log('[analyzePart] Modelo não encontrado na lista local, mantendo original:', rawModel);
               }
             }
           }

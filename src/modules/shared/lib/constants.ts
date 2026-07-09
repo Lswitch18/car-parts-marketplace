@@ -2,32 +2,42 @@ export const BRANDS = [
   {
     id: 'nissan',
     name: 'Nissan',
-    models: ['180SX', '350Z', '370Z', 'Fairlady Z Z33', 'Fairlady Z Z34', 'GT-R R35', 'Silvia S14', 'Silvia S15', 'Skyline R32', 'Skyline R33', 'Skyline R34']
+    models: ['180SX', '350Z', '370Z', 'Fairlady Z Z33', 'Fairlady Z Z34', 'GT-R R35', 'Silvia S14', 'Silvia S15', 'Skyline R32', 'Skyline R33', 'Skyline R34', 'Note', 'Dayz', 'Serena', 'Leaf', 'March']
   },
   {
     id: 'toyota',
     name: 'Toyota',
-    models: ['AE86 Sprinter Trueno', 'Altezza', 'Celica GT-Four', 'Chaser', 'GR86', 'GT86 / FR-S', 'Mark II', 'MR2 SW20', 'Supra A80', 'Supra GR']
+    models: ['AE86 Sprinter Trueno', 'Altezza', 'Celica GT-Four', 'Chaser', 'GR86', 'GT86 / FR-S', 'Mark II', 'MR2 SW20', 'Supra A80', 'Supra GR', 'Prius', 'Aqua', 'Vitz', 'Corolla', 'Yaris', 'Alphard', 'Vellfire', 'HiAce']
   },
   {
     id: 'honda',
     name: 'Honda',
-    models: ['Civic Type R EK9', 'Civic Type R EP3', 'Integra Type R', 'NSX NA1', 'NSX NC1', 'Prelude', 'S2000 AP1', 'S2000 AP2', 'S660']
+    models: ['Civic Type R EK9', 'Civic Type R EP3', 'Integra Type R', 'NSX NA1', 'NSX NC1', 'Prelude', 'S2000 AP1', 'S2000 AP2', 'S660', 'Fit', 'N-BOX', 'N-VAN', 'N-WGN', 'Freed', 'StepWGN']
   },
   {
     id: 'mazda',
     name: 'Mazda',
-    models: ['Mazdaspeed3', 'MX-5 NA', 'MX-5 NB', 'MX-5 NC', 'MX-5 ND', 'RX-7 FC3S', 'RX-7 FD3S', 'RX-8']
+    models: ['Mazdaspeed3', 'MX-5 NA', 'MX-5 NB', 'MX-5 NC', 'MX-5 ND', 'RX-7 FC3S', 'RX-7 FD3S', 'RX-8', 'Demio', 'Axela', 'Atenza', 'CX-5']
   },
   {
     id: 'subaru',
     name: 'Subaru',
-    models: ['BRZ Z10', 'BRZ ZC6', 'Impreza 22B', 'WRX STI GC8', 'WRX STI GDB', 'WRX STI VAB']
+    models: ['BRZ Z10', 'BRZ ZC6', 'Impreza 22B', 'WRX STI GC8', 'WRX STI GDB', 'WRX STI VAB', 'Levorg', 'Forester', 'Legacy']
   },
   {
     id: 'mitsubishi',
     name: 'Mitsubishi',
-    models: ['3000GT / GTO', 'Eclipse', 'FTO', 'Lancer Evo I-V', 'Lancer Evo VI', 'Lancer Evo VII-IX', 'Lancer Evo X']
+    models: ['3000GT / GTO', 'Eclipse', 'FTO', 'Lancer Evo I-V', 'Lancer Evo VI', 'Lancer Evo VII-IX', 'Lancer Evo X', 'Outlander', 'Delica D:5', 'Pajero']
+  },
+  {
+    id: 'suzuki',
+    name: 'Suzuki',
+    models: ['Swift', 'Wagon R', 'Spacia', 'Carry', 'Jimny', 'Alto', 'Hustler']
+  },
+  {
+    id: 'daihatsu',
+    name: 'Daihatsu',
+    models: ['Move', 'Tanto', 'Hijet', 'Mira', 'Copen', 'Taft']
   },
   {
     id: 'porsche',
