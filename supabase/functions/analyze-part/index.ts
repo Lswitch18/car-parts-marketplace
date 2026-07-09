@@ -219,8 +219,8 @@ Deno.serve(async (req: Request) => {
 {
   "is_car_part": boolean,
   "part_number": string | null,
-  "brand": string,
-  "model": string,
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
   "category": string,
   "title": string,
   "description": string,
@@ -335,9 +335,9 @@ Sua missão é pesquisar na internet o Part Number (Número OEM): "${visionResul
 Retorne APENAS um JSON válido e estrito contendo:
 {
   "found": boolean,
-  "part_number": string,
-  "brand": string,
-  "model": string,
+  "part_number": string (o código oficial),
+  "brand": string (marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan),
+  "model": string (modelo de CARRO/VEÍCULO compatível, ex: fit, aqua, prius. NÃO retorne o nome do modelo da própria peça),
   "category": string,
   "title": string,
   "description": string,
