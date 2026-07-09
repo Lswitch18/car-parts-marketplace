@@ -51,89 +51,20 @@ const mockDatabase: Record<string, ManufacturerPartData> = {
 export const manufacturerApi = {
   /**
    * Busca os dados oficiais da peça baseados no Part Number / Código OEM.
-   * Utiliza a IA conectada via OpenRouter para varrer os dados públicos de catálogos
-   * da Bosch, Denso, Honda, Toyota e outras montadoras.
+   * @deprecated Usar a Edge Function analyze-part no backend para maior confiabilidade e segurança.
    */
   lookupPartNumber: async (partNumber: string): Promise<ManufacturerPartData | null> => {
-    console.log(`[manufacturerApi] Buscando part number oficial: ${partNumber}`);
-    
+    console.warn("[manufacturerApi] lookupPartNumber client-side is deprecated. Use Edge Function analyze-part instead.");
     const cleanPartNumber = partNumber.trim().toUpperCase();
-    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-
-    if (!apiKey) {
-      console.warn("VITE_OPENROUTER_API_KEY não configurada, usando dados de fallback.");
-      return mockDatabase[cleanPartNumber] || null;
-    }
-
-    const prompt = `Você é um Web Scraper especializado em catálogos de autopeças (Bosch eCat, Denso Aftermarket, Catálogos Oficiais da Honda, Toyota, Nissan, etc). 
-Sua missão é pesquisar na sua base de dados o Part Number (Número OEM): "${cleanPartNumber}".
-
-Retorne APENAS um JSON válido e estrito contendo:
-- "part_number": o código exato
-- "brand": a montadora ou fabricante da peça em lowercase (ex: bosch, denso, honda, nissan, toyota)
-- "model": modelo do carro em que a peça aplica
-- "category": categoria da peça (engine, transmission, suspension, body, interior, electrical, wheels)
-- "title": Um título comercial preciso (ex: "Bico Injetor Bosch Original...")
-- "description": Especificações técnicas completas extraídas do fabricante
-- "estimated_price": Um valor estimado de mercado (apenas números, em reais BRL).
-Se você não encontrar a peça, tente inferir a fabricante pelo padrão do código.`;
-
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': window.location.origin,
-          'X-OpenRouter-Title': 'Car Parts Marketplace - Catalog Search'
-        },
-        body: JSON.stringify({
-          // Utilizando modelo Sonar Online da Perplexity que faz buscas na web em tempo real
-          // ou Gemini Flash se preferir um fallback rápido.
-          model: 'perplexity/llama-3.1-sonar-large-128k-online',
-          messages: [
-            { role: 'user', content: prompt }
-          ],
-        })
-      });
-
-      if (!response.ok) {
-        // Fallback pro modelo Flash caso a conta não tenha créditos premium para o Perplexity
-        const fallbackRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': window.location.origin,
-            'X-OpenRouter-Title': 'Car Parts Marketplace'
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-flash-1.5',
-            messages: [{ role: 'user', content: prompt }],
-            response_format: { type: 'json_object' }
-          })
-        });
-        
-        if (!fallbackRes.ok) throw new Error('Ambas as APIs de catálogo falharam');
-        const fallbackData = await fallbackRes.json();
-        return parseResponse(fallbackData.choices[0].message.content);
-      }
-
-      const data = await response.json();
-      return parseResponse(data.choices[0].message.content);
-
-    } catch (e) {
-      console.error("[manufacturerApi] Erro ao buscar catálogo:", e);
-      return mockDatabase[cleanPartNumber] || {
-        part_number: cleanPartNumber,
-        brand: "Desconhecida",
-        model: "Universal",
-        category: "engine",
-        title: `[CATÁLOGO] Peça OEM ${cleanPartNumber}`,
-        description: `Dados de catálogo indisponíveis no momento. Código buscado: ${cleanPartNumber}.`,
-        estimated_price: 1000
-      };
-    }
+    return mockDatabase[cleanPartNumber] || {
+      part_number: cleanPartNumber,
+      brand: "Desconhecida",
+      model: "Universal",
+      category: "engine",
+      title: `[MOCK] Peça OEM ${cleanPartNumber}`,
+      description: `Função cliente deprecada. Código OEM: ${cleanPartNumber}.`,
+      estimated_price: 1000
+    };
   }
 };
 

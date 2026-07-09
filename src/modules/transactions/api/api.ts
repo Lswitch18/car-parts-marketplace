@@ -273,14 +273,13 @@ export const api = {
   },
 
   ai: {
-    // Análise de imagem via OpenRouter (suporta modelos multimodais com visão)
-    analyzePart: async (image: string, language: string = 'pt') => {
-      const prompt = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos: is_car_part (boolean: true se for uma peça/carro, false se for outra coisa), part_number (string: procure ativamente por números de série, OEM, códigos impressos ou em etiquetas na peça. Se não achar, deixe null), title (título comercial otimizado), brand (id da marca em lowercase, ex: nissan, toyota, honda), model (modelo compatível), category (engine, transmission, suspension, body, interior, electrical, wheels), description (descrição técnica detalhada) e estimated_price (valor numérico sugerido em Reais). Se is_car_part for false, você pode deixar os outros campos vazios. IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código '${language}'.`;
+    // Análise de imagem via Edge Function do Supabase (para maior segurança e confiabilidade)
+    analyzePart: async (image: string, language: string = 'pt', vin?: string) => {
       const base64Image = image.split(',')[1] || image;
       
       let cacheKey = '';
       try {
-        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + language));
+        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + language + (vin || '')));
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         cacheKey = `ai_analysis_or_${hashHex}`;
@@ -294,70 +293,18 @@ export const api = {
         console.warn('Cache check error:', e);
       }
 
-      const signal = AbortSignal.timeout(120000); // 2 minutos
-      const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-
-      if (!apiKey) {
-        throw new Error('VITE_OPENROUTER_API_KEY não configurada.');
-      }
-      
       try {
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        console.log('[analyzePart] Cache MISS. Chamando a Edge Function analyze-part...');
+        const parsedData = await fetchApi<any>('/analyze-part', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'HTTP-Referer': window.location.origin,
-            'X-OpenRouter-Title': 'Car Parts Marketplace'
-          },
-          body: JSON.stringify({
-            model: 'qwen/qwen3-vl-235b-a22b-instruct',
-            messages: [
-              {
-                role: 'user',
-                content: [
-                  { type: 'text', text: prompt },
-                  {
-                    type: 'image_url',
-                    image_url: { url: `data:image/jpeg;base64,${base64Image}` }
-                  }
-                ]
-              }
-            ],
-            response_format: { type: 'json_object' },
-            temperature: 0.1,
-            max_tokens: 1024,
-          }),
-          signal
+          body: JSON.stringify({ image: base64Image, language, vin }),
+          timeout: 120000 // 2 minutos
         });
 
-        if (!response.ok) {
-          const errRes = await response.json().catch(() => ({}));
-          throw new Error((errRes as any).error?.message || 'Erro na IA via OpenRouter (HTTP ' + response.status + ')');
-        }
+        console.log('[analyzePart] Retorno da Edge Function:', parsedData);
 
-        const result = await response.json() as any;
-        const fullContent = result.choices?.[0]?.message?.content || '{}';
-
-        console.log('[analyzePart] Full content received from OpenRouter:', fullContent);
-
-        // Remove markdown blocks if the AI wraps the JSON
-        let cleanContent = fullContent.trim();
-        if (cleanContent.startsWith('```json')) {
-          cleanContent = cleanContent.replace(/^```json/, '').replace(/```$/, '').trim();
-        } else if (cleanContent.startsWith('```')) {
-          cleanContent = cleanContent.replace(/^```/, '').replace(/```$/, '').trim();
-        }
-
-        console.log('[analyzePart] Cleaned content for parsing:', cleanContent);
-
-        let parsedData: any = {};
-        let originalParsedData: any = {};
-        try {
-          parsedData = JSON.parse(cleanContent || '{}');
-          originalParsedData = JSON.parse(JSON.stringify(parsedData));
-          
-          // Normalize text to match internal UUID lookup maps (lowercase, trimmed)
+        // Normalize text to match internal UUID lookup maps (lowercase, trimmed)
+        if (parsedData && parsedData.is_car_part) {
           if (typeof parsedData.brand === 'string') parsedData.brand = parsedData.brand.toLowerCase().trim();
           if (typeof parsedData.category === 'string') parsedData.category = parsedData.category.toLowerCase().trim();
           
@@ -385,23 +332,16 @@ export const api = {
               }
             }
           }
-          
-          parsedData._raw_ai_response = originalParsedData;
-          
-          console.log('[analyzePart] Successfully parsed and normalized JSON:', parsedData);
-          
+
           if (cacheKey) {
             await setCache(cacheKey, parsedData, 60 * 60 * 24 * 7).catch(console.warn);
           }
-        } catch (parseError) {
-          console.error('[analyzePart] JSON Parse Error:', parseError);
-          console.error('[analyzePart] Raw content that failed to parse:', cleanContent);
         }
 
         return parsedData;
       } catch (err: any) {
-        console.error('[analyzePart] OpenRouter request failed:', err);
-        throw new Error(err.message || 'Falha na análise via OpenRouter');
+        console.error('[analyzePart] Falha ao analisar peça via Edge Function:', err);
+        throw new Error(err.message || 'Falha na análise via Edge Function');
       }
     },
     

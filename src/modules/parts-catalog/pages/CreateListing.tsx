@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { BRANDS, CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '@/modules/shared/lib/constants'
-import { Upload, X, Loader2, Sparkles, Gavel, Box, CheckCircle } from 'lucide-react'
+import { Upload, X, Loader2, Sparkles, Gavel, Box, CheckCircle, AlertTriangle } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { api } from '@/modules/transactions/api/api'
 import { manufacturerApi } from '@/modules/parts-catalog/api/manufacturerApi'
@@ -25,6 +25,8 @@ export default function CreateListing() {
   const [aiError, setAiError] = useState<string | null>(null)
   const [partNumber, setPartNumber] = useState<string | null>(null)
   const [isOfficialData, setIsOfficialData] = useState(false)
+  const [brandMismatch, setBrandMismatch] = useState(false)
+  const [vin, setVin] = useState('')
   
   const [aiEnabled, setAiEnabled] = useState(true)
   const [isAuction, setIsAuction] = useState(false)
@@ -139,11 +141,12 @@ export default function CreateListing() {
       setAiError(null)
       setAnalyzing(true)
       setAiProgress(0)
+      setBrandMismatch(false)
       progressIntervalRef.current = setInterval(() => {
         setAiProgress(prev => (prev < 95 ? prev + (Math.random() * 1.5) : prev))
       }, 1500)
       
-      const data = await api.ai.analyzePart(images[0], language) as any
+      const data = await api.ai.analyzePart(images[0], language, vin) as any
       
       setAnalyzing(false)
 
@@ -171,29 +174,18 @@ export default function CreateListing() {
         setPartNumber(data.part_number)
         console.log('[analyzeWithAI] Código OEM / Part Number detectado:', data.part_number)
         
-        // Simular a UI avisando que vai buscar os dados oficiais
-        setAiProgress(96)
+        setIsOfficialData(data.is_verified || false)
+        setBrandMismatch(data.brand_mismatch || false)
         
-        try {
-          const officialData = await manufacturerApi.lookupPartNumber(data.part_number)
-          if (officialData) {
-            setIsOfficialData(true)
-            newFormData = {
-              title: officialData.title,
-              description: officialData.description,
-              price: officialData.estimated_price?.toString() || newFormData.price,
-              brand: officialData.brand || newFormData.brand,
-              model: officialData.model || newFormData.model,
-              category: officialData.category || newFormData.category,
-            }
-            console.log('[analyzeWithAI] Dados substituídos pelo catálogo oficial:', newFormData)
-          }
-        } catch (e) {
-          console.warn('[analyzeWithAI] Falha ao buscar no catálogo do fabricante', e)
-        }
+        console.log('[analyzeWithAI] Dados cruzados no backend:', {
+          is_verified: data.is_verified,
+          brand_mismatch: data.brand_mismatch,
+          source: data.source
+        })
       } else {
         setPartNumber(null)
         setIsOfficialData(false)
+        setBrandMismatch(false)
       }
       
       console.log('[analyzeWithAI] Preenchendo campos com:', newFormData)
@@ -489,78 +481,108 @@ export default function CreateListing() {
               )}
 
               {images.length > 0 && aiEnabled && (
-                <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                  {!analyzing ? (
-                    <button
-                      type="button"
-                      onClick={analyzeWithAI}
-                      disabled={generating3D}
-                      className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-3 rounded-lg transition-all"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                      <span className="text-sm font-medium">{t('Análise de IA (Auto Preenchimento)')}</span>
-                    </button>
-                  ) : (
-                    <div className="flex-1 relative overflow-hidden bg-surface border border-primary/30 px-4 py-3 rounded-lg flex flex-col justify-center transition-all">
-                      <div className="flex justify-between items-center mb-2 relative z-10">
-                        <div className="flex items-center space-x-2">
-                          <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                          <span className="text-sm font-medium text-primary">
-                            {aiProgress < 20 ? t('Lendo imagem e textura...') : 
-                             aiProgress < 45 ? t('Identificando peça e montadora...') : 
-                             aiProgress < 75 ? t('Buscando especificações...') : 
-                             aiProgress < 96 ? t('Consultando valor de mercado...') :
-                             t('Finalizando...')}
-                          </span>
+                <div className="mt-4 space-y-3">
+                  <div>
+                    <label className="block text-text-secondary text-xs mb-1">
+                      {t('Número do Chassi / VIN (Opcional - Ajuda a IA a ser 98% precisa)')}
+                    </label>
+                    <input
+                      type="text"
+                      value={vin}
+                      onChange={(e) => setVin(e.target.value.toUpperCase())}
+                      className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text text-sm focus:border-primary focus:outline-none"
+                      placeholder="Ex: JTD123456789..."
+                    />
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {!analyzing ? (
+                      <button
+                        type="button"
+                        onClick={analyzeWithAI}
+                        disabled={generating3D}
+                        className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-3 rounded-lg transition-all"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        <span className="text-sm font-medium">{t('Análise de IA (Auto Preenchimento)')}</span>
+                      </button>
+                    ) : (
+                      <div className="flex-1 relative overflow-hidden bg-surface border border-primary/30 px-4 py-3 rounded-lg flex flex-col justify-center transition-all">
+                        <div className="flex justify-between items-center mb-2 relative z-10">
+                          <div className="flex items-center space-x-2">
+                            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                            <span className="text-sm font-medium text-primary">
+                              {aiProgress < 20 ? t('Lendo imagem e textura...') : 
+                               aiProgress < 45 ? t('Identificando peça e montadora...') : 
+                               aiProgress < 75 ? t('Buscando especificações...') : 
+                               aiProgress < 96 ? t('Consultando valor de mercado...') :
+                               t('Finalizando...')}
+                            </span>
+                          </div>
+                          <span className="text-xs font-bold text-primary">{Math.min(100, Math.round(aiProgress))}%</span>
                         </div>
-                        <span className="text-xs font-bold text-primary">{Math.min(100, Math.round(aiProgress))}%</span>
+                        <div className="h-1.5 w-full bg-primary/10 rounded-full overflow-hidden relative z-10 shadow-inner">
+                          <div 
+                            className="h-full bg-gradient-to-r from-[#0D75FF] to-[#00f0ff] transition-all duration-500 ease-out shadow-[0_0_8px_rgba(0,240,255,0.8)]"
+                            style={{ width: `${Math.min(100, aiProgress)}%` }}
+                          ></div>
+                        </div>
+                        <div className="absolute inset-0 bg-primary/5 animate-pulse rounded-lg"></div>
                       </div>
-                      <div className="h-1.5 w-full bg-primary/10 rounded-full overflow-hidden relative z-10 shadow-inner">
-                        <div 
-                          className="h-full bg-gradient-to-r from-[#0D75FF] to-[#00f0ff] transition-all duration-500 ease-out shadow-[0_0_8px_rgba(0,240,255,0.8)]"
-                          style={{ width: `${Math.min(100, aiProgress)}%` }}
-                        ></div>
+                    )}
+                    
+                    {/* Status do 3D Engine */}
+                    {(generating3D || model3DUrl) && (
+                      <div className="flex-1 flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-lg">
+                        {generating3D ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-purple-500" />
+                            <span className="text-sm font-medium text-purple-400">{t('Renderizando 3D (TripoSR)...')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Box className="w-4 h-4 text-green-500" />
+                            <span className="text-sm font-medium text-green-400">{t('Modelo 3D Gerado com Sucesso!')}</span>
+                          </>
+                        )}
                       </div>
-                      <div className="absolute inset-0 bg-primary/5 animate-pulse rounded-lg"></div>
-                    </div>
-                  )}
-                  
-                  {/* Status do 3D Engine */}
-                  {(generating3D || model3DUrl) && (
-                    <div className="flex-1 flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-lg">
-                      {generating3D ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-purple-500" />
-                          <span className="text-sm font-medium text-purple-400">{t('Renderizando 3D (TripoSR)...')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Box className="w-4 h-4 text-green-500" />
-                          <span className="text-sm font-medium text-green-400">{t('Modelo 3D Gerado com Sucesso!')}</span>
-                        </>
-                      )}
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )}
               
               {partNumber && (
-                <div className={`mt-4 p-4 rounded-lg border flex items-start gap-3 transition-colors ${isOfficialData ? 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff]' : 'bg-surface border-border text-text'}`}>
-                  {isOfficialData ? (
-                    <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  ) : (
-                    <Sparkles className="w-5 h-5 flex-shrink-0 mt-0.5 text-primary" />
-                  )}
-                  <div>
-                    <h3 className="text-sm font-semibold mb-1">
-                      {isOfficialData ? t('Dados Oficiais do Fabricante') : t('Part Number Identificado')}
-                    </h3>
-                    <p className="text-sm opacity-80">
-                      {isOfficialData 
-                        ? t(`O código OEM ${partNumber} foi validado no catálogo do fabricante. As especificações abaixo são 100% precisas.`) 
-                        : t(`O código ${partNumber} foi lido pela IA, porém não foi encontrado na base oficial. Os dados abaixo são estimativas.`)}
-                    </p>
+                <div className="space-y-3 mt-4">
+                  <div className={`p-4 rounded-lg border flex items-start gap-3 transition-colors ${isOfficialData ? 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff]' : 'bg-surface border-border text-text'}`}>
+                    {isOfficialData ? (
+                      <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <Sparkles className="w-5 h-5 flex-shrink-0 mt-0.5 text-primary" />
+                    )}
+                    <div>
+                      <h3 className="text-sm font-semibold mb-1">
+                        {isOfficialData ? t('Dados Oficiais do Fabricante') : t('Part Number Identificado')}
+                      </h3>
+                      <p className="text-sm opacity-80">
+                        {isOfficialData 
+                          ? t(`O código OEM ${partNumber} foi validado no catálogo do fabricante. As especificações abaixo são 100% precisas.`) 
+                          : t(`O código ${partNumber} foi lido pela IA, porém não foi encontrado na base oficial. Os dados abaixo são estimativas.`)}
+                      </p>
+                    </div>
                   </div>
+
+                  {brandMismatch && (
+                    <div className="p-4 rounded-lg border flex items-start gap-3 bg-red-500/10 border-red-500/30 text-red-500">
+                      <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="text-sm font-semibold mb-1">
+                          {t('Divergência de Marca Detectada')}
+                        </h3>
+                        <p className="text-sm opacity-80">
+                          {t(`Atenção: A marca identificada visualmente na peça não condiz com os dados oficiais do fabricante para o código ${partNumber}. Por favor, verifique os dados antes de prosseguir.`)}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
