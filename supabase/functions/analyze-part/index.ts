@@ -446,6 +446,22 @@ Retorne APENAS um JSON válido e estrito contendo:
       }
     }
 
+    // Garantir que a compatibilidade com o modelo de carro esteja descrita na descrição da peça
+    if (finalData.model && finalData.description) {
+      const cleanBrand = finalData.brand ? finalData.brand.toUpperCase() : '';
+      const modelUpper = finalData.model.trim();
+      let label = 'Compatibilidade sugerida';
+      if (language === 'ja') {
+        label = '推奨適合車種';
+      } else if (language === 'en') {
+        label = 'Suggested compatibility';
+      }
+      const compatibilityLine = `\n\n${label}: ${cleanBrand} ${modelUpper}`;
+      if (!finalData.description.includes(label)) {
+        finalData.description = `${finalData.description}${compatibilityLine}`.trim();
+      }
+    }
+
     // FASE 4: MAPEAR ID DE MARCA E CATEGORIA DO SUPABASE
     try {
       const { data: dbBrands } = await supabase.from('brands').select('id, name, slug');
