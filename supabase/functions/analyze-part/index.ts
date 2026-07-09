@@ -223,7 +223,7 @@ Deno.serve(async (req: Request) => {
   "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
   "category": string,
   "title": string,
-  "description": string,
+  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias, ou dados fundamentais equivalentes para outras categorias),
   "estimated_price": number,
   "confidence_score": number
 }
@@ -340,7 +340,7 @@ Retorne APENAS um JSON válido e estrito contendo:
   "model": string (modelo de CARRO/VEÍCULO compatível, ex: fit, aqua, prius. NÃO retorne o nome do modelo da própria peça),
   "category": string,
   "title": string,
-  "description": string,
+  "description": string (descrição técnica extremamente detalhada e completa. Busque e inclua obrigatoriamente especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões, polaridade e se suporta stop-start no caso de baterias, ou especificações técnicas detalhadas equivalentes para outras categorias),
   "estimated_price": number,
   "source_url": string | null
 }`;
