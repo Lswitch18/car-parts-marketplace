@@ -484,6 +484,17 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
           const promptScraper = `Você é um especialista em catálogos oficiais de autopeças.
 Sua missão é detalhar e validar em seu conhecimento o Part Number (Número OEM): "${visionResult.part_number}" do fabricante "${visionResult.brand}".
 
+CONTEXTO DA ANÁLISE VISUAL PRELIMINAR (FASE 1):
+- O sistema identificou visualmente a peça na foto como: "${visionResult.title}"
+- Categoria detectada: "${visionResult.category}"
+- Descrição visual preliminar: "${visionResult.description}"
+- Preço estimado visualmente: R$ ${visionResult.estimated_price || '—'}
+
+INSTRUÇÕES CRUCIAIS DE PRECISÃO E VALORES:
+1. VALIDAÇÃO DE ETIQUETA VS PEÇA PRINCIPAL: Se o contexto visual preliminar identificar uma peça automotiva de grande porte (ex: Capô, Porta, Para-choque, Motor, Radiador, Alternador) mas o Part Number extraído pertencer a um adesivo/etiqueta de advertência, informações de manutenção ou placa de especificações colada nessa peça grande (ex: códigos Honda que iniciam com '87533'), você NÃO DEVE alterar o título, a categoria ou o preço estimado para os da etiqueta. Mantenha o foco do anúncio na PEÇA PRINCIPAL (o Capô, o Motor, etc.). Apenas mencione na descrição que a peça principal possui a etiqueta original de identificação de serviço.
+2. PREÇOS ESTIMADOS: O valor "estimated_price" deve ser o preço estimado de mercado da PEÇA PRINCIPAL (ex: se for um Capô de Honda N-BOX usado, o valor de mercado realista é de cerca de R$ 1200 a R$ 2500 BRL, e não o preço de R$ 45 do adesivo!). Nunca retorne o valor do adesivo se a peça principal for um componente maior.
+3. Se você não tiver certeza absoluta sobre a função exata do part number, ou se os dados do catálogo forem incoerentes com a peça visualizada, defina "found": false para que o sistema mantenha a análise visual da Fase 1 sem sobrescrever incorretamente.
+
 Retorne APENAS um JSON válido e estrito contendo:
 {
   "found": boolean,
@@ -494,7 +505,7 @@ Retorne APENAS um JSON válido e estrito contendo:
   "category": string,
   "title": string,
   "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Apresente o item anunciado, detalhe seu estado físico/de conservação visual de catálogo, ficha técnica [especificações como amperagem/Ah, dimensões, voltagem/V se aplicável] e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
-  "estimated_price": number,
+  "estimated_price": number (preço estimado de venda da peça em Reais - BRL),
   "source_url": string | null
 }`;
 
