@@ -390,6 +390,10 @@ export const api = {
     generate3D: (image: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ image }) }),
     check3DStatus: (id: string) => fetchApi('/generate-3d', { method: 'POST', body: JSON.stringify({ id }) }),
     saveToDrive: (modelUrl: string, title: string) => fetchApi('/save-to-drive', { method: 'POST', body: JSON.stringify({ modelUrl, title }) }),
+    fetchAuditLogs: () => fetchApi<{ logs: any[]; stats: any; openrouter?: any }>('/analyze-part', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'get_logs' })
+    }),
   },
 
   partsLookup: {

@@ -190,6 +190,42 @@ async function callGemini(base64Image: string, promptVision: string, apiKey: str
   return JSON.parse(content);
 }
 
+async function fetchOpenRouterStatus(apiKey: string): Promise<any> {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/key', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.data || null;
+    }
+  } catch (err) {
+    console.error('[analyze-part] Error fetching OpenRouter key status:', err);
+  }
+  return null;
+}
+
+async function fetchOpenRouterCredits(apiKey: string): Promise<any> {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/credits', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      return data.data || null;
+    }
+  } catch (err) {
+    console.error('[analyze-part] Error fetching OpenRouter credits status:', err);
+  }
+  return null;
+}
+
 /**
  * Analyze Part Edge Function
  * Orchestrates multi-model validation, local/web lookup, chassis decoding, and logs metrics.
@@ -199,11 +235,113 @@ Deno.serve(async (req: Request) => {
     return new Response(null, { headers: corsHeaders() });
   }
 
-  const { response: authRes } = await requireAuth(req);
+  const { response: authRes, user } = await requireAuth(req);
   if (authRes) return authRes;
 
   try {
-    const { image, language = 'pt', vin } = await req.json();
+    const body = await req.json();
+    const { image, language = 'pt', vin, action } = body;
+
+    // Ação para recuperar logs de auditoria globais e estatísticas
+    if (action === 'get_logs') {
+      if (!user) {
+        return new Response(JSON.stringify(errorResponse('Não autorizado')), {
+          status: 401,
+          headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+        });
+      }
+
+      console.log(`[analyze-part] Verificando role de administrador para usuário ${user.id}...`);
+      const { data: profile, error: profileErr } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      if (profileErr || !profile || profile.role !== 'admin') {
+        console.warn(`[analyze-part] Usuário ${user.id} sem permissão de admin tentou acessar os logs.`);
+        return new Response(JSON.stringify(errorResponse('Acesso restrito a administradores')), {
+          status: 403,
+          headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+        });
+      }
+
+      console.log('[analyze-part] Acesso autorizado. Buscando logs e métricas...');
+
+      // 1. Buscar os logs de auditoria mais recentes (últimos 50)
+      const { data: logs, error: logsErr } = await supabase
+        .from('analysis_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (logsErr) {
+        throw new Error(`Falha ao buscar logs de auditoria: ${logsErr.message}`);
+      }
+
+      // 2. Buscar os últimos 200 logs para compor as estatísticas de acurácia
+      const { data: statsLogs, error: statsErr } = await supabase
+        .from('analysis_logs')
+        .select('confidence, source, brand_mismatch, was_fallback_used')
+        .order('created_at', { ascending: false })
+        .limit(200);
+
+      let stats = {
+        total: 0,
+        avgConfidence: 0,
+        mismatches: 0,
+        fallbacks: 0,
+        sources: { local_catalog: 0, web_catalog: 0, vision_only: 0 } as Record<string, number>
+      };
+
+      if (!statsErr && statsLogs) {
+        stats.total = statsLogs.length;
+        if (statsLogs.length > 0) {
+          let confSum = 0;
+          statsLogs.forEach((log: any) => {
+            confSum += Number(log.confidence || 0);
+            if (log.brand_mismatch) stats.mismatches++;
+            if (log.was_fallback_used) stats.fallbacks++;
+            const src = log.source || 'vision_only';
+            stats.sources[src] = (stats.sources[src] || 0) + 1;
+          });
+          stats.avgConfidence = confSum / statsLogs.length;
+        }
+      }
+
+      // 3. Obter o total absoluto na tabela
+      const { count: absoluteTotal } = await supabase
+        .from('analysis_logs')
+        .select('*', { count: 'exact', head: true });
+
+      const statsPayload = {
+        absoluteTotal: absoluteTotal || stats.total,
+        sampleSize: stats.total,
+        avgConfidence: Number(stats.avgConfidence.toFixed(4)),
+        mismatchCount: stats.mismatches,
+        fallbackCount: stats.fallbacks,
+        sources: stats.sources
+      };
+
+      // 4. Buscar informações e créditos do OpenRouter
+      const OPENROUTER_API_KEY_ENV = Deno.env.get('OPENROUTER_API_KEY');
+      let openrouterPayload = null;
+      if (OPENROUTER_API_KEY_ENV) {
+        const [orKey, orCredits] = await Promise.all([
+          fetchOpenRouterStatus(OPENROUTER_API_KEY_ENV),
+          fetchOpenRouterCredits(OPENROUTER_API_KEY_ENV).catch(() => null)
+        ]);
+        openrouterPayload = { key: orKey, credits: orCredits };
+      }
+
+      return new Response(JSON.stringify(successResponse({ 
+        logs, 
+        stats: statsPayload,
+        openrouter: openrouterPayload
+      })), {
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
 
     if (!image) {
       throw new Error('A imagem é obrigatória para análise');

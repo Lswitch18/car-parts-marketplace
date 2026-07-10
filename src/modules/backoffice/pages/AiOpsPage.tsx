@@ -104,6 +104,17 @@ export default function AiOpsPage() {
   const [copiedJson, setCopiedJson] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // New States for enhanced AI Playground & Quality Metrics
+  const [analysisMode, setAnalysisMode] = useState<'pipeline' | 'local'>('pipeline');
+  const [playgroundVin, setPlaygroundVin] = useState<string>('');
+  const [logsTab, setLogsTab] = useState<'db' | 'local'>('db');
+  
+  const [dbLogs, setDbLogs] = useState<AnalysisLogEntry[]>([]);
+  const [dbStats, setDbStats] = useState<any>(null);
+  const [loadingDbLogs, setLoadingDbLogs] = useState<boolean>(false);
+  const [dbLogsError, setDbLogsError] = useState<string | null>(null);
+  const [openrouterData, setOpenrouterData] = useState<any>(null);
+
   // Log state
   const [logEntries, setLogEntries] = useState<AnalysisLogEntry[]>(loadLog);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
@@ -312,10 +323,40 @@ export default function AiOpsPage() {
     }
   }, [selectedModel]);
 
-  // Initial health check
+  const loadDbLogs = useCallback(async () => {
+    setLoadingDbLogs(true);
+    setDbLogsError(null);
+    try {
+      const res = await api.ai.fetchAuditLogs();
+      const parsedLogs: AnalysisLogEntry[] = (res.logs || []).map((log: any) => ({
+        id: log.id,
+        timestamp: log.created_at,
+        thumbnail: '', // Sem thumbnail para logs do banco
+        isCarPart: Number(log.confidence || 0) > 0.0 && !log.brand_mismatch, 
+        brand: log.brand_detected || '—',
+        category: log.source || '—',
+        title: log.part_number_detected ? `${t('Código')}: ${log.part_number_detected}` : t('Peça Automotiva'),
+        latencyMs: 0,
+        jsonValid: true,
+        rawJson: JSON.stringify(log, null, 2),
+      }));
+      setDbLogs(parsedLogs);
+      setDbStats(res.stats);
+      setOpenrouterData(res.openrouter || null);
+    } catch (err: any) {
+      console.error('Error fetching db logs:', err);
+      setDbLogsError(err.message || t('Failed to load global audit logs'));
+      setOpenrouterData(null);
+    } finally {
+      setLoadingDbLogs(false);
+    }
+  }, [t]);
+
+  // Initial health check & db logs load
   useEffect(() => {
     runHealthCheck();
-  }, [runHealthCheck]);
+    loadDbLogs();
+  }, [runHealthCheck, loadDbLogs]);
 
   // ── Model Manager (Download) ───────────────────────────────────────
 
@@ -402,66 +443,184 @@ export default function AiOpsPage() {
   const runAnalysis = useCallback(async () => {
     if (!playgroundImage) return;
     setAnalyzing(true);
-    setFrontendStatusMessage(t('Imagem recebida. Iniciando análise...'));
     setAnalysisError(null);
     setAnalysisResult(null);
     setAnalysisRawJson('');
 
     const start = performance.now();
-    try {
-      const result = await api.ai.analyzePart(playgroundImage, 'pt');
-      const elapsed = Math.round(performance.now() - start);
-      setAnalysisLatency(elapsed);
 
-      const rawStr = JSON.stringify(result, null, 2);
-      setAnalysisRawJson(rawStr);
-      setAnalysisResult(result);
+    if (analysisMode === 'pipeline') {
+      setFrontendStatusMessage(t('Imagem enviada. Iniciando pipeline redundante no backend...'));
+      try {
+        const result = await api.ai.analyzePart(playgroundImage, 'pt', playgroundVin);
+        const elapsed = Math.round(performance.now() - start);
+        setAnalysisLatency(elapsed);
 
-      const entry: AnalysisLogEntry = {
-        id: crypto.randomUUID(),
-        timestamp: new Date().toISOString(),
-        thumbnail: playgroundImage,
-        isCarPart: result?.is_car_part ?? null,
-        brand: result?.brand || '—',
-        category: result?.category || '—',
-        title: result?.title || '—',
-        latencyMs: elapsed,
-        jsonValid: true,
-        rawJson: rawStr,
-      };
+        const rawStr = JSON.stringify(result, null, 2);
+        setAnalysisRawJson(rawStr);
+        setAnalysisResult(result);
 
-      setLogEntries(prev => {
-        const updated = [entry, ...prev];
-        saveLog(updated);
-        return updated;
-      });
-    } catch (err: any) {
-      const elapsed = Math.round(performance.now() - start);
-      setAnalysisLatency(elapsed);
-      setAnalysisError(err.message || t('AI analysis failed'));
+        const entry: AnalysisLogEntry = {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          thumbnail: playgroundImage,
+          isCarPart: result?.is_car_part ?? null,
+          brand: result?.brand || '—',
+          category: result?.category || '—',
+          title: result?.title || '—',
+          latencyMs: elapsed,
+          jsonValid: true,
+          rawJson: rawStr,
+        };
 
-      const entry: AnalysisLogEntry = {
-        id: crypto.randomUUID(),
-        timestamp: new Date().toISOString(),
-        thumbnail: playgroundImage,
-        isCarPart: null,
-        brand: '—',
-        category: '—',
-        title: 'ERROR',
-        latencyMs: elapsed,
-        jsonValid: false,
-        rawJson: err.message || 'unknown error',
-      };
+        setLogEntries(prev => {
+          const updated = [entry, ...prev];
+          saveLog(updated);
+          return updated;
+        });
 
-      setLogEntries(prev => {
-        const updated = [entry, ...prev];
-        saveLog(updated);
-        return updated;
-      });
-    } finally {
-      setAnalyzing(false);
+        // Recarregar os logs globais do banco para atualizar as estatísticas
+        loadDbLogs();
+      } catch (err: any) {
+        const elapsed = Math.round(performance.now() - start);
+        setAnalysisLatency(elapsed);
+        setAnalysisError(err.message || t('AI analysis failed'));
+
+        const entry: AnalysisLogEntry = {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          thumbnail: playgroundImage,
+          isCarPart: null,
+          brand: '—',
+          category: '—',
+          title: 'ERROR',
+          latencyMs: elapsed,
+          jsonValid: false,
+          rawJson: err.message || 'unknown error',
+        };
+
+        setLogEntries(prev => {
+          const updated = [entry, ...prev];
+          saveLog(updated);
+          return updated;
+        });
+      } finally {
+        setAnalyzing(false);
+      }
+    } else {
+      // MODO LOCAL: Chamada direta ao Ollama local
+      setFrontendStatusMessage(t('Enviando imagem diretamente para o modelo Ollama local...'));
+      try {
+        const base64ImageOnly = playgroundImage.split(',')[1] || playgroundImage;
+        const promptVision = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+{
+  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
+  "part_number": string | null,
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan),
+  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
+  "category": string,
+  "title": string,
+  "description": string (descrição técnica altamente detalhada),
+  "estimated_price": number,
+  "confidence_score": number
+}
+IMPORTANTE: Retorne os textos descritivos no idioma pt.`;
+
+        const response = await fetch(health.serverUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
+          },
+          body: JSON.stringify({
+            model: selectedModel,
+            messages: [
+              {
+                role: 'user',
+                content: promptVision,
+                images: [base64ImageOnly]
+              }
+            ],
+            format: 'json',
+            stream: false
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`${t('Ollama API error')}: HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const content = data.message?.content || '{}';
+        
+        let parsedResult: any = {};
+        let isValid = false;
+        try {
+          let cleanContent = content.trim();
+          if (cleanContent.startsWith('```json')) {
+            cleanContent = cleanContent.replace(/^```json/, '').replace(/```$/, '').trim();
+          } else if (cleanContent.startsWith('```')) {
+            cleanContent = cleanContent.replace(/^```/, '').replace(/```$/, '').trim();
+          }
+          parsedResult = JSON.parse(cleanContent);
+          isValid = true;
+        } catch (jsonErr) {
+          console.warn('Falha ao parsear JSON retornado pelo Ollama:', jsonErr);
+          parsedResult = { error_parse: true, raw: content };
+        }
+
+        const elapsed = Math.round(performance.now() - start);
+        setAnalysisLatency(elapsed);
+        setAnalysisRawJson(JSON.stringify(parsedResult, null, 2));
+        setAnalysisResult(parsedResult);
+
+        const entry: AnalysisLogEntry = {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          thumbnail: playgroundImage,
+          isCarPart: parsedResult.is_car_part ?? null,
+          brand: parsedResult.brand || '—',
+          category: parsedResult.category || '—',
+          title: parsedResult.title || `Local: ${selectedModel}`,
+          latencyMs: elapsed,
+          jsonValid: isValid,
+          rawJson: JSON.stringify(parsedResult, null, 2),
+        };
+
+        setLogEntries(prev => {
+          const updated = [entry, ...prev];
+          saveLog(updated);
+          return updated;
+        });
+
+      } catch (err: any) {
+        const elapsed = Math.round(performance.now() - start);
+        setAnalysisLatency(elapsed);
+        setAnalysisError(err.message || t('Local AI analysis failed'));
+
+        const entry: AnalysisLogEntry = {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          thumbnail: playgroundImage,
+          isCarPart: null,
+          brand: '—',
+          category: '—',
+          title: 'LOCAL ERROR',
+          latencyMs: elapsed,
+          jsonValid: false,
+          rawJson: err.message || 'unknown error',
+        };
+
+        setLogEntries(prev => {
+          const updated = [entry, ...prev];
+          saveLog(updated);
+          return updated;
+        });
+      } finally {
+        setAnalyzing(false);
+      }
     }
-  }, [playgroundImage, selectedModel, t]);
+  }, [playgroundImage, selectedModel, analysisMode, playgroundVin, health.serverUrl, t, loadDbLogs]);
 
   const copyJson = useCallback(() => {
     navigator.clipboard.writeText(analysisRawJson);
@@ -525,105 +684,208 @@ export default function AiOpsPage() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 1 — Health Check
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
-        {/* Decorative gradient line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* Ollama Server Health Card */}
+        <div className="bg-[#0c0d16]/85 backdrop-blur-md border border-[#22283d] rounded-xl p-6 relative overflow-hidden shadow-2xl hover:border-violet-500/20 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(124,58,237,0.05)]">
+          {/* Decorative gradient line */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400 shadow-[0_0_10px_rgba(124,58,237,0.5)]" />
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-          <div className="flex items-center gap-3">
-            <Server size={16} className="text-[#888]" />
-            <h2 className="text-[15px] font-semibold text-white">{t('Ollama Server Health')}</h2>
-            <div className={`w-2.5 h-2.5 rounded-full ${statusBgPulse(health.status)} transition-all`} />
-          </div>
-          <button
-            onClick={runHealthCheck}
-            disabled={health.status === 'checking'}
-            className="h-8 px-4 bg-[#1A1A1A] border border-[#333] rounded-lg text-[13px] font-medium text-[#EDEDED] hover:bg-[#2A2A2A] hover:border-[#444] disabled:opacity-50 transition-all flex items-center gap-2"
-          >
-            <RefreshCw size={14} className={health.status === 'checking' ? 'animate-spin' : ''} />
-            {t('Run Health Check')}
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-[#111] border border-[#222] rounded-lg p-3">
-            <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Status')}</div>
-            <div className={`text-[15px] font-semibold ${statusColor(health.status)}`}>
-              {statusLabel(health.status)}
-            </div>
-          </div>
-          <div className="bg-[#111] border border-[#222] rounded-lg p-3">
-            <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Latency')}</div>
-            <div className="text-[15px] font-mono text-white">
-              {health.latencyMs !== null ? `${health.latencyMs}ms` : '—'}
-            </div>
-          </div>
-          <div className="bg-[#111] border border-[#222] rounded-lg p-3">
-            <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Models')}</div>
-            <div className="text-[13px] text-[#EDEDED]">
-              {health.models.length > 0
-                ? health.models.join(', ')
-                : health.status === 'online' ? t('None loaded') : '—'}
-            </div>
-          </div>
-          <div className="bg-[#111] border border-[#222] rounded-lg p-3">
-            <div className="text-[11px] text-[#666] uppercase tracking-wider mb-1">{t('Endpoint')}</div>
-            <div className="text-[12px] text-[#AAA] font-mono truncate" title={health.serverUrl}>
-              {health.serverUrl.replace('https://', '').replace('/api/chat', '')}
-            </div>
-          </div>
-        </div>
-
-        {health.lastChecked && (
-          <div className="mt-3 text-[11px] text-[#555] flex items-center gap-1">
-            <Clock size={10} />
-            {t('Last checked')}: {new Date(health.lastChecked).toLocaleTimeString()}
-          </div>
-        )}
-
-        {/* --- Model Downloader --- */}
-        <div className="mt-5 pt-4 border-t border-[#222]">
-          <h3 className="text-[13px] font-semibold text-white mb-2">{t('Download New Model')}</h3>
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <div className="relative flex-1 w-full">
-              <input
-                type="text"
-                value={downloadModelName}
-                onChange={(e) => setDownloadModelName(e.target.value)}
-                placeholder={t('e.g., llama3.2-vision, gemma2')}
-                className="w-full h-9 bg-[#111] border border-[#333] rounded-lg px-3 text-[13px] text-[#EDEDED] placeholder-[#555] focus:border-indigo-500 focus:outline-none transition-colors"
-                disabled={isDownloading}
-              />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+            <div className="flex items-center gap-3">
+              <Server size={16} className="text-[#888]" />
+              <h2 className="text-[15px] font-semibold text-white tracking-wide">{t('Ollama Server Health')}</h2>
+              <div className={`w-2.5 h-2.5 rounded-full ${statusBgPulse(health.status)} transition-all`} />
             </div>
             <button
-              onClick={handleDownloadModel}
-              disabled={isDownloading || !downloadModelName.trim()}
-              className="w-full sm:w-auto h-9 px-4 bg-[#1A1A1A] border border-[#333] rounded-lg text-[13px] font-medium text-[#EDEDED] hover:bg-[#2A2A2A] hover:border-[#444] disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              onClick={runHealthCheck}
+              disabled={health.status === 'checking'}
+              className="h-8 px-4 bg-[#141624] border border-[#2c324e] rounded-lg text-[13px] font-medium text-[#EDEDED] hover:bg-[#1a1d30] hover:border-violet-500/30 hover:text-white disabled:opacity-50 transition-all flex items-center gap-2"
             >
-              {isDownloading ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
-              {isDownloading ? t('Downloading...') : t('Pull Model')}
+              <RefreshCw size={14} className={health.status === 'checking' ? 'animate-spin' : ''} />
+              {t('Run Health Check')}
             </button>
           </div>
-          
-          {downloadError && (
-            <div className="mt-3 text-[12px] text-red-400">{downloadError}</div>
-          )}
 
-          {downloadProgress && (
-            <div className="mt-3">
-              <div className="flex justify-between text-[11px] text-[#888] mb-1">
-                <span>{downloadProgress.status}</span>
-                {downloadProgress.pct > 0 && <span>{downloadProgress.pct}%</span>}
-              </div>
-              <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-300"
-                  style={{ width: `${downloadProgress.pct}%` }}
-                />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Status')}</div>
+              <div className={`text-[15px] font-bold ${statusColor(health.status)}`}>
+                {statusLabel(health.status)}
               </div>
             </div>
+            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Latency')}</div>
+              <div className="text-[15px] font-mono font-bold text-white">
+                {health.latencyMs !== null ? `${health.latencyMs}ms` : '—'}
+              </div>
+            </div>
+            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Models')}</div>
+              <div className="text-[13px] text-[#EDEDED] truncate font-medium" title={health.models.join(', ')}>
+                {health.models.length > 0
+                  ? health.models.join(', ')
+                  : health.status === 'online' ? t('None loaded') : '—'}
+              </div>
+            </div>
+            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Endpoint')}</div>
+              <div className="text-[12px] text-[#AAA] font-mono truncate" title={health.serverUrl}>
+                {health.serverUrl.replace('https://', '').replace('/api/chat', '')}
+              </div>
+            </div>
+          </div>
+
+          {health.lastChecked && (
+            <div className="mt-3 text-[11px] text-[#555] flex items-center gap-1.5 font-medium">
+              <Clock size={11} />
+              {t('Last checked')}: {new Date(health.lastChecked).toLocaleTimeString()}
+            </div>
           )}
+
+          {/* --- Model Downloader --- */}
+          <div className="mt-5 pt-4 border-t border-[#22283d]">
+            <h3 className="text-[13px] font-semibold text-white mb-2">{t('Download New Model')}</h3>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative flex-1 w-full">
+                <input
+                  type="text"
+                  value={downloadModelName}
+                  onChange={(e) => setDownloadModelName(e.target.value)}
+                  placeholder={t('e.g., llama3.2-vision, gemma2')}
+                  className="w-full h-9 bg-[#121422] border border-[#2c324e] rounded-lg px-3 text-[13px] text-[#EDEDED] placeholder-[#444] focus:border-violet-500 focus:outline-none transition-colors"
+                  disabled={isDownloading}
+                />
+              </div>
+              <button
+                onClick={handleDownloadModel}
+                disabled={isDownloading || !downloadModelName.trim()}
+                className="w-full sm:w-auto h-9 px-4 bg-[#141624] border border-[#2c324e] rounded-lg text-[13px] font-semibold text-[#EDEDED] hover:bg-[#1a1d30] hover:border-violet-500/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shrink-0"
+              >
+                {isDownloading ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+                {isDownloading ? t('Downloading...') : t('Pull Model')}
+              </button>
+            </div>
+            
+            {downloadError && (
+              <div className="mt-3 text-[12px] text-red-400 font-medium">{downloadError}</div>
+            )}
+
+            {downloadProgress && (
+              <div className="mt-3">
+                <div className="flex justify-between text-[11px] text-[#888] mb-1 font-mono">
+                  <span>{downloadProgress.status}</span>
+                  {downloadProgress.pct > 0 && <span>{downloadProgress.pct}%</span>}
+                </div>
+                <div className="h-1.5 w-full bg-[#121422] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 transition-all duration-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+                    style={{ width: `${downloadProgress.pct}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* OpenRouter Billing & Key Status Card */}
+        <div className="bg-[#0c0d16]/85 backdrop-blur-md border border-[#22283d] rounded-xl p-6 relative overflow-hidden shadow-2xl hover:border-indigo-500/20 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(99,102,241,0.05)] flex flex-col justify-between">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+          
+          <div>
+            <div className="flex items-center justify-between gap-4 mb-5">
+              <div className="flex items-center gap-3">
+                <Cpu size={16} className="text-indigo-400" />
+                <h2 className="text-[15px] font-semibold text-white tracking-wide">{t('OpenRouter API & Billing')}</h2>
+                {openrouterData?.key ? (
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
+                    openrouterData.key.is_active 
+                      ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                      : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                  }`}>
+                    {openrouterData.key.is_active ? t('Active') : t('Inactive')}
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#222] text-[#666] border border-[#333]">
+                    {t('Loading...')}
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={loadDbLogs}
+                disabled={loadingDbLogs}
+                className="h-8 px-4 bg-[#141624] border border-[#2c324e] rounded-lg text-[13px] font-medium text-[#EDEDED] hover:bg-[#1a1d30] hover:border-indigo-500/30 hover:text-white disabled:opacity-50 transition-all flex items-center gap-2"
+              >
+                <RefreshCw size={14} className={loadingDbLogs ? 'animate-spin' : ''} />
+                {t('Refresh Credits')}
+              </button>
+            </div>
+
+            {openrouterData ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+                    <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Key Label')}</div>
+                    <div className="text-[13px] font-bold text-white truncate" title={openrouterData?.key?.label}>
+                      {openrouterData?.key?.label || '—'}
+                    </div>
+                  </div>
+                  <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+                    <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Spent Credits')}</div>
+                    <div className="text-[15px] font-mono font-bold text-red-400">
+                      ${Number(openrouterData?.key?.usage || 0).toFixed(4)}
+                    </div>
+                  </div>
+                  <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+                    <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Key Credit Limit')}</div>
+                    <div className="text-[14px] font-mono font-bold text-[#AAA]">
+                      {openrouterData?.key?.limit !== null ? `$${Number(openrouterData.key.limit).toFixed(2)}` : t('Unlimited')}
+                    </div>
+                  </div>
+                  <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
+                    <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Limit Remaining')}</div>
+                    <div className="text-[14px] font-mono font-bold text-green-400">
+                      {openrouterData?.key?.limit_remaining !== null ? `$${Number(openrouterData.key.limit_remaining).toFixed(4)}` : t('Unlimited')}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Account-wide Credits if management key available */}
+                {openrouterData.credits && (
+                  <div className="mt-4 pt-4 border-t border-[#22283d] space-y-3">
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-[#888] font-semibold">{t('Account Balance')}</span>
+                      <span className="font-mono text-green-400 font-bold">
+                        ${(Number(openrouterData.credits.total_credits || 0) - Number(openrouterData.credits.total_usage || 0)).toFixed(4)} {t('remaining')}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-[#121422] rounded-full overflow-hidden flex shadow-inner">
+                      <div 
+                        className="h-full bg-indigo-500 transition-all"
+                        style={{ width: `${Math.min(100, (Number(openrouterData.credits.total_usage || 0) / Math.max(1, Number(openrouterData.credits.total_credits || 1))) * 100)}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-[9px] text-[#666] font-mono font-semibold">
+                      <span>{t('Total Spent')}: ${Number(openrouterData.credits.total_usage || 0).toFixed(4)}</span>
+                      <span>{t('Total Purchased')}: ${Number(openrouterData.credits.total_credits || 0).toFixed(2)}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="h-full min-h-[120px] flex flex-col items-center justify-center text-[#555] text-[13px]">
+                <Cpu size={24} className="animate-pulse mb-2 text-[#333]" />
+                <p>{t('Carregando informações da API...')}</p>
+              </div>
+            )}
+          </div>
+          
+          <div className="mt-4 text-[10px] text-[#555] flex items-center gap-1.5">
+            <AlertTriangle size={11} className="text-[#666]" />
+            <span>{t('Consultas financeiras utilizam a chave OPENROUTER_API_KEY do backend.')}</span>
+          </div>
+        </div>
+
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
@@ -643,30 +905,84 @@ export default function AiOpsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {/* Left: Upload + Controls */}
           <div className="space-y-4">
-            {/* Model Selector */}
+            {/* Mode Selection */}
             <div className="bg-[#111] border border-[#222] rounded-lg p-3">
-              <label className="flex items-center justify-between text-[11px] text-[#666] uppercase tracking-wider mb-2">
-                <span>{t('Select AI Model')}</span>
-                {health.runningModels?.includes(selectedModel) && (
-                  <span className="text-green-400 font-bold tracking-normal bg-green-400/10 px-1.5 py-0.5 rounded text-[9px]">
-                    {t('LOADED IN RAM')}
-                  </span>
-                )}
+              <label className="text-[11px] text-[#666] uppercase tracking-wider mb-2 block font-semibold">
+                {t('Analysis Mode')}
               </label>
-              <select
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value)}
-                className="w-full h-9 bg-[#1A1A1A] border border-[#333] rounded-md px-2 text-[13px] text-[#EDEDED] focus:border-violet-500 focus:outline-none cursor-pointer"
-              >
-                {health.models.length > 0 ? (
-                  health.models.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))
-                ) : (
-                  <option value="qwen3-vl:2b">qwen3-vl:2b</option>
-                )}
-              </select>
+              <div className="grid grid-cols-2 gap-2 bg-[#1A1A1A] p-1 rounded-lg">
+                <button
+                  type="button"
+                  onClick={() => setAnalysisMode('pipeline')}
+                  className={`h-8 rounded-md text-[12px] font-semibold transition-all ${
+                    analysisMode === 'pipeline'
+                      ? 'bg-gradient-to-r from-violet-600 to-indigo-500 text-white shadow-md'
+                      : 'text-[#888] hover:text-white'
+                  }`}
+                >
+                  {t('Production Pipeline')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAnalysisMode('local')}
+                  className={`h-8 rounded-md text-[12px] font-semibold transition-all ${
+                    analysisMode === 'local'
+                      ? 'bg-gradient-to-r from-violet-600 to-indigo-500 text-white shadow-md'
+                      : 'text-[#888] hover:text-white'
+                  }`}
+                >
+                  {t('Direct Local Model')}
+                </button>
+              </div>
             </div>
+
+            {/* Model Selector (Only visible for local mode) */}
+            {analysisMode === 'local' ? (
+              <div className="bg-[#111] border border-[#222] rounded-lg p-3 transition-all animate-fadeIn">
+                <label className="flex items-center justify-between text-[11px] text-[#666] uppercase tracking-wider mb-2 font-semibold">
+                  <span>{t('Select AI Model')}</span>
+                  {health.runningModels?.includes(selectedModel) && (
+                    <span className="text-green-400 font-bold tracking-normal bg-green-400/10 px-1.5 py-0.5 rounded text-[9px]">
+                      {t('LOADED IN RAM')}
+                    </span>
+                  )}
+                </label>
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="w-full h-9 bg-[#1A1A1A] border border-[#333] rounded-md px-2 text-[13px] text-[#EDEDED] focus:border-violet-500 focus:outline-none cursor-pointer"
+                >
+                  {health.models.length > 0 ? (
+                    health.models.map(m => (
+                      <option key={m} value={m}>{m}</option>
+                    ))
+                  ) : (
+                    <option value="qwen3-vl:2b">qwen3-vl:2b</option>
+                  )}
+                </select>
+              </div>
+            ) : (
+              <div className="bg-[#111]/40 border border-[#222]/30 rounded-lg p-3 text-[11px] text-[#888] leading-relaxed">
+                <span className="text-[#AAA] font-semibold block mb-1">⚡ {t('Redundant Production Engine')}</span>
+                {t('This mode triggers the production visual pipeline (Qwen3-VL 235B + Gemini 3.5 Flash) integrated with official part catalog search (local DB + web scrap via Perplexity Sonar) and chassis cross-referencing.')}
+              </div>
+            )}
+
+            {/* VIN / Chassis Input */}
+            {analysisMode === 'pipeline' && (
+              <div className="bg-[#111] border border-[#222] rounded-lg p-3 transition-all animate-fadeIn">
+                <label className="text-[11px] text-[#666] uppercase tracking-wider mb-2 block font-semibold">
+                  {t('Número de Chassi / VIN (Opcional)')}
+                </label>
+                <input
+                  type="text"
+                  value={playgroundVin}
+                  onChange={(e) => setPlaygroundVin(e.target.value)}
+                  placeholder={t('e.g., JTD123456789...')}
+                  className="w-full h-9 bg-[#1A1A1A] border border-[#333] rounded-md px-3 text-[13px] text-[#EDEDED] placeholder-[#444] focus:border-violet-500 focus:outline-none transition-colors font-mono"
+                />
+              </div>
+            )}
 
             {/* Drop Zone */}
             <div
@@ -977,90 +1293,284 @@ export default function AiOpsPage() {
             <Activity size={16} className="text-cyan-400" />
             <h2 className="text-[15px] font-semibold text-white">{t('Analysis History')}</h2>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#222] text-[#888] border border-[#333]">
-              {logEntries.length} {t('entries')}
+              {logsTab === 'db' ? dbLogs.length : logEntries.length} {t('entries')}
             </span>
           </div>
-          {logEntries.length > 0 && (
-            <button
-              onClick={clearLog}
-              className="h-7 px-3 bg-[#1A1A1A] border border-[#333] rounded-lg text-[11px] font-medium text-[#888] hover:text-red-400 hover:border-red-500/30 transition-all flex items-center gap-1.5"
-            >
-              <Trash2 size={11} />
-              {t('Clear History')}
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {logsTab === 'db' && (
+              <button
+                onClick={loadDbLogs}
+                disabled={loadingDbLogs}
+                className="h-7 px-3 bg-[#1A1A1A] border border-[#333] rounded-lg text-[11px] font-medium text-[#888] hover:text-white transition-all flex items-center gap-1.5"
+              >
+                <RefreshCw size={11} className={loadingDbLogs ? 'animate-spin' : ''} />
+                {t('Reload')}
+              </button>
+            )}
+            {logsTab === 'local' && logEntries.length > 0 && (
+              <button
+                onClick={clearLog}
+                className="h-7 px-3 bg-[#1A1A1A] border border-[#333] rounded-lg text-[11px] font-medium text-[#888] hover:text-red-400 hover:border-red-500/30 transition-all flex items-center gap-1.5"
+              >
+                <Trash2 size={11} />
+                {t('Clear History')}
+              </button>
+            )}
+          </div>
         </div>
 
-        {logEntries.length === 0 ? (
-          <div className="py-8 flex flex-col items-center gap-2">
-            <Activity size={24} className="text-[#333]" />
-            <p className="text-[13px] text-[#555]">{t('No analysis tests yet. Use the playground above to start.')}</p>
-          </div>
-        ) : (
-          <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
-            {logEntries.map((entry) => (
-              <div
-                key={entry.id}
-                className="bg-[#111] border border-[#222] rounded-lg overflow-hidden hover:border-[#333] transition-colors"
-              >
-                <button
-                  onClick={() => setExpandedLogId(expandedLogId === entry.id ? null : entry.id)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 text-left"
-                >
-                  <img
-                    src={entry.thumbnail}
-                    alt=""
-                    className="w-9 h-9 rounded-md object-cover border border-[#333] shrink-0"
-                  />
-                  <div className="flex-1 min-w-0 flex items-center gap-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[12px] text-[#EDEDED] truncate">{entry.title}</p>
-                      <p className="text-[11px] text-[#666]">
-                        {entry.brand} · {entry.category}
-                      </p>
-                    </div>
+        {/* Tab Switcher */}
+        <div className="flex border-b border-[#222] mb-5">
+          <button
+            onClick={() => setLogsTab('db')}
+            className={`pb-3 px-4 text-xs font-semibold tracking-wide border-b-2 transition-all ${
+              logsTab === 'db'
+                ? 'border-cyan-500 text-cyan-400 font-bold'
+                : 'border-transparent text-[#666] hover:text-[#AAA]'
+            }`}
+          >
+            {t('Global Audit Logs (Database)')}
+          </button>
+          <button
+            onClick={() => setLogsTab('local')}
+            className={`pb-3 px-4 text-xs font-semibold tracking-wide border-b-2 transition-all ${
+              logsTab === 'local'
+                ? 'border-cyan-500 text-cyan-400 font-bold'
+                : 'border-transparent text-[#666] hover:text-[#AAA]'
+            }`}
+          >
+            {t('Local Playground Tests')}
+          </button>
+        </div>
 
-                    <div className="shrink-0">
-                      {entry.isCarPart === true && <CheckCircle2 size={14} className="text-green-400" />}
-                      {entry.isCarPart === false && <XCircle size={14} className="text-red-400" />}
-                      {entry.isCarPart === null && <AlertTriangle size={14} className="text-yellow-400" />}
-                    </div>
-
-                    <span className={`text-[11px] font-mono shrink-0 ${
-                      entry.latencyMs < 5000 ? 'text-green-400' : entry.latencyMs < 15000 ? 'text-yellow-400' : 'text-red-400'
-                    }`}>
-                      {(entry.latencyMs / 1000).toFixed(1)}s
-                    </span>
-
-                    <div className="shrink-0">
-                      {entry.jsonValid ? (
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">JSON ✓</span>
-                      ) : (
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">FAIL</span>
-                      )}
-                    </div>
-
-                    <span className="text-[10px] text-[#555] shrink-0 hidden sm:block">
-                      {new Date(entry.timestamp).toLocaleString()}
-                    </span>
-
-                    <ChevronDown
-                      size={14}
-                      className={`text-[#666] shrink-0 transition-transform ${expandedLogId === entry.id ? 'rotate-180' : ''}`}
-                    />
-                  </div>
-                </button>
-
-                {expandedLogId === entry.id && (
-                  <div className="px-3 pb-3 border-t border-[#222]">
-                    <pre className="text-[10px] font-mono text-[#AAA] bg-[#0A0A0A] border border-[#222] rounded-lg p-2 mt-2 overflow-x-auto max-h-[200px] overflow-y-auto whitespace-pre-wrap break-words">
-                      {entry.rawJson}
-                    </pre>
-                  </div>
-                )}
+        {/* Quality Metrics Dashboard */}
+        {logsTab === 'db' && dbStats && (
+          <div className="space-y-4 mb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-[#111]/60 border border-[#222] rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                <span className="text-[10px] text-[#666] uppercase tracking-wider font-semibold">{t('Volume Total')}</span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-2xl font-bold text-white">{dbStats.absoluteTotal}</span>
+                  <span className="text-[9px] text-[#555]">{t('análises')}</span>
+                </div>
               </div>
-            ))}
+              
+              <div className="bg-[#111]/60 border border-[#222] rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                <span className="text-[10px] text-[#666] uppercase tracking-wider font-semibold">{t('Confiança Média')}</span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-2xl font-bold text-green-400">{(dbStats.avgConfidence * 100).toFixed(1)}%</span>
+                  <span className="text-[9px] text-[#555]">{t('acurácia')}</span>
+                </div>
+              </div>
+              
+              <div className="bg-[#111]/60 border border-[#222] rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                <span className="text-[10px] text-[#666] uppercase tracking-wider font-semibold">{t('Divergências')}</span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className={`text-2xl font-bold ${dbStats.mismatchCount > 0 ? 'text-amber-400' : 'text-slate-400'}`}>{dbStats.mismatchCount}</span>
+                  <span className="text-[9px] text-[#555]">
+                    ({dbStats.sampleSize > 0 ? ((dbStats.mismatchCount / dbStats.sampleSize) * 100).toFixed(0) : 0}%)
+                  </span>
+                </div>
+              </div>
+              
+              <div className="bg-[#111]/60 border border-[#222] rounded-xl p-4 flex flex-col justify-between shadow-sm">
+                <span className="text-[10px] text-[#666] uppercase tracking-wider font-semibold">{t('Correções de Chassi')}</span>
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  <span className="text-2xl font-bold text-indigo-400">{dbStats.fallbackCount}</span>
+                  <span className="text-[9px] text-[#555]">{t('resolvidos')}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Source Distribution Bar */}
+            {dbStats.sampleSize > 0 && (
+              <div className="bg-[#111]/30 border border-[#222]/80 rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[11px] text-[#666] uppercase tracking-wider font-semibold">{t('Distribuição de Origem dos Dados')}</span>
+                  <span className="text-[10px] text-[#888]">{t('Amostra de')} {dbStats.sampleSize} {t('itens')}</span>
+                </div>
+                <div className="h-3 w-full bg-[#1A1A1A] rounded-full overflow-hidden flex shadow-inner">
+                  <div 
+                    className="h-full bg-emerald-500 transition-all duration-500"
+                    style={{ width: `${((dbStats.sources.local_catalog || 0) / dbStats.sampleSize) * 100}%` }}
+                    title={`Catálogo Local: ${dbStats.sources.local_catalog || 0}`}
+                  />
+                  <div 
+                    className="h-full bg-indigo-500 transition-all duration-500"
+                    style={{ width: `${((dbStats.sources.web_catalog || 0) / dbStats.sampleSize) * 100}%` }}
+                    title={`Catálogo Web (Perplexity): ${dbStats.sources.web_catalog || 0}`}
+                  />
+                  <div 
+                    className="h-full bg-amber-500 transition-all duration-500"
+                    style={{ width: `${((dbStats.sources.vision_only || 0) / dbStats.sampleSize) * 100}%` }}
+                    title={`Somente Visão: ${dbStats.sources.vision_only || 0}`}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2.5 justify-center sm:justify-start">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="text-[10px] text-[#888]">Catálogo Local ({dbStats.sources.local_catalog || 0})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                    <span className="text-[10px] text-[#888]">Catálogo Web ({dbStats.sources.web_catalog || 0})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-amber-500" />
+                    <span className="text-[10px] text-[#888]">Somente Visão ({dbStats.sources.vision_only || 0})</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
+        )}
+
+        {logsTab === 'db' ? (
+          loadingDbLogs ? (
+            <div className="py-8 flex flex-col items-center gap-2">
+              <RefreshCw size={24} className="text-cyan-400 animate-spin" />
+              <p className="text-[13px] text-[#555]">{t('Carregando logs de auditoria globais...')}</p>
+            </div>
+          ) : dbLogsError ? (
+            <div className="py-8 flex flex-col items-center gap-2 text-red-400">
+              <AlertTriangle size={24} />
+              <p className="text-[13px]">{dbLogsError}</p>
+              <button 
+                onClick={loadDbLogs}
+                className="mt-2 h-7 px-3 bg-[#221010] border border-red-500/20 text-red-300 rounded hover:bg-[#331515] text-[11px] transition-colors"
+              >
+                {t('Tentar Novamente')}
+              </button>
+            </div>
+          ) : dbLogs.length === 0 ? (
+            <div className="py-8 flex flex-col items-center gap-2">
+              <Activity size={24} className="text-[#333]" />
+              <p className="text-[13px] text-[#555]">{t('Nenhum log de auditoria global encontrado no banco.')}</p>
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-[450px] overflow-y-auto pr-1">
+              {dbLogs.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="bg-[#111] border border-[#222] rounded-lg overflow-hidden hover:border-[#333] transition-colors"
+                >
+                  <button
+                    onClick={() => setExpandedLogId(expandedLogId === entry.id ? null : entry.id)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-left"
+                  >
+                    <div className="w-9 h-9 rounded-md bg-[#1C1D24] border border-[#2B2D3A] flex items-center justify-center shrink-0">
+                      <Database size={16} className="text-[#666]" />
+                    </div>
+                    <div className="flex-1 min-w-0 flex items-center gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12px] text-[#EDEDED] truncate font-semibold">{entry.title}</p>
+                        <p className="text-[11px] text-[#666]">
+                          {entry.brand} · <span className="font-mono text-[10px] text-cyan-400/80">{entry.category}</span>
+                        </p>
+                      </div>
+
+                      <div className="shrink-0">
+                        {entry.isCarPart ? (
+                          <CheckCircle2 size={14} className="text-green-400" />
+                        ) : (
+                          <AlertTriangle size={14} className="text-yellow-400" />
+                        )}
+                      </div>
+
+                      <span className="text-[10px] text-[#555] shrink-0 hidden sm:block">
+                        {new Date(entry.timestamp).toLocaleString()}
+                      </span>
+
+                      <ChevronDown
+                        size={14}
+                        className={`text-[#666] shrink-0 transition-transform ${expandedLogId === entry.id ? 'rotate-180' : ''}`}
+                      />
+                    </div>
+                  </button>
+
+                  {expandedLogId === entry.id && (
+                    <div className="px-3 pb-3 border-t border-[#222]">
+                      <pre className="text-[10px] font-mono text-[#AAA] bg-[#0A0A0A] border border-[#222] rounded-lg p-2 mt-2 overflow-x-auto max-h-[250px] overflow-y-auto whitespace-pre-wrap break-words">
+                        {entry.rawJson}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
+        ) : (
+          logEntries.length === 0 ? (
+            <div className="py-8 flex flex-col items-center gap-2">
+              <Activity size={24} className="text-[#333]" />
+              <p className="text-[13px] text-[#555]">{t('No analysis tests yet. Use the playground above to start.')}</p>
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-1">
+              {logEntries.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="bg-[#111] border border-[#222] rounded-lg overflow-hidden hover:border-[#333] transition-colors"
+                >
+                  <button
+                    onClick={() => setExpandedLogId(expandedLogId === entry.id ? null : entry.id)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-left"
+                  >
+                    <img
+                      src={entry.thumbnail}
+                      alt=""
+                      className="w-9 h-9 rounded-md object-cover border border-[#333] shrink-0"
+                    />
+                    <div className="flex-1 min-w-0 flex items-center gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12px] text-[#EDEDED] truncate">{entry.title}</p>
+                        <p className="text-[11px] text-[#666]">
+                          {entry.brand} · {entry.category}
+                        </p>
+                      </div>
+
+                      <div className="shrink-0">
+                        {entry.isCarPart === true && <CheckCircle2 size={14} className="text-green-400" />}
+                        {entry.isCarPart === false && <XCircle size={14} className="text-red-400" />}
+                        {entry.isCarPart === null && <AlertTriangle size={14} className="text-yellow-400" />}
+                      </div>
+
+                      <span className={`text-[11px] font-mono shrink-0 ${
+                        entry.latencyMs < 5000 ? 'text-green-400' : entry.latencyMs < 15000 ? 'text-yellow-400' : 'text-red-400'
+                      }`}>
+                        {(entry.latencyMs / 1000).toFixed(1)}s
+                      </span>
+
+                      <div className="shrink-0">
+                        {entry.jsonValid ? (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">JSON ✓</span>
+                        ) : (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">FAIL</span>
+                        )}
+                      </div>
+
+                      <span className="text-[10px] text-[#555] shrink-0 hidden sm:block">
+                        {new Date(entry.timestamp).toLocaleString()}
+                      </span>
+
+                      <ChevronDown
+                        size={14}
+                        className={`text-[#666] shrink-0 transition-transform ${expandedLogId === entry.id ? 'rotate-180' : ''}`}
+                      />
+                    </div>
+                  </button>
+
+                  {expandedLogId === entry.id && (
+                    <div className="px-3 pb-3 border-t border-[#222]">
+                      <pre className="text-[10px] font-mono text-[#AAA] bg-[#0A0A0A] border border-[#222] rounded-lg p-2 mt-2 overflow-x-auto max-h-[200px] overflow-y-auto whitespace-pre-wrap break-words">
+                        {entry.rawJson}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
         )}
       </div>
     </div>
