@@ -359,6 +359,7 @@ Deno.serve(async (req: Request) => {
   "part_number": string | null (Busque atentamente por etiquetas de manutenção ou códigos impressos na peça, ex: códigos Honda como 87533-R9G-000, 19010-6F6-003, e extraia-os aqui),
   "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
   "model": string (o modelo do CARRO/VEÍCULO compatível em camelcase, ex: Prius, Aqua, Fit, Note, N-BOX. NÃO retorne o modelo da própria peça, retorne o nome do carro. DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos),
+  "compatibility_tags": string[] (tags curtas de compatibilidade com marcas e modelos exatos, ex: ["Honda N-BOX", "Honda N-WGN", "Honda N-ONE"]),
   "category": string,
   "title": string,
   "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
@@ -489,6 +490,7 @@ Retorne APENAS um JSON válido e estrito contendo:
   "part_number": string (o código oficial),
   "brand": string (marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan),
   "model": string (modelo de CARRO/VEÍCULO compatível, ex: fit, aqua, prius. NÃO retorne o nome do modelo da própria peça),
+  "compatibility_tags": string[] (tags curtas de compatibilidade com marcas e modelos exatos, ex: ["Honda N-BOX", "Honda N-WGN", "Honda N-ONE"]),
   "category": string,
   "title": string,
   "description": string (descrição técnica extremamente detalhada e completa. Busque e inclua obrigatoriamente especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões, polaridade e se suporta stop-start no caso de baterias. Além disso, DEVE listar de forma legível e clara os principais modelos de carros e marcas compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
@@ -622,17 +624,25 @@ Retorne APENAS um JSON válido e estrito contendo:
     // OVERRIDE DE MODELOS JDM POR CÓDIGO DE PEÇA
     if (finalData.part_number) {
       const partUpper = finalData.part_number.toUpperCase();
+      if (!finalData.compatibility_tags) finalData.compatibility_tags = [];
+      
       if (partUpper.includes('R9G') || partUpper.includes('R9H')) {
         finalData.brand = 'honda';
         finalData.model = 'N-BOX';
+        const newTag = 'Honda N-BOX';
+        if (!finalData.compatibility_tags.includes(newTag)) finalData.compatibility_tags.push(newTag);
         console.log(`[analyze-part] JDM Override: Detectou código R9G/R9H da Honda em "${finalData.part_number}". Forçando modelo para N-BOX.`);
       } else if (partUpper.includes('T5A') || partUpper.includes('TF0')) {
         finalData.brand = 'honda';
         finalData.model = 'Fit';
+        const newTag = 'Honda Fit';
+        if (!finalData.compatibility_tags.includes(newTag)) finalData.compatibility_tags.push(newTag);
         console.log(`[analyze-part] JDM Override: Detectou código T5A/TF0 da Honda em "${finalData.part_number}". Forçando modelo para Fit.`);
       } else if (partUpper.includes('TTA')) {
         finalData.brand = 'honda';
         finalData.model = 'N-VAN';
+        const newTag = 'Honda N-VAN';
+        if (!finalData.compatibility_tags.includes(newTag)) finalData.compatibility_tags.push(newTag);
         console.log(`[analyze-part] JDM Override: Detectou código TTA da Honda em "${finalData.part_number}". Forçando modelo para N-VAN.`);
       }
     }
