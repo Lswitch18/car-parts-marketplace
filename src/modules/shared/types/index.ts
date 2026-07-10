@@ -46,6 +46,7 @@ export interface Product {
   images: string[]
   status: 'active' | 'sold' | 'draft'
   views: number
+  compatibility_tags?: string[]
   created_at: string
   seller?: User
 }

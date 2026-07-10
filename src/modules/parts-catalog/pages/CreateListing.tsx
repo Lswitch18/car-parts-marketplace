@@ -98,6 +98,9 @@ export default function CreateListing() {
     auctionDurationHours: '72',
   })
 
+  const [compatibilityTags, setCompatibilityTags] = useState<string[]>([])
+  const [newTagInput, setNewTagInput] = useState('')
+
   const poll3DStatus = (predictionId: string, title: string) => {
     let attempts = 0
     if (checkIntervalRef.current) clearInterval(checkIntervalRef.current)
@@ -186,6 +189,12 @@ export default function CreateListing() {
         setPartNumber(null)
         setIsOfficialData(false)
         setBrandMismatch(false)
+      }
+
+      if (data.compatibility_tags && Array.isArray(data.compatibility_tags)) {
+        setCompatibilityTags(data.compatibility_tags)
+      } else {
+        setCompatibilityTags([])
       }
       
       console.log('[analyzeWithAI] Preenchendo campos com:', newFormData)
@@ -315,6 +324,7 @@ export default function CreateListing() {
           images: uploadedUrls,
           model_3d_url: model3DUrl,
           status: 'active',
+          compatibility_tags: compatibilityTags,
         });
 
         if (error) throw error;
@@ -718,6 +728,71 @@ export default function CreateListing() {
                   </select>
                 </div>
               )}
+            </div>
+
+            {/* Compatibility Tags Selection */}
+            <div className="card p-5 border border-border/60 bg-surface/50">
+              <label className="block text-text-secondary text-sm font-semibold mb-2">
+                {t('Tags de Compatibilidade')} (Kei Cars, JDM, Variantes)
+              </label>
+              <p className="text-xs text-gray-500 mb-3">
+                {t('Adicione outros veículos que também aceitam essa peça. A IA adiciona sugestões automaticamente baseada em códigos OEM.')}
+              </p>
+              
+              <div className="flex flex-wrap gap-2 mb-3">
+                {compatibilityTags.map((tag) => (
+                  <span key={tag} className="flex items-center gap-1 bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20 px-3 py-1.5 rounded-full text-xs font-semibold">
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => setCompatibilityTags(prev => prev.filter(t => t !== tag))}
+                      className="hover:text-red-400 font-bold ml-1 text-sm focus:outline-none"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ))}
+                {compatibilityTags.length === 0 && (
+                  <span className="text-gray-500 text-xs py-1.5">{t('Nenhuma tag de compatibilidade adicionada.')}</span>
+                )}
+              </div>
+              
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder={t('Adicione um veículo (Ex: Honda N-BOX)')}
+                  value={newTagInput}
+                  onChange={(e) => setNewTagInput(e.target.value)}
+                  className="flex-1 px-4 py-2.5 bg-background border border-border rounded-lg text-text text-sm focus:border-daig-blue"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (newTagInput.trim()) {
+                        const val = newTagInput.trim();
+                        if (!compatibilityTags.includes(val)) {
+                          setCompatibilityTags(prev => [...prev, val]);
+                        }
+                        setNewTagInput('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (newTagInput.trim()) {
+                      const val = newTagInput.trim();
+                      if (!compatibilityTags.includes(val)) {
+                        setCompatibilityTags(prev => [...prev, val]);
+                      }
+                      setNewTagInput('');
+                    }
+                  }}
+                  className="bg-daig-blue/20 text-daig-blue hover:bg-daig-blue/30 border border-daig-blue/30 px-4 rounded-lg text-sm font-semibold"
+                >
+                  {t('Adicionar')}
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

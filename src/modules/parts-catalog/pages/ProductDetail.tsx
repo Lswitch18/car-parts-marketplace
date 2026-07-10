@@ -205,6 +205,22 @@ export default function ProductDetail() {
               </div>
             </div>
 
+            {product.compatibility_tags && product.compatibility_tags.length > 0 && (
+              <div className="card p-6 mb-6 border border-border/60 bg-surface/40">
+                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <span>🚗</span>
+                  <span>{t('Veículos Compatíveis')}</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.compatibility_tags.map((tag: string) => (
+                    <span key={tag} className="bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20 px-3 py-1.5 rounded-full text-xs font-semibold">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="card p-6">
               <h3 className="text-white font-semibold mb-4">{t('Descrição')}</h3>
               <div className="text-gray-400 whitespace-pre-line">
