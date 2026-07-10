@@ -619,6 +619,24 @@ Retorne APENAS um JSON válido e estrito contendo:
       }
     }
 
+    // OVERRIDE DE MODELOS JDM POR CÓDIGO DE PEÇA
+    if (finalData.part_number) {
+      const partUpper = finalData.part_number.toUpperCase();
+      if (partUpper.includes('R9G') || partUpper.includes('R9H')) {
+        finalData.brand = 'honda';
+        finalData.model = 'N-BOX';
+        console.log(`[analyze-part] JDM Override: Detectou código R9G/R9H da Honda em "${finalData.part_number}". Forçando modelo para N-BOX.`);
+      } else if (partUpper.includes('T5A') || partUpper.includes('TF0')) {
+        finalData.brand = 'honda';
+        finalData.model = 'Fit';
+        console.log(`[analyze-part] JDM Override: Detectou código T5A/TF0 da Honda em "${finalData.part_number}". Forçando modelo para Fit.`);
+      } else if (partUpper.includes('TTA')) {
+        finalData.brand = 'honda';
+        finalData.model = 'N-VAN';
+        console.log(`[analyze-part] JDM Override: Detectou código TTA da Honda em "${finalData.part_number}". Forçando modelo para N-VAN.`);
+      }
+    }
+
     // Garantir que a compatibilidade com o modelo de carro esteja descrita na descrição da peça
     if (finalData.model && finalData.description) {
       const cleanBrand = finalData.brand ? finalData.brand.toUpperCase() : '';
