@@ -70,6 +70,15 @@ function resizeImage(base64: string, maxSize: number): Promise<string> {
   });
 }
 
+const HudCorners = () => (
+  <>
+    <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-cyan-400/80 pointer-events-none" />
+    <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-cyan-400/80 pointer-events-none" />
+    <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-cyan-400/80 pointer-events-none" />
+    <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-cyan-400/80 pointer-events-none" />
+  </>
+);
+
 // ── Component ──────────────────────────────────────────────────────────
 
 export default function AiOpsPage() {
@@ -672,7 +681,9 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
   // ── Render ─────────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-[1100px] mx-auto p-4 md:p-6 space-y-6 text-[#EDEDED] font-sans pb-20">
+    <div className="relative min-h-screen cyber-grid bg-[#020205] p-4 md:p-6 text-[#EDEDED] font-sans pb-20 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-t from-violet-950/20 via-black/40 to-cyan-950/10 pointer-events-none" />
+      <div className="max-w-[1100px] mx-auto space-y-6 relative z-10">
 
       {/* Page Header */}
       <div className="flex items-center gap-3 mb-2">
@@ -691,8 +702,9 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       <div className="grid grid-cols-1 gap-6">
 
         {/* OpenRouter Billing & Key Status Card */}
-        <div className="bg-[#0c0d16]/85 backdrop-blur-md border border-[#22283d] rounded-xl p-6 relative overflow-hidden shadow-2xl hover:border-indigo-500/20 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(99,102,241,0.05)] flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+        <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-6 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse flex flex-col justify-between">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-indigo-500 via-cyan-400 to-indigo-500 shadow-[0_0_12px_rgba(6,182,212,0.4)]" />
+          <HudCorners />
           
           <div>
             <div className="flex items-center justify-between gap-4 mb-5">
@@ -793,8 +805,9 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 2 — AI Playground
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-500 via-orange-500 to-red-500" />
+      <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-5 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 shadow-[0_0_12px_rgba(245,158,11,0.4)]" />
+        <HudCorners />
 
         <div className="flex items-center gap-3 mb-5">
           <Zap size={16} className="text-amber-400" />
@@ -945,12 +958,15 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded-xl cursor-pointer transition-all min-h-[200px] flex flex-col items-center justify-center gap-3 ${
+              className={`relative border-2 border-dashed rounded-xl cursor-pointer transition-all min-h-[220px] flex flex-col items-center justify-center gap-3 overflow-hidden ${
                 playgroundImage
-                  ? 'border-[#333] bg-[#111]'
-                  : 'border-[#333] hover:border-[#555] bg-[#0D0D0D] hover:bg-[#111]'
+                  ? 'border-[#22283d] bg-[#0c0d16]/30'
+                  : 'border-[#1e293b] hover:border-cyan-500/40 bg-[#08080f] hover:bg-[#0c0c16] shadow-inner'
               }`}
             >
+              {/* Laser scanner line when analyzing */}
+              {analyzing && <div className="animate-cyber-scan" />}
+
               {playgroundImage ? (
                 <>
                   <img
@@ -1136,8 +1152,9 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 4 — Analysis Log History
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500" />
+      <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-5 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 shadow-[0_0_12px_rgba(6,182,212,0.4)]" />
+        <HudCorners />
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -1425,5 +1442,6 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
         )}
       </div>
     </div>
+  </div>
   );
 }
