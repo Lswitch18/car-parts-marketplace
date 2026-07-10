@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { api } from '@/modules/transactions/api/api';
+import { getRedisKeys, deleteRedisKey, getCache } from '@/modules/shared/lib/redisCache';
 import {
   Brain, Upload, Zap, Trash2, RefreshCw, CheckCircle2, XCircle,
   Clock, Activity, Server, Cpu, ImageIcon, ChevronDown, ChevronUp,
@@ -143,6 +144,14 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
   // Log state
   const [logEntries, setLogEntries] = useState<AnalysisLogEntry[]>(loadLog);
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+
+  // Tab layout state
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'playground' | 'prompt' | 'redis'>('dashboard');
+  const [redisKeys, setRedisKeys] = useState<string[]>([]);
+  const [loadingRedis, setLoadingRedis] = useState<boolean>(false);
+  const [selectedRedisKey, setSelectedRedisKey] = useState<string | null>(null);
+  const [selectedRedisValue, setSelectedRedisValue] = useState<any>(null);
+  const [redisError, setRedisError] = useState<string | null>(null);
 
   // Server Logs state
   const [serverLogs, setServerLogs] = useState<string>('');
@@ -347,6 +356,64 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       }));
     }
   }, [selectedModel]);
+
+  const loadRedisKeys = useCallback(async () => {
+    setLoadingRedis(true);
+    setRedisError(null);
+    try {
+      const keys = await getRedisKeys('ai_analysis_or_*');
+      setRedisKeys(keys);
+    } catch (e: any) {
+      setRedisError(e.message || 'Error loading Redis keys');
+    } finally {
+      setLoadingRedis(false);
+    }
+  }, []);
+
+  const loadRedisValue = useCallback(async (key: string) => {
+    setSelectedRedisKey(key);
+    setSelectedRedisValue(null);
+    try {
+      const val = await getCache(key);
+      setSelectedRedisValue(val);
+    } catch (e: any) {
+      console.warn('Error reading Redis key:', e);
+    }
+  }, []);
+
+  const deleteKey = useCallback(async (key: string) => {
+    const ok = await deleteRedisKey(key);
+    if (ok) {
+      if (selectedRedisKey === key) {
+        setSelectedRedisKey(null);
+        setSelectedRedisValue(null);
+      }
+      loadRedisKeys();
+    }
+  }, [selectedRedisKey, loadRedisKeys]);
+
+  const clearAllCache = useCallback(async () => {
+    if (!window.confirm(t('Are you sure you want to delete all cached AI classification payloads?'))) return;
+    try {
+      setLoadingRedis(true);
+      for (const key of redisKeys) {
+        await deleteRedisKey(key);
+      }
+      setSelectedRedisKey(null);
+      setSelectedRedisValue(null);
+      await loadRedisKeys();
+    } catch (e: any) {
+      setRedisError(e.message || 'Error clearing keys');
+    } finally {
+      setLoadingRedis(false);
+    }
+  }, [redisKeys, loadRedisKeys, t]);
+
+  useEffect(() => {
+    if (activeTab === 'redis') {
+      loadRedisKeys();
+    }
+  }, [activeTab, loadRedisKeys]);
 
   const loadDbLogs = useCallback(async () => {
     setLoadingDbLogs(true);
@@ -696,10 +763,56 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 1 — OpenRouter API & Billing
-          ═══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 gap-6">
+      {/* Sci-Fi Navigation Tabs */}
+      <div className="flex flex-wrap gap-2 border-b border-[#1e293b] pb-px mb-4">
+        <button
+          onClick={() => setActiveTab('dashboard')}
+          className={`h-9 px-4 text-[12px] font-semibold uppercase tracking-wider transition-all flex items-center gap-2 border-b-2 -mb-px ${
+            activeTab === 'dashboard'
+              ? 'border-cyan-400 text-cyan-400 font-bold bg-cyan-400/5'
+              : 'border-transparent text-[#666] hover:text-[#AAA]'
+          }`}
+        >
+          <Activity size={14} />
+          {t('Dashboard & Billing')}
+        </button>
+        <button
+          onClick={() => setActiveTab('playground')}
+          className={`h-9 px-4 text-[12px] font-semibold uppercase tracking-wider transition-all flex items-center gap-2 border-b-2 -mb-px ${
+            activeTab === 'playground'
+              ? 'border-cyan-400 text-cyan-400 font-bold bg-cyan-400/5'
+              : 'border-transparent text-[#666] hover:text-[#AAA]'
+          }`}
+        >
+          <Zap size={14} />
+          {t('AI Playground')}
+        </button>
+        <button
+          onClick={() => setActiveTab('prompt')}
+          className={`h-9 px-4 text-[12px] font-semibold uppercase tracking-wider transition-all flex items-center gap-2 border-b-2 -mb-px ${
+            activeTab === 'prompt'
+              ? 'border-cyan-400 text-cyan-400 font-bold bg-cyan-400/5'
+              : 'border-transparent text-[#666] hover:text-[#AAA]'
+          }`}
+        >
+          <Brain size={14} />
+          {t('Prompt Training')}
+        </button>
+        <button
+          onClick={() => setActiveTab('redis')}
+          className={`h-9 px-4 text-[12px] font-semibold uppercase tracking-wider transition-all flex items-center gap-2 border-b-2 -mb-px ${
+            activeTab === 'redis'
+              ? 'border-cyan-400 text-cyan-400 font-bold bg-cyan-400/5'
+              : 'border-transparent text-[#666] hover:text-[#AAA]'
+          }`}
+        >
+          <Database size={14} />
+          {t('Redis Cache')}
+        </button>
+      </div>
+
+      {activeTab === 'dashboard' && (
+        <div className="grid grid-cols-1 gap-6">
 
         {/* OpenRouter Billing & Key Status Card */}
         <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-6 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse flex flex-col justify-between">
@@ -801,11 +914,10 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
         </div>
 
       </div>
+      )}
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 2 — AI Playground
-          ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-5 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
+      {activeTab === 'playground' && (
+        <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-5 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 shadow-[0_0_12px_rgba(245,158,11,0.4)]" />
         <HudCorners />
 
@@ -1146,13 +1258,10 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
           </div>
         </div>
       </div>
+      )}
 
-
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 4 — Analysis Log History
-          ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-5 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
+      {activeTab === 'dashboard' && (
+        <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-5 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 shadow-[0_0_12px_rgba(6,182,212,0.4)]" />
         <HudCorners />
 
@@ -1441,7 +1550,230 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
           )
         )}
       </div>
+      )}
+
+      {activeTab === 'prompt' && (
+        <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-6 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400 shadow-[0_0_12px_rgba(124,58,237,0.4)]" />
+          <HudCorners />
+          
+          <div className="flex items-center gap-3 mb-5 border-b border-[#22283d] pb-4">
+            <Brain size={18} className="text-violet-400" />
+            <div>
+              <h2 className="text-[15px] font-semibold text-white tracking-wide">{t('System Prompt Tuning (AI Training)')}</h2>
+              <p className="text-[11px] text-[#666] mt-0.5">{t('Refine rules and structural response templates here to train how the AI behaves during analyses.')}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="relative">
+                <textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  rows={18}
+                  className="w-full bg-[#050508] border border-[#2c324e] rounded-lg p-4 text-[12px] font-mono text-[#DEDEDE] leading-relaxed focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/20"
+                />
+                <span className="absolute bottom-3 right-3 text-[10px] text-[#555] font-mono">
+                  {systemPrompt.length} chars
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center bg-[#111322] border border-[#22283d] rounded-lg p-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse" />
+                  <span className="text-[11px] text-[#AAA] font-medium">{t('Active Custom Prompt Enabled')}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSystemPrompt(
+                    `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+{
+  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
+  "part_number": string | null,
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
+  "category": string,
+  "title": string,
+  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+  "estimated_price": number,
+  "confidence_score": number
+}
+IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`
+                  )}
+                  className="text-[11px] text-red-400 hover:text-red-300 font-semibold transition-colors bg-red-400/5 px-2.5 py-1 rounded border border-red-500/10"
+                >
+                  {t('Reset Default Prompt')}
+                </button>
+              </div>
+            </div>
+
+            {/* Presets and Guidelines */}
+            <div className="space-y-4">
+              <div className="bg-[#121422] border border-[#22283d] rounded-lg p-4 space-y-3">
+                <h3 className="text-[12px] font-semibold text-white tracking-wider uppercase">{t('Model Target Presets')}</h3>
+                <p className="text-[11px] text-[#888] leading-relaxed">{t('Quickly switch between pre-tuned instruction frameworks optimized for different parts categories:')}</p>
+                <div className="space-y-2 pt-1">
+                  <button
+                    onClick={() => setSystemPrompt(prev => prev + `\n\nADICIONAL: Foque em extrair amperagem (Ah), polaridade, CCA e tamanho se a peça for uma bateria.`)}
+                    className="w-full text-left text-[11px] text-[#BBB] hover:text-white bg-[#1a1d30]/50 border border-[#2c324e] rounded p-2 hover:bg-[#1a1d30] transition-colors"
+                  >
+                    🔋 <strong>{t('Battery Analyzer Add-on')}</strong>
+                    <span className="block text-[10px] text-[#666] mt-0.5">{t('Instructs AI to fetch capacity specs')}</span>
+                  </button>
+                  <button
+                    onClick={() => setSystemPrompt(prev => prev + `\n\nADICIONAL: Se houver part number na peça, extraia exatamente como escrito.`)}
+                    className="w-full text-left text-[11px] text-[#BBB] hover:text-white bg-[#1a1d30]/50 border border-[#2c324e] rounded p-2 hover:bg-[#1a1d30] transition-colors"
+                  >
+                    🔍 <strong>{t('Part Number Specialist')}</strong>
+                    <span className="block text-[10px] text-[#666] mt-0.5">{t('Prioritize identification sticker scan')}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-[#121422] border border-[#22283d] rounded-lg p-4 space-y-2">
+                <h3 className="text-[12px] font-semibold text-white tracking-wider uppercase">{t('Tuning Guidelines')}</h3>
+                <ul className="text-[11px] text-[#888] space-y-2 list-disc list-inside">
+                  <li>{t('Return ONLY valid, parsable JSON matching the fields requested.')}</li>
+                  <li>{t('Avoid any markdown wrap besides standard JSON.')}</li>
+                  <li>{t('Specify vehicle compatibility mapping in detail for the description field.')}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'redis' && (
+        <div className="bg-[#080810]/95 backdrop-blur-md border border-[#1e293b] rounded-xl p-6 relative overflow-hidden shadow-2xl transition-all duration-300 animate-cyber-pulse">
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-600 via-indigo-500 to-violet-400 shadow-[0_0_12px_rgba(6,182,212,0.4)]" />
+          <HudCorners />
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#22283d] pb-4">
+            <div className="flex items-center gap-3">
+              <Database size={18} className="text-cyan-400" />
+              <div>
+                <h2 className="text-[15px] font-semibold text-white tracking-wide">{t('Upstash Redis Cache')}</h2>
+                <p className="text-[11px] text-[#666] mt-0.5">{t('Inspect, query, and clear cached AI visual analysis records in Upstash Redis.')}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={loadRedisKeys}
+                disabled={loadingRedis}
+                className="h-8 px-3.5 bg-[#141624] border border-[#2c324e] rounded-lg text-[12px] font-medium text-[#EDEDED] hover:bg-[#1a1d30] transition-colors flex items-center gap-1.5"
+              >
+                <RefreshCw size={12} className={loadingRedis ? 'animate-spin' : ''} />
+                {t('Reload Keys')}
+              </button>
+              {redisKeys.length > 0 && (
+                <button
+                  onClick={clearAllCache}
+                  disabled={loadingRedis}
+                  className="h-8 px-3.5 bg-red-950/20 border border-red-900/30 rounded-lg text-[12px] font-semibold text-red-400 hover:bg-red-900/20 transition-colors flex items-center gap-1.5"
+                >
+                  <Trash2 size={12} />
+                  {t('Clear Cache')}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {redisError && (
+            <div className="mb-4 px-3 py-2.5 bg-red-500/5 border border-red-500/20 rounded-lg text-[12px] text-red-400">
+              {redisError}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Keys list */}
+            <div className="md:col-span-1 border border-[#22283d] bg-[#050508] rounded-lg p-3 flex flex-col h-[400px]">
+              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-2 font-semibold flex items-center justify-between">
+                <span>{t('Cached Keys')}</span>
+                <span className="font-mono text-cyan-400">{redisKeys.length}</span>
+              </div>
+
+              {loadingRedis && redisKeys.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center text-[#555] text-xs">
+                  <RefreshCw size={14} className="animate-spin mr-1.5" />
+                  {t('Loading keys...')}
+                </div>
+              ) : redisKeys.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center text-[#444] text-[11px] text-center px-4 leading-normal">
+                  {t('No cached AI classifications found in Redis.')}
+                </div>
+              ) : (
+                <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
+                  {redisKeys.map(k => (
+                    <div 
+                      key={k} 
+                      className={`group flex items-center justify-between p-2 rounded text-[11.5px] font-mono cursor-pointer transition-colors border ${
+                        selectedRedisKey === k 
+                          ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400' 
+                          : 'bg-[#121422]/40 border-transparent hover:bg-[#121422] text-[#AAA]'
+                      }`}
+                      onClick={() => loadRedisValue(k)}
+                    >
+                      <span className="truncate flex-1 pr-2">{k.replace('ai_analysis_or_', '')}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteKey(k);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 hover:text-red-400 text-[#555] transition-opacity p-0.5"
+                      >
+                        <Trash2 size={11} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Inspector */}
+            <div className="md:col-span-2 border border-[#22283d] bg-[#050508] rounded-lg p-4 flex flex-col h-[400px]">
+              {selectedRedisKey ? (
+                <div className="flex-1 flex flex-col min-h-0">
+                  <div className="flex items-center justify-between border-b border-[#22283d] pb-2.5 mb-3">
+                    <div className="min-w-0 flex-1 pr-4">
+                      <span className="text-[10px] text-[#666] uppercase tracking-wider block font-semibold">{t('Active Inspector Key')}</span>
+                      <span className="font-mono text-[11px] text-cyan-400 truncate block mt-0.5">{selectedRedisKey}</span>
+                    </div>
+                    <button
+                      onClick={() => deleteKey(selectedRedisKey)}
+                      className="h-7 px-3 bg-red-950/20 border border-red-900/30 rounded text-[11px] font-semibold text-red-400 hover:bg-red-900/20 transition-colors flex items-center gap-1.5 shrink-0"
+                    >
+                      <Trash2 size={11} />
+                      {t('Delete Key')}
+                    </button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto bg-[#0a0a0f] border border-[#1e293b]/50 rounded-lg p-3 font-mono text-[11.5px] text-[#E0E0E0] whitespace-pre-wrap">
+                    {selectedRedisValue ? (
+                      <pre className="text-green-400 leading-relaxed">
+                        {JSON.stringify(selectedRedisValue, null, 2)}
+                      </pre>
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-[#555]">
+                        <RefreshCw size={14} className="animate-spin mr-1.5" />
+                        {t('Fetching cache payload...')}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center px-6 text-[#555]">
+                  <Database size={24} className="mb-2 text-[#333]" />
+                  <p className="text-xs">{t('Select a cache key from the list to inspect its contents.')}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      </div>
     </div>
-  </div>
   );
 }

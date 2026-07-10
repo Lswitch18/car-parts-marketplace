@@ -47,3 +47,41 @@ export async function setCache(key: string, value: any, expiresInSeconds: number
     console.warn('Redis Cache Set Error:', error)
   }
 }
+
+export async function getRedisKeys(pattern: string = '*'): Promise<string[]> {
+  if (!REDIS_URL || !REDIS_TOKEN) return []
+  try {
+    const res = await fetch(`${REDIS_URL}/`, {
+      method: 'POST',
+      headers: { 
+        Authorization: `Bearer ${REDIS_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(['KEYS', pattern])
+    })
+    if (!res.ok) return []
+    const json = await res.json()
+    return Array.isArray(json.result) ? json.result : []
+  } catch (error) {
+    console.warn('Redis KEYS error:', error)
+    return []
+  }
+}
+
+export async function deleteRedisKey(key: string): Promise<boolean> {
+  if (!REDIS_URL || !REDIS_TOKEN) return false
+  try {
+    const res = await fetch(`${REDIS_URL}/`, {
+      method: 'POST',
+      headers: { 
+        Authorization: `Bearer ${REDIS_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(['DEL', key])
+    })
+    return res.ok
+  } catch (error) {
+    console.warn('Redis DEL error:', error)
+    return false
+  }
+}
