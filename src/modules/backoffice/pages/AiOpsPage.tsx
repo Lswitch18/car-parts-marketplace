@@ -31,6 +31,20 @@ interface HealthStatus {
   lastChecked: string | null;
 }
 
+const DEFAULT_SYSTEM_PROMPT = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+{
+  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
+  "part_number": string | null,
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
+  "category": string,
+  "title": string,
+  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+  "estimated_price": number,
+  "confidence_score": number
+}
+IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`;
+
 const STORAGE_KEY = 'daig_ai_ops_log';
 const MAX_LOG_ENTRIES = 50;
 // Maximum image dimension before sending to AI (matches CreateListing behavior)
@@ -125,21 +139,10 @@ export default function AiOpsPage() {
   const [dbLogsError, setDbLogsError] = useState<string | null>(null);
   const [openrouterData, setOpenrouterData] = useState<any>(null);
   const [showPromptEditor, setShowPromptEditor] = useState<boolean>(false);
-  const [systemPrompt, setSystemPrompt] = useState<string>(
-    `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
-{
-  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
-  "part_number": string | null,
-  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
-  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
-  "category": string,
-  "title": string,
-  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
-  "estimated_price": number,
-  "confidence_score": number
-}
-IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`
-  );
+  const [systemPrompt, setSystemPrompt] = useState<string>(() => {
+    return localStorage.getItem('daig_ai_ops_custom_prompt') || DEFAULT_SYSTEM_PROMPT;
+  });
+  const [isSavedPrompt, setIsSavedPrompt] = useState<boolean>(true);
 
   // Log state
   const [logEntries, setLogEntries] = useState<AnalysisLogEntry[]>(loadLog);
@@ -356,6 +359,19 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       }));
     }
   }, [selectedModel]);
+
+  const saveCustomPrompt = useCallback(() => {
+    localStorage.setItem('daig_ai_ops_custom_prompt', systemPrompt);
+    setIsSavedPrompt(true);
+  }, [systemPrompt]);
+
+  const resetDefaultPrompt = useCallback(() => {
+    if (window.confirm(t('Are you sure you want to restore the default system instructions?'))) {
+      setSystemPrompt(DEFAULT_SYSTEM_PROMPT);
+      localStorage.removeItem('daig_ai_ops_custom_prompt');
+      setIsSavedPrompt(true);
+    }
+  }, [t]);
 
   const loadRedisKeys = useCallback(async () => {
     setLoadingRedis(true);
@@ -1570,7 +1586,10 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
               <div className="relative">
                 <textarea
                   value={systemPrompt}
-                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  onChange={(e) => {
+                    setSystemPrompt(e.target.value);
+                    setIsSavedPrompt(false);
+                  }}
                   rows={18}
                   className="w-full bg-[#050508] border border-[#2c324e] rounded-lg p-4 text-[12px] font-mono text-[#DEDEDE] leading-relaxed focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/20"
                 />
@@ -1581,30 +1600,32 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
 
               <div className="flex justify-between items-center bg-[#111322] border border-[#22283d] rounded-lg p-3">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse" />
-                  <span className="text-[11px] text-[#AAA] font-medium">{t('Active Custom Prompt Enabled')}</span>
+                  <span className={`w-2.5 h-2.5 rounded-full ${isSavedPrompt ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-yellow-500 animate-pulse shadow-[0_0_8px_rgba(234,179,8,0.6)]'}`} />
+                  <span className="text-[11px] text-[#AAA] font-medium">
+                    {isSavedPrompt ? t('Active Custom Prompt Enabled') : t('Unsaved changes in prompt')}
+                  </span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setSystemPrompt(
-                    `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
-{
-  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
-  "part_number": string | null,
-  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
-  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
-  "category": string,
-  "title": string,
-  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
-  "estimated_price": number,
-  "confidence_score": number
-}
-IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`
-                  )}
-                  className="text-[11px] text-red-400 hover:text-red-300 font-semibold transition-colors bg-red-400/5 px-2.5 py-1 rounded border border-red-500/10"
-                >
-                  {t('Reset Default Prompt')}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={resetDefaultPrompt}
+                    className="text-[11.5px] text-[#888] hover:text-white font-medium transition-colors bg-[#1a1d30]/50 hover:bg-[#1a1d30] px-3 py-1.5 rounded border border-[#2c324e]"
+                  >
+                    {t('Restore Default')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={saveCustomPrompt}
+                    className={`h-8 px-4 rounded text-[12px] font-bold transition-all flex items-center gap-1.5 shadow-lg ${
+                      isSavedPrompt
+                        ? 'bg-green-500/10 border border-green-500/20 text-green-400 cursor-default'
+                        : 'bg-gradient-to-r from-violet-600 to-indigo-500 text-white hover:from-violet-500 hover:to-indigo-400 shadow-violet-500/10 active:scale-95'
+                    }`}
+                  >
+                    <Check size={13} />
+                    {isSavedPrompt ? t('Saved') : t('Save Training')}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1615,14 +1636,20 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
                 <p className="text-[11px] text-[#888] leading-relaxed">{t('Quickly switch between pre-tuned instruction frameworks optimized for different parts categories:')}</p>
                 <div className="space-y-2 pt-1">
                   <button
-                    onClick={() => setSystemPrompt(prev => prev + `\n\nADICIONAL: Foque em extrair amperagem (Ah), polaridade, CCA e tamanho se a peça for uma bateria.`)}
+                    onClick={() => {
+                      setSystemPrompt(prev => prev + `\n\nADICIONAL: Foque em extrair amperagem (Ah), polaridade, CCA e tamanho se a peça for uma bateria.`);
+                      setIsSavedPrompt(false);
+                    }}
                     className="w-full text-left text-[11px] text-[#BBB] hover:text-white bg-[#1a1d30]/50 border border-[#2c324e] rounded p-2 hover:bg-[#1a1d30] transition-colors"
                   >
                     🔋 <strong>{t('Battery Analyzer Add-on')}</strong>
                     <span className="block text-[10px] text-[#666] mt-0.5">{t('Instructs AI to fetch capacity specs')}</span>
                   </button>
                   <button
-                    onClick={() => setSystemPrompt(prev => prev + `\n\nADICIONAL: Se houver part number na peça, extraia exatamente como escrito.`)}
+                    onClick={() => {
+                      setSystemPrompt(prev => prev + `\n\nADICIONAL: Se houver part number na peça, extraia exatamente como escrito.`);
+                      setIsSavedPrompt(false);
+                    }}
                     className="w-full text-left text-[11px] text-[#BBB] hover:text-white bg-[#1a1d30]/50 border border-[#2c324e] rounded p-2 hover:bg-[#1a1d30] transition-colors"
                   >
                     🔍 <strong>{t('Part Number Specialist')}</strong>
