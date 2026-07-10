@@ -12,7 +12,7 @@ export const BRANDS = [
   {
     id: 'honda',
     name: 'Honda',
-    models: ['Civic Type R EK9', 'Civic Type R EP3', 'Integra Type R', 'NSX NA1', 'NSX NC1', 'Prelude', 'S2000 AP1', 'S2000 AP2', 'S660', 'Fit', 'N-BOX', 'N-VAN', 'N-WGN', 'Freed', 'StepWGN']
+    models: ['Civic', 'Civic Type R EK9', 'Civic Type R EP3', 'Integra Type R', 'NSX NA1', 'NSX NC1', 'Prelude', 'S2000 AP1', 'S2000 AP2', 'S660', 'Fit', 'N-BOX', 'N-VAN', 'N-WGN', 'Freed', 'StepWGN']
   },
   {
     id: 'mazda',
