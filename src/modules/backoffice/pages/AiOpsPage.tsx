@@ -686,111 +686,9 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 1 — Health Check
+          SECTION 1 — OpenRouter API & Billing
           ═══════════════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* Ollama Server Health Card */}
-        <div className="bg-[#0c0d16]/85 backdrop-blur-md border border-[#22283d] rounded-xl p-6 relative overflow-hidden shadow-2xl hover:border-violet-500/20 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(124,58,237,0.05)]">
-          {/* Decorative gradient line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400 shadow-[0_0_10px_rgba(124,58,237,0.5)]" />
-
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
-            <div className="flex items-center gap-3">
-              <Server size={16} className="text-[#888]" />
-              <h2 className="text-[15px] font-semibold text-white tracking-wide">{t('Ollama Server Health')}</h2>
-              <div className={`w-2.5 h-2.5 rounded-full ${statusBgPulse(health.status)} transition-all`} />
-            </div>
-            <button
-              onClick={runHealthCheck}
-              disabled={health.status === 'checking'}
-              className="h-8 px-4 bg-[#141624] border border-[#2c324e] rounded-lg text-[13px] font-medium text-[#EDEDED] hover:bg-[#1a1d30] hover:border-violet-500/30 hover:text-white disabled:opacity-50 transition-all flex items-center gap-2"
-            >
-              <RefreshCw size={14} className={health.status === 'checking' ? 'animate-spin' : ''} />
-              {t('Run Health Check')}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
-              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Status')}</div>
-              <div className={`text-[15px] font-bold ${statusColor(health.status)}`}>
-                {statusLabel(health.status)}
-              </div>
-            </div>
-            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
-              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Latency')}</div>
-              <div className="text-[15px] font-mono font-bold text-white">
-                {health.latencyMs !== null ? `${health.latencyMs}ms` : '—'}
-              </div>
-            </div>
-            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
-              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Models')}</div>
-              <div className="text-[13px] text-[#EDEDED] truncate font-medium" title={health.models.join(', ')}>
-                {health.models.length > 0
-                  ? health.models.join(', ')
-                  : health.status === 'online' ? t('None loaded') : '—'}
-              </div>
-            </div>
-            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
-              <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Endpoint')}</div>
-              <div className="text-[12px] text-[#AAA] font-mono truncate" title={health.serverUrl}>
-                {health.serverUrl.replace('https://', '').replace('/api/chat', '')}
-              </div>
-            </div>
-          </div>
-
-          {health.lastChecked && (
-            <div className="mt-3 text-[11px] text-[#555] flex items-center gap-1.5 font-medium">
-              <Clock size={11} />
-              {t('Last checked')}: {new Date(health.lastChecked).toLocaleTimeString()}
-            </div>
-          )}
-
-          {/* --- Model Downloader --- */}
-          <div className="mt-5 pt-4 border-t border-[#22283d]">
-            <h3 className="text-[13px] font-semibold text-white mb-2">{t('Download New Model')}</h3>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <div className="relative flex-1 w-full">
-                <input
-                  type="text"
-                  value={downloadModelName}
-                  onChange={(e) => setDownloadModelName(e.target.value)}
-                  placeholder={t('e.g., llama3.2-vision, gemma2')}
-                  className="w-full h-9 bg-[#121422] border border-[#2c324e] rounded-lg px-3 text-[13px] text-[#EDEDED] placeholder-[#444] focus:border-violet-500 focus:outline-none transition-colors"
-                  disabled={isDownloading}
-                />
-              </div>
-              <button
-                onClick={handleDownloadModel}
-                disabled={isDownloading || !downloadModelName.trim()}
-                className="w-full sm:w-auto h-9 px-4 bg-[#141624] border border-[#2c324e] rounded-lg text-[13px] font-semibold text-[#EDEDED] hover:bg-[#1a1d30] hover:border-violet-500/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shrink-0"
-              >
-                {isDownloading ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
-                {isDownloading ? t('Downloading...') : t('Pull Model')}
-              </button>
-            </div>
-            
-            {downloadError && (
-              <div className="mt-3 text-[12px] text-red-400 font-medium">{downloadError}</div>
-            )}
-
-            {downloadProgress && (
-              <div className="mt-3">
-                <div className="flex justify-between text-[11px] text-[#888] mb-1 font-mono">
-                  <span>{downloadProgress.status}</span>
-                  {downloadProgress.pct > 0 && <span>{downloadProgress.pct}%</span>}
-                </div>
-                <div className="h-1.5 w-full bg-[#121422] rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-violet-500 via-indigo-500 to-cyan-400 transition-all duration-300 shadow-[0_0_8px_rgba(99,102,241,0.5)]"
-                    style={{ width: `${downloadProgress.pct}%` }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 gap-6">
 
         {/* OpenRouter Billing & Key Status Card */}
         <div className="bg-[#0c0d16]/85 backdrop-blur-md border border-[#22283d] rounded-xl p-6 relative overflow-hidden shadow-2xl hover:border-indigo-500/20 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(99,102,241,0.05)] flex flex-col justify-between">
@@ -827,7 +725,7 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
 
             {openrouterData ? (
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3.5 hover:border-[#3b4260] transition-colors">
                     <div className="text-[10px] text-[#666] uppercase tracking-wider mb-1 font-semibold">{t('Key Label')}</div>
                     <div className="text-[13px] font-bold text-white truncate" title={openrouterData?.key?.label}>
@@ -1233,112 +1131,7 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 3 — Server Logs & Metrics
-          ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-5 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-pink-500 via-rose-500 to-red-500" />
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <Server size={16} className="text-pink-400" />
-            <h2 className="text-[15px] font-semibold text-white">{t('Server Metrics & Live Logs')}</h2>
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-pink-500/10 border border-pink-500/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
-              <span className="text-[10px] font-bold text-pink-400">STREAMING</span>
-            </div>
-          </div>
-
-          {/* Metrics Visualization */}
-          {serverMetrics && (
-            <div className="flex items-center gap-6">
-              {/* CPU */}
-              <div className="flex items-center gap-3">
-                <Cpu size={14} className="text-[#888]" />
-                <div className="w-32">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] text-[#888] font-mono">CPU</span>
-                    <span className="text-[10px] text-[#EDEDED] font-mono">{serverMetrics.cpuPercent}%</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-1000 ${parseFloat(serverMetrics.cpuPercent) > 80 ? 'bg-red-500' : parseFloat(serverMetrics.cpuPercent) > 50 ? 'bg-yellow-500' : 'bg-green-500'}`}
-                      style={{ width: `${serverMetrics.cpuPercent}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* RAM */}
-              <div className="flex items-center gap-3">
-                <HardDrive size={14} className="text-[#888]" />
-                <div className="w-32">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] text-[#888] font-mono">RAM ({serverMetrics.usedMemMb}MB)</span>
-                    <span className="text-[10px] text-[#EDEDED] font-mono">{serverMetrics.memoryPercent}%</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-1000 ${parseFloat(serverMetrics.memoryPercent) > 85 ? 'bg-red-500' : parseFloat(serverMetrics.memoryPercent) > 60 ? 'bg-yellow-500' : 'bg-blue-500'}`}
-                      style={{ width: `${serverMetrics.memoryPercent}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* HDD */}
-              {serverMetrics.hddPercent && (
-                <div className="flex items-center gap-3">
-                  <Database size={14} className="text-[#888]" />
-                  <div className="w-32">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] text-[#888] font-mono">HDD ({serverMetrics.usedHddGb}GB)</span>
-                      <span className="text-[10px] text-[#EDEDED] font-mono">{serverMetrics.hddPercent}%</span>
-                    </div>
-                    <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all duration-1000 ${parseFloat(serverMetrics.hddPercent) > 90 ? 'bg-red-500' : parseFloat(serverMetrics.hddPercent) > 75 ? 'bg-yellow-500' : 'bg-cyan-500'}`}
-                        style={{ width: `${serverMetrics.hddPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {logsError && (
-          <div className="mb-4 flex items-start gap-2 px-3 py-2.5 bg-red-500/5 border border-red-500/20 rounded-lg">
-            <AlertTriangle size={14} className="text-red-400 shrink-0 mt-0.5" />
-            <p className="text-[12px] text-red-300">{logsError}</p>
-          </div>
-        )}
-
-        <div className="bg-[#050505] border border-[#222] rounded-lg overflow-hidden flex flex-col h-[300px]">
-          <div className="flex items-center gap-2 px-4 py-2 bg-[#111] border-b border-[#222] shrink-0">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-            <span className="ml-2 text-[11px] font-mono text-[#666]">{t('AI Analysis Pipeline Status')}</span>
-          </div>
-          <div 
-            ref={logsRef}
-            className="p-4 overflow-x-auto overflow-y-auto flex-1 scroll-smooth"
-          >
-            {serverLogs ? (
-              <pre className="text-[12px] font-mono text-green-400 whitespace-pre-wrap break-words leading-relaxed">
-                {serverLogs}
-              </pre>
-            ) : (
-              <div className="flex items-center justify-center h-full text-[#555] text-[13px] font-mono">
-                <RefreshCw size={14} className="animate-spin mr-2" />
-                {t('Connecting to real-time log stream...')}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 4 — Analysis Log History
