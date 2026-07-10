@@ -122,9 +122,9 @@ function cleanJsonMarkdown(raw: string): string {
 }
 
 /**
- * Call Qwen3-VL Model via OpenRouter
+ * Call any model via OpenRouter
  */
-async function callQwen(base64Image: string, promptVision: string, apiKey: string): Promise<any> {
+async function callOpenRouter(base64Image: string, promptVision: string, apiKey: string, model: string): Promise<any> {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -134,7 +134,7 @@ async function callQwen(base64Image: string, promptVision: string, apiKey: strin
       'X-OpenRouter-Title': 'Gaid Parts Marketplace'
     },
     body: JSON.stringify({
-      model: 'qwen/qwen3-vl-235b-a22b-instruct',
+      model: model,
       messages: [
         {
           role: 'user',
@@ -373,13 +373,21 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c√
     let geminiResult: any = null;
 
     // FASE 1: VIS√ÉO COMPUTACIONAL REDUNDANTE (Gemini 3.5 Flash como principal + Qwen3-VL como backup)
-    if (GEMINI_API_KEY) {
-      console.log('[analyze-part] Chamando Gemini 3.5 Flash como modelo principal...');
+    if (OPENROUTER_API_KEY) {
+      console.log('[analyze-part] Chamando Gemini 3.5 Flash via OpenRouter como modelo principal...');
+      try {
+        geminiResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'google/gemini-3.5-flash');
+        console.log('[analyze-part] Retorno Gemini (OpenRouter):', geminiResult);
+      } catch (err) {
+        console.error('[analyze-part] Erro no Gemini 3.5 Flash via OpenRouter:', err);
+      }
+    } else if (GEMINI_API_KEY) {
+      console.log('[analyze-part] Chamando Gemini 3.5 Flash via Google API como modelo principal...');
       try {
         geminiResult = await callGemini(base64Image, promptVision, GEMINI_API_KEY);
-        console.log('[analyze-part] Retorno Gemini:', geminiResult);
+        console.log('[analyze-part] Retorno Gemini (Google API):', geminiResult);
       } catch (err) {
-        console.error('[analyze-part] Erro no Gemini 3.5 Flash:', err);
+        console.error('[analyze-part] Erro no Gemini 3.5 Flash via Google API:', err);
       }
     }
 
@@ -388,10 +396,10 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c√
     if (needsQwen && OPENROUTER_API_KEY) {
       console.log('[analyze-part] Chamando Qwen3-VL via OpenRouter para verifica√ß√£o redundante...');
       try {
-        qwenResult = await callQwen(base64Image, promptVision, OPENROUTER_API_KEY);
-        console.log('[analyze-part] Retorno Qwen:', qwenResult);
+        qwenResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'qwen/qwen3-vl-235b-a22b-instruct');
+        console.log('[analyze-part] Retorno Qwen (OpenRouter):', qwenResult);
       } catch (err) {
-        console.error('[analyze-part] Erro no Qwen3-VL:', err);
+        console.error('[analyze-part] Erro no Qwen3-VL via OpenRouter:', err);
       }
     }
 
