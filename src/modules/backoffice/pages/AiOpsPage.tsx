@@ -47,7 +47,7 @@ Estrutura do JSON (Retorne APENAS o JSON, sem blocos de código markdown ou text
   "model": "string" (o modelo do VEÍCULO compatível em camelcase),
   "category": "string" (categoria técnica da peça, ex: "alternador", "bateria", "suspensao", "motor", "lanterna"),
   "title": "string" (Título profissional no formato: [Nome da Peça] [Marca do Carro] [Modelo] [Motor/Ano se visível]),
-  "description": "string" (Descrição técnica estruturada contendo: 1. Ficha técnica detalhada com especificações físicas visíveis [ex: Amperagem/Ah, Voltagem/V, CCA, quantidade de pinos do conector elétrico]; 2. Estado de conservação observado [ex: Usado em boas condições, com oxidação leve superficial, pinos íntegros]; 3. Tabela ou lista de compatibilidade exata com anos e versões conhecidos do veículo),
+  "description": "string" (Descrição comercial e atraente em formato de anúncio de venda de autopeças [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Deve conter: 1. Apresentação do item anunciado e seu estado de conservação física observado [ex: Peça usada em bom estado]; 2. Ficha técnica e especificações físicas [ex: dimensões, conexões, amperagem/Ah se aplicável]; 3. Lista de compatibilidade exata com modelos, anos e chassis para facilitar a compra),
   "estimated_price": number (preço estimado de mercado para venda de peça usada em Reais/BRL),
   "confidence_score": number (número de 0.0 a 1.0 indicando a precisão da identificação)
 }

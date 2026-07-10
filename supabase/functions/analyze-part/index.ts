@@ -362,7 +362,7 @@ Deno.serve(async (req: Request) => {
   "compatibility_tags": string[] (tags curtas de compatibilidade com marcas e modelos exatos, ex: ["Honda N-BOX", "Honda N-WGN", "Honda N-ONE"]),
   "category": string,
   "title": string,
-  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+  "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Apresente o item anunciado, detalhe seu estado físico/de conservação visual observado, ficha técnica [especificações como amperagem/Ah, dimensões, voltagem/V se aplicável] e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
   "estimated_price": number,
   "confidence_score": number
 }
@@ -493,7 +493,7 @@ Retorne APENAS um JSON válido e estrito contendo:
   "compatibility_tags": string[] (tags curtas de compatibilidade com marcas e modelos exatos, ex: ["Honda N-BOX", "Honda N-WGN", "Honda N-ONE"]),
   "category": string,
   "title": string,
-  "description": string (descrição técnica extremamente detalhada e completa. Busque e inclua obrigatoriamente especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões, polaridade e se suporta stop-start no caso de baterias. Além disso, DEVE listar de forma legível e clara os principais modelos de carros e marcas compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+  "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Apresente o item anunciado, detalhe seu estado físico/de conservação visual de catálogo, ficha técnica [especificações como amperagem/Ah, dimensões, voltagem/V se aplicável] e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
   "estimated_price": number,
   "source_url": string | null
 }`;
