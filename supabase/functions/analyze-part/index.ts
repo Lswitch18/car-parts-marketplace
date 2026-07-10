@@ -372,26 +372,26 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
     let qwenResult: any = null;
     let geminiResult: any = null;
 
-    // FASE 1: VISÃO COMPUTACIONAL REDUNDANTE (Qwen3-VL + Gemini 2.5 Pro)
-    if (OPENROUTER_API_KEY) {
-      console.log('[analyze-part] Chamando Qwen3-VL via OpenRouter...');
+    // FASE 1: VISÃO COMPUTACIONAL REDUNDANTE (Gemini 3.5 Flash como principal + Qwen3-VL como backup)
+    if (GEMINI_API_KEY) {
+      console.log('[analyze-part] Chamando Gemini 3.5 Flash como modelo principal...');
+      try {
+        geminiResult = await callGemini(base64Image, promptVision, GEMINI_API_KEY);
+        console.log('[analyze-part] Retorno Gemini:', geminiResult);
+      } catch (err) {
+        console.error('[analyze-part] Erro no Gemini 3.5 Flash:', err);
+      }
+    }
+
+    // Se Gemini falhou ou retornou confiança abaixo de 0.95, acionamos Qwen para dupla validação
+    const needsQwen = !geminiResult || geminiResult.confidence_score < 0.95 || !geminiResult.part_number;
+    if (needsQwen && OPENROUTER_API_KEY) {
+      console.log('[analyze-part] Chamando Qwen3-VL via OpenRouter para verificação redundante...');
       try {
         qwenResult = await callQwen(base64Image, promptVision, OPENROUTER_API_KEY);
         console.log('[analyze-part] Retorno Qwen:', qwenResult);
       } catch (err) {
         console.error('[analyze-part] Erro no Qwen3-VL:', err);
-      }
-    }
-
-    // Se Qwen falhou ou retornou confiança abaixo de 0.95, acionamos Gemini para dupla validação
-    const needsGemini = !qwenResult || qwenResult.confidence_score < 0.95 || !qwenResult.part_number;
-    if (needsGemini && GEMINI_API_KEY) {
-      console.log('[analyze-part] Chamando Gemini 2.5 Pro para verificação...');
-      try {
-        geminiResult = await callGemini(base64Image, promptVision, GEMINI_API_KEY);
-        console.log('[analyze-part] Retorno Gemini:', geminiResult);
-      } catch (err) {
-        console.error('[analyze-part] Erro no Gemini:', err);
       }
     }
 
@@ -404,19 +404,19 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       if (similarity >= 0.95) {
         // Alta concordância
         visionResult = {
-          ...qwenResult,
+          ...geminiResult,
           confidence_score: 0.99
         };
       } else {
         // Baixa concordância: escolhe o que tem maior confiança nativa, ponderado por similaridade
-        const best = (qwenResult.confidence_score || 0) >= (geminiResult.confidence_score || 0) ? qwenResult : geminiResult;
+        const best = (geminiResult.confidence_score || 0) >= (qwenResult.confidence_score || 0) ? geminiResult : qwenResult;
         visionResult = {
           ...best,
           confidence_score: Math.max(best.confidence_score || 0.5, 0.5) * similarity
         };
       }
     } else {
-      visionResult = qwenResult || geminiResult || { is_car_part: false };
+      visionResult = geminiResult || qwenResult || { is_car_part: false };
     }
 
     if (!visionResult.is_car_part) {
