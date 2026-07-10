@@ -31,19 +31,28 @@ interface HealthStatus {
   lastChecked: string | null;
 }
 
-const DEFAULT_SYSTEM_PROMPT = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+const DEFAULT_SYSTEM_PROMPT = `Você é um Engenheiro de Visão Computacional Sênior e Especialista em Autopeças e Desmanche Automotivo.
+Analise a imagem da autopeça com alta precisão e retorne APENAS um objeto JSON válido e estrito com as propriedades abaixo.
+
+REGRAS DE ANÁLISE VISUAL:
+1. OCR Avançado de Identificação: Escaneie ativamente etiquetas, adesivos, gravações a laser no metal, códigos de barra e marcações fundidas para extrair o "Part Number" (Código da Peça) exato. Remova espaços extras.
+2. Estado de Conservação Visual: Analise sinais de ferrugem, desgaste físico, oxidação, integridade dos conectores elétricos, trincas ou sujeira. Descreva esse estado físico no campo "description".
+3. Compatibilidade do Veículo: Identifique a marca e modelo do CARRO compatível (ex: marca "toyota" e modelo "prius" ou "aqua", em caixa baixa/lowercase), e não a marca do fabricante da peça (se for uma bobina Denso de um Corolla, a marca deve ser "toyota" e o modelo "corolla").
+
+Estrutura do JSON (Retorne APENAS o JSON, sem blocos de código markdown ou texto explicativo):
 {
-  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
-  "part_number": string | null,
-  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
-  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
-  "category": string,
-  "title": string,
-  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
-  "estimated_price": number,
-  "confidence_score": number
+  "is_car_part": true/false (true se a imagem contiver uma peça, componente mecânico, elétrico, acessório ou etiqueta de peça automotiva; false caso contrário),
+  "part_number": "string" ou null (o código OEM ou de fabricante extraído por OCR, ex: "27060-37071", "30926-28A"),
+  "brand": "string" (a marca do VEÍCULO compatível em lowercase, ex: "toyota", "honda", "nissan", "subaru"),
+  "model": "string" (o modelo do VEÍCULO compatível em lowercase, ex: "prius", "fit", "note", "aqua"),
+  "category": "string" (categoria técnica da peça, ex: "alternador", "bateria", "suspensao", "motor", "lanterna"),
+  "title": "string" (Título profissional no formato: [Nome da Peça] [Marca do Carro] [Modelo] [Motor/Ano se visível] - ex: "Alternador Toyota Prius 1.8 16V 2010 a 2015"),
+  "description": "string" (Descrição técnica estruturada contendo: 1. Ficha técnica detalhada com especificações físicas visíveis [ex: Amperagem/Ah, Voltagem/V, CCA, quantidade de pinos do conector elétrico]; 2. Estado de conservação observado [ex: Usado em boas condições, com oxidação leve superficial, pinos íntegros]; 3. Tabela ou lista de compatibilidade exata com anos e versões conhecidos),
+  "estimated_price": number (preço estimado de mercado para venda de peça usada em Reais/BRL, ex: 450.00),
+  "confidence_score": number (número de 0.0 a 1.0 indicando a precisão da identificação)
 }
-IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`;
+
+IMPORTANTE: Todos os textos em "title" e "description" devem ser escritos em Português do Brasil (pt-BR).`;
 
 const STORAGE_KEY = 'daig_ai_ops_log';
 const MAX_LOG_ENTRIES = 50;
@@ -1047,28 +1056,20 @@ export default function AiOpsPage() {
                   </p>
                   <textarea
                     value={systemPrompt}
-                    onChange={(e) => setSystemPrompt(e.target.value)}
+                    onChange={(e) => {
+                      setSystemPrompt(e.target.value);
+                      setIsSavedPrompt(false);
+                    }}
                     rows={12}
                     className="w-full bg-[#0d0e17] border border-[#2c324e] rounded-md p-3 text-[11.5px] font-mono text-[#DEDEDE] placeholder-[#555] focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 transition-all leading-relaxed"
                   />
                   <div className="flex justify-between items-center">
                     <button
                       type="button"
-                      onClick={() => setSystemPrompt(
-                        `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
-{
-  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
-  "part_number": string | null,
-  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
-  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
-  "category": string,
-  "title": string,
-  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
-  "estimated_price": number,
-  "confidence_score": number
-}
-IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`
-                      )}
+                      onClick={() => {
+                        setSystemPrompt(DEFAULT_SYSTEM_PROMPT);
+                        setIsSavedPrompt(true);
+                      }}
                       className="text-[10px] text-red-400 hover:text-red-300 font-semibold transition-colors animate-pulse"
                     >
                       {t('Reset Default Prompt')}
