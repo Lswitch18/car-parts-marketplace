@@ -539,10 +539,9 @@ export default function AiOpsPage() {
     }
 
     const reader = new FileReader();
-    reader.onload = async (e) => {
+    reader.onload = (e) => {
       const base64 = e.target?.result as string;
-      const resized = await resizeImage(base64, MAX_IMAGE_SIZE);
-      setPlaygroundImage(resized);
+      setPlaygroundImage(base64);
       setAnalysisResult(null);
       setAnalysisRawJson('');
       setAnalysisLatency(null);
