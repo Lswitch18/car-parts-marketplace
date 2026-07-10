@@ -46,15 +46,15 @@ async def analyze_part(data: RequestData):
     """
 
     # --------------------------------------------------------------------------
-    # FASE 2: CATÁLOGO OFICIAL E BUSCA NA WEB (Perplexity Sonar Online)
+    # FASE 2: DETALHAMENTO DE CATÁLOGO (Gemini 3.5 Flash)
     # --------------------------------------------------------------------------
-    # Se um 'part_number' for detectado na Fase 1, o Perplexity faz a busca na web
-    # em tempo real em catálogos de autopeças oficiais.
+    # Se um 'part_number' for detectado na Fase 1, o Gemini 3.5 Flash é consultado
+    # para trazer especificações detalhadas do catálogo de autopeças.
     
-    # PROMPT DO WEB SCRAPER (Perplexity):
+    # PROMPT DO DETALHADOR DE CATÁLOGO (Gemini 3.5 Flash):
     prompt_scraper = """
-    Você é um Web Scraper especializado em catálogos oficiais de autopeças.
-    Sua missão é pesquisar na internet o Part Number (Número OEM): "{part_number}" do fabricante "{brand}".
+    Você é um especialista em catálogos oficiais de autopeças.
+    Sua missão é detalhar e validar em seu conhecimento o Part Number (Número OEM): "{part_number}" do fabricante "{brand}".
 
     Retorne APENAS um JSON válido e estrito contendo:
     {

@@ -356,9 +356,9 @@ Deno.serve(async (req: Request) => {
     const promptVision = custom_prompt || `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
 {
   "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
-  "part_number": string | null,
+  "part_number": string | null (Busque atentamente por etiquetas de manutenção ou códigos impressos na peça, ex: códigos Honda como 87533-R9G-000, 19010-6F6-003, e extraia-os aqui),
   "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
-  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
+  "model": string (o modelo do CARRO/VEÍCULO compatível em camelcase, ex: Prius, Aqua, Fit, Note, N-BOX. NÃO retorne o modelo da própria peça, retorne o nome do carro. DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos),
   "category": string,
   "title": string,
   "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
@@ -427,6 +427,11 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       visionResult = geminiResult || qwenResult || { is_car_part: false };
     }
 
+    // Se a IA extraiu um Part Number válido, forçamos is_car_part para true como salvaguarda
+    if (visionResult.part_number && visionResult.part_number.trim().length > 3) {
+      visionResult.is_car_part = true;
+    }
+
     if (!visionResult.is_car_part) {
       return new Response(JSON.stringify(successResponse({ is_car_part: false })), {
         headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
@@ -474,9 +479,9 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
       } else {
         // 2. Não achou localmente. Rodar busca web via Perplexity Sonar
         if (OPENROUTER_API_KEY) {
-          console.log('[analyze-part] Peça não encontrada localmente. Buscando na web com Perplexity...');
-          const promptScraper = `Você é um Web Scraper especializado em catálogos oficiais de autopeças.
-Sua missão é pesquisar na internet o Part Number (Número OEM): "${visionResult.part_number}" do fabricante "${visionResult.brand}".
+          console.log('[analyze-part] Peça não encontrada localmente. Buscando informações com Gemini 3.5 Flash...');
+          const promptScraper = `Você é um especialista em catálogos oficiais de autopeças.
+Sua missão é detalhar e validar em seu conhecimento o Part Number (Número OEM): "${visionResult.part_number}" do fabricante "${visionResult.brand}".
 
 Retorne APENAS um JSON válido e estrito contendo:
 {
@@ -501,7 +506,7 @@ Retorne APENAS um JSON válido e estrito contendo:
                 'X-OpenRouter-Title': 'Gaid Parts Scraper'
               },
               body: JSON.stringify({
-                model: 'perplexity/llama-3.1-sonar-large-128k-online',
+                model: 'google/gemini-3.5-flash',
                 messages: [{ role: 'user', content: promptScraper }],
                 temperature: 0.1,
               })
@@ -513,7 +518,7 @@ Retorne APENAS um JSON válido e estrito contendo:
               const parsedScraper = JSON.parse(scraperContent);
 
               if (parsedScraper.found) {
-                console.log('[analyze-part] Peça verificada com sucesso na web via Perplexity!');
+                console.log('[analyze-part] Peça verificada com sucesso via Gemini 3.5 Flash!');
                 
                 const visionBrandClean = visionResult.brand?.toLowerCase().trim();
                 const scraperBrandClean = parsedScraper.brand?.toLowerCase().trim();
