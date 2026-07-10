@@ -274,12 +274,12 @@ export const api = {
 
   ai: {
     // Análise de imagem via Edge Function do Supabase (para maior segurança e confiabilidade)
-    analyzePart: async (image: string, language: string = 'pt', vin?: string) => {
+    analyzePart: async (image: string, language: string = 'pt', vin?: string, customPrompt?: string) => {
       const base64Image = image.split(',')[1] || image;
       
       let cacheKey = '';
       try {
-        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + language + (vin || '')));
+        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64Image + language + (vin || '') + (customPrompt || '')));
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         cacheKey = `ai_analysis_or_${hashHex}`;
@@ -297,7 +297,7 @@ export const api = {
         console.log('[analyzePart] Cache MISS. Chamando a Edge Function analyze-part...');
         const parsedData = await fetchApi<any>('/analyze-part', {
           method: 'POST',
-          body: JSON.stringify({ image: base64Image, language, vin }),
+          body: JSON.stringify({ image: base64Image, language, vin, custom_prompt: customPrompt }),
           timeout: 120000 // 2 minutos
         });
 

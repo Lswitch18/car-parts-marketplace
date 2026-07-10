@@ -240,7 +240,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const body = await req.json();
-    const { image, language = 'pt', vin, action } = body;
+    const { image, language = 'pt', vin, action, custom_prompt } = body;
 
     // Ação para recuperar logs de auditoria globais e estatísticas
     if (action === 'get_logs') {
@@ -353,7 +353,7 @@ Deno.serve(async (req: Request) => {
 
     const imageHash = await sha256(image);
 
-    const promptVision = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+    const promptVision = custom_prompt || `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
 {
   "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
   "part_number": string | null,

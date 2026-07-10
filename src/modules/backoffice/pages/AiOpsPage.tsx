@@ -114,6 +114,22 @@ export default function AiOpsPage() {
   const [loadingDbLogs, setLoadingDbLogs] = useState<boolean>(false);
   const [dbLogsError, setDbLogsError] = useState<string | null>(null);
   const [openrouterData, setOpenrouterData] = useState<any>(null);
+  const [showPromptEditor, setShowPromptEditor] = useState<boolean>(false);
+  const [systemPrompt, setSystemPrompt] = useState<string>(
+    `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+{
+  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
+  "part_number": string | null,
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
+  "category": string,
+  "title": string,
+  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+  "estimated_price": number,
+  "confidence_score": number
+}
+IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`
+  );
 
   // Log state
   const [logEntries, setLogEntries] = useState<AnalysisLogEntry[]>(loadLog);
@@ -452,7 +468,7 @@ export default function AiOpsPage() {
     if (analysisMode === 'pipeline') {
       setFrontendStatusMessage(t('Imagem enviada. Iniciando pipeline redundante no backend...'));
       try {
-        const result = await api.ai.analyzePart(playgroundImage, 'pt', playgroundVin);
+        const result = await api.ai.analyzePart(playgroundImage, 'pt', playgroundVin, systemPrompt);
         const elapsed = Math.round(performance.now() - start);
         setAnalysisLatency(elapsed);
 
@@ -512,19 +528,7 @@ export default function AiOpsPage() {
       setFrontendStatusMessage(t('Enviando imagem diretamente para o modelo Ollama local...'));
       try {
         const base64ImageOnly = playgroundImage.split(',')[1] || playgroundImage;
-        const promptVision = `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
-{
-  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
-  "part_number": string | null,
-  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan),
-  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
-  "category": string,
-  "title": string,
-  "description": string (descrição técnica altamente detalhada),
-  "estimated_price": number,
-  "confidence_score": number
-}
-IMPORTANTE: Retorne os textos descritivos no idioma pt.`;
+        const promptVision = systemPrompt;
 
         const response = await fetch(health.serverUrl, {
           method: 'POST',
@@ -620,7 +624,7 @@ IMPORTANTE: Retorne os textos descritivos no idioma pt.`;
         setAnalyzing(false);
       }
     }
-  }, [playgroundImage, selectedModel, analysisMode, playgroundVin, health.serverUrl, t, loadDbLogs]);
+  }, [playgroundImage, selectedModel, analysisMode, playgroundVin, health.serverUrl, t, loadDbLogs, systemPrompt]);
 
   const copyJson = useCallback(() => {
     navigator.clipboard.writeText(analysisRawJson);
@@ -983,6 +987,60 @@ IMPORTANTE: Retorne os textos descritivos no idioma pt.`;
                 />
               </div>
             )}
+
+            {/* System Prompt Editor (Prompt Playground) */}
+            <div className="bg-[#121422] border border-[#22283d] rounded-lg p-3 transition-all">
+              <button
+                type="button"
+                onClick={() => setShowPromptEditor(!showPromptEditor)}
+                className="w-full flex items-center justify-between text-[11px] text-white uppercase tracking-wider font-semibold hover:text-violet-400 transition-colors"
+              >
+                <span>⚙️ {t('System Prompt Editor (Prompt Playground)')}</span>
+                <span className="text-[10px] text-violet-400 font-mono">
+                  {showPromptEditor ? t('[ Hide ]') : t('[ Edit ]')}
+                </span>
+              </button>
+              
+              {showPromptEditor && (
+                <div className="mt-3.5 space-y-2.5 animate-fadeIn">
+                  <p className="text-[11px] text-[#888] leading-normal">
+                    {t('Adjust the system instructions below to test and fine-tune how the models behave during image classification.')}
+                  </p>
+                  <textarea
+                    value={systemPrompt}
+                    onChange={(e) => setSystemPrompt(e.target.value)}
+                    rows={12}
+                    className="w-full bg-[#0d0e17] border border-[#2c324e] rounded-md p-3 text-[11.5px] font-mono text-[#DEDEDE] placeholder-[#555] focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 transition-all leading-relaxed"
+                  />
+                  <div className="flex justify-between items-center">
+                    <button
+                      type="button"
+                      onClick={() => setSystemPrompt(
+                        `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
+{
+  "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
+  "part_number": string | null,
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+  "model": string (o modelo do CARRO/VEÍCULO compatível, ex: prius, aqua, fit, note. NÃO retorne o modelo da própria peça, retorne o nome do carro),
+  "category": string,
+  "title": string,
+  "description": string (descrição técnica altamente detalhada. Você DEVE extrair e incluir especificações cruciais como amperagem/Ah, voltagem/V, CCA, dimensões e polaridade no caso de baterias. Além disso, DEVE listar as principais marcas e modelos de carros compatíveis conhecidos para esta peça, ex: compatível com Honda Fit, Toyota Prius, etc.),
+  "estimated_price": number,
+  "confidence_score": number
+}
+IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código 'pt'.`
+                      )}
+                      className="text-[10px] text-red-400 hover:text-red-300 font-semibold transition-colors animate-pulse"
+                    >
+                      {t('Reset Default Prompt')}
+                    </button>
+                    <span className="text-[9px] text-[#666] font-mono">
+                      {systemPrompt.length} chars
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Drop Zone */}
             <div
