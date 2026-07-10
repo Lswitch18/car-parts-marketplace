@@ -3,8 +3,11 @@
  * Utiliza o fetch nativo para evitar dependências pesadas no bundle.
  */
 
-const REDIS_URL = import.meta.env.VITE_UPSTASH_REDIS_REST_URL
-const REDIS_TOKEN = import.meta.env.VITE_UPSTASH_REDIS_REST_TOKEN
+const rawUrl = import.meta.env.VITE_UPSTASH_REDIS_REST_URL
+const rawToken = import.meta.env.VITE_UPSTASH_REDIS_REST_TOKEN
+
+const REDIS_URL = typeof rawUrl === 'string' ? rawUrl.replace(/^["']|["']$/g, '') : ''
+const REDIS_TOKEN = typeof rawToken === 'string' ? rawToken.replace(/^["']|["']$/g, '') : ''
 
 export async function getCache(key: string): Promise<any | null> {
   if (!REDIS_URL || !REDIS_TOKEN) return null
