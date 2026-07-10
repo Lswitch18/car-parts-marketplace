@@ -35,16 +35,16 @@ const DEFAULT_SYSTEM_PROMPT = `Você é um Engenheiro de Visão Computacional S�
 Analise a imagem da autopeça com alta precisão e retorne APENAS um objeto JSON válido e estrito com as propriedades abaixo.
 
 REGRAS DE ANÁLISE VISUAL:
-1. OCR Avançado de Identificação: Escaneie ativamente etiquetas, adesivos, gravações a laser no metal, códigos de barra e marcações fundidas para extrair o "Part Number" (Código da Peça) exato. Remova espaços extras.
+1. OCR Avançado de Identificação: Escaneie ativamente etiquetas, adesivos, gravações a laser no metal, códigos de barra e marcações fundidas para extrair o "Part Number" (Código da Peça) exato (ex: códigos Honda como 87533-R9G-000, 19010-6F6-003). Remova espaços extras.
 2. Estado de Conservação Visual: Analise sinais de ferrugem, desgaste físico, oxidação, integridade dos conectores elétricos, trincas ou sujeira. Descreva esse estado físico no campo "description".
-3. Compatibilidade do Veículo: Identifique a marca e modelo do CARRO compatível em caixa baixa/lowercase, e não a marca do fabricante da peça (se for um componente elétrico ou mecânico produzido por terceiros para um determinado carro, retorne a marca e o modelo do veículo em que ele é de fato instalado).
+3. Compatibilidade do Veículo: Identifique a marca e modelo do CARRO compatível em camelcase (ex: Prius, Aqua, Fit, Note, N-BOX), e não a marca do fabricante da peça (se for um componente elétrico ou mecânico produzido por terceiros para um determinado carro, retorne a marca e o modelo do veículo em que ele é de fato instalado). DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos.
 
 Estrutura do JSON (Retorne APENAS o JSON, sem blocos de código markdown ou texto explicativo):
 {
   "is_car_part": true/false (true se a imagem contiver uma peça, componente mecânico, elétrico, acessório ou etiqueta de peça automotiva; false caso contrário),
   "part_number": "string" ou null (o código OEM ou de fabricante extraído por OCR),
   "brand": "string" (a marca do VEÍCULO compatível em lowercase),
-  "model": "string" (o modelo do VEÍCULO compatível em lowercase),
+  "model": "string" (o modelo do VEÍCULO compatível em camelcase),
   "category": "string" (categoria técnica da peça, ex: "alternador", "bateria", "suspensao", "motor", "lanterna"),
   "title": "string" (Título profissional no formato: [Nome da Peça] [Marca do Carro] [Modelo] [Motor/Ano se visível]),
   "description": "string" (Descrição técnica estruturada contendo: 1. Ficha técnica detalhada com especificações físicas visíveis [ex: Amperagem/Ah, Voltagem/V, CCA, quantidade de pinos do conector elétrico]; 2. Estado de conservação observado [ex: Usado em boas condições, com oxidação leve superficial, pinos íntegros]; 3. Tabela ou lista de compatibilidade exata com anos e versões conhecidos do veículo),
@@ -57,7 +57,7 @@ IMPORTANTE: Todos os textos em "title" e "description" devem ser escritos em Por
 const STORAGE_KEY = 'daig_ai_ops_log';
 const MAX_LOG_ENTRIES = 50;
 // Maximum image dimension before sending to AI (matches CreateListing behavior)
-const MAX_IMAGE_SIZE = 256;
+const MAX_IMAGE_SIZE = 1024;
 
 // ── Helpers ────────────────────────────────────────────────────────────
 
