@@ -37,18 +37,18 @@ Analise a imagem da autopeça com alta precisão e retorne APENAS um objeto JSON
 REGRAS DE ANÁLISE VISUAL:
 1. OCR Avançado de Identificação: Escaneie ativamente etiquetas, adesivos, gravações a laser no metal, códigos de barra e marcações fundidas para extrair o "Part Number" (Código da Peça) exato. Remova espaços extras.
 2. Estado de Conservação Visual: Analise sinais de ferrugem, desgaste físico, oxidação, integridade dos conectores elétricos, trincas ou sujeira. Descreva esse estado físico no campo "description".
-3. Compatibilidade do Veículo: Identifique a marca e modelo do CARRO compatível (ex: marca "toyota" e modelo "prius" ou "aqua", em caixa baixa/lowercase), e não a marca do fabricante da peça (se for uma bobina Denso de um Corolla, a marca deve ser "toyota" e o modelo "corolla").
+3. Compatibilidade do Veículo: Identifique a marca e modelo do CARRO compatível em caixa baixa/lowercase, e não a marca do fabricante da peça (se for um componente elétrico ou mecânico produzido por terceiros para um determinado carro, retorne a marca e o modelo do veículo em que ele é de fato instalado).
 
 Estrutura do JSON (Retorne APENAS o JSON, sem blocos de código markdown ou texto explicativo):
 {
   "is_car_part": true/false (true se a imagem contiver uma peça, componente mecânico, elétrico, acessório ou etiqueta de peça automotiva; false caso contrário),
-  "part_number": "string" ou null (o código OEM ou de fabricante extraído por OCR, ex: "27060-37071", "30926-28A"),
-  "brand": "string" (a marca do VEÍCULO compatível em lowercase, ex: "toyota", "honda", "nissan", "subaru"),
-  "model": "string" (o modelo do VEÍCULO compatível em lowercase, ex: "prius", "fit", "note", "aqua"),
+  "part_number": "string" ou null (o código OEM ou de fabricante extraído por OCR),
+  "brand": "string" (a marca do VEÍCULO compatível em lowercase),
+  "model": "string" (o modelo do VEÍCULO compatível em lowercase),
   "category": "string" (categoria técnica da peça, ex: "alternador", "bateria", "suspensao", "motor", "lanterna"),
-  "title": "string" (Título profissional no formato: [Nome da Peça] [Marca do Carro] [Modelo] [Motor/Ano se visível] - ex: "Alternador Toyota Prius 1.8 16V 2010 a 2015"),
-  "description": "string" (Descrição técnica estruturada contendo: 1. Ficha técnica detalhada com especificações físicas visíveis [ex: Amperagem/Ah, Voltagem/V, CCA, quantidade de pinos do conector elétrico]; 2. Estado de conservação observado [ex: Usado em boas condições, com oxidação leve superficial, pinos íntegros]; 3. Tabela ou lista de compatibilidade exata com anos e versões conhecidos),
-  "estimated_price": number (preço estimado de mercado para venda de peça usada em Reais/BRL, ex: 450.00),
+  "title": "string" (Título profissional no formato: [Nome da Peça] [Marca do Carro] [Modelo] [Motor/Ano se visível]),
+  "description": "string" (Descrição técnica estruturada contendo: 1. Ficha técnica detalhada com especificações físicas visíveis [ex: Amperagem/Ah, Voltagem/V, CCA, quantidade de pinos do conector elétrico]; 2. Estado de conservação observado [ex: Usado em boas condições, com oxidação leve superficial, pinos íntegros]; 3. Tabela ou lista de compatibilidade exata com anos e versões conhecidos do veículo),
+  "estimated_price": number (preço estimado de mercado para venda de peça usada em Reais/BRL),
   "confidence_score": number (número de 0.0 a 1.0 indicando a precisão da identificação)
 }
 
