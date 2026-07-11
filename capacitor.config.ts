@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.daig.logistix.express',
-  appName: 'DAIG Logistix Express',
+  appName: 'AI Garage Scan',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

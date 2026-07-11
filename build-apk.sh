@@ -34,6 +34,6 @@ cd android
 
 cd /home/lswitch/car-parts-marketplce
 mkdir -p apks
-cp android/app/build/outputs/apk/debug/app-debug.apk apks/driver-app-debug.apk
+cp android/app/build/outputs/apk/debug/app-debug.apk apks/ai-scanner-debug.apk
 
-echo "Build complete. Driver APK is at: /home/lswitch/car-parts-marketplce/apks/driver-app-debug.apk"
+echo "Build complete. AI Scanner APK is at: /home/lswitch/car-parts-marketplce/apks/ai-scanner-debug.apk"

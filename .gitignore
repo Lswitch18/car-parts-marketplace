@@ -31,6 +31,7 @@ dist-ssr
 
 # Python
 .venv
+venv/
 __pycache__
 *.pyc
 
@@ -48,3 +49,8 @@ relatorio-aws-eks.md
 jdk-17.0.10+7/
 jdk17.tar.gz
 snapshot/
+supabase/snapshot-*/
+
+# Mobile Builds
+apks/
+*.apk

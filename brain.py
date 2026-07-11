@@ -90,6 +90,7 @@ async def analyze_part(data: RequestData):
         "category": "cooling-system",
         "title": "Radiador Honda N-VAN (JJ1/JJ2)",
         "description": "Radiador de água original do motor fabricado pela DENSO compatível com Honda N-VAN (chassis JJ1/JJ2) de 660cc. Código OEM equivalente Honda: 19010-6F6-003.",
+        "compatibility_tags": ["Honda N-VAN (2018-2024)", "Honda N-BOX (2017-2023)", "Honda N-WGN (2019-2023)"],
         "estimated_price": 12000,
         "confidence_score": 0.99,
         "source": "web_lookup"

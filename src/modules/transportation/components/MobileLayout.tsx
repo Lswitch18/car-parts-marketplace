@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, PackageSearch, Truck, Warehouse, LogOut,
+  LayoutDashboard, PackageSearch, Truck, Warehouse, LogOut, Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 
@@ -12,6 +12,7 @@ interface Tab {
 const TABS: Tab[] = [
   { id: 'dashboard', label: 'Início', icon: LayoutDashboard },
   { id: 'coletas', label: 'Coletas', icon: PackageSearch },
+  { id: 'ia-vision', label: 'Scanner IA', icon: Sparkles },
   { id: 'entregas', label: 'Entregas', icon: Truck },
   { id: 'cd', label: 'CD', icon: Warehouse },
 ];

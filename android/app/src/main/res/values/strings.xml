@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">DAIG Logistix Express</string>
-    <string name="title_activity_main">DAIG Logistix Express</string>
+    <string name="app_name">AI Garage Scan</string>
+    <string name="title_activity_main">AI Garage Scan</string>
     <string name="package_name">com.daig.logistix.express</string>
     <string name="custom_url_scheme">com.daig.logistix.express</string>
     <string name="server_client_id">618628258891-0k11mbjiuv3lrg8gsjlldv6p4qg1p06b.apps.googleusercontent.com</string>

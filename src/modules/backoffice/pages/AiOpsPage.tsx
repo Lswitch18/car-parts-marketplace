@@ -38,6 +38,7 @@ REGRAS DE ANÁLISE VISUAL:
 1. OCR Avançado de Identificação: Escaneie ativamente etiquetas, adesivos, gravações a laser no metal, códigos de barra e marcações fundidas para extrair o "Part Number" (Código da Peça) exato (ex: códigos Honda como 87533-R9G-000, 19010-6F6-003). Remova espaços extras.
 2. Estado de Conservação Visual: Analise sinais de ferrugem, desgaste físico, oxidação, integridade dos conectores elétricos, trincas ou sujeira. Descreva esse estado físico no campo "description".
 3. Compatibilidade do Veículo: Identifique a marca e modelo do CARRO compatível em camelcase (ex: Prius, Aqua, Fit, Note, N-BOX), e não a marca do fabricante da peça (se for um componente elétrico ou mecânico produzido por terceiros para um determinado carro, retorne a marca e o modelo do veículo em que ele é de fato instalado). DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos.
+4. Precisão de Dados & Preço: Evite alucinar nomes específicos de componentes (ex: não chame uma etiqueta genérica do cofre do motor de 'Filtro de Ar'). O valor "estimated_price" deve ser estimado em Reais (BRL), levando em conta a conversão do mercado JDM/Japão (ex: adesivos originais custam de ¥800 a ¥1500, o que equivale a R$ 30 a R$ 60 BRL).
 
 Estrutura do JSON (Retorne APENAS o JSON, sem blocos de código markdown ou texto explicativo):
 {
