@@ -116,3 +116,36 @@ threading.Thread(target=start_tunnel, daemon=True).start()
 nest_asyncio.apply()
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
+# ==============================================================================
+# REGISTRO DE ARQUITETURA E PROGRESSO DO PROJETO (Histórico de Alterações)
+# ==============================================================================
+# DATA: 13 de Julho de 2026
+#
+# 1. HOMOLOGAÇÃO DE CHECKOUT & ESCROW REAL (Stripe Connect):
+#    - Checkout Dinâmico: Removido o parâmetro fixo 'payment_method_types[]': 'card' 
+#      no endpoint /stripe-checkout para permitir formas locais JDM (Konbini/Furikomi).
+#    - Escrow Nativo (Separate Charges & Transfers): Confirmado que o dinheiro das compras 
+#      entra direto no saldo da plataforma (Stripe principal) com status 'escrow'. 
+#      A liberação dos fundos líquidos (seller_net) para a conta do vendedor via /v1/transfers 
+#      só ocorre quando o comprador confirma o recebimento (status 'completed' no PUT).
+#
+# 2. ALINHAMENTO DE BANCO DE DADOS:
+#    - Adicionada a coluna faltante 'stripe_payment_id' na tabela 'transactions' via script 
+#      de migração 'stripe-checkout-fix.sql' para garantir integridade dos IDs de Checkout.
+#
+# 3. VERIFICAÇÃO DE FLUXOS:
+#    - Simulação completa do fluxo de compra (7 fases) realizada com sucesso via 
+#      script automatizado 'scripts/test_purchase_flow.mjs' (DB, Webhooks, Chats e Escrow).
+#
+# 4. CORREÇÃO DE MÉTRICAS NO ADMIN:
+#    - O painel de controle (AdminDashboard.tsx) foi corrigido para usar a correta 
+#      mapeação do banco (amount, payment_status, fulfillment_status) ao consolidar o 
+#      GMV, Custódia Escrow e Pedidos Ativos, eliminando a exibição de dados zerados.
+#
+# 5. DOCUMENTAÇÃO:
+#    - Relatório consolidado em Markdown e PDF gerado e salvo em:
+#      docs/RELATORIO_DE_FLUXOS_E_VERIFICACAO_SEGURANCA-SAST.md
+#      docs/RELATORIO_DE_FLUXOS_E_VERIFICACAO_SEGURANCA-SAST.pdf
+# ==============================================================================
