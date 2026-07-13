@@ -4,6 +4,8 @@ import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 import { Navigate } from 'react-router-dom';
 import { adminApi } from '@/modules/transactions/api/adminApi';
+import { api } from '@/modules/transactions/api/api';
+
 
 export default function TransactionManagement() {
   const { user: currentUser } = useAuthStore();
@@ -136,12 +138,7 @@ export default function TransactionManagement() {
         ? { payment_status: status } 
         : { fulfillment_status: status };
         
-      const { error } = await supabase
-        .from('transactions')
-        .update(updateData)
-        .eq('id', transactionId);
-      
-      if (error) throw error;
+      await api.transactions.update(transactionId, updateData);
       
       const updateList = (prev: any[]) =>
         prev.map(t => 

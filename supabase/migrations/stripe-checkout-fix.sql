@@ -12,3 +12,8 @@ ALTER TABLE public.transactions
 ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS stripe_account_id text,
   ADD COLUMN IF NOT EXISTS stripe_onboarding_complete boolean DEFAULT false;
+
+-- Add stripe_payment_id to transactions
+ALTER TABLE public.transactions
+  ADD COLUMN IF NOT EXISTS stripe_payment_id text;
+

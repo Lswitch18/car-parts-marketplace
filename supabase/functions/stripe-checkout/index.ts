@@ -1,5 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { requireAuth } from '../utils/base.ts';
+import { z } from 'https://esm.sh/zod@3.22.4';
+
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -98,15 +100,39 @@ Deno.serve(async (req) => {
   }
 });
 
-async function createCheckoutSession(req: Request) {
-  const { transaction_id, part_id: clientPartId, buyer_id: clientBuyerId, seller_id: clientSellerId, amount: clientAmount, shipping, auction_id, title: customTitle } = await req.json();
+const createCheckoutSchema = z.object({
+  transaction_id: z.string().uuid("ID de transação inválido"),
+  part_id: z.string().uuid("ID de peça inválido"),
+  buyer_id: z.string().uuid("ID de comprador inválido"),
+  seller_id: z.string().uuid("ID de vendedor inválido"),
+  amount: z.number().positive("Valor inválido"),
+  shipping: z.any().optional(),
+  auction_id: z.string().uuid("ID de leilão inválido").optional(),
+  title: z.string().optional(),
+});
 
-  if (!transaction_id) {
-    return new Response(JSON.stringify({ error: 'Missing transaction_id' }), {
+async function createCheckoutSession(req: Request) {
+  let body;
+  try {
+    body = await req.json();
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'JSON inválido' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
+
+  const parseResult = createCheckoutSchema.safeParse(body);
+  if (!parseResult.success) {
+    return new Response(JSON.stringify({ 
+      error: `Validação falhou: ${parseResult.error.errors.map(e => e.message).join(', ')}` 
+    }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  const { transaction_id, part_id, buyer_id, seller_id, amount: clientAmount, shipping, auction_id, title: customTitle } = parseResult.data;
 
   // ── Buscar transação no banco de dados como fonte da verdade (segurança contra adulteração de preço)
   const { data: tx, error: txError } = await supabase
@@ -123,9 +149,6 @@ async function createCheckoutSession(req: Request) {
   }
 
   const amount = tx.amount;
-  const part_id = tx.part_id;
-  const buyer_id = tx.buyer_id;
-  const seller_id = tx.seller_id;
 
   if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
     return new Response(JSON.stringify({ 
@@ -138,27 +161,6 @@ async function createCheckoutSession(req: Request) {
     });
   }
 
-  // ── Buscar taxa de comissão customizada do banco de dados
-  let customRate = COMMISSION_RATE;
-  try {
-    const { data: configData } = await supabase
-      .from('admin_configuracoes')
-      .select('valor')
-      .eq('chave', 'comissao_taxa')
-      .single();
-    if (configData?.valor) {
-      const parsed = parseFloat(configData.valor);
-      if (!isNaN(parsed)) {
-        customRate = parsed / 100;
-      }
-    }
-  } catch (e) {
-    console.warn('Falha ao obter taxa customizada de comissão, usando padrão de 10%:', e);
-  }
-
-  const fees = calculateFees(Number(amount), customRate);
-  const applicationFeeAmount = Math.round(fees.commission_amount + fees.stripe_fee);
-
   const { data: part } = await supabase
     .from('parts')
     .select('title, images')
@@ -169,7 +171,6 @@ async function createCheckoutSession(req: Request) {
 
   const lineItems: Record<string, string> = {
     'mode': 'payment',
-    'payment_method_types[]': 'card',
     'line_items[0][price_data][currency]': 'jpy',
     'line_items[0][price_data][product_data][name]': productName,
     'line_items[0][price_data][unit_amount]': String(Math.round(amount)),
@@ -188,19 +189,6 @@ async function createCheckoutSession(req: Request) {
 
   if (part?.images?.[0]) {
     lineItems['line_items[0][price_data][product_data][images][0]'] = part.images[0];
-  }
-
-  if (seller_id) {
-    const { data: seller } = await supabase
-      .from('profiles')
-      .select('stripe_account_id')
-      .eq('id', seller_id)
-      .single();
-
-    if (seller?.stripe_account_id) {
-      lineItems['transfer_data[destination]'] = seller.stripe_account_id;
-      lineItems['application_fee_amount'] = String(applicationFeeAmount);
-    }
   }
 
   if (shipping) {
@@ -470,7 +458,6 @@ async function createContractSubscription(req: Request) {
     // 4. Create Stripe Checkout Session in subscription mode
     const sessionParams = new URLSearchParams({
       'mode': 'subscription',
-      'payment_method_types[]': 'card',
       'line_items[0][price]': priceData.id,
       'line_items[0][quantity]': '1',
       'success_url': `${APP_URL}/admin/logistix?payment=success&contract_id=${contract_id}`,

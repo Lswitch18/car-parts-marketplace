@@ -1,4 +1,7 @@
 import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken } from '../utils/base.ts';
+import { z } from 'https://esm.sh/zod@3.22.4';
+
+const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY')!;
 
 const COMMISSION_RATE = 0.10;
 const STRIPE_FEE_RATE = 0.029;
@@ -187,6 +190,24 @@ async function expireOldPendingTransactions() {
   }
 }
 
+const shippingSchema = z.object({
+  name: z.string().min(2, "Nome do destinatário muito curto").max(100).optional(),
+  email: z.string().email("E-mail de envio inválido").optional(),
+  phone: z.string().regex(/^(?:\+?81|0)\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{4}$/, "Telefone de envio inválido (formato do Japão esperado)").optional(),
+  address: z.string().max(200).optional(),
+  city: z.string().max(100).optional(),
+  state: z.string().max(50).optional(),
+  zip: z.string().regex(/^\d{3}-\d{4}$|^\d{7}$/, "CEP de envio inválido (deve ser 123-4567 ou 1234567)").optional(),
+});
+
+const createTransactionSchema = z.object({
+  part_id: z.string().uuid("ID de peça inválido"),
+  amount: z.number().positive("O valor deve ser maior que zero"),
+  shipping: shippingSchema.optional(),
+  idempotency_key: z.string().optional(),
+  confirmed_message_id: z.string().uuid("ID de proposta inválido").optional(),
+});
+
 async function createTransaction(req: Request, body: Record<string, unknown>) {
   const token = getAuthUser(req);
   if (!token) {
@@ -204,16 +225,20 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     });
   }
 
+  // Validar corpo com Zod
+  const parseResult = createTransactionSchema.safeParse(body);
+  if (!parseResult.success) {
+    return new Response(JSON.stringify(errorResponse(`Validação falhou: ${parseResult.error.errors.map((e: any) => e.message).join(', ')}`)), {
+      status: 400,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const { part_id, amount, shipping, idempotency_key, confirmed_message_id } = parseResult.data;
+
   // Limpa transações pendentes antigas antes de criar ou validar nova transação
   await expireOldPendingTransactions();
 
-  const { part_id, amount, shipping, idempotency_key, confirmed_message_id } = body as {
-    part_id: string;
-    amount: number;
-    shipping?: Record<string, string>;
-    idempotency_key?: string;
-    confirmed_message_id?: string;
-  };
 
   if (!part_id || !amount) {
     return new Response(JSON.stringify(errorResponse('part_id e amount são obrigatórios')), {
@@ -424,6 +449,12 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
   });
 }
 
+const updateTransactionSchema = z.object({
+  payment_status: z.enum(['pending', 'escrow', 'paid', 'completed', 'failed', 'refunded', 'disputed']).optional(),
+  fulfillment_status: z.enum(['pending', 'shipped', 'delivered', 'received', 'completed']).optional(),
+  stripe_payment_id: z.string().optional(),
+});
+
 async function updateTransaction(req: Request, txId: string, body: Record<string, unknown>) {
   const token = getAuthUser(req);
   if (!token) {
@@ -441,13 +472,30 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
     });
   }
 
-  const { payment_status, fulfillment_status, stripe_payment_id } = body;
+  // Validar corpo com Zod
+  const parseResult = updateTransactionSchema.safeParse(body);
+  if (!parseResult.success) {
+    return new Response(JSON.stringify(errorResponse(`Validação falhou: ${parseResult.error.errors.map(e => e.message).join(', ')}`)), {
+      status: 400,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
-  const { data: existingTx } = await supabase
+  const { payment_status, fulfillment_status, stripe_payment_id } = parseResult.data;
+
+  // Buscar transação atual
+  const { data: existingTx, error: fetchErr } = await supabase
     .from('transactions')
-    .select('buyer_id, seller_id')
+    .select('buyer_id, seller_id, payment_status, seller_net, stripe_transfer_id')
     .eq('id', txId)
     .single();
+
+  if (fetchErr || !existingTx) {
+    return new Response(JSON.stringify(errorResponse('Transação não encontrada')), {
+      status: 404,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -456,8 +504,8 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
     .single();
 
   const isAdmin = profile?.role?.includes('admin');
-  const isBuyer = existingTx?.buyer_id === user.id;
-  const isSeller = existingTx?.seller_id === user.id;
+  const isBuyer = existingTx.buyer_id === user.id;
+  const isSeller = existingTx.seller_id === user.id;
 
   if (!isAdmin && !isBuyer && !isSeller) {
     return new Response(JSON.stringify(errorResponse('Não autorizado')), {
@@ -466,10 +514,61 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
     });
   }
 
+  // ── Liberação de Custódia (Escrow Release via Stripe Connect) ──────────────────
+  let transferId: string | null = null;
+  if (payment_status === 'completed' && existingTx.payment_status === 'escrow' && !existingTx.stripe_transfer_id) {
+    const { data: sellerProfile } = await supabase
+      .from('profiles')
+      .select('stripe_account_id')
+      .eq('id', existingTx.seller_id)
+      .single();
+
+    if (!sellerProfile?.stripe_account_id) {
+      return new Response(JSON.stringify(errorResponse('Vendedor não possui conta Stripe vinculada para transferência de fundos')), {
+        status: 400,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
+      console.log(`[Stripe Connect] Demo Mode: Simulating transfer of ¥${existingTx.seller_net} to ${sellerProfile.stripe_account_id}`);
+      transferId = `tr_mock_${crypto.randomUUID()}`;
+    } else {
+      try {
+        const transferRes = await fetch('https://api.stripe.com/v1/transfers', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            amount: String(Math.round(existingTx.seller_net)),
+            currency: 'jpy',
+            destination: sellerProfile.stripe_account_id,
+            description: `Liberação de escrow para transação ${txId}`,
+          }).toString(),
+        });
+        const transferData = await transferRes.json();
+        if (transferData.error) {
+          throw new Error(transferData.error.message);
+        }
+        transferId = transferData.id;
+        console.log(`[Stripe Connect] Transferência concluída: ${transferId}`);
+      } catch (err: any) {
+        console.error('[Stripe Connect] Erro na transferência:', err);
+        return new Response(JSON.stringify(errorResponse(`Erro ao transferir fundos no Stripe: ${err.message}`)), {
+          status: 500,
+          headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+        });
+      }
+    }
+  }
+
   const updates: Record<string, unknown> = {};
   if (payment_status) updates.payment_status = payment_status;
   if (fulfillment_status) updates.fulfillment_status = fulfillment_status;
   if (stripe_payment_id) updates.stripe_payment_id = stripe_payment_id;
+  if (transferId) updates.stripe_transfer_id = transferId;
 
   const { data, error } = await supabase
     .from('transactions')

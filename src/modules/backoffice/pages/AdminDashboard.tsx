@@ -34,15 +34,19 @@ export default function AdminDashboard() {
         const pPulse = await getPartsPulse();
         setPlatformStats({ pending3D: 14, newListings: pPulse.totalListings || 0 });
 
-        const { data: txData } = await supabase.from('transactions').select('amount, status');
+        const { data: txData } = await supabase.from('transactions').select('amount, payment_status, fulfillment_status');
         let gmv = 0;
         let escrow = 0;
         let activeOrders = 0;
         
         txData?.forEach(tx => {
-          if (tx.status === 'completed' || tx.status === 'delivered') gmv += tx.amount || 0;
-          if (tx.status === 'pending' || tx.status === 'processing') {
+          if (tx.payment_status === 'paid' || tx.fulfillment_status === 'delivered' || tx.fulfillment_status === 'completed') {
+            gmv += tx.amount || 0;
+          }
+          if (tx.payment_status === 'escrow') {
             escrow += tx.amount || 0;
+            activeOrders++;
+          } else if (tx.payment_status === 'pending') {
             activeOrders++;
           }
         });

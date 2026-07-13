@@ -86,8 +86,7 @@ export default function Dashboard() {
 
   const updateTransaction = useMutation({
     mutationFn: async ({ id, updates }: { id: string, updates: any }) => {
-      const { error } = await supabase.from('transactions').update(updates).eq('id', id)
-      if (error) throw error
+      await api.transactions.update(id, updates)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-transactions'] })

@@ -39,7 +39,6 @@ export default function PaymentCheckout() {
   
   const [step, setStep] = useState<'details' | 'payment' | 'processing' | 'success' | 'error'>('details')
   const [errorMessage, setErrorMessage] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'pix'>('card')
   const [shippingInfo, setShippingInfo] = useState({
     name: '', email: '', phone: '', address: '', number: '', complement: '', city: '', state: '', zipCode: '',
   })
@@ -256,20 +255,15 @@ export default function PaymentCheckout() {
               </div>
 
               <div className="card p-6">
-                <h2 className="text-lg font-semibold text-white mb-4">Forma de Pagamento</h2>
-                <div className="space-y-3">
-                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'card' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'}`}>
-                    <input type="radio" name="payment" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="hidden" />
-                    <CreditCard className="w-6 h-6 text-daig-blue mr-3" />
-                    <div className="flex-1"><p className="text-white font-medium">Cartão de Crédito</p><p className="text-gray-400 text-sm">Pagamento parcelado ou à vista</p></div>
-                    {paymentMethod === 'card' && <Check className="w-5 h-5 text-daig-blue" />}
-                  </label>
-                  <label className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'pix' ? 'border-daig-blue bg-daig-blue/10' : 'border-border'}`}>
-                    <input type="radio" name="payment" checked={paymentMethod === 'pix'} onChange={() => setPaymentMethod('pix')} className="hidden" />
-                    <span className="text-2xl mr-3">📱</span>
-                    <div className="flex-1"><p className="text-white font-medium">PIX</p><p className="text-gray-400 text-sm">Pagamento instantâneo</p></div>
-                    {paymentMethod === 'pix' && <Check className="w-5 h-5 text-daig-blue" />}
-                  </label>
+                <h2 className="text-lg font-semibold text-white mb-4">Pagamento Seguro via Stripe</h2>
+                <div className="flex items-start space-x-3 p-4 border border-daig-blue/30 bg-daig-blue/5 rounded-lg">
+                  <CreditCard className="w-6 h-6 text-daig-blue mt-0.5 mr-2 flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-medium">Métodos de Pagamento JDM</p>
+                    <p className="text-gray-400 text-sm mt-1">
+                      Aceita Cartão de Crédito, Lojas de Conveniência (Konbini), Google Pay e Apple Pay. O método de cobrança final em Iene (JPY) será selecionado de forma segura na tela oficial do Stripe.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

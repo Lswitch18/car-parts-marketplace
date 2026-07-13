@@ -1,4 +1,5 @@
 import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken } from '../utils/base.ts';
+import { z } from 'https://esm.sh/zod@3.22.4';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -135,6 +136,16 @@ async function listUsers() {
   });
 }
 
+const updateProfileSchema = z.object({
+  full_name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").max(100).optional(),
+  phone: z.string().regex(/^(?:\+?81|0)\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{4}$/, "Telefone inválido (formato do Japão esperado)").optional(),
+  address: z.string().max(200).optional(),
+  cep: z.string().regex(/^\d{3}-\d{4}$|^\d{7}$/, "CEP do Japão inválido (deve ser 123-4567 ou 1234567)").optional(),
+  avatar_url: z.string().url("Avatar URL inválido").optional().or(z.literal('')),
+  bio: z.string().max(500).optional(),
+  role: z.enum(['buyer', 'seller', 'admin']).optional(),
+});
+
 async function updateProfile(req: Request, body: Record<string, unknown>) {
   const token = getAuthUser(req);
   if (!token) {
@@ -152,12 +163,16 @@ async function updateProfile(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  const allowedFields = ['full_name', 'phone', 'address', 'cep', 'avatar_url', 'bio', 'role'];
-  const updates: Record<string, unknown> = {};
-
-  for (const field of allowedFields) {
-    if (body[field] !== undefined) updates[field] = body[field];
+  // Validar corpo com Zod
+  const parseResult = updateProfileSchema.safeParse(body);
+  if (!parseResult.success) {
+    return new Response(JSON.stringify(errorResponse(`Validação falhou: ${parseResult.error.errors.map((e: any) => e.message).join(', ')}`)), {
+      status: 400,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
   }
+
+  const updates = parseResult.data;
 
   if (Object.keys(updates).length === 0) {
     return new Response(JSON.stringify(errorResponse('Nenhum campo para atualizar')), {
@@ -166,11 +181,11 @@ async function updateProfile(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  updates.updated_at = new Date().toISOString();
+  const dbUpdates: Record<string, unknown> = { ...updates, updated_at: new Date().toISOString() };
 
   const { data, error } = await supabase
     .from('profiles')
-    .update(updates)
+    .update(dbUpdates)
     .eq('id', user.id)
     .select()
     .single();
