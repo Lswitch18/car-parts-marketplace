@@ -5,6 +5,7 @@ import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { getIdentityPulse } from '@/modules/identity/api/identityAdminApi';
 import { getPartsPulse } from '@/modules/parts-catalog/api/partsAdminApi';
+import { calculateFinanceStats, orchestrateAlerts } from '@/modules/backoffice/utils/dashboardUtils';
 import { 
   Search, Filter, ChevronDown, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, ShieldAlert, Users, ArrowRight, ArrowUpRight
 } from 'lucide-react';
@@ -35,43 +36,28 @@ export default function AdminDashboard() {
         setPlatformStats({ pending3D: 14, newListings: pPulse.totalListings || 0 });
 
         const { data: txData } = await supabase.from('transactions').select('amount, payment_status, fulfillment_status');
-        let gmv = 0;
-        let escrow = 0;
-        let activeOrders = 0;
-        
-        txData?.forEach(tx => {
-          if (tx.payment_status === 'paid' || tx.fulfillment_status === 'delivered' || tx.fulfillment_status === 'completed') {
-            gmv += tx.amount || 0;
-          }
-          if (tx.payment_status === 'escrow') {
-            escrow += tx.amount || 0;
-            activeOrders++;
-          } else if (tx.payment_status === 'pending') {
-            activeOrders++;
-          }
-        });
-        setFinanceStats({ gmv, escrow, activeOrders });
+        const finStats = calculateFinanceStats(txData);
+        setFinanceStats(finStats);
 
         const { count: pendingShip } = await supabase.from('transactions').select('id', { count: 'exact', head: true }).eq('fulfillment_status', 'pending');
         setLogisticsStats({ pendingShipments: pendingShip || 0, delayed: 2 }); 
 
         const { count: flaggedRev } = await supabase.from('reviews').select('id', { count: 'exact', head: true }).lt('rating', 3);
-        setTrustStats({ 
-          pendingKYC: idPulse.pendingStoreValidations || 0, 
-          openDisputes: 1, 
-          flaggedReviews: flaggedRev || 0 
-        });
+        const currentTrust = {
+          pendingKYC: idPulse.pendingStoreValidations || 0,
+          openDisputes: 1,
+          flaggedReviews: flaggedRev || 0
+        };
+        setTrustStats(currentTrust);
 
         // Actionable Alerts Orchestration
-        const alerts = [];
-        if (idPulse.pendingStoreValidations > 0) alerts.push({ type: 'warning', msg: `${idPulse.pendingStoreValidations} ${t('Company Verifications pending (B2B)')}`, ctx: t('Identity'), action: t('Review'), path: '/admin/crm/contacts' });
-        if (pendingShip && pendingShip > 10) alerts.push({ type: 'warning', msg: `${t('High volume of pending shipments')} (${pendingShip})`, ctx: t('Logistics'), action: t('Fulfill'), path: '/admin/logistix' });
-        if (trustStats.openDisputes > 0) alerts.push({ type: 'critical', msg: t('1 Open Transaction Dispute requires mediation'), ctx: t('Finance'), action: t('Resolve'), path: '/admin/transactions' });
-        if (flaggedRev && flaggedRev > 5) alerts.push({ type: 'info', msg: `${flaggedRev} ${t('reviews need moderation')}`, ctx: t('Trust'), action: t('Moderate'), path: '/admin/reviews' });
-        
-        if (alerts.length === 0) {
-           alerts.push({ type: 'info', msg: t('All systems operational. Edge caches warmed up.'), ctx: t('System'), action: null, path: null });
-        }
+        const alerts = orchestrateAlerts({
+          pendingStoreValidations: idPulse.pendingStoreValidations || 0,
+          pendingShipments: pendingShip || 0,
+          openDisputes: currentTrust.openDisputes,
+          flaggedReviews: currentTrust.flaggedReviews,
+          t
+        });
         setRecentAlerts(alerts);
 
       } catch (err) {

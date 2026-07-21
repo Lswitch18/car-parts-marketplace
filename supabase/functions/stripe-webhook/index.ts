@@ -77,12 +77,72 @@ async function callLogistixSync(transactionId: string) {
   }
 }
 
-async function notifyBuyerAndSeller(tx: any) {
+async function notifyKonbiniPending(transactionId: string) {
+  const { data: tx } = await supabase
+    .from('transactions')
+    .select(`
+      *,
+      buyer:profiles!transactions_buyer_id_fkey(email, full_name),
+      seller:profiles!transactions_seller_id_fkey(email, full_name),
+      parts!transactions_part_id_fkey(title)
+    `)
+    .eq('id', transactionId)
+    .single();
+
   if (!tx) return;
 
   const buyerId = tx.buyer_id;
   const sellerId = tx.seller_id;
   const partTitle = tx.parts?.title || 'Peça';
+  const buyerName = tx.buyer?.full_name || 'Comprador';
+
+  const message = {
+    sender_id: buyerId,
+    receiver_id: sellerId,
+    product_id: tx.part_id,
+    transaction_id: tx.id,
+    content: `Aguardando pagamento do pedido via Konbini (Loja de Conveniência Japonesa). Peça reservada. 🏪`,
+    message_type: 'system',
+  };
+
+  try {
+    await supabase.from('messages').insert(message);
+  } catch (e: any) {
+    console.error('[Webhook] Erro ao criar mensagem de Konbini pendente:', e);
+  }
+
+  try {
+    if (tx.buyer?.email) {
+      await jsonFetch(`${supabaseUrl}/functions/v1/notifications`, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'email',
+          to: tx.buyer.email,
+          subject: `Pedido Aguardando Pagamento Konbini - ${partTitle}`,
+          body: `
+            <h2>Olá, ${buyerName}!</h2>
+            <p>Seu pedido para a autopeça <strong>${partTitle}</strong> foi recebido com sucesso.</p>
+            <p>O método de pagamento escolhido foi <strong>Konbini (Loja de Conveniência no Japão)</strong>.</p>
+            <p>Por favor, utilize as instruções de pagamento enviadas pelo Stripe ou no caixa da loja para concluir o pagamento em até 3 dias. Assim que o pagamento for realizado, seu pedido será processado e o vendedor será notificado para envio.</p>
+            <p>Atenciosamente,<br/>Equipe JDM Car Parts</p>
+          `,
+          metadata: { transaction_id: tx.id },
+        }),
+      });
+    }
+  } catch (err) {
+    console.error('[Webhook] Konbini pending email error:', err);
+  }
+}
+
+async function notifyPaymentConfirmed(tx: any) {
+  if (!tx) return;
+
+  const buyerId = tx.buyer_id;
+  const sellerId = tx.seller_id;
+  const partTitle = tx.parts?.title || 'Peça';
+  const buyerName = tx.buyer?.full_name || 'Comprador';
+  const sellerName = tx.seller?.full_name || 'Vendedor';
 
   const messages = [
     {
@@ -104,31 +164,168 @@ async function notifyBuyerAndSeller(tx: any) {
   ];
 
   for (const msg of messages) {
-    await supabase.from('messages').insert(msg).then().catch(e =>
-      console.error('[Webhook] Erro ao criar mensagem:', e)
-    );
+    try {
+      await supabase.from('messages').insert(msg);
+    } catch (e: any) {
+      console.error('[Webhook] Erro ao criar mensagem de pagamento confirmado:', e);
+    }
   }
 
+  // Email para o comprador
   try {
-    await jsonFetch(`${supabaseUrl}/functions/v1/notifications`, {
-      method: 'POST',
-      body: JSON.stringify({
-        type: 'email',
-        to: tx.profiles?.email || '',
-        subject: `Pagamento confirmado - ${partTitle}`,
-        body: `Seu pagamento para "${partTitle}" foi confirmado com sucesso!`,
-        metadata: { transaction_id: tx.id },
-      }),
-    });
+    if (tx.buyer?.email) {
+      await jsonFetch(`${supabaseUrl}/functions/v1/notifications`, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'email',
+          to: tx.buyer.email,
+          subject: `Pagamento Confirmado - ${partTitle}`,
+          body: `
+            <h2>Pagamento Confirmado!</h2>
+            <p>Olá, ${buyerName}.</p>
+            <p>Seu pagamento para a autopeça <strong>${partTitle}</strong> foi confirmado com sucesso!</p>
+            <p>Os fundos estão sob custódia segura da plataforma (escrow) e o vendedor já foi notificado para preparar o envio.</p>
+            <p>Atenciosamente,<br/>Equipe JDM Car Parts</p>
+          `,
+          metadata: { transaction_id: tx.id },
+        }),
+      });
+    }
   } catch (err) {
-    console.error('[Webhook] Notification error:', err);
+    console.error('[Webhook] Buyer confirmation email error:', err);
   }
+
+  // Email para o vendedor
+  try {
+    if (tx.seller?.email) {
+      await jsonFetch(`${supabaseUrl}/functions/v1/notifications`, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'email',
+          to: tx.seller.email,
+          subject: `Nova Venda Realizada! - ${partTitle}`,
+          body: `
+            <h2>Parabéns, ${sellerName}!</h2>
+            <p>Você realizou a venda da peça <strong>${partTitle}</strong>!</p>
+            <p>Os fundos estão em custódia segura na plataforma. Por favor, prepare e envie o pacote para o comprador.</p>
+            <p>Assim que o comprador receber o item e confirmar a entrega, os fundos serão liberados para o seu saldo.</p>
+            <p>Atenciosamente,<br/>Equipe JDM Car Parts</p>
+          `,
+          metadata: { transaction_id: tx.id },
+        }),
+      });
+    }
+  } catch (err) {
+    console.error('[Webhook] Seller confirmation email error:', err);
+  }
+}
+
+async function notifyKonbiniExpired(tx: any) {
+  if (!tx) return;
+
+  const partTitle = tx.parts?.title || 'Peça';
+  const buyerName = tx.buyer?.full_name || 'Comprador';
+  const buyerId = tx.buyer_id;
+  const sellerId = tx.seller_id;
+
+  const messages = [
+    {
+      sender_id: buyerId,
+      receiver_id: sellerId,
+      product_id: tx.part_id,
+      transaction_id: tx.id,
+      content: `O prazo de pagamento do Konbini expirou. O pedido foi cancelado e a peça voltou ao catálogo. ❌`,
+      message_type: 'system',
+    }
+  ];
+
+  for (const msg of messages) {
+    try {
+      await supabase.from('messages').insert(msg);
+    } catch (e: any) {
+      console.error('[Webhook] Erro ao criar mensagem de cancelamento de Konbini:', e);
+    }
+  }
+
+  // Email para o comprador
+  try {
+    if (tx.buyer?.email) {
+      await jsonFetch(`${supabaseUrl}/functions/v1/notifications`, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'email',
+          to: tx.buyer.email,
+          subject: `Pedido Cancelado (Pagamento Expirado) - ${partTitle}`,
+          body: `
+            <h2>Seu pedido foi cancelado</h2>
+            <p>Olá, ${buyerName}.</p>
+            <p>O prazo para pagamento do Konbini para a peça <strong>${partTitle}</strong> expirou e a transação correspondente foi cancelada.</p>
+            <p>A autopeça foi devolvida ao catálogo ativo da plataforma.</p>
+            <p>Atenciosamente,<br/>Equipe JDM Car Parts</p>
+          `,
+          metadata: { transaction_id: tx.id },
+        }),
+      });
+    }
+  } catch (err) {
+    console.error('[Webhook] Buyer expired email error:', err);
+  }
+}
+
+async function confirmPayment(transaction_id: string, part_id: string, seller_id: string, stripe_payment_id: string, auction_id?: string) {
+  await supabase
+    .from('transactions')
+    .update({
+      payment_status: 'escrow',
+      stripe_payment_id: stripe_payment_id,
+    })
+    .eq('id', transaction_id);
+
+  if (part_id) {
+    await supabase
+      .from('parts')
+      .update({
+        status: 'sold',
+        ...(auction_id ? { winner_notified: true } : {}),
+      })
+      .eq('id', part_id);
+  }
+
+  if (seller_id) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('total_sales')
+      .eq('id', seller_id)
+      .single();
+
+    await supabase
+      .from('profiles')
+      .update({ total_sales: (profile?.total_sales || 0) + 1 })
+      .eq('id', seller_id);
+  }
+
+  console.log(`[Webhook] Payment confirmed for transaction ${transaction_id}`);
+
+  await callLogistixSync(transaction_id);
+
+  const { data: tx } = await supabase
+    .from('transactions')
+    .select(`
+      *,
+      buyer:profiles!transactions_buyer_id_fkey(email, full_name),
+      seller:profiles!transactions_seller_id_fkey(email, full_name),
+      parts!transactions_part_id_fkey(title)
+    `)
+    .eq('id', transaction_id)
+    .single();
+
+  await notifyPaymentConfirmed(tx);
 }
 
 async function handleCheckoutCompleted(session: any) {
   const { transaction_id, part_id, buyer_id, seller_id, auction_id, contract_id } = session.metadata || {};
 
-  if (contract_id) {
+  if (contract_id && session.payment_status === 'paid') {
     const { error: contractErr } = await supabase
       .from('legal_contracts')
       .update({
@@ -144,50 +341,21 @@ async function handleCheckoutCompleted(session: any) {
   }
 
   if (transaction_id) {
+    if (session.payment_status === 'paid') {
+      await confirmPayment(transaction_id, part_id, seller_id, session.id, auction_id);
+    } else {
+      // Pagamento pendente (Konbini)
       await supabase
         .from('transactions')
         .update({
-          payment_status: 'escrow',
+          payment_status: 'pending_payment',
           stripe_payment_id: session.id,
         })
         .eq('id', transaction_id);
 
-    if (part_id) {
-      // For auction payments, mark as 'sold' directly (winner already resolved)
-      // For regular and buy-now, mark as 'sold' as well
-      await supabase
-        .from('parts')
-        .update({
-          status: 'sold',
-          ...(auction_id ? { winner_notified: true } : {}),
-        })
-        .eq('id', part_id);
+      console.log(`[Webhook] Konbini checkout completed. Awaiting payment for transaction ${transaction_id}`);
+      await notifyKonbiniPending(transaction_id);
     }
-
-    if (seller_id) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('total_sales')
-        .eq('id', seller_id)
-        .single();
-
-      await supabase
-        .from('profiles')
-        .update({ total_sales: (profile?.total_sales || 0) + 1 })
-        .eq('id', seller_id);
-    }
-
-    console.log(`[Webhook] Payment completed for transaction ${transaction_id}`);
-
-    await callLogistixSync(transaction_id);
-
-    const { data: tx } = await supabase
-      .from('transactions')
-      .select('*, profiles!transactions_buyer_id_fkey(email), parts!transactions_part_id_fkey(title)')
-      .eq('id', transaction_id)
-      .single();
-
-    await notifyBuyerAndSeller(tx);
   }
 }
 
@@ -316,10 +484,53 @@ function constantTimeCompare(a: Uint8Array, b: Uint8Array): boolean {
   return result === 0;
 }
 
+async function handleAsyncPaymentFailed(session: any) {
+  const { transaction_id, part_id } = session.metadata || {};
+
+  if (transaction_id) {
+    await supabase
+      .from('transactions')
+      .update({ payment_status: 'failed' })
+      .eq('id', transaction_id);
+
+    if (part_id) {
+      await supabase
+        .from('parts')
+        .update({ status: 'active' })
+        .eq('id', part_id);
+    }
+
+    console.log(`[Webhook] Async payment failed (Konbini expired) for transaction ${transaction_id}`);
+
+    const { data: tx } = await supabase
+      .from('transactions')
+      .select(`
+        *,
+        buyer:profiles!transactions_buyer_id_fkey(email, full_name),
+        parts!transactions_part_id_fkey(title)
+      `)
+      .eq('id', transaction_id)
+      .single();
+
+    await notifyKonbiniExpired(tx);
+  }
+}
+
 async function handleEvent(event: StripeEvent) {
   switch (event.type) {
     case 'checkout.session.completed':
       await handleCheckoutCompleted(event.data.object);
+      break;
+    case 'checkout.session.async_payment_succeeded': {
+      const session = event.data.object;
+      const { transaction_id, part_id, seller_id, auction_id } = session.metadata || {};
+      if (transaction_id) {
+        await confirmPayment(transaction_id, part_id, seller_id, session.id, auction_id);
+      }
+      break;
+    }
+    case 'checkout.session.async_payment_failed':
+      await handleAsyncPaymentFailed(event.data.object);
       break;
     case 'payment_intent.payment_failed':
       await handlePaymentFailed(event.data.object);
@@ -378,6 +589,7 @@ Deno.serve(async (req) => {
 
   } catch (err) {
     console.error('[Webhook] Error:', err);
-    return errorResponse(`Webhook error: ${err.message}`, 500);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return errorResponse(`Webhook error: ${errMsg}`, 500);
   }
 });

@@ -1,74 +1,76 @@
-import { describe, it, expect } from 'vitest';
+import { test, describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+
 import { 
   calculateGrowth, 
   calculateFinanceStats, 
-  orchestrateAlerts,
-  TransactionSummary 
-} from '../utils/dashboardUtils';
+  orchestrateAlerts 
+} from '../src/modules/backoffice/utils/dashboardUtils.ts';
 
-describe('Backoffice Module - Dashboard Utils', () => {
+describe('Admin Dashboard - Unit Tests', () => {
+
   describe('calculateGrowth', () => {
     it('deve calcular porcentagem positiva de crescimento', () => {
-      expect(calculateGrowth(150, 100)).toBe(50);
-      expect(calculateGrowth(200, 50)).toBe(300);
+      assert.strictEqual(calculateGrowth(150, 100), 50);
+      assert.strictEqual(calculateGrowth(200, 50), 300);
     });
 
     it('deve calcular porcentagem estagnada (sem alteração)', () => {
-      expect(calculateGrowth(100, 100)).toBe(0);
+      assert.strictEqual(calculateGrowth(100, 100), 0);
     });
 
     it('deve calcular porcentagem negativa de queda', () => {
-      expect(calculateGrowth(50, 100)).toBe(-50);
-      expect(calculateGrowth(25, 100)).toBe(-75);
+      assert.strictEqual(calculateGrowth(50, 100), -50);
+      assert.strictEqual(calculateGrowth(25, 100), -75);
     });
 
     it('deve tratar divisão por zero adequadamente', () => {
-      expect(calculateGrowth(100, 0)).toBe(100);
-      expect(calculateGrowth(0, 0)).toBe(0);
+      assert.strictEqual(calculateGrowth(100, 0), 100);
+      assert.strictEqual(calculateGrowth(0, 0), 0);
     });
   });
 
   describe('calculateFinanceStats', () => {
     it('deve retornar zeros quando os dados de transações forem nulos ou vazios', () => {
-      expect(calculateFinanceStats(null)).toEqual({ gmv: 0, escrow: 0, activeOrders: 0 });
-      expect(calculateFinanceStats([])).toEqual({ gmv: 0, escrow: 0, activeOrders: 0 });
+      assert.deepStrictEqual(calculateFinanceStats(null), { gmv: 0, escrow: 0, activeOrders: 0 });
+      assert.deepStrictEqual(calculateFinanceStats([]), { gmv: 0, escrow: 0, activeOrders: 0 });
     });
 
     it('deve calcular GMV corretamente para transações pagas e concluídas', () => {
-      const mockData: TransactionSummary[] = [
+      const mockData = [
         { amount: 15000, payment_status: 'paid', fulfillment_status: 'pending' },
         { amount: 25000, payment_status: 'escrow', fulfillment_status: 'delivered' },
         { amount: 10000, payment_status: 'escrow', fulfillment_status: 'completed' },
       ];
 
       const stats = calculateFinanceStats(mockData);
-      expect(stats.gmv).toBe(50000); // 15000 + 25000 + 10000
+      assert.strictEqual(stats.gmv, 50000);
     });
 
     it('deve calcular saldo em custódia (Escrow) e pedidos ativos corretamente', () => {
-      const mockData: TransactionSummary[] = [
+      const mockData = [
         { amount: 8000, payment_status: 'escrow', fulfillment_status: 'pending' },
         { amount: 12000, payment_status: 'escrow', fulfillment_status: 'shipped' },
         { amount: 5000, payment_status: 'pending', fulfillment_status: 'pending' },
-        { amount: 6000, payment_status: 'pending_payment', fulfillment_status: 'pending' }, // Konbini pendente
+        { amount: 6000, payment_status: 'pending_payment', fulfillment_status: 'pending' },
         { amount: 20000, payment_status: 'failed', fulfillment_status: 'cancelled' },
       ];
 
       const stats = calculateFinanceStats(mockData);
-      expect(stats.escrow).toBe(20000); // 8000 + 12000
-      expect(stats.activeOrders).toBe(4); // 2 escrow + 1 pending + 1 pending_payment
+      assert.strictEqual(stats.escrow, 20000);
+      assert.strictEqual(stats.activeOrders, 4);
     });
 
     it('deve ignorar transações canceladas, falhas ou reembolsadas no GMV e Escrow', () => {
-      const mockData: TransactionSummary[] = [
+      const mockData = [
         { amount: 50000, payment_status: 'failed', fulfillment_status: 'cancelled' },
         { amount: 30000, payment_status: 'refunded', fulfillment_status: 'returned' },
       ];
 
       const stats = calculateFinanceStats(mockData);
-      expect(stats.gmv).toBe(0);
-      expect(stats.escrow).toBe(0);
-      expect(stats.activeOrders).toBe(0);
+      assert.strictEqual(stats.gmv, 0);
+      assert.strictEqual(stats.escrow, 0);
+      assert.strictEqual(stats.activeOrders, 0);
     });
   });
 
@@ -81,11 +83,11 @@ describe('Backoffice Module - Dashboard Utils', () => {
         flaggedReviews: 0,
       });
 
-      expect(alerts.length).toBe(2);
-      expect(alerts[0].type).toBe('warning');
-      expect(alerts[0].ctx).toBe('Identity');
-      expect(alerts[1].type).toBe('warning');
-      expect(alerts[1].ctx).toBe('Logistics');
+      assert.strictEqual(alerts.length, 2);
+      assert.strictEqual(alerts[0].type, 'warning');
+      assert.strictEqual(alerts[0].ctx, 'Identity');
+      assert.strictEqual(alerts[1].type, 'warning');
+      assert.strictEqual(alerts[1].ctx, 'Logistics');
     });
 
     it('deve gerar alerta crítico quando existirem disputas financeiras abertas', () => {
@@ -96,24 +98,25 @@ describe('Backoffice Module - Dashboard Utils', () => {
         flaggedReviews: 0,
       });
 
-      expect(alerts.length).toBe(1);
-      expect(alerts[0].type).toBe('critical');
-      expect(alerts[0].ctx).toBe('Finance');
-      expect(alerts[0].path).toBe('/admin/transactions');
+      assert.strictEqual(alerts.length, 1);
+      assert.strictEqual(alerts[0].type, 'critical');
+      assert.strictEqual(alerts[0].ctx, 'Finance');
+      assert.strictEqual(alerts[0].path, '/admin/transactions');
     });
 
     it('deve gerar alerta informativo operacional quando não houver pendências críticas', () => {
       const alerts = orchestrateAlerts({
         pendingStoreValidations: 0,
-        pendingShipments: 2, // abaixo do limite de 10
+        pendingShipments: 2,
         openDisputes: 0,
-        flaggedReviews: 1, // abaixo do limite de 5
+        flaggedReviews: 1,
       });
 
-      expect(alerts.length).toBe(1);
-      expect(alerts[0].type).toBe('info');
-      expect(alerts[0].ctx).toBe('System');
-      expect(alerts[0].action).toBeNull();
+      assert.strictEqual(alerts.length, 1);
+      assert.strictEqual(alerts[0].type, 'info');
+      assert.strictEqual(alerts[0].ctx, 'System');
+      assert.strictEqual(alerts[0].action, null);
     });
   });
+
 });

@@ -148,4 +148,11 @@ if __name__ == "__main__":
 #    - Relatório consolidado em Markdown e PDF gerado e salvo em:
 #      docs/RELATORIO_DE_FLUXOS_E_VERIFICACAO_SEGURANCA-SAST.md
 #      docs/RELATORIO_DE_FLUXOS_E_VERIFICACAO_SEGURANCA-SAST.pdf
+#
+# 6. SUPORTE A MÉTODOS DO JAPÃO (KONBINI/APPLE PAY/GOOGLE PAY) & RESEND:
+#    - Adicionada a coluna 'currency' na tabela 'transactions' (20260721_add_currency_to_transactions.sql) para suporte pleno a JPY.
+#    - Stripe Checkout integrado com Payment Method Configuration ID ('pmc_1O8JCnHLdM') para forçar métodos locais do Japão.
+#    - Suporte ao ciclo de vida assíncrono do Konbini no 'stripe-webhook' (checkout.session.async_payment_succeeded e async_payment_failed).
+#    - Disparo automático de e-mails transacionais via API do Resend (/notifications) para pagamentos pendentes, confirmações de venda e cancelamentos por expiração.
+#    - Refatoração dos utilitários do Painel Administrativo ('dashboardUtils.ts') e homologação de suíte de testes unitários com 100% de aprovação (154/154 testes passando).
 # ==============================================================================

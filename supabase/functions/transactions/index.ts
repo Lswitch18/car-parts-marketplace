@@ -58,7 +58,8 @@ Deno.serve(async (req) => {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify(errorResponse(err.message)), {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify(errorResponse(errMsg)), {
       status: 500,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
@@ -203,6 +204,7 @@ const shippingSchema = z.object({
 const createTransactionSchema = z.object({
   part_id: z.string().uuid("ID de peça inválido"),
   amount: z.number().positive("O valor deve ser maior que zero"),
+  currency: z.string().optional(),
   shipping: shippingSchema.optional(),
   idempotency_key: z.string().optional(),
   confirmed_message_id: z.string().uuid("ID de proposta inválido").optional(),
@@ -234,7 +236,7 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     });
   }
 
-  const { part_id, amount, shipping, idempotency_key, confirmed_message_id } = parseResult.data;
+  const { part_id, amount, currency, shipping, idempotency_key, confirmed_message_id } = parseResult.data;
 
   // Limpa transações pendentes antigas antes de criar ou validar nova transação
   await expireOldPendingTransactions();
@@ -382,6 +384,7 @@ async function createTransaction(req: Request, body: Record<string, unknown>) {
     buyer_id: user.id,
     seller_id: part.seller_id,
     amount: validatedAmount,
+    currency: currency || 'jpy',
     commission_rate: COMMISSION_RATE,
     commission_amount: fees.commission_amount,
     platform_fee: fees.platform_fee,
@@ -486,7 +489,7 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
   // Buscar transação atual
   const { data: existingTx, error: fetchErr } = await supabase
     .from('transactions')
-    .select('buyer_id, seller_id, payment_status, seller_net, stripe_transfer_id')
+    .select('buyer_id, seller_id, payment_status, seller_net, stripe_transfer_id, currency')
     .eq('id', txId)
     .single();
 
@@ -531,7 +534,7 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
     }
 
     if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
-      console.log(`[Stripe Connect] Demo Mode: Simulating transfer of ¥${existingTx.seller_net} to ${sellerProfile.stripe_account_id}`);
+      console.log(`[Stripe Connect] Demo Mode: Simulating transfer of ${existingTx.currency || 'jpy'} ${existingTx.seller_net} to ${sellerProfile.stripe_account_id}`);
       transferId = `tr_mock_${crypto.randomUUID()}`;
     } else {
       try {
@@ -543,7 +546,7 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
           },
           body: new URLSearchParams({
             amount: String(Math.round(existingTx.seller_net)),
-            currency: 'jpy',
+            currency: existingTx.currency || 'jpy',
             destination: sellerProfile.stripe_account_id,
             description: `Liberação de escrow para transação ${txId}`,
           }).toString(),
@@ -597,9 +600,15 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
         .update({ status: 'sold' })
         .eq('id', tx.part_id);
 
+      const { data: sellerProfile } = await supabase
+        .from('profiles')
+        .select('total_sales')
+        .eq('id', tx.seller_id)
+        .single();
+
       await supabase
         .from('profiles')
-        .update({ total_sales: supabase.raw('total_sales + 1') })
+        .update({ total_sales: (sellerProfile?.total_sales || 0) + 1 })
         .eq('id', tx.seller_id);
 
       await supabase.from('messages').insert({

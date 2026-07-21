@@ -93,7 +93,8 @@ Deno.serve(async (req) => {
 
   } catch (err) {
     console.error('Stripe error:', err);
-    return new Response(JSON.stringify({ error: err.message }), {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify({ error: errMsg }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -161,6 +162,14 @@ async function createCheckoutSession(req: Request) {
     });
   }
 
+  const { data: buyerProfile } = await supabase
+    .from('profiles')
+    .select('email')
+    .eq('id', buyer_id)
+    .single();
+
+  const STRIPE_PAYMENT_METHOD_CONFIG_ID = Deno.env.get('STRIPE_PAYMENT_METHOD_CONFIG_ID') || Deno.env.get('VITE_STRIPE_PAYMENT_METHOD_CONFIG_ID');
+
   const { data: part } = await supabase
     .from('parts')
     .select('title, images')
@@ -182,6 +191,20 @@ async function createCheckoutSession(req: Request) {
     'metadata[buyer_id]': buyer_id || '',
     'metadata[seller_id]': seller_id || '',
   };
+
+  if (buyerProfile?.email) {
+    lineItems['customer_email'] = buyerProfile.email;
+  }
+
+  if (STRIPE_PAYMENT_METHOD_CONFIG_ID) {
+    lineItems['payment_method_configuration'] = STRIPE_PAYMENT_METHOD_CONFIG_ID;
+  } else {
+    lineItems['payment_method_types[0]'] = 'card';
+    lineItems['payment_method_types[1]'] = 'konbini';
+  }
+
+  // Opções específicas para pagamento Konbini no Japão
+  lineItems['payment_method_options[konbini][expires_after_days]'] = '3';
 
   if (auction_id) {
     lineItems['metadata[auction_id]'] = auction_id;
