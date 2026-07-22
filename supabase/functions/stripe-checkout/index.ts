@@ -198,9 +198,6 @@ async function createCheckoutSession(req: Request) {
 
   if (STRIPE_PAYMENT_METHOD_CONFIG_ID) {
     lineItems['payment_method_configuration'] = STRIPE_PAYMENT_METHOD_CONFIG_ID;
-  } else {
-    lineItems['payment_method_types[0]'] = 'card';
-    lineItems['payment_method_types[1]'] = 'konbini';
   }
 
   // Opções específicas para pagamento Konbini no Japão
