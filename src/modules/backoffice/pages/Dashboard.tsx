@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/modules/identity/store/authStore'
@@ -7,8 +7,13 @@ import SafeImage from '@/modules/parts-catalog/components/SafeImage'
 import { api } from '@/modules/transactions/api/api'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { fetchPostal } from '@/modules/shared/lib/postal'
-import { Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, Camera, Save, CreditCard, ExternalLink, Loader2 } from 'lucide-react'
+import { 
+  Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, 
+  Camera, Save, CreditCard, ExternalLink, Loader2, LayoutDashboard, ShoppingBag, 
+  CheckCircle2, Clock, Sparkles, Search, Wallet, ChevronRight, ArrowRight, ShieldCheck, Tag
+} from 'lucide-react'
 
+type TabType = 'overview' | 'products' | 'transactions' | 'stripe' | 'profile'
 
 export default function Dashboard() {
   const { t } = useI18n()
@@ -16,12 +21,17 @@ export default function Dashboard() {
   const { user, loading: authLoading, initialized, setUser } = useAuthStore()
   const queryClient = useQueryClient()
 
-  // Redirect se não logado (após inicialização completa)
+  // Redirect se não logado
   if (initialized && !authLoading && !user) {
     navigate('/login', { replace: true })
     return null
   }
+
+  const [activeTab, setActiveTab] = useState<TabType>('overview')
   const [editingProfile, setEditingProfile] = useState(false)
+  const [productSearch, setProductSearch] = useState('')
+  const [txFilter, setTxFilter] = useState<'all' | 'sales' | 'purchases'>('all')
+
   const [profileForm, setProfileForm] = useState({
     name: user?.name || '',
     phone: user?.phone || '',
@@ -48,7 +58,8 @@ export default function Dashboard() {
     setPostalLoading(false)
   }, [profileForm.zip_code])
 
-  const { data: stats } = useQuery({
+  // Stats Query
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['seller-stats', user?.id],
     queryFn: async () => {
       if (!user) return null
@@ -70,7 +81,8 @@ export default function Dashboard() {
     enabled: !!user
   })
 
-  const { data: transactions } = useQuery({
+  // Transactions Query
+  const { data: transactions = [], isLoading: txLoading } = useQuery({
     queryKey: ['my-transactions', user?.id],
     queryFn: async () => {
       if (!user) return []
@@ -94,8 +106,8 @@ export default function Dashboard() {
     }
   })
 
-
-  const { data: products } = useQuery({
+  // Products Query
+  const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ['seller-products', user?.id],
     queryFn: async () => {
       if (!user) return []
@@ -104,8 +116,22 @@ export default function Dashboard() {
         .select('*')
         .eq('seller_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(5)
       return data || []
+    },
+    enabled: !!user
+  })
+
+  // Profile Stripe Query
+  const { data: profile } = useQuery({
+    queryKey: ['profile-stripe', user?.id],
+    queryFn: async () => {
+      if (!user) return null
+      const { data } = await supabase
+        .from('profiles')
+        .select('stripe_account_id, stripe_onboarding_complete')
+        .eq('id', user.id)
+        .single()
+      return data as { stripe_account_id: string | null; stripe_onboarding_complete: boolean }
     },
     enabled: !!user
   })
@@ -149,20 +175,6 @@ export default function Dashboard() {
   const [stripeLoading, setStripeLoading] = useState(false)
   const [stripeError, setStripeError] = useState<string | null>(null)
 
-  const { data: profile } = useQuery({
-    queryKey: ['profile-stripe', user?.id],
-    queryFn: async () => {
-      if (!user) return null
-      const { data } = await supabase
-        .from('profiles')
-        .select('stripe_account_id, stripe_onboarding_complete')
-        .eq('id', user.id)
-        .single()
-      return data as { stripe_account_id: string | null; stripe_onboarding_complete: boolean }
-    },
-    enabled: !!user
-  })
-
   const handleStripeConnect = async () => {
     if (!user) return
     setStripeLoading(true)
@@ -199,391 +211,693 @@ export default function Dashboard() {
     }
   }
 
+  // Filtered lists
+  const filteredProducts = useMemo(() => {
+    if (!productSearch.trim()) return products
+    const term = productSearch.toLowerCase()
+    return products.filter(p => p.title?.toLowerCase().includes(term))
+  }, [products, productSearch])
+
+  const filteredTransactions = useMemo(() => {
+    if (txFilter === 'sales') return transactions.filter(t => t.seller_id === user?.id)
+    if (txFilter === 'purchases') return transactions.filter(t => t.buyer_id === user?.id)
+    return transactions
+  }, [transactions, txFilter, user?.id])
+
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-[#07070A] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-[#00E5FF] animate-spin" />
       </div>
     )
   }
 
-  if (!user) {
-    navigate('/login')
-    return null
-  }
+  if (!user) return null
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-display text-3xl font-bold text-text">
-              {t('Dashboard')}
+    <div className="min-h-screen bg-[#07070A] text-white py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+
+        {/* Header Principal */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5" /> DAIG Backoffice & Marketplace
+            </div>
+            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+              {t('Painel do Usuário')}
             </h1>
-            <p className="text-text-secondary">{t('Bem-vindo de volta')}, {user.name || user.email}</p>
-          </div>
-          <Link
-            to="/create-listing"
-            className="flex items-center space-x-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium"
-          >
-            <Plus className="w-5 h-5" />
-            <span>{t('Nova Listagem')}</span>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link to="/catalog" className="card p-6 hover:border-primary/50 transition-all block group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-                <Package className="w-6 h-6 text-primary" />
-              </div>
-              <TrendingUp className="w-5 h-5 text-green-500" />
-            </div>
-            <p className="text-text-secondary text-sm">{t('Anúncios Ativos')}</p>
-            <p className="text-2xl font-bold text-text group-hover:text-primary transition-colors">{stats?.activeProducts || 0}</p>
-          </Link>
-
-          <Link to="/catalog" className="card p-6 hover:border-info/50 transition-all block group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-info/20 flex items-center justify-center group-hover:bg-info/30 transition-colors">
-                <Eye className="w-6 h-6 text-info" />
-              </div>
-            </div>
-            <p className="text-text-secondary text-sm">{t('Total de Visualizações')}</p>
-            <p className="text-2xl font-bold text-text group-hover:text-info transition-colors">{stats?.totalViews || 0}</p>
-          </Link>
-
-          <div className="card p-6 hover:border-green-500/50 transition-all group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
-                <DollarSign className="w-6 h-6 text-green-500" />
-              </div>
-            </div>
-            <p className="text-text-secondary text-sm">{t('Vendas Totais')}</p>
-            <p className="text-2xl font-bold text-text group-hover:text-green-500 transition-colors">
-              ¥ {(stats?.totalSales || 0).toLocaleString('ja-JP')}
+            <p className="text-gray-400 text-sm">
+              {t('Bem-vindo de volta')}, <span className="text-white font-medium">{user.name || user.email}</span>
             </p>
           </div>
 
-          <Link to="/messages" className="card p-6 hover:border-purple-500/50 transition-all block group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-colors">
-                <MessageCircle className="w-6 h-6 text-purple-500" />
-              </div>
-            </div>
-            <p className="text-text-secondary text-sm">{t('Mensagens')}</p>
-            <p className="text-2xl font-bold text-text group-hover:text-purple-500 transition-colors">{stats?.unreadMessages || 0}</p>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/create-listing"
+              className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.02]"
+            >
+              <Plus className="w-4 h-4" />
+              <span>{t('Nova Listagem')}</span>
+            </Link>
+          </div>
         </div>
 
+        {/* Navegação por Abas (UI/UX Instintiva) */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-white/10 scrollbar-none">
+          {[
+            { id: 'overview', label: t('Visão Geral'), icon: LayoutDashboard },
+            { id: 'products', label: t('Meus Anúncios'), icon: Package, count: products.length },
+            { id: 'transactions', label: t('Transações'), icon: ShoppingBag, count: transactions.length },
+            { id: 'stripe', label: t('Recebimentos'), icon: Wallet },
+            { id: 'profile', label: t('Meu Perfil'), icon: User },
+          ].map(tab => {
+            const Icon = tab.icon
+            const isActive = activeTab === tab.id
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as TabType)}
+                className={`inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
+                  isActive
+                    ? 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30 shadow-md shadow-[#00E5FF]/5'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+                {tab.count !== undefined && (
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                    isActive ? 'bg-[#00E5FF]/20 text-[#00E5FF]' : 'bg-white/10 text-gray-300'
+                  }`}>
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
 
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="card p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-text">{t('Meus Anúncios')}</h2>
-                <Link to="/catalog" className="text-primary text-sm hover:underline">
-                  {t('Ver todos')}
-                </Link>
+        {/* ─── ABA 1: VISÃO GERAL (OVERVIEW) ────────────────────── */}
+        {activeTab === 'overview' && (
+          <div className="space-y-8">
+            
+            {/* Metric Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              
+              {/* Card 1: Vendas */}
+              <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-5 hover:border-emerald-500/30 transition-all space-y-3 group">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                    JPY ¥
+                  </span>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">{t('Vendas Totais')}</p>
+                  <p className="text-2xl font-black text-white mt-1 group-hover:text-emerald-400 transition-colors">
+                    ¥ {(stats?.totalSales || 0).toLocaleString('ja-JP')}
+                  </p>
+                </div>
               </div>
 
-              {products && products.length > 0 ? (
-                <div className="space-y-4">
-                  {products.map((product) => (
-                    <Link
-                      key={product.id}
-                      to={`/product/${product.id}`}
-                      className="flex items-center space-x-4 p-4 bg-background rounded-lg border border-border hover:border-primary/30 transition-all group"
-                    >
-                      <div className="w-16 h-16 bg-surface rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
-                        <SafeImage src={product.images?.[0]} alt={product.title} className="w-full h-full object-cover rounded-lg" fallback={<Package className="w-6 h-6 text-text-secondary" />} />
+              {/* Card 2: Anúncios Ativos */}
+              <button 
+                onClick={() => setActiveTab('products')}
+                className="bg-[#0D0D14] border border-white/10 rounded-2xl p-5 hover:border-blue-500/30 transition-all text-left space-y-3 group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  <TrendingUp className="w-4 h-4 text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">{t('Anúncios Ativos')}</p>
+                  <p className="text-2xl font-black text-white mt-1 group-hover:text-blue-400 transition-colors">
+                    {stats?.activeProducts || 0}
+                  </p>
+                </div>
+              </button>
+
+              {/* Card 3: Visualizações */}
+              <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-5 hover:border-purple-500/30 transition-all space-y-3 group">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                    <Eye className="w-5 h-5" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">{t('Visualizações')}</p>
+                  <p className="text-2xl font-black text-white mt-1 group-hover:text-purple-400 transition-colors">
+                    {stats?.totalViews || 0}
+                  </p>
+                </div>
+              </div>
+
+              {/* Card 4: Mensagens */}
+              <Link 
+                to="/messages"
+                className="bg-[#0D0D14] border border-white/10 rounded-2xl p-5 hover:border-amber-500/30 transition-all block space-y-3 group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  {stats?.unreadMessages ? (
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
+                  ) : null}
+                </div>
+                <div>
+                  <p className="text-gray-400 text-xs font-medium uppercase tracking-wider">{t('Mensagens Recebidas')}</p>
+                  <p className="text-2xl font-black text-white mt-1 group-hover:text-amber-400 transition-colors">
+                    {stats?.unreadMessages || 0}
+                  </p>
+                </div>
+              </Link>
+
+            </div>
+
+            {/* Ações Rápidas em Destaque */}
+            <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-4">
+              <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#00E5FF]" /> {t('Ações Rápidas')}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Link
+                  to="/create-listing"
+                  className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-blue-500/10 border border-white/5 hover:border-blue-500/30 transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400">
+                      <Plus className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors">{t('Vender Peça')}</p>
+                      <p className="text-xs text-gray-400">{t('Cadastrar produto JDM')}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-blue-400 transition-colors" />
+                </Link>
+
+                <Link
+                  to="/messages"
+                  className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-amber-500/10 border border-white/5 hover:border-amber-500/30 transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-amber-500/20 text-amber-400">
+                      <MessageCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white group-hover:text-amber-400 transition-colors">{t('Chat de Vendas')}</p>
+                      <p className="text-xs text-gray-400">{t('Responder compradores')}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-amber-400 transition-colors" />
+                </Link>
+
+                <Link
+                  to="/rastreio"
+                  className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-purple-500/20 text-purple-400">
+                      <ShoppingBag className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white group-hover:text-purple-400 transition-colors">{t('Rastreamento')}</p>
+                      <p className="text-xs text-gray-400">{t('Consultar entregas')}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-purple-400 transition-colors" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Layout Duplo: Prévias Rápidas */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* Prévia Anúncios Recentes */}
+              <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Package className="w-4 h-4 text-blue-400" /> {t('Anúncios Recentes')}
+                  </h3>
+                  <button onClick={() => setActiveTab('products')} className="text-xs font-semibold text-blue-400 hover:underline flex items-center gap-1">
+                    {t('Ver todos')} <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {products.length > 0 ? (
+                  <div className="space-y-3">
+                    {products.slice(0, 3).map(p => (
+                      <Link
+                        key={p.id}
+                        to={`/product/${p.id}`}
+                        className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                            <SafeImage src={p.images?.[0]} alt={p.title} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-white group-hover:text-blue-400 truncate">{p.title}</p>
+                            <p className="text-xs text-gray-400">¥ {p.price?.toLocaleString('ja-JP')} • {p.views || 0} views</p>
+                          </div>
+                        </div>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${
+                          p.status === 'active'
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                            : 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                        }`}>
+                          {p.status === 'active' ? 'Ativo' : p.status}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400 text-center py-6">{t('Você ainda não tem anúncios cadastrados.')}</p>
+                )}
+              </div>
+
+              {/* Prévia Transações Recentes */}
+              <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <ShoppingBag className="w-4 h-4 text-emerald-400" /> {t('Transações Recentes')}
+                  </h3>
+                  <button onClick={() => setActiveTab('transactions')} className="text-xs font-semibold text-emerald-400 hover:underline flex items-center gap-1">
+                    {t('Ver todas')} <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {transactions.length > 0 ? (
+                  <div className="space-y-3">
+                    {transactions.slice(0, 3).map(tx => {
+                      const isBuyer = tx.buyer_id === user.id
+                      return (
+                        <div key={tx.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                              <SafeImage src={tx.parts?.images?.[0]} alt="" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold text-white truncate">{tx.parts?.title || 'Peça Automotiva'}</p>
+                              <p className="text-xs text-gray-400">
+                                {isBuyer ? 'Compra' : 'Venda'} • ¥ {tx.amount?.toLocaleString('ja-JP')}
+                              </p>
+                            </div>
+                          </div>
+                          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                            {tx.fulfillment_status === 'pending' ? 'Pendente' : tx.fulfillment_status === 'shipped' ? 'Enviado' : 'Concluído'}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400 text-center py-6">{t('Nenhuma transação registrada ainda.')}</p>
+                )}
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ─── ABA 2: MEUS ANÚNCIOS (MY LISTINGS) ──────────────── */}
+        {activeTab === 'products' && (
+          <div className="space-y-6">
+            <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-6">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white">{t('Gerenciar Meus Anúncios')}</h2>
+                  <p className="text-gray-400 text-xs">{t('Confira e gerencie suas peças anunciadas no marketplace')}</p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder={t('Buscar peça...')}
+                      value={productSearch}
+                      onChange={(e) => setProductSearch(e.target.value)}
+                      className="pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <Link
+                    to="/create-listing"
+                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shrink-0"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>{t('Criar Anúncio')}</span>
+                  </Link>
+                </div>
+              </div>
+
+              {filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredProducts.map(p => (
+                    <div key={p.id} className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 hover:border-blue-500/30 transition-all group">
+                      <div className="aspect-[16/9] rounded-lg bg-black/40 border border-white/10 overflow-hidden relative">
+                        <SafeImage src={p.images?.[0]} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <span className={`absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-xs font-bold border backdrop-blur-md ${
+                          p.status === 'active'
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                            : 'bg-gray-500/20 text-gray-300 border-gray-500/30'
+                        }`}>
+                          {p.status === 'active' ? 'Ativo' : p.status}
+                        </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-text font-medium group-hover:text-primary transition-colors truncate">{product.title}</h3>
-                        <p className="text-text-secondary text-sm">
-                          ¥ {product.price.toLocaleString('ja-JP')} • {product.views || 0} visualizações
+
+                      <div className="space-y-1">
+                        <h3 className="font-semibold text-white group-hover:text-blue-400 transition-colors truncate">{p.title}</h3>
+                        <p className="text-emerald-400 font-extrabold text-lg">
+                          ¥ {p.price?.toLocaleString('ja-JP')}
+                        </p>
+                        <p className="text-xs text-gray-400 flex items-center gap-2">
+                          <Eye className="w-3.5 h-3.5" /> {p.views || 0} visualizações
                         </p>
                       </div>
-                      <span className={`badge ${product.status === 'active' ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
-                        {product.status === 'active' ? 'Ativo' : product.status}
-                      </span>
-                    </Link>
+
+                      <div className="pt-2 border-t border-white/5 flex items-center justify-between gap-2">
+                        <Link
+                          to={`/product/${p.id}`}
+                          className="text-xs font-semibold text-blue-400 hover:underline flex items-center gap-1"
+                        >
+                          Ver no catálogo <ExternalLink className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <Package className="w-12 h-12 text-text-secondary mx-auto mb-4" />
-                  <p className="text-text-secondary mb-4">{t('Você ainda não tem anúncios')}</p>
-                  <Link
-                    to="/create-listing"
-                    className="text-primary hover:underline"
-                  >
-                    {t('Criar primeiro anúncio')}
-                  </Link>
+                <div className="text-center py-12 space-y-3">
+                  <Package className="w-12 h-12 text-gray-500 mx-auto" />
+                  <p className="text-gray-400 text-sm">{t('Nenhuma peça encontrada.')}</p>
                 </div>
               )}
+
             </div>
-            
-            <div className="card p-6 mt-8 border-daig-purple">
-              <h2 className="text-xl font-semibold text-text mb-6">Minhas Transações</h2>
-              {transactions && transactions.length > 0 ? (
+          </div>
+        )}
+
+        {/* ─── ABA 3: TRANSAÇÕES (TRANSACTIONS) ────────────────── */}
+        {activeTab === 'transactions' && (
+          <div className="space-y-6">
+            <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-6">
+              
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white">{t('Histórico de Transações')}</h2>
+                  <p className="text-gray-400 text-xs">{t('Acompanhe suas compras e vendas com custódia segura DAIG Escrow')}</p>
+                </div>
+
+                {/* Filtros em Pílulas */}
+                <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+                  {[
+                    { id: 'all', label: 'Todas' },
+                    { id: 'sales', label: 'Minhas Vendas' },
+                    { id: 'purchases', label: 'Minhas Compras' },
+                  ].map(f => (
+                    <button
+                      key={f.id}
+                      onClick={() => setTxFilter(f.id as any)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        txFilter === f.id
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {filteredTransactions.length > 0 ? (
                 <div className="space-y-4">
-                  {transactions.map((t) => {
-                    const isBuyer = t.buyer_id === user.id;
-                    const roleText = isBuyer ? 'Compra' : 'Venda';
+                  {filteredTransactions.map(tx => {
+                    const isBuyer = tx.buyer_id === user.id
                     return (
-                      <div key={t.id} className="p-4 bg-background rounded-lg border border-border hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group">
-                        <Link to={`/product/${t.part_id}`} className="flex items-center space-x-4 flex-1 min-w-0">
-                          <div className="w-12 h-12 bg-surface rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                            <SafeImage src={t.parts?.images?.[0]} alt="" className="w-full h-full object-cover" fallback={<Package className="w-6 h-6 text-text-secondary" />} />
+                      <div key={tx.id} className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        
+                        <div className="flex items-center gap-4 min-w-0">
+                          <div className="w-14 h-14 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                            <SafeImage src={tx.parts?.images?.[0]} alt="" className="w-full h-full object-cover" />
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-text font-medium group-hover:text-primary transition-colors truncate">{t.parts?.title || 'Produto'}</p>
-                            <p className="text-text-secondary text-sm">
-                              {roleText} • ¥ {t.amount?.toLocaleString('ja-JP')}
-                            </p>
+                          <div className="min-w-0 space-y-1">
+                            <p className="text-white font-semibold text-sm truncate">{tx.parts?.title || 'Peça Automotiva'}</p>
+                            <div className="flex items-center gap-3 text-xs text-gray-400">
+                              <span className={`px-2 py-0.5 rounded font-bold ${isBuyer ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'}`}>
+                                {isBuyer ? 'COMPRA' : 'VENDA'}
+                              </span>
+                              <span>•</span>
+                              <span className="text-emerald-400 font-bold">¥ {tx.amount?.toLocaleString('ja-JP')}</span>
+                            </div>
                           </div>
-                        </Link>
-                        <div className="flex items-center space-x-4">
-                          <div className="text-right">
-                            <p className="text-sm font-medium text-white">Status: {t.fulfillment_status === 'pending' ? 'Pendente' : t.fulfillment_status === 'shipped' ? 'Enviado' : 'Concluído'}</p>
+                        </div>
+
+                        <div className="flex items-center gap-4 justify-between md:justify-end border-t md:border-t-0 border-white/5 pt-3 md:pt-0">
+                          <div className="text-left md:text-right">
+                            <span className="text-xs font-semibold text-gray-400 block">Status de Entrega</span>
+                            <span className="text-sm font-bold text-white">
+                              {tx.fulfillment_status === 'pending' ? '⏳ Pendente de Envio' : tx.fulfillment_status === 'shipped' ? '🚚 Enviado' : '✅ Entregue & Concluído'}
+                            </span>
                           </div>
-                          
-                          {!isBuyer && t.fulfillment_status === 'pending' && t.payment_status === 'escrow' && (
+
+                          {!isBuyer && tx.fulfillment_status === 'pending' && tx.payment_status === 'escrow' && (
                             <button 
-                              onClick={() => updateTransaction.mutate({ id: t.id, updates: { fulfillment_status: 'shipped' } })}
-                              className="bg-daig-blue hover:bg-daig-blue/80 text-white px-4 py-2 rounded text-sm font-medium"
+                              onClick={() => updateTransaction.mutate({ id: tx.id, updates: { fulfillment_status: 'shipped' } })}
+                              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20"
                             >
-                              Marcar Enviado
+                              Marcar como Enviado 🚚
                             </button>
                           )}
-                          
-                          {isBuyer && t.fulfillment_status === 'shipped' && (
+
+                          {isBuyer && tx.fulfillment_status === 'shipped' && (
                             <button 
-                              onClick={() => updateTransaction.mutate({ id: t.id, updates: { fulfillment_status: 'received', payment_status: 'completed' } })}
-                              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-sm font-medium"
+                              onClick={() => updateTransaction.mutate({ id: tx.id, updates: { fulfillment_status: 'received', payment_status: 'completed' } })}
+                              className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-500/20"
                             >
-                              Confirmar Recebimento
+                              Confirmar Recebimento 🎉
                             </button>
                           )}
                         </div>
+
                       </div>
                     )
                   })}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <p className="text-text-secondary">Nenhuma transação encontrada</p>
+                <div className="text-center py-12 space-y-3">
+                  <ShoppingBag className="w-12 h-12 text-gray-500 mx-auto" />
+                  <p className="text-gray-400 text-sm">{t('Nenhuma transação encontrada nesta categoria.')}</p>
                 </div>
               )}
+
             </div>
-
           </div>
+        )}
 
+        {/* ─── ABA 4: RECEBIMENTOS & STRIPE (STRIPE) ───────────── */}
+        {activeTab === 'stripe' && (
           <div className="space-y-6">
-            <div className="card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-text">{t('Meu Perfil')}</h2>
+            <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
+              
+              <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                  <Wallet className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-white">{t('Conta de Recebimentos (Stripe Connect)')}</h2>
+                  <p className="text-gray-400 text-xs">{t('Configure sua conta bancária para receber os repasses das suas vendas automaticamente')}</p>
+                </div>
+              </div>
+
+              {stripeError && (
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                  {stripeError}
+                </div>
+              )}
+
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4 max-w-xl">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-400 font-semibold">Status de Onboarding:</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                    profile?.stripe_onboarding_complete
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                  }`}>
+                    {profile?.stripe_onboarding_complete ? '✅ Conta Verificada' : '⏳ Pendente / Incompleto'}
+                  </span>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <button
+                    onClick={handleStripeConnect}
+                    disabled={stripeLoading}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-50 shadow-lg shadow-blue-500/20"
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    <span>
+                      {stripeLoading
+                        ? t('Processando...')
+                        : profile?.stripe_account_id
+                          ? t('Completar Cadastro no Stripe')
+                          : t('Conectar Conta Stripe')}
+                    </span>
+                  </button>
+
+                  {profile?.stripe_account_id && (
+                    <button
+                      onClick={handleStripePortal}
+                      disabled={stripeLoading}
+                      className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-50"
+                    >
+                      <ExternalLink className="w-5 h-5 text-gray-400" />
+                      <span>{t('Abrir Painel Stripe')}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ─── ABA 5: PERFIL (PROFILE) ─────────────────────────── */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6">
+            <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-6">
+              
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white">{t('Dados do Meu Perfil')}</h2>
+                  <p className="text-gray-400 text-xs">{t('Gerencie suas informações pessoais e endereço de entrega no Japão')}</p>
+                </div>
                 <button
                   onClick={() => setEditingProfile(!editingProfile)}
-                  className="text-primary hover:underline text-sm"
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-blue-400 hover:text-white transition-all"
                 >
-                  {editingProfile ? t('Cancelar') : t('Editar')}
+                  {editingProfile ? t('Cancelar') : t('Editar Perfil')}
                 </button>
               </div>
 
               {editingProfile ? (
-                <form onSubmit={(e) => { e.preventDefault(); updateProfile.mutate() }} className="space-y-4">
-                  <div className="flex justify-center mb-4">
-                    <div className="relative">
-                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-                        <User className="w-10 h-10 text-white" />
-                      </div>
-                      <button className="absolute bottom-0 right-0 p-2 bg-primary rounded-full text-white">
-                        <Camera className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
+                <form onSubmit={(e) => { e.preventDefault(); updateProfile.mutate() }} className="space-y-5 max-w-xl">
                   <div>
-                    <label className="block text-text-secondary text-sm mb-1">{t('Nome')}</label>
+                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Nome Completo')}</label>
                     <input
                       type="text"
                       value={profileForm.name}
                       onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                      className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-text-secondary text-sm mb-1">{t('Telefone')}</label>
+                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Telefone')}</label>
                     <input
                       type="tel"
                       value={profileForm.phone}
                       onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                      className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-text-secondary text-sm mb-1">{t('Endereço')}</label>
+                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('CEP (Código Postal Japão)')}</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="100-0001"
+                        value={profileForm.zip_code}
+                        onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
+                        onBlur={handlePostalBlur}
+                        className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500 pr-10"
+                      />
+                      {postalLoading && (
+                        <Loader2 className="w-4 h-4 text-blue-400 animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Endereço Completo')}</label>
                     <input
                       type="text"
                       value={profileForm.address}
                       onChange={(e) => setProfileForm({ ...profileForm, address: e.target.value })}
-                      className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-text-secondary text-sm mb-1">{t('Cidade')}</label>
+                      <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Cidade')}</label>
                       <input
                         type="text"
                         value={profileForm.city}
                         onChange={(e) => setProfileForm({ ...profileForm, city: e.target.value })}
-                        className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text"
+                        className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-text-secondary text-sm mb-1">{t('Estado')}</label>
+                      <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Província / Estado')}</label>
                       <input
                         type="text"
                         value={profileForm.state}
                         onChange={(e) => setProfileForm({ ...profileForm, state: e.target.value })}
-                        className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text"
+                        className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-blue-500"
                       />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-text-secondary text-sm mb-1">{t('CEP')}</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={profileForm.zip_code}
-                        onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
-                        onBlur={handlePostalBlur}
-                        className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text pr-10"
-                      />
-                      {postalLoading && (
-                        <Loader2 className="w-4 h-4 text-primary animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
-                      )}
                     </div>
                   </div>
 
                   <button
                     type="submit"
                     disabled={updateProfile.isPending}
-                    className="w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-lg font-medium flex items-center justify-center space-x-2"
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
                   >
                     <Save className="w-4 h-4" />
-                    <span>{updateProfile.isPending ? t('Salvando...') : t('Salvar')}</span>
+                    <span>{updateProfile.isPending ? t('Salvando...') : t('Salvar Alterações')}</span>
                   </button>
                 </form>
               ) : (
-                <div className="space-y-4">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt="" className="w-full h-full object-cover rounded-full" />
-                      ) : (
-                        <User className="w-10 h-10 text-white" />
-                      )}
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Nome</span>
+                    <p className="text-white font-medium">{user.name || t('Não informado')}</p>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3 text-text-secondary">
-                      <User className="w-4 h-4" />
-                      <span className="text-text">{user.name || t('Nome não definido')}</span>
-                    </div>
-                    <div className="flex items-center space-x-3 text-text-secondary">
-                      <Mail className="w-4 h-4" />
-                      <span className="text-text">{user.email}</span>
-                    </div>
-                    {user.phone && (
-                      <div className="flex items-center space-x-3 text-text-secondary">
-                        <Phone className="w-4 h-4" />
-                        <span className="text-text">{user.phone}</span>
-                      </div>
-                    )}
-                    {user.address && (
-                      <div className="flex items-center space-x-3 text-text-secondary">
-                        <MapPin className="w-4 h-4" />
-                        <span className="text-text">{user.address}, {user.city} - {user.state}</span>
-                      </div>
-                    )}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">E-mail</span>
+                    <p className="text-white font-medium">{user.email}</p>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Telefone</span>
+                    <p className="text-white font-medium">{user.phone || t('Não informado')}</p>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Endereço de Entrega</span>
+                    <p className="text-white font-medium">
+                      {user.address ? `${user.address}, ${user.city} - ${user.state} (CEP ${user.zip_code || ''})` : t('Não informado')}
+                    </p>
                   </div>
                 </div>
               )}
-            </div>
 
-            <div className="card p-6">
-              <h2 className="text-xl font-semibold text-text mb-6">{t('Ações Rápidas')}</h2>
-              <div className="space-y-3">
-                <Link
-                  to="/create-listing"
-                  className="flex items-center space-x-3 p-3 rounded-lg bg-background hover:bg-primary/10 transition-colors border border-border"
-                >
-                  <Plus className="w-5 h-5 text-primary" />
-                  <span className="text-text">{t('Nova Listagem')}</span>
-                </Link>
-                <Link
-                  to="/messages"
-                  className="flex items-center space-x-3 p-3 rounded-lg bg-background hover:bg-primary/10 transition-colors border border-border"
-                >
-                  <MessageCircle className="w-5 h-5 text-info" />
-                  <span className="text-text">{t('Mensagens')}</span>
-                </Link>
-                <Link
-                  to="/favorites"
-                  className="flex items-center space-x-3 p-3 rounded-lg bg-background hover:bg-primary/10 transition-colors border border-border"
-                >
-                  <Package className="w-5 h-5 text-warning" />
-                  <span className="text-text">{t('Favoritos')}</span>
-                </Link>
-              </div>
-            </div>
-
-            <div className="card p-6">
-              <h2 className="text-xl font-semibold text-text mb-4">{t('Recebimentos')}</h2>
-              <p className="text-text-secondary text-sm mb-4">
-                Configure sua conta para receber pagamentos das vendas diretamente na sua conta bancária.
-              </p>
-              {stripeError && (
-                <p className="text-red-500 text-sm mb-3">{stripeError}</p>
-              )}
-              <div className="space-y-3">
-                <button
-                  onClick={handleStripeConnect}
-                  disabled={stripeLoading}
-                  className="w-full flex items-center justify-center space-x-2 bg-primary hover:bg-primary-dark text-white px-4 py-3 rounded-lg font-medium disabled:opacity-50"
-                >
-                  <CreditCard className="w-5 h-5" />
-                  <span>
-                    {stripeLoading
-                      ? t('Processando...')
-                      : profile?.stripe_account_id
-                        ? t('Completar cadastro Stripe')
-                        : t('Conectar conta Stripe')}
-                  </span>
-                </button>
-                {profile?.stripe_account_id && (
-                  <button
-                    onClick={handleStripePortal}
-                    disabled={stripeLoading}
-                    className="w-full flex items-center justify-center space-x-2 border border-border hover:border-primary text-text px-4 py-3 rounded-lg font-medium disabled:opacity-50"
-                  >
-                    <ExternalLink className="w-5 h-5" />
-                    <span>{t('Painel Stripe')}</span>
-                  </button>
-                )}
-              </div>
             </div>
           </div>
-        </div>
+        )}
+
       </div>
     </div>
   )
