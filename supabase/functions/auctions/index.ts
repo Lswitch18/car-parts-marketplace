@@ -4,19 +4,22 @@ const COMMISSION_RATE = 0.10;
 const STRIPE_FEE_RATE = 0.029;
 const STRIPE_FEE_FIXED = 30;
 
-/** Calcula comissão da plataforma + taxa Stripe */
-function calculateFees(amount: number) {
+/** Calcula comissão da plataforma + taxa Stripe com arredondamento financeiro seguro */
+function calculateFees(amount: number, isIntegerCurrency = true) {
   const commission = amount * COMMISSION_RATE;
   const stripeFee = (amount * STRIPE_FEE_RATE) + STRIPE_FEE_FIXED;
   const platformFee = commission + stripeFee;
   const sellerNet = amount - platformFee;
+
+  const round = (val: number) => isIntegerCurrency ? Math.round(val) : Math.round(val * 100) / 100;
+
   return {
-    gross_amount: amount,
+    gross_amount: round(amount),
     commission_rate: COMMISSION_RATE,
-    commission_amount: commission,
-    stripe_fee: stripeFee,
-    platform_fee: platformFee,
-    seller_net: sellerNet,
+    commission_amount: round(commission),
+    stripe_fee: round(stripeFee),
+    platform_fee: round(platformFee),
+    seller_net: round(sellerNet),
   };
 }
 

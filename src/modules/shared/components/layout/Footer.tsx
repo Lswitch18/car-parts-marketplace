@@ -186,16 +186,16 @@ export default function Footer() {
           <p className="text-gray-400 text-sm">
             © 2026 GAID. {t('Todos os direitos reservados.')}
           </p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+          <div className="flex flex-wrap gap-4 mt-4 md:mt-0 items-center">
+            <Link to="/legal" className="text-gray-400 hover:text-white text-sm transition-colors">
+              特定商取引法に基づく表記 (SCT)
+            </Link>
+            <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
               {t('Termos de Uso')}
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            </Link>
+            <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
               {t('Privacidade')}
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              {t('Cookies')}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

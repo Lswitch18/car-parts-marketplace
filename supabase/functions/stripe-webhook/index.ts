@@ -163,12 +163,11 @@ async function notifyPaymentConfirmed(tx: any) {
     },
   ];
 
-  for (const msg of messages) {
-    try {
-      await supabase.from('messages').insert(msg);
-    } catch (e: any) {
-      console.error('[Webhook] Erro ao criar mensagem de pagamento confirmado:', e);
-    }
+  try {
+    const { error: msgErr } = await supabase.from('messages').insert(messages);
+    if (msgErr) console.error('[Webhook] Erro ao criar mensagens em batch:', msgErr);
+  } catch (e: any) {
+    console.error('[Webhook] Erro ao criar mensagens de pagamento confirmado:', e);
   }
 
   // Email para o comprador

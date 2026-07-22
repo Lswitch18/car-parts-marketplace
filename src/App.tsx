@@ -45,6 +45,9 @@ const Auctions = lazy(() => import('@/modules/auctions/pages/Auctions'))
 const PartsLookup = lazy(() => import('@/modules/parts-catalog/pages/PartsLookup'))
 const DriverApprovalsPage = lazy(() => import('@/modules/transportation/pages/admin/DriverApprovalsPage'))
 const AiOpsPage = lazy(() => import('@/modules/backoffice/pages/AiOpsPage'))
+const LegalNotice = lazy(() => import('@/modules/storefront/pages/LegalNotice'))
+const TermsOfService = lazy(() => import('@/modules/storefront/pages/TermsOfService'))
+const PrivacyPolicy = lazy(() => import('@/modules/storefront/pages/PrivacyPolicy'))
 
 function App() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -87,6 +90,10 @@ function App() {
             <Route path="product/:id" element={<ProductDetail />} />
             <Route path="cars" element={<CarList />} />
             <Route path="auctions" element={<Auctions />} />
+            <Route path="legal" element={<LegalNotice />} />
+            <Route path="tokushouhou" element={<LegalNotice />} />
+            <Route path="terms" element={<TermsOfService />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
             
             {/* Rotas Protegidas (Exigem Login) */}
             <Route element={<ProtectedRoute />}>

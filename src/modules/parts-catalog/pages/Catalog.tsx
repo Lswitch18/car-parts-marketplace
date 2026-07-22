@@ -93,7 +93,7 @@ export default function Catalog() {
   const activeFiltersCount = useMemo(() => Object.values(filters).filter(v => v).length, [filters])
 
   const { data: products = [], isLoading } = useQuery<ProductUI[]>({
-    queryKey: ['products', 'catalog', filters],
+    queryKey: ['products', 'catalog', filters, sortBy],
     staleTime: 300_000,
     gcTime: 300_000,
     queryFn: async () => {
