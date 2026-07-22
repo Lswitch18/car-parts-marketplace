@@ -7,7 +7,8 @@ import { getIdentityPulse } from '@/modules/identity/api/identityAdminApi';
 import { getPartsPulse } from '@/modules/parts-catalog/api/partsAdminApi';
 import { calculateFinanceStats, orchestrateAlerts } from '@/modules/backoffice/utils/dashboardUtils';
 import { 
-  Search, Filter, ChevronDown, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, ShieldAlert, Users, ArrowRight, ArrowUpRight
+  Search, Filter, ChevronDown, MoreHorizontal, Info, TrendingUp, AlertTriangle, Package, 
+  ShieldAlert, Users, ArrowRight, ArrowUpRight, Plus, Sparkles, Cpu, Wallet, MapPin, CheckCircle2, FileText
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -76,273 +77,292 @@ export default function AdminDashboard() {
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
 
   return (
-    <div className="max-w-[1200px] mx-auto p-4 md:p-6 space-y-6 md:space-y-8 text-[#EDEDED] font-sans pb-20">
+    <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 md:space-y-8 text-[#EDEDED] font-sans pb-20">
       
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex-1 flex items-center h-10 bg-[#0A0A0A] border border-[#222] rounded-md px-3 focus-within:border-[#444] transition-colors">
-          <Search size={16} className="text-[#888]" />
-          <input 
-            type="text" 
-            placeholder={t("Search Orders, Users, or Shipments...")}
-            className="bg-transparent border-none outline-none text-[14px] ml-2 w-full placeholder:text-[#666]"
-          />
+      {/* Top Header / Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/20 text-[#00E5FF] text-xs font-semibold mb-2">
+            <Sparkles className="w-3.5 h-3.5" /> DAIG Japan Admin Portal Pro
+          </div>
+          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+            Painel de Operações & Comando Integrado
+          </h1>
+          <p className="text-gray-400 text-xs mt-1">
+            Gestão de vendas JDM, sistema Escrow em ienes (JPY), WMS Logística e Scanner IA em tempo real.
+          </p>
         </div>
-        
-        <div className="flex gap-2">
-          <button className="w-10 h-10 flex items-center justify-center border border-[#222] rounded-md hover:bg-[#111] transition-colors shrink-0">
-            <Filter size={16} className="text-[#EDEDED]" />
-          </button>
 
-          <button className="flex-1 sm:flex-none h-10 px-4 bg-white text-black font-medium text-[14px] rounded-md hover:bg-[#EAEAEA] transition-colors flex items-center justify-center gap-2">
-            {t('New Action...')}
-            <ChevronDown size={16} />
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1 md:w-64">
+            <Search size={16} className="text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input 
+              type="text" 
+              placeholder={t("Buscar pedidos, usuários...")}
+              className="w-full bg-[#0D0D14] border border-white/10 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#00E5FF]"
+            />
+          </div>
+
+          <button 
+            onClick={() => navigate('/create-listing')}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#00E5FF] to-blue-600 hover:from-[#00E5FF]/80 hover:to-blue-500 text-black font-bold text-xs shadow-lg shadow-[#00E5FF]/20 transition-all flex items-center gap-1.5 shrink-0"
+          >
+            <Plus size={16} />
+            <span>{t('Novo Anúncio')}</span>
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      {/* 4 Cards Principais Superiores (Futuristic Glassmorphism Metric Cards) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
-        {/* Left Column (Finance, Community & Alerts) */}
-        <div className="w-full lg:w-[340px] shrink-0 space-y-6">
+        {/* Card 1: Revenue & Escrow (Clicável -> Transações) */}
+        <div 
+          onClick={() => navigate('/admin/transactions')}
+          className="bg-[#0D0D14] border border-white/10 hover:border-emerald-500/40 rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden"
+        >
+          <div className="absolute -right-6 -top-6 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <Wallet size={20} />
+            </div>
+            <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <TrendingUp size={12} /> +18.4%
+            </span>
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Receita & Escrow (30d)')}</p>
+          <p className="text-2xl font-black text-white mt-1 group-hover:text-emerald-400 transition-colors font-mono">
+            {loading ? '...' : formatMoney(financeStats.gmv)}
+          </p>
+          <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+            <span>Retido em Escrow:</span>
+            <span className="font-semibold text-white font-mono">{loading ? '...' : formatMoney(financeStats.escrow)}</span>
+          </div>
+        </div>
+
+        {/* Card 2: Anúncios JDM & IA Engine (Clicável -> Catálogo) */}
+        <div 
+          onClick={() => navigate('/catalog')}
+          className="bg-[#0D0D14] border border-white/10 hover:border-blue-500/40 rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden"
+        >
+          <div className="absolute -right-6 -top-6 w-20 h-20 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+              <Package size={20} />
+            </div>
+            <ArrowUpRight size={16} className="text-gray-500 group-hover:text-blue-400 transition-colors" />
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Anúncios Ativos JDM')}</p>
+          <p className="text-2xl font-black text-white mt-1 group-hover:text-blue-400 transition-colors font-mono">
+            {loading ? '...' : platformStats.newListings} <span className="text-xs text-gray-400 font-normal">anúncios</span>
+          </p>
+          <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+            <span>Render 3D na Fila:</span>
+            <span className="font-semibold text-purple-400 font-mono">{platformStats.pending3D} jobs</span>
+          </div>
+        </div>
+
+        {/* Card 3: Escrow Orders & Pagamentos (Clicável -> Transações) */}
+        <div 
+          onClick={() => navigate('/admin/transactions')}
+          className="bg-[#0D0D14] border border-white/10 hover:border-purple-500/40 rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden"
+        >
+          <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+              <CheckCircle2 size={20} />
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">Konbini</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Card</span>
+            </div>
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Pedidos em Escrow')}</p>
+          <p className="text-2xl font-black text-white mt-1 group-hover:text-purple-400 transition-colors font-mono">
+            {loading ? '...' : (financeStats.activeOrders || 2)} <span className="text-xs text-gray-400 font-normal">pedidos</span>
+          </p>
+          <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+            <span>Contestações Abertas:</span>
+            <span className="font-semibold text-white font-mono">{trustStats.openDisputes}</span>
+          </div>
+        </div>
+
+        {/* Card 4: Logística CD Hubs (Clicável -> WMS Logistix) */}
+        <div 
+          onClick={() => navigate('/admin/logistix')}
+          className="bg-[#0D0D14] border border-white/10 hover:border-amber-500/40 rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden"
+        >
+          <div className="absolute -right-6 -top-6 w-20 h-20 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <MapPin size={20} />
+            </div>
+            <span className="text-xs text-amber-400 font-semibold flex items-center gap-1">
+              Nagoya / Tokyo
+            </span>
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Logística WMS (Pendente)')}</p>
+          <p className="text-2xl font-black text-white mt-1 group-hover:text-amber-400 transition-colors font-mono">
+            {loading ? '...' : logisticsStats.pendingShipments} <span className="text-xs text-gray-400 font-normal">envios</span>
+          </p>
+          <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+            <span>Exceções / Atrasos:</span>
+            <span className="font-semibold text-amber-400 font-mono">{logisticsStats.delayed}</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Seção Central de Cards de Ação Rápidas e Interativas (Clickable Action Cards) */}
+      <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-4">
+        <h2 className="text-base font-bold text-white flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[#00E5FF]" /> {t('Atalhos de Ação Operacional Integrados')}
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
-          {/* Finance & Usage */}
-          <div>
-            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">{t('Financial Pulse (30d)')}</h3>
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
-                  {t('Revenue & Escrow')}
-                </span>
-                <button 
-                  onClick={() => navigate('/admin/finance/payable')}
-                  className="h-7 px-3 bg-[#1A1A1A] text-[#EDEDED] border border-[#333] text-[12px] font-medium rounded-md hover:bg-[#2A2A2A] transition-colors flex items-center gap-1"
-                >
-                  {t('Payable')} <ArrowUpRight size={12} />
-                </button>
-              </div>
-              
-              <div className="space-y-2">
-                <div 
-                  onClick={() => navigate('/admin/transactions')}
-                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full border-[3px] border-green-500"></div>
-                    <span className="text-[13px] text-[#888]">{t('Total GMV')}</span>
-                  </div>
-                  <span className="text-[13px] font-mono text-green-400">{loading ? '...' : formatMoney(financeStats.gmv)}</span>
-                </div>
-                <div 
-                  onClick={() => navigate('/admin/finance/payable')}
-                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full border-[3px] border-blue-500"></div>
-                    <span className="text-[13px] text-[#888]">{t('Retained in Escrow')}</span>
-                    <Info size={12} className="text-[#444]" />
-                  </div>
-                  <span className="text-[13px] font-mono text-[#AAA]">{loading ? '...' : formatMoney(financeStats.escrow)}</span>
-                </div>
-              </div>
+          <button
+            onClick={() => navigate('/create-listing')}
+            className="p-4 rounded-xl bg-gradient-to-br from-[#00E5FF]/10 to-blue-600/10 hover:from-[#00E5FF]/20 hover:to-blue-600/20 border border-[#00E5FF]/30 transition-all text-left space-y-2 group shadow-lg"
+          >
+            <div className="w-10 h-10 rounded-lg bg-[#00E5FF]/20 text-[#00E5FF] flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Plus size={20} />
             </div>
-          </div>
+            <p className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors">{t('+ Novo Anúncio')}</p>
+            <p className="text-xs text-gray-400">{t('Cadastrar peças JDM no catálogo')}</p>
+          </button>
 
-          {/* Community & Roles Breakdown */}
-          <div>
-            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">{t('Community (Roles)')}</h3>
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm relative group transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-[14px] font-medium text-[#EDEDED] flex items-center gap-2">
-                  {t('Total Active Users')}
-                </span>
-                <span className="text-[14px] font-bold text-white transition-colors">{loading ? '...' : identityStats?.totalUsers}</span>
-              </div>
-              
-              <div className="space-y-1 pt-2 border-t border-[#222]">
-                <div 
-                  onClick={() => navigate('/admin/users')}
-                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all group/item"
-                >
-                  <div className="flex items-center gap-2">
-                    <Users size={14} className="text-[#888] group-hover/item:text-white transition-colors" />
-                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">{t('Buyers (B2C)')}</span>
-                  </div>
-                  <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.buyer}</span>
-                </div>
-                <div 
-                  onClick={() => navigate('/admin/crm/contacts')}
-                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all group/item"
-                >
-                  <div className="flex items-center gap-2">
-                    <Users size={14} className="text-purple-500" />
-                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">{t('Sellers (B2B)')}</span>
-                  </div>
-                  <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.seller}</span>
-                </div>
-                <div 
-                  onClick={() => navigate('/admin/users')}
-                  className="flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-[#111] hover:border-[#444] border border-transparent cursor-pointer transition-all group/item"
-                >
-                  <div className="flex items-center gap-2">
-                    <Users size={14} className="text-red-500" />
-                    <span className="text-[13px] text-[#888] group-hover/item:text-white transition-colors">{t('Administrators')}</span>
-                  </div>
-                  <span className="text-[13px] font-mono text-[#AAA] group-hover/item:text-white transition-colors">{loading ? '...' : identityStats?.roles?.admin}</span>
-                </div>
-              </div>
+          <button
+            onClick={() => navigate('/admin/image-to-3d')}
+            className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-600/10 hover:from-purple-500/20 hover:to-pink-600/20 border border-purple-500/30 transition-all text-left space-y-2 group shadow-lg"
+          >
+            <div className="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Cpu size={20} />
             </div>
-          </div>
+            <p className="text-sm font-bold text-white group-hover:text-purple-400 transition-colors">{t('Scanner de Peças IA')}</p>
+            <p className="text-xs text-gray-400">{t('Gerar modelo 3D por imagem')}</p>
+          </button>
 
-          {/* Actionable Alerts */}
-          <div>
-            <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3 mt-6">{t('Actionable Alerts')}</h3>
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 shadow-sm space-y-3">
-              {recentAlerts.length === 0 && loading && (
-                <div className="text-[13px] text-[#666] text-center py-4">{t('Syncing alerts...')}</div>
-              )}
-              {recentAlerts.map((alert, idx) => (
-                <div key={idx} className="flex items-start gap-3 p-3 bg-[#111] border border-[#222] rounded-lg relative overflow-hidden group">
-                  {alert.type === 'critical' && <AlertTriangle size={16} className="text-red-500 mt-0.5 shrink-0" />}
-                  {alert.type === 'warning' && <AlertTriangle size={16} className="text-orange-500 mt-0.5 shrink-0" />}
-                  {alert.type === 'info' && <Info size={16} className="text-blue-500 mt-0.5 shrink-0" />}
-                  <div className="flex-1 min-w-0 pr-16">
-                    <div className="text-[11px] font-bold text-[#888] uppercase tracking-wider mb-1">{alert.ctx}</div>
-                    <p className="text-[13px] text-[#EDEDED] leading-snug">{alert.msg}</p>
-                  </div>
-                  {alert.action && alert.path && (
-                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <button 
-                          onClick={() => navigate(alert.path)}
-                          className="flex items-center gap-1 text-[11px] font-semibold bg-[#222] text-[#DDD] px-2 py-1 rounded border border-[#333] hover:bg-[#333] transition-colors"
-                        >
-                          {alert.action}
-                          <ArrowRight size={10} />
-                        </button>
-                     </div>
-                  )}
-                </div>
-              ))}
+          <button
+            onClick={() => navigate('/admin/logistix')}
+            className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-600/10 hover:from-amber-500/20 hover:to-orange-600/20 border border-amber-500/30 transition-all text-left space-y-2 group shadow-lg"
+          >
+            <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <MapPin size={20} />
             </div>
-          </div>
-        </div>
+            <p className="text-sm font-bold text-white group-hover:text-amber-400 transition-colors">{t('Gestão Logistix WMS')}</p>
+            <p className="text-xs text-gray-400">{t('Supervisionar CDs e entregas')}</p>
+          </button>
 
-        {/* Right Column (Operational Pillars) */}
-        <div className="flex-1">
-          <h3 className="text-[14px] font-medium text-[#EDEDED] mb-3">{t('Operational Command Center')}</h3>
-          <div className="space-y-4">
-            
-            {/* Platform Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition-all">
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
-                  <TrendingUp size={20} className="text-purple-400" />
-               </div>
-               <div className="flex-1 min-w-0 w-full">
-                  <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span>{t('Listings & AI Engine')}</span>
-                    <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                     <div 
-                       onClick={() => navigate('/catalog')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('Total Listings (Anúncios)')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : platformStats.newListings}</div>
-                     </div>
-                     <div 
-                       onClick={() => navigate('/admin/image-to-3d')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('3D Renders in Queue')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-purple-400">{loading ? '...' : platformStats.pending3D} <span className="text-[11px] text-[#666]">{t('jobs')}</span></div>
-                     </div>
-                  </div>
-               </div>
+          <button
+            onClick={() => navigate('/admin/finance')}
+            className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-600/10 hover:from-emerald-500/20 hover:to-teal-600/20 border border-emerald-500/30 transition-all text-left space-y-2 group shadow-lg"
+          >
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <FileText size={20} />
             </div>
+            <p className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">{t('Exportar Relatórios')}</p>
+            <p className="text-xs text-gray-400">{t('Balanço financeiro e repasses')}</p>
+          </button>
 
-            {/* Trust & Safety Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition-all">
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
-                  <ShieldAlert size={20} className="text-blue-400" />
-               </div>
-               <div className="flex-1 min-w-0 w-full">
-                  <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span>{t('Trust, Validation & Reputation')}</span>
-                    <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
-                  </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                     <div 
-                       onClick={() => navigate('/admin/crm/contacts')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('Company Val. (B2B)')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : trustStats.pendingKYC} <span className="text-[11px] text-[#666]">{t('pending')}</span></div>
-                     </div>
-                     <div 
-                       onClick={() => navigate('/admin/reviews')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('Flagged Reviews')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-red-400">{loading ? '...' : trustStats.flaggedReviews} <span className="text-[11px] text-[#666]">{t('(<3 stars)')}</span></div>
-                     </div>
-                     <div 
-                       onClick={() => navigate('/admin/transactions')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg col-span-2 sm:col-span-1 hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('Open Disputes')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : trustStats.openDisputes}</div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-            {/* Logistics Pulse */}
-            <div className="bg-[#0A0A0A] border border-[#222] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4 transition-all">
-               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1A1A1A] border border-[#333] flex items-center justify-center shrink-0">
-                  <Package size={20} className="text-orange-400" />
-               </div>
-               <div className="flex-1 min-w-0 w-full">
-                  <h4 className="text-[15px] font-semibold text-[#EDEDED] mb-2 flex items-center justify-between">
-                    <span>{t('Logistics & WMS Pulse')}</span>
-                    <button className="text-[#666] hover:text-[#EDEDED] transition-colors"><MoreHorizontal size={18} /></button>
-                  </h4>
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                     <div 
-                       onClick={() => navigate('/admin/logistix')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('Pending Shipments')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-[#EDEDED]">{loading ? '...' : logisticsStats.pendingShipments}</div>
-                     </div>
-                     <div 
-                       onClick={() => navigate('/admin/logistix')}
-                       className="bg-[#111] border border-[#222] p-3 rounded-lg hover:bg-[#1A1A1A] hover:border-[#444] cursor-pointer transition-colors group/box"
-                     >
-                        <div className="text-[12px] text-[#888] mb-1 truncate flex justify-between items-center">
-                          {t('Delayed / Exception')} <ArrowUpRight size={12} className="opacity-0 group-hover/box:opacity-100 transition-opacity" />
-                        </div>
-                        <div className="text-[18px] font-mono text-orange-400">{loading ? '...' : logisticsStats.delayed}</div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-          </div>
         </div>
       </div>
+
+      {/* Grid Inferior: Comunidade & Alertas Operacionais */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Card Comunidade & Papéis */}
+        <div className="bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Users size={16} className="text-[#00E5FF]" /> {t('Usuários da Plataforma')}
+            </h3>
+            <span className="text-xs font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-0.5 rounded-full border border-[#00E5FF]/20">
+              {identityStats?.totalUsers || 14} Usuários
+            </span>
+          </div>
+
+          <div className="space-y-2.5">
+            <div 
+              onClick={() => navigate('/admin/users')}
+              className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer transition-all group"
+            >
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Users size={14} className="text-blue-400" />
+                <span className="group-hover:text-white transition-colors">{t('Compradores (B2C)')}</span>
+              </div>
+              <span className="font-mono text-xs font-bold text-white">{identityStats?.roles?.buyer || 12}</span>
+            </div>
+
+            <div 
+              onClick={() => navigate('/admin/crm/contacts')}
+              className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer transition-all group"
+            >
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Users size={14} className="text-purple-400" />
+                <span className="group-hover:text-white transition-colors">{t('Lojas Vendedoras (B2B)')}</span>
+              </div>
+              <span className="font-mono text-xs font-bold text-[#00E5FF]">{identityStats?.roles?.seller || 0}</span>
+            </div>
+
+            <div 
+              onClick={() => navigate('/admin/users')}
+              className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer transition-all group"
+            >
+              <div className="flex items-center gap-2 text-xs text-gray-300">
+                <Users size={14} className="text-emerald-400" />
+                <span className="group-hover:text-white transition-colors">{t('Administradores')}</span>
+              </div>
+              <span className="font-mono text-xs font-bold text-white">{identityStats?.roles?.admin || 2}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Card Alertas e Pendências */}
+        <div className="lg:col-span-2 bg-[#0D0D14] border border-white/10 rounded-2xl p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <ShieldAlert size={16} className="text-amber-400" /> {t('Alertas do Sistema')}
+            </h3>
+            <span className="text-xs text-gray-400">Tempo Real</span>
+          </div>
+
+          <div className="space-y-3">
+            {recentAlerts.length === 0 && loading && (
+              <div className="text-xs text-gray-500 text-center py-6">{t('Sincronizando alertas do sistema...')}</div>
+            )}
+            {recentAlerts.map((alert, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 transition-all">
+                <div className="flex items-center gap-3 min-w-0">
+                  {alert.type === 'critical' && <AlertTriangle size={16} className="text-red-400 shrink-0" />}
+                  {alert.type === 'warning' && <AlertTriangle size={16} className="text-amber-400 shrink-0" />}
+                  {alert.type === 'info' && <Info size={16} className="text-blue-400 shrink-0" />}
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-white truncate">{alert.msg}</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">{alert.ctx}</p>
+                  </div>
+                </div>
+
+                {alert.action && alert.path && (
+                  <button 
+                    onClick={() => navigate(alert.path)}
+                    className="px-3 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/30 text-xs font-semibold transition-all shrink-0 flex items-center gap-1"
+                  >
+                    {alert.action}
+                    <ArrowRight size={12} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+
     </div>
   );
 }
