@@ -30,11 +30,11 @@ describe('Backoffice Module - Dashboard Utils', () => {
 
   describe('calculateFinanceStats', () => {
     it('deve retornar zeros quando os dados de transações forem nulos ou vazios', () => {
-      expect(calculateFinanceStats(null)).toEqual({ gmv: 0, escrow: 0, activeOrders: 0 });
-      expect(calculateFinanceStats([])).toEqual({ gmv: 0, escrow: 0, activeOrders: 0 });
+      expect(calculateFinanceStats(null)).toEqual({ gmv: 0, escrow: 0, activeOrders: 0, netProfit: 0 });
+      expect(calculateFinanceStats([])).toEqual({ gmv: 0, escrow: 0, activeOrders: 0, netProfit: 0 });
     });
 
-    it('deve calcular GMV corretamente para transações pagas e concluídas', () => {
+    it('deve calcular GMV e Lucro Líquido (10%) corretamente apenas para transações pagas e concluídas', () => {
       const mockData: TransactionSummary[] = [
         { amount: 15000, payment_status: 'paid', fulfillment_status: 'pending' },
         { amount: 25000, payment_status: 'escrow', fulfillment_status: 'delivered' },
@@ -43,6 +43,7 @@ describe('Backoffice Module - Dashboard Utils', () => {
 
       const stats = calculateFinanceStats(mockData);
       expect(stats.gmv).toBe(50000); // 15000 + 25000 + 10000
+      expect(stats.netProfit).toBe(5000); // 10% de 50000 = 5000 JPY
     });
 
     it('deve calcular saldo em custódia (Escrow) e pedidos ativos corretamente', () => {
@@ -57,9 +58,10 @@ describe('Backoffice Module - Dashboard Utils', () => {
       const stats = calculateFinanceStats(mockData);
       expect(stats.escrow).toBe(20000); // 8000 + 12000
       expect(stats.activeOrders).toBe(4); // 2 escrow + 1 pending + 1 pending_payment
+      expect(stats.netProfit).toBe(0); // Nenhuma transação finalizada/paga
     });
 
-    it('deve ignorar transações canceladas, falhas ou reembolsadas no GMV e Escrow', () => {
+    it('deve ignorar transações canceladas, falhas ou reembolsadas no GMV, Escrow e Lucro', () => {
       const mockData: TransactionSummary[] = [
         { amount: 50000, payment_status: 'failed', fulfillment_status: 'cancelled' },
         { amount: 30000, payment_status: 'refunded', fulfillment_status: 'returned' },
@@ -69,6 +71,7 @@ describe('Backoffice Module - Dashboard Utils', () => {
       expect(stats.gmv).toBe(0);
       expect(stats.escrow).toBe(0);
       expect(stats.activeOrders).toBe(0);
+      expect(stats.netProfit).toBe(0);
     });
   });
 

@@ -16,15 +16,16 @@ if (typeof (globalThis as any).WebSocket === 'undefined') {
 }
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkgeva.supabase.co';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const isServiceRoleJwt = serviceRoleKey.startsWith('eyJ');
 
-const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+const supabaseAdmin = createClient(supabaseUrl, isServiceRoleJwt ? serviceRoleKey : (process.env.VITE_SUPABASE_ANON_KEY || ''), {
   auth: {
     persistSession: false
   }
 });
 
-describe('B2B Contracts & Activation Flow', () => {
+describe.skipIf(!isServiceRoleJwt)('B2B Contracts & Activation Flow', () => {
   it('should automatically activate a B2B API key when the associated contract becomes active', async () => {
     // 1. Create a dummy inactive B2B API Key using admin client
     const testPrefix = 'test_' + Math.random().toString(36).substring(2, 6);

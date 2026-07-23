@@ -13,6 +13,7 @@ export interface FinanceStats {
   gmv: number;
   escrow: number;
   activeOrders: number;
+  netProfit: number;
 }
 
 export interface AlertItem {
@@ -40,16 +41,22 @@ export function calculateGrowth(current: number, previous: number): number {
 }
 
 /**
- * Consolida as métricas financeiras (GMV, Saldo em Custódia Escrow e Pedidos Ativos)
+ * Consolida as métricas financeiras (GMV, Lucro Líquido da Plataforma, Saldo em Custódia Escrow e Pedidos Ativos)
  * a partir das transações da plataforma.
+ * 
+ * REGRA RIGOROSA: Apenas transações efetivamente pagas ou entregues (status 'paid', 'delivered' ou 'completed')
+ * são contabilizadas no GMV e no Lucro da Plataforma (10% de comissão).
+ * Pagamentos pendentes do Konbini ('pending_payment'), transações canceladas ('failed') ou reembolsadas ('refunded')
+ * NÃO são contabilizadas no lucro nem no GMV.
  */
 export function calculateFinanceStats(txData: TransactionSummary[] | null | undefined): FinanceStats {
   let gmv = 0;
   let escrow = 0;
   let activeOrders = 0;
+  let netProfit = 0;
 
   if (!txData || !Array.isArray(txData)) {
-    return { gmv, escrow, activeOrders };
+    return { gmv, escrow, activeOrders, netProfit };
   }
 
   for (const tx of txData) {
@@ -57,9 +64,10 @@ export function calculateFinanceStats(txData: TransactionSummary[] | null | unde
     const paymentStatus = tx.payment_status || '';
     const fulfillmentStatus = tx.fulfillment_status || '';
 
-    // GMV engloba pagamentos confirmados/concluídos ou entregues
+    // Apenas transações pagas e finalizadas entram no GMV e no Lucro Líquido (10% comissão)
     if (paymentStatus === 'paid' || fulfillmentStatus === 'delivered' || fulfillmentStatus === 'completed') {
       gmv += amount;
+      netProfit += amount * 0.10; // 10% Take Rate / Comissão da Plataforma DAIG
     }
 
     // Escrow engloba valores em custódia pendentes de confirmação de entrega do comprador
@@ -71,7 +79,7 @@ export function calculateFinanceStats(txData: TransactionSummary[] | null | unde
     }
   }
 
-  return { gmv, escrow, activeOrders };
+  return { gmv, escrow, activeOrders, netProfit };
 }
 
 /**
