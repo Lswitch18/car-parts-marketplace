@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { User, Building2, Wrench, Car, Package, Globe, ChevronRight, CheckCircle, Sparkles, Store } from 'lucide-react'
+import GaidLogo from '@/modules/shared/components/GaidLogo'
 
 const STORE_TYPES = [
   { id: 'oficina', label: 'Oficina Mecânica', icon: Wrench, desc: 'Reparo e manutenção de veículos', color: '#F59E0B' }, // Amber
@@ -115,39 +116,43 @@ export default function Onboarding() {
       <OnboardingLayout t={t}>
         <div className="w-full max-w-lg text-center relative z-10">
           <div
-            className="rounded-3xl p-10 mb-8"
-            style={{
-              background: 'rgba(10,10,15,0.6)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(13,117,255,0.2)',
-              boxShadow: '0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
-            }}
+            className="rounded-3xl p-8 sm:p-10 mb-8 border border-zinc-800 bg-zinc-900/90 backdrop-blur-2xl shadow-2xl"
           >
-            <div className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center transition-transform"
-              style={{ 
-                background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
-                boxShadow: '0 0 40px rgba(13,117,255,0.4)',
-                animation: 'pulse 3s infinite'
-              }}>
-              <Sparkles className="w-12 h-12 text-white" />
+            <div className="flex justify-center mb-6">
+              <GaidLogo size={56} variant="horizontal" />
             </div>
-            <h1 className="font-display text-4xl font-bold text-white mb-3" style={{ letterSpacing: '-0.02em' }}>
+
+            <h1 className="font-display text-3xl sm:text-4xl font-bold text-white mb-3" style={{ letterSpacing: '-0.02em' }}>
               {t('Bem-vindo à')}{' '}
-              <span className="neon-text">DAIG</span> 🎉
+              <span className="text-blue-500 font-extrabold">DAIG</span> 🎉
             </h1>
-            <p className="text-lg leading-relaxed max-w-md mx-auto" style={{ color: '#8892A4' }}>
+            <p className="text-base sm:text-lg leading-relaxed max-w-md mx-auto text-zinc-300 mb-6">
               {t('O maior marketplace de peças automotivas JDM do Japão. Vamos configurar sua conta em poucos segundos.')}
             </p>
+
+            <div className="pt-4 border-t border-zinc-800/80 text-xs text-zinc-400 flex flex-wrap items-center justify-center gap-1.5">
+              <span>{t('Ao continuar, você concorda com os')}</span>
+              <Link to="/terms" className="text-zinc-200 hover:text-white underline transition-colors font-medium">
+                {t('Termos de Uso')}
+              </Link>
+              <span>{t('e')}</span>
+              <Link to="/privacy" className="text-zinc-200 hover:text-white underline transition-colors font-medium">
+                {t('Política de Privacidade')}
+              </Link>
+            </div>
           </div>
 
           <button
             onClick={() => setStep(1)}
-            className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, #0D75FF 0%, #7000FF 100%)',
-              boxShadow: '0 0 30px rgba(13,117,255,0.4)',
-            }}
+            className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-semibold text-white text-lg transition-all duration-300 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02]"
+          >
+            {t('Começar')}
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+      </OnboardingLayout>
+    )
+  }
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLElement
               el.style.transform = 'translateY(-2px) scale(1.02)'
