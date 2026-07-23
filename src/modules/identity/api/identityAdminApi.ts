@@ -6,16 +6,14 @@ import { supabase } from '@/modules/shared/lib/supabase';
  */
 export async function getIdentityPulse() {
   try {
-    const [totalUsers, admins, sellers, pendingStores] = await Promise.all([
-      supabase.from('profiles').select('id', { count: 'exact', head: true }),
-      supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'admin'),
-      supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'seller'),
-      supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('is_store', true).eq('store_verified', false)
-    ]);
-    
-    const totalCount = totalUsers.count || 0;
-    const adminCount = admins.count || 0;
-    const sellerCount = sellers.count || 0;
+    const totalRes = await supabase.from('profiles').select('id', { count: 'exact' });
+    const adminRes = await supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'admin');
+    const sellerRes = await supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'seller');
+    const pendingStoresRes = await supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'seller');
+
+    const totalCount = totalRes.count || totalRes.data?.length || 0;
+    const adminCount = adminRes.count || adminRes.data?.length || 0;
+    const sellerCount = sellerRes.count || sellerRes.data?.length || 0;
     const buyerCount = totalCount - adminCount - sellerCount;
 
     return {
@@ -25,7 +23,7 @@ export async function getIdentityPulse() {
         seller: sellerCount,
         buyer: buyerCount >= 0 ? buyerCount : 0
       },
-      pendingStoreValidations: pendingStores.count || 0
+      pendingStoreValidations: pendingStoresRes.count || 0
     };
   } catch (error) {
     console.error("Error fetching identity pulse:", error);

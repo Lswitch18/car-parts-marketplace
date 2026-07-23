@@ -5,7 +5,7 @@ import * as THREE from 'three'
 function WireGlobe() {
   const groupRef = useRef<THREE.Group>(null)
 
-  const data = useMemo(() => {
+  const { pointsGeo, linesGeo } = useMemo(() => {
     const count = 200
     const radius = 3.8
     const pos = new Float32Array(count * 3)
@@ -53,12 +53,15 @@ function WireGlobe() {
       }
     }
 
-    return {
-      positions: pos,
-      colors: col,
-      linePositions: new Float32Array(lines),
-      lineColors: new Float32Array(lcols),
-    }
+    const pGeo = new THREE.BufferGeometry()
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
+    pGeo.setAttribute('color', new THREE.BufferAttribute(col, 3))
+
+    const lGeo = new THREE.BufferGeometry()
+    lGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lines), 3))
+    lGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(lcols), 3))
+
+    return { pointsGeo: pGeo, linesGeo: lGeo }
   }, [])
 
   useFrame((_, delta) => {
@@ -70,18 +73,10 @@ function WireGlobe() {
 
   return (
     <group ref={groupRef}>
-      <points>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={data.positions.length / 3} array={data.positions} itemSize={3} />
-          <bufferAttribute attach="attributes-color" count={data.colors.length / 3} array={data.colors} itemSize={3} />
-        </bufferGeometry>
+      <points geometry={pointsGeo}>
         <pointsMaterial size={0.1} vertexColors transparent opacity={0.7} blending={THREE.AdditiveBlending} depthWrite={false} sizeAttenuation />
       </points>
-      <lineSegments>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={data.linePositions.length / 3} array={data.linePositions} itemSize={3} />
-          <bufferAttribute attach="attributes-color" count={data.lineColors.length / 3} array={data.lineColors} itemSize={3} />
-        </bufferGeometry>
+      <lineSegments geometry={linesGeo}>
         <lineBasicMaterial vertexColors transparent opacity={0.3} />
       </lineSegments>
     </group>
