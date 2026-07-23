@@ -484,7 +484,7 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
     });
   }
 
-  const { payment_status, fulfillment_status, stripe_payment_id } = parseResult.data;
+  let { payment_status, fulfillment_status, stripe_payment_id } = parseResult.data;
 
   // Buscar transação atual
   const { data: existingTx, error: fetchErr } = await supabase
@@ -498,6 +498,11 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
       status: 404,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
+  }
+
+  // ── Automação Escrow: se o comprador confirmar o recebimento, ativa automaticamente completed ──
+  if ((fulfillment_status === 'received' || fulfillment_status === 'delivered') && (!payment_status || payment_status === 'escrow')) {
+    payment_status = 'completed';
   }
 
   const { data: profile } = await supabase
@@ -517,9 +522,9 @@ async function updateTransaction(req: Request, txId: string, body: Record<string
     });
   }
 
-  // ── Liberação de Custódia (Escrow Release via Stripe Connect) ──────────────────
+  // ── Liberação de Custódia Automática (Escrow Release via Stripe Connect) ──────────────────
   let transferId: string | null = null;
-  if (payment_status === 'completed' && existingTx.payment_status === 'escrow' && !existingTx.stripe_transfer_id) {
+  if (payment_status === 'completed' && (!existingTx.payment_status || existingTx.payment_status === 'escrow' || existingTx.payment_status === 'paid') && !existingTx.stripe_transfer_id) {
     const { data: sellerProfile } = await supabase
       .from('profiles')
       .select('stripe_account_id')
