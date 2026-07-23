@@ -123,6 +123,9 @@ export const api = {
     update: (id: string, data: { payment_status?: string; fulfillment_status?: string }) =>
       fetchApi(`/transactions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
 
+    recover: (transactionId: string) =>
+      fetchApi('/transactions/recover', { method: 'POST', body: JSON.stringify({ transaction_id: transactionId }) }),
+
     calculateFees: (amount: number) => fetchApi(`/transactions/calculate?amount=${amount}`),
   },
 

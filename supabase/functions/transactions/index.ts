@@ -39,9 +39,15 @@ Deno.serve(async (req) => {
       if (txId) return await getTransaction(txId);
     }
 
-    if (req.method === 'POST' && action === 'create') {
-      const body = await req.json();
-      return await createTransaction(req, body);
+    if (req.method === 'POST') {
+      if (action === 'create') {
+        const body = await req.json();
+        return await createTransaction(req, body);
+      }
+      if (action === 'recover') {
+        const body = await req.json();
+        return await recoverTransaction(req, body);
+      }
     }
 
     if (req.method === 'PUT') {
@@ -665,4 +671,115 @@ function calculateFeesEndpoint(req: Request) {
   return new Response(JSON.stringify(successResponse(fees)), {
     headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
   });
+}
+
+async function recoverTransaction(req: Request, body: any) {
+  const { transaction_id } = body || {};
+  if (!transaction_id) {
+    return new Response(JSON.stringify(errorResponse('transaction_id é obrigatório')), {
+      status: 400,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Fetch transaction details
+  const { data: tx, error: fetchErr } = await supabase
+    .from('transactions')
+    .select(`
+      id,
+      amount,
+      payment_status,
+      created_at,
+      buyer:profiles!transactions_buyer_id_fkey(email, full_name),
+      seller:profiles!transactions_seller_id_fkey(email, full_name),
+      part:parts!transactions_part_id_fkey(title, images, price)
+    `)
+    .eq('id', transaction_id)
+    .single();
+
+  if (fetchErr || !tx) {
+    return new Response(JSON.stringify(errorResponse('Transação não encontrada')), {
+      status: 404,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const buyerEmail = tx.buyer?.email;
+  const buyerName = tx.buyer?.full_name || buyerEmail || 'Cliente DAIG';
+  const partTitle = tx.part?.title || 'Peça Automotiva JDM';
+  const amountStr = `¥ ${new Intl.NumberFormat('ja-JP').format(tx.amount || 0)}`;
+  const appUrl = Deno.env.get('APP_URL') || 'https://daig.jp';
+  const checkoutUrl = `${appUrl}/payment/${tx.id}`;
+
+  const resendApiKey = Deno.env.get('RESEND_API_KEY');
+  let emailSent = false;
+  let providerUsed = 'in-app-notification';
+
+  if (resendApiKey && buyerEmail) {
+    try {
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'DAIG Japan Escrow <suporte@daig.jp>',
+          to: [buyerEmail],
+          subject: `🛒 Lembrete de Compra: ${partTitle} (${amountStr})`,
+          html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d14; color: #ededed; padding: 30px; border-radius: 12px;">
+              <h2 style="color: #00e5ff; margin-top: 0;">Lembrete de Pedido Pendente — DAIG Japan</h2>
+              <p>Olá <strong>${buyerName}</strong>,</p>
+              <p>Notamos que você não finalizou o pagamento do item abaixo:</p>
+              <div style="background: #18181b; padding: 15px; border-radius: 8px; border: 1px solid #27272a; margin: 20px 0;">
+                <h3 style="color: #ffffff; margin: 0 0 5px 0;">${partTitle}</h3>
+                <p style="color: #00e5ff; font-size: 20px; font-weight: bold; margin: 0;">${amountStr}</p>
+              </div>
+              <p>Garantimos a reserva por tempo limitado através do nosso sistema seguro de <strong>Custódia Escrow JPY</strong>.</p>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${checkoutUrl}" style="background: #00e5ff; color: #000; padding: 12px 30px; font-weight: bold; text-decoration: none; border-radius: 8px; display: inline-block;">
+                  Finalizar Pagamento Agora 🚀
+                </a>
+              </div>
+              <hr style="border: 0; border-top: 1px solid #27272a; margin: 25px 0;" />
+              <p style="font-size: 11px; color: #71717a; text-align: center;">Digital A.I. Garage Co., Ltd. • Nagoya / Tokyo, Japan</p>
+            </div>
+          `,
+        }),
+      });
+
+      if (resendRes.ok) {
+        emailSent = true;
+        providerUsed = 'resend';
+      } else {
+        console.error('[Transactions] Resend error:', await resendRes.text());
+      }
+    } catch (err) {
+      console.error('[Transactions] Resend exception:', err);
+    }
+  }
+
+  // Always log notification / message in system inbox as well
+  await supabase.from('messages').insert({
+    sender_id: tx.seller?.id || tx.id,
+    receiver_id: tx.buyer?.id || tx.id,
+    product_id: tx.part_id,
+    transaction_id: tx.id,
+    content: `📧 Lembrete de recuperação enviado para ${buyerName} (${buyerEmail || 'In-App'}): Peça ${partTitle} - ${amountStr}.`,
+    message_type: 'system',
+  });
+
+  return new Response(
+    JSON.stringify(
+      successResponse({
+        transaction_id: tx.id,
+        buyer_email: buyerEmail,
+        email_sent: emailSent,
+        provider: providerUsed,
+        checkout_url: checkoutUrl,
+      }, 'E-mail e notificação de recuperação de venda processados')
+    ),
+    { headers: { ...corsHeaders(), 'Content-Type': 'application/json' } }
+  );
 }

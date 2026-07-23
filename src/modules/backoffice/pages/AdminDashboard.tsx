@@ -10,7 +10,7 @@ import { calculateFinanceStats, orchestrateAlerts } from '@/modules/backoffice/u
 import { 
   Search, TrendingUp, AlertTriangle, Package, Activity,
   ShieldAlert, Users, ArrowRight, ArrowUpRight, Plus, Cpu, Wallet, MapPin, 
-  CheckCircle2, FileText, RefreshCw, Clock, BarChart3, Zap, Globe, ShieldCheck, Lock
+  CheckCircle2, FileText, RefreshCw, Clock, BarChart3, Zap, Globe, ShieldCheck, Lock, Info, Mail
 } from 'lucide-react';
 
 // Skeleton loader for clean operational loading states
@@ -210,10 +210,19 @@ export default function AdminDashboard() {
             {/* Card 1: Financeiro & Escrow */}
             <div 
               onClick={() => navigate('/admin/transactions')}
-              className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group"
+              className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group relative"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Receita Total & Escrow')}</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Receita Total & Escrow')}</span>
+                  <div className="relative group/tooltip">
+                    <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
+                    <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                      <strong>Receita Total (GMV):</strong> Volume bruto acumulado de vendas.<br/>
+                      <strong>Escrow:</strong> Valores mantidos em custódia segura até confirmação de entrega.
+                    </div>
+                  </div>
+                </div>
                 <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded flex items-center gap-1">
                   <TrendingUp size={10} /> +18.4%
                 </span>

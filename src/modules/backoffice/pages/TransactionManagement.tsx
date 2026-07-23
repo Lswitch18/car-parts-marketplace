@@ -10,7 +10,7 @@ import { api } from '@/modules/transactions/api/api';
 import { 
   ShieldCheck, DollarSign, Wallet, Filter, ArrowUpDown,
   CheckCircle2, Clock, Eye, Sparkles, Save, X, RefreshCw,
-  Calendar, Search, Loader2, ArrowUpRight, Lock
+  Calendar, Search, Loader2, ArrowUpRight, Lock, Info, Mail, Send
 } from 'lucide-react';
 
 // ─── Transaction Detail Modal ──────────────────────────────────────────────────
@@ -230,6 +230,20 @@ export default function TransactionManagement() {
     }
   };
 
+  const [recoveringId, setRecoveringId] = useState<string | null>(null);
+
+  const handleRecoverTransaction = async (transactionId: string) => {
+    try {
+      setRecoveringId(transactionId);
+      await api.transactions.recover(transactionId);
+      alert('📧 E-mail de lembrete de compra e notificação de recuperação de venda disparados com sucesso via Resend!');
+    } catch (err: any) {
+      alert(`Falha ao disparar e-mail de recuperação: ${err.message || 'Erro de comunicação'}`);
+    } finally {
+      setRecoveringId(null);
+    }
+  };
+
   const updateTransactionStatus = async (transactionId: string, status: string, type: 'payment' | 'fulfillment') => {
     try {
       const updateData = type === 'payment' 
@@ -376,15 +390,23 @@ export default function TransactionManagement() {
       {/* ═══ CLEAN OPERATIONAL LEDGER CARDS ═══ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Card 1: A Receber (Pendente) */}
+        {/* Card 1: A Receber (Pendente / Abandonada) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 ${
+          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
             activeLedgerFilter === 'receber' ? 'border-amber-500/60 bg-amber-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('A RECEBER')}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('A RECEBER')}</span>
+              <div className="relative group/tooltip">
+                <Info size={12} className="text-zinc-500 hover:text-amber-400 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                  Vendas pendentes ou abandonadas no checkout Stripe. Clique para filtrar e disparar e-mail de recuperação via Resend.
+                </div>
+              </div>
+            </div>
             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
               <Clock size={10} /> Pendente
             </span>
@@ -392,18 +414,26 @@ export default function TransactionManagement() {
           <p className="text-2xl font-bold text-white font-mono tracking-tight">
             {formatMoney(aReceberVal)}
           </p>
-          <p className="text-[11px] text-zinc-500 mt-2">Aguardando confirmação de pagamento</p>
+          <p className="text-[11px] text-zinc-500 mt-2">Clique para listar compras pendentes de recuperação</p>
         </div>
 
         {/* Card 2: Custódia Retida (Escrow) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 ${
+          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
             activeLedgerFilter === 'retido' ? 'border-sky-500/60 bg-sky-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('CUSTÓDIA RETIDA')}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('CUSTÓDIA RETIDA')}</span>
+              <div className="relative group/tooltip">
+                <Info size={12} className="text-zinc-500 hover:text-sky-400 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                  Fundos retidos com segurança em conta de custódia Escrow JPY até confirmação de entrega pelo comprador.
+                </div>
+              </div>
+            </div>
             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1">
               <Lock size={10} /> Escrow 🔒
             </span>
@@ -417,12 +447,20 @@ export default function TransactionManagement() {
         {/* Card 3: Pagos ao Vendedor */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 ${
+          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
             activeLedgerFilter === 'pagos' ? 'border-emerald-500/60 bg-emerald-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
+              <div className="relative group/tooltip">
+                <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                  Repasses efetuados aos vendedores via Stripe Connect após conclusão da entrega do pedido.
+                </div>
+              </div>
+            </div>
             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
               <CheckCircle2 size={10} /> Repassado
             </span>
@@ -434,9 +472,17 @@ export default function TransactionManagement() {
         </div>
 
         {/* Card 4: Lucro Plataforma */}
-        <div className="bg-[#121215] border border-[#27272a] rounded-xl p-4 space-y-2">
+        <div className="bg-[#121215] border border-[#27272a] rounded-xl p-4 space-y-2 relative group">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
+              <div className="relative group/tooltip">
+                <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
+                <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                  Receita líquida da DAIG: Comissão de {commissionRate}% sobre as vendas brutas descontados contratos operacionais terceirizados.
+                </div>
+              </div>
+            </div>
             <DollarSign size={14} className="text-emerald-400" />
           </div>
           <p className={`text-2xl font-bold font-mono tracking-tight ${lucroLiquido >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -476,7 +522,7 @@ export default function TransactionManagement() {
           {activeLedgerFilter && (
             <div className="flex items-center gap-2 bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1">
               <Filter size={11} className="text-zinc-400" />
-              <span className="text-[11px] text-white font-semibold uppercase">{activeLedgerFilter === 'receber' ? 'A Receber' : activeLedgerFilter === 'retido' ? 'Escrow Retido' : 'Pagos'}</span>
+              <span className="text-[11px] text-white font-semibold uppercase">{activeLedgerFilter === 'receber' ? 'A Receber (Recuperação)' : activeLedgerFilter === 'retido' ? 'Escrow Retido' : 'Pagos'}</span>
               <button onClick={() => setActiveLedgerFilter(null)} className="ml-1 text-zinc-400 hover:text-white">
                 <X size={12} />
               </button>
@@ -573,6 +619,17 @@ export default function TransactionManagement() {
 
                 {/* Actions */}
                 <div className="col-span-2 flex items-center gap-2 justify-end">
+                  {(tx.payment_status === 'pending' || tx.payment_status === 'processing') && (
+                    <button
+                      onClick={() => handleRecoverTransaction(tx.id)}
+                      disabled={recoveringId === tx.id}
+                      className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold transition-all shadow-sm flex items-center gap-1 disabled:opacity-50"
+                      title="Disparar e-mail de recuperação de venda via Resend"
+                    >
+                      <Mail size={11} />
+                      {recoveringId === tx.id ? '...' : 'Recuperar'}
+                    </button>
+                  )}
                   {tx.payment_status === 'escrow' && (
                     <button
                       onClick={() => updateTransactionStatus(tx.id, 'completed', 'payment')}
