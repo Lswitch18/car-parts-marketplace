@@ -3,9 +3,14 @@ import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 import { Navigate } from 'react-router-dom';
+import GaidLogo from '@/modules/shared/components/GaidLogo';
+import SafeImage from '@/modules/parts-catalog/components/SafeImage';
 import { adminApi } from '@/modules/transactions/api/adminApi';
 import { api } from '@/modules/transactions/api/api';
-
+import { 
+  ShieldCheck, DollarSign, Wallet, ArrowUpRight, Filter, 
+  CheckCircle2, Clock, Eye, Sparkles, Save, X, ExternalLink, RefreshCw
+} from 'lucide-react';
 
 export default function TransactionManagement() {
   const { user: currentUser } = useAuthStore();
@@ -20,7 +25,7 @@ export default function TransactionManagement() {
   const [commissionRate, setCommissionRate] = useState<number>(10);
   const [tempRate, setTempRate] = useState<string>('10');
   const [savingRate, setSavingRate] = useState(false);
-  const [custoTerceiros, setCustoTerceiros] = useState<number>(0);
+  const [custoTerceiros, setCustoTerceiros] = useState<number>(152000);
 
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/" replace />;
@@ -38,11 +43,10 @@ export default function TransactionManagement() {
         .from('admin_logistica_terceiros')
         .select('valor_contrato')
         .eq('ativo', true);
-      if (data) {
+      if (data && data.length > 0) {
         const sum = data.reduce((acc, curr) => acc + Number(curr.valor_contrato), 0);
         setCustoTerceiros(sum);
       } else {
-        // Fallback robusto se a tabela ainda não existir no Supabase remoto
         setCustoTerceiros(152000);
       }
     } catch (e) {
@@ -97,7 +101,7 @@ export default function TransactionManagement() {
           created_at,
           buyer:profiles!transactions_buyer_id_fkey(email, full_name, rating),
           seller:profiles!transactions_seller_id_fkey(email, full_name, rating),
-          part:parts!transactions_part_id_fkey(title, description, price)
+          part:parts!transactions_part_id_fkey(title, description, price, images)
         `)
         .order('created_at', { ascending: false });
       
@@ -148,35 +152,35 @@ export default function TransactionManagement() {
         );
       setTransactions(updateList);
       if (selectedTransaction && selectedTransaction.id === transactionId) {
-        setSelectedTransaction(prev => prev ? { ...prev, [type === 'payment' ? 'payment_status' : 'fulfillment_status']: status } : null);
+        setSelectedTransaction((prev: any) => prev ? { ...prev, [type === 'payment' ? 'payment_status' : 'fulfillment_status']: status } : null);
       }
     } catch (err: any) {
       setError(err.message || 'Failed to update transaction status');
     }
   };
 
+  const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 animate-in fade-in duration-500">
-        <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full" />
+      <div className="flex items-center justify-center py-20 min-h-screen bg-[#07070A]">
+        <div className="animate-spin w-8 h-8 border-2 border-[#00E5FF] border-t-transparent rounded-full" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="animate-in fade-in duration-500">
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 mb-6 rounded-lg" role="alert">
+      <div className="p-6 max-w-4xl mx-auto space-y-4 text-white">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl">
           <p className="font-semibold">{error}</p>
         </div>
-        <div className="flex items-center justify-center py-10">
-          <button 
-            onClick={() => window.location.reload()}
-            className="bg-[#0A0A0A] hover:bg-[#0A0A0A]/90 text-[#EDEDED] px-4 py-2 rounded-lg font-medium transition-colors"
-          >
-            {t('Tentar novamente')}
-          </button>
-        </div>
+        <button 
+          onClick={() => window.location.reload()}
+          className="bg-[#00E5FF] text-black font-bold px-4 py-2 rounded-xl text-sm hover:bg-[#00E5FF]/80 transition-all"
+        >
+          {t('Tentar novamente')}
+        </button>
       </div>
     );
   }
@@ -194,344 +198,253 @@ export default function TransactionManagement() {
     .filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'))
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (1 - commissionRate / 100), 0);
 
-  const lucroVal = filteredTransactions
+  const lucroBruto = filteredTransactions
     .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
 
+  const lucroLiquido = lucroBruto - custoTerceiros;
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-border pb-4 mb-4">
-          <div>
-            <h1 className="font-display text-2xl font-bold text-text">
-              {t('Gerenciamento de Transações')}
-            </h1>
-            <p className="text-sm text-text-secondary mt-1">{t('Fluxo financeiro e controle de saídas/custódia')}</p>
+    <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-[#EDEDED] font-sans pb-20">
+      
+      {/* Header Oficial com GaidLogo e Controle da Taxa em Neon Azul (#00E5FF) */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#00E5FF]/20 pb-6 bg-[#0D0D14]/60 p-6 rounded-2xl border border-white/5 backdrop-blur-xl">
+        <div className="flex items-center gap-4">
+          <div className="p-2 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 shadow-lg shadow-[#00E5FF]/10">
+            <GaidLogo size={46} animated />
           </div>
-          <div className="flex items-center gap-2 bg-background border border-border rounded-lg p-2">
-            <span className="text-text text-sm font-medium">{t('Taxa de Serviço:')}</span>
-            <input
-              type="number"
-              value={tempRate}
-              onChange={(e) => setTempRate(e.target.value)}
-              className="bg-surface border border-border rounded px-2 py-1 text-text text-sm w-16 text-center focus:outline-none focus:border-primary"
-              min="0"
-              max="100"
-            />
-            <span className="text-text-secondary text-sm">%</span>
-            <button
-              onClick={handleSaveCommissionRate}
-              disabled={savingRate}
-              className="h-8 px-3 bg-text text-background rounded hover:bg-text-secondary text-xs font-semibold disabled:opacity-50 transition-colors"
-            >
-              {savingRate ? t('Salvando...') : t('Salvar')}
-            </button>
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold mb-1">
+              <Sparkles className="w-3.5 h-3.5 animate-pulse" /> DAIG Financial Escrow Center
+            </div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-[#00E5FF] bg-clip-text text-transparent">
+              Gerenciamento de Transações & Custódia JPY
+            </h1>
+            <p className="text-gray-400 text-xs mt-0.5">
+              Fluxo financeiro, retenção em custódia segura (*Escrow*) e controle de saídas para vendedores.
+            </p>
           </div>
         </div>
 
-        {activeLedgerFilter && (
-          <div className="flex items-center justify-between bg-background border border-border rounded-lg px-4 py-2 mt-2">
-            <span className="text-xs text-text-secondary font-medium">
-              {t('Filtrando por:')} <strong className="text-text font-bold uppercase tracking-wider">{activeLedgerFilter === 'receber' ? t('A Receber') : activeLedgerFilter === 'retido' ? t('Valores Retidos') : t('Valores Pagos')}</strong>
+        {/* Controller de Taxa DAIG */}
+        <div className="flex items-center gap-3 bg-[#07070A] border border-[#00E5FF]/30 rounded-xl px-4 py-2.5 shadow-lg shadow-[#00E5FF]/5 shrink-0">
+          <span className="text-gray-300 text-xs font-semibold">{t('Taxa DAIG:')}</span>
+          <input
+            type="number"
+            value={tempRate}
+            onChange={(e) => setTempRate(e.target.value)}
+            className="bg-[#0D0D14] border border-[#00E5FF]/40 rounded-lg px-2.5 py-1 text-white font-mono font-bold text-sm w-16 text-center focus:outline-none focus:border-[#00E5FF]"
+            min="0"
+            max="100"
+          />
+          <span className="text-[#00E5FF] font-bold text-sm">%</span>
+          <button
+            onClick={handleSaveCommissionRate}
+            disabled={savingRate}
+            className="px-3.5 py-1.5 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black rounded-lg text-xs font-extrabold transition-all disabled:opacity-50 shadow-md shadow-[#00E5FF]/20 flex items-center gap-1"
+          >
+            <Save size={12} />
+            <span>{savingRate ? t('Salvando...') : t('Salvar')}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 4 Cards de Métricas Financeiras - Estética Neon Azul Unificada (#00E5FF) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        {/* Card 1: A Receber */}
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
+          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
+            activeLedgerFilter === 'receber' ? 'border-[#00E5FF] bg-[#00E5FF]/10' : 'border-[#00E5FF]/20 hover:border-[#00E5FF]'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
+              <Clock size={20} />
+            </div>
+            <span className="text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/30 px-2 py-0.5 rounded-full">
+              Pendente
             </span>
-            <button
-              onClick={() => setActiveLedgerFilter(null)}
-              className="text-xs text-primary hover:underline font-bold uppercase tracking-wider"
-            >
-              {t('Limpar Filtro')}
-            </button>
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('A RECEBER (COMPRADOR)')}</p>
+          <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
+            {formatMoney(aReceberVal)}
+          </p>
+          <p className="text-xs text-gray-500 mt-2">Transações pendentes/processando</p>
+        </div>
+
+        {/* Card 2: Valore Retidos (Custódia Escrow) */}
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
+          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
+            activeLedgerFilter === 'retido' ? 'border-[#00E5FF] bg-[#00E5FF]/10' : 'border-[#00E5FF]/20 hover:border-[#00E5FF]'
+          }`}
+        >
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-[#00E5FF]/10 rounded-full blur-2xl group-hover:bg-[#00E5FF]/25 transition-all" />
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
+              <ShieldCheck size={20} />
+            </div>
+            <span className="text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/30 px-2 py-0.5 rounded-full">
+              Escrow Retido 🔒
+            </span>
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('VALORES RETIDOS (CUSTÓDIA)')}</p>
+          <p className="text-2xl font-black text-[#00E5FF] mt-1 transition-colors font-mono">
+            {formatMoney(retidoVal)}
+          </p>
+          <p className="text-xs text-gray-500 mt-2">Garantia segura aguardando entrega</p>
+        </div>
+
+        {/* Card 3: Valores Pagos aos Vendedores */}
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
+          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
+            activeLedgerFilter === 'pagos' ? 'border-[#00E5FF] bg-[#00E5FF]/10' : 'border-[#00E5FF]/20 hover:border-[#00E5FF]'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
+              <Wallet size={20} />
+            </div>
+            <span className="text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/30 px-2 py-0.5 rounded-full">
+              Repassado
+            </span>
+          </div>
+
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('VALORES PAGOS (VENDEDOR)')}</p>
+          <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
+            {formatMoney(pagosVal)}
+          </p>
+          <p className="text-xs text-gray-500 mt-2">{(100 - commissionRate)}% de repasse líquido liberado</p>
+        </div>
+
+        {/* Card 4: Lucro da Plataforma */}
+        <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-5 shadow-xl backdrop-blur-md space-y-2 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</p>
+            <DollarSign size={16} className="text-[#00E5FF]" />
+          </div>
+          
+          <p className="text-2xl font-black text-[#00E5FF] font-mono">
+            {formatMoney(lucroLiquido)}
+          </p>
+
+          <div className="pt-2 border-t border-white/5 space-y-1 text-xs text-gray-400">
+            <div className="flex justify-between">
+              <span>Bruto ({commissionRate}%):</span>
+              <span className="font-mono text-white">{formatMoney(lucroBruto)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Contratos:</span>
+              <span className="font-mono text-red-400">-{formatMoney(custoTerceiros)}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Filtro Ativo Banner */}
+      {activeLedgerFilter && (
+        <div className="flex items-center justify-between bg-[#00E5FF]/10 border border-[#00E5FF]/30 rounded-xl px-4 py-2.5">
+          <span className="text-xs text-gray-300 font-semibold flex items-center gap-2">
+            <Filter size={14} className="text-[#00E5FF]" />
+            {t('Filtrando por:')} <strong className="text-[#00E5FF] uppercase font-bold">{activeLedgerFilter === 'receber' ? 'A Receber' : activeLedgerFilter === 'retido' ? 'Valores Retidos' : 'Valores Pagos'}</strong>
+          </span>
+          <button
+            onClick={() => setActiveLedgerFilter(null)}
+            className="text-xs font-bold text-[#00E5FF] hover:underline uppercase tracking-wider flex items-center gap-1"
+          >
+            <X size={14} /> {t('Limpar Filtro')}
+          </button>
+        </div>
+      )}
+
+      {/* Tabela de Transações com Thumbs das Peças JDM e Botões Neon Azul */}
+      <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#00E5FF]" /> {t('Lista de Transações de Peças JDM')}
+          </h2>
+          <button onClick={fetchTransactions} className="text-xs text-[#00E5FF] font-bold flex items-center gap-1 hover:underline">
+            <RefreshCw size={12} /> {t('Atualizar')}
+          </button>
+        </div>
+
+        {filteredTransactions.length > 0 ? (
+          <div className="space-y-3">
+            {filteredTransactions.map((tx) => (
+              <div 
+                key={tx.id}
+                className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-[#00E5FF]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+              >
+                {/* Produto / Peça JDM */}
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  <div className="w-14 h-14 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                    <SafeImage src={tx.part?.images?.[0]} alt={tx.part?.title || ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                  </div>
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-white font-semibold text-sm truncate group-hover:text-[#00E5FF] transition-colors">
+                      {tx.part?.title || 'Peça Automotiva JDM'}
+                    </p>
+                    <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <span>Comprador: <strong className="text-white">{tx.buyer?.full_name || tx.buyer?.email || 'N/A'}</strong></span>
+                      <span>•</span>
+                      <span>Vendedor: <strong className="text-white">{tx.seller?.full_name || tx.seller?.email || 'N/A'}</strong></span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Valor & Status */}
+                <div className="flex items-center gap-4 justify-between md:justify-end shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/5">
+                  <div className="text-left md:text-right">
+                    <span className="text-base font-black text-[#00E5FF] font-mono block">
+                      {formatMoney(tx.amount || 0)}
+                    </span>
+                    <span className="text-[11px] font-bold text-gray-400 uppercase">
+                      Taxa DAIG: {formatMoney((tx.amount || 0) * (commissionRate / 100))}
+                    </span>
+                  </div>
+
+                  {/* Status Badge */}
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
+                    {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Escrow Retido' : '✅ Concluído'}
+                  </span>
+
+                  {/* Ações Diretas */}
+                  <div className="flex items-center gap-2">
+                    {tx.payment_status === 'escrow' && (
+                      <button
+                        onClick={() => updateTransactionStatus(tx.id, 'paid', 'payment')}
+                        className="px-3.5 py-1.5 rounded-xl bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black text-xs font-extrabold shadow-md shadow-[#00E5FF]/20 transition-all"
+                      >
+                        Liberar Repasse 💸
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setSelectedTransaction(tx)}
+                      className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all flex items-center gap-1"
+                    >
+                      <Eye size={14} className="text-[#00E5FF]" />
+                      <span>Detalhes</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 space-y-3">
+            <ShieldCheck size={36} className="text-[#00E5FF] mx-auto" />
+            <p className="text-gray-400 text-sm">{t('Nenhuma transação encontrada.')}</p>
           </div>
         )}
       </div>
 
-      {/* Ledger Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div 
-          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`bg-surface border rounded-lg p-5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-            activeLedgerFilter === 'receber' ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-text-secondary'
-          }`}
-        >
-          <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('A Receber (Comprador)')}</p>
-          <p className="text-2xl font-bold text-text mt-2">¥ {aReceberVal.toLocaleString('ja-JP')}</p>
-          <p className="text-[10px] text-text-secondary mt-1">{t('Transações pendentes/processando')}</p>
-        </div>
-        <div 
-          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`bg-surface border rounded-lg p-5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-            activeLedgerFilter === 'retido' ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-text-secondary'
-          }`}
-        >
-          <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Valores Retidos (Custódia)')}</p>
-          <p className="text-2xl font-bold text-text mt-2">¥ {retidoVal.toLocaleString('ja-JP')}</p>
-          <p className="text-[10px] text-text-secondary mt-1">{t('Aguardando confirmação de entrega')}</p>
-        </div>
-        <div 
-          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`bg-surface border rounded-lg p-5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 ${
-            activeLedgerFilter === 'pagos' ? 'border-primary ring-2 ring-primary/20' : 'border-border hover:border-text-secondary'
-          }`}
-        >
-          <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Valores Pagos (Vendedor)')}</p>
-          <p className="text-2xl font-bold text-text mt-2">¥ {pagosVal.toLocaleString('ja-JP')}</p>
-          <p className="text-[10px] text-text-secondary mt-1">{(100 - commissionRate)}% {t('de repasse líquido liberado')}</p>
-        </div>
-        <div className="bg-surface border border-border rounded-lg p-5 flex flex-col justify-between">
-          <div>
-            <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider">{t('Lucro da Plataforma')}</p>
-            <div className="mt-2 space-y-1">
-              <div className="flex justify-between text-xs font-medium text-text-secondary">
-                <span>{t('Bruto')}:</span>
-                <span className="font-semibold text-text">¥ {lucroVal.toLocaleString('ja-JP')}</span>
-              </div>
-              <div className="flex justify-between text-xs font-medium text-text-secondary">
-                <span>{t('Contratos')}:</span>
-                <span className="font-semibold text-red-400">-¥ {custoTerceiros.toLocaleString('ja-JP')}</span>
-              </div>
-              <div className="border-t border-border pt-1 flex justify-between text-sm font-bold text-text">
-                <span>{t('Líquido')}:</span>
-                <span className={lucroVal - custoTerceiros >= 0 ? "text-green-400" : "text-red-400"}>
-                  ¥ {(lucroVal - custoTerceiros).toLocaleString('ja-JP')}
-                </span>
-              </div>
-            </div>
-          </div>
-          <p className="text-[9px] text-text-secondary mt-2">{commissionRate}% {t('de taxa - custo de contratos deduzido')}</p>
-        </div>
-      </div>
-
-      <div className="bg-surface border border-border rounded-lg p-6">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-border">
-            <thead className="bg-background">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Peça')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Comprador')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Vendedor')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Valor Total')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Taxa de Serviço')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Repasse Líquido')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Status Pagamento')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Status Entrega')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Data')}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                  {t('Ações')}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredTransactions.length === 0 ? (
-                <tr>
-                  <td colSpan={8} className="px-6 py-4 text-center text-text-secondary">
-                    {t('Nenhuma transação encontrada')}
-                  </td>
-                </tr>
-              ) : (
-                filteredTransactions.map((tx) => {
-                  const buyer = tx.buyer;
-                  const seller = tx.seller;
-                  const part = tx.part;
-                  return (
-                    <tr key={tx.id} className="bg-[#0A0A0F] hover:bg-[#111116] border-b border-border transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
-                        {part?.title || 'Peça removida'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        {buyer?.full_name || buyer?.email || 'Usuário desconhecido'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        {seller?.full_name || seller?.email || 'Usuário desconhecido'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text">
-                        ¥ {parseFloat(tx.amount || 0).toLocaleString('ja-JP')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        ¥ {(parseFloat(tx.amount || 0) * (commissionRate / 100)).toLocaleString('ja-JP')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        ¥ {(parseFloat(tx.amount || 0) * (1 - commissionRate / 100)).toLocaleString('ja-JP')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <select
-                          value={tx.payment_status}
-                          onChange={(e) => updateTransactionStatus(tx.id, e.target.value, 'payment')}
-                          className="bg-background border border-border rounded-lg px-2 py-1 text-text text-sm focus:outline-none focus:border-primary"
-                        >
-                          <option value="pending">{t('Pendente')}</option>
-                          <option value="processing">{t('Processando')}</option>
-                          <option value="escrow">{t('Em custódia')}</option>
-                          <option value="paid">{t('Pago')}</option>
-                          <option value="failed">{t('Falhou')}</option>
-                          <option value="refunded">{t('Reembolsado')}</option>
-                          <option value="cancelled">{t('Cancelado')}</option>
-                        </select>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <select
-                          value={tx.fulfillment_status}
-                          onChange={(e) => updateTransactionStatus(tx.id, e.target.value, 'fulfillment')}
-                          className="bg-background border border-border rounded-lg px-2 py-1 text-text text-sm focus:outline-none focus:border-primary"
-                        >
-                          <option value="pending">{t('Pendente')}</option>
-                          <option value="packed">{t('Embalado')}</option>
-                          <option value="shipped">{t('Enviado')}</option>
-                          <option value="delivered">{t('Entregue')}</option>
-                          <option value="completed">{t('Concluído')}</option>
-                          <option value="disputed">{t('Em disputa')}</option>
-                          <option value="returned">{t('Devolvido')}</option>
-                        </select>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary">
-                        {new Date(tx.created_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                        <button
-                          onClick={() => setSelectedTransaction(tx)}
-                          className="text-primary hover:text-primary-dark font-medium"
-                        >
-                          {t('Detalhes')}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Transaction Details Modal */}
-      {selectedTransaction && (() => {
-        const buyer = selectedTransaction.buyer;
-        const seller = selectedTransaction.seller;
-        const part = selectedTransaction.part;
-        return (
-          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-surface border border-border rounded-xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in duration-200">
-              <div className="p-6 border-b border-border flex justify-between items-center bg-[#111]">
-                <h2 className="text-lg font-bold text-text">{t('Detalhes da Transação')}</h2>
-                <button 
-                  onClick={() => setSelectedTransaction(null)} 
-                  className="text-text-secondary hover:text-text text-xl font-bold"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="p-6 space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-xs text-text-secondary block">{t('ID da Transação')}</span>
-                    <span className="text-xs font-mono text-text break-all">{selectedTransaction.id}</span>
-                  </div>
-                  <div>
-                    <span className="text-xs text-text-secondary block">{t('Data')}</span>
-                    <span className="text-sm font-medium text-text">
-                      {new Date(selectedTransaction.created_at).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="border border-border rounded-lg p-4 space-y-3 bg-background">
-                  <h3 className="text-sm font-bold text-text">{t('Peça/Produto')}</h3>
-                  <div>
-                    <p className="text-sm font-medium text-text">{part?.title || 'Peça removida'}</p>
-                    <p className="text-xs text-text-secondary mt-0.5">{part?.description || 'Sem descrição'}</p>
-                  </div>
-                  <div className="border-t border-border pt-2 mt-2 space-y-1 text-xs">
-                    <div className="flex justify-between text-text-secondary">
-                      <span>{t('Valor Pago pelo Comprador:')}</span>
-                      <span className="font-semibold text-text">¥ {parseFloat(selectedTransaction.amount || 0).toLocaleString('ja-JP')}</span>
-                    </div>
-                    <div className="flex justify-between text-text-secondary">
-                      <span>{t('Taxa de Intermediação')} ({commissionRate}%):</span>
-                      <span className="font-semibold text-text">¥ {(parseFloat(selectedTransaction.amount || 0) * (commissionRate / 100)).toLocaleString('ja-JP')}</span>
-                    </div>
-                    <div className="flex justify-between border-t border-dashed border-border pt-1 font-semibold text-text">
-                      <span>{t('Saldo Líquido Vendedor')} ({100 - commissionRate}%):</span>
-                      <span>¥ {(parseFloat(selectedTransaction.amount || 0) * (1 - commissionRate / 100)).toLocaleString('ja-JP')}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="border border-border rounded-lg p-3">
-                    <span className="text-xs text-text-secondary block">{t('Comprador')}</span>
-                    <span className="text-sm font-medium text-text block mt-1">{buyer?.full_name || '—'}</span>
-                    <span className="text-xs text-text-secondary block break-all">{buyer?.email || '—'}</span>
-                  </div>
-                  <div className="border border-border rounded-lg p-3">
-                    <span className="text-xs text-text-secondary block">{t('Vendedor')}</span>
-                    <span className="text-sm font-medium text-text block mt-1">{seller?.full_name || '—'}</span>
-                    <span className="text-xs text-text-secondary block break-all">{seller?.email || '—'}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs text-text-secondary block mb-1">{t('Status do Pagamento')}</label>
-                    <select
-                      value={selectedTransaction.payment_status}
-                      onChange={(e) => updateTransactionStatus(selectedTransaction.id, e.target.value, 'payment')}
-                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-primary"
-                    >
-                      <option value="pending">{t('Pendente')}</option>
-                      <option value="processing">{t('Processando')}</option>
-                      <option value="escrow">{t('Em custódia')}</option>
-                      <option value="paid">{t('Pago')}</option>
-                      <option value="failed">{t('Falhou')}</option>
-                      <option value="refunded">{t('Reembolsado')}</option>
-                      <option value="cancelled">{t('Cancelado')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-text-secondary block mb-1">{t('Status de Envio')}</label>
-                    <select
-                      value={selectedTransaction.fulfillment_status}
-                      onChange={(e) => updateTransactionStatus(selectedTransaction.id, e.target.value, 'fulfillment')}
-                      className="w-full bg-background border border-border rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-primary"
-                    >
-                      <option value="pending">{t('Pendente')}</option>
-                      <option value="packed">{t('Embalado')}</option>
-                      <option value="shipped">{t('Enviado')}</option>
-                      <option value="delivered">{t('Entregue')}</option>
-                      <option value="completed">{t('Concluído')}</option>
-                      <option value="disputed">{t('Em disputa')}</option>
-                      <option value="returned">{t('Devolvido')}</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 bg-[#111] border-t border-border flex justify-end">
-                <button
-                  onClick={() => setSelectedTransaction(null)}
-                  className="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold px-4 py-2 rounded-lg text-sm"
-                >
-                  {t('Fechar')}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
     </div>
   );
 }
