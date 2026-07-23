@@ -56,3 +56,9 @@ supabase/snapshot*.sql
 # Mobile Builds
 apks/
 *.apk
+
+# Scratch and export files
+*.mjs
+daig_documentacao.zip
+exports/
+
