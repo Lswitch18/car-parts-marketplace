@@ -10,7 +10,7 @@ import { calculateFinanceStats, orchestrateAlerts } from '@/modules/backoffice/u
 import { 
   Search, TrendingUp, AlertTriangle, Package, Activity,
   ShieldAlert, Users, ArrowRight, ArrowUpRight, Plus, Cpu, Wallet, MapPin, 
-  CheckCircle2, FileText, RefreshCw, Clock, BarChart3, Zap, Globe, ShieldCheck
+  CheckCircle2, FileText, RefreshCw, Clock, BarChart3, Zap, Globe, ShieldCheck, Lock
 } from 'lucide-react';
 
 // Skeleton loader for clean operational loading states
@@ -72,10 +72,10 @@ export default function AdminDashboard() {
       const finStats = calculateFinanceStats(txData);
       setFinanceStats(finStats);
 
-      const { count: pendingShip } = await supabase.from('transactions').select('id', { count: 'exact', head: true }).eq('fulfillment_status', 'pending');
+      const { count: pendingShip } = await supabase.from('transactions').select('id', { count: 'exact' }).eq('fulfillment_status', 'pending');
       setLogisticsStats({ pendingShipments: pendingShip || 0, delayed: 2 }); 
 
-      const { count: flaggedRev } = await supabase.from('reviews').select('id', { count: 'exact', head: true }).lt('rating', 3);
+      const { count: flaggedRev } = await supabase.from('reviews').select('id', { count: 'exact' }).lt('rating', 3);
       const currentTrust = {
         pendingKYC: idPulse.pendingStoreValidations || 0,
         openDisputes: 1,
