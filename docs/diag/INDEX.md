@@ -14,6 +14,7 @@ Bem-vindo à pasta central de documentação e diagramas do projeto **Digital AI
 ---
 
 ### 2. 📊 Configurações do Ambiente
+* 📖 [CONFIGURACOES_E_CHAVES_ENV.md](CONFIGURACOES_E_CHAVES_ENV.md): Documentação oficial detalhada mapeando todas as chaves e variáveis para Vercel e Supabase.
 * 📊 [env_configuracoes.xlsx](env_configuracoes.xlsx): Planilha Excel oficial mapeando todas as variáveis do `.env`, separadas por escopo (Frontend/Backend), criticidade e status.
 
 ---
