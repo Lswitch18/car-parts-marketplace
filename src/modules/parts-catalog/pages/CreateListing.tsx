@@ -51,7 +51,7 @@ export default function CreateListing() {
       const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString()
       supabase
         .from('parts')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .eq('seller_id', user.id)
         .gte('created_at', startOfMonth)
         .then(({ count, error }) => {
@@ -69,7 +69,7 @@ export default function CreateListing() {
       // Empresa não verificada: contar total (limite de 20)
       supabase
         .from('parts')
-        .select('*', { count: 'exact', head: true })
+        .select('id', { count: 'exact' })
         .eq('seller_id', user.id)
         .then(({ count, error }) => {
           if (!error && count !== null) {

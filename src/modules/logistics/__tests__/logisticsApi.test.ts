@@ -15,10 +15,7 @@ vi.mock('@/modules/shared/lib/supabase', () => ({
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
-async function importModule() {
-  const { logisticsApi } = await import('@/modules/logistics/api/logisticsApi');
-  return logisticsApi;
-}
+import { logisticsApi } from '@/modules/logistics/api/logisticsApi';
 
 describe('logisticsApi - URL, pipeline and status updates', () => {
   beforeEach(() => {
@@ -29,7 +26,6 @@ describe('logisticsApi - URL, pipeline and status updates', () => {
   });
 
   it('shipments.create envia POST para /oms/shipments com payload correto', async () => {
-    const logisticsApi = await importModule();
     const payload = { pedido_id: 'ped-123', transportadora: 'Yamato Transport' };
     
     await logisticsApi.shipments.create(payload);
@@ -47,7 +43,6 @@ describe('logisticsApi - URL, pipeline and status updates', () => {
   });
 
   it('shipments.update envia PUT para /oms/shipments/:id com novos dados da pipeline', async () => {
-    const logisticsApi = await importModule();
     const updatePayload = { etapa: 'DELIVERING', status: 'in_transit' };
     
     await logisticsApi.shipments.update('ship-789', updatePayload);
@@ -62,7 +57,6 @@ describe('logisticsApi - URL, pipeline and status updates', () => {
   });
 
   it('wms.receive dispara escaneamento e move status na pipeline para recebido', async () => {
-    const logisticsApi = await importModule();
     const scanPayload = { codigo_barras: 'BARCODE12345', armazem_id: 'cd-tokyo' };
     
     await logisticsApi.wms.receive(scanPayload);
@@ -77,7 +71,6 @@ describe('logisticsApi - URL, pipeline and status updates', () => {
   });
 
   it('wms.sort atualiza zona de triagem na pipeline', async () => {
-    const logisticsApi = await importModule();
     const sortPayload = { inventory_id: 'inv-111', zona_id: 'zona-sul' };
     
     await logisticsApi.wms.sort(sortPayload);
@@ -92,8 +85,6 @@ describe('logisticsApi - URL, pipeline and status updates', () => {
   });
 
   it('tracking.get consulta o status atual de rastreamento por codigo', async () => {
-    const logisticsApi = await importModule();
-    
     await logisticsApi.tracking.get('#SHIP-TOYOTA-101');
     
     expect(mockFetch).toHaveBeenCalledWith(

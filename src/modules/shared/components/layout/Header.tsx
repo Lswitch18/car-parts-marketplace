@@ -32,7 +32,7 @@ export default function Header() {
     if (!user) return
     const { count, error } = await supabase
       .from('messages')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact' })
       .eq('receiver_id', user.id)
       .eq('is_read', false)
     if (!error) setUnreadCount(count || 0)

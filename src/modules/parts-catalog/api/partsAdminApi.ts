@@ -6,7 +6,7 @@ import { supabase } from '@/modules/shared/lib/supabase';
  */
 export async function getPartsPulse() {
   try {
-    const { count } = await supabase.from('parts').select('id', { count: 'exact', head: true });
+    const { count } = await supabase.from('parts').select('id', { count: 'exact' });
     return {
       totalListings: count || 0,
       activeListings: count || 0 // Mocked active status for now
