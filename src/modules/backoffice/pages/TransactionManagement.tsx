@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
@@ -8,18 +8,131 @@ import SafeImage from '@/modules/parts-catalog/components/SafeImage';
 import { adminApi } from '@/modules/transactions/api/adminApi';
 import { api } from '@/modules/transactions/api/api';
 import { 
-  ShieldCheck, DollarSign, Wallet, ArrowUpRight, Filter, 
-  CheckCircle2, Clock, Eye, Sparkles, Save, X, ExternalLink, RefreshCw
+  ShieldCheck, DollarSign, Wallet, Filter, ArrowUpDown,
+  CheckCircle2, Clock, Eye, Sparkles, Save, X, RefreshCw,
+  ArrowRight, ChevronDown, Download, Calendar, Search, Loader2
 } from 'lucide-react';
 
+// ─── Transaction Detail Modal ──────────────────────────────────────────────────
+function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatMoney }: {
+  tx: any;
+  onClose: () => void;
+  onAction: (id: string, status: string, type: 'payment' | 'fulfillment') => void;
+  commissionRate: number;
+  formatMoney: (val: number) => string;
+}) {
+  if (!tx) return null;
+  const amount = tx.amount || 0;
+  const fee = amount * (commissionRate / 100);
+  const sellerNet = amount - fee;
+  const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString('ja-JP', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-[#0D0D14] border border-[#00E5FF]/30 rounded-2xl w-full max-w-lg shadow-2xl shadow-[#00E5FF]/10 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Modal Header */}
+        <div className="flex items-center justify-between p-5 border-b border-white/5">
+          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <Eye size={16} className="text-[#00E5FF]" /> Detalhes da Transação
+          </h3>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors">
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Product Info */}
+        <div className="p-5 space-y-5">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-xl bg-black/40 border border-white/10 overflow-hidden shrink-0">
+              <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-white font-bold text-sm truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
+              <p className="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1">
+                <Calendar size={10} /> {createdAt}
+              </p>
+            </div>
+          </div>
+
+          {/* Financial Breakdown */}
+          <div className="bg-white/[0.02] border border-white/5 rounded-xl p-4 space-y-3">
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Breakdown Financeiro</p>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between text-gray-400">
+                <span>Valor Bruto</span>
+                <span className="font-mono font-bold text-white">{formatMoney(amount)}</span>
+              </div>
+              <div className="flex justify-between text-gray-400">
+                <span>Taxa DAIG ({commissionRate}%)</span>
+                <span className="font-mono font-bold text-[#00E5FF]">-{formatMoney(fee)}</span>
+              </div>
+              <div className="border-t border-white/5 pt-2 flex justify-between text-gray-300">
+                <span className="font-semibold">Líquido p/ Vendedor</span>
+                <span className="font-mono font-bold text-white">{formatMoney(sellerNet)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Parties */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-1">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Comprador</p>
+              <p className="text-xs text-white font-semibold truncate">{tx.buyer?.full_name || tx.buyer?.email || 'N/A'}</p>
+            </div>
+            <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-1">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Vendedor</p>
+              <p className="text-xs text-white font-semibold truncate">{tx.seller?.full_name || tx.seller?.email || 'N/A'}</p>
+            </div>
+          </div>
+
+          {/* Status Badges */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="space-y-1">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Pagamento</p>
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30 inline-block">
+                {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Escrow' : tx.payment_status === 'completed' ? '✅ Concluído' : tx.payment_status}
+              </span>
+            </div>
+            <div className="space-y-1">
+              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Entrega</p>
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-white border border-white/10 inline-block">
+                {tx.fulfillment_status === 'pending' ? '⏳ Pendente' : tx.fulfillment_status === 'shipped' ? '🚚 Enviado' : tx.fulfillment_status === 'received' ? '📦 Recebido' : '✅ Concluído'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Modal Actions */}
+        <div className="p-5 border-t border-white/5 flex items-center gap-3">
+          {tx.payment_status === 'escrow' && (
+            <button
+              onClick={() => { onAction(tx.id, 'completed', 'payment'); onClose(); }}
+              className="flex-1 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black py-2.5 rounded-xl text-xs font-extrabold transition-all shadow-md shadow-[#00E5FF]/20 flex items-center justify-center gap-2"
+            >
+              <ShieldCheck size={14} />
+              Liberar Repasse ao Vendedor
+            </button>
+          )}
+          <button onClick={onClose} className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Component ─────────────────────────────────────────────────────────────
 export default function TransactionManagement() {
   const { user: currentUser } = useAuthStore();
   const { t } = useI18n();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
   const [activeLedgerFilter, setActiveLedgerFilter] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
 
   const [selectedTransaction, setSelectedTransaction] = useState<any | null>(null);
   const [commissionRate, setCommissionRate] = useState<number>(10);
@@ -107,34 +220,12 @@ export default function TransactionManagement() {
       
       if (error) throw error;
       setTransactions(data || []);
-      setFilteredTransactions(data || []);
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!activeLedgerFilter) {
-      setFilteredTransactions(transactions);
-      return;
-    }
-    
-    const filtered = transactions.filter(t => {
-      if (activeLedgerFilter === 'receber') {
-        return t.payment_status === 'pending' || t.payment_status === 'processing';
-      }
-      if (activeLedgerFilter === 'retido') {
-        return t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed');
-      }
-      if (activeLedgerFilter === 'pagos') {
-        return t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed');
-      }
-      return true;
-    });
-    setFilteredTransactions(filtered);
-  }, [activeLedgerFilter, transactions]);
 
   const updateTransactionStatus = async (transactionId: string, status: string, type: 'payment' | 'fulfillment') => {
     try {
@@ -144,27 +235,80 @@ export default function TransactionManagement() {
         
       await api.transactions.update(transactionId, updateData);
       
-      const updateList = (prev: any[]) =>
+      setTransactions(prev =>
         prev.map(t => 
           t.id === transactionId 
             ? {...t, [type === 'payment' ? 'payment_status' : 'fulfillment_status']: status} 
             : t
-        );
-      setTransactions(updateList);
-      if (selectedTransaction && selectedTransaction.id === transactionId) {
-        setSelectedTransaction((prev: any) => prev ? { ...prev, [type === 'payment' ? 'payment_status' : 'fulfillment_status']: status } : null);
-      }
+        )
+      );
     } catch (err: any) {
       setError(err.message || 'Failed to update transaction status');
     }
   };
 
+  // Filtered + searched + sorted transactions
+  const filteredTransactions = useMemo(() => {
+    let list = [...transactions];
+
+    // Ledger filter
+    if (activeLedgerFilter === 'receber') {
+      list = list.filter(t => t.payment_status === 'pending' || t.payment_status === 'processing');
+    } else if (activeLedgerFilter === 'retido') {
+      list = list.filter(t => t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed'));
+    } else if (activeLedgerFilter === 'pagos') {
+      list = list.filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'));
+    }
+
+    // Search
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(t => 
+        (t.part?.title || '').toLowerCase().includes(q) ||
+        (t.buyer?.full_name || '').toLowerCase().includes(q) ||
+        (t.seller?.full_name || '').toLowerCase().includes(q) ||
+        (t.buyer?.email || '').toLowerCase().includes(q)
+      );
+    }
+
+    // Sort
+    list.sort((a, b) => {
+      const da = new Date(a.created_at).getTime();
+      const db = new Date(b.created_at).getTime();
+      return sortOrder === 'desc' ? db - da : da - db;
+    });
+
+    return list;
+  }, [transactions, activeLedgerFilter, searchQuery, sortOrder]);
+
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
+
+  // Ledger calculations (always from full transactions list)
+  const aReceberVal = transactions
+    .filter(t => t.payment_status === 'pending' || t.payment_status === 'processing')
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+  const retidoVal = transactions
+    .filter(t => t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed'))
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+  const pagosVal = transactions
+    .filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'))
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (1 - commissionRate / 100), 0);
+
+  const lucroBruto = transactions
+    .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow')
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
+
+  const lucroLiquido = lucroBruto - custoTerceiros;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 min-h-screen bg-[#07070A]">
-        <div className="animate-spin w-8 h-8 border-2 border-[#00E5FF] border-t-transparent rounded-full" />
+      <div className="flex items-center justify-center py-20 min-h-[60vh]">
+        <div className="text-center space-y-3">
+          <Loader2 className="w-8 h-8 text-[#00E5FF] animate-spin mx-auto" />
+          <p className="text-xs text-gray-500">Carregando transações...</p>
+        </div>
       </div>
     );
   }
@@ -172,11 +316,11 @@ export default function TransactionManagement() {
   if (error) {
     return (
       <div className="p-6 max-w-4xl mx-auto space-y-4 text-white">
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm">
           <p className="font-semibold">{error}</p>
         </div>
         <button 
-          onClick={() => window.location.reload()}
+          onClick={() => { setError(null); fetchTransactions(); }}
           className="bg-[#00E5FF] text-black font-bold px-4 py-2 rounded-xl text-sm hover:bg-[#00E5FF]/80 transition-all"
         >
           {t('Tentar novamente')}
@@ -185,265 +329,314 @@ export default function TransactionManagement() {
     );
   }
 
-  // Cálculos do Ledger Financeiro
-  const aReceberVal = filteredTransactions
-    .filter(t => t.payment_status === 'pending' || t.payment_status === 'processing')
-    .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
-
-  const retidoVal = filteredTransactions
-    .filter(t => t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed'))
-    .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
-
-  const pagosVal = filteredTransactions
-    .filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'))
-    .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (1 - commissionRate / 100), 0);
-
-  const lucroBruto = filteredTransactions
-    .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow')
-    .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
-
-  const lucroLiquido = lucroBruto - custoTerceiros;
-
   return (
     <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-[#EDEDED] font-sans pb-20">
       
-      {/* Header Oficial com GaidLogo e Controle da Taxa em Neon Azul (#00E5FF) */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#00E5FF]/20 pb-6 bg-[#0D0D14]/60 p-6 rounded-2xl border border-white/5 backdrop-blur-xl">
-        <div className="flex items-center gap-4">
-          <div className="p-2 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 shadow-lg shadow-[#00E5FF]/10">
-            <GaidLogo size={46} animated />
-          </div>
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold mb-1">
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" /> DAIG Financial Escrow Center
+      {/* ═══ HEADER ═══ */}
+      <div className="relative overflow-hidden bg-[#0D0D14]/80 p-6 md:p-8 rounded-2xl border border-[#00E5FF]/20 backdrop-blur-xl">
+        <div className="absolute -left-20 -top-20 w-60 h-60 bg-[#00E5FF]/5 rounded-full blur-3xl" />
+        
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 shadow-lg shadow-[#00E5FF]/10">
+              <GaidLogo size={42} animated />
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-[#00E5FF] bg-clip-text text-transparent">
-              Gerenciamento de Transações & Custódia JPY
-            </h1>
-            <p className="text-gray-400 text-xs mt-0.5">
-              Fluxo financeiro, retenção em custódia segura (*Escrow*) e controle de saídas para vendedores.
-            </p>
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold mb-1.5">
+                <Sparkles className="w-3 h-3 animate-pulse" /> Financial Escrow Center
+              </div>
+              <h1 className="text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-[#00E5FF] bg-clip-text text-transparent">
+                Transações & Custódia JPY
+              </h1>
+            </div>
           </div>
-        </div>
 
-        {/* Controller de Taxa DAIG */}
-        <div className="flex items-center gap-3 bg-[#07070A] border border-[#00E5FF]/30 rounded-xl px-4 py-2.5 shadow-lg shadow-[#00E5FF]/5 shrink-0">
-          <span className="text-gray-300 text-xs font-semibold">{t('Taxa DAIG:')}</span>
-          <input
-            type="number"
-            value={tempRate}
-            onChange={(e) => setTempRate(e.target.value)}
-            className="bg-[#0D0D14] border border-[#00E5FF]/40 rounded-lg px-2.5 py-1 text-white font-mono font-bold text-sm w-16 text-center focus:outline-none focus:border-[#00E5FF]"
-            min="0"
-            max="100"
-          />
-          <span className="text-[#00E5FF] font-bold text-sm">%</span>
-          <button
-            onClick={handleSaveCommissionRate}
-            disabled={savingRate}
-            className="px-3.5 py-1.5 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black rounded-lg text-xs font-extrabold transition-all disabled:opacity-50 shadow-md shadow-[#00E5FF]/20 flex items-center gap-1"
-          >
-            <Save size={12} />
-            <span>{savingRate ? t('Salvando...') : t('Salvar')}</span>
-          </button>
+          {/* Taxa Controller */}
+          <div className="flex items-center gap-3 bg-[#07070A] border border-[#00E5FF]/20 rounded-xl px-4 py-2.5 shrink-0">
+            <span className="text-gray-400 text-xs font-semibold">{t('Taxa DAIG:')}</span>
+            <input
+              type="number"
+              value={tempRate}
+              onChange={(e) => setTempRate(e.target.value)}
+              className="bg-[#0D0D14] border border-[#00E5FF]/30 rounded-lg px-2.5 py-1 text-white font-mono font-bold text-sm w-14 text-center focus:outline-none focus:border-[#00E5FF]"
+              min="0"
+              max="100"
+            />
+            <span className="text-[#00E5FF] font-bold text-sm">%</span>
+            <button
+              onClick={handleSaveCommissionRate}
+              disabled={savingRate}
+              className="px-3 py-1.5 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black rounded-lg text-xs font-extrabold transition-all disabled:opacity-50 shadow-md shadow-[#00E5FF]/20 flex items-center gap-1"
+            >
+              <Save size={12} />
+              <span>{savingRate ? '...' : t('Salvar')}</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* 4 Cards de Métricas Financeiras - Estética Neon Azul Unificada (#00E5FF) */}
+      {/* ═══ 4 LEDGER CARDS ═══ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
         {/* Card 1: A Receber */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
-            activeLedgerFilter === 'receber' ? 'border-[#00E5FF] bg-[#00E5FF]/10' : 'border-[#00E5FF]/20 hover:border-[#00E5FF]'
+          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
+            activeLedgerFilter === 'receber' ? 'border-[#00E5FF] ring-1 ring-[#00E5FF]/30' : 'border-[#00E5FF]/15 hover:border-[#00E5FF]/60'
           }`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-              <Clock size={20} />
+          <div className="absolute -right-8 -top-8 w-28 h-28 bg-[#00E5FF]/5 rounded-full blur-2xl group-hover:bg-[#00E5FF]/15 transition-all duration-500" />
+          <div className="relative">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF]">
+                <Clock size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-0.5 rounded-full">
+                Pendente
+              </span>
             </div>
-            <span className="text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/30 px-2 py-0.5 rounded-full">
-              Pendente
-            </span>
+            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('A RECEBER')}</p>
+            <p className="text-xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
+              {formatMoney(aReceberVal)}
+            </p>
           </div>
-
-          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('A RECEBER (COMPRADOR)')}</p>
-          <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-            {formatMoney(aReceberVal)}
-          </p>
-          <p className="text-xs text-gray-500 mt-2">Transações pendentes/processando</p>
         </div>
 
-        {/* Card 2: Valore Retidos (Custódia Escrow) */}
+        {/* Card 2: Escrow */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
-            activeLedgerFilter === 'retido' ? 'border-[#00E5FF] bg-[#00E5FF]/10' : 'border-[#00E5FF]/20 hover:border-[#00E5FF]'
+          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
+            activeLedgerFilter === 'retido' ? 'border-[#00E5FF] ring-1 ring-[#00E5FF]/30' : 'border-[#00E5FF]/15 hover:border-[#00E5FF]/60'
           }`}
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-[#00E5FF]/10 rounded-full blur-2xl group-hover:bg-[#00E5FF]/25 transition-all" />
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-              <ShieldCheck size={20} />
+          <div className="absolute -right-8 -top-8 w-28 h-28 bg-[#00E5FF]/5 rounded-full blur-2xl group-hover:bg-[#00E5FF]/15 transition-all duration-500" />
+          <div className="relative">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF]">
+                <ShieldCheck size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-0.5 rounded-full">
+                Escrow 🔒
+              </span>
             </div>
-            <span className="text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/30 px-2 py-0.5 rounded-full">
-              Escrow Retido 🔒
-            </span>
+            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('CUSTÓDIA RETIDA')}</p>
+            <p className="text-xl font-black text-[#00E5FF] mt-1 font-mono">
+              {formatMoney(retidoVal)}
+            </p>
           </div>
-
-          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('VALORES RETIDOS (CUSTÓDIA)')}</p>
-          <p className="text-2xl font-black text-[#00E5FF] mt-1 transition-colors font-mono">
-            {formatMoney(retidoVal)}
-          </p>
-          <p className="text-xs text-gray-500 mt-2">Garantia segura aguardando entrega</p>
         </div>
 
-        {/* Card 3: Valores Pagos aos Vendedores */}
+        {/* Card 3: Pagos */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
-            activeLedgerFilter === 'pagos' ? 'border-[#00E5FF] bg-[#00E5FF]/10' : 'border-[#00E5FF]/20 hover:border-[#00E5FF]'
+          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
+            activeLedgerFilter === 'pagos' ? 'border-[#00E5FF] ring-1 ring-[#00E5FF]/30' : 'border-[#00E5FF]/15 hover:border-[#00E5FF]/60'
           }`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-              <Wallet size={20} />
+          <div className="relative">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF]">
+                <Wallet size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-0.5 rounded-full">
+                Repassado
+              </span>
             </div>
-            <span className="text-[11px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/30 px-2 py-0.5 rounded-full">
-              Repassado
-            </span>
+            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</p>
+            <p className="text-xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
+              {formatMoney(pagosVal)}
+            </p>
           </div>
-
-          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('VALORES PAGOS (VENDEDOR)')}</p>
-          <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-            {formatMoney(pagosVal)}
-          </p>
-          <p className="text-xs text-gray-500 mt-2">{(100 - commissionRate)}% de repasse líquido liberado</p>
         </div>
 
-        {/* Card 4: Lucro da Plataforma */}
-        <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-5 shadow-xl backdrop-blur-md space-y-2 relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</p>
-            <DollarSign size={16} className="text-[#00E5FF]" />
-          </div>
-          
-          <p className="text-2xl font-black text-[#00E5FF] font-mono">
-            {formatMoney(lucroLiquido)}
-          </p>
-
-          <div className="pt-2 border-t border-white/5 space-y-1 text-xs text-gray-400">
-            <div className="flex justify-between">
-              <span>Bruto ({commissionRate}%):</span>
-              <span className="font-mono text-white">{formatMoney(lucroBruto)}</span>
+        {/* Card 4: Lucro */}
+        <div className="bg-[#0D0D14] border border-[#00E5FF]/15 rounded-2xl p-5 shadow-xl space-y-2 relative overflow-hidden">
+          <div className="absolute -right-8 -top-8 w-28 h-28 bg-[#00E5FF]/5 rounded-full blur-2xl" />
+          <div className="relative">
+            <div className="flex items-center justify-between">
+              <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('LUCRO PLATAFORMA')}</p>
+              <DollarSign size={14} className="text-[#00E5FF]" />
             </div>
-            <div className="flex justify-between">
-              <span>Contratos:</span>
-              <span className="font-mono text-red-400">-{formatMoney(custoTerceiros)}</span>
+            <p className={`text-xl font-black font-mono mt-1 ${lucroLiquido >= 0 ? 'text-[#00E5FF]' : 'text-red-400'}`}>
+              {formatMoney(lucroLiquido)}
+            </p>
+            <div className="pt-2 mt-2 border-t border-white/5 space-y-1 text-[11px] text-gray-500">
+              <div className="flex justify-between">
+                <span>Bruto ({commissionRate}%):</span>
+                <span className="font-mono text-white">{formatMoney(lucroBruto)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Contratos:</span>
+                <span className="font-mono text-red-400">-{formatMoney(custoTerceiros)}</span>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
 
-      {/* Filtro Ativo Banner */}
-      {activeLedgerFilter && (
-        <div className="flex items-center justify-between bg-[#00E5FF]/10 border border-[#00E5FF]/30 rounded-xl px-4 py-2.5">
-          <span className="text-xs text-gray-300 font-semibold flex items-center gap-2">
-            <Filter size={14} className="text-[#00E5FF]" />
-            {t('Filtrando por:')} <strong className="text-[#00E5FF] uppercase font-bold">{activeLedgerFilter === 'receber' ? 'A Receber' : activeLedgerFilter === 'retido' ? 'Valores Retidos' : 'Valores Pagos'}</strong>
-          </span>
-          <button
-            onClick={() => setActiveLedgerFilter(null)}
-            className="text-xs font-bold text-[#00E5FF] hover:underline uppercase tracking-wider flex items-center gap-1"
-          >
-            <X size={14} /> {t('Limpar Filtro')}
-          </button>
-        </div>
-      )}
+      {/* ═══ TOOLBAR (Search + Filter + Sort) ═══ */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Search */}
+          <div className="relative">
+            <Search size={13} className="text-[#00E5FF] absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('Buscar peça, comprador...')}
+              className="pl-8 pr-4 py-2 bg-[#0D0D14] border border-white/10 focus:border-[#00E5FF]/40 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none w-56 transition-colors"
+            />
+          </div>
 
-      {/* Tabela de Transações com Thumbs das Peças JDM e Botões Neon Azul */}
-      <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-4 shadow-xl">
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#00E5FF]" /> {t('Lista de Transações de Peças JDM')}
-          </h2>
-          <button onClick={fetchTransactions} className="text-xs text-[#00E5FF] font-bold flex items-center gap-1 hover:underline">
-            <RefreshCw size={12} /> {t('Atualizar')}
+          {/* Active Filter Banner */}
+          {activeLedgerFilter && (
+            <div className="flex items-center gap-2 bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-xl px-3 py-1.5">
+              <Filter size={12} className="text-[#00E5FF]" />
+              <span className="text-[11px] text-[#00E5FF] font-bold uppercase">{activeLedgerFilter === 'receber' ? 'A Receber' : activeLedgerFilter === 'retido' ? 'Escrow Retido' : 'Pagos'}</span>
+              <button onClick={() => setActiveLedgerFilter(null)} className="ml-1 p-0.5 rounded hover:bg-white/10 text-[#00E5FF]">
+                <X size={12} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Sort Toggle */}
+          <button
+            onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D14] border border-white/10 text-xs text-gray-400 hover:text-white hover:border-white/20 transition-all"
+          >
+            <ArrowUpDown size={12} />
+            <span>{sortOrder === 'desc' ? 'Mais recentes' : 'Mais antigas'}</span>
           </button>
+
+          {/* Refresh */}
+          <button
+            onClick={fetchTransactions}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D14] border border-white/10 text-xs text-[#00E5FF] hover:border-[#00E5FF]/30 transition-all"
+          >
+            <RefreshCw size={12} />
+            <span>Atualizar</span>
+          </button>
+
+          {/* Counter */}
+          <span className="px-3 py-2 rounded-xl bg-[#0D0D14] border border-white/10 text-xs text-gray-500 font-mono">
+            {filteredTransactions.length} de {transactions.length}
+          </span>
+        </div>
+      </div>
+
+      {/* ═══ TRANSACTION LIST ═══ */}
+      <div className="bg-[#0D0D14] border border-[#00E5FF]/15 rounded-2xl overflow-hidden shadow-xl">
+        
+        {/* Table Header */}
+        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 border-b border-white/5 text-[10px] text-gray-500 uppercase tracking-wider font-bold">
+          <div className="col-span-5">Produto</div>
+          <div className="col-span-2">Comprador</div>
+          <div className="col-span-1 text-right">Valor</div>
+          <div className="col-span-1 text-center">Taxa</div>
+          <div className="col-span-1 text-center">Status</div>
+          <div className="col-span-2 text-right">Ações</div>
         </div>
 
         {filteredTransactions.length > 0 ? (
-          <div className="space-y-3">
+          <div className="divide-y divide-white/[0.03]">
             {filteredTransactions.map((tx) => (
               <div 
                 key={tx.id}
-                className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-[#00E5FF]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-5 md:px-6 py-4 hover:bg-white/[0.015] transition-colors group items-center"
               >
-                {/* Produto / Peça JDM */}
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  <div className="w-14 h-14 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
-                    <SafeImage src={tx.part?.images?.[0]} alt={tx.part?.title || ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                {/* Product */}
+                <div className="col-span-5 flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                    <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                   </div>
-                  <div className="min-w-0 space-y-1">
-                    <p className="text-white font-semibold text-sm truncate group-hover:text-[#00E5FF] transition-colors">
-                      {tx.part?.title || 'Peça Automotiva JDM'}
+                  <div className="min-w-0">
+                    <p className="text-xs text-white font-semibold truncate group-hover:text-[#00E5FF] transition-colors">
+                      {tx.part?.title || 'Peça JDM'}
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-gray-400">
-                      <span>Comprador: <strong className="text-white">{tx.buyer?.full_name || tx.buyer?.email || 'N/A'}</strong></span>
-                      <span>•</span>
-                      <span>Vendedor: <strong className="text-white">{tx.seller?.full_name || tx.seller?.email || 'N/A'}</strong></span>
-                    </div>
+                    <p className="text-[10px] text-gray-600">
+                      {tx.created_at ? new Date(tx.created_at).toLocaleDateString('ja-JP') : '—'}
+                    </p>
                   </div>
                 </div>
 
-                {/* Valor & Status */}
-                <div className="flex items-center gap-4 justify-between md:justify-end shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-white/5">
-                  <div className="text-left md:text-right">
-                    <span className="text-base font-black text-[#00E5FF] font-mono block">
-                      {formatMoney(tx.amount || 0)}
-                    </span>
-                    <span className="text-[11px] font-bold text-gray-400 uppercase">
-                      Taxa DAIG: {formatMoney((tx.amount || 0) * (commissionRate / 100))}
-                    </span>
-                  </div>
+                {/* Buyer */}
+                <div className="col-span-2 text-[11px] text-gray-400 truncate">
+                  {tx.buyer?.full_name || tx.buyer?.email || 'N/A'}
+                </div>
 
-                  {/* Status Badge */}
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
-                    {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Escrow Retido' : '✅ Concluído'}
+                {/* Amount */}
+                <div className="col-span-1 text-right">
+                  <span className="text-xs font-black text-[#00E5FF] font-mono">
+                    {formatMoney(tx.amount || 0)}
                   </span>
+                </div>
 
-                  {/* Ações Diretas */}
-                  <div className="flex items-center gap-2">
-                    {tx.payment_status === 'escrow' && (
-                      <button
-                        onClick={() => updateTransactionStatus(tx.id, 'paid', 'payment')}
-                        className="px-3.5 py-1.5 rounded-xl bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black text-xs font-extrabold shadow-md shadow-[#00E5FF]/20 transition-all"
-                      >
-                        Liberar Repasse 💸
-                      </button>
-                    )}
+                {/* Fee */}
+                <div className="col-span-1 text-center">
+                  <span className="text-[10px] text-gray-500 font-mono">
+                    {formatMoney((tx.amount || 0) * (commissionRate / 100))}
+                  </span>
+                </div>
+
+                {/* Status */}
+                <div className="col-span-1 text-center">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                    tx.payment_status === 'escrow' 
+                      ? 'bg-[#00E5FF]/10 text-[#00E5FF] border-[#00E5FF]/30' 
+                      : tx.payment_status === 'pending'
+                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  }`}>
+                    {tx.payment_status === 'pending' ? '⏳' : tx.payment_status === 'escrow' ? '🔒' : '✅'}
+                    <span className="hidden sm:inline">{tx.payment_status === 'pending' ? 'Pend.' : tx.payment_status === 'escrow' ? 'Escrow' : 'OK'}</span>
+                  </span>
+                </div>
+
+                {/* Actions */}
+                <div className="col-span-2 flex items-center gap-2 justify-end">
+                  {tx.payment_status === 'escrow' && (
                     <button
-                      onClick={() => setSelectedTransaction(tx)}
-                      className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all flex items-center gap-1"
+                      onClick={() => updateTransactionStatus(tx.id, 'completed', 'payment')}
+                      className="px-2.5 py-1 rounded-lg bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black text-[10px] font-extrabold shadow-sm shadow-[#00E5FF]/20 transition-all"
                     >
-                      <Eye size={14} className="text-[#00E5FF]" />
-                      <span>Detalhes</span>
+                      Liberar 💸
                     </button>
-                  </div>
+                  )}
+                  <button
+                    onClick={() => setSelectedTransaction(tx)}
+                    className="p-1.5 rounded-lg bg-white/[0.03] hover:bg-white/10 border border-white/5 text-gray-400 hover:text-[#00E5FF] transition-all"
+                    title="Detalhes"
+                  >
+                    <Eye size={14} />
+                  </button>
                 </div>
 
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 space-y-3">
-            <ShieldCheck size={36} className="text-[#00E5FF] mx-auto" />
-            <p className="text-gray-400 text-sm">{t('Nenhuma transação encontrada.')}</p>
+          <div className="text-center py-16 space-y-3">
+            <ShieldCheck size={32} className="text-[#00E5FF]/30 mx-auto" />
+            <p className="text-gray-500 text-xs">{searchQuery ? t('Nenhuma transação encontrada para esta busca.') : t('Nenhuma transação registrada.')}</p>
           </div>
         )}
       </div>
+
+      {/* ═══ DETAIL MODAL ═══ */}
+      {selectedTransaction && (
+        <TransactionDetailModal
+          tx={selectedTransaction}
+          onClose={() => setSelectedTransaction(null)}
+          onAction={updateTransactionStatus}
+          commissionRate={commissionRate}
+          formatMoney={formatMoney}
+        />
+      )}
 
     </div>
   );
