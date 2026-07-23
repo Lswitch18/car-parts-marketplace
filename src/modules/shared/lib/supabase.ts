@@ -94,59 +94,76 @@ export const signInWithGoogle = async () => {
       throw error
     }
   } else {
+    await loadGsiScript()
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
+
+    // Reseta o cookie de bloqueio temporário do Google One-Tap/GSI
     try {
-      await loadGsiScript()
-      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
-      
-      return new Promise((resolve, reject) => {
-        if (!window.google?.accounts?.id) {
-          return reject(new Error('Google Identity Services não está disponível.'))
-        }
+      document.cookie = 'g_state=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+    } catch {}
 
-        window.google.accounts.id.initialize({
-          client_id: googleClientId,
-          callback: async (response: any) => {
-            try {
-              if (!response.credential) {
-                return reject(new Error('Nenhum token retornado pelo Google.'))
-              }
-              const { data, error } = await supabase.auth.signInWithIdToken({
-                provider: 'google',
-                token: response.credential,
-              })
-              if (error) throw error
-              resolve(data)
-            } catch (err) {
-              reject(err)
+    return new Promise((resolve, reject) => {
+      if (!window.google?.accounts?.id) {
+        return reject(new Error('Google Identity Services não está disponível.'))
+      }
+
+      // Prepara um container oculto para renderizar e acionar o botão nativo do GSI (que abre o popup sem redirecionar a página)
+      let container = document.getElementById('gsi-hidden-button-container')
+      if (!container) {
+        container = document.createElement('div')
+        container.id = 'gsi-hidden-button-container'
+        container.style.position = 'absolute'
+        container.style.top = '-9999px'
+        container.style.left = '-9999px'
+        container.style.opacity = '0'
+        container.style.pointerEvents = 'none'
+        document.body.appendChild(container)
+      } else {
+        container.innerHTML = ''
+      }
+
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: async (response: any) => {
+          try {
+            if (!response.credential) {
+              return reject(new Error('Nenhum token retornado pelo Google.'))
             }
-          },
-          auto_select: false,
-          cancel_on_tap_outside: true
-        })
-
-        // Exibe o prompt oficial do Google Sign-In One-Tap / Popup
-        window.google.accounts.id.prompt((notification: any) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // Fallback seguro via OAuth tradicional caso o popup One-Tap seja ignorado pelo navegador
-            supabase.auth.signInWithOAuth({
+            const { data, error } = await supabase.auth.signInWithIdToken({
               provider: 'google',
-              options: {
-                redirectTo: `${window.location.origin}`,
-              },
-            }).then(resolve).catch(reject)
+              token: response.credential,
+            })
+            if (error) throw error
+            resolve(data)
+          } catch (err) {
+            reject(err)
           }
-        })
-      })
-    } catch (err) {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}`,
         },
+        auto_select: false,
+        cancel_on_tap_outside: true,
       })
-      if (error) throw error
-      return data
-    }
+
+      // Renderiza o botão oficial do GSI no container oculto
+      window.google.accounts.id.renderButton(container, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+      })
+
+      // Simula o clique no botão nativo do GSI para abrir o Popup do Google mantendo a origem do aplicativo
+      setTimeout(() => {
+        const btn = container?.querySelector('div[role="button"]') as HTMLElement | HTMLDivElement | null
+        if (btn) {
+          btn.click()
+        } else {
+          window.google.accounts.id.prompt((notification: any) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+              reject(new Error('Login com Google foi cancelado ou a origem não está autorizada.'))
+            }
+          })
+        }
+      }, 100)
+    })
   }
 }
 
