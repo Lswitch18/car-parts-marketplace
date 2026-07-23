@@ -10,7 +10,7 @@ import { api } from '@/modules/transactions/api/api';
 import { 
   ShieldCheck, DollarSign, Wallet, Filter, ArrowUpDown,
   CheckCircle2, Clock, Eye, Sparkles, Save, X, RefreshCw,
-  ArrowRight, ChevronDown, Download, Calendar, Search, Loader2
+  Calendar, Search, Loader2, ArrowUpRight, Lock
 } from 'lucide-react';
 
 // ─── Transaction Detail Modal ──────────────────────────────────────────────────
@@ -28,93 +28,100 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
   const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString('ja-JP', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#0D0D14] border border-[#00E5FF]/30 rounded-2xl w-full max-w-lg shadow-2xl shadow-[#00E5FF]/10 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-[#121215] border border-[#27272a] rounded-xl w-full max-w-lg shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-5 border-b border-white/5">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <Eye size={16} className="text-[#00E5FF]" /> Detalhes da Transação
-          </h3>
-          <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#27272a] bg-[#18181b]">
+          <div className="flex items-center gap-2">
+            <Eye size={16} className="text-zinc-400" />
+            <h3 className="text-sm font-bold text-white">Detalhes da Transação</h3>
+          </div>
+          <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
             <X size={16} />
           </button>
         </div>
 
         {/* Product Info */}
-        <div className="p-5 space-y-5">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-xl bg-black/40 border border-white/10 overflow-hidden shrink-0">
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-3 bg-[#18181b] p-3 rounded-lg border border-[#27272a]">
+            <div className="w-14 h-14 rounded-lg bg-black border border-zinc-800 overflow-hidden shrink-0">
               <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-white font-bold text-sm truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
-              <p className="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1">
-                <Calendar size={10} /> {createdAt}
+              <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-1">
+                <Calendar size={11} /> {createdAt}
               </p>
             </div>
           </div>
 
           {/* Financial Breakdown */}
-          <div className="bg-white/[0.02] border border-white/5 rounded-xl p-4 space-y-3">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Breakdown Financeiro</p>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between text-gray-400">
-                <span>Valor Bruto</span>
-                <span className="font-mono font-bold text-white">{formatMoney(amount)}</span>
+          <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4 space-y-2.5">
+            <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Detalhamento Financeiro</p>
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between text-zinc-300">
+                <span>Valor Total Bruto:</span>
+                <span className="font-bold text-white">{formatMoney(amount)}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
-                <span>Taxa DAIG ({commissionRate}%)</span>
-                <span className="font-mono font-bold text-[#00E5FF]">-{formatMoney(fee)}</span>
+              <div className="flex justify-between text-zinc-400">
+                <span>Comissão DAIG ({commissionRate}%):</span>
+                <span className="font-bold text-cyan-400">-{formatMoney(fee)}</span>
               </div>
-              <div className="border-t border-white/5 pt-2 flex justify-between text-gray-300">
-                <span className="font-semibold">Líquido p/ Vendedor</span>
-                <span className="font-mono font-bold text-white">{formatMoney(sellerNet)}</span>
+              <div className="border-t border-[#27272a] pt-2 flex justify-between text-zinc-200">
+                <span className="font-sans font-semibold">Repasse Líquido Vendedor:</span>
+                <span className="font-bold text-emerald-400">{formatMoney(sellerNet)}</span>
               </div>
             </div>
           </div>
 
           {/* Parties */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-1">
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Comprador</p>
+            <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-3 space-y-1">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Comprador</p>
               <p className="text-xs text-white font-semibold truncate">{tx.buyer?.full_name || tx.buyer?.email || 'N/A'}</p>
             </div>
-            <div className="bg-white/[0.02] border border-white/5 rounded-xl p-3 space-y-1">
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Vendedor</p>
+            <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-3 space-y-1">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Vendedor</p>
               <p className="text-xs text-white font-semibold truncate">{tx.seller?.full_name || tx.seller?.email || 'N/A'}</p>
             </div>
           </div>
 
           {/* Status Badges */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="space-y-1">
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Pagamento</p>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30 inline-block">
-                {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Escrow' : tx.payment_status === 'completed' ? '✅ Concluído' : tx.payment_status}
+          <div className="flex items-center gap-3 pt-1">
+            <div className="flex-1 space-y-1">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Pagamento</p>
+              <span className={`px-2.5 py-1 rounded-md text-xs font-bold border block text-center ${
+                tx.payment_status === 'pending'
+                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                  : tx.payment_status === 'escrow'
+                    ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                    : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+              }`}>
+                {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Retido em Escrow' : '✅ Concluído'}
               </span>
             </div>
-            <div className="space-y-1">
-              <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Entrega</p>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/5 text-white border border-white/10 inline-block">
-                {tx.fulfillment_status === 'pending' ? '⏳ Pendente' : tx.fulfillment_status === 'shipped' ? '🚚 Enviado' : tx.fulfillment_status === 'received' ? '📦 Recebido' : '✅ Concluído'}
+            <div className="flex-1 space-y-1">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Entrega WMS</p>
+              <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-[#18181b] text-zinc-300 border border-[#27272a] block text-center">
+                {tx.fulfillment_status === 'pending' ? '⏳ Pendente' : tx.fulfillment_status === 'shipped' ? '🚚 Em Trânsito' : tx.fulfillment_status === 'received' ? '📦 Entregue' : '✅ Concluído'}
               </span>
             </div>
           </div>
         </div>
 
         {/* Modal Actions */}
-        <div className="p-5 border-t border-white/5 flex items-center gap-3">
+        <div className="p-4 border-t border-[#27272a] bg-[#18181b] flex items-center justify-end gap-3">
           {tx.payment_status === 'escrow' && (
             <button
               onClick={() => { onAction(tx.id, 'completed', 'payment'); onClose(); }}
-              className="flex-1 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black py-2.5 rounded-xl text-xs font-extrabold transition-all shadow-md shadow-[#00E5FF]/20 flex items-center justify-center gap-2"
+              className="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
             >
               <ShieldCheck size={14} />
-              Liberar Repasse ao Vendedor
+              Liberar Repasse
             </button>
           )}
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-semibold transition-all">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-white text-xs font-medium transition-all">
             Fechar
           </button>
         </div>
@@ -247,7 +254,6 @@ export default function TransactionManagement() {
   const filteredTransactions = useMemo(() => {
     let list = [...transactions];
 
-    // Ledger filter
     if (activeLedgerFilter === 'receber') {
       list = list.filter(t => t.payment_status === 'pending' || t.payment_status === 'processing');
     } else if (activeLedgerFilter === 'retido') {
@@ -256,7 +262,6 @@ export default function TransactionManagement() {
       list = list.filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'));
     }
 
-    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(t => 
@@ -267,7 +272,6 @@ export default function TransactionManagement() {
       );
     }
 
-    // Sort
     list.sort((a, b) => {
       const da = new Date(a.created_at).getTime();
       const db = new Date(b.created_at).getTime();
@@ -279,7 +283,6 @@ export default function TransactionManagement() {
 
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
 
-  // Ledger calculations (always from full transactions list)
   const aReceberVal = transactions
     .filter(t => t.payment_status === 'pending' || t.payment_status === 'processing')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
@@ -306,8 +309,8 @@ export default function TransactionManagement() {
     return (
       <div className="flex items-center justify-center py-20 min-h-[60vh]">
         <div className="text-center space-y-3">
-          <Loader2 className="w-8 h-8 text-[#00E5FF] animate-spin mx-auto" />
-          <p className="text-xs text-gray-500">Carregando transações...</p>
+          <Loader2 className="w-8 h-8 text-zinc-400 animate-spin mx-auto" />
+          <p className="text-xs text-zinc-500">Carregando painel financeiro...</p>
         </div>
       </div>
     );
@@ -316,12 +319,12 @@ export default function TransactionManagement() {
   if (error) {
     return (
       <div className="p-6 max-w-4xl mx-auto space-y-4 text-white">
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-lg text-sm">
           <p className="font-semibold">{error}</p>
         </div>
         <button 
           onClick={() => { setError(null); fetchTransactions(); }}
-          className="bg-[#00E5FF] text-black font-bold px-4 py-2 rounded-xl text-sm hover:bg-[#00E5FF]/80 transition-all"
+          className="bg-zinc-800 text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-zinc-700 transition-all"
         >
           {t('Tentar novamente')}
         </button>
@@ -330,173 +333,151 @@ export default function TransactionManagement() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-[#EDEDED] font-sans pb-20">
+    <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-zinc-200 font-sans pb-20 bg-[#09090b]">
       
-      {/* ═══ HEADER ═══ */}
-      <div className="relative overflow-hidden bg-[#0D0D14]/80 p-6 md:p-8 rounded-2xl border border-[#00E5FF]/20 backdrop-blur-xl">
-        <div className="absolute -left-20 -top-20 w-60 h-60 bg-[#00E5FF]/5 rounded-full blur-3xl" />
-        
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 shadow-lg shadow-[#00E5FF]/10">
-              <GaidLogo size={42} animated />
-            </div>
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold mb-1.5">
-                <Sparkles className="w-3 h-3 animate-pulse" /> Financial Escrow Center
-              </div>
-              <h1 className="text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-[#00E5FF] bg-clip-text text-transparent">
-                Transações & Custódia JPY
-              </h1>
-            </div>
+      {/* ═══ CLEAN OPERATIONAL HEADER ═══ */}
+      <div className="bg-[#121215] border border-[#27272a] p-5 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="p-2.5 rounded-lg bg-[#18181b] border border-[#27272a]">
+            <GaidLogo size={36} />
           </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-white tracking-tight">Transações & Custódia Escrow</h1>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">JPY</span>
+            </div>
+            <p className="text-xs text-zinc-400 mt-0.5">Gestão operacional de fluxo de caixa, comissões e repasses Stripe</p>
+          </div>
+        </div>
 
-          {/* Taxa Controller */}
-          <div className="flex items-center gap-3 bg-[#07070A] border border-[#00E5FF]/20 rounded-xl px-4 py-2.5 shrink-0">
-            <span className="text-gray-400 text-xs font-semibold">{t('Taxa DAIG:')}</span>
-            <input
-              type="number"
-              value={tempRate}
-              onChange={(e) => setTempRate(e.target.value)}
-              className="bg-[#0D0D14] border border-[#00E5FF]/30 rounded-lg px-2.5 py-1 text-white font-mono font-bold text-sm w-14 text-center focus:outline-none focus:border-[#00E5FF]"
-              min="0"
-              max="100"
-            />
-            <span className="text-[#00E5FF] font-bold text-sm">%</span>
-            <button
-              onClick={handleSaveCommissionRate}
-              disabled={savingRate}
-              className="px-3 py-1.5 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black rounded-lg text-xs font-extrabold transition-all disabled:opacity-50 shadow-md shadow-[#00E5FF]/20 flex items-center gap-1"
-            >
-              <Save size={12} />
-              <span>{savingRate ? '...' : t('Salvar')}</span>
-            </button>
-          </div>
+        {/* Taxa DAIG Controller */}
+        <div className="flex items-center gap-2.5 bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 shrink-0">
+          <span className="text-zinc-400 text-xs font-medium">{t('Taxa DAIG:')}</span>
+          <input
+            type="number"
+            value={tempRate}
+            onChange={(e) => setTempRate(e.target.value)}
+            className="bg-black border border-zinc-700 rounded px-2 py-0.5 text-white font-mono font-bold text-xs w-12 text-center focus:outline-none focus:border-zinc-500"
+            min="0"
+            max="100"
+          />
+          <span className="text-zinc-400 font-bold text-xs">%</span>
+          <button
+            onClick={handleSaveCommissionRate}
+            disabled={savingRate}
+            className="px-3 py-1 bg-zinc-700 hover:bg-zinc-600 text-white rounded text-xs font-semibold transition-all disabled:opacity-50 flex items-center gap-1 ml-1"
+          >
+            <Save size={12} />
+            <span>{savingRate ? '...' : t('Salvar')}</span>
+          </button>
         </div>
       </div>
 
-      {/* ═══ 4 LEDGER CARDS ═══ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* ═══ CLEAN OPERATIONAL LEDGER CARDS ═══ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Card 1: A Receber */}
+        {/* Card 1: A Receber (Pendente) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
-            activeLedgerFilter === 'receber' ? 'border-[#00E5FF] ring-1 ring-[#00E5FF]/30' : 'border-[#00E5FF]/15 hover:border-[#00E5FF]/60'
+          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 ${
+            activeLedgerFilter === 'receber' ? 'border-amber-500/60 bg-amber-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
-          <div className="absolute -right-8 -top-8 w-28 h-28 bg-[#00E5FF]/5 rounded-full blur-2xl group-hover:bg-[#00E5FF]/15 transition-all duration-500" />
-          <div className="relative">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF]">
-                <Clock size={18} />
-              </div>
-              <span className="text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-0.5 rounded-full">
-                Pendente
-              </span>
-            </div>
-            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('A RECEBER')}</p>
-            <p className="text-xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-              {formatMoney(aReceberVal)}
-            </p>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('A RECEBER')}</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
+              <Clock size={10} /> Pendente
+            </span>
           </div>
+          <p className="text-2xl font-bold text-white font-mono tracking-tight">
+            {formatMoney(aReceberVal)}
+          </p>
+          <p className="text-[11px] text-zinc-500 mt-2">Aguardando confirmação de pagamento</p>
         </div>
 
-        {/* Card 2: Escrow */}
+        {/* Card 2: Custódia Retida (Escrow) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
-            activeLedgerFilter === 'retido' ? 'border-[#00E5FF] ring-1 ring-[#00E5FF]/30' : 'border-[#00E5FF]/15 hover:border-[#00E5FF]/60'
+          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 ${
+            activeLedgerFilter === 'retido' ? 'border-sky-500/60 bg-sky-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
-          <div className="absolute -right-8 -top-8 w-28 h-28 bg-[#00E5FF]/5 rounded-full blur-2xl group-hover:bg-[#00E5FF]/15 transition-all duration-500" />
-          <div className="relative">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF]">
-                <ShieldCheck size={18} />
-              </div>
-              <span className="text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-0.5 rounded-full">
-                Escrow 🔒
-              </span>
-            </div>
-            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('CUSTÓDIA RETIDA')}</p>
-            <p className="text-xl font-black text-[#00E5FF] mt-1 font-mono">
-              {formatMoney(retidoVal)}
-            </p>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('CUSTÓDIA RETIDA')}</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1">
+              <Lock size={10} /> Escrow 🔒
+            </span>
           </div>
+          <p className="text-2xl font-bold text-sky-400 font-mono tracking-tight">
+            {formatMoney(retidoVal)}
+          </p>
+          <p className="text-[11px] text-zinc-500 mt-2">Retido até confirmação de entrega pelo cliente</p>
         </div>
 
-        {/* Card 3: Pagos */}
+        {/* Card 3: Pagos ao Vendedor */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`bg-[#0D0D14] border rounded-2xl p-5 shadow-xl cursor-pointer transition-all hover:scale-[1.02] group relative overflow-hidden ${
-            activeLedgerFilter === 'pagos' ? 'border-[#00E5FF] ring-1 ring-[#00E5FF]/30' : 'border-[#00E5FF]/15 hover:border-[#00E5FF]/60'
+          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 ${
+            activeLedgerFilter === 'pagos' ? 'border-emerald-500/60 bg-emerald-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
-          <div className="relative">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/20 flex items-center justify-center text-[#00E5FF]">
-                <Wallet size={18} />
-              </div>
-              <span className="text-[10px] font-bold text-[#00E5FF] bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-0.5 rounded-full">
-                Repassado
-              </span>
-            </div>
-            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</p>
-            <p className="text-xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-              {formatMoney(pagosVal)}
-            </p>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+              <CheckCircle2 size={10} /> Repassado
+            </span>
           </div>
+          <p className="text-2xl font-bold text-white font-mono tracking-tight">
+            {formatMoney(pagosVal)}
+          </p>
+          <p className="text-[11px] text-zinc-500 mt-2">{(100 - commissionRate)}% repassado via Stripe Connect</p>
         </div>
 
-        {/* Card 4: Lucro */}
-        <div className="bg-[#0D0D14] border border-[#00E5FF]/15 rounded-2xl p-5 shadow-xl space-y-2 relative overflow-hidden">
-          <div className="absolute -right-8 -top-8 w-28 h-28 bg-[#00E5FF]/5 rounded-full blur-2xl" />
-          <div className="relative">
-            <div className="flex items-center justify-between">
-              <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-wider">{t('LUCRO PLATAFORMA')}</p>
-              <DollarSign size={14} className="text-[#00E5FF]" />
+        {/* Card 4: Lucro Plataforma */}
+        <div className="bg-[#121215] border border-[#27272a] rounded-xl p-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
+            <DollarSign size={14} className="text-emerald-400" />
+          </div>
+          <p className={`text-2xl font-bold font-mono tracking-tight ${lucroLiquido >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+            {formatMoney(lucroLiquido)}
+          </p>
+          <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
+            <div className="flex justify-between">
+              <span>Bruto ({commissionRate}%):</span>
+              <span className="text-white">{formatMoney(lucroBruto)}</span>
             </div>
-            <p className={`text-xl font-black font-mono mt-1 ${lucroLiquido >= 0 ? 'text-[#00E5FF]' : 'text-red-400'}`}>
-              {formatMoney(lucroLiquido)}
-            </p>
-            <div className="pt-2 mt-2 border-t border-white/5 space-y-1 text-[11px] text-gray-500">
-              <div className="flex justify-between">
-                <span>Bruto ({commissionRate}%):</span>
-                <span className="font-mono text-white">{formatMoney(lucroBruto)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Contratos:</span>
-                <span className="font-mono text-red-400">-{formatMoney(custoTerceiros)}</span>
-              </div>
+            <div className="flex justify-between">
+              <span>Contratos terceiros:</span>
+              <span className="text-red-400">-{formatMoney(custoTerceiros)}</span>
             </div>
           </div>
         </div>
 
       </div>
 
-      {/* ═══ TOOLBAR (Search + Filter + Sort) ═══ */}
+      {/* ═══ OPERATIONAL TOOLBAR (Search + Filter + Actions) ═══ */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Search */}
+          {/* Search Bar */}
           <div className="relative">
-            <Search size={13} className="text-[#00E5FF] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search size={13} className="text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('Buscar peça, comprador...')}
-              className="pl-8 pr-4 py-2 bg-[#0D0D14] border border-white/10 focus:border-[#00E5FF]/40 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none w-56 transition-colors"
+              placeholder={t('Buscar produto, comprador...')}
+              className="pl-8 pr-4 py-1.5 bg-[#121215] border border-[#27272a] focus:border-zinc-500 rounded-lg text-xs text-white placeholder-zinc-500 focus:outline-none w-64 transition-colors"
             />
           </div>
 
-          {/* Active Filter Banner */}
+          {/* Active Filter Badge */}
           {activeLedgerFilter && (
-            <div className="flex items-center gap-2 bg-[#00E5FF]/10 border border-[#00E5FF]/20 rounded-xl px-3 py-1.5">
-              <Filter size={12} className="text-[#00E5FF]" />
-              <span className="text-[11px] text-[#00E5FF] font-bold uppercase">{activeLedgerFilter === 'receber' ? 'A Receber' : activeLedgerFilter === 'retido' ? 'Escrow Retido' : 'Pagos'}</span>
-              <button onClick={() => setActiveLedgerFilter(null)} className="ml-1 p-0.5 rounded hover:bg-white/10 text-[#00E5FF]">
+            <div className="flex items-center gap-2 bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1">
+              <Filter size={11} className="text-zinc-400" />
+              <span className="text-[11px] text-white font-semibold uppercase">{activeLedgerFilter === 'receber' ? 'A Receber' : activeLedgerFilter === 'retido' ? 'Escrow Retido' : 'Pagos'}</span>
+              <button onClick={() => setActiveLedgerFilter(null)} className="ml-1 text-zinc-400 hover:text-white">
                 <X size={12} />
               </button>
             </div>
@@ -504,10 +485,10 @@ export default function TransactionManagement() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Sort Toggle */}
+          {/* Sort Order */}
           <button
             onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D14] border border-white/10 text-xs text-gray-400 hover:text-white hover:border-white/20 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#121215] border border-[#27272a] text-xs text-zinc-300 hover:bg-[#18181b] transition-all"
           >
             <ArrowUpDown size={12} />
             <span>{sortOrder === 'desc' ? 'Mais recentes' : 'Mais antigas'}</span>
@@ -516,84 +497,77 @@ export default function TransactionManagement() {
           {/* Refresh */}
           <button
             onClick={fetchTransactions}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D14] border border-white/10 text-xs text-[#00E5FF] hover:border-[#00E5FF]/30 transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#121215] border border-[#27272a] text-xs text-zinc-300 hover:bg-[#18181b] transition-all"
           >
             <RefreshCw size={12} />
             <span>Atualizar</span>
           </button>
 
           {/* Counter */}
-          <span className="px-3 py-2 rounded-xl bg-[#0D0D14] border border-white/10 text-xs text-gray-500 font-mono">
+          <span className="px-3 py-1.5 rounded-lg bg-[#121215] border border-[#27272a] text-xs text-zinc-400 font-mono">
             {filteredTransactions.length} de {transactions.length}
           </span>
         </div>
       </div>
 
-      {/* ═══ TRANSACTION LIST ═══ */}
-      <div className="bg-[#0D0D14] border border-[#00E5FF]/15 rounded-2xl overflow-hidden shadow-xl">
+      {/* ═══ CLEAN OPERATIONAL TABLE ═══ */}
+      <div className="bg-[#121215] border border-[#27272a] rounded-xl overflow-hidden shadow-lg">
         
         {/* Table Header */}
-        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 border-b border-white/5 text-[10px] text-gray-500 uppercase tracking-wider font-bold">
-          <div className="col-span-5">Produto</div>
+        <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 border-b border-[#27272a] bg-[#18181b] text-[10px] text-zinc-400 uppercase tracking-wider font-bold">
+          <div className="col-span-5">Peça / Produto</div>
           <div className="col-span-2">Comprador</div>
-          <div className="col-span-1 text-right">Valor</div>
-          <div className="col-span-1 text-center">Taxa</div>
+          <div className="col-span-1 text-right">Valor Total</div>
+          <div className="col-span-1 text-center">Taxa DAIG</div>
           <div className="col-span-1 text-center">Status</div>
           <div className="col-span-2 text-right">Ações</div>
         </div>
 
         {filteredTransactions.length > 0 ? (
-          <div className="divide-y divide-white/[0.03]">
+          <div className="divide-y divide-[#27272a]">
             {filteredTransactions.map((tx) => (
               <div 
                 key={tx.id}
-                className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-5 md:px-6 py-4 hover:bg-white/[0.015] transition-colors group items-center"
+                className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
               >
                 {/* Product */}
                 <div className="col-span-5 flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
-                    <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                  <div className="w-9 h-9 rounded-md bg-black border border-zinc-800 overflow-hidden shrink-0">
+                    <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs text-white font-semibold truncate group-hover:text-[#00E5FF] transition-colors">
-                      {tx.part?.title || 'Peça JDM'}
-                    </p>
-                    <p className="text-[10px] text-gray-600">
+                    <p className="text-white font-medium truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
+                    <p className="text-[10px] text-zinc-500 font-mono">
                       {tx.created_at ? new Date(tx.created_at).toLocaleDateString('ja-JP') : '—'}
                     </p>
                   </div>
                 </div>
 
                 {/* Buyer */}
-                <div className="col-span-2 text-[11px] text-gray-400 truncate">
+                <div className="col-span-2 text-zinc-300 truncate">
                   {tx.buyer?.full_name || tx.buyer?.email || 'N/A'}
                 </div>
 
                 {/* Amount */}
-                <div className="col-span-1 text-right">
-                  <span className="text-xs font-black text-[#00E5FF] font-mono">
-                    {formatMoney(tx.amount || 0)}
-                  </span>
+                <div className="col-span-1 text-right font-mono font-bold text-white">
+                  {formatMoney(tx.amount || 0)}
                 </div>
 
                 {/* Fee */}
-                <div className="col-span-1 text-center">
-                  <span className="text-[10px] text-gray-500 font-mono">
-                    {formatMoney((tx.amount || 0) * (commissionRate / 100))}
-                  </span>
+                <div className="col-span-1 text-center font-mono text-zinc-400">
+                  {formatMoney((tx.amount || 0) * (commissionRate / 100))}
                 </div>
 
                 {/* Status */}
                 <div className="col-span-1 text-center">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                    tx.payment_status === 'escrow' 
-                      ? 'bg-[#00E5FF]/10 text-[#00E5FF] border-[#00E5FF]/30' 
-                      : tx.payment_status === 'pending'
-                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                    tx.payment_status === 'pending'
+                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                      : tx.payment_status === 'escrow'
+                        ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
                         : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                   }`}>
-                    {tx.payment_status === 'pending' ? '⏳' : tx.payment_status === 'escrow' ? '🔒' : '✅'}
-                    <span className="hidden sm:inline">{tx.payment_status === 'pending' ? 'Pend.' : tx.payment_status === 'escrow' ? 'Escrow' : 'OK'}</span>
+                    {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Escrow' : '✅ Concluído'}
                   </span>
                 </div>
 
@@ -602,17 +576,17 @@ export default function TransactionManagement() {
                   {tx.payment_status === 'escrow' && (
                     <button
                       onClick={() => updateTransactionStatus(tx.id, 'completed', 'payment')}
-                      className="px-2.5 py-1 rounded-lg bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black text-[10px] font-extrabold shadow-sm shadow-[#00E5FF]/20 transition-all"
+                      className="px-2.5 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[11px] font-bold transition-all shadow-sm"
                     >
                       Liberar 💸
                     </button>
                   )}
                   <button
                     onClick={() => setSelectedTransaction(tx)}
-                    className="p-1.5 rounded-lg bg-white/[0.03] hover:bg-white/10 border border-white/5 text-gray-400 hover:text-[#00E5FF] transition-all"
-                    title="Detalhes"
+                    className="p-1 rounded bg-[#27272a] hover:bg-[#3f3f46] text-zinc-300 hover:text-white transition-all"
+                    title="Ver detalhes"
                   >
-                    <Eye size={14} />
+                    <Eye size={13} />
                   </button>
                 </div>
 
@@ -620,9 +594,9 @@ export default function TransactionManagement() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 space-y-3">
-            <ShieldCheck size={32} className="text-[#00E5FF]/30 mx-auto" />
-            <p className="text-gray-500 text-xs">{searchQuery ? t('Nenhuma transação encontrada para esta busca.') : t('Nenhuma transação registrada.')}</p>
+          <div className="text-center py-12 space-y-2">
+            <ShieldCheck size={28} className="text-zinc-600 mx-auto" />
+            <p className="text-zinc-500 text-xs">{searchQuery ? t('Nenhuma transação encontrada para esta busca.') : t('Nenhuma transação registrada.')}</p>
           </div>
         )}
       </div>
