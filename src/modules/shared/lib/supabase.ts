@@ -32,7 +32,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Inicializa o GoogleAuth para a web nativa se aplicável
 if (Capacitor.isNativePlatform()) {
   GoogleAuth.initialize({
-    clientId: '618628258891-0k11mbjiuv3lrg8gsjlldv6p4qg1p06b.apps.googleusercontent.com',
+    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com',
     scopes: ['profile', 'email'],
     grantOfflineAccess: true,
   });
@@ -55,6 +55,28 @@ export const getCurrentUserProfile = async () => {
   return profile
 }
 
+const loadGsiScript = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (typeof window !== 'undefined' && window.google?.accounts?.id) {
+      return resolve()
+    }
+    const existing = document.getElementById('gsi-client-script')
+    if (existing) {
+      existing.addEventListener('load', () => resolve())
+      existing.addEventListener('error', (err) => reject(err))
+      return
+    }
+    const script = document.createElement('script')
+    script.id = 'gsi-client-script'
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.onload = () => resolve()
+    script.onerror = (err) => reject(err)
+    document.head.appendChild(script)
+  })
+}
+
 export const signInWithGoogle = async () => {
   if (Capacitor.isNativePlatform()) {
     try {
@@ -72,16 +94,62 @@ export const signInWithGoogle = async () => {
       throw error
     }
   } else {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}`,
-      },
-    })
-    if (error) throw error
-    return data
+    try {
+      await loadGsiScript()
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
+      
+      return new Promise((resolve, reject) => {
+        if (!window.google?.accounts?.id) {
+          return reject(new Error('Google Identity Services não está disponível.'))
+        }
+
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: async (response: any) => {
+            try {
+              if (!response.credential) {
+                return reject(new Error('Nenhum token retornado pelo Google.'))
+              }
+              const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: 'google',
+                token: response.credential,
+              })
+              if (error) throw error
+              resolve(data)
+            } catch (err) {
+              reject(err)
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true
+        })
+
+        // Exibe o prompt oficial do Google Sign-In One-Tap / Popup
+        window.google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // Fallback seguro via OAuth tradicional caso o popup One-Tap seja ignorado pelo navegador
+            supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                redirectTo: `${window.location.origin}`,
+              },
+            }).then(resolve).catch(reject)
+          }
+        })
+      })
+    } catch (err) {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}`,
+        },
+      })
+      if (error) throw error
+      return data
+    }
   }
 }
+
 
 export const signOut = async () => {
   const { error } = await supabase.auth.signOut()
