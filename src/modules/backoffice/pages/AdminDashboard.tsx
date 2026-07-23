@@ -132,27 +132,29 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-zinc-200 font-sans pb-20 bg-[#09090b]">
       
+      {/* ═══ TOP BRANDING BAR ═══ */}
+      <div className="flex items-center justify-between pb-1">
+        <div className="flex items-center gap-3">
+          <GaidLogo size={32} />
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded border border-emerald-500/20">
+            <PulseDot color="#10b981" /> Sistema Operacional
+          </span>
+          <span className="text-[10px] text-zinc-500 font-mono hidden sm:inline">Última sync: {formatTime(lastRefresh)}</span>
+        </div>
+      </div>
+
       {/* ═══ CLEAN OPERATIONAL HEADER ═══ */}
-      <div className="bg-[#121215] border border-[#27272a] p-5 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="p-2.5 rounded-lg bg-[#18181b] border border-[#27272a]">
-            <GaidLogo size={36} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                <PulseDot color="#10b981" /> Sistema Operacional
-              </span>
-              <span className="text-[10px] text-zinc-500 font-mono">Última sync: {formatTime(lastRefresh)}</span>
-            </div>
-            <h1 className="text-xl font-bold text-white tracking-tight mt-1">DAIG Admin Control Center</h1>
-            <p className="text-xs text-zinc-400">Visão consolidada — Vendas, Escrow, Logística WMS Japão e Motor 3D</p>
-          </div>
+      <div className="bg-[#121215] border border-[#27272a] p-4 md:p-5 rounded-xl flex flex-col xl:flex-row xl:items-center justify-between gap-4 overflow-hidden">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold text-white tracking-tight">DAIG Admin Control Center</h1>
+          <p className="text-xs text-zinc-400 mt-0.5">Visão consolidada — Vendas, Escrow, Logística WMS Japão e Motor 3D</p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           {/* Health Score Indicator */}
-          <div className="hidden md:flex items-center gap-2 bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-1.5">
+          <div className="hidden sm:flex items-center gap-2 bg-[#18181b] border border-[#27272a] rounded-lg px-2.5 py-1.5 shrink-0">
             <Activity size={13} className="text-zinc-400" />
             <span className="text-xs text-zinc-400">Saúde:</span>
             <span className={`text-xs font-bold font-mono ${healthScore >= 80 ? 'text-emerald-400' : healthScore >= 50 ? 'text-amber-400' : 'text-red-400'}`}>
@@ -161,14 +163,14 @@ export default function AdminDashboard() {
           </div>
 
           {/* Search */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-initial">
             <Search size={13} className="text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input 
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t("Buscar no sistema...")}
-              className="bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 w-44 transition-colors"
+              className="bg-[#18181b] border border-[#27272a] rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 w-full sm:w-40 transition-colors"
             />
           </div>
 
@@ -176,7 +178,8 @@ export default function AdminDashboard() {
           <button 
             onClick={fetchSuperPulse}
             disabled={loading}
-            className="p-2 rounded-lg bg-[#18181b] border border-[#27272a] text-zinc-300 hover:text-white transition-all disabled:opacity-50"
+            className="p-2 rounded-lg bg-[#18181b] border border-[#27272a] text-zinc-300 hover:text-white transition-all disabled:opacity-50 shrink-0"
+            title="Atualizar dados"
           >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
           </button>
