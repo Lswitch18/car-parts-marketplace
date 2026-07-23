@@ -153,24 +153,6 @@ export default function Onboarding() {
       </OnboardingLayout>
     )
   }
-            onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLElement
-              el.style.transform = 'translateY(-2px) scale(1.02)'
-              el.style.boxShadow = '0 0 50px rgba(13,117,255,0.6)'
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLElement
-              el.style.transform = ''
-              el.style.boxShadow = '0 0 30px rgba(13,117,255,0.4)'
-            }}
-          >
-            {t('Começar')}
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </div>
-      </OnboardingLayout>
-    )
-  }
 
   // ─── Step 1: Account Type ───────────────────────────────────
   if (step === 1) {
