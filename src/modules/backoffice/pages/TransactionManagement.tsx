@@ -140,10 +140,6 @@ export default function TransactionManagement() {
   const [savingRate, setSavingRate] = useState(false);
   const [custoTerceiros, setCustoTerceiros] = useState<number>(152000);
 
-  if (!currentUser || currentUser.role !== 'admin') {
-    return <Navigate to="/" replace />;
-  }
-
   useEffect(() => {
     fetchTransactions();
     fetchConfig();
@@ -301,6 +297,10 @@ export default function TransactionManagement() {
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
 
   const lucroLiquido = lucroBruto - custoTerceiros;
+
+  if (!currentUser || currentUser.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
 
   if (loading) {
     return (

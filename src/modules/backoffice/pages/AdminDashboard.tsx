@@ -334,7 +334,7 @@ export default function AdminDashboard() {
             { icon: Plus, label: '+ Novo Anúncio', desc: 'Cadastrar peças JDM', path: '/create-listing' },
             { icon: Cpu, label: 'Scanner IA 3D', desc: 'Gerar modelo por imagem', path: '/admin/image-to-3d' },
             { icon: MapPin, label: 'Logistix WMS', desc: 'CDs e entregas', path: '/admin/logistix' },
-            { icon: BarChart3, label: 'Relatórios', desc: 'Balanço e repasses', path: '/admin/finance' },
+            { icon: BarChart3, label: 'Relatórios', desc: 'Balanço e repasses', path: '/admin/finance/payable' },
           ].map((item, i) => {
             const Icon = item.icon;
             return (
