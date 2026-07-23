@@ -48,7 +48,7 @@ export default function PrivacyPolicy() {
         </div>
 
         <div className="text-center text-xs text-gray-500 pt-4">
-          © 2026 Digital AI Garage - DAIG (PATRICK HIKARUFORBECI SUZUKI). Todos os direitos reservados.
+          © 2026 Digital AI Garage - DAIG. Todos os direitos reservados.
         </div>
 
       </div>

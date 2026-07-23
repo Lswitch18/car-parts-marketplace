@@ -35,7 +35,7 @@ export default function LegalNotice() {
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nome Jurídico / 法人名・代表者</span>
               <p className="text-white font-semibold text-base flex items-center gap-1.5">
                 <UserCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                PATRICK HIKARUFORBECI SUZUKI
+                Digital AI Garage (DAIG Inc.)
               </p>
             </div>
 
