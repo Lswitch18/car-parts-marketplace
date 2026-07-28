@@ -1,16 +1,16 @@
-# Graph Report - car-parts-marketplce  (2026-07-28)
+# Graph Report - car-parts-marketplce  (2026-07-23)
 
 ## Corpus Check
-- 342 files · ~810,026 words
+- 342 files · ~788,600 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1638 nodes · 2452 edges · 192 communities (137 shown, 55 thin omitted)
+- 1638 nodes · 2452 edges · 193 communities (137 shown, 56 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.74)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `408a4978`
+- Built from commit: `caf615fb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,7 +26,6 @@
 - i
 - vendor-supabase-CW1GYbG4.js
 - t
-- axios
 - .copy
 - r
 - t
@@ -43,6 +42,7 @@
 - corsHeaders
 - .getSize
 - zt
+- @base-ui/react
 - @supabase/supabase-js
 - .push
 - constructor
@@ -66,6 +66,7 @@
 - adminApi.test.ts
 - @types/three
 - EtiquetasPage.tsx
+- NotificationCenter.tsx
 - App.tsx
 - LogistixDashboard.tsx
 - dispose
@@ -197,7 +198,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (192 total, 55 thin omitted)
+## Communities (193 total, 56 thin omitted)
 
 ### Community 0 - "LogistixDashboard-ZhczRoYg.js"
 Cohesion: 0.12
@@ -304,8 +305,8 @@ Cohesion: 0.05
 Nodes (39): AccountsPayable, AdminDashboard, AdminLayout, AgenciaPage, AiOpsPage, App(), Auctions, CarList (+31 more)
 
 ### Community 63 - "LogistixDashboard.tsx"
-Cohesion: 0.09
-Nodes (12): NotificationCenter(), timeAgo(), DEFAULT_ICON, authFetch(), ColetasPage(), DONUT_COLORS, getNavGroups(), LogistixDashboard() (+4 more)
+Cohesion: 0.10
+Nodes (10): DEFAULT_ICON, authFetch(), ColetasPage(), DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup, STATUS_COLOR (+2 more)
 
 ### Community 87 - "dispose"
 Cohesion: 0.04
@@ -325,7 +326,7 @@ Nodes (21): getCityCoords(), getCurrentPositionSafe(), haversineKm(), JP_CITY_CO
 
 ### Community 105 - "dependencies"
 Cohesion: 0.18
-Nodes (11): @base-ui/react, clsx, leaflet, lucide-react, dependencies, @base-ui/react, clsx, leaflet (+3 more)
+Nodes (11): axios, clsx, leaflet, lucide-react, dependencies, axios, clsx, leaflet (+3 more)
 
 ### Community 111 - "WorkerApp-BWctDf0A.js"
 Cohesion: 0.05
@@ -598,14 +599,14 @@ Nodes (3): Concluídas ✅, Lista de Tarefas (Work in Progress), Pendentes ⏳
 ## Knowledge Gaps
 - **654 isolated node(s):** `build-apk.sh script`, `ANDROID_HOME`, `PATH`, `build-store-apk.sh script`, `ANDROID_HOME` (+649 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **55 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **56 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `useI18n()` connect `J` to `vendor-react-DqCMjyrC.js`, `vendor-three-BAVKA0D-.js`, `vendor-react-DqCMjyrC.js`, `i`, `dashboardUtils.test.ts`, `.copy`, `.get`, `index-B_no5lKC.js`, `useTranslation`, `Ne`, `EtiquetasPage.tsx`, `useAuthStore`, `LogistixDashboard.tsx`?**
   _High betweenness centrality (0.074) - this node is a cross-community bridge._
-- **Why does `dependencies` connect `dependencies` to `jsbarcode`, `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `.setAttribute`, `shadcn`, `@tanstack/react-query`, `three`, `axios`, `@supabase/supabase-js`, `constructor`, `.getSize`, `Wt`, `xn`, `B`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `package.json`, `qrcode`?**
+- **Why does `dependencies` connect `dependencies` to `jsbarcode`, `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `.setAttribute`, `shadcn`, `@tanstack/react-query`, `three`, `@base-ui/react`, `@supabase/supabase-js`, `constructor`, `.getSize`, `Wt`, `xn`, `B`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `package.json`, `qrcode`?**
   _High betweenness centrality (0.069) - this node is a cross-community bridge._
 - **Why does `LabelCard()` connect `EtiquetasPage.tsx` to `qrcode`, `J`?**
   _High betweenness centrality (0.065) - this node is a cross-community bridge._

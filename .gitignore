@@ -52,6 +52,7 @@ snapshot/
 snapshot*/
 supabase/snapshot*/
 supabase/snapshot*.sql
+supabase/backups/
 
 # Mobile Builds
 apks/
