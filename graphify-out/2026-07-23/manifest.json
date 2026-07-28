@@ -460,8 +460,8 @@
     "semantic_hash": "0ed52b9ca01a99d0bf50f25c496979d2"
   },
   "src/modules/backoffice/pages/AdminDashboard.tsx": {
-    "mtime": 1784779980.2242782,
-    "ast_hash": "13f1ede97abaa2279f1b5bf0098dd555",
+    "mtime": 1784780538.2882853,
+    "ast_hash": "71460731ba9fa8e5e43d48f43566c5bb",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AiOpsPage.tsx": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1784778363.67228,
-    "ast_hash": "b10e6fcfaa78d064a63c4efaa8e1b79e",
+    "mtime": 1784780498.7842853,
+    "ast_hash": "d5c378b515162789c4c2d0c841bc3b19",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -990,9 +990,9 @@
     "semantic_hash": "8d8cdc1f5853c0ec941ecfb5e76be0fe"
   },
   "src/modules/shared/lib/supabase.ts": {
-    "mtime": 1781928743.6625319,
-    "ast_hash": "5e125ba7f7cc8420e6dad6d5cfae892a",
-    "semantic_hash": "5e125ba7f7cc8420e6dad6d5cfae892a"
+    "mtime": 1784829172.2293532,
+    "ast_hash": "8f9500175fb18609c0466d73c025280b",
+    "semantic_hash": ""
   },
   "src/modules/shared/lib/supabaseErrorHandler.ts": {
     "mtime": 1781833815.6396163,
@@ -1040,9 +1040,9 @@
     "semantic_hash": "4a6e421150d484766774f4c0520bc045"
   },
   "src/modules/transactions/api/api.ts": {
-    "mtime": 1783652681.3366382,
-    "ast_hash": "0775b72ede47f0499e6d0852cb0f2ab2",
-    "semantic_hash": "0775b72ede47f0499e6d0852cb0f2ab2"
+    "mtime": 1784780422.740285,
+    "ast_hash": "70fa7317d0404d66e4a273f69c8b8196",
+    "semantic_hash": ""
   },
   "src/modules/transactions/api/fees.ts": {
     "mtime": 1781833815.3836164,
@@ -1230,9 +1230,9 @@
     "semantic_hash": "f8c2da4aebb38d55f47d4cd762a1179c"
   },
   "src/vite-env.d.ts": {
-    "mtime": 1781833815.7676163,
-    "ast_hash": "16c5173f27fbb846bae733ed9ec9f4cb",
-    "semantic_hash": "16c5173f27fbb846bae733ed9ec9f4cb"
+    "mtime": 1784827802.700031,
+    "ast_hash": "48835241b702970d0ae532d9a3190e03",
+    "semantic_hash": ""
   },
   "supabase/.temp/linked-project.json": {
     "mtime": 1781009488.2703536,
@@ -1350,8 +1350,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/transactions/index.ts": {
-    "mtime": 1784768151.2517936,
-    "ast_hash": "c207cc194f93e6305dead4644df0318d",
+    "mtime": 1784780287.0242813,
+    "ast_hash": "f112f91ae3b14804489f554ca0b35016",
     "semantic_hash": ""
   },
   "supabase/functions/users/index.ts": {
@@ -1715,7 +1715,7 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "supabase/storage-urls.json": {
-    "mtime": 1784725552.795824,
+    "mtime": 1784825261.7840302,
     "ast_hash": "7fd19f0152b403766b8b00f38474ae93",
     "semantic_hash": "7fd19f0152b403766b8b00f38474ae93"
   },

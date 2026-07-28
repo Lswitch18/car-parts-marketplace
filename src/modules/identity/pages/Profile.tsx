@@ -123,15 +123,16 @@ export default function Profile() {
   }
 
 
-  const handlePostalBlur = useCallback(async () => {
-    const raw = formData.zip_code.replace(/\D/g, '')
+  const handlePostalLookup = useCallback(async (codeToFetch?: string) => {
+    const targetCode = codeToFetch ?? formData.zip_code
+    const raw = targetCode.replace(/\D/g, '')
     if (raw.length < 5) return
     setPostalLoading(true)
     const result = await fetchPostal(raw)
     if (result) {
       setFormData(prev => ({
         ...prev,
-        address: result.fullAddress || prev.address,
+        address: result.street || result.fullAddress || prev.address,
         city: result.city || prev.city,
         state: result.state || prev.state,
       }))
@@ -275,8 +276,16 @@ export default function Profile() {
                   <input
                     type="text"
                     value={formData.zip_code}
-                    onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
-                    onBlur={handlePostalBlur}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setFormData(prev => ({ ...prev, zip_code: val }))
+                      const digits = val.replace(/\D/g, '')
+                      if (digits.length === 7 || digits.length === 8) {
+                        handlePostalLookup(val)
+                      }
+                    }}
+                    onBlur={() => handlePostalLookup()}
+                    placeholder="Ex: 100-0001 (JP) ou 01001-000 (BR)"
                     className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg pl-4 pr-10 py-3 text-white"
                   />
                   {postalLoading && (

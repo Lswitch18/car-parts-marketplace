@@ -34,6 +34,7 @@ interface ViaCEPResponse {
 
 export interface PostalResult {
   fullAddress: string
+  street?: string
   city: string
   state: string
 }
@@ -47,8 +48,9 @@ async function fetchZipcloud(digits: string): Promise<PostalResult | null> {
     const r = data.results[0]
     return {
       state: r.address1,
-      city: r.address2 + r.address3,
-      fullAddress: `${r.address1} ${r.address2} ${r.address3}`,
+      city: r.address2,
+      street: r.address3 ? `${r.address2} ${r.address3}` : r.address2,
+      fullAddress: `${r.address1} ${r.address2} ${r.address3}`.trim(),
     }
   } catch {
     return null
@@ -61,11 +63,12 @@ async function fetchViaCEP(digits: string): Promise<PostalResult | null> {
     if (!res.ok) return null
     const data: ViaCEPResponse = await res.json()
     if (data.erro) return null
-    const fullAddress = [data.logradouro, data.bairro].filter(Boolean).join(', ')
+    const street = [data.logradouro, data.bairro].filter(Boolean).join(', ')
     return {
       state: data.uf,
       city: data.localidade,
-      fullAddress: fullAddress,
+      street: street,
+      fullAddress: street,
     }
   } catch {
     return null

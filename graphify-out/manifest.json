@@ -540,14 +540,14 @@
     "semantic_hash": "a5faba47b03bb152180b4f8973a6c12d"
   },
   "src/modules/identity/pages/Login.tsx": {
-    "mtime": 1782488991.3691595,
-    "ast_hash": "b96d668f24b944e62c825bed5e57f891",
-    "semantic_hash": "b96d668f24b944e62c825bed5e57f891"
+    "mtime": 1784830613.905351,
+    "ast_hash": "822ef9a48d5cbd31671dc581f087c773",
+    "semantic_hash": ""
   },
   "src/modules/identity/pages/Onboarding.tsx": {
-    "mtime": 1782492340.5531576,
-    "ast_hash": "b843908a02cbba156cd7454ae95fc6fb",
-    "semantic_hash": "b843908a02cbba156cd7454ae95fc6fb"
+    "mtime": 1784830707.9533522,
+    "ast_hash": "9ce41c8a0588b83da81c43816271af60",
+    "semantic_hash": ""
   },
   "src/modules/identity/pages/Profile.tsx": {
     "mtime": 1783968176.1928744,
@@ -555,9 +555,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Register.tsx": {
-    "mtime": 1782488971.3011606,
-    "ast_hash": "abb09fbf86cd0c8ae1b8b7b2ae06259b",
-    "semantic_hash": "abb09fbf86cd0c8ae1b8b7b2ae06259b"
+    "mtime": 1784830642.8373542,
+    "ast_hash": "a9d1cca07f7ba80f09c6cec146d4f15d",
+    "semantic_hash": ""
   },
   "src/modules/identity/pages/Subscription.tsx": {
     "mtime": 1782491928.6491592,
@@ -990,9 +990,9 @@
     "semantic_hash": "8d8cdc1f5853c0ec941ecfb5e76be0fe"
   },
   "src/modules/shared/lib/supabase.ts": {
-    "mtime": 1781928743.6625319,
-    "ast_hash": "5e125ba7f7cc8420e6dad6d5cfae892a",
-    "semantic_hash": "5e125ba7f7cc8420e6dad6d5cfae892a"
+    "mtime": 1784829172.2293532,
+    "ast_hash": "8f9500175fb18609c0466d73c025280b",
+    "semantic_hash": ""
   },
   "src/modules/shared/lib/supabaseErrorHandler.ts": {
     "mtime": 1781833815.6396163,
@@ -1230,9 +1230,9 @@
     "semantic_hash": "f8c2da4aebb38d55f47d4cd762a1179c"
   },
   "src/vite-env.d.ts": {
-    "mtime": 1781833815.7676163,
-    "ast_hash": "16c5173f27fbb846bae733ed9ec9f4cb",
-    "semantic_hash": "16c5173f27fbb846bae733ed9ec9f4cb"
+    "mtime": 1784827802.700031,
+    "ast_hash": "48835241b702970d0ae532d9a3190e03",
+    "semantic_hash": ""
   },
   "supabase/.temp/linked-project.json": {
     "mtime": 1781009488.2703536,
@@ -1715,7 +1715,7 @@
     "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
   },
   "supabase/storage-urls.json": {
-    "mtime": 1784725552.795824,
+    "mtime": 1784825261.7840302,
     "ast_hash": "7fd19f0152b403766b8b00f38474ae93",
     "semantic_hash": "7fd19f0152b403766b8b00f38474ae93"
   },
@@ -2670,18 +2670,18 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/LegalNotice.tsx": {
-    "mtime": 1784750810.1118045,
-    "ast_hash": "548cf6e1c54473770fef0ff748a34f58",
+    "mtime": 1784831043.4413574,
+    "ast_hash": "a3cbc5f3c9883a9715e53870824db9a9",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PrivacyPolicy.tsx": {
-    "mtime": 1784750838.799805,
-    "ast_hash": "9ed9ff6e08b57c3269d809d4eed6a1fb",
+    "mtime": 1784831059.3613577,
+    "ast_hash": "ac2e5c7c3220a8e441169741334a1cd0",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/TermsOfService.tsx": {
-    "mtime": 1784750824.1958048,
-    "ast_hash": "0913fdda35747b2e48a4f3a820329c68",
+    "mtime": 1784831072.693358,
+    "ast_hash": "1ac6ac73c6ef15ca493eecc12085c243",
     "semantic_hash": ""
   },
   "supabase/migrations/20260722_catalog_composite_index.sql": {
@@ -2692,6 +2692,11 @@
   "docs/diag/CONFIGURACOES_E_CHAVES_ENV.md": {
     "mtime": 1784766852.0318146,
     "ast_hash": "fd530f4a827c8cccb520f5c76e2428a9",
+    "semantic_hash": ""
+  },
+  "public/images/cheap-valve-caps-100yen.png": {
+    "mtime": 1784900541.3058717,
+    "ast_hash": "6b190449f5610c7cac618b50cf6bfbd6",
     "semantic_hash": ""
   }
 }
