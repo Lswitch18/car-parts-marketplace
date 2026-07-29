@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Profile.tsx": {
-    "mtime": 1784906611.5418663,
-    "ast_hash": "f10e99aa4beb82b85b59dc7b3fa288b0",
+    "mtime": 1785299191.9394417,
+    "ast_hash": "fe9d1017d794cbe6c18cc83424a8d0a1",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Register.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Header.tsx": {
-    "mtime": 1785293031.6212122,
-    "ast_hash": "409d19966be866a9aae8ede8a38d29f9",
+    "mtime": 1785299181.9234416,
+    "ast_hash": "fae5ea3aa3c8b2304a7bc3e22384ecc4",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Layout.tsx": {

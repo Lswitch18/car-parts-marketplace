@@ -416,7 +416,7 @@ export default function Dashboard() {
                       <Plus className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">Anunciar Peça JDM</p>
+                      <p className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">Anunciar Peça</p>
                       <p className="text-[10px] text-zinc-500">Cadastrar no catálogo</p>
                     </div>
                   </div>

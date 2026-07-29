@@ -1269,8 +1269,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 64,
-      "community_name": "axios",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1280,8 +1280,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 64,
-      "community_name": "axios",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1511,8 +1511,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 64,
+      "community_name": "axios",
       "norm_label": "axios"
     },
     {
@@ -1522,8 +1522,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 64,
+      "community_name": "axios",
       "norm_label": "axios"
     },
     {
@@ -5040,7 +5040,7 @@
       "label": "TabType",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard_tabtype",
       "community": 181,
@@ -5051,7 +5051,7 @@
       "label": "Dashboard()",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard_dashboard",
       "community": 181,
@@ -25439,7 +25439,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_dashboard",
@@ -25450,7 +25450,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_dashboard",
@@ -25619,7 +25619,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_dashboard_dashboard",
@@ -25631,7 +25631,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_dashboard_dashboard",
@@ -25643,7 +25643,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L50",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_dashboard_dashboard",
@@ -25655,7 +25655,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/modules/backoffice/pages/Dashboard.tsx",
-      "source_location": "L279",
+      "source_location": "L370",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_dashboard_dashboard",
@@ -48213,5 +48213,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1f91506e44560f73c6160af33a0f0c2917c26668"
+  "built_at_commit": "fbf7e0714a4012c551462c13c77246dd2a407c49"
 }
