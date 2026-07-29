@@ -75,6 +75,7 @@ export interface Product {
   status: 'active' | 'sold' | 'draft'
   views: number
   compatibility_tags?: string[]
+  oem_code?: string
   created_at: string
   seller?: User
 }

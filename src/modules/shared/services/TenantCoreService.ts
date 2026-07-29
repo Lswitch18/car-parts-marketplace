@@ -104,7 +104,7 @@ export class TenantCoreService {
   static calculateTenantStats(parts: Product[]): TenantInventoryStats {
     const totalSKUs = parts.length
     const totalPrivateValue = parts.reduce((acc, p) => acc + (Number(p.price) || 0), 0)
-    const publishedCount = parts.filter(p => p.status === 'available').length
+    const publishedCount = parts.filter(p => p.status === 'active').length
     const privateCount = totalSKUs - publishedCount
 
     return {

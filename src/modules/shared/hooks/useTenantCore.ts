@@ -75,7 +75,7 @@ export function useTenantCore() {
         part.oem_code?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         part.category?.toLowerCase().includes(searchQuery.toLowerCase())
 
-      const isPublished = part.status === 'available'
+      const isPublished = part.status === 'active'
       if (filterCategory === 'published') return matchesSearch && isPublished
       if (filterCategory === 'private') return matchesSearch && !isPublished
       return matchesSearch

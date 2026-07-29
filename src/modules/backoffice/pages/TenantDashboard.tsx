@@ -686,7 +686,7 @@ export default function TenantDashboard() {
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
                   {filteredParts.map((part) => {
-                    const isPublished = part.status === 'available'
+                    const isPublished = part.status === 'active'
                     const isSelected = selectedPartIds.includes(part.id)
 
                     return (
