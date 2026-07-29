@@ -31,6 +31,7 @@ const ReviewManagement = lazy(() => import('@/modules/reputation/pages/ReviewMan
 const AdminDashboard = lazy(() => import('@/modules/backoffice/pages/AdminDashboard'))
 const LogistixDashboard = lazy(() => import('@/modules/logistics/pages/LogistixDashboard'))
 const TransactionManagement = lazy(() => import('@/modules/backoffice/pages/TransactionManagement'))
+const DeliveriesManagement = lazy(() => import('@/modules/backoffice/pages/DeliveriesManagement'))
 const AdminLayout = lazy(() => import('@/modules/backoffice/components/AdminLayout'))
 const ContactsManagement = lazy(() => import('@/modules/crm/pages/ContactsManagement'))
 const AccountsPayable = lazy(() => import('@/modules/finance/pages/AccountsPayable'))
@@ -128,6 +129,7 @@ function App() {
               {/* <Route path="logistix" element={<LogistixDashboard />} /> */}
               <Route path="users" element={<UserManagement />} />
               <Route path="transactions" element={<TransactionManagement />} />
+              <Route path="deliveries" element={<DeliveriesManagement />} />
               <Route path="reviews" element={<ReviewManagement />} />
               <Route path="image-to-3d" element={<ImageTo3D />} />
               <Route path="crm/contacts" element={<ContactsManagement />} />

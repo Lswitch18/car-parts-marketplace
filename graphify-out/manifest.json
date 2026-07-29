@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1785353556.8154058,
-    "ast_hash": "e7ee294629244f04be017af502ee9195",
+    "mtime": 1785354824.2034047,
+    "ast_hash": "dd1cc5a1ae753c5e2339bdac4ffa9a9a",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/AdminLayout.tsx": {
-    "mtime": 1785353212.3514059,
-    "ast_hash": "668c38f7068dff5ab608ab067e469a2a",
+    "mtime": 1785354837.1474042,
+    "ast_hash": "b251cdad99314f049476ce3cc82ddee6",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AdminDashboard.tsx": {
@@ -2787,6 +2787,11 @@
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {
     "mtime": 1785353894.111405,
     "ast_hash": "7e12ad2755dd388db9bfb8fd939f6f08",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/pages/DeliveriesManagement.tsx": {
+    "mtime": 1785354803.179405,
+    "ast_hash": "4a24df212526dd019662c26e69255d2c",
     "semantic_hash": ""
   }
 }

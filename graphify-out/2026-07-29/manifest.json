@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1785353193.7434058,
-    "ast_hash": "2580db999e5073cdd9baa9ae996b4592",
+    "mtime": 1785353556.8154058,
+    "ast_hash": "e7ee294629244f04be017af502ee9195",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Header.tsx": {
-    "mtime": 1785349030.7474012,
-    "ast_hash": "0d9ed6fd7458a910a542d328dae5f2f8",
+    "mtime": 1785353572.0114062,
+    "ast_hash": "436b2ff1f3801d0eed23bcbf664bb9f0",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Layout.tsx": {
@@ -2780,8 +2780,13 @@
     "semantic_hash": ""
   },
   "src/modules/finance/pages/SaasControlCenter.tsx": {
-    "mtime": 1785353170.779406,
-    "ast_hash": "e3c0a3cf2864523b8b1024a0cf112769",
+    "mtime": 1785353939.831404,
+    "ast_hash": "44620f116df3139352e19b49124dea21",
+    "semantic_hash": ""
+  },
+  "src/modules/storefront/pages/PartnerPortalPage.tsx": {
+    "mtime": 1785353894.111405,
+    "ast_hash": "7e12ad2755dd388db9bfb8fd939f6f08",
     "semantic_hash": ""
   }
 }
