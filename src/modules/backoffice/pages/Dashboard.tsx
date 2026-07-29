@@ -11,7 +11,8 @@ import { fetchPostal } from '@/modules/shared/lib/postal'
 import { 
   Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, 
   Save, CreditCard, ExternalLink, Loader2, LayoutDashboard, ShoppingBag, 
-  CheckCircle2, Sparkles, Search, Wallet, ChevronRight, ArrowRight, Landmark
+  CheckCircle2, Sparkles, Search, Wallet, ChevronRight, ArrowRight, Landmark,
+  ShieldCheck, RefreshCw, X, Tag, SlidersHorizontal, Store
 } from 'lucide-react'
 
 type TabType = 'overview' | 'products' | 'transactions' | 'stripe' | 'profile'
@@ -227,8 +228,8 @@ export default function Dashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#07070A] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#00E5FF] animate-spin" />
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
       </div>
     )
   }
@@ -236,46 +237,136 @@ export default function Dashboard() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-[#07070A] text-white py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 py-6 px-3 sm:px-6 lg:px-8 relative font-sans overflow-x-hidden">
+      {/* Background ambient lighting */}
+      <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[160px] pointer-events-none" />
+      <div className="absolute top-1/2 right-10 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[160px] pointer-events-none" />
 
-        {/* Header Principal com Logo DAIG e Estética Neon Azul (#00E5FF) */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#00E5FF]/20 pb-6 bg-[#0D0D14]/60 p-6 rounded-2xl border border-white/5 backdrop-blur-xl">
-          <div className="flex items-center gap-4">
-            <div className="p-2 rounded-2xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 shadow-lg shadow-[#00E5FF]/10">
-              <GaidLogo size={46} animated />
-            </div>
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold mb-1">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse" /> Digital A.I. Garage Marketplace
+      <div className="max-w-6xl mx-auto space-y-6 relative z-10">
+
+        {/* APP NATIVE TOP BAR & USER PROFILE HERO */}
+        <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-5 sm:p-7 shadow-2xl space-y-6">
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            
+            {/* Left User Identity */}
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 p-0.5 shadow-lg shadow-emerald-500/20">
+                  <div className="w-full h-full bg-zinc-950 rounded-[14px] flex items-center justify-center overflow-hidden">
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-7 h-7 text-emerald-400" />
+                    )}
+                  </div>
+                </div>
+                <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-zinc-950 rounded-full shadow-sm" />
               </div>
-              <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-[#00E5FF] bg-clip-text text-transparent">
-                {t('Painel do Usuário')}
-              </h1>
-              <p className="text-gray-400 text-xs">
-                {t('Bem-vindo de volta')}, <span className="text-white font-semibold">{user.name || user.email}</span>
-              </p>
+
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                    {user.name || user.email?.split('@')[0]}
+                  </h1>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    <ShieldCheck className="w-3 h-3 mr-1" />
+                    Vendedor
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-400 mt-0.5 truncate max-w-[220px] sm:max-w-md">
+                  {user.email}
+                </p>
+              </div>
             </div>
+
+            {/* Right Action Buttons */}
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+              <Link
+                to="/create-listing"
+                className="flex-1 sm:flex-initial px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-zinc-950 font-black text-xs uppercase tracking-wider transition shadow-[0_0_25px_rgba(16,185,129,0.25)] flex items-center justify-center space-x-2 group"
+              >
+                <Plus className="w-4 h-4 text-zinc-950 group-hover:scale-110 transition-transform" />
+                <span>+ Anunciar Peça</span>
+              </Link>
+
+              <Link
+                to="/japan-bank-account"
+                className="p-3 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-amber-500/50 text-amber-400 transition flex items-center justify-center"
+                title="Conta Bancária Japão (JPY)"
+              >
+                <Landmark className="w-5 h-5" />
+              </Link>
+            </div>
+
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-              to="/create-listing"
-              className="inline-flex items-center justify-center gap-2 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-lg shadow-[#00E5FF]/25 transition-all hover:scale-[1.03]"
+          {/* QUICK METRICS HIGHLIGHT RIBBON */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div className="p-3.5 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-mono text-zinc-500 uppercase">Receita de Vendas</p>
+                <p className="text-lg font-mono font-bold text-emerald-400 mt-0.5">
+                  ¥ {(stats?.totalSales || 0).toLocaleString('ja-JP')}
+                </p>
+              </div>
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+                <DollarSign className="w-4 h-4" />
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-mono text-zinc-500 uppercase">Anúncios Ativos</p>
+                <p className="text-lg font-mono font-bold text-white mt-0.5">
+                  {stats?.activeProducts || 0}
+                </p>
+              </div>
+              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+                <Package className="w-4 h-4" />
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-mono text-zinc-500 uppercase">Visualizações</p>
+                <p className="text-lg font-mono font-bold text-cyan-400 mt-0.5">
+                  {stats?.totalViews || 0}
+                </p>
+              </div>
+              <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
+                <Eye className="w-4 h-4" />
+              </div>
+            </div>
+
+            <Link 
+              to="/messages"
+              className="p-3.5 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-zinc-700 transition flex items-center justify-between group"
             >
-              <Plus className="w-4 h-4" />
-              <span>{t('Nova Listagem')}</span>
+              <div>
+                <p className="text-[10px] font-mono text-zinc-500 uppercase">Mensagens</p>
+                <p className="text-lg font-mono font-bold text-amber-300 mt-0.5 group-hover:text-amber-200">
+                  {stats?.unreadMessages || 0}
+                </p>
+              </div>
+              <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 relative">
+                <MessageCircle className="w-4 h-4" />
+                {stats?.unreadMessages ? (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                ) : null}
+              </div>
             </Link>
           </div>
+
         </div>
 
-        {/* Navegação por Abas com Tema Neon Azul */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#00E5FF]/20 scrollbar-none">
+        {/* MOBILE SEGMENTED APP NAVIGATION BAR */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none sticky top-16 z-30 py-2 bg-zinc-950/80 backdrop-blur-xl">
           {[
             { id: 'overview', label: t('Visão Geral'), icon: LayoutDashboard },
-            { id: 'products', label: t('Meus Anúncios'), icon: Package, count: products.length },
-            { id: 'transactions', label: t('Transações'), icon: ShoppingBag, count: transactions.length },
-            { id: 'stripe', label: t('Recebimentos'), icon: Wallet },
+            { id: 'products', label: t('Minhas Peças'), icon: Package, count: products.length },
+            { id: 'transactions', label: t('Vendas & Compras'), icon: ShoppingBag, count: transactions.length },
+            { id: 'stripe', label: t('Conta Bancária'), icon: Landmark },
             { id: 'profile', label: t('Meu Perfil'), icon: User },
           ].map(tab => {
             const Icon = tab.icon
@@ -284,17 +375,17 @@ export default function Dashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabType)}
-                className={`inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
+                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold transition-all whitespace-nowrap ${
                   isActive
-                    ? 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/40 shadow-md shadow-[#00E5FF]/10'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-zinc-950 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                    : 'bg-zinc-900/80 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
                 }`}
               >
-                <Icon className="w-4 h-4 text-[#00E5FF]" />
+                <Icon className="w-4 h-4" />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                    isActive ? 'bg-[#00E5FF]/20 text-[#00E5FF]' : 'bg-white/10 text-gray-300'
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                    isActive ? 'bg-zinc-950/40 text-zinc-950 font-black' : 'bg-zinc-800 text-zinc-300'
                   }`}>
                     {tab.count}
                   </span>
@@ -306,213 +397,148 @@ export default function Dashboard() {
 
         {/* ─── ABA 1: VISÃO GERAL (OVERVIEW) ────────────────────── */}
         {activeTab === 'overview' && (
-          <div className="space-y-8">
+          <div className="space-y-6 animate-fade-in">
             
-            {/* Metric Cards Grid - Neon Cyan Palette */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              
-              {/* Card 1: Vendas */}
-              <div className="bg-[#0D0D14] border border-[#00E5FF]/20 hover:border-[#00E5FF] rounded-2xl p-5 transition-all space-y-3 group hover:scale-[1.02] shadow-xl">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-                    <DollarSign className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-bold text-[#00E5FF] bg-[#00E5FF]/10 px-2 py-1 rounded-full border border-[#00E5FF]/30">
-                    JPY ¥
-                  </span>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Vendas Totais')}</p>
-                  <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-                    ¥ {(stats?.totalSales || 0).toLocaleString('ja-JP')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 2: Anúncios Ativos */}
-              <button 
-                onClick={() => setActiveTab('products')}
-                className="bg-[#0D0D14] border border-[#00E5FF]/20 hover:border-[#00E5FF] rounded-2xl p-5 transition-all text-left space-y-3 group hover:scale-[1.02] shadow-xl"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-                    <Package className="w-5 h-5" />
-                  </div>
-                  <TrendingUp className="w-4 h-4 text-[#00E5FF]" />
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Anúncios Ativos')}</p>
-                  <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-                    {stats?.activeProducts || 0}
-                  </p>
-                </div>
-              </button>
-
-              {/* Card 3: Visualizações */}
-              <div className="bg-[#0D0D14] border border-[#00E5FF]/20 hover:border-[#00E5FF] rounded-2xl p-5 transition-all space-y-3 group hover:scale-[1.02] shadow-xl">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-                    <Eye className="w-5 h-5" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Visualizações')}</p>
-                  <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-                    {stats?.totalViews || 0}
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 4: Mensagens */}
-              <Link 
-                to="/messages"
-                className="bg-[#0D0D14] border border-[#00E5FF]/20 hover:border-[#00E5FF] rounded-2xl p-5 transition-all block space-y-3 group hover:scale-[1.02] shadow-xl"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF]">
-                    <MessageCircle className="w-5 h-5" />
-                  </div>
-                  {stats?.unreadMessages ? (
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#00E5FF] animate-ping" />
-                  ) : null}
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{t('Mensagens Recebidas')}</p>
-                  <p className="text-2xl font-black text-white mt-1 group-hover:text-[#00E5FF] transition-colors font-mono">
-                    {stats?.unreadMessages || 0}
-                  </p>
-                </div>
-              </Link>
-
-            </div>
-
-            {/* Ações Rápidas em Destaque */}
-            <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-4">
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#00E5FF]" /> {t('Ações Rápidas Operacionais')}
+            {/* Quick Operational Tiles */}
+            <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 space-y-4">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-emerald-400" /> Ações Rápidas de Vendedor
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                
                 <Link
                   to="/create-listing"
-                  className="flex items-center justify-between p-4 rounded-xl bg-[#00E5FF]/5 hover:bg-[#00E5FF]/15 border border-[#00E5FF]/30 transition-all group"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-emerald-500/50 transition-all group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[#00E5FF]/20 text-[#00E5FF]">
+                    <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 group-hover:scale-110 transition-transform">
                       <Plus className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors">{t('Vender Peça JDM')}</p>
-                      <p className="text-xs text-gray-400">{t('Cadastrar produto no catálogo')}</p>
+                      <p className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">Anunciar Peça JDM</p>
+                      <p className="text-[10px] text-zinc-500">Cadastrar no catálogo</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#00E5FF] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-emerald-400 transition-colors" />
+                </Link>
+
+                <Link
+                  to="/japan-bank-account"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-amber-500/50 transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 group-hover:scale-110 transition-transform">
+                      <Landmark className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">Conta Japão (Furikomi)</p>
+                      <p className="text-[10px] text-zinc-500">Configurar depósitos JPY</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-amber-300 transition-colors" />
                 </Link>
 
                 <Link
                   to="/messages"
-                  className="flex items-center justify-between p-4 rounded-xl bg-[#00E5FF]/5 hover:bg-[#00E5FF]/15 border border-[#00E5FF]/30 transition-all group"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-indigo-500/50 transition-all group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[#00E5FF]/20 text-[#00E5FF]">
+                    <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400 group-hover:scale-110 transition-transform">
                       <MessageCircle className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors">{t('Chat de Vendas')}</p>
-                      <p className="text-xs text-gray-400">{t('Responder compradores')}</p>
+                      <p className="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors">Chat com Compradores</p>
+                      <p className="text-[10px] text-zinc-500">Responder perguntas</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#00E5FF] transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-indigo-300 transition-colors" />
                 </Link>
 
-                <Link
-                  to="/rastreio"
-                  className="flex items-center justify-between p-4 rounded-xl bg-[#00E5FF]/5 hover:bg-[#00E5FF]/15 border border-[#00E5FF]/30 transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[#00E5FF]/20 text-[#00E5FF]">
-                      <ShoppingBag className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white group-hover:text-[#00E5FF] transition-colors">{t('Rastreamento WMS')}</p>
-                      <p className="text-xs text-gray-400">{t('Consultar entregas Japão')}</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-[#00E5FF] transition-colors" />
-                </Link>
               </div>
             </div>
 
-            {/* Layout Duplo: Prévias Rápidas */}
+            {/* Split Preview Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
-              {/* Prévia Anúncios Recentes */}
-              <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <Package className="w-4 h-4 text-[#00E5FF]" /> {t('Anúncios Recentes')}
+              {/* Recent Products Preview */}
+              <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                    <Package className="w-4 h-4 text-emerald-400" /> Seus Anúncios Recentes
                   </h3>
-                  <button onClick={() => setActiveTab('products')} className="text-xs font-bold text-[#00E5FF] hover:underline flex items-center gap-1">
-                    {t('Ver todos')} <ArrowRight className="w-3.5 h-3.5" />
+                  <button 
+                    onClick={() => setActiveTab('products')} 
+                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                  >
+                    Ver todas <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
                 {products.length > 0 ? (
-                  <div className="space-y-3">
-                    {products.slice(0, 3).map(p => (
+                  <div className="space-y-2.5">
+                    {products.slice(0, 4).map(p => (
                       <Link
                         key={p.id}
                         to={`/product/${p.id}`}
-                        className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-[#00E5FF]/10 border border-white/5 hover:border-[#00E5FF]/30 transition-all group"
+                        className="flex items-center justify-between p-3 rounded-2xl bg-zinc-950/60 border border-zinc-800 hover:border-emerald-500/40 transition-all group"
                       >
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
-                            <SafeImage src={p.images?.[0]} alt={p.title} className="w-full h-full object-cover" />
+                          <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden shrink-0">
+                            <SafeImage src={p.images?.[0]} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-white group-hover:text-[#00E5FF] truncate">{p.title}</p>
-                            <p className="text-xs text-gray-400">¥ {p.price?.toLocaleString('ja-JP')} • {p.views || 0} views</p>
+                            <p className="text-xs font-bold text-white group-hover:text-emerald-400 truncate">{p.title}</p>
+                            <p className="text-[11px] font-mono text-emerald-400 font-bold mt-0.5">
+                              ¥ {p.price?.toLocaleString('ja-JP')} • {p.views || 0} views
+                            </p>
                           </div>
                         </div>
-                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                           {p.status === 'active' ? 'Ativo' : p.status}
                         </span>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400 text-center py-6">{t('Você ainda não tem anúncios cadastrados.')}</p>
+                  <div className="text-center py-8 text-xs text-zinc-500">
+                    Você ainda não possui peças anunciadas.
+                  </div>
                 )}
               </div>
 
-              {/* Prévia Transações Recentes */}
-              <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <h3 className="text-base font-bold text-white flex items-center gap-2">
-                    <ShoppingBag className="w-4 h-4 text-[#00E5FF]" /> {t('Transações Recentes')}
+              {/* Recent Transactions Preview */}
+              <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-white flex items-center gap-2">
+                    <ShoppingBag className="w-4 h-4 text-emerald-400" /> Útimas Vendas & Compras
                   </h3>
-                  <button onClick={() => setActiveTab('transactions')} className="text-xs font-bold text-[#00E5FF] hover:underline flex items-center gap-1">
-                    {t('Ver todas')} <ArrowRight className="w-3.5 h-3.5" />
+                  <button 
+                    onClick={() => setActiveTab('transactions')} 
+                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                  >
+                    Ver histórico <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
                 {transactions.length > 0 ? (
-                  <div className="space-y-3">
-                    {transactions.slice(0, 3).map(tx => {
+                  <div className="space-y-2.5">
+                    {transactions.slice(0, 4).map(tx => {
                       const isBuyer = tx.buyer_id === user.id
                       return (
-                        <div key={tx.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-[#00E5FF]/30 transition-all">
+                        <div key={tx.id} className="flex items-center justify-between p-3 rounded-2xl bg-zinc-950/60 border border-zinc-800 hover:border-emerald-500/40 transition-all">
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                            <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden shrink-0">
                               <SafeImage src={tx.parts?.images?.[0]} alt="" className="w-full h-full object-cover" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm font-semibold text-white truncate">{tx.parts?.title || 'Peça Automotiva'}</p>
-                              <p className="text-xs text-gray-400">
-                                {isBuyer ? 'Compra' : 'Venda'} • ¥ {tx.amount?.toLocaleString('ja-JP')}
+                              <p className="text-xs font-bold text-white truncate">{tx.parts?.title || 'Peça Automotiva'}</p>
+                              <p className="text-[11px] font-mono text-zinc-400 mt-0.5">
+                                {isBuyer ? 'COMPRA' : 'VENDA'} • <span className="text-emerald-400 font-bold">¥ {tx.amount?.toLocaleString('ja-JP')}</span>
                               </p>
                             </div>
                           </div>
-                          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
                             {tx.fulfillment_status === 'pending' ? 'Pendente' : tx.fulfillment_status === 'shipped' ? 'Enviado' : 'Concluído'}
                           </span>
                         </div>
@@ -520,7 +546,9 @@ export default function Dashboard() {
                     })}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400 text-center py-6">{t('Nenhuma transação registrada ainda.')}</p>
+                  <div className="text-center py-8 text-xs text-zinc-500">
+                    Nenhuma transação efetuada até o momento.
+                  </div>
                 )}
               </div>
 
@@ -529,75 +557,77 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ─── ABA 2: MEUS ANÚNCIOS (MY LISTINGS) ──────────────── */}
+        {/* ─── ABA 2: MINHAS PEÇAS (MY LISTINGS) ───────────────── */}
         {activeTab === 'products' && (
-          <div className="space-y-6">
-            <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-6">
+          <div className="space-y-4 animate-fade-in">
+            <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 space-y-6">
               
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white">{t('Gerenciar Meus Anúncios')}</h2>
-                  <p className="text-gray-400 text-xs">{t('Confira e gerencie suas peças anunciadas no marketplace')}</p>
+                  <h2 className="text-lg font-black text-white tracking-tight">Suas Peças no Catálogo</h2>
+                  <p className="text-xs text-zinc-400">Gerencie preços, visualizações e status dos seus anúncios</p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <Search className="w-4 h-4 text-[#00E5FF] absolute left-3 top-1/2 -translate-y-1/2" />
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:w-64">
+                    <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
-                      placeholder={t('Buscar peça...')}
+                      placeholder="Buscar peça..."
                       value={productSearch}
                       onChange={(e) => setProductSearch(e.target.value)}
-                      className="pl-9 pr-4 py-2 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#00E5FF]"
+                      className="w-full pl-9 pr-4 py-2.5 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white placeholder-zinc-500 focus:border-emerald-500 transition outline-none"
                     />
                   </div>
 
                   <Link
                     to="/create-listing"
-                    className="inline-flex items-center gap-2 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black px-4 py-2 rounded-xl text-sm font-extrabold transition-all shrink-0"
+                    className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs rounded-xl transition flex items-center gap-1.5 shrink-0"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>{t('Criar Anúncio')}</span>
+                    <span>Cadastrar</span>
                   </Link>
                 </div>
               </div>
 
               {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredProducts.map(p => (
-                    <div key={p.id} className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-3 hover:border-[#00E5FF]/40 transition-all group">
-                      <div className="aspect-[16/9] rounded-lg bg-black/40 border border-white/10 overflow-hidden relative">
-                        <SafeImage src={p.images?.[0]} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        <span className="absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#00E5FF]/20 text-[#00E5FF] border border-[#00E5FF]/40 backdrop-blur-md">
-                          {p.status === 'active' ? 'Ativo' : p.status}
-                        </span>
+                    <div key={p.id} className="bg-zinc-950/70 border border-zinc-800/80 rounded-2xl p-4 space-y-3 hover:border-emerald-500/40 transition-all group flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <div className="aspect-[16/9] rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden relative">
+                          <SafeImage src={p.images?.[0]} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                          <span className="absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-950/90 text-emerald-400 border border-emerald-500/40 backdrop-blur-md">
+                            {p.status === 'active' ? 'Ativo' : p.status}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1">
+                          <h3 className="font-bold text-sm text-white group-hover:text-emerald-400 transition-colors truncate">{p.title}</h3>
+                          <p className="text-emerald-400 font-black text-base font-mono">
+                            ¥ {p.price?.toLocaleString('ja-JP')}
+                          </p>
+                          <p className="text-[11px] text-zinc-400 flex items-center gap-1.5 font-mono">
+                            <Eye className="w-3.5 h-3.5 text-zinc-500" /> {p.views || 0} visualizações
+                          </p>
+                        </div>
                       </div>
 
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-white group-hover:text-[#00E5FF] transition-colors truncate">{p.title}</h3>
-                        <p className="text-[#00E5FF] font-extrabold text-lg font-mono">
-                          ¥ {p.price?.toLocaleString('ja-JP')}
-                        </p>
-                        <p className="text-xs text-gray-400 flex items-center gap-2">
-                          <Eye className="w-3.5 h-3.5 text-[#00E5FF]" /> {p.views || 0} visualizações
-                        </p>
-                      </div>
-
-                      <div className="pt-2 border-t border-white/5 flex items-center justify-between gap-2">
+                      <div className="pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-2">
                         <Link
                           to={`/product/${p.id}`}
-                          className="text-xs font-bold text-[#00E5FF] hover:underline flex items-center gap-1"
+                          className="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1"
                         >
-                          Ver no catálogo <ExternalLink className="w-3 h-3" />
+                          Ver no Catálogo <ExternalLink className="w-3 h-3" />
                         </Link>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12 space-y-3">
-                  <Package className="w-12 h-12 text-[#00E5FF] mx-auto" />
-                  <p className="text-gray-400 text-sm">{t('Nenhuma peça encontrada.')}</p>
+                <div className="text-center py-12 space-y-3 text-zinc-500">
+                  <Package className="w-10 h-10 mx-auto text-zinc-700" />
+                  <p className="text-xs">Nenhuma peça encontrada.</p>
                 </div>
               )}
 
@@ -605,18 +635,18 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ─── ABA 3: TRANSAÇÕES (TRANSACTIONS) ────────────────── */}
+        {/* ─── ABA 3: VENDAS & COMPRAS (TRANSACTIONS) ───────────── */}
         {activeTab === 'transactions' && (
-          <div className="space-y-6">
-            <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 space-y-6">
+          <div className="space-y-4 animate-fade-in">
+            <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-5 sm:p-6 space-y-6">
               
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white">{t('Histórico de Transações')}</h2>
-                  <p className="text-gray-400 text-xs">{t('Acompanhe suas compras e vendas com custódia segura DAIG Escrow')}</p>
+                  <h2 className="text-lg font-black text-white tracking-tight">Histórico de Vendas & Compras</h2>
+                  <p className="text-xs text-zinc-400">Acompanhe suas negociações e status de entrega</p>
                 </div>
 
-                <div className="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+                <div className="flex items-center gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-800">
                   {[
                     { id: 'all', label: 'Todas' },
                     { id: 'sales', label: 'Minhas Vendas' },
@@ -627,8 +657,8 @@ export default function Dashboard() {
                       onClick={() => setTxFilter(f.id as any)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                         txFilter === f.id
-                          ? 'bg-[#00E5FF] text-black shadow-md'
-                          : 'text-gray-400 hover:text-white'
+                          ? 'bg-emerald-500 text-zinc-950 font-black shadow-md'
+                          : 'text-zinc-400 hover:text-white'
                       }`}
                     >
                       {f.label}
@@ -638,51 +668,50 @@ export default function Dashboard() {
               </div>
 
               {filteredTransactions.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {filteredTransactions.map(tx => {
                     const isBuyer = tx.buyer_id === user.id
                     return (
-                      <div key={tx.id} className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[#00E5FF]/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div key={tx.id} className="p-4 rounded-2xl bg-zinc-950/70 border border-zinc-800/80 hover:border-emerald-500/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         
-                        <div className="flex items-center gap-4 min-w-0">
-                          <div className="w-14 h-14 rounded-lg bg-black/40 border border-white/10 overflow-hidden shrink-0">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden shrink-0">
                             <SafeImage src={tx.parts?.images?.[0]} alt="" className="w-full h-full object-cover" />
                           </div>
                           <div className="min-w-0 space-y-1">
-                            <p className="text-white font-semibold text-sm truncate">{tx.parts?.title || 'Peça Automotiva'}</p>
-                            <div className="flex items-center gap-3 text-xs text-gray-400">
-                              <span className="px-2 py-0.5 rounded font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
+                            <p className="text-white font-bold text-xs truncate">{tx.parts?.title || 'Peça Automotiva'}</p>
+                            <div className="flex items-center gap-2.5 text-[11px] font-mono">
+                              <span className="px-2 py-0.5 rounded font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                                 {isBuyer ? 'COMPRA' : 'VENDA'}
                               </span>
-                              <span>•</span>
-                              <span className="text-[#00E5FF] font-bold font-mono">¥ {tx.amount?.toLocaleString('ja-JP')}</span>
+                              <span className="text-emerald-400 font-bold">¥ {tx.amount?.toLocaleString('ja-JP')}</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4 justify-between md:justify-end border-t md:border-t-0 border-white/5 pt-3 md:pt-0">
-                          <div className="text-left md:text-right">
-                            <span className="text-xs font-semibold text-gray-400 block">Status de Entrega</span>
-                            <span className="text-sm font-bold text-white">
-                              {tx.fulfillment_status === 'pending' ? '⏳ Pendente de Envio' : tx.fulfillment_status === 'shipped' ? '🚚 Enviado' : '✅ Entregue & Concluído'}
+                        <div className="flex items-center gap-4 justify-between sm:justify-end border-t sm:border-t-0 border-zinc-800/80 pt-3 sm:pt-0">
+                          <div className="text-left sm:text-right">
+                            <span className="text-[10px] font-mono text-zinc-500 block uppercase">Status</span>
+                            <span className="text-xs font-bold text-white">
+                              {tx.fulfillment_status === 'pending' ? '⏳ Pendente de Envio' : tx.fulfillment_status === 'shipped' ? '🚚 Enviado' : '✅ Concluído'}
                             </span>
                           </div>
 
-                          {!isBuyer && tx.fulfillment_status === 'pending' && tx.payment_status === 'escrow' && (
+                          {!isBuyer && tx.fulfillment_status === 'pending' && (
                             <button 
                               onClick={() => updateTransaction.mutate({ id: tx.id, updates: { fulfillment_status: 'shipped' } })}
-                              className="bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black px-4 py-2 rounded-xl text-xs font-extrabold transition-all shadow-md shadow-[#00E5FF]/20"
+                              className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-3.5 py-1.5 rounded-xl text-xs font-black transition shadow-md"
                             >
-                              Marcar como Enviado 🚚
+                              Marcar Enviado 🚚
                             </button>
                           )}
 
                           {isBuyer && tx.fulfillment_status === 'shipped' && (
                             <button 
                               onClick={() => updateTransaction.mutate({ id: tx.id, updates: { fulfillment_status: 'received', payment_status: 'completed' } })}
-                              className="bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black px-4 py-2 rounded-xl text-xs font-extrabold transition-all shadow-md shadow-[#00E5FF]/20"
+                              className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 px-3.5 py-1.5 rounded-xl text-xs font-black transition shadow-md"
                             >
-                              Confirmar Recebimento 🎉
+                              Confirmar Entrega 🎉
                             </button>
                           )}
                         </div>
@@ -692,9 +721,8 @@ export default function Dashboard() {
                   })}
                 </div>
               ) : (
-                <div className="text-center py-12 space-y-3">
-                  <ShoppingBag className="w-12 h-12 text-[#00E5FF] mx-auto" />
-                  <p className="text-gray-400 text-sm">{t('Nenhuma transação encontrada nesta categoria.')}</p>
+                <div className="text-center py-12 text-xs text-zinc-500">
+                  Nenhuma transação encontrada nesta categoria.
                 </div>
               )}
 
@@ -702,68 +730,40 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ─── ABA 4: RECEBIMENTOS & STRIPE (STRIPE) ───────────── */}
+        {/* ─── ABA 4: CONTA BANCÁRIA JAPÃO (STRIPE) ─────────────── */}
         {activeTab === 'stripe' && (
-          <div className="space-y-6">
-            <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 sm:p-8 space-y-6">
+          <div className="space-y-4 animate-fade-in">
+            <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 space-y-6 max-w-2xl mx-auto">
               
-              <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-                <div className="p-3 rounded-xl bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF]">
-                  <Wallet className="w-6 h-6" />
+              <div className="flex items-center space-x-3 border-b border-zinc-800 pb-4">
+                <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                  <Landmark className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">{t('Conta de Recebimentos (Stripe Connect)')}</h2>
-                  <p className="text-gray-400 text-xs">{t('Configure sua conta bancária para receber os repasses das suas vendas automaticamente')}</p>
+                  <h2 className="text-lg font-black text-white">Dados Bancários & Repasses (JPY)</h2>
+                  <p className="text-xs text-zinc-400">Configuração para recebimento de vendas no Japão (Furikomi)</p>
                 </div>
               </div>
 
-              {stripeError && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                  {stripeError}
-                </div>
-              )}
-
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4 max-w-xl">
+              <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400 font-semibold">Status de Onboarding:</span>
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/30">
-                    {profile?.stripe_onboarding_complete ? '✅ Conta Verificada' : '⏳ Pendente / Incompleto'}
+                  <span className="text-xs text-zinc-400">Status no Japão:</span>
+                  <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    Zengin Net Ready
                   </span>
                 </div>
 
-                <div className="space-y-3 pt-2">
-                  <button
-                    onClick={handleStripeConnect}
-                    disabled={stripeLoading}
-                    className="w-full flex items-center justify-center gap-2 bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black px-5 py-3 rounded-xl font-extrabold text-sm transition-all disabled:opacity-50 shadow-lg shadow-[#00E5FF]/20"
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    <span>
-                      {stripeLoading
-                        ? t('Processando...')
-                        : profile?.stripe_account_id
-                          ? t('Completar Cadastro no Stripe')
-                          : t('Conectar Conta Stripe')}
-                    </span>
-                  </button>
+                <p className="text-xs text-zinc-300 leading-relaxed">
+                  Cadastre seus dados bancários (Código do Banco, Agência e Katakana) para repasses em ienes (¥).
+                </p>
 
-                  {profile?.stripe_account_id && (
-                    <button
-                      onClick={handleStripePortal}
-                      disabled={stripeLoading}
-                      className="w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-50"
-                    >
-                      <ExternalLink className="w-5 h-5 text-gray-400" />
-                      <span>{t('Abrir Painel Stripe')}</span>
-                    </button>
-                  )}
-
+                <div className="pt-2">
                   <Link
-                    to="/bank-account"
-                    className="w-full flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-5 py-3 rounded-xl font-semibold text-sm transition-all"
+                    to="/japan-bank-account"
+                    className="w-full py-3.5 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 text-zinc-950 font-black text-xs uppercase tracking-wider rounded-2xl transition shadow-lg flex items-center justify-center space-x-2"
                   >
-                    <Landmark className="w-5 h-5 text-emerald-400" />
-                    <span>Cadastrar Conta Bancária do Japão (振込口座)</span>
+                    <Landmark className="w-4 h-4 text-zinc-950" />
+                    <span>Acessar Cadastro de Conta Bancária Japão</span>
                   </Link>
                 </div>
               </div>
@@ -774,121 +774,110 @@ export default function Dashboard() {
 
         {/* ─── ABA 5: PERFIL (PROFILE) ─────────────────────────── */}
         {activeTab === 'profile' && (
-          <div className="space-y-6">
-            <div className="bg-[#0D0D14] border border-[#00E5FF]/20 rounded-2xl p-6 sm:p-8 space-y-6">
+          <div className="space-y-4 animate-fade-in">
+            <div className="bg-zinc-900/80 border border-zinc-800/80 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 space-y-6 max-w-2xl mx-auto">
               
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white">{t('Dados do Meu Perfil')}</h2>
-                  <p className="text-gray-400 text-xs">{t('Gerencie suas informações pessoais e endereço de entrega no Japão')}</p>
+                  <h2 className="text-lg font-black text-white">Dados Pessoais</h2>
+                  <p className="text-xs text-zinc-400">Informações da sua conta de vendedor</p>
                 </div>
                 <button
                   onClick={() => setEditingProfile(!editingProfile)}
-                  className="px-4 py-2 rounded-xl bg-[#00E5FF]/10 hover:bg-[#00E5FF]/20 border border-[#00E5FF]/30 text-xs font-bold text-[#00E5FF] transition-all"
+                  className="px-3.5 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-bold text-emerald-400 hover:text-white transition"
                 >
-                  {editingProfile ? t('Cancelar') : t('Editar Perfil')}
+                  {editingProfile ? 'Cancelar' : 'Editar Dados'}
                 </button>
               </div>
 
               {editingProfile ? (
-                <form onSubmit={(e) => { e.preventDefault(); updateProfile.mutate() }} className="space-y-5 max-w-xl">
+                <form onSubmit={(e) => { e.preventDefault(); updateProfile.mutate() }} className="space-y-4">
                   <div>
-                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Nome Completo')}</label>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Nome Completo</label>
                     <input
                       type="text"
                       value={profileForm.name}
                       onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-white text-sm focus:outline-none focus:border-[#00E5FF]"
+                      className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white focus:border-emerald-500 transition outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Telefone')}</label>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Telefone</label>
                     <input
                       type="tel"
                       value={profileForm.phone}
                       onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-white text-sm focus:outline-none focus:border-[#00E5FF]"
+                      className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white focus:border-emerald-500 transition outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('CEP (Código Postal Japão)')}</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="100-0001"
-                        value={profileForm.zip_code}
-                        onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
-                        onBlur={handlePostalBlur}
-                        className="w-full px-4 py-2.5 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-white text-sm focus:outline-none focus:border-[#00E5FF] pr-10"
-                      />
-                      {postalLoading && (
-                        <Loader2 className="w-4 h-4 text-[#00E5FF] animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
-                      )}
-                    </div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">CEP (Código Postal Japão)</label>
+                    <input
+                      type="text"
+                      value={profileForm.zip_code}
+                      onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
+                      onBlur={handlePostalBlur}
+                      placeholder="100-0001"
+                      className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white focus:border-emerald-500 transition outline-none font-mono"
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Endereço Completo')}</label>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Endereço Completo</label>
                     <input
                       type="text"
                       value={profileForm.address}
                       onChange={(e) => setProfileForm({ ...profileForm, address: e.target.value })}
-                      className="w-full px-4 py-2.5 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-white text-sm focus:outline-none focus:border-[#00E5FF]"
+                      className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-white focus:border-emerald-500 transition outline-none"
                     />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Cidade')}</label>
-                      <input
-                        type="text"
-                        value={profileForm.city}
-                        onChange={(e) => setProfileForm({ ...profileForm, city: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-white text-sm focus:outline-none focus:border-[#00E5FF]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1.5">{t('Província / Estado')}</label>
-                      <input
-                        type="text"
-                        value={profileForm.state}
-                        onChange={(e) => setProfileForm({ ...profileForm, state: e.target.value })}
-                        className="w-full px-4 py-2.5 bg-white/5 border border-[#00E5FF]/30 rounded-xl text-white text-sm focus:outline-none focus:border-[#00E5FF]"
-                      />
-                    </div>
                   </div>
 
                   <button
                     type="submit"
                     disabled={updateProfile.isPending}
-                    className="w-full bg-[#00E5FF] hover:bg-[#00E5FF]/80 text-black py-3 rounded-xl font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#00E5FF]/20"
+                    className="w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center space-x-2"
                   >
-                    <Save className="w-4 h-4" />
-                    <span>{updateProfile.isPending ? t('Salvando...') : t('Salvar Alterações')}</span>
+                    <Save className="w-4 h-4 text-zinc-950" />
+                    <span>{updateProfile.isPending ? 'Salvando...' : 'Salvar Alterações'}</span>
                   </button>
                 </form>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
-                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Nome</span>
-                    <p className="text-white font-medium">{user.name || t('Não informado')}</p>
+                <div className="space-y-3 text-xs">
+                  <div className="p-3.5 bg-zinc-950 border border-zinc-800 rounded-2xl flex justify-between">
+                    <span className="text-zinc-500 font-mono">Nome:</span>
+                    <span className="text-white font-bold">{user.name || 'Não informado'}</span>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
-                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">E-mail</span>
-                    <p className="text-white font-medium">{user.email}</p>
+                  <div className="p-3.5 bg-zinc-950 border border-zinc-800 rounded-2xl flex justify-between">
+                    <span className="text-zinc-500 font-mono">E-mail:</span>
+                    <span className="text-white font-bold">{user.email}</span>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
-                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Telefone</span>
-                    <p className="text-white font-medium">{user.phone || t('Não informado')}</p>
+                  <div className="p-3.5 bg-zinc-950 border border-zinc-800 rounded-2xl flex justify-between">
+                    <span className="text-zinc-500 font-mono">Telefone:</span>
+                    <span className="text-white font-bold">{user.phone || 'Não informado'}</span>
                   </div>
 
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
-                    <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Endereço de Entrega</span>
-                    <p className="text-white font-medium">
+                  <div className="p-3.5 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-1">
+                    <span className="text-zinc-500 font-mono block">Endereço no Japão:</span>
+                    <span className="text-white font-medium block">
+                      {user.address ? `${user.address}, ${user.city} - ${user.state} (CEP ${user.zip_code || ''})` : 'Não informado'}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
+}
+Name="text-white font-medium">
                       {user.address ? `${user.address}, ${user.city} - ${user.state} (CEP ${user.zip_code || ''})` : t('Não informado')}
                     </p>
                   </div>
