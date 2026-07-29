@@ -11,7 +11,7 @@ import { fetchPostal } from '@/modules/shared/lib/postal'
 import { 
   Package, Plus, DollarSign, Eye, MessageCircle, TrendingUp, User, Mail, Phone, MapPin, 
   Save, CreditCard, ExternalLink, Loader2, LayoutDashboard, ShoppingBag, 
-  CheckCircle2, Sparkles, Search, Wallet, ChevronRight, ArrowRight
+  CheckCircle2, Sparkles, Search, Wallet, ChevronRight, ArrowRight, Landmark
 } from 'lucide-react'
 
 type TabType = 'overview' | 'products' | 'transactions' | 'stripe' | 'profile'
