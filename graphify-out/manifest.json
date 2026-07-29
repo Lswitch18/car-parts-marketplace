@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785286295.2092183,
-    "ast_hash": "6d87e9988f49d8fbc3e5c289b557d002",
+    "mtime": 1785287453.465218,
+    "ast_hash": "a3f2ddb0d293279d8bdb3f89e83b39ae",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -2742,6 +2742,21 @@
   "docs/diag/PERMISSOES_E_ROLES_SAAS_TENANT.md": {
     "mtime": 1785286582.2132175,
     "ast_hash": "58ce2891fb5505b0c37850bec8307c1c",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/hooks/useTenantCore.ts": {
+    "mtime": 1785287444.2692182,
+    "ast_hash": "fe0f94796b7a48c9abadedc7211c5ed6",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/services/TenantCoreService.ts": {
+    "mtime": 1785287436.5452182,
+    "ast_hash": "e77db6be974b20248ffbab3ef7c9b660",
+    "semantic_hash": ""
+  },
+  "docs/diag/ARQUITETURA_LIMPA_E_PADROES_PROJETO.md": {
+    "mtime": 1785287460.549218,
+    "ast_hash": "a6000c9e492bf8b1f4e7f932b57c7fcb",
     "semantic_hash": ""
   }
 }
