@@ -33,13 +33,50 @@ export default function DeliveriesManagement() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'shipped' | 'received'>('all')
-  const [deliveries, setDeliveries] = useState<DeliveryTransaction[]>([])
+  const [deliveries, setDeliveries] = useState<DeliveryTransaction[] >([])
   const [selectedDelivery, setSelectedDelivery] = useState<DeliveryTransaction | null>(null)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+
+  // Modal para Despacho pelo Vendedor
+  const [dispatchModalTx, setDispatchModalTx] = useState<DeliveryTransaction | null>(null)
+  const [trackingCodeInput, setTrackingCodeInput] = useState('')
+  const [carrierInput, setCarrierInput] = useState('Japan Post (JP Post)')
 
   useEffect(() => {
     fetchDeliveries()
   }, [])
+
+  const handleConfirmSellerDispatch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!dispatchModalTx) return
+
+    try {
+      setUpdatingId(dispatchModalTx.id)
+      const trackCode = trackingCodeInput || `JP-${dispatchModalTx.id.substring(0, 8).toUpperCase()}`
+
+      await supabase
+        .from('transactions')
+        .update({
+          fulfillment_status: 'shipped',
+          tracking_number: trackCode,
+          carrier_name: carrierInput
+        })
+        .eq('id', dispatchModalTx.id)
+
+      setDeliveries(prev => prev.map(d => d.id === dispatchModalTx.id ? {
+        ...d,
+        fulfillment_status: 'shipped',
+        tracking_number: trackCode,
+        carrier_name: carrierInput
+      } : d))
+
+      setDispatchModalTx(null)
+    } catch (err) {
+      console.error('Erro ao confirmar despacho do vendedor:', err)
+    } finally {
+      setUpdatingId(null)
+    }
+  }
 
   const fetchDeliveries = async () => {
     try {
@@ -369,7 +406,19 @@ export default function DeliveriesManagement() {
                           <Eye size={12} /> Detalhes
                         </button>
 
-                        {!isReceived && (
+                        {!isShipped && !isReceived && (
+                          <button
+                            onClick={() => {
+                              setDispatchModalTx(tx)
+                              setTrackingCodeInput(`JP-${tx.id.substring(0, 8).toUpperCase()}`)
+                            }}
+                            className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-lg text-xs font-bold transition inline-flex items-center gap-1"
+                          >
+                            <Truck size={12} /> Despachar (Vendedor)
+                          </button>
+                        )}
+
+                        {isShipped && !isReceived && (
                           <button
                             onClick={() => handleConfirmBuyerReceipt(tx.id)}
                             disabled={updatingId === tx.id}
@@ -451,6 +500,77 @@ export default function DeliveriesManagement() {
                 Fechar
               </button>
             </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ═══ MODAL DESPACHO PELO VENDEDOR (DIRECT SHIP) ═══ */}
+      {dispatchModalTx && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#121215] border border-[#27272a] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl space-y-4 p-6">
+            
+            <div className="flex items-center justify-between border-b border-[#27272a] pb-3">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Truck className="w-4 h-4 text-amber-400" />
+                Confirmar Despacho do Vendedor (Direct Ship)
+              </h3>
+              <button onClick={() => setDispatchModalTx(null)} className="text-zinc-500 hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleConfirmSellerDispatch} className="space-y-4 text-xs">
+              <div className="bg-[#18181b] p-3 rounded-lg border border-[#27272a] space-y-1">
+                <span className="text-[10px] text-zinc-500 uppercase font-mono font-bold">Produto / Peça</span>
+                <p className="font-bold text-white">{dispatchModalTx.part_title}</p>
+                <p className="text-[11px] text-zinc-400">Vendedor: <span className="text-zinc-200 font-semibold">{dispatchModalTx.seller_name}</span></p>
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 mb-1 font-medium">Código de Rastreamento (Japan Post / Transportadora)</label>
+                <input
+                  type="text"
+                  required
+                  value={trackingCodeInput}
+                  onChange={(e) => setTrackingCodeInput(e.target.value)}
+                  placeholder="Ex: JP-1B09683E ou 1234567890"
+                  className="w-full px-3 py-2 bg-[#18181b] border border-[#27272a] rounded-lg text-white font-mono outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 mb-1 font-medium">Transportadora Utilizada</label>
+                <select
+                  value={carrierInput}
+                  onChange={(e) => setCarrierInput(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#18181b] border border-[#27272a] rounded-lg text-white outline-none focus:border-amber-500"
+                >
+                  <option value="Japan Post (JP Post)">Japan Post (Japan Post / 郵便局)</option>
+                  <option value="Yamato Transport (Kuroneko)">Yamato Transport (ヤマト運輸)</option>
+                  <option value="Sagawa Express">Sagawa Express (佐川急便)</option>
+                  <option value="Outra Transportadora Direct Ship">Outra Transportadora</option>
+                </select>
+              </div>
+
+              <div className="pt-3 border-t border-[#27272a] flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDispatchModalTx(null)}
+                  className="px-4 py-2 bg-[#18181b] hover:bg-[#27272a] text-zinc-300 rounded-xl font-semibold transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={updatingId === dispatchModalTx.id}
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl font-bold transition flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  {updatingId === dispatchModalTx.id && <Loader2 size={14} className="animate-spin" />}
+                  <span>Confirmar Despacho 🚚</span>
+                </button>
+              </div>
+            </form>
 
           </div>
         </div>
