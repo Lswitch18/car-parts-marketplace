@@ -1511,8 +1511,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 3,
+      "community_name": "vendor-three-BAVKA0D-.js",
       "norm_label": "axios"
     },
     {
@@ -1522,8 +1522,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 3,
+      "community_name": "vendor-three-BAVKA0D-.js",
       "norm_label": "axios"
     },
     {
@@ -1533,8 +1533,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 33,
-      "community_name": "constructor",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1544,8 +1544,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 33,
-      "community_name": "constructor",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "canvas-confetti"
     },
     {
@@ -3981,10 +3981,21 @@
       "norm_label": "privacypolicy"
     },
     {
+      "label": "JapanBankAccount",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L52",
+      "_origin": "ast",
+      "id": "src_app_japanbankaccount",
+      "community": 59,
+      "community_name": "App.tsx",
+      "norm_label": "japanbankaccount"
+    },
+    {
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L53",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 59,
@@ -3998,8 +4009,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_driverapp",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "driverapp.tsx"
     },
     {
@@ -4009,8 +4020,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_driverapp_login",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "login"
     },
     {
@@ -4020,8 +4031,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_driverapp_mobileapp",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "mobileapp"
     },
     {
@@ -4031,8 +4042,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_driverapp_workerapp",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "workerapp"
     },
     {
@@ -4042,8 +4053,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_driverapp_qrinstallpage",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "qrinstallpage"
     },
     {
@@ -4053,8 +4064,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_driverapp_agenciapage",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "agenciapage"
     },
     {
@@ -4064,8 +4075,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_driverapp_driverapp",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "driverapp()"
     },
     {
@@ -4240,8 +4251,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_storeapp_storeapp",
-      "community": 52,
-      "community_name": "adminApi.test.ts",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "storeapp()"
     },
     {
@@ -4669,8 +4680,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 52,
-      "community_name": "adminApi.test.ts",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "main.tsx"
     },
     {
@@ -4680,8 +4691,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_main_queryclient",
-      "community": 52,
-      "community_name": "adminApi.test.ts",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "queryclient"
     },
     {
@@ -4691,8 +4702,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_main_root",
-      "community": 52,
-      "community_name": "adminApi.test.ts",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "root"
     },
     {
@@ -4856,8 +4867,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_admindashboard",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "admindashboard.tsx"
     },
     {
@@ -4867,8 +4878,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_admindashboard_skeletoncard",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "skeletoncard()"
     },
     {
@@ -4878,8 +4889,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_admindashboard_pulsedot",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "pulsedot()"
     },
     {
@@ -4889,8 +4900,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_admindashboard_admindashboard",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "admindashboard()"
     },
     {
@@ -5015,25 +5026,69 @@
       "norm_label": "dashboard()"
     },
     {
+      "label": "JapanBankAccount.tsx",
+      "file_type": "code",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_modules_backoffice_pages_japanbankaccount",
+      "community": 88,
+      "community_name": "useAuthStore",
+      "norm_label": "japanbankaccount.tsx"
+    },
+    {
+      "label": "JAPAN_TOP_BANKS",
+      "file_type": "code",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "src_modules_backoffice_pages_japanbankaccount_japan_top_banks",
+      "community": 88,
+      "community_name": "useAuthStore",
+      "norm_label": "japan_top_banks"
+    },
+    {
+      "label": "JapanBankAccount()",
+      "file_type": "code",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "src_modules_backoffice_pages_japanbankaccount_japanbankaccount",
+      "community": 88,
+      "community_name": "useAuthStore",
+      "norm_label": "japanbankaccount()"
+    },
+    {
       "label": "TenantDashboard.tsx",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_tenantdashboard",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 139,
+      "community_name": "index.ts",
       "norm_label": "tenantdashboard.tsx"
+    },
+    {
+      "label": "TabType",
+      "file_type": "code",
+      "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "src_modules_backoffice_pages_tenantdashboard_tabtype",
+      "community": 139,
+      "community_name": "index.ts",
+      "norm_label": "tabtype"
     },
     {
       "label": "TenantDashboard()",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L9",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_tenantdashboard_tenantdashboard",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 139,
+      "community_name": "index.ts",
       "norm_label": "tenantdashboard()"
     },
     {
@@ -5076,8 +5131,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_usermanagement",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "usermanagement.tsx"
     },
     {
@@ -5087,8 +5142,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_usermanagement_predefined_permissions",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "predefined_permissions"
     },
     {
@@ -5098,8 +5153,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_usermanagement_usermanagement",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "usermanagement()"
     },
     {
@@ -5263,8 +5318,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_chat_pages_messages",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "messages.tsx"
     },
     {
@@ -5274,8 +5329,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_modules_chat_pages_messages_message",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "message"
     },
     {
@@ -5285,8 +5340,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_modules_chat_pages_messages_conversation",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "conversation"
     },
     {
@@ -5296,8 +5351,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_modules_chat_pages_messages_messages",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "messages()"
     },
     {
@@ -5384,8 +5439,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_api_identityadminapi",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "identityadminapi.ts"
     },
     {
@@ -5395,8 +5450,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_identity_api_identityadminapi_getidentitypulse",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "getidentitypulse()"
     },
     {
@@ -5428,8 +5483,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_components_protectedroute",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "protectedroute.tsx"
     },
     {
@@ -5439,8 +5494,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_identity_components_protectedroute_protectedroute",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "protectedroute()"
     },
     {
@@ -6308,7 +6363,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico",
-      "community": 4,
+      "community": 2,
       "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "trackingpublico.tsx"
     },
@@ -6319,7 +6374,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico_etapas",
-      "community": 4,
+      "community": 2,
       "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "etapas"
     },
@@ -6330,7 +6385,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico_tipo_label",
-      "community": 4,
+      "community": 2,
       "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "tipo_label"
     },
@@ -6341,7 +6396,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico_trackingpublico",
-      "community": 4,
+      "community": 2,
       "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "trackingpublico()"
     },
@@ -6715,8 +6770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage",
-      "community": 55,
-      "community_name": "EtiquetasPage.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "etiquetaspage.tsx"
     },
     {
@@ -6726,8 +6781,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_etiquetaspage",
-      "community": 55,
-      "community_name": "EtiquetasPage.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "etiquetaspage()"
     },
     {
@@ -6737,8 +6792,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_getwarehouselocation",
-      "community": 55,
-      "community_name": "EtiquetasPage.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "getwarehouselocation()"
     },
     {
@@ -6748,8 +6803,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_level_colors",
-      "community": 55,
-      "community_name": "EtiquetasPage.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "level_colors"
     },
     {
@@ -6759,8 +6814,8 @@
       "source_location": "L192",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_labelcard",
-      "community": 55,
-      "community_name": "EtiquetasPage.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "labelcard()"
     },
     {
@@ -6770,8 +6825,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_mapapage",
-      "community": 4,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 89,
+      "community_name": "J",
       "norm_label": "mapapage.tsx"
     },
     {
@@ -6781,8 +6836,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_mapapage_mapapage",
-      "community": 4,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 89,
+      "community_name": "J",
       "norm_label": "mapapage()"
     },
     {
@@ -6869,8 +6924,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_pedidodetail",
-      "community": 9,
-      "community_name": "vendor-supabase-CW1GYbG4.js",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "pedidodetail()"
     },
     {
@@ -7254,8 +7309,8 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_wmspage",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "wmspage()"
     },
     {
@@ -7331,8 +7386,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_api_partsadminapi",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "partsadminapi.ts"
     },
     {
@@ -7342,8 +7397,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_api_partsadminapi_getpartspulse",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 297,
+      "community_name": "dashboardUtils.test.ts",
       "norm_label": "getpartspulse()"
     },
     {
@@ -8002,8 +8057,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_favorites",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "favorites.tsx"
     },
     {
@@ -8013,8 +8068,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_favorites_favorites",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "favorites()"
     },
     {
@@ -8057,8 +8112,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_productdetail",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "productdetail.tsx"
     },
     {
@@ -8068,8 +8123,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_productdetail_productdetail",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "productdetail()"
     },
     {
@@ -8079,8 +8134,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_store_favoritestore",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "favoritestore.ts"
     },
     {
@@ -8090,8 +8145,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_store_favoritestore_favoritestate",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "favoritestate"
     },
     {
@@ -8101,8 +8156,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_store_favoritestore_usefavoritestore",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "usefavoritestore"
     },
     {
@@ -8244,8 +8299,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_autotranslatetext",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "autotranslatetext.tsx"
     },
     {
@@ -8255,8 +8310,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_shared_components_autotranslatetext_autotranslatetextprops",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "autotranslatetextprops"
     },
     {
@@ -8266,8 +8321,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_shared_components_autotranslatetext_autotranslatetext",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "autotranslatetext()"
     },
     {
@@ -8376,8 +8431,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_pwaregister",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "pwaregister.tsx"
     },
     {
@@ -8387,8 +8442,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_shared_components_pwaregister_pwaregister",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "pwaregister()"
     },
     {
@@ -8442,8 +8497,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_scrolltotop",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "scrolltotop.tsx"
     },
     {
@@ -8453,8 +8508,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_shared_components_scrolltotop_scrolltotop",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "scrolltotop()"
     },
     {
@@ -8794,8 +8849,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantcore",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 139,
+      "community_name": "index.ts",
       "norm_label": "usetenantcore.ts"
     },
     {
@@ -8805,8 +8860,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantcore_usetenantcore",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 139,
+      "community_name": "index.ts",
       "norm_label": "usetenantcore()"
     },
     {
@@ -9135,8 +9190,8 @@
       "source_location": "L1113",
       "_origin": "ast",
       "id": "src_modules_shared_lib_i18n_i18nprovider",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "i18nprovider()"
     },
     {
@@ -9355,8 +9410,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_modules_shared_lib_supabase_supabase",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 11,
+      "community_name": "axios",
       "norm_label": "supabase"
     },
     {
@@ -9990,7 +10045,7 @@
       "label": "FeatureCard()",
       "file_type": "code",
       "source_file": "src/modules/storefront/pages/Home.tsx",
-      "source_location": "L616",
+      "source_location": "L482",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_home_featurecard",
       "community": 20,
@@ -10367,8 +10422,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transactions_components_purchaseflow",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "purchaseflow.tsx"
     },
     {
@@ -10378,8 +10433,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_transactions_components_purchaseflow_purchaseflowprops",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "purchaseflowprops"
     },
     {
@@ -10389,8 +10444,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_transactions_components_purchaseflow_purchaseflow",
-      "community": 2,
-      "community_name": "vendor-react-DqCMjyrC.js",
+      "community": 20,
+      "community_name": "index-B_no5lKC.js",
       "norm_label": "purchaseflow()"
     },
     {
@@ -22378,7 +22433,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
-      "source_location": "L53",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app",
@@ -22504,6 +22559,17 @@
       "_origin": "ast",
       "source": "src_app",
       "target": "src_app_immersiveexperience",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_app_japanbankaccount",
       "confidence_score": 1.0
     },
     {
@@ -22958,7 +23024,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/App.tsx",
-      "source_location": "L54",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_app",
@@ -25532,8 +25598,101 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount",
+      "target": "src_modules_backoffice_pages_japanbankaccount_japan_top_banks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount",
+      "target": "src_modules_backoffice_pages_japanbankaccount_japanbankaccount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount",
+      "target": "src_modules_identity_store_authstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount",
+      "target": "src_modules_identity_store_authstore_useauthstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount",
+      "target": "src_modules_shared_lib_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount",
+      "target": "src_modules_shared_lib_supabase_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/modules/backoffice/pages/JapanBankAccount.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_japanbankaccount_japanbankaccount",
+      "target": "src_modules_identity_store_authstore_useauthstore"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L9",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_tenantdashboard",
+      "target": "src_modules_backoffice_pages_tenantdashboard_tabtype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -25545,7 +25704,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L2",
+      "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -25557,7 +25716,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L2",
+      "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -25569,7 +25728,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L3",
+      "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -25581,7 +25740,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L3",
+      "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -25594,7 +25753,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L11",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard_tenantdashboard",
@@ -25606,7 +25765,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L29",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard_tenantdashboard",
@@ -32500,7 +32659,7 @@
       "deferred": true,
       "confidence": "EXTRACTED",
       "source_file": "src/modules/storefront/pages/Home.tsx",
-      "source_location": "L541",
+      "source_location": "L407",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_storefront_pages_home_home",
@@ -34561,7 +34720,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/storefront/pages/Home.tsx",
-      "source_location": "L621",
+      "source_location": "L487",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_storefront_pages_home_featurecard",
@@ -35779,7 +35938,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/storefront/pages/Home.tsx",
-      "source_location": "L616",
+      "source_location": "L482",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_storefront_pages_home",
@@ -47977,5 +48136,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "9f454a25f6f7aecb688b9a13308774c811902c66"
+  "built_at_commit": "2535a93e0dd46439c4268cb907c03a49497f6992"
 }

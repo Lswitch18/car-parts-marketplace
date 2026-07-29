@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1785286310.7252183,
-    "ast_hash": "2c947c80bffa30a623bae20c6655b94f",
+    "mtime": 1785293059.0932105,
+    "ast_hash": "2abda3effab81a5ed9047b81402fa961",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -470,8 +470,8 @@
     "semantic_hash": "a2e58047851494568786ecc3dfb6277e"
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1784757485.4998105,
-    "ast_hash": "f4caa231a1374d1d8c28b1d00fe1ebea",
+    "mtime": 1785293069.64521,
+    "ast_hash": "3401721b068bd360f6041b64c085984a",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Header.tsx": {
-    "mtime": 1785286332.8812182,
-    "ast_hash": "dc6136487dbdd02d58eed2f672273380",
+    "mtime": 1785293031.6212122,
+    "ast_hash": "409d19966be866a9aae8ede8a38d29f9",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Layout.tsx": {
@@ -1010,8 +1010,8 @@
     "semantic_hash": "66ce47bd513e04b748f3058103c0cb77"
   },
   "src/modules/storefront/pages/Home.tsx": {
-    "mtime": 1785287112.9812193,
-    "ast_hash": "82c420a5d193042671bab7b1144f37ad",
+    "mtime": 1785293031.6332123,
+    "ast_hash": "2e9dc8963252af828672f06235fed258",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/HomeLanding.tsx": {
@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785287453.465218,
-    "ast_hash": "a3f2ddb0d293279d8bdb3f89e83b39ae",
+    "mtime": 1785292144.2532153,
+    "ast_hash": "4c9b5331f266b188dcca8dcd8d5c3314",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -2757,6 +2757,11 @@
   "docs/diag/ARQUITETURA_LIMPA_E_PADROES_PROJETO.md": {
     "mtime": 1785287460.549218,
     "ast_hash": "a6000c9e492bf8b1f4e7f932b57c7fcb",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/pages/JapanBankAccount.tsx": {
+    "mtime": 1785293041.2332118,
+    "ast_hash": "afbdbf1f6301fc661bcd8c56a2a33ab4",
     "semantic_hash": ""
   }
 }
