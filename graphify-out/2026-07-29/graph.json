@@ -1269,8 +1269,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 70,
-      "community_name": "@base-ui/react",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1280,8 +1280,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 70,
-      "community_name": "@base-ui/react",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1511,8 +1511,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 68,
+      "community_name": "axios",
       "norm_label": "axios"
     },
     {
@@ -1522,8 +1522,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 68,
+      "community_name": "axios",
       "norm_label": "axios"
     },
     {
@@ -4284,8 +4284,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_storeapp_storeapp",
-      "community": 0,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 64,
+      "community_name": "main.tsx",
       "norm_label": "storeapp()"
     },
     {
@@ -4713,8 +4713,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 0,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 64,
+      "community_name": "main.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -4724,8 +4724,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_main_queryclient",
-      "community": 0,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 64,
+      "community_name": "main.tsx",
       "norm_label": "queryclient"
     },
     {
@@ -4735,8 +4735,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_main_root",
-      "community": 0,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 64,
+      "community_name": "main.tsx",
       "norm_label": "root"
     },
     {
@@ -4812,8 +4812,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "auctions.tsx"
     },
     {
@@ -4823,8 +4823,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_auctionitem",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "auctionitem"
     },
     {
@@ -4834,8 +4834,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_recentbid",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "recentbid"
     },
     {
@@ -4845,8 +4845,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_condition_colors",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "condition_colors"
     },
     {
@@ -4856,8 +4856,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_auctions",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "auctions()"
     },
     {
@@ -5351,8 +5351,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "chatpopup.tsx"
     },
     {
@@ -5362,8 +5362,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_chatpopupprops",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "chatpopupprops"
     },
     {
@@ -5373,8 +5373,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_message",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "message"
     },
     {
@@ -5384,8 +5384,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_conversation",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "conversation"
     },
     {
@@ -5395,8 +5395,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_chatpopup",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "chatpopup()"
     },
     {
@@ -5516,8 +5516,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "saascontrolcenter.tsx"
     },
     {
@@ -5527,8 +5527,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_saascompanysubscription",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "saascompanysubscription"
     },
     {
@@ -5538,8 +5538,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_plan_details",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "plan_details"
     },
     {
@@ -5549,8 +5549,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_store_type_config",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "store_type_config"
     },
     {
@@ -5560,8 +5560,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_saascontrolcenter",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "saascontrolcenter()"
     },
     {
@@ -5626,8 +5626,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_components_protectedroute",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "protectedroute.tsx"
     },
     {
@@ -5637,8 +5637,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_identity_components_protectedroute_protectedroute",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "protectedroute()"
     },
     {
@@ -5648,8 +5648,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_login",
-      "community": 89,
-      "community_name": "J",
+      "community": 8,
+      "community_name": "i",
       "norm_label": "login.tsx"
     },
     {
@@ -5659,8 +5659,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_identity_pages_login_login",
-      "community": 89,
-      "community_name": "J",
+      "community": 8,
+      "community_name": "i",
       "norm_label": "login()"
     },
     {
@@ -5670,8 +5670,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding",
-      "community": 89,
-      "community_name": "J",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "onboarding.tsx"
     },
     {
@@ -5681,8 +5681,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_store_types",
-      "community": 89,
-      "community_name": "J",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "store_types"
     },
     {
@@ -5692,8 +5692,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_onboardinglayout",
-      "community": 89,
-      "community_name": "J",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "onboardinglayout()"
     },
     {
@@ -5703,8 +5703,8 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_onboarding",
-      "community": 89,
-      "community_name": "J",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "onboarding()"
     },
     {
@@ -5736,8 +5736,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_register",
-      "community": 89,
-      "community_name": "J",
+      "community": 8,
+      "community_name": "i",
       "norm_label": "register.tsx"
     },
     {
@@ -5747,8 +5747,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_identity_pages_register_register",
-      "community": 89,
-      "community_name": "J",
+      "community": 8,
+      "community_name": "i",
       "norm_label": "register()"
     },
     {
@@ -5923,8 +5923,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_tests_logisticsapi_test",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "logisticsapi.test.ts"
     },
     {
@@ -5934,8 +5934,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_logistics_tests_logisticsapi_test_mockfetch",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "mockfetch"
     },
     {
@@ -5945,8 +5945,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_api_logisticsapi",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "logisticsapi.ts"
     },
     {
@@ -5956,8 +5956,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_logistics_api_logisticsapi_logisticsfetch",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "logisticsfetch()"
     },
     {
@@ -5967,8 +5967,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_logistics_api_logisticsapi_logisticsapi",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "logisticsapi"
     },
     {
@@ -6055,7 +6055,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_components_globalsearch",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "globalsearch.tsx"
     },
@@ -6066,7 +6066,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_logistics_components_globalsearch_searchresult",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "searchresult"
     },
@@ -6077,7 +6077,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_logistics_components_globalsearch_type_labels",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "type_labels"
     },
@@ -6088,7 +6088,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_modules_logistics_components_globalsearch_globalsearch",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "globalsearch()"
     },
@@ -6418,7 +6418,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "logistixdashboard.tsx"
     },
@@ -6429,7 +6429,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_navgroup",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "navgroup"
     },
@@ -6440,7 +6440,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_getnavgroups",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "getnavgroups()"
     },
@@ -6451,7 +6451,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_donut_colors",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "donut_colors"
     },
@@ -6462,7 +6462,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_status_label",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "status_label"
     },
@@ -6473,7 +6473,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_status_color",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "status_color"
     },
@@ -6484,7 +6484,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_kpicard",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "kpicard()"
     },
@@ -6495,7 +6495,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_logistixdashboard",
-      "community": 63,
+      "community": 33,
       "community_name": "LogistixDashboard.tsx",
       "norm_label": "logistixdashboard()"
     },
@@ -6770,8 +6770,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_coletaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 67,
+      "community_name": "ColetasPage.tsx",
       "norm_label": "coletaspage.tsx"
     },
     {
@@ -6781,8 +6781,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_coletaspage_authfetch",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 67,
+      "community_name": "ColetasPage.tsx",
       "norm_label": "authfetch()"
     },
     {
@@ -6792,8 +6792,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_coletaspage_coletaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 67,
+      "community_name": "ColetasPage.tsx",
       "norm_label": "coletaspage()"
     },
     {
@@ -6825,8 +6825,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_dropoffpage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "dropoffpage.tsx"
     },
     {
@@ -6836,8 +6836,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_dropoffpage_dropoffpage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "dropoffpage()"
     },
     {
@@ -6847,8 +6847,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 66,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "entregaspage.tsx"
     },
     {
@@ -6858,8 +6858,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_entrega",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 66,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "status_entrega"
     },
     {
@@ -6869,8 +6869,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_color",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 66,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "status_color"
     },
     {
@@ -6880,8 +6880,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_entregaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 66,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "entregaspage()"
     },
     {
@@ -6913,8 +6913,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage",
-      "community": 89,
-      "community_name": "J",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "etiquetaspage.tsx"
     },
     {
@@ -6924,8 +6924,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_etiquetaspage",
-      "community": 89,
-      "community_name": "J",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "etiquetaspage()"
     },
     {
@@ -6935,8 +6935,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_getwarehouselocation",
-      "community": 89,
-      "community_name": "J",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "getwarehouselocation()"
     },
     {
@@ -6946,8 +6946,8 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_level_colors",
-      "community": 89,
-      "community_name": "J",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "level_colors"
     },
     {
@@ -6957,8 +6957,8 @@
       "source_location": "L192",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_etiquetaspage_labelcard",
-      "community": 89,
-      "community_name": "J",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "labelcard()"
     },
     {
@@ -6968,8 +6968,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_mapapage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 89,
+      "community_name": "J",
       "norm_label": "mapapage.tsx"
     },
     {
@@ -6979,8 +6979,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_mapapage_mapapage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 89,
+      "community_name": "J",
       "norm_label": "mapapage()"
     },
     {
@@ -7012,8 +7012,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 61,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "pedidodetail.tsx"
     },
     {
@@ -7023,8 +7023,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_status_label",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 61,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "status_label"
     },
     {
@@ -7034,8 +7034,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_status_color",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 61,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "status_color"
     },
     {
@@ -7045,8 +7045,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_event_icons",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 61,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "event_icons"
     },
     {
@@ -7056,8 +7056,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_timeline",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 61,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "timeline()"
     },
     {
@@ -7067,8 +7067,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_pedidodetail",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 88,
+      "community_name": "useAuthStore",
       "norm_label": "pedidodetail()"
     },
     {
@@ -7078,8 +7078,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidospage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 55,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "pedidospage.tsx"
     },
     {
@@ -7089,8 +7089,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidospage_status_options",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 55,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "status_options"
     },
     {
@@ -7100,8 +7100,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidospage_status_color",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 55,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "status_color"
     },
     {
@@ -7111,8 +7111,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidospage_pedidoform",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 55,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "pedidoform"
     },
     {
@@ -7122,8 +7122,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidospage_emptyform",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 55,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "emptyform"
     },
     {
@@ -7133,8 +7133,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidospage_pedidospage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 55,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "pedidospage()"
     },
     {
@@ -7199,8 +7199,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_relatoriospage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "relatoriospage.tsx"
     },
     {
@@ -7210,8 +7210,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_relatoriospage_relatoriospage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 22,
+      "community_name": "Ne",
       "norm_label": "relatoriospage()"
     },
     {
@@ -7309,8 +7309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_transportespage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "transportespage.tsx"
     },
     {
@@ -7320,8 +7320,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_transportespage_transportespage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "transportespage()"
     },
     {
@@ -7353,8 +7353,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "wmspage.tsx"
     },
     {
@@ -7364,8 +7364,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_racks",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "racks"
     },
     {
@@ -7375,8 +7375,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_bays",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "bays"
     },
     {
@@ -7386,8 +7386,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_levels",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "levels"
     },
     {
@@ -7397,8 +7397,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_positions",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "positions"
     },
     {
@@ -7408,8 +7408,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_level_colors",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "level_colors"
     },
     {
@@ -7419,8 +7419,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_getwarehouselocation",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "getwarehouselocation()"
     },
     {
@@ -7430,8 +7430,8 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_warehousegridprops",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "warehousegridprops"
     },
     {
@@ -7441,8 +7441,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_warehousegrid",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "warehousegrid()"
     },
     {
@@ -8321,8 +8321,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_reputation_pages_reviewmanagement",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 89,
+      "community_name": "J",
       "norm_label": "reviewmanagement.tsx"
     },
     {
@@ -8332,8 +8332,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_reputation_pages_reviewmanagement_reviewmanagement",
-      "community": 88,
-      "community_name": "useAuthStore",
+      "community": 89,
+      "community_name": "J",
       "norm_label": "reviewmanagement()"
     },
     {
@@ -8436,6 +8436,17 @@
       "norm_label": "rediscache.test.ts"
     },
     {
+      "label": "securitySanitizer.test.ts",
+      "file_type": "code",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_modules_shared_tests_securitysanitizer_test",
+      "community": 9,
+      "community_name": "vendor-supabase-CW1GYbG4.js",
+      "norm_label": "securitysanitizer.test.ts"
+    },
+    {
       "label": "AutoTranslateText.tsx",
       "file_type": "code",
       "source_file": "src/modules/shared/components/AutoTranslateText.tsx",
@@ -8508,8 +8519,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_gaidlogo",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "gaidlogo.tsx"
     },
     {
@@ -8519,8 +8530,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_shared_components_gaidlogo_gaidlogo",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "gaidlogo()"
     },
     {
@@ -8530,8 +8541,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_globalloader",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "globalloader.tsx"
     },
     {
@@ -8541,8 +8552,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_shared_components_globalloader_globalloader",
-      "community": 3,
-      "community_name": "vendor-three-BAVKA0D-.js",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "globalloader()"
     },
     {
@@ -8596,8 +8607,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "particlefield.tsx"
     },
     {
@@ -8607,8 +8618,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield_particle",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "particle"
     },
     {
@@ -8618,8 +8629,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield_colors",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "colors"
     },
     {
@@ -8629,8 +8640,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield_particlefield",
-      "community": 66,
-      "community_name": "ChatPopup.tsx",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "particlefield()"
     },
     {
@@ -9817,8 +9828,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_modules_shared_lib_supabaseerrorhandler_handlesupabaseerror",
-      "community": 89,
-      "community_name": "J",
+      "community": 8,
+      "community_name": "i",
       "norm_label": "handlesupabaseerror()"
     },
     {
@@ -10961,8 +10972,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_modules_transactions_pages_paymentcheckout_paymentcheckout",
-      "community": 15,
-      "community_name": ".get",
+      "community": 2,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "paymentcheckout()"
     },
     {
@@ -11291,8 +11302,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transportation_pages_agenciapage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "agenciapage.tsx"
     },
     {
@@ -11302,8 +11313,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_transportation_pages_agenciapage_agenciapage",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 31,
+      "community_name": "logisticsApi.ts",
       "norm_label": "agenciapage()"
     },
     {
@@ -33853,6 +33864,90 @@
       "_origin": "ast",
       "source": "src_modules_shared_tests_integration_spec",
       "target": "src_modules_shared_tests_integration_spec_seeded_data",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer_istrustedorigin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer_maskcreditcard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer_maskemail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer_maskphone",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer_sanitizeinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/shared/__tests__/securitySanitizer.test.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_shared_tests_securitysanitizer_test",
+      "target": "src_modules_shared_lib_securitysanitizer_striptags",
       "confidence_score": 1.0
     },
     {

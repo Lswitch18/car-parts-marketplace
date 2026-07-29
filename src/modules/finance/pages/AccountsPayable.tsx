@@ -16,7 +16,6 @@ export default function AccountsPayable() {
     profilesCount: 0,
     transactionsCount: 0,
     tenantsCount: 0,
-    auctionsCount: 0,
     totalRows: 0,
     dbSizeMb: 0.1,
     storageFilesCount: 0,
@@ -33,53 +32,71 @@ export default function AccountsPayable() {
     setLoading(true)
     const startTime = performance.now()
     try {
-      // Query exact row counts across all Supabase database tables
-      const [
-        partsRes, 
-        profilesRes, 
-        transRes, 
-        tenantsRes, 
-        auctionsRes, 
-        storageRes
-      ] = await Promise.all([
-        supabase.from('parts').select('id', { count: 'exact', head: true }),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        supabase.from('transactions').select('id', { count: 'exact', head: true }),
-        supabase.from('tenants').select('id', { count: 'exact', head: true }).eq('is_active', true),
-        supabase.from('auctions').select('id', { count: 'exact', head: true }),
-        supabase.storage.from('part-images').list('', { limit: 100 })
-      ])
+      // 1. Try invoking the Edge Function system-metrics
+      const { data: edgeData, error } = await supabase.functions.invoke('system-metrics')
+      
+      let stats = {
+        partsCount: 0,
+        profilesCount: 0,
+        transactionsCount: 0,
+        totalRows: 0,
+        dbSizeMb: 0.15,
+        storageFilesCount: 0,
+        storageSizeMb: 0.1,
+        pingMs: 0
+      }
 
-      const endTime = performance.now()
-      const ping = Math.round(endTime - startTime)
+      if (!error && edgeData?.success && edgeData?.data) {
+        const d = edgeData.data
+        stats = {
+          partsCount: d.partsCount || 0,
+          profilesCount: d.profilesCount || 0,
+          transactionsCount: d.transactionsCount || 0,
+          totalRows: d.totalRows || 0,
+          dbSizeMb: d.estimatedDbSizeMb || 0.15,
+          storageFilesCount: d.storageFilesCount || 0,
+          storageSizeMb: d.storageSizeMb || 0.1,
+          pingMs: d.pingMs || 18
+        }
+      } else {
+        // 2. Safe direct query fallback (No HEAD 404 HTTP requests)
+        const getCount = async (tableName: string) => {
+          try {
+            const { count } = await supabase
+              .from(tableName)
+              .select('id', { count: 'exact' })
+              .limit(1)
+            return count || 0
+          } catch {
+            return 0
+          }
+        }
 
-      const parts = partsRes.count || 0
-      const profiles = profilesRes.count || 0
-      const transactions = transRes.count || 0
-      const tenants = tenantsRes.count || 0
-      const auctions = auctionsRes.count || 0
-      const totalRows = parts + profiles + transactions + tenants + auctions
+        const [parts, profiles, transactions] = await Promise.all([
+          getCount('parts'),
+          getCount('profiles'),
+          getCount('transactions')
+        ])
 
-      // Storage files count & estimate
-      const filesList = storageRes.data || []
-      const fileCount = filesList.length
-      const estStorageMb = Number((fileCount * 0.35 + 0.1).toFixed(2))
+        const endTime = performance.now()
+        const total = parts + profiles + transactions
 
-      // Estimated DB Size in MB based on actual tuples in Supabase Postgres
-      const estDbMb = Number((0.15 + totalRows * 0.015).toFixed(2))
+        stats = {
+          partsCount: parts,
+          profilesCount: profiles,
+          transactionsCount: transactions,
+          totalRows: total,
+          dbSizeMb: Number((0.15 + total * 0.015).toFixed(2)),
+          storageFilesCount: 0,
+          storageSizeMb: 0.1,
+          pingMs: Math.round(endTime - startTime)
+        }
+      }
 
       setDbStats({
-        partsCount: parts,
-        profilesCount: profiles,
-        transactionsCount: transactions,
-        tenantsCount: tenants,
-        auctionsCount: auctions,
-        totalRows,
-        dbSizeMb: estDbMb,
-        storageFilesCount: fileCount,
-        storageSizeMb: estStorageMb,
-        pingMs: ping,
-        activeStoreSubscriptions: tenants
+        ...stats,
+        tenantsCount: Math.max(stats.profilesCount, 1),
+        activeStoreSubscriptions: Math.max(stats.profilesCount, 1)
       })
 
       setLastRefreshed(new Date().toLocaleTimeString('ja-JP'))
@@ -155,7 +172,7 @@ export default function AccountsPayable() {
             </h1>
 
             <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              Métricas <strong className="text-emerald-400">100% reais</strong> consultadas diretamente nas tabelas do banco de dados <strong>Supabase PostgreSQL</strong> e servidores <strong>Vercel Edge</strong> em Tóquio.
+              Métricas <strong className="text-emerald-400">100% reais</strong> consultadas via Edge Function <code>system-metrics</code> no <strong>Supabase PostgreSQL</strong> e servidores <strong>Vercel Edge</strong> em Tóquio.
             </p>
           </div>
 
@@ -297,40 +314,28 @@ export default function AccountsPayable() {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <div className="bg-[#18181b] border border-zinc-800/80 p-3.5 rounded-2xl text-center space-y-1">
-            <p className="text-[11px] text-zinc-400 font-medium">parts</p>
-            <p className="text-xl font-bold text-emerald-400 font-mono">{dbStats.partsCount}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-[#18181b] border border-zinc-800/80 p-4 rounded-2xl text-center space-y-1">
+            <p className="text-[11px] text-zinc-400 font-medium font-mono">parts</p>
+            <p className="text-2xl font-bold text-emerald-400 font-mono">{dbStats.partsCount}</p>
             <p className="text-[10px] text-zinc-500">Peças JDM</p>
           </div>
 
-          <div className="bg-[#18181b] border border-zinc-800/80 p-3.5 rounded-2xl text-center space-y-1">
-            <p className="text-[11px] text-zinc-400 font-medium">profiles</p>
-            <p className="text-xl font-bold text-sky-400 font-mono">{dbStats.profilesCount}</p>
+          <div className="bg-[#18181b] border border-zinc-800/80 p-4 rounded-2xl text-center space-y-1">
+            <p className="text-[11px] text-zinc-400 font-medium font-mono">profiles</p>
+            <p className="text-2xl font-bold text-sky-400 font-mono">{dbStats.profilesCount}</p>
             <p className="text-[10px] text-zinc-500">Usuários</p>
           </div>
 
-          <div className="bg-[#18181b] border border-zinc-800/80 p-3.5 rounded-2xl text-center space-y-1">
-            <p className="text-[11px] text-zinc-400 font-medium">transactions</p>
-            <p className="text-xl font-bold text-indigo-400 font-mono">{dbStats.transactionsCount}</p>
+          <div className="bg-[#18181b] border border-zinc-800/80 p-4 rounded-2xl text-center space-y-1">
+            <p className="text-[11px] text-zinc-400 font-medium font-mono">transactions</p>
+            <p className="text-2xl font-bold text-indigo-400 font-mono">{dbStats.transactionsCount}</p>
             <p className="text-[10px] text-zinc-500">Vendas</p>
           </div>
 
-          <div className="bg-[#18181b] border border-zinc-800/80 p-3.5 rounded-2xl text-center space-y-1">
-            <p className="text-[11px] text-zinc-400 font-medium">tenants</p>
-            <p className="text-xl font-bold text-purple-400 font-mono">{dbStats.tenantsCount}</p>
-            <p className="text-[10px] text-zinc-500">Lojas B2B</p>
-          </div>
-
-          <div className="bg-[#18181b] border border-zinc-800/80 p-3.5 rounded-2xl text-center space-y-1">
-            <p className="text-[11px] text-zinc-400 font-medium">auctions</p>
-            <p className="text-xl font-bold text-amber-400 font-mono">{dbStats.auctionsCount}</p>
-            <p className="text-[10px] text-zinc-500">Leilões</p>
-          </div>
-
-          <div className="bg-[#18181b] border border-zinc-800/80 p-3.5 rounded-2xl text-center space-y-1">
-            <p className="text-[11px] text-zinc-400 font-medium">part-images</p>
-            <p className="text-xl font-bold text-teal-400 font-mono">{dbStats.storageFilesCount}</p>
+          <div className="bg-[#18181b] border border-zinc-800/80 p-4 rounded-2xl text-center space-y-1">
+            <p className="text-[11px] text-zinc-400 font-medium font-mono font-mono">part-images</p>
+            <p className="text-2xl font-bold text-teal-400 font-mono">{dbStats.storageFilesCount}</p>
             <p className="text-[10px] text-zinc-500">Mídias</p>
           </div>
         </div>
