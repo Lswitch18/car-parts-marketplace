@@ -877,18 +877,3 @@ export default function Dashboard() {
     </div>
   )
 }
-Name="text-white font-medium">
-                      {user.address ? `${user.address}, ${user.city} - ${user.state} (CEP ${user.zip_code || ''})` : t('Não informado')}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        )}
-
-      </div>
-    </div>
-  )
-}
