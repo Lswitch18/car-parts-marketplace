@@ -97,11 +97,17 @@ export default function JapanBankAccount() {
     } catch (err: any) {
       console.error('Erro ao conectar conta Stripe:', err)
       setIsRedirecting(false)
-      setErrorMessage(
-        err?.message?.includes('CORS') || err?.message?.includes('fetch')
-          ? 'O portal Stripe Connect está sendo inicializado. Tente novamente em alguns segundos.'
-          : (err?.message || 'Falha ao conectar com o serviço Stripe.')
-      )
+      
+      const msg = err?.message || ''
+      if (msg.includes('signed up for Connect') || msg.includes('dashboard.stripe.com/connect')) {
+        setErrorMessage(
+          'O recurso Stripe Connect precisa ser ativado no painel da sua conta Stripe. Por favor, acesse dashboard.stripe.com/connect para habilitar a criação de contas de repasse.'
+        )
+      } else if (msg.includes('CORS') || msg.includes('fetch')) {
+        setErrorMessage('O portal Stripe Connect está sendo inicializado no servidor. Tente novamente em alguns segundos.')
+      } else {
+        setErrorMessage(msg || 'Falha ao conectar com o serviço Stripe.')
+      }
     }
   }
 
