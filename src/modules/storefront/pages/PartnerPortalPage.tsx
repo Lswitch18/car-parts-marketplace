@@ -134,23 +134,7 @@ export default function PartnerPortalPage() {
       const subId = stripeRes.subscription_id || `sub_stripe_${Date.now()}`
       setStripeSubId(subId)
 
-      // 2. Gravar registro em saas_subscriptions no Supabase
-      await supabase
-        .from('saas_subscriptions')
-        .insert({
-          name: formData.storeName,
-          slug: slugVal,
-          store_type: formData.storeType,
-          contact_name: formData.contactName,
-          contact_email: formData.contactEmail,
-          plan_type: selectedPlan.id,
-          price: selectedPlan.price,
-          status: 'active',
-          stripe_subscription_id: subId,
-          next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-        })
-
-      // 3. Cadastrar a loja na tabela tenants
+      // 2. Cadastrar a loja parceira na tabela tenants
       await supabase
         .from('tenants')
         .insert({

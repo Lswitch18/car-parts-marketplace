@@ -32,10 +32,18 @@ export default function LegalNotice() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Nome Jurídico / 法人名・代表者</span>
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Representante Legal / Titular Declarado</span>
               <p className="text-white font-semibold text-base flex items-center gap-1.5">
                 <UserCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                Digital AI Garage (DAIG Inc.)
+                Sr. ALDAIR JOSE PINTO
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Declaração de Endereço Residencial do Representante</span>
+              <p className="text-white font-medium flex items-center gap-1.5 text-xs">
+                <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
+                Rua Ismair Eufrasio de Siqueira, nº 11, Bairro Xaxim, CEP 81810-532
               </p>
             </div>
 
@@ -48,7 +56,7 @@ export default function LegalNotice() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Telefone de Suporte (Linha Fixa JP) / 電話番号</span>
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Telefone de Suporte / 電話番号</span>
               <p className="text-white font-medium flex items-center gap-1.5">
                 <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
                 03-1234-5678 (+81 3 1234 5678)
@@ -60,14 +68,6 @@ export default function LegalNotice() {
               <p className="text-white font-medium flex items-center gap-1.5">
                 <Clock className="w-4 h-4 text-amber-400 shrink-0" />
                 10:00 - 17:00 (Segunda a Sexta-feira - JST)
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Endereço Comercial / 所在地</span>
-              <p className="text-white font-medium flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-blue-400 shrink-0" />
-                Tokyo / Nagoya Headquarters, Japan
               </p>
             </div>
           </div>

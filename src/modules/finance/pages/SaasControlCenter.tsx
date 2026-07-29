@@ -106,31 +106,6 @@ export default function SaasControlCenter() {
         })
       }
 
-      // Somente assinaturas SaaS reais criadas no banco de dados saas_subscriptions
-      const { data: realSubscriptions, error: subErr } = await supabase
-        .from('saas_subscriptions')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (!subErr && realSubscriptions && realSubscriptions.length > 0) {
-        realSubscriptions.forEach((sub: any) => {
-          const plan = (sub.plan_type as 'starter' | 'pro' | 'enterprise') || 'pro'
-          combined.push({
-            id: sub.id,
-            name: sub.store_name || sub.name || 'Loja Parceira',
-            slug: sub.slug || (sub.store_name || 'loja').toLowerCase().replace(/\s+/g, '-'),
-            store_type: (sub.store_type || 'loja_pecas') as any,
-            contact_name: sub.contact_name || 'Responsável',
-            contact_email: sub.contact_email || 'contato@loja.jp',
-            plan_type: plan,
-            plan_price: sub.price || PLAN_DETAILS[plan]?.price || 10000,
-            status: sub.status || 'active',
-            next_billing_date: sub.next_billing_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            created_at: sub.created_at || new Date().toISOString()
-          })
-        })
-      }
-
       setSubscriptions(combined)
     } catch (err) {
       console.error('Error fetching SaaS subscriptions:', err)

@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1785358546.227404,
-    "ast_hash": "c497d20dd4f74c695bcccbec24dcf5d3",
+    "mtime": 1785366014.3154032,
+    "ast_hash": "831a7434623c4d5aafe2f52ee122969d",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -515,9 +515,9 @@
     "semantic_hash": "e48725915cf51cca6bbb970755fadc3f"
   },
   "src/modules/finance/pages/AccountsPayable.tsx": {
-    "mtime": 1781833815.2876163,
-    "ast_hash": "f1cf120a37c2d6cebceaf254bca00415",
-    "semantic_hash": "f1cf120a37c2d6cebceaf254bca00415"
+    "mtime": 1785366188.3354027,
+    "ast_hash": "72933c62c55a668ca68e098daed22d2d",
+    "semantic_hash": ""
   },
   "src/modules/identity/__tests__/authStore.test.ts": {
     "mtime": 1781836860.3596113,
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Onboarding.tsx": {
-    "mtime": 1785296863.7434502,
-    "ast_hash": "c8fa562591aee2d0460225779e0cd3f3",
+    "mtime": 1785362553.3474057,
+    "ast_hash": "e818cc949f69257c05352fa1a926d9db",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Profile.tsx": {
@@ -2670,8 +2670,8 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/LegalNotice.tsx": {
-    "mtime": 1785349538.0554059,
-    "ast_hash": "07f93a9ebaa79b4365d3e798a0272e29",
+    "mtime": 1785364551.6194015,
+    "ast_hash": "9e5af0b997aceb6fb7bb79925f1bf89b",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PrivacyPolicy.tsx": {
@@ -2780,13 +2780,13 @@
     "semantic_hash": ""
   },
   "src/modules/finance/pages/SaasControlCenter.tsx": {
-    "mtime": 1785357979.563406,
-    "ast_hash": "14eb61c9b690efa96c0c7c7e7dcc136a",
+    "mtime": 1785366044.0274036,
+    "ast_hash": "9e9251ac0a105a9836a217e4a0ce57aa",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {
-    "mtime": 1785358797.3754041,
-    "ast_hash": "d459ddb7c97b68b87c2d7ca65cceffa5",
+    "mtime": 1785366036.755403,
+    "ast_hash": "b2334e7ccade3eb2fa8ad01224b5d62e",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/DeliveriesManagement.tsx": {

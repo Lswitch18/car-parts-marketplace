@@ -160,11 +160,17 @@ export default function TransactionManagement() {
 
   const fetchActiveStores = async () => {
     try {
-      const { data, count } = await supabase
-        .from('saas_subscriptions')
-        .select('price, status', { count: 'exact' })
-        .eq('status', 'active');
+      const { data, count, error } = await supabase
+        .from('tenants')
+        .select('plan_type, is_active', { count: 'exact' })
+        .eq('is_active', true);
       
+      if (error) {
+        setActiveStoresCount(0);
+        setSaasRevenueTotal(0);
+        return;
+      }
+
       if (count !== null) {
         setActiveStoresCount(count);
       } else {
@@ -172,13 +178,13 @@ export default function TransactionManagement() {
       }
 
       if (data && data.length > 0) {
-        const total = data.reduce((sum, s) => sum + parseFloat(s.price || 0), 0);
+        const PLAN_PRICES: Record<string, number> = { starter: 7000, pro: 10000, enterprise: 16000 };
+        const total = data.reduce((sum, s) => sum + (PLAN_PRICES[s.plan_type || 'pro'] || 10000), 0);
         setSaasRevenueTotal(total);
       } else {
         setSaasRevenueTotal(0);
       }
     } catch (err) {
-      console.error('Erro ao buscar assinaturas SaaS ativas:', err);
       setActiveStoresCount(0);
       setSaasRevenueTotal(0);
     }
@@ -285,9 +291,9 @@ export default function TransactionManagement() {
     if (activeLedgerFilter === 'receber') {
       list = list.filter(t => t.payment_status === 'pending' || t.payment_status === 'processing');
     } else if (activeLedgerFilter === 'retido') {
-      list = list.filter(t => t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed'));
+      list = list.filter(t => t.payment_status === 'escrow' || ((t.payment_status === 'paid' || t.payment_status === 'completed') && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed' && t.fulfillment_status !== 'received'));
     } else if (activeLedgerFilter === 'pagos') {
-      list = list.filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'));
+      list = list.filter(t => (t.payment_status === 'paid' || t.payment_status === 'completed') && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed' || t.fulfillment_status === 'received'));
     }
 
     if (searchQuery.trim()) {
@@ -315,9 +321,12 @@ export default function TransactionManagement() {
     .filter(t => t.payment_status === 'pending' || t.payment_status === 'processing')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
-  const retidoVal = transactions
+  const retidoValBruto = transactions
     .filter(t => t.payment_status === 'escrow' || ((t.payment_status === 'paid' || t.payment_status === 'completed') && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed' && t.fulfillment_status !== 'received'))
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
+
+  const retidoStripeFee = retidoValBruto * 0.036;
+  const retidoValLiquido = retidoValBruto - retidoStripeFee;
 
   const pagosVal = transactions
     .filter(t => (t.payment_status === 'paid' || t.payment_status === 'completed') && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed' || t.fulfillment_status === 'received'))
@@ -330,8 +339,6 @@ export default function TransactionManagement() {
   const totalStripeFees = transactions
     .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * 0.036, 0);
-
-  const retidoStripeFee = retidoVal * 0.036;
 
   const receitaSaaS = saasRevenueTotal;
   const lucroLiquidoPlataforma = (lucroBruto - totalStripeFees) + receitaSaaS;
@@ -460,16 +467,16 @@ export default function TransactionManagement() {
             </span>
           </div>
           <p className="text-2xl font-bold text-sky-400 font-mono tracking-tight">
-            {formatMoney(retidoVal)}
+            {formatMoney(retidoValLiquido)}
           </p>
           <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
             <div className="flex justify-between">
-              <span>Taxa Stripe (3.6%):</span>
-              <span className="text-amber-400">-{formatMoney(retidoStripeFee)}</span>
+              <span>Vendas Brutas Retidas:</span>
+              <span className="text-white font-bold">{formatMoney(retidoValBruto)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Escrow Líquido Retido:</span>
-              <span className="text-white font-bold">{formatMoney(retidoVal - retidoStripeFee)}</span>
+              <span>Taxa Stripe (3.6%):</span>
+              <span className="text-amber-400">-{formatMoney(retidoStripeFee)}</span>
             </div>
           </div>
         </div>

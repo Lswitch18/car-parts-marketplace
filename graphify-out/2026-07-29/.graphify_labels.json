@@ -66,6 +66,8 @@
   "64": "axios",
   "65": "@capacitor/core",
   "66": "ChatPopup.tsx",
+  "67": "Catalog",
+  "68": "GlobalSearch.tsx",
   "87": "dispose",
   "88": "useAuthStore",
   "89": "J",
