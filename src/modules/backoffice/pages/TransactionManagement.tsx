@@ -102,7 +102,7 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
               </span>
             </div>
             <div className="flex-1 space-y-1">
-              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Entrega WMS</p>
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Envio Vendedor (Direct Ship)</p>
               <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-[#18181b] text-zinc-300 border border-[#27272a] block text-center">
                 {tx.fulfillment_status === 'pending' ? '⏳ Pendente' : tx.fulfillment_status === 'shipped' ? '🚚 Em Trânsito' : tx.fulfillment_status === 'received' ? '📦 Entregue' : '✅ Concluído'}
               </span>
@@ -145,28 +145,25 @@ export default function TransactionManagement() {
   const [commissionRate, setCommissionRate] = useState<number>(10);
   const [tempRate, setTempRate] = useState<string>('10');
   const [savingRate, setSavingRate] = useState(false);
-  const [custoTerceiros, setCustoTerceiros] = useState<number>(152000);
+  const [activeStoresCount, setActiveStoresCount] = useState<number>(2);
 
   useEffect(() => {
     fetchTransactions();
     fetchConfig();
-    fetchTerceiros();
+    fetchActiveStores();
   }, []);
 
-  const fetchTerceiros = async () => {
+  const fetchActiveStores = async () => {
     try {
-      const { data } = await supabase
-        .from('admin_logistica_terceiros')
-        .select('valor_contrato')
-        .eq('ativo', true);
-      if (data && data.length > 0) {
-        const sum = data.reduce((acc, curr) => acc + Number(curr.valor_contrato), 0);
-        setCustoTerceiros(sum);
-      } else {
-        setCustoTerceiros(152000);
+      const { count } = await supabase
+        .from('profiles')
+        .select('id', { count: 'exact' })
+        .or('role.eq.seller,account_type.neq.pessoa_fisica');
+      if (count !== null && count > 0) {
+        setActiveStoresCount(count);
       }
-    } catch (e) {
-      setCustoTerceiros(152000);
+    } catch (err) {
+      console.error('Erro ao buscar lojas ativas:', err);
     }
   };
 
@@ -313,7 +310,8 @@ export default function TransactionManagement() {
     .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
 
-  const lucroLiquido = lucroBruto - custoTerceiros;
+  const receitaSaaS = activeStoresCount * 15000;
+  const lucroTotal = lucroBruto + receitaSaaS;
 
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/" replace />;
@@ -478,15 +476,15 @@ export default function TransactionManagement() {
               <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
-                <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
-                  Receita líquida da DAIG: Comissão de {commissionRate}% sobre as vendas brutas descontados contratos operacionais terceirizados.
+                <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-56 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                  Receita total da DAIG: Comissão de {commissionRate}% sobre as vendas do marketplace + Assinaturas SaaS das Lojas B2B ativas.
                 </div>
               </div>
             </div>
             <DollarSign size={14} className="text-emerald-400" />
           </div>
-          <p className={`text-2xl font-bold font-mono tracking-tight ${lucroLiquido >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-            {formatMoney(lucroLiquido)}
+          <p className="text-2xl font-bold text-emerald-400 font-mono tracking-tight">
+            {formatMoney(lucroTotal)}
           </p>
           <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
             <div className="flex justify-between">
@@ -494,8 +492,8 @@ export default function TransactionManagement() {
               <span className="text-white">{formatMoney(lucroBruto)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Contratos terceiros:</span>
-              <span className="text-red-400">-{formatMoney(custoTerceiros)}</span>
+              <span>Assinaturas SaaS ({activeStoresCount} Lojas):</span>
+              <span className="text-emerald-400">+{formatMoney(receitaSaaS)}</span>
             </div>
           </div>
         </div>

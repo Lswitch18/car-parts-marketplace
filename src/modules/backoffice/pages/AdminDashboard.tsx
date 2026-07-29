@@ -10,7 +10,7 @@ import { calculateFinanceStats, orchestrateAlerts } from '@/modules/backoffice/u
 import { 
   Search, TrendingUp, AlertTriangle, Package, Activity,
   ShieldAlert, Users, ArrowRight, ArrowUpRight, Plus, Cpu, Wallet, MapPin, 
-  CheckCircle2, FileText, RefreshCw, Clock, BarChart3, Zap, Globe, ShieldCheck, Lock, Info, Mail
+  CheckCircle2, FileText, RefreshCw, Clock, BarChart3, Zap, Globe, ShieldCheck, Lock, Info, Mail, ChevronRight
 } from 'lucide-react';
 
 // Skeleton loader for clean operational loading states
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   
   // Bounded Contexts States
-  const [financeStats, setFinanceStats] = useState({ gmv: 0, escrow: 0, activeOrders: 0 });
+  const [financeStats, setFinanceStats] = useState<{ gmv: number; escrow: number; activeOrders: number; totalTransactions?: number; completedTransactions?: number }>({ gmv: 0, escrow: 0, activeOrders: 0, totalTransactions: 0, completedTransactions: 0 });
   const [logisticsStats, setLogisticsStats] = useState({ pendingShipments: 0, delayed: 0 });
   const [platformStats, setPlatformStats] = useState({ pending3D: 0, newListings: 0 });
   const [trustStats, setTrustStats] = useState({ pendingKYC: 0, openDisputes: 0, flaggedReviews: 0 });
@@ -254,44 +254,48 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Card 3: Pedidos */}
+            {/* Card 3: Usuários Ativos */}
             <div 
-              onClick={() => navigate('/admin/transactions')}
+              onClick={() => navigate('/admin/users')}
               className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Pedidos Ativos')}</span>
-                <div className="flex items-center gap-1">
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#18181b] text-zinc-300 border border-[#27272a]">Konbini</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#18181b] text-zinc-300 border border-[#27272a]">Card</span>
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-white font-mono tracking-tight">
-                {financeStats.activeOrders || 2} <span className="text-xs text-zinc-400 font-normal">pedidos</span>
-              </p>
-              <div className="mt-3 pt-2 border-t border-[#27272a] flex items-center justify-between text-xs text-zinc-400">
-                <span>Disputas:</span>
-                <span className="font-bold text-amber-400 font-mono">{trustStats.openDisputes}</span>
-              </div>
-            </div>
-
-            {/* Card 4: Envios Diretos */}
-            <div 
-              onClick={() => navigate('/admin/transactions')}
-              className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Envios Diretos (Vendedor)')}</span>
-                <span className="text-[10px] text-zinc-400 font-mono flex items-center gap-1">
-                  <Globe size={10} /> JP
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Usuários Ativos')}</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  {identityStats?.totalUsers || 20} Ativos
                 </span>
               </div>
               <p className="text-2xl font-bold text-white font-mono tracking-tight">
-                {logisticsStats.pendingShipments} <span className="text-xs text-zinc-400 font-normal">envios</span>
+                {identityStats?.totalUsers || 20} <span className="text-xs text-zinc-400 font-normal">usuários</span>
+              </p>
+              <div 
+                onClick={(e) => { e.stopPropagation(); navigate('/admin/saas'); }}
+                className="mt-3 pt-2 border-t border-[#27272a] flex items-center justify-between text-xs text-zinc-400 hover:text-emerald-400 transition-colors cursor-pointer"
+              >
+                <span>Lojas SaaS (B2B):</span>
+                <span className="font-bold text-emerald-400 font-mono flex items-center gap-1">
+                  {identityStats?.roles?.seller || 2} <ChevronRight size={12} />
+                </span>
+              </div>
+            </div>
+
+            {/* Card 4: Transações Totais */}
+            <div 
+              onClick={() => navigate('/admin/transactions')}
+              className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Número de Transações')}</span>
+                <span className="text-[10px] text-emerald-400 font-mono font-bold flex items-center gap-1">
+                  Live
+                </span>
+              </div>
+              <p className="text-2xl font-bold text-white font-mono tracking-tight">
+                {financeStats.totalTransactions || 1} <span className="text-xs text-zinc-400 font-normal">transações</span>
               </p>
               <div className="mt-3 pt-2 border-t border-[#27272a] flex items-center justify-between text-xs text-zinc-400">
-                <span>Atrasos:</span>
-                <span className="font-bold text-zinc-300 font-mono">{logisticsStats.delayed}</span>
+                <span>Concluídas:</span>
+                <span className="font-bold text-emerald-400 font-mono">{financeStats.completedTransactions || 1}</span>
               </div>
             </div>
           </>

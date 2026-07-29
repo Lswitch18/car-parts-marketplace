@@ -44,7 +44,7 @@ export default function QRStickerPrint({
       <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
         <div className="flex items-center space-x-2">
           <QrCode className="w-5 h-5 text-amber-400" />
-          <h3 className="font-bold text-white text-sm">Etiqueta Térmica de Armazém WMS</h3>
+          <h3 className="font-bold text-white text-sm">Etiqueta Térmica de Identificação da Peça</h3>
         </div>
         
         {/* Seletor de Tamanho 80mm vs 58mm */}
@@ -78,7 +78,7 @@ export default function QRStickerPrint({
           {/* Header da Etiqueta */}
           <div className="border-b border-black pb-2 mb-2 flex items-center justify-between">
             <span className="text-[10px] font-bold tracking-tighter uppercase font-mono">{tenantName}</span>
-            <span className="text-[9px] bg-black text-white px-1.5 py-0.5 rounded font-mono font-bold">DAIG WMS</span>
+            <span className="text-[9px] bg-black text-white px-1.5 py-0.5 rounded font-mono font-bold">DAIG STORE</span>
           </div>
 
           {/* Título & OEM */}

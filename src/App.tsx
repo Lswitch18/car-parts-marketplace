@@ -34,6 +34,8 @@ const TransactionManagement = lazy(() => import('@/modules/backoffice/pages/Tran
 const AdminLayout = lazy(() => import('@/modules/backoffice/components/AdminLayout'))
 const ContactsManagement = lazy(() => import('@/modules/crm/pages/ContactsManagement'))
 const AccountsPayable = lazy(() => import('@/modules/finance/pages/AccountsPayable'))
+const SaasControlCenter = lazy(() => import('@/modules/finance/pages/SaasControlCenter'))
+const PartnerPortalPage = lazy(() => import('@/modules/storefront/pages/PartnerPortalPage'))
 const TrackingPublico = lazy(() => import('@/modules/logistics/pages/TrackingPublico'))
 const MobileApp = lazy(() => import('@/modules/transportation/pages/MobileApp'))
 const WorkerApp = lazy(() => import('@/modules/transportation/pages/WorkerApp'))
@@ -92,6 +94,8 @@ function App() {
             <Route path="product/:id" element={<ProductDetail />} />
             <Route path="cars" element={<CarList />} />
             <Route path="auctions" element={<Auctions />} />
+            <Route path="partner" element={<PartnerPortalPage />} />
+            <Route path="partner/plans" element={<PartnerPortalPage />} />
             <Route path="legal" element={<LegalNotice />} />
             <Route path="tokushouhou" element={<LegalNotice />} />
             <Route path="terms" element={<TermsOfService />} />
@@ -128,6 +132,7 @@ function App() {
               <Route path="image-to-3d" element={<ImageTo3D />} />
               <Route path="crm/contacts" element={<ContactsManagement />} />
               <Route path="finance/payable" element={<AccountsPayable />} />
+              <Route path="saas" element={<SaasControlCenter />} />
               <Route path="transportation/drivers" element={<DriverApprovalsPage />} />
               <Route path="ai-ops" element={<AiOpsPage />} />
             </Route>

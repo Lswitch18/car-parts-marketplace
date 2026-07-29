@@ -20,6 +20,7 @@ export default function AdminLayout() {
 
     { section: 'COMMERCE' },
     { label: 'Transactions', path: '/admin/transactions', icon: CreditCard },
+    { label: 'SaaS Subscriptions', path: '/admin/saas', icon: Building2, badge: 'MRR' },
     { label: 'Finance & Payouts', path: '/admin/finance/payable', icon: DollarSign },
     { label: 'AI 3D Engine', path: '/admin/image-to-3d', icon: ImageIcon, badge: 'Jobs' },
     { label: 'AI Ops', path: '/admin/ai-ops', icon: Brain },

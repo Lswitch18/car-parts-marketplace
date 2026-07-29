@@ -174,7 +174,7 @@ export default function TenantDashboard() {
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-1 flex items-center space-x-2">
-                <span>Sistema de Gestão SaaS ERP/WMS Multi-Tenant</span>
+                <span>Sistema de Gestão SaaS Multi-Tenant para Lojas</span>
                 <span>•</span>
                 <span className="text-emerald-400 font-medium flex items-center">
                   <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Banco de Dados Isolado
@@ -679,7 +679,7 @@ export default function TenantDashboard() {
                     </th>
                     <th className="py-3 px-4">Peça / Produto</th>
                     <th className="py-3 px-4">OEM / Código</th>
-                    <th className="py-3 px-4">Local WMS (Prateleira)</th>
+                    <th className="py-3 px-4">Localização (Prateleira)</th>
                     <th className="py-3 px-4">Preço Estoque</th>
                     <th className="py-3 px-4 text-center">Divulgação no Marketplace</th>
                   </tr>

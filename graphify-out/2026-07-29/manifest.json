@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1785293059.0932105,
-    "ast_hash": "2abda3effab81a5ed9047b81402fa961",
+    "mtime": 1785353193.7434058,
+    "ast_hash": "2580db999e5073cdd9baa9ae996b4592",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -455,13 +455,13 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/AdminLayout.tsx": {
-    "mtime": 1782875999.051403,
-    "ast_hash": "0ed52b9ca01a99d0bf50f25c496979d2",
-    "semantic_hash": "0ed52b9ca01a99d0bf50f25c496979d2"
+    "mtime": 1785353212.3514059,
+    "ast_hash": "668c38f7068dff5ab608ab067e469a2a",
+    "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AdminDashboard.tsx": {
-    "mtime": 1784780538.2882853,
-    "ast_hash": "71460731ba9fa8e5e43d48f43566c5bb",
+    "mtime": 1785353238.6074057,
+    "ast_hash": "cde2766284c3e47b1d7b057f546d4a73",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AiOpsPage.tsx": {
@@ -475,14 +475,14 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1784780498.7842853,
-    "ast_hash": "d5c378b515162789c4c2d0c841bc3b19",
+    "mtime": 1785352814.731406,
+    "ast_hash": "f2240692b39992aae0a1d9dfdc2b5ee0",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
-    "mtime": 1782501442.375248,
-    "ast_hash": "dc41fda1302ad29b4c8ff2f0ce5787e6",
-    "semantic_hash": "dc41fda1302ad29b4c8ff2f0ce5787e6"
+    "mtime": 1785349084.991401,
+    "ast_hash": "28a7ace8f83e75455665aefd6f723057",
+    "semantic_hash": ""
   },
   "src/modules/chat/__tests__/chatLogic.test.ts": {
     "mtime": 1781836884.7876108,
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Header.tsx": {
-    "mtime": 1785299181.9234416,
-    "ast_hash": "fae5ea3aa3c8b2304a7bc3e22384ecc4",
+    "mtime": 1785349030.7474012,
+    "ast_hash": "0d9ed6fd7458a910a542d328dae5f2f8",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Layout.tsx": {
@@ -1015,9 +1015,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/HomeLanding.tsx": {
-    "mtime": 1781833815.3996162,
-    "ast_hash": "e124f13338763ab5497ff49af75d2cf7",
-    "semantic_hash": "e124f13338763ab5497ff49af75d2cf7"
+    "mtime": 1785349170.1313996,
+    "ast_hash": "23233f83bf232184dc901de57be216d5",
+    "semantic_hash": ""
   },
   "src/modules/storefront/pages/MobileStoreHome.tsx": {
     "mtime": 1781927374.406534,
@@ -1050,9 +1050,9 @@
     "semantic_hash": "3e1c050f1f7fc0ddb0f84a9e98ed26d7"
   },
   "src/modules/transactions/components/LabelPrint.tsx": {
-    "mtime": 1781833815.3356164,
-    "ast_hash": "9a1d211aa7d8e4d268d70cb57b7a19fe",
-    "semantic_hash": "9a1d211aa7d8e4d268d70cb57b7a19fe"
+    "mtime": 1785349617.8314033,
+    "ast_hash": "701865191612baabd62c2cf7c04dbd1d",
+    "semantic_hash": ""
   },
   "src/modules/transactions/components/PurchaseFlow.tsx": {
     "mtime": 1781833815.3356164,
@@ -1090,8 +1090,8 @@
     "semantic_hash": "9652cdcc58c56a93bc72779c241629c2"
   },
   "src/modules/transactions/pages/PaymentCheckout.tsx": {
-    "mtime": 1783959932.2744935,
-    "ast_hash": "bed6c93016ebbc769e8801194671566a",
+    "mtime": 1785349128.379401,
+    "ast_hash": "620214251f8c6b6acb92a71e75ea4a6b",
     "semantic_hash": ""
   },
   "src/modules/transportation/__tests__/driver-biometrics.test.ts": {
@@ -1225,9 +1225,9 @@
     "semantic_hash": "9938dc796ad6b81dd727e111cf098470"
   },
   "src/modules/visualization3d/pages/MotionFramePage.tsx": {
-    "mtime": 1781833815.4316163,
-    "ast_hash": "f8c2da4aebb38d55f47d4cd762a1179c",
-    "semantic_hash": "f8c2da4aebb38d55f47d4cd762a1179c"
+    "mtime": 1785349236.5353987,
+    "ast_hash": "c010ac74ff9d26813315a4ecf0140580",
+    "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
     "mtime": 1784827802.700031,
@@ -2615,8 +2615,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/utils/dashboardUtils.ts": {
-    "mtime": 1784672465.1836407,
-    "ast_hash": "491b7f072e0899a76b042ab8f5b7d3c4",
+    "mtime": 1785351544.4474008,
+    "ast_hash": "7497d745d36a17acd2f82a87f5862777",
     "semantic_hash": ""
   },
   "supabase/migrations/20260713_secure_rls.sql": {
@@ -2670,8 +2670,8 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/LegalNotice.tsx": {
-    "mtime": 1784831043.4413574,
-    "ast_hash": "a3cbc5f3c9883a9715e53870824db9a9",
+    "mtime": 1785349538.0554059,
+    "ast_hash": "07f93a9ebaa79b4365d3e798a0272e29",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PrivacyPolicy.tsx": {
@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785295669.9034472,
-    "ast_hash": "3f93993828bf3743423c9437b1edf7e4",
+    "mtime": 1785352846.4714053,
+    "ast_hash": "2ba044805a057c0e164af0784b2f5306",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -2750,8 +2750,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/services/TenantCoreService.ts": {
-    "mtime": 1785295686.4194472,
-    "ast_hash": "8e3fee6ec2693f130174a5cd56bc1dea",
+    "mtime": 1785352903.0794048,
+    "ast_hash": "8663629b042c192dcea8e03e9ab19f05",
     "semantic_hash": ""
   },
   "docs/diag/ARQUITETURA_LIMPA_E_PADROES_PROJETO.md": {
@@ -2760,13 +2760,13 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785300564.763446,
-    "ast_hash": "068de4ed431626b974fb23bbb745461c",
+    "mtime": 1785301382.4514465,
+    "ast_hash": "ad7eef7b58ecaca054578fb6117e3d82",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/QRStickerPrint.tsx": {
-    "mtime": 1785293784.2212162,
-    "ast_hash": "6ca6963acca9b9add52a4442df8fe0ca",
+    "mtime": 1785352868.799405,
+    "ast_hash": "208d135c7a11574c590173ca0de0f931",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_japan_bank_info_and_wms_stickers.sql": {
@@ -2777,6 +2777,11 @@
   "public/assets/stripe_bank_trust_badge.png": {
     "mtime": 1785300491.5874476,
     "ast_hash": "f7f6bbc4fd3657c17da0601d756edbfe",
+    "semantic_hash": ""
+  },
+  "src/modules/finance/pages/SaasControlCenter.tsx": {
+    "mtime": 1785353170.779406,
+    "ast_hash": "e3c0a3cf2864523b8b1024a0cf112769",
     "semantic_hash": ""
   }
 }

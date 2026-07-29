@@ -7,7 +7,7 @@ export interface TenantInventoryStats {
   publishedCount: number
   privateCount: number
   activeOSCount: number
-  wmsShelvesCount: number
+  shelvesCount: number
 }
 
 export interface CreateWorkOrderInput {
@@ -26,7 +26,7 @@ export interface CreateWorkOrderInput {
  * 
  * Camada de serviço pura em TypeScript que encapsula todas as regras de negócio
  * do SaaS Multi-Tenant sem duplicação de código:
- * - Gestão de Estoque Privado e WMS
+ * - Gestão de Estoque Privado da Loja
  * - Chave de Publicação 1-Clique para o Marketplace Central DAIG
  * - Ordens de Serviço (O.S.) da Oficina
  * - Baixa automática de estoque
@@ -113,7 +113,7 @@ export class TenantCoreService {
       publishedCount,
       privateCount,
       activeOSCount: 4, // Exemplo integrado O.S.
-      wmsShelvesCount: 28 // Exemplo integrado WMS
+      shelvesCount: 28 // Exemplo integrado prateleiras de estoque
     }
   }
 

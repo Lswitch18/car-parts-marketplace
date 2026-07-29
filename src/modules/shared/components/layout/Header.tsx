@@ -132,6 +132,21 @@ export default function Header() {
               {t('Catálogo de Peças')}
             </Link>
 
+            <Link
+              to="/partner"
+              style={{ ...navLinkBase, color: '#10B981', fontWeight: 600 }}
+              onMouseEnter={(e) => {
+                ;(e.currentTarget as HTMLElement).style.color = '#34D399'
+                ;(e.currentTarget as HTMLElement).style.background = 'rgba(16,185,129,0.1)'
+              }}
+              onMouseLeave={(e) => {
+                ;(e.currentTarget as HTMLElement).style.color = '#10B981'
+                ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+              }}
+            >
+              {t('Parceiros B2B')}
+            </Link>
+
             {showAuthSkeleton ? (
               <div
                 style={{

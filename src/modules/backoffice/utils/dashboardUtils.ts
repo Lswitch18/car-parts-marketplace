@@ -14,6 +14,8 @@ export interface FinanceStats {
   escrow: number;
   activeOrders: number;
   netProfit: number;
+  totalTransactions: number;
+  completedTransactions: number;
 }
 
 export interface AlertItem {
@@ -43,21 +45,20 @@ export function calculateGrowth(current: number, previous: number): number {
 /**
  * Consolida as métricas financeiras (GMV, Lucro Líquido da Plataforma, Saldo em Custódia Escrow e Pedidos Ativos)
  * a partir das transações da plataforma.
- * 
- * REGRA RIGOROSA: Apenas transações efetivamente pagas ou entregues (status 'paid', 'delivered' ou 'completed')
- * são contabilizadas no GMV e no Lucro da Plataforma (10% de comissão).
- * Pagamentos pendentes do Konbini ('pending_payment'), transações canceladas ('failed') ou reembolsadas ('refunded')
- * NÃO são contabilizadas no lucro nem no GMV.
  */
 export function calculateFinanceStats(txData: TransactionSummary[] | null | undefined): FinanceStats {
   let gmv = 0;
   let escrow = 0;
   let activeOrders = 0;
   let netProfit = 0;
+  let totalTransactions = 0;
+  let completedTransactions = 0;
 
   if (!txData || !Array.isArray(txData)) {
-    return { gmv, escrow, activeOrders, netProfit };
+    return { gmv, escrow, activeOrders, netProfit, totalTransactions, completedTransactions };
   }
+
+  totalTransactions = txData.length;
 
   for (const tx of txData) {
     const amount = Number(tx.amount) || 0;
@@ -65,9 +66,10 @@ export function calculateFinanceStats(txData: TransactionSummary[] | null | unde
     const fulfillmentStatus = tx.fulfillment_status || '';
 
     // Apenas transações pagas e finalizadas entram no GMV e no Lucro Líquido (10% comissão)
-    if (paymentStatus === 'paid' || fulfillmentStatus === 'delivered' || fulfillmentStatus === 'completed') {
+    if (paymentStatus === 'paid' || paymentStatus === 'completed' || fulfillmentStatus === 'delivered' || fulfillmentStatus === 'completed') {
       gmv += amount;
       netProfit += amount * 0.10; // 10% Take Rate / Comissão da Plataforma DAIG
+      completedTransactions++;
     }
 
     // Escrow engloba valores em custódia pendentes de confirmação de entrega do comprador
@@ -79,7 +81,7 @@ export function calculateFinanceStats(txData: TransactionSummary[] | null | unde
     }
   }
 
-  return { gmv, escrow, activeOrders, netProfit };
+  return { gmv, escrow, activeOrders, netProfit, totalTransactions, completedTransactions };
 }
 
 /**
