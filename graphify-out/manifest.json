@@ -2760,8 +2760,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785296060.3194404,
-    "ast_hash": "ee06687034163be3925e3c0da0152d75",
+    "mtime": 1785296404.5994484,
+    "ast_hash": "8ca50fce1f921a884144589edc119ff6",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/QRStickerPrint.tsx": {
@@ -2775,8 +2775,8 @@
     "semantic_hash": ""
   },
   "public/assets/stripe_bank_trust_badge.png": {
-    "mtime": 1785296023.4354424,
-    "ast_hash": "b1df05c2cbe1a8cae194dba8a471cb94",
+    "mtime": 1785296348.9114501,
+    "ast_hash": "9632f58d167284e375fb14db46bc65cc",
     "semantic_hash": ""
   }
 }

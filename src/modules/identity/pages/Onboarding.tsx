@@ -89,10 +89,22 @@ export default function Onboarding() {
         updates.account_type = 'pessoa_fisica'
       }
 
-      const { error } = await supabase
+      let { error } = await supabase
         .from('profiles')
         .update(updates)
         .eq('id', user?.id)
+
+      if (error && (error.code === 'PGRST303' || error.message?.includes('JWT expired'))) {
+        console.warn('[Onboarding] JWT expired, attempting session refresh...')
+        const { data: refreshed } = await supabase.auth.refreshSession()
+        if (refreshed?.session) {
+          const { error: retryErr } = await supabase
+            .from('profiles')
+            .update(updates)
+            .eq('id', user?.id)
+          error = retryErr
+        }
+      }
 
       if (error) throw error
 

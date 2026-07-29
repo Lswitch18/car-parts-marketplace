@@ -49,6 +49,20 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
       .eq('id', userId)
       .single()
 
+    if (profileError && (profileError.code === 'PGRST303' || profileError.message?.includes('JWT expired'))) {
+      console.warn('[authStore] JWT expired during profile fetch. Refreshing session...')
+      const { data: refreshed } = await supabase.auth.refreshSession()
+      if (refreshed?.session) {
+        const { data: retryProfile, error: retryError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
+        profile = retryProfile
+        profileError = retryError
+      }
+    }
+
     if (profileError) {
       console.warn('[authStore] Profile fetch query returned error or no profile:', profileError.message)
     }
@@ -58,7 +72,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
       const roleFromMeta = meta?.role || 'buyer'
       console.log('[authStore] Profile not found. Creating new profile with role:', roleFromMeta)
       
-      const { data: newProfile, error: createError } = await supabase
+      let { data: newProfile, error: createError } = await supabase
         .from('profiles')
         .insert({
           id: userId,
@@ -73,6 +87,30 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
         })
         .select()
         .single()
+
+      if (createError && (createError.code === 'PGRST303' || createError.message?.includes('JWT expired'))) {
+        console.warn('[authStore] JWT expired during profile creation. Refreshing session...')
+        const { data: refreshed } = await supabase.auth.refreshSession()
+        if (refreshed?.session) {
+          const { data: retryNewProfile, error: retryCreateErr } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              email: sessionUser.email ?? '',
+              full_name: meta?.full_name || meta?.name || sessionUser.email?.split('@')[0] || 'Usuário',
+              phone: meta?.phone || null,
+              avatar_url: meta?.avatar_url || meta?.picture || null,
+              rating: 0,
+              total_sales: 0,
+              is_verified: false,
+              role: roleFromMeta,
+            })
+            .select()
+            .single()
+          newProfile = retryNewProfile
+          createError = retryCreateErr
+        }
+      }
 
       if (createError) {
         if (createError.code === '23505') {
@@ -320,12 +358,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { user } = get()
     if (!user) return
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('profiles')
         .update(updates)
         .eq('id', user.id)
         .select()
         .single()
+
+      if (error && (error.code === 'PGRST303' || error.message?.includes('JWT expired'))) {
+        console.warn('[authStore] JWT expired during updateProfile. Refreshing session...')
+        const { data: refreshed } = await supabase.auth.refreshSession()
+        if (refreshed?.session) {
+          const { data: retryData, error: retryErr } = await supabase
+            .from('profiles')
+            .update(updates)
+            .eq('id', user.id)
+            .select()
+            .single()
+          data = retryData
+          error = retryErr
+        }
+      }
+
       if (error) throw error
       const updated = { ...data, name: data.full_name } as User
       set({ user: updated, isAdmin: updated.role === 'admin' })

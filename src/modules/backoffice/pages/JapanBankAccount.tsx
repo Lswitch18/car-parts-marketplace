@@ -6,7 +6,7 @@ import {
   Building2, ShieldCheck, Lock, CheckCircle2, AlertCircle, 
   ArrowLeft, CreditCard, Landmark, HelpCircle, Save, Sparkles, RefreshCw,
   Copy, Check, Zap, Globe2, Fingerprint, Eye, Award, ChevronRight, Shield,
-  ExternalLink, ArrowUpRight, CheckCircle, ShieldAlert
+  ExternalLink, ArrowUpRight, CheckCircle, ShieldAlert, FileText, Info, X
 } from 'lucide-react'
 
 // Principais Bancos do Japão para Seleção Rápida com Identidade Visual
@@ -52,6 +52,12 @@ export default function JapanBankAccount() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  // Estado dos Termos de Aceite DAIG & Coleta de Dados
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [consentDisclaimer, setConsentDisclaimer] = useState(false)
+  const [consentDataCollection, setConsentDataCollection] = useState(false)
+  const [termsAcceptedDate, setTermsAcceptedDate] = useState<string | null>(null)
+
   // Carregar dados existentes
   useEffect(() => {
     if (user?.id) {
@@ -78,6 +84,12 @@ export default function JapanBankAccount() {
         setAccountHolderKana(info.account_holder_kana || '')
         setAccountHolderKanji(info.account_holder_kanji || data.full_name || '')
         setCorporateNumber(info.corporate_number || '')
+        
+        if (info.terms_accepted_at) {
+          setTermsAcceptedDate(info.terms_accepted_at)
+          setConsentDisclaimer(true)
+          setConsentDataCollection(true)
+        }
       }
     } catch (err) {
       console.warn('Nenhuma conta bancária prévia registrada.')
@@ -97,17 +109,20 @@ export default function JapanBankAccount() {
 
   // Redirecionar para o Portal Seguro Stripe Connect Express
   const handleStripeExpressRedirect = async () => {
+    if (!consentDisclaimer || !consentDataCollection) {
+      setShowTermsModal(true)
+      return
+    }
+
     setIsRedirectingStripe(true)
     setErrorMessage(null)
 
     try {
-      // Chamar Edge Function do Supabase para criar Link Seguro Stripe Account Link
       const { data, error } = await supabase.functions.invoke('create-stripe-connect-link', {
         body: { return_url: window.location.href, refresh_url: window.location.href }
       })
 
       if (error || !data?.url) {
-        // Fallback gracioso com demonstração de integração segura Stripe
         console.warn('Stripe Connect Function mock redirect active.')
         setTimeout(() => {
           setIsRedirectingStripe(false)
@@ -124,6 +139,13 @@ export default function JapanBankAccount() {
     }
   }
 
+  const handleConfirmTerms = () => {
+    if (consentDisclaimer && consentDataCollection) {
+      setTermsAcceptedDate(new Date().toISOString())
+      setShowTermsModal(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMessage(null)
@@ -131,6 +153,11 @@ export default function JapanBankAccount() {
 
     if (!user?.id) {
       setErrorMessage('Você precisa estar autenticado para salvar os dados bancários.')
+      return
+    }
+
+    if (!consentDisclaimer || !consentDataCollection) {
+      setShowTermsModal(true)
       return
     }
 
@@ -159,6 +186,7 @@ export default function JapanBankAccount() {
         corporate_number: corporateNumber,
         country: 'JP',
         currency: 'jpy',
+        terms_accepted_at: termsAcceptedDate || new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
 
@@ -172,7 +200,7 @@ export default function JapanBankAccount() {
 
       if (error) throw error
 
-      setSuccessMessage('✨ Conta bancária do Japão salva e criptografada com sucesso! Repasses de vendas em JPY (¥ / Furikomi) ativos.')
+      setSuccessMessage('✨ Termos aceitos e conta bancária do Japão salva com sucesso! Repasses em JPY (¥ / Furikomi) ativos.')
     } catch (err: any) {
       console.error('Erro ao salvar conta bancária:', err)
       setErrorMessage(err.message || 'Falha ao salvar dados bancários com segurança.')
@@ -205,16 +233,20 @@ export default function JapanBankAccount() {
           </Link>
 
           <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setShowTermsModal(true)}
+              className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/20 transition"
+            >
+              <FileText className="w-3 h-3 mr-1.5 text-indigo-400" />
+              Termos DAIG & Stripe
+            </button>
+
             <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
               <span className="relative flex h-2 w-2 mr-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               ZENGIN NET READY (全銀ネット)
-            </span>
-            
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-800">
-              <Lock className="w-3 h-3 mr-1.5 text-emerald-400" /> AES-256 Encrypted
             </span>
           </div>
         </div>
@@ -226,7 +258,7 @@ export default function JapanBankAccount() {
             <div className="space-y-3 text-center md:text-left max-w-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Ambiente Bancário Homologado Japão (JPY)</span>
+                <span>DAIG Digital A.I. Garage • Financial Gateway</span>
               </div>
               
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
@@ -237,7 +269,7 @@ export default function JapanBankAccount() {
               </h1>
               
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Configure como deseja cadastrar e validar sua conta bancária japonesa para saques e repasses automáticos em ienes (¥).
+                Configure os dados da sua conta bancária no Japão para repasses em ienes (¥). Processado e mantido sob custódia independente da Stripe.
               </p>
             </div>
 
@@ -301,6 +333,41 @@ export default function JapanBankAccount() {
           </div>
 
         </div>
+
+        {/* Status de Termos Aceitos ou Banner de Aviso */}
+        {!termsAcceptedDate ? (
+          <div className="p-4 bg-amber-950/30 border border-amber-500/40 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <ShieldAlert className="w-6 h-6 text-amber-400 flex-shrink-0" />
+              <div className="text-xs">
+                <p className="font-bold text-amber-200">Aceite Obrigatório dos Termos DAIG & Stripe</p>
+                <p className="text-amber-300/80 mt-0.5">
+                  Para cadastrar a conta bancária, é necessário confirmar que compreende que a DAIG não custodia fundos.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowTermsModal(true)}
+              className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl transition flex-shrink-0"
+            >
+              Ler e Aceitar Termos
+            </button>
+          </div>
+        ) : (
+          <div className="px-4 py-2.5 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl flex items-center justify-between text-xs text-emerald-300 font-mono">
+            <span className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+              Termos de Isenção Financeira DAIG aceitos em {new Date(termsAcceptedDate).toLocaleDateString('pt-BR')}
+            </span>
+            <button
+              onClick={() => setShowTermsModal(true)}
+              className="text-[11px] text-zinc-400 hover:text-white underline"
+            >
+              Revisar Termos
+            </button>
+          </div>
+        )}
 
         {/* Alert Toasts */}
         {successMessage && (
@@ -810,6 +877,136 @@ export default function JapanBankAccount() {
               </form>
             </div>
 
+          </div>
+        )}
+
+        {/* MODAL DE TERMOS DE ACEITE E TRANSPARÊNCIA DAIG */}
+        {showTermsModal && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden max-h-[90vh] flex flex-col justify-between">
+              
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="p-2.5 bg-indigo-500/10 border border-indigo-500/30 rounded-2xl text-indigo-400">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white leading-snug">
+                      Termos de Aceite & Transparência Financeira
+                    </h3>
+                    <p className="text-xs text-indigo-300/80 font-mono">
+                      DAIG (Digital A.I. Garage) • Stripe Connect Policy
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowTermsModal(false)}
+                  className="text-zinc-400 hover:text-white p-2 rounded-xl bg-zinc-950 border border-zinc-800 transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Scrollable Content */}
+              <div className="space-y-4 overflow-y-auto pr-2 text-xs leading-relaxed text-zinc-300 max-h-[50vh]">
+                
+                {/* Cláusula 1: Isenção de Custódia Financeira pela DAIG */}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-2">
+                  <div className="flex items-center space-x-2 text-amber-400 font-bold text-sm">
+                    <ShieldAlert className="w-4 h-4 flex-shrink-0" />
+                    <span>1. Isenção de Processamento e Custódia de Valores pela DAIG</span>
+                  </div>
+                  <p className="text-zinc-400">
+                    A <strong>DAIG (Digital A.I. Garage)</strong> atua estritamente como fornecedora da infraestrutura de software SaaS ERP e Marketplace de autopeças. 
+                    A DAIG <strong>NÃO processa, NÃO recebe, NÃO custodia e NÃO retém</strong> os valores transacionados ou saldos de vendas efetuados na plataforma.
+                  </p>
+                  <p className="text-zinc-400 pt-1">
+                    Toda a liquidação de vendas, prevenção a fraudes, processamento de cartões e transferências bancárias diretas (Furikomi JPY) são operados e gerenciados de forma autônoma pela <strong>Stripe Inc.</strong>, uma das maiores infraestruturas de tecnologia financeira e pagamentos do mundo.
+                  </p>
+                </div>
+
+                {/* Cláusula 2: Transparência de Coleta de Informações */}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-2">
+                  <div className="flex items-center space-x-2 text-indigo-400 font-bold text-sm">
+                    <Info className="w-4 h-4 flex-shrink-0" />
+                    <span>2. Transparência de Coleta de Informações Bancárias</span>
+                  </div>
+                  <p className="text-zinc-400">
+                    Para viabilizar a homologação no sistema bancário japonês <strong>Zengin Net (全銀システム)</strong> e realizar os depósitos em ienes (¥), coletamos e mantemos sob sigilo bancário estrito os seguintes dados:
+                  </p>
+                  <ul className="list-disc list-inside text-zinc-300 space-y-1 pl-2 font-mono text-[11px]">
+                    <li><strong>Nome da Instituição Financeira e Código de 4 dígitos</strong> (ex: MUFG `0005`, SMBC `0009`, JP Bank `9900`).</li>
+                    <li><strong>Nome e Código de 3 dígitos da Agência Bancária</strong> (支店名・支店コード).</li>
+                    <li><strong>Tipo de Conta</strong> (`普通` Corrente / `当座` Cheque PJ) e <strong>Número da Conta</strong> (7 dígitos).</li>
+                    <li><strong>Titularidade Obrigatória em Katakana</strong> (`口座名義 カタカナ`).</li>
+                    <li><strong>Nome do Titular em Kanji / Alfabeto</strong> e <strong>Número de Registro Jurídico Hojin</strong> (se houver).</li>
+                  </ul>
+                </div>
+
+                {/* Cláusula 3: Criptografia & Sigilo */}
+                <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-1.5">
+                  <div className="flex items-center space-x-2 text-emerald-400 font-bold text-xs">
+                    <Lock className="w-4 h-4" />
+                    <span>3. Proteção e Criptografia AES-256</span>
+                  </div>
+                  <p className="text-zinc-400 text-[11px]">
+                    Os dados são mantidos em banco de dados isolado com criptografia em repouso AES-256 (Supabase RLS) e trafegados exclusivamente por conexões HTTPS/TLS 1.3 de alta segurança.
+                  </p>
+                </div>
+
+              </div>
+
+              {/* Checkboxes de Consentimento Obrigatórios */}
+              <div className="space-y-3 pt-3 border-t border-zinc-800">
+                <label className="flex items-start space-x-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={consentDisclaimer}
+                    onChange={(e) => setConsentDisclaimer(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded bg-zinc-950 border-zinc-700 text-indigo-600 focus:ring-0 cursor-pointer"
+                  />
+                  <span className="text-xs text-zinc-300 group-hover:text-white transition">
+                    Estou ciente de que a <strong>DAIG não processa pagamentos</strong> e que toda a movimentação financeira e repasses bancários são realizados de forma independente pela <strong>Stripe</strong>.
+                  </span>
+                </label>
+
+                <label className="flex items-start space-x-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={consentDataCollection}
+                    onChange={(e) => setConsentDataCollection(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded bg-zinc-950 border-zinc-700 text-indigo-600 focus:ring-0 cursor-pointer"
+                  />
+                  <span className="text-xs text-zinc-300 group-hover:text-white transition">
+                    Autorizo a coleta e o armazenamento seguro das minhas informações bancárias do Japão (Zengin / Katakana meigi) estritamente para liquidação dos meus repasses de vendas.
+                  </span>
+                </label>
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="pt-2 flex items-center justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowTermsModal(false)}
+                  className="px-4 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs font-semibold text-zinc-400 hover:text-white transition"
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleConfirmTerms}
+                  disabled={!consentDisclaimer || !consentDataCollection}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-400 hover:to-emerald-400 text-zinc-950 font-black text-xs uppercase tracking-wider transition shadow-lg disabled:opacity-40"
+                >
+                  Confirmar e Prosseguir
+                </button>
+              </div>
+
+            </div>
           </div>
         )}
 
