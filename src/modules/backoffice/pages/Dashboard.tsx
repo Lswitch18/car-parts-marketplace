@@ -757,6 +757,14 @@ export default function Dashboard() {
                       <span>{t('Abrir Painel Stripe')}</span>
                     </button>
                   )}
+
+                  <Link
+                    to="/bank-account"
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 px-5 py-3 rounded-xl font-semibold text-sm transition-all"
+                  >
+                    <Landmark className="w-5 h-5 text-emerald-400" />
+                    <span>Cadastrar Conta Bancária do Japão (振込口座)</span>
+                  </Link>
                 </div>
               </div>
 

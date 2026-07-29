@@ -49,6 +49,7 @@ const AiOpsPage = lazy(() => import('@/modules/backoffice/pages/AiOpsPage'))
 const LegalNotice = lazy(() => import('@/modules/storefront/pages/LegalNotice'))
 const TermsOfService = lazy(() => import('@/modules/storefront/pages/TermsOfService'))
 const PrivacyPolicy = lazy(() => import('@/modules/storefront/pages/PrivacyPolicy'))
+const JapanBankAccount = lazy(() => import('@/modules/backoffice/pages/JapanBankAccount'))
 
 function App() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -103,6 +104,8 @@ function App() {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="tenant/dashboard" element={<TenantDashboard />} />
                 <Route path="tenant-dashboard" element={<TenantDashboard />} />
+                <Route path="bank-account" element={<JapanBankAccount />} />
+                <Route path="japan-bank-account" element={<JapanBankAccount />} />
                 <Route path="create-listing" element={<CreateListing />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="favorites" element={<Favorites />} />

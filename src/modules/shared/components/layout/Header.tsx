@@ -249,8 +249,7 @@ export default function Header() {
 
                     <div className="p-2">
                       {[
-                        { to: '/tenant/dashboard', label: t('Painel do Tenant (ERP/WMS)') },
-                        { to: '/dashboard', label: t('Dashboard Vendedor') },
+                        { to: '/dashboard', label: t('Dashboard') },
                         { to: '/profile', label: t('Perfil') },
                       ].map(({ to, label }) => (
                         <Link

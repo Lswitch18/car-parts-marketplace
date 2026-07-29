@@ -821,23 +821,52 @@ export default function TenantDashboard() {
 
         {/* ABA 8: MÓDULO FINANCEIRO */}
         {activeTab === 'finance' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-6">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-emerald-400" />
-              Módulo Financeiro & DRE do Tenant
+              Módulo Financeiro & Repasses Stripe Connect
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
                 <span className="text-xs text-zinc-400">Faturamento Bruto</span>
                 <p className="text-2xl font-bold text-white mt-1">¥ 1.420.000 JPY</p>
               </div>
               <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Custo dos Produtos (COGS)</span>
-                <p className="text-2xl font-bold text-amber-400 mt-1">¥ 480.000 JPY</p>
+                <span className="text-xs text-zinc-400">Saldo em Custódia (Escrow Aprovado)</span>
+                <p className="text-2xl font-bold text-sky-400 mt-1">¥ 185.000 JPY</p>
+                <p className="text-[11px] text-zinc-500 mt-0.5">Aguardando confirmação de entrega do comprador</p>
               </div>
               <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Lucro Líquido Estimado</span>
-                <p className="text-2xl font-bold text-emerald-400 mt-1">¥ 940.000 JPY (66%)</p>
+                <span className="text-xs text-zinc-400">Repassado via Stripe Connect</span>
+                <p className="text-2xl font-bold text-emerald-400 mt-1">¥ 755.000 JPY</p>
+                <p className="text-[11px] text-emerald-400/80 mt-0.5">Depositado na conta bancária vinculada</p>
+              </div>
+            </div>
+
+            {/* Painel Stripe Connect Express / Custom */}
+            <div className="p-5 bg-gradient-to-r from-indigo-950/60 to-purple-950/60 border border-indigo-800/60 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <ShieldCheck className="w-5 h-5 text-indigo-400" />
+                  <h3 className="font-bold text-white text-sm">Conta Stripe Connect Express (Japão)</h3>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    Ativa & Conectada
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-300">
+                  Sua conta bancária japonesa (Furikomi) está configurada para receber repasses automáticos de 90% do valor de cada venda assim que a entrega for confirmada.
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-3 flex-shrink-0">
+                <Link
+                  to="/admin/transactions"
+                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition shadow-lg shadow-indigo-600/20 flex items-center space-x-2"
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span>Gerenciar Repasses Escrow</span>
+                </Link>
               </div>
             </div>
           </div>
