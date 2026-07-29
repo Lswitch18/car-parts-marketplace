@@ -2760,8 +2760,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785300564.763446,
-    "ast_hash": "068de4ed431626b974fb23bbb745461c",
+    "mtime": 1785300955.887448,
+    "ast_hash": "677a4cb1a1fcbd7510f6223566be80d2",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/QRStickerPrint.tsx": {

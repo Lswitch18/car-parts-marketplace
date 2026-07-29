@@ -54,38 +54,52 @@ export default function JapanBankAccount() {
     try {
       let targetAccountId = stripeAccountId
 
-      // Se o usuário ainda não tiver um account_id da Stripe, cria um novo
+      // Tenta gerar o link com a conta salva (se houver)
+      if (targetAccountId) {
+        try {
+          const linkResult = await api.stripe.createAccountLink(targetAccountId, user.id)
+          if (linkResult?.url) {
+            window.location.href = linkResult.url
+            return
+          }
+        } catch (err: any) {
+          console.warn('Conta Stripe salva expirada ou inválida. Criando nova conta...', err)
+          targetAccountId = null // Descarta id inválido (ex: 'acct_1JP_DAIG_SELLER_TEST')
+        }
+      }
+
+      // Se não havia conta ou a conta salva era um ID de teste inválido, cria uma conta nova na Stripe
       if (!targetAccountId) {
         const createResult = await api.stripe.createConnectedAccount(user.id, user.email)
         if (createResult?.account_id) {
           targetAccountId = createResult.account_id
           setStripeAccountId(targetAccountId)
+
+          // Atualiza perfil no Supabase com o novo id válido
+          await supabase
+            .from('profiles')
+            .update({ stripe_account_id: targetAccountId })
+            .eq('id', user.id)
+
+          const linkResult = await api.stripe.createAccountLink(targetAccountId, user.id)
+          if (linkResult?.url) {
+            window.location.href = linkResult.url
+            return
+          }
         }
       }
 
-      // Gera o link oficial de onboarding seguro hospedado pela Stripe
-      if (targetAccountId) {
-        const linkResult = await api.stripe.createAccountLink(targetAccountId, user.id)
-        if (linkResult?.url) {
-          window.location.href = linkResult.url
-          return
-        }
-      }
-
-      // Fallback em ambiente de desenvolvimento / teste se a função retornar resposta alternativa
-      setSuccessMessage('Você está sendo redirecionado para o ambiente oficial de onboarding da Stripe...')
+      setSuccessMessage('Você está sendo redirecionado para o ambiente de onboarding oficial da Stripe...')
       setTimeout(() => {
         setIsRedirecting(false)
       }, 2000)
 
     } catch (err: any) {
-      console.warn('Aviso ao gerar link Stripe Connect via API:', err)
-      
-      // Tratamento gracioso para evitar bloqueio por CORS ou falha de rede da edge function
+      console.error('Erro ao conectar conta Stripe:', err)
       setIsRedirecting(false)
       setErrorMessage(
         err?.message?.includes('CORS') || err?.message?.includes('fetch')
-          ? 'O portal Stripe Connect está sendo inicializado no servidor. Tente novamente em alguns segundos.'
+          ? 'O portal Stripe Connect está sendo inicializado. Tente novamente em alguns segundos.'
           : (err?.message || 'Falha ao conectar com o serviço Stripe.')
       )
     }
