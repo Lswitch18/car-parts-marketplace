@@ -1,16 +1,16 @@
 # Graph Report - car-parts-marketplce  (2026-07-29)
 
 ## Corpus Check
-- 359 files · ~858,154 words
+- 360 files · ~860,246 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1723 nodes · 2568 edges · 200 communities (145 shown, 55 thin omitted)
+- 1727 nodes · 2580 edges · 200 communities (145 shown, 55 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.74)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `01b6bcfb`
+- Built from commit: `f223bc23`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -179,12 +179,12 @@
 - update-launcher-icons.sh
 
 ## God Nodes (most connected - your core abstractions)
-1. `useAuthStore` - 75 edges
-2. `useI18n()` - 68 edges
+1. `useAuthStore` - 77 edges
+2. `useI18n()` - 70 edges
 3. `corsHeaders()` - 47 edges
 4. `successResponse()` - 45 edges
 5. `errorResponse()` - 43 edges
-6. `supabase` - 38 edges
+6. `supabase` - 39 edges
 7. `cn()` - 34 edges
 8. `requireAuth()` - 22 edges
 9. `adminApi` - 21 edges
@@ -197,10 +197,10 @@
   src/modules/logistics/pages/admin/PedidoDetail.tsx → src/modules/shared/types/index.ts
 - `QRInstallPage()` --references--> `qrcode`  [EXTRACTED]
   src/modules/transportation/pages/QRInstallPage.tsx → package.json
-- `App()` --calls--> `useAuthStore`  [EXTRACTED]
-  src/App.tsx → src/modules/identity/store/authStore.ts
 - `DriverApp()` --calls--> `useAuthStore`  [EXTRACTED]
   src/DriverApp.tsx → src/modules/identity/store/authStore.ts
+- `JapanBankAccount()` --calls--> `useAuthStore`  [EXTRACTED]
+  src/modules/backoffice/pages/JapanBankAccount.tsx → src/modules/identity/store/authStore.ts
 
 ## Import Cycles
 - None detected.
@@ -216,31 +216,31 @@ Cohesion: 0.05
 Nodes (34): 🏛️ 1. Arquitetura do Sistema, 🔄 2. Fluxo da Transação e Ciclo de Vida do Pagamento (Konbini & Escrow), 📊 3. Mapeamento de Arquivos de Configuração (.env), 📦 Componentes Principais:, Digital AIGarage (DAIG) - Arquitetura de Software e Fluxo de Plataforma, 📋 Etapas do Fluxo de Compra:, 🌐 1. Variáveis Públicas do Frontend (Vercel Project Settings), 🔒 2. Chaves Secretas de Backend (Supabase Dashboard / Edge Functions) (+26 more)
 
 ### Community 2 - "vendor-react-DqCMjyrC.js"
-Cohesion: 0.50
-Nodes (3): ETAPAS, TIPO_LABEL, TrackingPublico()
+Cohesion: 0.33
+Nodes (4): emptyForm, PedidoForm, STATUS_COLOR, STATUS_OPTIONS
 
 ### Community 3 - "vendor-three-BAVKA0D-.js"
-Cohesion: 0.20
-Nodes (9): AgenciaPage, DriverApp(), Login, MobileApp, QRInstallPage, WorkerApp, GlobalLoader(), ScrollToTop() (+1 more)
+Cohesion: 0.18
+Nodes (10): AgenciaPage, DriverApp(), Login, MobileApp, QRInstallPage, WorkerApp, ProtectedRoute(), GlobalLoader() (+2 more)
 
 ### Community 4 - "vendor-react-DqCMjyrC.js"
 Cohesion: 0.15
-Nodes (9): logisticsApi, DropoffPage(), emptyForm, PedidoForm, STATUS_COLOR, STATUS_OPTIONS, TransportesPage(), mockFetch (+1 more)
+Nodes (9): logisticsApi, DropoffPage(), MapaPage(), TransportesPage(), ETAPAS, TIPO_LABEL, TrackingPublico(), mockFetch (+1 more)
 
 ### Community 5 - "vendor-three-BAVKA0D-.js"
 Cohesion: 0.12
 Nodes (15): 1.1 Homologação do Stripe para Produção (JDM), 1.2 Simulação e Verificação de Fluxos, 1.3 Correção da Contabilização no Painel Admin, 1. Resumo do Trabalho Realizado, 2.1 Incompatibilidade de Dependências, 2.2 Garantia de Compilação, 2. Diagnóstico de Testes Unitários, 3. Análise de Segurança SAST (Estática) (+7 more)
 
 ### Community 6 - ".setAttribute"
-Cohesion: 0.18
-Nodes (13): Dashboard(), Profile(), COUNTRIES_BY_LENGTH, fetchPostal(), fetchViaCEP(), fetchZipcloud(), fetchZippopotamus(), PostalResult (+5 more)
+Cohesion: 0.20
+Nodes (12): Profile(), COUNTRIES_BY_LENGTH, fetchPostal(), fetchViaCEP(), fetchZipcloud(), fetchZippopotamus(), PostalResult, ViaCEPResponse (+4 more)
 
 ### Community 7 - "n"
 Cohesion: 0.30
 Nodes (13): auditLog(), calcularCustos(), corsHeaders(), createResource(), deleteResource(), getAuthUser(), getResource(), handleDashboard() (+5 more)
 
 ### Community 8 - "i"
-Cohesion: 0.27
+Cohesion: 0.23
 Nodes (9): Login(), Register(), getRetryDelay(), handleSupabaseError(), isRateLimitError(), RATE_LIMIT_ERRORS, sanitizeMessage(), SupabaseError (+1 more)
 
 ### Community 9 - "vendor-supabase-CW1GYbG4.js"
@@ -252,24 +252,24 @@ Cohesion: 0.18
 Nodes (6): calculateFees(), corsHeaders, createCheckoutSchema, createCheckoutSession(), rateLimitMap, supabase
 
 ### Community 11 - "axios"
-Cohesion: 0.28
-Nodes (6): Conversation, Message, Messages(), ProductDetail(), AutoTranslateText(), AutoTranslateTextProps
+Cohesion: 0.40
+Nodes (4): PLAN_DETAILS, SaasCompanySubscription, SaasControlCenter(), STORE_TYPE_CONFIG
 
 ### Community 12 - ".copy"
-Cohesion: 0.25
-Nodes (8): BAYS, getWarehouseLocation(), LEVEL_COLORS, LEVELS, POSITIONS, RACKS, WarehouseGrid(), WarehouseGridProps
+Cohesion: 0.24
+Nodes (9): BAYS, getWarehouseLocation(), LEVEL_COLORS, LEVELS, POSITIONS, RACKS, WarehouseGrid(), WarehouseGridProps (+1 more)
 
 ### Community 13 - "r"
 Cohesion: 0.22
 Nodes (8): 📌 1. Visão Geral do Modelo de Negócio (SaaS Gestão + Marketplace Omnichannel), 🏛️ 2. Arquitetura do Sistema (Gestão Privada + Ponte para Marketplace), 🔒 3. Estrutura de Isolação de Dados (Visibilidade Pública vs Privada), 📦 4. Módulos do Sistema de Gestão Interna (ERP/WMS), 🛒 5. O Fluxo da Venda no Marketplace (Divulgação em 1 Clique), ✅ 6. Vantagens Competitivas deste Modelo, Esquema SQL de Visibilidade Híbrida:, Estudo de Arquitetura SaaS Multi-Tenant Escalável (SaaS-First ERP/WMS + Marketplace Opcional em 1 Clique)
 
 ### Community 14 - "t"
-Cohesion: 0.11
-Nodes (13): TabType, ChatPopupProps, Conversation, Message, iconMap, Props, SafeImage(), SafeImageProps (+5 more)
+Cohesion: 0.12
+Nodes (19): TabType, ChatPopup(), ChatPopupProps, Conversation, Message, Conversation, Message, Messages() (+11 more)
 
 ### Community 15 - ".get"
-Cohesion: 0.18
-Nodes (14): Terceiro, TerceirosPage(), SimulateSale(), calculateFees(), FeeBreakdown, formatBRL(), formatJPY(), Part (+6 more)
+Cohesion: 0.10
+Nodes (22): JapanBankAccount(), Terceiro, TerceirosPage(), iconMap, Props, Part, Props, SimulateSale() (+14 more)
 
 ### Community 16 - "r"
 Cohesion: 0.40
@@ -288,16 +288,16 @@ Cohesion: 0.40
 Nodes (3): STATUS_COLOR, TIPO_COLOR, TIPO_ICON
 
 ### Community 20 - "index-B_no5lKC.js"
-Cohesion: 0.07
-Nodes (37): AiOpsPage(), AnalysisLogEntry, HealthStatus, loadLog(), saveLog(), manufacturerApi, ManufacturerPartData, mockDatabase (+29 more)
+Cohesion: 0.08
+Nodes (31): AiOpsPage(), AnalysisLogEntry, HealthStatus, loadLog(), saveLog(), manufacturerApi, ManufacturerPartData, mockDatabase (+23 more)
 
 ### Community 21 - "Ne"
 Cohesion: 0.25
 Nodes (7): 📌 1. Sumário Executivo (Executive Summary), 💡 2. O Modelo SaaS-First + Marketplace Opcional, 📊 3. Projeções Financeiras e Demonstrativo de Lucro (3 Anos), 🎯 4. Vantagens Estratégicas deste Modelo, Digital AIGarage (DAIG) - Deck de Apresentação para Investidores, Pitch Executive & Projeção Financeira (SaaS Gestão ERP/WMS + Marketplace Opcional 1-Clique), 📊 Tabela de Projeção Financeira (Ano 1 a Ano 3)
 
 ### Community 22 - "Ne"
-Cohesion: 0.08
-Nodes (14): TransactionManagement(), PLAN_DETAILS, SaasCompanySubscription, SaasControlCenter(), STORE_TYPE_CONFIG, Onboarding(), STORE_TYPES, WMSPage() (+6 more)
+Cohesion: 0.11
+Nodes (6): TransactionManagement(), loadGsiScript(), signInWithGoogle(), updateTransactionStatus(), PARTNER_PLANS, PartnerPlan
 
 ### Community 23 - "constructor"
 Cohesion: 0.29
@@ -336,16 +336,16 @@ Cohesion: 0.25
 Nodes (7): 🏛️ 1. Princípios Fundamentais Aplicados, 1. **Single Responsibility Principle (SRP - Princípio da Responsabilidade Única):**, 2. **Don't Repeat Yourself (DRY - Sem Duplicação de Código):**, 📂 2. Estrutura dos Arquivos Criados, ✅ 3. Benefícios da Refatoração, 3. **Dependency Inversion Principle (DIP - Inversão de Dependência):**, Guia de Arquitetura Limpa (Clean Architecture & SOLID) - DAIG
 
 ### Community 59 - "App.tsx"
-Cohesion: 0.05
-Nodes (43): AccountsPayable, AdminDashboard, AdminLayout, AgenciaPage, AiOpsPage, App(), Auctions, CarList (+35 more)
+Cohesion: 0.04
+Nodes (44): AccountsPayable, AdminDashboard, AdminLayout, AgenciaPage, AiOpsPage, Auctions, CarList, Catalog (+36 more)
 
 ### Community 61 - "EntregasPage.tsx"
-Cohesion: 0.21
-Nodes (4): SearchResult, TYPE_LABELS, STATUS_COLOR, STATUS_ENTREGA
+Cohesion: 0.15
+Nodes (10): SearchResult, TYPE_LABELS, authFetch(), ColetasPage(), DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup (+2 more)
 
 ### Community 63 - "LogistixDashboard.tsx"
-Cohesion: 0.10
-Nodes (11): DEFAULT_ICON, authFetch(), ColetasPage(), DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup, STATUS_COLOR (+3 more)
+Cohesion: 0.11
+Nodes (5): DEFAULT_ICON, STATUS_COLOR, STATUS_ENTREGA, adminApi, DashboardKPIs
 
 ### Community 66 - "ChatPopup.tsx"
 Cohesion: 0.25
@@ -356,20 +356,20 @@ Cohesion: 0.04
 Nodes (44): 10. Variáveis de Ambiente, 11. Códigos de Status de Envio, 12.1 Regras de Negócio, 12.2 Campos Obrigatórios para Etiqueta, 12. Considerações Importantes, 13.1 Contato Inicial, 13.2 Documentos Necessários, 13.3 Prazo Estimado (+36 more)
 
 ### Community 88 - "useAuthStore"
-Cohesion: 0.11
-Nodes (22): AdminLayout(), JapanBankAccount(), ChatPopup(), ContactsManagement(), OnboardingGuard(), ProtectedRoute(), Subscription(), AuthState (+14 more)
+Cohesion: 0.10
+Nodes (24): App(), AdminLayout(), Dashboard(), PREDEFINED_PERMISSIONS, UserManagement(), ContactsManagement(), Onboarding(), STORE_TYPES (+16 more)
 
 ### Community 89 - "J"
 Cohesion: 0.10
-Nodes (22): PREDEFINED_PERMISSIONS, UserManagement(), MapaPage(), PartDetailDrawer(), Props, PartsLookupHeader(), Props, Props (+14 more)
+Nodes (23): DeliveriesManagement(), DeliveryTransaction, Subscription(), PartDetailDrawer(), Props, PartsLookupHeader(), Props, Props (+15 more)
 
 ### Community 93 - "WorkerColetas.tsx"
 Cohesion: 0.07
-Nodes (21): getCityCoords(), getCurrentPositionSafe(), haversineKm(), JP_CITY_COORDS, sortByDistance(), getCurrentPosition(), mobileApi, BiometricScannerProps (+13 more)
+Nodes (20): getCityCoords(), getCurrentPositionSafe(), haversineKm(), JP_CITY_COORDS, sortByDistance(), getCurrentPosition(), mobileApi, BiometricScannerProps (+12 more)
 
 ### Community 105 - "dependencies"
 Cohesion: 0.18
-Nodes (11): axios, clsx, leaflet, lucide-react, dependencies, axios, clsx, leaflet (+3 more)
+Nodes (11): @base-ui/react, clsx, leaflet, lucide-react, dependencies, @base-ui/react, clsx, leaflet (+3 more)
 
 ### Community 111 - "WorkerApp-BWctDf0A.js"
 Cohesion: 0.05
@@ -636,21 +636,21 @@ Cohesion: 0.50
 Nodes (3): Concluídas ✅, Lista de Tarefas (Work in Progress), Pendentes ⏳
 
 ## Knowledge Gaps
-- **697 isolated node(s):** `build-apk.sh script`, `ANDROID_HOME`, `PATH`, `build-store-apk.sh script`, `ANDROID_HOME` (+692 more)
+- **699 isolated node(s):** `build-apk.sh script`, `ANDROID_HOME`, `PATH`, `build-store-apk.sh script`, `ANDROID_HOME` (+694 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **55 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `jsbarcode`, `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `shadcn`, `@tanstack/react-query`, `three`, `@supabase/supabase-js`, `.getSize`, `Wt`, `B`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `adminApi.test.ts`, `@base-ui/react`, `NotificationCenter.tsx`, `@capacitor/core`, `package.json`, `qrcode`?**
-  _High betweenness centrality (0.069) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `jsbarcode`, `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `shadcn`, `@tanstack/react-query`, `three`, `@supabase/supabase-js`, `.getSize`, `Wt`, `B`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `@base-ui/react`, `NotificationCenter.tsx`, `axios`, `@capacitor/core`, `package.json`, `qrcode`?**
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
 - **Why does `qrcode` connect `qrcode` to `dependencies`, `.push`?**
-  _High betweenness centrality (0.064) - this node is a cross-community bridge._
+  _High betweenness centrality (0.063) - this node is a cross-community bridge._
 - **Why does `LabelCard()` connect `.push` to `qrcode`, `J`?**
-  _High betweenness centrality (0.064) - this node is a cross-community bridge._
+  _High betweenness centrality (0.063) - this node is a cross-community bridge._
 - **What connects `build-apk.sh script`, `ANDROID_HOME`, `PATH` to the rest of the system?**
-  _697 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _699 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `LogistixDashboard-ZhczRoYg.js` be split into smaller, more focused modules?**
   _Cohesion score 0.125 - nodes in this community are weakly interconnected._
 - **Should `LogistixDashboard-ZhczRoYg.js` be split into smaller, more focused modules?**

@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1785354824.2034047,
-    "ast_hash": "dd1cc5a1ae753c5e2339bdac4ffa9a9a",
+    "mtime": 1785358913.1193964,
+    "ast_hash": "e5893167aa61fb47780d764f809e1076",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1785352814.731406,
-    "ast_hash": "f2240692b39992aae0a1d9dfdc2b5ee0",
+    "mtime": 1785358546.227404,
+    "ast_hash": "c497d20dd4f74c695bcccbec24dcf5d3",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": "4a6e421150d484766774f4c0520bc045"
   },
   "src/modules/transactions/api/api.ts": {
-    "mtime": 1784780422.740285,
-    "ast_hash": "70fa7317d0404d66e4a273f69c8b8196",
+    "mtime": 1785358780.8154044,
+    "ast_hash": "3fa2dc2e9418a290219139455b1ef693",
     "semantic_hash": ""
   },
   "src/modules/transactions/api/fees.ts": {
@@ -2780,18 +2780,18 @@
     "semantic_hash": ""
   },
   "src/modules/finance/pages/SaasControlCenter.tsx": {
-    "mtime": 1785353939.831404,
-    "ast_hash": "44620f116df3139352e19b49124dea21",
+    "mtime": 1785357979.563406,
+    "ast_hash": "14eb61c9b690efa96c0c7c7e7dcc136a",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {
-    "mtime": 1785353894.111405,
-    "ast_hash": "7e12ad2755dd388db9bfb8fd939f6f08",
+    "mtime": 1785358797.3754041,
+    "ast_hash": "d459ddb7c97b68b87c2d7ca65cceffa5",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/DeliveriesManagement.tsx": {
-    "mtime": 1785356455.3474028,
-    "ast_hash": "7c5eeb5679c7b8ede15d9fc91180e495",
+    "mtime": 1785357508.2273965,
+    "ast_hash": "25df75f0a3778845e0d156bf1c3be73a",
     "semantic_hash": ""
   }
 }

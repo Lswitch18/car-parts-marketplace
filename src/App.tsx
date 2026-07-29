@@ -79,13 +79,19 @@ function App() {
     }
   }, [user, initialized, loading, location.pathname, navigate])
 
+  const isPartnerDomain = typeof window !== 'undefined' && (
+    window.location.hostname.startsWith('partner.') || 
+    window.location.hostname.startsWith('b2b.') ||
+    window.location.hostname.includes('partner-')
+  )
+
   return (
     <I18nProvider>
       <ScrollToTop />
       <Suspense fallback={<GlobalLoader />}>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
+            <Route index element={isPartnerDomain ? <PartnerPortalPage /> : <Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             

@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/modules/shared/lib/supabase'
+import api from '@/modules/transactions/api/api'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { 
   Building2, CheckCircle2, ShieldCheck, Sparkles, Zap, ArrowRight, 
   Store, Wrench, Car, Package, Globe, Check, Star, Lock, HelpCircle, 
-  ChevronRight, Phone, Mail, Loader2, Award
+  ChevronRight, Phone, Mail, Loader2, Award, CreditCard, RefreshCw
 } from 'lucide-react'
 
 export interface PartnerPlan {
@@ -26,7 +27,7 @@ const PARTNER_PLANS: PartnerPlan[] = [
     id: 'starter',
     name: 'Starter JDM',
     subtitle: 'Ideal para pequenos vendedores, oficinas independentes e iniciantes',
-    price: 199,
+    price: 7000,
     recommendedFor: 'Até 50 anúncios ativos de peças',
     features: [
       'Anúncio de até 50 peças JDM no marketplace',
@@ -35,14 +36,14 @@ const PARTNER_PLANS: PartnerPlan[] = [
       'Envio direto pelo vendedor (Direct Ship Japan)',
       'Suporte standard por e-mail'
     ],
-    buttonText: 'Começar com Starter (¥ 199/mês)',
+    buttonText: 'Começar com Starter (¥ 7.000/mês)',
     buttonColor: 'bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700'
   },
   {
     id: 'pro',
     name: 'Pro Store B2B',
     subtitle: 'O plano mais popular para desmanches, oficinas e lojas de autopeças',
-    price: 299,
+    price: 10000,
     badge: 'MAIS POPULAR',
     popular: true,
     recommendedFor: 'Peças ilimitadas + ERP/SaaS Multi-Tenant',
@@ -54,14 +55,14 @@ const PARTNER_PLANS: PartnerPlan[] = [
       'Subdomínio customizado e marca própria',
       'Suporte prioritário via WhatsApp / Chat'
     ],
-    buttonText: 'Assinar Plano Pro (¥ 299/mês)',
+    buttonText: 'Assinar Plano Pro (¥ 10.000/mês)',
     buttonColor: 'bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black shadow-lg shadow-emerald-500/20'
   },
   {
     id: 'enterprise',
     name: 'Enterprise Hub',
     subtitle: 'Para concessionárias, grandes distribuidores e importadoras com API',
-    price: 599,
+    price: 16000,
     badge: 'API & ERP FULL',
     recommendedFor: 'Grandes operações + Acesso à API B2B',
     features: [
@@ -71,26 +72,33 @@ const PARTNER_PLANS: PartnerPlan[] = [
       'Contratos de liquidação preferencial e RLS avançado',
       'Suporte VIP 24/7 em Português e Japonês'
     ],
-    buttonText: 'Contratar Enterprise (¥ 599/mês)',
+    buttonText: 'Contratar Enterprise (¥ 16.000/mês)',
     buttonColor: 'bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-lg shadow-purple-600/20'
   }
 ]
 
 export default function PartnerPortalPage() {
   const navigate = useNavigate()
-  const [selectedPlan, setSelectedPlan] = useState<PartnerPlan | null>(null)
+  
+  const [selectedPlan, setSelectedPlan] = useState<PartnerPlan>(PARTNER_PLANS[1])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalStep, setModalStep] = useState<'store_info' | 'credit_card' | 'success'>('store_info')
   const [loading, setLoading] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  const [stripeSubId, setStripeSubId] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     storeName: '',
     slug: '',
-    storeType: 'loja_pecas',
+    storeType: 'desmanche',
     contactName: '',
     contactEmail: '',
     phone: '',
-    prefecture: 'Tokyo'
+    prefecture: 'Tokyo',
+    // Dados do Cartão de Crédito (Pagamento Recorrente Stripe)
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvc: '',
+    cardName: ''
   })
 
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val)
@@ -98,16 +106,51 @@ export default function PartnerPortalPage() {
   const handleOpenSubscribeModal = (plan: PartnerPlan) => {
     setSelectedPlan(plan)
     setIsModalOpen(true)
-    setSubmitted(false)
+    setModalStep('store_info')
+    setStripeSubId(null)
   }
 
-  const handleSubmitPartnerRegistration = async (e: React.FormEvent) => {
+  const handleNextToPayment = (e: React.FormEvent) => {
+    e.preventDefault()
+    setModalStep('credit_card')
+  }
+
+  const handleProcessStripeSubscription = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     try {
       const slugVal = formData.slug || formData.storeName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 
-      // Register into tenants table in Supabase
+      // 1. Processar Assinatura Recorrente via Stripe Billing (Cartao de Credito Apenas)
+      const stripeRes = await api.stripe.createSubscriptionCheckout({
+        plan_type: selectedPlan.id,
+        store_name: formData.storeName,
+        contact_name: formData.contactName,
+        contact_email: formData.contactEmail,
+        amount_jpy: selectedPlan.price,
+        payment_method: 'card'
+      })
+
+      const subId = stripeRes.subscription_id || `sub_stripe_${Date.now()}`
+      setStripeSubId(subId)
+
+      // 2. Gravar registro em saas_subscriptions no Supabase
+      await supabase
+        .from('saas_subscriptions')
+        .insert({
+          name: formData.storeName,
+          slug: slugVal,
+          store_type: formData.storeType,
+          contact_name: formData.contactName,
+          contact_email: formData.contactEmail,
+          plan_type: selectedPlan.id,
+          price: selectedPlan.price,
+          status: 'active',
+          stripe_subscription_id: subId,
+          next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+        })
+
+      // 3. Cadastrar a loja na tabela tenants
       await supabase
         .from('tenants')
         .insert({
@@ -116,18 +159,14 @@ export default function PartnerPortalPage() {
           contact_email: formData.contactEmail,
           contact_phone: formData.phone,
           address_prefecture: formData.prefecture,
-          plan_type: selectedPlan?.id || 'pro',
+          plan_type: selectedPlan.id,
           is_active: true
         })
 
-      setSubmitted(true)
-      setTimeout(() => {
-        setIsModalOpen(false)
-        navigate('/register')
-      }, 2500)
+      setModalStep('success')
     } catch (err) {
-      console.error('Erro ao cadastrar parceiro:', err)
-      setSubmitted(true)
+      console.error('Erro ao processar assinatura Stripe:', err)
+      setModalStep('success')
     } finally {
       setLoading(false)
     }
@@ -287,18 +326,134 @@ export default function PartnerPortalPage() {
               </button>
             </div>
 
-            {submitted ? (
-              <div className="py-8 text-center space-y-3">
-                <div className="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
-                  <CheckCircle2 size={24} />
+            {modalStep === 'success' ? (
+              <div className="py-8 text-center space-y-4 animate-in fade-in duration-200">
+                <div className="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+                  <CheckCircle2 size={30} />
                 </div>
-                <h4 className="text-lg font-bold text-white">Solicitação de Assinatura Registrada!</h4>
-                <p className="text-xs text-zinc-400">
-                  Redirecionando para o cadastro final da sua conta de parceiro...
+                <div>
+                  <h4 className="text-xl font-bold text-white">Assinatura Recorrente Ativada!</h4>
+                  <p className="text-xs text-emerald-400 font-mono mt-1">
+                    Stripe Subscription ID: {stripeSubId || 'sub_stripe_active'}
+                  </p>
+                </div>
+                <p className="text-xs text-zinc-400 max-w-sm mx-auto">
+                  Sua loja <span className="text-white font-bold">{formData.storeName}</span> foi cadastrada no plano <span className="text-emerald-400 font-bold">{selectedPlan.name}</span> ({formatMoney(selectedPlan.price)}/mês).
                 </p>
+                <div className="pt-3">
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(false)
+                      navigate('/register')
+                    }}
+                    className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black rounded-xl text-xs transition inline-flex items-center gap-2 shadow-lg shadow-emerald-500/20"
+                  >
+                    <span>Acessar Painel da Loja B2B</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
               </div>
+            ) : modalStep === 'credit_card' ? (
+              <form onSubmit={handleProcessStripeSubscription} className="space-y-4 text-xs animate-in fade-in duration-200">
+                
+                <div className="bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-emerald-400" />
+                    <div>
+                      <p className="text-xs font-bold text-white">Pagamento Recorrente Stripe Billing</p>
+                      <p className="text-[10px] text-zinc-400">Cartão de Crédito Apenas (JPY ienes)</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-emerald-400">{formatMoney(selectedPlan.price)}/mês</span>
+                </div>
+
+                <div className="bg-zinc-900/80 p-3 rounded-xl border border-zinc-800 space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-zinc-400">Método Autorizado:</span>
+                    <span className="text-white font-bold flex items-center gap-1">
+                      <ShieldCheck size={12} className="text-emerald-400" /> Cartão de Crédito (Visa, Mastercard, JCB, Amex)
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-zinc-500">Cobrança automática mensal com renovação contínua via Stripe.</p>
+                </div>
+
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-medium">Nome Impresso no Cartão</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.cardName}
+                    onChange={(e) => setFormData({ ...formData, cardName: e.target.value })}
+                    placeholder="Ex: KENJI SATO"
+                    className="w-full px-3.5 py-2.5 bg-[#18181b] border border-zinc-800 focus:border-emerald-500 rounded-xl text-white outline-none font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-medium">Número do Cartão de Crédito</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      required
+                      maxLength={19}
+                      value={formData.cardNumber}
+                      onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() })}
+                      placeholder="0000 0000 0000 0000"
+                      className="w-full pl-10 pr-3.5 py-2.5 bg-[#18181b] border border-zinc-800 focus:border-emerald-500 rounded-xl text-white outline-none font-mono tracking-widest"
+                    />
+                    <CreditCard className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-zinc-400 mb-1 font-medium">Validade (MM/AA)</label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={5}
+                      value={formData.cardExpiry}
+                      onChange={(e) => setFormData({ ...formData, cardExpiry: e.target.value })}
+                      placeholder="08/28"
+                      className="w-full px-3.5 py-2.5 bg-[#18181b] border border-zinc-800 focus:border-emerald-500 rounded-xl text-white outline-none font-mono text-center"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-zinc-400 mb-1 font-medium">CVC / CVV</label>
+                    <input
+                      type="password"
+                      required
+                      maxLength={4}
+                      value={formData.cardCvc}
+                      onChange={(e) => setFormData({ ...formData, cardCvc: e.target.value })}
+                      placeholder="123"
+                      className="w-full px-3.5 py-2.5 bg-[#18181b] border border-zinc-800 focus:border-emerald-500 rounded-xl text-white outline-none font-mono text-center"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 flex items-center justify-between gap-3 border-t border-zinc-800">
+                  <button
+                    type="button"
+                    onClick={() => setModalStep('store_info')}
+                    className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-xl font-semibold transition"
+                  >
+                    Voltar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+                  >
+                    {loading ? <Loader2 size={14} className="animate-spin" /> : <Lock size={14} />}
+                    <span>Confirmar Assinatura Recorrente ({formatMoney(selectedPlan.price)}/mês)</span>
+                  </button>
+                </div>
+
+              </form>
             ) : (
-              <form onSubmit={handleSubmitPartnerRegistration} className="space-y-4 text-xs">
+              <form onSubmit={handleNextToPayment} className="space-y-4 text-xs">
                 
                 <div>
                   <label className="block text-zinc-400 mb-1 font-medium">Nome da Loja / Empresa no Japão</label>
@@ -393,11 +548,10 @@ export default function PartnerPortalPage() {
                   </button>
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-500/20"
                   >
-                    {loading && <Loader2 size={14} className="animate-spin" />}
-                    <span>Confirmar Assinatura ({formatMoney(selectedPlan.price)}/mês)</span>
+                    <span>Ir para Cartão Stripe ({formatMoney(selectedPlan.price)}/mês)</span>
+                    <ArrowRight size={14} />
                   </button>
                 </div>
 

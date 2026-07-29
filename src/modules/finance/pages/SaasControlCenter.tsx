@@ -25,9 +25,9 @@ export interface SaasCompanySubscription {
 }
 
 const PLAN_DETAILS = {
-  starter: { name: 'Starter', price: 199, color: 'border-blue-500/30 text-blue-400 bg-blue-500/10' },
-  pro: { name: 'Pro', price: 299, color: 'border-purple-500/30 text-purple-400 bg-purple-500/10' },
-  enterprise: { name: 'Enterprise', price: 599, color: 'border-amber-500/30 text-amber-400 bg-amber-500/10' },
+  starter: { name: 'Starter', price: 7000, color: 'border-blue-500/30 text-blue-400 bg-blue-500/10' },
+  pro: { name: 'Pro', price: 10000, color: 'border-purple-500/30 text-purple-400 bg-purple-500/10' },
+  enterprise: { name: 'Enterprise', price: 16000, color: 'border-amber-500/30 text-amber-400 bg-amber-500/10' },
 }
 
 const STORE_TYPE_CONFIG = {
@@ -106,73 +106,29 @@ export default function SaasControlCenter() {
         })
       }
 
-      // Add stores from profiles if not already added
-      if (profileData && profileData.length > 0) {
-        profileData.forEach((p, index) => {
-          const exists = combined.some(c => c.contact_email === p.email)
-          if (!exists) {
-            const plan: 'starter' | 'pro' | 'enterprise' = index % 2 === 0 ? 'pro' : 'starter'
-            const storeType = p.store_type || p.account_type || 'loja_pecas'
-            combined.push({
-              id: p.id,
-              name: p.store_name || p.full_name || 'Loja Autopeças JDM',
-              slug: (p.store_name || p.full_name || 'store').toLowerCase().replace(/\s+/g, '-'),
-              store_type: (storeType in STORE_TYPE_CONFIG ? storeType : 'loja_pecas') as any,
-              contact_name: p.full_name || p.name || 'Proprietário',
-              contact_email: p.email || 'vendedor@daig.jp',
-              plan_type: plan,
-              plan_price: PLAN_DETAILS[plan].price,
-              status: p.store_status === 'approved' || p.is_verified ? 'active' : p.store_status === 'pending' ? 'pending' : 'active',
-              next_billing_date: new Date(Date.now() + (15 + index * 3) * 24 * 60 * 60 * 1000).toISOString(),
-              created_at: p.created_at || new Date().toISOString()
-            })
-          }
-        })
-      }
+      // Somente assinaturas SaaS reais criadas no banco de dados saas_subscriptions
+      const { data: realSubscriptions, error: subErr } = await supabase
+        .from('saas_subscriptions')
+        .select('*')
+        .order('created_at', { ascending: false })
 
-      // Fallback demo data if database has zero stores yet
-      if (combined.length === 0) {
-        combined.push(
-          {
-            id: 'demo-1',
-            name: 'Desmanche Tokyo JDM Parts',
-            slug: 'desmanche-tokyo',
-            store_type: 'desmanche',
-            contact_name: 'Kenji Sato',
-            contact_email: 'kenji@desmanchetokyo.jp',
-            plan_type: 'pro',
-            plan_price: 30000,
-            status: 'active',
-            next_billing_date: '2026-08-15T00:00:00.000Z',
-            created_at: '2026-01-10T00:00:00.000Z'
-          },
-          {
-            id: 'demo-2',
-            name: 'Osaka Performance Works',
-            slug: 'osaka-performance',
-            store_type: 'oficina',
-            contact_name: 'Hiroshi Tanaka',
-            contact_email: 'osaka.works@jdm.jp',
-            plan_type: 'enterprise',
-            plan_price: 60000,
-            status: 'active',
-            next_billing_date: '2026-08-20T00:00:00.000Z',
-            created_at: '2026-02-01T00:00:00.000Z'
-          },
-          {
-            id: 'demo-3',
-            name: 'Nagoya Auto Importadora Direct',
-            slug: 'nagoya-auto-import',
-            store_type: 'importadora',
-            contact_name: 'Takeshi Yamada',
-            contact_email: 'takeshi@nagoyaauto.co.jp',
-            plan_type: 'starter',
-            plan_price: 15000,
-            status: 'active',
-            next_billing_date: '2026-08-28T00:00:00.000Z',
-            created_at: '2026-03-15T00:00:00.000Z'
-          }
-        )
+      if (!subErr && realSubscriptions && realSubscriptions.length > 0) {
+        realSubscriptions.forEach((sub: any) => {
+          const plan = (sub.plan_type as 'starter' | 'pro' | 'enterprise') || 'pro'
+          combined.push({
+            id: sub.id,
+            name: sub.store_name || sub.name || 'Loja Parceira',
+            slug: sub.slug || (sub.store_name || 'loja').toLowerCase().replace(/\s+/g, '-'),
+            store_type: (sub.store_type || 'loja_pecas') as any,
+            contact_name: sub.contact_name || 'Responsável',
+            contact_email: sub.contact_email || 'contato@loja.jp',
+            plan_type: plan,
+            plan_price: sub.price || PLAN_DETAILS[plan]?.price || 10000,
+            status: sub.status || 'active',
+            next_billing_date: sub.next_billing_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            created_at: sub.created_at || new Date().toISOString()
+          })
+        })
       }
 
       setSubscriptions(combined)
@@ -484,9 +440,9 @@ export default function SaasControlCenter() {
               className="bg-transparent text-xs text-white outline-none cursor-pointer"
             >
               <option value="all" className="bg-zinc-900">Todos os Planos</option>
-              <option value="starter" className="bg-zinc-900">Starter (¥199)</option>
-              <option value="pro" className="bg-zinc-900">Pro (¥299)</option>
-              <option value="enterprise" className="bg-zinc-900">Enterprise (¥599)</option>
+              <option value="starter" className="bg-zinc-900">Starter (¥7.000)</option>
+              <option value="pro" className="bg-zinc-900">Pro (¥10.000)</option>
+              <option value="enterprise" className="bg-zinc-900">Enterprise (¥16.000)</option>
             </select>
           </div>
         </div>
@@ -712,9 +668,9 @@ export default function SaasControlCenter() {
                     onChange={(e) => setFormData({ ...formData, plan_type: e.target.value as any })}
                     className="w-full px-3 py-2 bg-[#18181b] border border-[#27272a] rounded-lg text-white font-bold outline-none focus:border-zinc-500"
                   >
-                    <option value="starter">Plano Starter (¥ 199/mês)</option>
-                    <option value="pro">Plano Pro (¥ 299/mês)</option>
-                    <option value="enterprise">Plano Enterprise (¥ 599/mês)</option>
+                    <option value="starter">Plano Starter (¥ 7.000/mês)</option>
+                    <option value="pro">Plano Pro (¥ 10.000/mês)</option>
+                    <option value="enterprise">Plano Enterprise (¥ 16.000/mês)</option>
                   </select>
                 </div>
 

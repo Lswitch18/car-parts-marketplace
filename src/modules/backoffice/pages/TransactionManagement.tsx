@@ -58,18 +58,22 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
 
           {/* Financial Breakdown */}
           <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4 space-y-2.5">
-            <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Detalhamento Financeiro</p>
+            <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Detalhamento Financeiro & Taxas Stripe</p>
             <div className="space-y-1.5 text-xs font-mono">
               <div className="flex justify-between text-zinc-300">
-                <span>Valor Total Bruto:</span>
+                <span>Valor Total Pago (Stripe):</span>
                 <span className="font-bold text-white">{formatMoney(amount)}</span>
               </div>
-              <div className="flex justify-between text-zinc-400">
+              <div className="flex justify-between text-amber-400/90">
+                <span>Taxa Cartão Stripe Japan (3.6%):</span>
+                <span className="font-bold">-{formatMoney(amount * 0.036)}</span>
+              </div>
+              <div className="flex justify-between text-cyan-400">
                 <span>Comissão DAIG ({commissionRate}%):</span>
-                <span className="font-bold text-cyan-400">-{formatMoney(fee)}</span>
+                <span className="font-bold">+{formatMoney(fee)}</span>
               </div>
               <div className="border-t border-[#27272a] pt-2 flex justify-between text-zinc-200">
-                <span className="font-sans font-semibold">Repasse Líquido Vendedor:</span>
+                <span className="font-sans font-semibold">Repasse Líquido Vendedor (90%):</span>
                 <span className="font-bold text-emerald-400">{formatMoney(sellerNet)}</span>
               </div>
             </div>
@@ -145,7 +149,8 @@ export default function TransactionManagement() {
   const [commissionRate, setCommissionRate] = useState<number>(10);
   const [tempRate, setTempRate] = useState<string>('10');
   const [savingRate, setSavingRate] = useState(false);
-  const [activeStoresCount, setActiveStoresCount] = useState<number>(2);
+  const [activeStoresCount, setActiveStoresCount] = useState<number>(0);
+  const [saasRevenueTotal, setSaasRevenueTotal] = useState<number>(0);
 
   useEffect(() => {
     fetchTransactions();
@@ -155,15 +160,27 @@ export default function TransactionManagement() {
 
   const fetchActiveStores = async () => {
     try {
-      const { count } = await supabase
-        .from('profiles')
-        .select('id', { count: 'exact' })
-        .or('role.eq.seller,account_type.neq.pessoa_fisica');
-      if (count !== null && count > 0) {
+      const { data, count } = await supabase
+        .from('saas_subscriptions')
+        .select('price, status', { count: 'exact' })
+        .eq('status', 'active');
+      
+      if (count !== null) {
         setActiveStoresCount(count);
+      } else {
+        setActiveStoresCount(0);
+      }
+
+      if (data && data.length > 0) {
+        const total = data.reduce((sum, s) => sum + parseFloat(s.price || 0), 0);
+        setSaasRevenueTotal(total);
+      } else {
+        setSaasRevenueTotal(0);
       }
     } catch (err) {
-      console.error('Erro ao buscar lojas ativas:', err);
+      console.error('Erro ao buscar assinaturas SaaS ativas:', err);
+      setActiveStoresCount(0);
+      setSaasRevenueTotal(0);
     }
   };
 
@@ -299,19 +316,25 @@ export default function TransactionManagement() {
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
   const retidoVal = transactions
-    .filter(t => t.payment_status === 'escrow' || (t.payment_status === 'paid' && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed'))
+    .filter(t => t.payment_status === 'escrow' || ((t.payment_status === 'paid' || t.payment_status === 'completed') && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed' && t.fulfillment_status !== 'received'))
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
   const pagosVal = transactions
-    .filter(t => t.payment_status === 'paid' && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed'))
+    .filter(t => (t.payment_status === 'paid' || t.payment_status === 'completed') && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed' || t.fulfillment_status === 'received'))
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (1 - commissionRate / 100), 0);
 
   const lucroBruto = transactions
-    .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow')
+    .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (commissionRate / 100), 0);
 
-  const receitaSaaS = activeStoresCount * 15000;
-  const lucroTotal = lucroBruto + receitaSaaS;
+  const totalStripeFees = transactions
+    .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed')
+    .reduce((sum, t) => sum + parseFloat(t.amount || 0) * 0.036, 0);
+
+  const retidoStripeFee = retidoVal * 0.036;
+
+  const receitaSaaS = saasRevenueTotal;
+  const lucroLiquidoPlataforma = (lucroBruto - totalStripeFees) + receitaSaaS;
 
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/" replace />;
@@ -415,7 +438,7 @@ export default function TransactionManagement() {
           <p className="text-[11px] text-zinc-500 mt-2">Clique para listar compras pendentes de recuperação</p>
         </div>
 
-        {/* Card 2: Custódia Retida (Escrow) */}
+        {/* Card 2: Custódia Retida (Escrow no Stripe) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
           className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
@@ -424,11 +447,11 @@ export default function TransactionManagement() {
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('CUSTÓDIA RETIDA')}</span>
+              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('CUSTÓDIA RETIDA STRIPE')}</span>
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-sky-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
-                  Fundos retidos com segurança em conta de custódia Escrow JPY até confirmação de entrega pelo comprador.
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                  Fundos retidos com segurança na conta Stripe Escrow JPY até confirmação de entrega pelo cliente.
                 </div>
               </div>
             </div>
@@ -439,7 +462,16 @@ export default function TransactionManagement() {
           <p className="text-2xl font-bold text-sky-400 font-mono tracking-tight">
             {formatMoney(retidoVal)}
           </p>
-          <p className="text-[11px] text-zinc-500 mt-2">Retido até confirmação de entrega pelo cliente</p>
+          <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
+            <div className="flex justify-between">
+              <span>Taxa Stripe (3.6%):</span>
+              <span className="text-amber-400">-{formatMoney(retidoStripeFee)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Escrow Líquido Retido:</span>
+              <span className="text-white font-bold">{formatMoney(retidoVal - retidoStripeFee)}</span>
+            </div>
+          </div>
         </div>
 
         {/* Card 3: Pagos ao Vendedor */}
@@ -477,19 +509,23 @@ export default function TransactionManagement() {
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
                 <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-56 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
-                  Receita total da DAIG: Comissão de {commissionRate}% sobre as vendas do marketplace + Assinaturas SaaS das Lojas B2B ativas.
+                  Lucro líquido da DAIG (Comissão de {commissionRate}% sobre vendas - Taxas do Stripe 3.6% + Assinaturas SaaS).
                 </div>
               </div>
             </div>
             <DollarSign size={14} className="text-emerald-400" />
           </div>
           <p className="text-2xl font-bold text-emerald-400 font-mono tracking-tight">
-            {formatMoney(lucroTotal)}
+            {formatMoney(lucroLiquidoPlataforma)}
           </p>
           <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
             <div className="flex justify-between">
               <span>Bruto ({commissionRate}%):</span>
               <span className="text-white">{formatMoney(lucroBruto)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Taxas Stripe (3.6%):</span>
+              <span className="text-amber-400">-{formatMoney(totalStripeFees)}</span>
             </div>
             <div className="flex justify-between">
               <span>Assinaturas SaaS ({activeStoresCount} Lojas):</span>

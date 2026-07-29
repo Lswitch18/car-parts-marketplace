@@ -90,8 +90,9 @@ export default function DeliveriesManagement() {
           payment_status,
           fulfillment_status,
           created_at,
-          parts (title, profiles:seller_id (full_name, store_name)),
-          profiles:buyer_id (full_name, email)
+          buyer:profiles!transactions_buyer_id_fkey(email, full_name),
+          seller:profiles!transactions_seller_id_fkey(email, full_name, store_name),
+          part:parts!transactions_part_id_fkey(title)
         `)
         .order('created_at', { ascending: false })
 
@@ -107,9 +108,9 @@ export default function DeliveriesManagement() {
           tracking_number: tx.fulfillment_status === 'shipped' || tx.fulfillment_status === 'received' ? `JP-${tx.id.substring(0, 8).toUpperCase()}` : undefined,
           carrier_name: 'Japan Post (JP Post)',
           shipping_address: 'Tokyo, Minato-ku 106-0032',
-          part_title: tx.parts?.title || 'Kit Tampas de Válvula JDM',
-          seller_name: tx.parts?.profiles?.store_name || tx.parts?.profiles?.full_name || 'Vendedor JDM Japão',
-          buyer_name: tx.profiles?.full_name || tx.profiles?.email || 'Comprador Marketplace',
+          part_title: tx.part?.title || tx.parts?.title || 'Kit Tampas de Válvula JDM',
+          seller_name: tx.seller?.store_name || tx.seller?.full_name || 'Vendedor JDM Japão',
+          buyer_name: tx.buyer?.full_name || tx.buyer?.email || 'Comprador Marketplace',
           confirmed_by_buyer_at: tx.fulfillment_status === 'received' || tx.fulfillment_status === 'completed' ? tx.created_at : undefined
         }))
         setDeliveries(formatted)
