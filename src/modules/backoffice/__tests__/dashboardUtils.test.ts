@@ -30,8 +30,8 @@ describe('Backoffice Module - Dashboard Utils', () => {
 
   describe('calculateFinanceStats', () => {
     it('deve retornar zeros quando os dados de transações forem nulos ou vazios', () => {
-      expect(calculateFinanceStats(null)).toEqual({ gmv: 0, escrow: 0, activeOrders: 0, netProfit: 0 });
-      expect(calculateFinanceStats([])).toEqual({ gmv: 0, escrow: 0, activeOrders: 0, netProfit: 0 });
+      expect(calculateFinanceStats(null)).toEqual({ gmv: 0, escrow: 0, activeOrders: 0, netProfit: 0, totalTransactions: 0, completedTransactions: 0 });
+      expect(calculateFinanceStats([])).toEqual({ gmv: 0, escrow: 0, activeOrders: 0, netProfit: 0, totalTransactions: 0, completedTransactions: 0 });
     });
 
     it('deve calcular GMV e Lucro Líquido (10%) corretamente apenas para transações pagas e concluídas', () => {

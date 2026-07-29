@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/AdminLayout.tsx": {
-    "mtime": 1785354837.1474042,
-    "ast_hash": "b251cdad99314f049476ce3cc82ddee6",
+    "mtime": 1785366685.2914014,
+    "ast_hash": "5e669f807a502e49f007a17d8b573662",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AdminDashboard.tsx": {
@@ -515,9 +515,9 @@
     "semantic_hash": "e48725915cf51cca6bbb970755fadc3f"
   },
   "src/modules/finance/pages/AccountsPayable.tsx": {
-    "mtime": 1781833815.2876163,
-    "ast_hash": "f1cf120a37c2d6cebceaf254bca00415",
-    "semantic_hash": "f1cf120a37c2d6cebceaf254bca00415"
+    "mtime": 1785366493.4994018,
+    "ast_hash": "8cf26cbdcad6c11d7a1d89e33e5edb63",
+    "semantic_hash": ""
   },
   "src/modules/identity/__tests__/authStore.test.ts": {
     "mtime": 1781836860.3596113,
@@ -2792,6 +2792,11 @@
   "src/modules/backoffice/pages/DeliveriesManagement.tsx": {
     "mtime": 1785357508.2273965,
     "ast_hash": "25df75f0a3778845e0d156bf1c3be73a",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/lib/securitySanitizer.ts": {
+    "mtime": 1785366664.4914014,
+    "ast_hash": "3b1dc31f42a43a15d90fa90035ad75fd",
     "semantic_hash": ""
   }
 }

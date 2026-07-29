@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { LayoutDashboard, Activity, Bell, MoreHorizontal, Search, ChevronRight, Package, Truck, CreditCard, DollarSign, Image as ImageIcon, Users, Star, Building2, Menu, X, Brain } from 'lucide-react';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 
@@ -7,6 +7,11 @@ export default function AdminLayout() {
   const location = useLocation();
   const { user, signOut } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Fail-Closed Security Guard: Restrict admin layout strictly to admin users (CWE-285)
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/login" replace />;
+  }
 
   const NAV_ITEMS = [
     { section: 'OVERVIEW' },
