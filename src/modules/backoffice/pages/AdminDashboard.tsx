@@ -149,7 +149,7 @@ export default function AdminDashboard() {
       <div className="bg-[#121215] border border-[#27272a] p-4 md:p-5 rounded-xl flex flex-col xl:flex-row xl:items-center justify-between gap-4 overflow-hidden">
         <div className="min-w-0">
           <h1 className="text-xl font-bold text-white tracking-tight">DAIG Admin Control Center</h1>
-          <p className="text-xs text-zinc-400 mt-0.5">Visão consolidada — Vendas, Escrow, Logística WMS Japão e Motor 3D</p>
+          <p className="text-xs text-zinc-400 mt-0.5">Visão consolidada — Vendas, Escrow, Envios Diretos Japão e Motor 3D</p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
@@ -275,13 +275,13 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Card 4: WMS Logística */}
+            {/* Card 4: Envios Diretos */}
             <div 
-              onClick={() => navigate('/admin/logistix')}
+              onClick={() => navigate('/admin/transactions')}
               className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Envios Logistix WMS')}</span>
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Envios Diretos (Vendedor)')}</span>
                 <span className="text-[10px] text-zinc-400 font-mono flex items-center gap-1">
                   <Globe size={10} /> JP
                 </span>
@@ -312,7 +312,7 @@ export default function AdminDashboard() {
           {[
             { icon: Plus, label: '+ Novo Anúncio', desc: 'Cadastrar peças JDM', path: '/create-listing' },
             { icon: Cpu, label: 'Scanner IA 3D', desc: 'Gerar modelo por imagem', path: '/admin/image-to-3d' },
-            { icon: MapPin, label: 'Logistix WMS', desc: 'CDs e entregas Japão', path: '/admin/logistix' },
+            { icon: ShieldCheck, label: 'Transações', desc: 'Gestão de envios e entregas', path: '/admin/transactions' },
             { icon: BarChart3, label: 'Relatórios', desc: 'Balanço e repasses', path: '/admin/finance/payable' },
           ].map((item, i) => {
             const Icon = item.icon;

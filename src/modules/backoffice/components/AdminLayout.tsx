@@ -15,7 +15,6 @@ export default function AdminLayout() {
     { divider: true },
     
     { section: 'OPERATIONS' },
-    { label: 'Logistix WMS', path: '/admin/logistix', icon: Package },
     { label: 'Fleet & Drivers', path: '/admin/transportation/drivers', icon: Truck },
     { divider: true },
 

@@ -411,9 +411,9 @@ export default function HomeLanding() {
               <div className="p-4 bg-[#7000FF]/10 rounded-2xl w-fit border border-[#7000FF]/20 group-hover:bg-[#7000FF] group-hover:text-black transition-all">
                 <Layers className="w-8 h-8 text-[#7000FF] group-hover:text-black" />
               </div>
-              <h3 className="text-xl font-bold text-white font-display">Logistix WMS 3D</h3>
+              <h3 className="text-xl font-bold text-white font-display">Envio Direto Japão (Direct Ship)</h3>
               <p className="text-gray-400 text-sm leading-relaxed font-light">
-                Totalmente integrado com nosso WMS inteligente. Toda peça comprada é automaticamente roteada em tempo real pelas maiores transportadoras japonesas (Yamato/Sagawa).
+                Total transparência e agilidade. O próprio vendedor japonês despacha a peça com rastreamento direto e a transação só é concluída após a sua confirmação.
               </p>
             </div>
 

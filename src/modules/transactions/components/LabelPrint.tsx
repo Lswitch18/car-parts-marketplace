@@ -44,7 +44,7 @@ export default function LabelPrint({ pedido, onClose }: Props) {
           {/* Header */}
           <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
             <div>
-              <p className="text-xs text-gray-500 font-medium">DAIG LOGISTIX</p>
+              <p className="text-xs text-gray-500 font-medium">DAIG MARKETPLACE DIRECT SHIP</p>
               <p className="text-lg font-black tracking-tight">ETIQUETA DE ENVIO</p>
             </div>
             <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white text-xl font-black">
@@ -99,7 +99,7 @@ export default function LabelPrint({ pedido, onClose }: Props) {
 
           {/* Tracking Steps Preview */}
           <div className="border-t border-gray-200 pt-3">
-            <p className="text-[10px] text-gray-400 text-center">logistix.daig.jp/rastreamento/{p.codigo || ''}</p>
+            <p className="text-[10px] text-gray-400 text-center">daig.jp/rastreamento/{p.codigo || ''}</p>
           </div>
         </div>
 

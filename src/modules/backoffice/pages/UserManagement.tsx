@@ -1713,8 +1713,8 @@ export default function UserManagement() {
                 )}
               </div>
 
-              {/* Warehouse permissions (Logistix integration) */}
-              <div>
+              {/* Warehouse permissions (Logistix integration - Oculto no modelo Direct Ship) */}
+              {/* <div>
                 <span className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-2">{t('Vincular Acesso a Armazéns (Logistix WMS)')}</span>
                 <div className="grid grid-cols-2 gap-2 border-2 border-[#333] rounded-xl p-4 bg-[#111] max-h-40 overflow-y-auto">
                   {armazens.map(a => {
@@ -1732,7 +1732,7 @@ export default function UserManagement() {
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="p-4 bg-[#111] border-t-2 border-[#333]/15 flex justify-end gap-3">

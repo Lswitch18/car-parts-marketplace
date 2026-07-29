@@ -333,20 +333,6 @@ export default function Header() {
                             {t('Painel Admin')}
                           </Link>
                           <Link
-                            to="/admin/logistix"
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-                            style={{ color: '#3b82f6' }}
-                            onMouseEnter={(e) =>
-                              ((e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.1)')
-                            }
-                            onMouseLeave={(e) =>
-                              ((e.currentTarget as HTMLElement).style.background = 'transparent')
-                            }
-                          >
-                            <Package className="w-4 h-4" />
-                            {t('Logistix WMS')}
-                          </Link>
-                          <Link
                             to="/admin/image-to-3d"
                             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
                             style={{ color: '#a855f7' }}

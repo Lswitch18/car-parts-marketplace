@@ -151,8 +151,7 @@ export default function MotionFramePage() {
               <div>
                 <h3 className="text-lg font-bold text-white mb-2">Aplicação Prática no DAIG</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Esta expertise 3D foi empregada no desenvolvimento do módulo <Link to="/admin" className="text-purple-400 hover:underline font-semibold">Armazém 3D Logistix WMS</Link>, 
-                  proporcionando monitoramento volumétrico em tempo real de contêineres e prateleiras para frotas de peças japonesas.
+                  Esta expertise 3D é empregada na visualização tridimensional interativa de peças e componentes mecânicos JDM do catálogo da plataforma.
                 </p>
               </div>
             </div>

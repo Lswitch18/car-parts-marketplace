@@ -107,7 +107,7 @@ export default function LegalNotice() {
               </li>
               <li className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-gray-400">Operadores Logísticos:</span>
-                <span className="font-semibold text-white">Logistix, Yamato Transport, Sagawa</span>
+                <span className="font-semibold text-white">Yamato Transport, Sagawa, Japan Post</span>
               </li>
               <li className="flex justify-between pb-1">
                 <span className="text-gray-400">Garantia em Custódia:</span>

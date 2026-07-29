@@ -121,7 +121,7 @@ function App() {
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="logistix" element={<LogistixDashboard />} />
+              {/* <Route path="logistix" element={<LogistixDashboard />} /> */}
               <Route path="users" element={<UserManagement />} />
               <Route path="transactions" element={<TransactionManagement />} />
               <Route path="reviews" element={<ReviewManagement />} />

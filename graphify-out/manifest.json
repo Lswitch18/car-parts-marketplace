@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1785293059.0932105,
-    "ast_hash": "2abda3effab81a5ed9047b81402fa961",
+    "mtime": 1785348996.1994016,
+    "ast_hash": "73769666e3908a2bc1de23405165ebd4",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -455,13 +455,13 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/AdminLayout.tsx": {
-    "mtime": 1782875999.051403,
-    "ast_hash": "0ed52b9ca01a99d0bf50f25c496979d2",
-    "semantic_hash": "0ed52b9ca01a99d0bf50f25c496979d2"
+    "mtime": 1785349015.8114016,
+    "ast_hash": "0e698dda374b6b1a347a2703458e034a",
+    "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AdminDashboard.tsx": {
-    "mtime": 1784780538.2882853,
-    "ast_hash": "71460731ba9fa8e5e43d48f43566c5bb",
+    "mtime": 1785349492.5514073,
+    "ast_hash": "5adcc08aa069e1de263236d630d12e6f",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AiOpsPage.tsx": {
@@ -480,9 +480,9 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
-    "mtime": 1782501442.375248,
-    "ast_hash": "dc41fda1302ad29b4c8ff2f0ce5787e6",
-    "semantic_hash": "dc41fda1302ad29b4c8ff2f0ce5787e6"
+    "mtime": 1785349084.991401,
+    "ast_hash": "28a7ace8f83e75455665aefd6f723057",
+    "semantic_hash": ""
   },
   "src/modules/chat/__tests__/chatLogic.test.ts": {
     "mtime": 1781836884.7876108,
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Header.tsx": {
-    "mtime": 1785299181.9234416,
-    "ast_hash": "fae5ea3aa3c8b2304a7bc3e22384ecc4",
+    "mtime": 1785349030.7474012,
+    "ast_hash": "0d9ed6fd7458a910a542d328dae5f2f8",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Layout.tsx": {
@@ -1015,9 +1015,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/HomeLanding.tsx": {
-    "mtime": 1781833815.3996162,
-    "ast_hash": "e124f13338763ab5497ff49af75d2cf7",
-    "semantic_hash": "e124f13338763ab5497ff49af75d2cf7"
+    "mtime": 1785349170.1313996,
+    "ast_hash": "23233f83bf232184dc901de57be216d5",
+    "semantic_hash": ""
   },
   "src/modules/storefront/pages/MobileStoreHome.tsx": {
     "mtime": 1781927374.406534,
@@ -1050,9 +1050,9 @@
     "semantic_hash": "3e1c050f1f7fc0ddb0f84a9e98ed26d7"
   },
   "src/modules/transactions/components/LabelPrint.tsx": {
-    "mtime": 1781833815.3356164,
-    "ast_hash": "9a1d211aa7d8e4d268d70cb57b7a19fe",
-    "semantic_hash": "9a1d211aa7d8e4d268d70cb57b7a19fe"
+    "mtime": 1785349617.8314033,
+    "ast_hash": "701865191612baabd62c2cf7c04dbd1d",
+    "semantic_hash": ""
   },
   "src/modules/transactions/components/PurchaseFlow.tsx": {
     "mtime": 1781833815.3356164,
@@ -1090,8 +1090,8 @@
     "semantic_hash": "9652cdcc58c56a93bc72779c241629c2"
   },
   "src/modules/transactions/pages/PaymentCheckout.tsx": {
-    "mtime": 1783959932.2744935,
-    "ast_hash": "bed6c93016ebbc769e8801194671566a",
+    "mtime": 1785349128.379401,
+    "ast_hash": "620214251f8c6b6acb92a71e75ea4a6b",
     "semantic_hash": ""
   },
   "src/modules/transportation/__tests__/driver-biometrics.test.ts": {
@@ -1225,9 +1225,9 @@
     "semantic_hash": "9938dc796ad6b81dd727e111cf098470"
   },
   "src/modules/visualization3d/pages/MotionFramePage.tsx": {
-    "mtime": 1781833815.4316163,
-    "ast_hash": "f8c2da4aebb38d55f47d4cd762a1179c",
-    "semantic_hash": "f8c2da4aebb38d55f47d4cd762a1179c"
+    "mtime": 1785349236.5353987,
+    "ast_hash": "c010ac74ff9d26813315a4ecf0140580",
+    "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
     "mtime": 1784827802.700031,
@@ -2670,8 +2670,8 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/LegalNotice.tsx": {
-    "mtime": 1784831043.4413574,
-    "ast_hash": "a3cbc5f3c9883a9715e53870824db9a9",
+    "mtime": 1785349538.0554059,
+    "ast_hash": "07f93a9ebaa79b4365d3e798a0272e29",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PrivacyPolicy.tsx": {
@@ -2760,8 +2760,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785301141.843442,
-    "ast_hash": "1cc0ff68e3740b04de6739a7dbd126be",
+    "mtime": 1785301382.4514465,
+    "ast_hash": "ad7eef7b58ecaca054578fb6117e3d82",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/QRStickerPrint.tsx": {

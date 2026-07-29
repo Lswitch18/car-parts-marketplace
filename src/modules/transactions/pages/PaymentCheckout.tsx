@@ -341,11 +341,11 @@ export default function PaymentCheckout() {
             <div className="card p-6 max-w-md mx-auto mb-8 text-left">
               <h3 className="text-white font-semibold mb-4">Próximos passos:</h3>
               <ol className="list-decimal list-inside text-gray-400 space-y-2">
-                <li>Vendedor foi notificado e preparará a peça</li>
-                <li>Pedido será sincronizado com a Logistix para logística</li>
-                <li>Você receberá o código de rastreamento por e-mail</li>
-                <li>Acompanhe o envio pelo painel de compras</li>
-                <li>Confira o recebimento para liberar o pagamento ao vendedor</li>
+                <li>Vendedor japonês foi notificado e preparará a peça</li>
+                <li>Envio direto feito pelo próprio vendedor (Direct Ship)</li>
+                <li>Você receberá o código de rastreamento no seu painel</li>
+                <li>Acompanhe a entrega em Minhas Compras</li>
+                <li>Após receber a peça, confirme a entrega no painel para concluir a transação</li>
               </ol>
             </div>
             <div className="flex gap-4 justify-center">
