@@ -470,8 +470,8 @@
     "semantic_hash": "a2e58047851494568786ecc3dfb6277e"
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1785294399.7412097,
-    "ast_hash": "4db9c7643766de5241c50677850afa03",
+    "mtime": 1785293069.64521,
+    "ast_hash": "3401721b068bd360f6041b64c085984a",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
@@ -1000,8 +1000,8 @@
     "semantic_hash": "539e3c52a7bbfb3ad096f46bed9b62bb"
   },
   "src/modules/shared/types/index.ts": {
-    "mtime": 1785295662.003447,
-    "ast_hash": "9407cafa37839320ada3aa1e01e23b31",
+    "mtime": 1785286590.5892174,
+    "ast_hash": "f20cc83c945a5b973ba5f68e25a58e29",
     "semantic_hash": ""
   },
   "src/modules/storefront/__tests__/homeLogic.test.ts": {
@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785295669.9034472,
-    "ast_hash": "3f93993828bf3743423c9437b1edf7e4",
+    "mtime": 1785292144.2532153,
+    "ast_hash": "4c9b5331f266b188dcca8dcd8d5c3314",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -2745,13 +2745,13 @@
     "semantic_hash": ""
   },
   "src/modules/shared/hooks/useTenantCore.ts": {
-    "mtime": 1785295678.0474472,
-    "ast_hash": "d5dc9cd2fdc3ace58af7f2fb804d2512",
+    "mtime": 1785287444.2692182,
+    "ast_hash": "fe0f94796b7a48c9abadedc7211c5ed6",
     "semantic_hash": ""
   },
   "src/modules/shared/services/TenantCoreService.ts": {
-    "mtime": 1785295686.4194472,
-    "ast_hash": "8e3fee6ec2693f130174a5cd56bc1dea",
+    "mtime": 1785287436.5452182,
+    "ast_hash": "e77db6be974b20248ffbab3ef7c9b660",
     "semantic_hash": ""
   },
   "docs/diag/ARQUITETURA_LIMPA_E_PADROES_PROJETO.md": {
@@ -2760,18 +2760,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785295527.0154457,
-    "ast_hash": "2ef6b2b33b6db5e4017a069c53bc6d1c",
-    "semantic_hash": ""
-  },
-  "src/modules/backoffice/components/QRStickerPrint.tsx": {
-    "mtime": 1785293784.2212162,
-    "ast_hash": "6ca6963acca9b9add52a4442df8fe0ca",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/20260729_japan_bank_info_and_wms_stickers.sql": {
-    "mtime": 1785293759.785216,
-    "ast_hash": "1b176473111797712ae1b175b849c0fe",
+    "mtime": 1785293041.2332118,
+    "ast_hash": "afbdbf1f6301fc661bcd8c56a2a33ab4",
     "semantic_hash": ""
   }
 }
