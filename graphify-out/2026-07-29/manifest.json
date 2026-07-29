@@ -470,8 +470,8 @@
     "semantic_hash": "a2e58047851494568786ecc3dfb6277e"
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1785299415.6474404,
-    "ast_hash": "071abf2d827179ed25fd0b3c9414f9f3",
+    "mtime": 1785300099.3394501,
+    "ast_hash": "50e8c86e907abcb0f91269daab3c85d9",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
@@ -2760,8 +2760,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785296630.1674461,
-    "ast_hash": "a1ffa13ab6f31a401027ce785268fe57",
+    "mtime": 1785300059.28345,
+    "ast_hash": "b0b735a79380dd06709238c3d8f4ba04",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/QRStickerPrint.tsx": {
@@ -2775,8 +2775,8 @@
     "semantic_hash": ""
   },
   "public/assets/stripe_bank_trust_badge.png": {
-    "mtime": 1785296348.9114501,
-    "ast_hash": "9632f58d167284e375fb14db46bc65cc",
+    "mtime": 1785300027.6474504,
+    "ast_hash": "c5a3540e9d70b8f34b114fe58ffb49c6",
     "semantic_hash": ""
   }
 }
