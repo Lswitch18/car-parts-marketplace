@@ -2760,8 +2760,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/JapanBankAccount.tsx": {
-    "mtime": 1785295527.0154457,
-    "ast_hash": "2ef6b2b33b6db5e4017a069c53bc6d1c",
+    "mtime": 1785296060.3194404,
+    "ast_hash": "ee06687034163be3925e3c0da0152d75",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/QRStickerPrint.tsx": {
@@ -2772,6 +2772,11 @@
   "supabase/migrations/20260729_japan_bank_info_and_wms_stickers.sql": {
     "mtime": 1785293759.785216,
     "ast_hash": "1b176473111797712ae1b175b849c0fe",
+    "semantic_hash": ""
+  },
+  "public/assets/stripe_bank_trust_badge.png": {
+    "mtime": 1785296023.4354424,
+    "ast_hash": "b1df05c2cbe1a8cae194dba8a471cb94",
     "semantic_hash": ""
   }
 }

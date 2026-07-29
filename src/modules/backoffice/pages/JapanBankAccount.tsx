@@ -245,7 +245,7 @@ export default function JapanBankAccount() {
             <div className="flex flex-col items-center justify-center p-2">
               <img 
                 src="/assets/stripe_bank_trust_badge.png" 
-                alt="Corporate Banking Trust Seal - Powered by Stripe" 
+                alt="DAIG - Digital A.I. Garage Official Corporate Banking Trust Seal" 
                 className="w-36 h-36 object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-transform hover:scale-105"
               />
             </div>
