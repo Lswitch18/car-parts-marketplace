@@ -342,6 +342,140 @@ export default function Home() {
       */}
 
       {/* ════════════════════════════════════════
+          B2B SAAS ENTERPRISE MARKETING SECTION
+      ════════════════════════════════════════ */}
+      <section id="saas-marketing" className="py-24 relative overflow-hidden bg-zinc-950/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Header da Seção Marketing */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-4">
+              <Cpu className="w-4 h-4 text-blue-400" />
+              SaaS Multi-Tenant para Desmanches, Autopeças & Oficinas
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight leading-tight">
+              O Software de Gestão Completo para o seu Negócio Automotivo no Japão
+            </h2>
+            <p className="text-base sm:text-lg text-zinc-400 leading-relaxed">
+              Mantenha seu estoque 100% privado com nosso ERP/WMS de alta performance e ative a divulgação no <strong className="text-white">Marketplace Central DAIG com apenas 1 clique</strong> quando quiser vender online.
+            </p>
+          </div>
+
+          {/* Grid de 4 Recursos Principais do SaaS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            
+            {/* Card 1: Catalogação IA */}
+            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 hover:border-blue-500/40 transition duration-300 group shadow-xl hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-5 text-blue-400 group-hover:scale-110 transition">
+                <Bot className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Catalogação por IA em 30s</h3>
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Tire fotos no balcão e deixe nossa IA identificar o Part Number OEM, aplicação veicular e gerar o modelo 3D interativo.
+              </p>
+            </div>
+
+            {/* Card 2: Armazém WMS & Etiquetas */}
+            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 hover:border-amber-500/40 transition duration-300 group shadow-xl hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-400 group-hover:scale-110 transition">
+                <Package className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Armazém WMS & QR Code</h3>
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Mapeie galpões, corredores e prateleiras. Imprima etiquetas térmicas com QR Code para colagem imediata na autopeça.
+              </p>
+            </div>
+
+            {/* Card 3: Ordens de Serviço (O.S.) */}
+            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 hover:border-purple-500/40 transition duration-300 group shadow-xl hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-5 text-purple-400 group-hover:scale-110 transition">
+                <Gauge className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Ordens de Serviço (O.S.)</h3>
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Gestão completa de oficinas, busca por placa/VIN, atribuição de mecânicos e baixa automática de estoque de peças.
+              </p>
+            </div>
+
+            {/* Card 4: Marketplace 1-Clique */}
+            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 hover:border-emerald-500/40 transition duration-300 group shadow-xl hover:-translate-y-1">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5 text-emerald-400 group-hover:scale-110 transition">
+                <Globe className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Marketplace em 1-Clique</h3>
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                Seu estoque é privado. Alterne uma chave de 1-clique para expor qualquer peça ao mercado do Japão e exportação JDM.
+              </p>
+            </div>
+          </div>
+
+          {/* Demonstrativo Interativo da Chave 1-Clique */}
+          <div className="bg-gradient-to-r from-blue-950/40 via-zinc-900 to-indigo-950/40 border border-blue-500/20 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-widest block mb-2">
+                  Diferencial Exclusivo DAIG
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                  Gestão Privada + Vendas Online em 1 Botão
+                </h3>
+                <p className="text-sm text-zinc-300 leading-relaxed mb-6">
+                  Sua empresa ganha organização total no balcão sem obrigação de vender online. Quando decidir negociar uma peça parada, o sistema integra Stripe Custody, frete Yamato/Sagawa e baixa o estoque automaticamente!
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <Link
+                    to="/tenant/dashboard"
+                    className="px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-blue-600/30 flex items-center gap-2"
+                  >
+                    <span>Acessar Painel do Tenant (ERP)</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    to="/subscription"
+                    className="px-6 py-3.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-semibold rounded-xl text-sm transition"
+                  >
+                    Planos e Assinatura SaaS
+                  </Link>
+                </div>
+              </div>
+
+              {/* Card Ilustrativo da Chave 1-Clique */}
+              <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-4 mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-blue-400 font-bold text-xs">
+                      OEM
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Turbo RB26DETT Nismo Spec</p>
+                      <p className="text-xs text-zinc-500">Prateleira: A-04 • Preço: ¥ 185.000 JPY</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between bg-zinc-900/80 p-4 rounded-xl border border-zinc-800">
+                  <div className="flex items-center space-x-3">
+                    <Globe className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <p className="text-xs font-bold text-white">Divulgação no Marketplace DAIG</p>
+                      <p className="text-[11px] text-zinc-400">Visível para Compradores Japão & Global</p>
+                    </div>
+                  </div>
+                  <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-emerald-500 cursor-pointer shadow-lg shadow-emerald-500/30">
+                    <span className="inline-block h-4 w-4 transform rounded-full bg-white translate-x-6 transition" />
+                  </div>
+                </div>
+                <p className="text-[11px] text-emerald-400/90 text-center mt-3 font-medium">
+                  ✓ Sincronização e Baixa Automática de Estoque Ativada
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
           CTA — Glassmorphism
       ════════════════════════════════════════ */}
       <section className="py-24 relative overflow-hidden" ref={ctaRef}>

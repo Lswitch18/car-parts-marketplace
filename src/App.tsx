@@ -18,6 +18,7 @@ const CarList = lazy(() => import('@/modules/vehicles/pages/CarList'))
 const Login = lazy(() => import('@/modules/identity/pages/Login'))
 const Register = lazy(() => import('@/modules/identity/pages/Register'))
 const Dashboard = lazy(() => import('@/modules/backoffice/pages/Dashboard'))
+const TenantDashboard = lazy(() => import('@/modules/backoffice/pages/TenantDashboard'))
 const CreateListing = lazy(() => import('@/modules/parts-catalog/pages/CreateListing'))
 const Onboarding = lazy(() => import('@/modules/identity/pages/Onboarding'))
 const Profile = lazy(() => import('@/modules/identity/pages/Profile'))
@@ -100,6 +101,8 @@ function App() {
               <Route path="onboarding" element={<Onboarding />} />
               <Route element={<OnboardingGuard />}>
                 <Route path="dashboard" element={<Dashboard />} />
+                <Route path="tenant/dashboard" element={<TenantDashboard />} />
+                <Route path="tenant-dashboard" element={<TenantDashboard />} />
                 <Route path="create-listing" element={<CreateListing />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="favorites" element={<Favorites />} />

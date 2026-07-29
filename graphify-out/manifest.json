@@ -380,8 +380,8 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1784750885.2358057,
-    "ast_hash": "79c67526ade44441d1327f93b0736f48",
+    "mtime": 1785286310.7252183,
+    "ast_hash": "2c947c80bffa30a623bae20c6655b94f",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Header.tsx": {
-    "mtime": 1784779263.292288,
-    "ast_hash": "409d19966be866a9aae8ede8a38d29f9",
+    "mtime": 1785286332.8812182,
+    "ast_hash": "dc6136487dbdd02d58eed2f672273380",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/Layout.tsx": {
@@ -1000,9 +1000,9 @@
     "semantic_hash": "539e3c52a7bbfb3ad096f46bed9b62bb"
   },
   "src/modules/shared/types/index.ts": {
-    "mtime": 1783692417.8028977,
-    "ast_hash": "ca7de0f56882bdea750dcd29ab844a2b",
-    "semantic_hash": "ca7de0f56882bdea750dcd29ab844a2b"
+    "mtime": 1785286590.5892174,
+    "ast_hash": "f20cc83c945a5b973ba5f68e25a58e29",
+    "semantic_hash": ""
   },
   "src/modules/storefront/__tests__/homeLogic.test.ts": {
     "mtime": 1781836901.1996121,
@@ -1010,9 +1010,9 @@
     "semantic_hash": "66ce47bd513e04b748f3058103c0cb77"
   },
   "src/modules/storefront/pages/Home.tsx": {
-    "mtime": 1781880638.8816385,
-    "ast_hash": "2e9dc8963252af828672f06235fed258",
-    "semantic_hash": "2e9dc8963252af828672f06235fed258"
+    "mtime": 1785287112.9812193,
+    "ast_hash": "82c420a5d193042671bab7b1144f37ad",
+    "semantic_hash": ""
   },
   "src/modules/storefront/pages/HomeLanding.tsx": {
     "mtime": 1781833815.3996162,
@@ -2697,6 +2697,51 @@
   "public/images/cheap-valve-caps-100yen.png": {
     "mtime": 1784900541.3058717,
     "ast_hash": "6b190449f5610c7cac618b50cf6bfbd6",
+    "semantic_hash": ""
+  },
+  "scripts/convert_docs_to_pdf.py": {
+    "mtime": 1785276184.9172206,
+    "ast_hash": "7856c340572f64063f3e4ebd6be94e2e",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/pages/TenantDashboard.tsx": {
+    "mtime": 1785286295.2092183,
+    "ast_hash": "6d87e9988f49d8fbc3e5c289b557d002",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
+    "mtime": 1785286599.6892173,
+    "ast_hash": "b6aa1eca9eed57fd93f5e6fa0e7100ed",
+    "semantic_hash": ""
+  },
+  "docs/diag/ARQUITETURA_DDD_MONOLITO_MODULAR.md": {
+    "mtime": 1785286280.5332184,
+    "ast_hash": "20b8f90c8e34754008db57c7b94675ae",
+    "semantic_hash": ""
+  },
+  "docs/diag/ESTUDO_ARQUITETURA_SAAS_MULTI_TENANT.md": {
+    "mtime": 1785286153.1252189,
+    "ast_hash": "a07fe9775d7453ee3295aafe832b08ea",
+    "semantic_hash": ""
+  },
+  "docs/diag/PITCH_DECK_INVESTIDORES_JAPAO.md": {
+    "mtime": 1785286159.065219,
+    "ast_hash": "347a3a47031ff02a6f887839da2f9e91",
+    "semantic_hash": ""
+  },
+  "docs/diag/PROMPT_PITCH_1MIN_GOOGLE_FLOW.md": {
+    "mtime": 1785281092.4492192,
+    "ast_hash": "b7bb0c76cea0802bac236888abc91c04",
+    "semantic_hash": ""
+  },
+  "docs/diag/PROMPT_PITCH_1MIN_ULTRA_REALISTA.md": {
+    "mtime": 1785282073.953214,
+    "ast_hash": "4355b790e5b539e2bf96ffa881507d38",
+    "semantic_hash": ""
+  },
+  "docs/diag/PERMISSOES_E_ROLES_SAAS_TENANT.md": {
+    "mtime": 1785286582.2132175,
+    "ast_hash": "58ce2891fb5505b0c37850bec8307c1c",
     "semantic_hash": ""
   }
 }

@@ -29,6 +29,34 @@ export interface User {
   store_requested_at?: string
   store_approved_at?: string
   store_rejected_reason?: string
+  // Multi-Tenant SaaS Role
+  tenant_role?: TenantRole
+  tenant_id?: string
+}
+
+export type TenantRole = 
+  | 'tenant_admin'    // Dono / Diretor do Desmanche ou Oficina
+  | 'tenant_manager'  // Gerente de Estoque / WMS
+  | 'tenant_mechanic' // Mecânico / Técnico da Oficina
+  | 'tenant_operator' // Atendente de Balcão / Caixa
+
+export type TenantPermission = 
+  | 'manage_tenant'       // Editar dados da empresa e assinatura
+  | 'manage_users'        // Convidar e alterar funções de membros
+  | 'view_financials'     // Ver preço de custo e lucro líquido
+  | 'manage_inventory'    // Adicionar/editar peças e prateleiras
+  | 'publish_marketplace' // Alternar chave de 1-clique para o Marketplace
+  | 'manage_work_orders'  // Criar e atualizar Ordens de Serviço (O.S.)
+  | 'print_qr_labels'     // Imprimir etiquetas térmicas
+
+export interface TenantUserMember {
+  id: string
+  tenant_id: string
+  user_id: string
+  role: TenantRole
+  is_primary_owner: boolean
+  user?: User
+  created_at: string
 }
 
 export interface Product {
