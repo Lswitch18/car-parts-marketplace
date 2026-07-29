@@ -470,8 +470,8 @@
     "semantic_hash": "a2e58047851494568786ecc3dfb6277e"
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1785294399.7412097,
-    "ast_hash": "4db9c7643766de5241c50677850afa03",
+    "mtime": 1785299415.6474404,
+    "ast_hash": "071abf2d827179ed25fd0b3c9414f9f3",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
