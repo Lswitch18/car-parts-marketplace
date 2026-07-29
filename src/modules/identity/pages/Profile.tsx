@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
-import { User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2 } from 'lucide-react'
+import { User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, Building2, Landmark, PlusCircle, ArrowRight, Package } from 'lucide-react'
 import { fetchPostal } from '@/modules/shared/lib/postal'
 
 export default function Profile() {
@@ -189,6 +189,56 @@ export default function Profile() {
         <h1 className="font-display text-3xl font-bold text-white mb-8">
           Meu Perfil
         </h1>
+
+        {/* Card do Painel do Vendedor & Gestão SaaS ERP */}
+        <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.12)]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="space-y-1.5 max-w-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                <Building2 className="w-3.5 h-3.5" />
+                <span>Gestão de Vendas & Estoque WMS</span>
+              </div>
+              <h3 className="text-xl font-bold text-white tracking-tight">
+                Painel do Vendedor (SaaS ERP)
+              </h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Acesse o controle completo do seu estoque, cadastro de peças, ordens de serviço, relatórios e conta bancária para recebimentos em ienes (JPY).
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2.5 w-full sm:w-auto flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="w-full px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2"
+              >
+                <Building2 className="w-4 h-4" />
+                <span>Acessar Painel do Vendedor</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-2 w-full">
+                <button
+                  type="button"
+                  onClick={() => navigate('/create-listing')}
+                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Anunciar Peça</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/japan-bank-account')}
+                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                >
+                  <Landmark className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Conta (JPY)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="card p-8">
           <div className="flex items-center space-x-6 mb-8">

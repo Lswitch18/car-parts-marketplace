@@ -5722,7 +5722,7 @@
       "label": "useAuthStore",
       "file_type": "code",
       "source_file": "src/modules/identity/store/authStore.ts",
-      "source_location": "L109",
+      "source_location": "L147",
       "_origin": "ast",
       "id": "src_modules_identity_store_authstore_useauthstore",
       "community": 88,
@@ -27523,7 +27523,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/identity/store/authStore.ts",
-      "source_location": "L109",
+      "source_location": "L147",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_identity_store_authstore",
@@ -27787,7 +27787,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/identity/store/authStore.ts",
-      "source_location": "L91",
+      "source_location": "L129",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_identity_store_authstore_fetchandmapprofile",
@@ -48213,5 +48213,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c1239d590a9a8dcc1b6b2919ca5ab545056a21b3"
+  "built_at_commit": "3229e0657800e8c1457b86ab6509aebec2e9a18b"
 }

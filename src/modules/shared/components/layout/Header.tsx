@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import {
   Menu, X, Heart, User, LogOut,
   MessageCircle, ArrowRight, Package, Sparkles, Settings,
+  Building2, Landmark
 } from 'lucide-react'
 import LanguageDetector from '../LanguageDetector'
 import { useI18n } from '@/modules/shared/lib/i18n'
@@ -247,31 +248,76 @@ export default function Header() {
                       </p>
                     </div>
 
-                    <div className="p-2">
-                      {[
-                        { to: '/dashboard', label: t('Dashboard') },
-                        { to: '/profile', label: t('Perfil') },
-                      ].map(({ to, label }) => (
-                        <Link
-                          key={to}
-                          to={to}
-                          className="block px-3 py-2 rounded-lg text-sm transition-all"
-                          style={{ color: '#B0B5C0' }}
-                          onMouseEnter={(e) => {
-                            ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
-                            ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
-                          }}
-                          onMouseLeave={(e) => {
-                            ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
-                            ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                          }}
-                        >
-                          {label}
-                        </Link>
-                      ))}
+                    <div className="p-2 space-y-1">
+                      <Link
+                        to="/dashboard"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all"
+                        style={{ color: '#10B981', background: 'rgba(16,185,129,0.08)' }}
+                        onMouseEnter={(e) =>
+                          ((e.currentTarget as HTMLElement).style.background = 'rgba(16,185,129,0.18)')
+                        }
+                        onMouseLeave={(e) =>
+                          ((e.currentTarget as HTMLElement).style.background = 'rgba(16,185,129,0.08)')
+                        }
+                      >
+                        <Building2 className="w-4 h-4 text-emerald-400" />
+                        {t('Painel do Vendedor (ERP SaaS)')}
+                      </Link>
+
+                      <Link
+                        to="/create-listing"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                        style={{ color: '#B0B5C0' }}
+                        onMouseEnter={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                          ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                        }}
+                        onMouseLeave={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                          ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                        }}
+                      >
+                        <Package className="w-4 h-4 text-zinc-400" />
+                        {t('Anunciar Peça')}
+                      </Link>
+
+                      <Link
+                        to="/japan-bank-account"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                        style={{ color: '#B0B5C0' }}
+                        onMouseEnter={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                          ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                        }}
+                        onMouseLeave={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                          ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                        }}
+                      >
+                        <Landmark className="w-4 h-4 text-amber-400" />
+                        {t('Dados Bancários (Japão JPY)')}
+                      </Link>
+
+                      <Link
+                        to="/profile"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
+                        style={{ color: '#B0B5C0' }}
+                        onMouseEnter={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
+                          ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
+                        }}
+                        onMouseLeave={(e) => {
+                          ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
+                          ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                        }}
+                      >
+                        <User className="w-4 h-4 text-zinc-400" />
+                        {t('Meu Perfil')}
+                      </Link>
 
                       {isAdmin && (
                         <>
+                          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', margin: '4px 0' }} />
                           <Link
                             to="/admin"
                             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all"
@@ -429,26 +475,32 @@ export default function Header() {
                   {t('Catálogo de Peças')}
                 </Link>
                 {[
-                  { to: '/dashboard', label: t('Dashboard') },
+                  { to: '/dashboard', label: t('Painel do Vendedor (ERP SaaS)'), highlight: true },
+                  { to: '/create-listing', label: t('Anunciar Peça') },
+                  { to: '/japan-bank-account', label: t('Dados Bancários (Japão JPY)') },
+                  { to: '/profile', label: t('Meu Perfil') },
                   { to: '/favorites', label: t('Favoritos') },
                   { to: '/messages', label: t('Mensagens'), badge: unreadCount },
-                ].map(({ to, label, badge }) => (
+                ].map(({ to, label, badge, highlight }) => (
                   <Link
                     key={to}
                     to={to}
-                    className="flex items-center justify-between py-3 px-3 rounded-lg text-sm font-medium"
-                    style={{ color: '#B0B5C0' }}
+                    className={`flex items-center justify-between py-3 px-3 rounded-lg text-sm font-medium transition-colors ${
+                      highlight 
+                        ? 'bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/30' 
+                        : 'text-zinc-400 hover:text-white'
+                    }`}
                     onClick={() => setMenuOpen(false)}
                   >
                     <span>{label}</span>
-                    {badge && badge > 0 && (
+                    {badge && badge > 0 ? (
                       <span
                         className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                         style={{ background: '#FF4B4B', color: '#FFFFFF' }}
                       >
                         {badge}
                       </span>
-                    )}
+                    ) : null}
                   </Link>
                 ))}
 
