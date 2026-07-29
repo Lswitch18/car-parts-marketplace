@@ -190,19 +190,19 @@ export default function Profile() {
           Meu Perfil
         </h1>
 
-        {/* Card do Painel do Vendedor & Gestão SaaS ERP */}
+        {/* Card do Painel do Vendedor */}
         <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.12)]">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="space-y-1.5 max-w-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                <Building2 className="w-3.5 h-3.5" />
-                <span>Gestão de Vendas & Estoque WMS</span>
+                <Package className="w-3.5 h-3.5" />
+                <span>Minhas Vendas & Anúncios</span>
               </div>
               <h3 className="text-xl font-bold text-white tracking-tight">
-                Painel do Vendedor (SaaS ERP)
+                Painel do Vendedor
               </h3>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                Acesse o controle completo do seu estoque, cadastro de peças, ordens de serviço, relatórios e conta bancária para recebimentos em ienes (JPY).
+                Gerencie suas peças anunciadas, acompanhe suas vendas, mensagens de compradores e configure sua conta bancária para recebimentos em ienes (JPY).
               </p>
             </div>
 

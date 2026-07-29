@@ -261,7 +261,7 @@ export default function Header() {
                         }
                       >
                         <Building2 className="w-4 h-4 text-emerald-400" />
-                        {t('Painel do Vendedor (ERP SaaS)')}
+                        {t('Painel do Vendedor')}
                       </Link>
 
                       <Link
@@ -475,7 +475,7 @@ export default function Header() {
                   {t('Catálogo de Peças')}
                 </Link>
                 {[
-                  { to: '/dashboard', label: t('Painel do Vendedor (ERP SaaS)'), highlight: true },
+                  { to: '/dashboard', label: t('Painel do Vendedor'), highlight: true },
                   { to: '/create-listing', label: t('Anunciar Peça') },
                   { to: '/japan-bank-account', label: t('Dados Bancários (Japão JPY)') },
                   { to: '/profile', label: t('Meu Perfil') },
