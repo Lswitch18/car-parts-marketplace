@@ -437,6 +437,60 @@ export default function CreateListing() {
           </div>
         </div>
 
+        {/* BANNER PROPOSTA IA: CADASTRO EM 30 SEGUNDOS VIA VISÃO COMPUTACIONAL */}
+        <div className="bg-gradient-to-r from-blue-950/80 via-indigo-950/80 to-purple-950/80 border border-blue-500/40 rounded-2xl p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center space-x-3">
+            <div className="p-3 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-500/30">
+              <Sparkles className="w-6 h-6 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-extrabold text-sm text-white">Cadastro por Visão Computacional em 30s</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  REDUÇÃO DE 90% DO TEMPO
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Fotografe a peça ou selecione a imagem: nossa IA lê o código OEM, reconhece a marca/modelo e autopreenche 100% do formulário em 30 segundos!
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setImages(['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'])
+              setAnalyzing(true)
+              setAiProgress(10)
+              setTimeout(() => setAiProgress(60), 300)
+              setTimeout(() => {
+                setAiProgress(100)
+                setAnalyzing(false)
+                setPartNumber('OEM-33100-47820')
+                setIsOfficialData(true)
+                setFormData({
+                  title: 'Farol Dianteiro Full LED Esquerdo Prius ZVW30',
+                  description: 'Farol LED genuíno Toyota em estado impecável, testado no scanner óptico com encaixes e reator intactos.',
+                  price: '45000',
+                  brand: 'toyota',
+                  model: 'prius',
+                  yearStart: '2015',
+                  yearEnd: '2022',
+                  category: 'lataria',
+                  condition: 'Usado - Excelente Estado (Grau A+)',
+                  startingBid: '35000',
+                  buyNowPrice: '45000',
+                  auctionDurationHours: '72'
+                })
+              }, 800)
+            }}
+            className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/30 flex items-center space-x-2 shrink-0 transition"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>⚡ Autopreencher Formulário em 30s (IA Vision)</span>
+          </button>
+        </div>
+
         <div className="card p-8">
           <form onSubmit={(e) => { e.preventDefault(); createListing.mutate() }} className="space-y-6">
             <div>

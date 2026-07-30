@@ -71,6 +71,7 @@
   "69": "GlobalSearch.tsx",
   "70": "@base-ui/react",
   "71": "index.ts",
+  "72": "axios",
   "74": "jsbarcode",
   "87": "dispose",
   "88": "useAuthStore",

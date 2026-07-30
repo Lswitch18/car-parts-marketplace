@@ -830,8 +830,8 @@
     "semantic_hash": "9ae111fa32a92e380e178c2d49a9eeb9"
   },
   "src/modules/parts-catalog/pages/Catalog.tsx": {
-    "mtime": 1784725987.8478284,
-    "ast_hash": "10851819a9fc27dbd606258e2d7fdea8",
+    "mtime": 1785453007.3956368,
+    "ast_hash": "859410c9f19fe895a617749ed1769513",
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/CreateListing.tsx": {
@@ -2842,6 +2842,16 @@
   "public/marketing/daig_starter_saas_badge.png": {
     "mtime": 1785432799.2991965,
     "ast_hash": "4b5576c8e3f3fa028112b966eb9c580e",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/components/MarketplaceAiAssistantModal.tsx": {
+    "mtime": 1785452976.8436363,
+    "ast_hash": "2a987e3ce7dcdde82e3a2d9c749f5ce3",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/lib/aiPartIdentifier.ts": {
+    "mtime": 1785452953.0516362,
+    "ast_hash": "bfa245bed7808c2452d1b69c45caaeaa",
     "semantic_hash": ""
   }
 }

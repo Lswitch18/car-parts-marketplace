@@ -1301,13 +1301,22 @@ export default function TenantDashboard() {
           <div className="space-y-6 max-w-5xl mx-auto">
             <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
               <div className="border-b border-zinc-800 pb-4 mb-6">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-6 h-6 text-blue-400" />
-                  Hub de Inteligência Artificial & Visão Computacional
-                </h2>
-                <p className="text-xs text-zinc-400 mt-1">
-                  Fotografe a peça para identificação visual, faça leitura de gravações metálicas via OCR ou consulte o estoque por voz.
-                </p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <Sparkles className="w-6 h-6 text-blue-400" />
+                      Hub de Inteligência Artificial & Visão Computacional
+                    </h2>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Fotografe a peça para identificação visual: a IA autopreenche todo o formulário de cadastro em até 30 segundos!
+                    </p>
+                  </div>
+
+                  <div className="px-3.5 py-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 rounded-xl flex items-center space-x-2 text-xs text-emerald-300 font-bold shrink-0">
+                    <Zap className="w-4 h-4 text-emerald-400" />
+                    <span>Cadastro por IA em 30s</span>
+                  </div>
+                </div>
               </div>
 
               {/* SEÇÃO 1: RECONHECIMENTO POR FOTO E OCR */}
