@@ -1,30 +1,47 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useTenantCore } from '@/modules/shared/hooks/useTenantCore'
+import { fetchPostal } from '@/modules/shared/lib/postal'
+import { supabase } from '@/modules/shared/lib/supabase'
 import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
+import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { 
   Building2, Package, QrCode, Wrench, Globe, Sparkles, 
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText, 
   ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2, 
-  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check, Printer, X, CreditCard
+  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check, 
+  Printer, X, CreditCard, ChevronLeft, ChevronRight, Mic, MicOff, Command, 
+  MapPin, SlidersHorizontal, User, Mail, Phone, Save, LogOut, Grid, Zap, LayoutDashboard, Box, Loader2
 } from 'lucide-react'
 
 type TabType = 
   | 'overview' 
-  | 'ai-cataloger' 
-  | 'vin-lookup' 
-  | 'vehicles' 
+  | 'ai-hub' 
+  | 'wms-hierarchy' 
+  | 'workshop-kanban' 
   | 'inventory' 
-  | 'purchases' 
   | 'sales' 
+  | 'purchases' 
   | 'finance' 
-  | 'b2b-network' 
-  | 'api-integrations'
+  | 'profile' 
+  | 'api-b2b'
+
+interface WorkOrder {
+  id: string
+  title: string
+  client: string
+  vehicle: string
+  mechanic: string
+  status: 'aguardando' | 'em_manutencao' | 'testes' | 'pronto'
+  amount: number
+  partsUsed: string
+  date: string
+}
 
 export default function TenantDashboard() {
   const navigate = useNavigate()
-  const { user, initialized, loading: authLoading } = useAuthStore()
+  const { user, initialized, loading: authLoading, signOut, setUser } = useAuthStore()
   
   // Clean Architecture Hook
   const {
@@ -44,62 +61,146 @@ export default function TenantDashboard() {
     batchPublish,
   } = useTenantCore()
 
+  // Sidebar & Navigation state
   const [activeTab, setActiveTab] = useState<TabType>('overview')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
-  // Estado do Módulo: Cadastro Automático por IA
-  const [aiForm, setAiForm] = useState({
+  // Command Palette (Cmd + K)
+  const [showCommandPalette, setShowCommandPalette] = useState(false)
+  const [cmdSearch, setCmdSearch] = useState('')
+
+  // Listener para atalho Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setShowCommandPalette(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Modals States
+  const [printingStickerPart, setPrintingStickerPart] = useState<any | null>(null)
+  const [showPdvModal, setShowPdvModal] = useState(false)
+  const [showNfeModal, setShowNfeModal] = useState(false)
+  const [showWorkOrderModal, setShowWorkOrderModal] = useState(false)
+
+  // IA Hub State
+  const [aiAnalysisResult, setAiAnalysisResult] = useState<any | null>(null)
+  const [isAiScanning, setIsAiScanning] = useState(false)
+  const [isOcrScanning, setIsOcrScanning] = useState(false)
+  const [ocrResult, setOcrResult] = useState<string | null>(null)
+  const [voiceQuery, setVoiceQuery] = useState('')
+  const [isListeningVoice, setIsListeningVoice] = useState(false)
+  const [voiceSearchResult, setVoiceSearchResult] = useState<any | null>(null)
+
+  // Hierarquia WMS State
+  const [wmsFilter, setWmsFilter] = useState({
+    warehouse: 'Galpão A (Principal)',
+    aisle: 'Corredor 04 (Motor & Transmissão)',
+    rack: 'Estante B',
+    shelf: 'Prateleira 3',
+    box: 'Caixa 12',
+    position: 'Posição 08'
+  })
+
+  // Kanban O.S. State
+  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([
+    { id: 'OS-801', title: 'Troca do Inversor Híbrido & Diagnóstico', client: 'Takahashi Auto Repair', vehicle: 'Toyota Prius ZVW30 (2018)', mechanic: 'Kenji Sato', status: 'aguardando', amount: 85000, partsUsed: 'Módulo Inversor Híbrido OEM', date: 'Hoje, 09:30' },
+    { id: 'OS-802', title: 'Instalação de Kit Turbo & Acerto ECU', client: 'Yamada Drift Team', vehicle: 'Nissan Skyline BNR34 GT-R', mechanic: 'Hiroshi Tanaka', status: 'em_manutencao', amount: 240000, partsUsed: 'Turbo RB26DETT Nismo + ECU Remap', date: 'Hoje, 11:00' },
+    { id: 'OS-803', title: 'Substituição de Amortecedores & Freios', client: 'Sora Tanaka (Particular)', vehicle: 'Honda Fit GK3 (2017)', mechanic: 'Takeshi Lin', status: 'testes', amount: 52000, partsUsed: 'Jogo Amortecedores KYB + Pastilhas', date: 'Ontem' },
+    { id: 'OS-804', title: 'Revisão Geral e Alinhamento 3D', client: 'Kuroda Motors', vehicle: 'Subaru Impreza WRX STI', mechanic: 'Kenji Sato', status: 'pronto', amount: 68000, partsUsed: 'Óleo Motul 5W40 + Filtros OEM', date: '25/07' }
+  ])
+
+  const [newOrderForm, setNewOrderForm] = useState({
     title: '',
-    oem_code: '',
-    category: 'Motor & Periféricos',
-    price: '',
-    cost_price: '',
-    compatibility_tags: 'Honda Fit (2015-2020), Toyota Prius ZVW30, Nissan Note E12',
-    description: '',
-    is_published_to_marketplace: false,
+    client: '',
+    vehicle: '',
+    mechanic: 'Kenji Sato',
+    amount: '',
+    partsUsed: ''
   })
-  const [isAiAnalyzing, setIsAiAnalyzing] = useState(false)
-  const [aiSuccessMessage, setAiSuccessMessage] = useState<string | null>(null)
 
-  // Estado do Módulo: Pesquisa por Placa / VIN
-  const [vinSearchQuery, setVinSearchQuery] = useState('')
-
-  // Estado do Módulo: Cadastro de Veículo para Desmonte
-  const [vehicleForm, setVehicleForm] = useState({
-    brand: 'Toyota',
-    model: 'Prius ZVW30',
-    year: '2018',
-    license_plate: '品川 300 な 45-89',
-    vin: 'JTDKN3DU0J0129845',
-    mileage: '85.000 km',
-    dismantle_status: 'em_desmonte'
+  // Estado do Módulo: Perfil & Configurações da Loja
+  const [editingProfile, setEditingProfile] = useState(false)
+  const [savingProfile, setSavingProfile] = useState(false)
+  const [postalLoading, setPostalLoading] = useState(false)
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || user?.full_name || 'Tokyo Auto Parts Partner (DAIG SaaS)',
+    email: user?.email || 'teste.partner@daig.jp',
+    phone: user?.phone || '+81 90-1234-5678',
+    address: user?.address || 'Kanagawa-ken, Yokohama-shi, Naka-ku, Honcho 1-2-3',
+    city: user?.city || 'Yokohama',
+    state: user?.state || 'Kanagawa',
+    zip_code: user?.zip_code || '231-0005',
+    store_name: 'Tokyo Auto Parts & Dismantler',
+    japan_bank_name: 'MUFG Bank (三菱UFJ銀行)',
+    japan_branch_name: 'Yokohama Branch (横浜支店 - 041)',
+    japan_account_number: '1092847',
+    japan_account_holder: 'TOKYO AUTO PARTS INC'
   })
-  const [vehiclesList, setVehiclesList] = useState([
-    { id: 'v1', brand: 'Toyota', model: 'Prius ZVW30', year: '2018', plate: '品川 300 な 45-89', vin: 'JTDKN3DU0J0129845', parts_count: 34, status: 'Em Desmonte' },
-    { id: 'v2', brand: 'Honda', model: 'Fit GK3', year: '2017', plate: '横浜 501 き 12-34', vin: 'HGK31004589', parts_count: 22, status: 'Concluído' },
-    { id: 'v3', brand: 'Nissan', model: 'Skyline R34 GT-R', year: '2001', plate: '大宮 330 さ 99-88', vin: 'BNR34001928', parts_count: 18, status: 'Aguardando Doca' },
-  ])
 
-  // Estado do Módulo: Compras & NF-e
-  const [purchaseInvoices, setPurchaseInvoices] = useState([
-    { id: 'nfe-1092', key: '35260710049284000192550010000010921', supplier: 'Leilão Automotivo Tokyo Bay', date: '2026-07-22', value: 450000, status: 'Processada' },
-    { id: 'nfe-1093', key: '35260710049284000192550010000010932', supplier: 'Seguradora Sompo Japan', date: '2026-07-26', value: 890000, status: 'Aguardando Estoque' },
-  ])
+  // Busca CEP Japonês / Brasileiro (Zipcloud / ViaCEP)
+  const handlePostalBlur = useCallback(async () => {
+    const raw = profileForm.zip_code.replace(/\D/g, '')
+    if (raw.length < 5) return
+    setPostalLoading(true)
+    const result = await fetchPostal(raw)
+    if (result) {
+      setProfileForm(prev => ({
+        ...prev,
+        address: result.fullAddress || prev.address,
+        city: result.city || prev.city,
+        state: result.state || prev.state,
+      }))
+    }
+    setPostalLoading(false)
+  }, [profileForm.zip_code])
 
-  // Estado do Módulo: Vendas & PDV Balcão
+  // Salvar Perfil
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSavingProfile(true)
+    try {
+      if (user?.id) {
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: profileForm.name,
+            phone: profileForm.phone,
+            address: profileForm.address,
+            city: profileForm.city,
+            state: profileForm.state,
+            zip_code: profileForm.zip_code
+          })
+          .eq('id', user.id)
+      }
+      setUser({
+        ...user,
+        name: profileForm.name,
+        full_name: profileForm.name,
+        phone: profileForm.phone,
+        address: profileForm.address,
+        city: profileForm.city,
+        state: profileForm.state,
+        zip_code: profileForm.zip_code
+      } as any)
+      setEditingProfile(false)
+      alert('Perfil e Dados da Empresa salvos com sucesso!')
+    } catch (err: any) {
+      alert('Erro ao salvar perfil: ' + err.message)
+    } finally {
+      setSavingProfile(false)
+    }
+  }
+
+  // PDV State
   const [salesList, setSalesList] = useState([
     { id: 'venda-881', customer: 'Oficina Takahashi Auto', items: 'Farol LED Prius ZVW30', total: 45000, date: 'Hoje, 14:30', channel: 'Balcão / PDV' },
     { id: 'venda-882', customer: 'Hiroshi Tanaka (Cliente B2C)', items: 'Turbo RB26DETT Nismo', total: 185000, date: 'Hoje, 11:15', channel: 'Marketplace DAIG (1-Clique)' },
   ])
-
-  // Estado do Módulo: API Integrações ERP
-  const [apiKey, setApiKey] = useState('daig_live_sk_tenant_99482710398412')
-  const [copiedKey, setCopiedKey] = useState(false)
-
-  // Estado para Impressão de Etiquetas WMS QR
-  const [printingStickerPart, setPrintingStickerPart] = useState<any | null>(null)
-
-  // Estado para Modal de Vendas PDV Balcão
-  const [showPdvModal, setShowPdvModal] = useState(false)
   const [pdvForm, setPdvForm] = useState({
     partTitle: '',
     customer: 'Oficina / Cliente Balcão',
@@ -108,599 +209,922 @@ export default function TenantDashboard() {
     receivedAmount: '50000'
   })
 
-  // Estado para Modal de Importação de NF-e XML
-  const [showNfeModal, setShowNfeModal] = useState(false)
+  // NF-e Purchases State
+  const [purchaseInvoices, setPurchaseInvoices] = useState([
+    { id: 'nfe-1092', key: '35260710049284000192550010000010921', supplier: 'Leilão USS Tokyo Bay', date: '2026-07-22', value: 450000, status: 'Processada' },
+    { id: 'nfe-1093', key: '35260710049284000192550010000010932', supplier: 'Seguradora Sompo Japan', date: '2026-07-26', value: 890000, status: 'Aguardando Estoque' },
+  ])
   const [nfeForm, setNfeForm] = useState({
     supplier: 'Leilão USS Tokyo Bay',
     key: '35260710049284000192550010000010945',
     value: '520000'
   })
 
-  // Redirecionar se não estiver autenticado
+  // API Key State
+  const [apiKey] = useState('daig_live_sk_tenant_99482710398412')
+  const [copiedKey, setCopiedKey] = useState(false)
+
+  // Redirecionar se não autenticado
   if (initialized && !authLoading && !user) {
     navigate('/login', { replace: true })
     return null
   }
 
-  const tenantName = user?.name || 'Tokyo Auto Parts & Dismantler'
+  const tenantName = profileForm.store_name || user?.name || 'Tokyo Auto Parts & Dismantler'
   const tenantId = user?.id ? `tenant_${user.id.slice(0, 8)}` : 'tenant_demo_01'
 
-  // Simular Cadastro Automático por IA
-  const handleSimulateAiScan = () => {
-    setIsAiAnalyzing(true)
-    setAiSuccessMessage(null)
+  // Simular Reconhecimento por Foto IA
+  const handleSimulateAiImageScan = () => {
+    setIsAiScanning(true)
+    setAiAnalysisResult(null)
     setTimeout(() => {
-      setAiForm({
-        title: 'Módulo de Injeção Eletrônica ECU Engine Control Unit',
-        oem_code: 'OEM-37820-5R0-J61',
-        category: 'Injeção Eletrônica & Sensores',
-        price: '38000',
-        cost_price: '12000',
-        compatibility_tags: 'Honda Fit GK3 (2015-2020), Honda Vezel RU1, Honda Shuttle GP7',
-        description: 'Módulo ECU testado no scanner diagnóstico. Sem falhas de circuito, com certidão de desmonte e garantia de 90 dias.',
-        is_published_to_marketplace: true,
+      setAiAnalysisResult({
+        name: 'Módulo de Injeção Eletrônica ECU Engine Control Unit',
+        oem: 'OEM-37820-5R0-J61',
+        brand: 'Honda',
+        model: 'Fit GK3 / Vezel RU1',
+        yearRange: '2015 - 2020',
+        side: 'Central de Painel',
+        suggestedPrice: 38000,
+        costPrice: 12000,
+        condition: 'Usado Genuíno - Graus A (Testado Scanner 100%)',
+        wmsLocation: 'Galpão A ➔ Corredor 04 ➔ Estante B ➔ Prateleira 3 ➔ Caixa 12 ➔ Posição 08',
+        compatibility: ['Honda Fit GK3 (2015-2020)', 'Honda Vezel RU1', 'Honda Shuttle GP7']
       })
-      setIsAiAnalyzing(false)
-      setAiSuccessMessage('IA identificou a peça e preencheu o formulário completo com tags de compatibilidade!')
-    }, 1500)
+      setIsAiScanning(false)
+    }, 1400)
   }
 
-  const handleAddVehicle = (e: React.FormEvent) => {
+  // Simular Leitura OCR de Metal
+  const handleSimulateOcr = () => {
+    setIsOcrScanning(true)
+    setOcrResult(null)
+    setTimeout(() => {
+      setOcrResult('GRAVURA DETECTADA: [RB26-778192-N] - BLOCO MOTOR NISSAN SKYLINE R34 GT-R NISMO')
+      setIsOcrScanning(false)
+    }, 1200)
+  }
+
+  // Simular Busca por Voz / Linguagem Natural
+  const handleVoiceSearchSubmit = (queryText: string) => {
+    const q = queryText.toLowerCase()
+    setVoiceSearchResult(null)
+    
+    if (q.includes('farol') || q.includes('gol') || q.includes('prius')) {
+      setVoiceSearchResult({
+        found: true,
+        title: 'Farol Dianteiro LED Esquerdo Prius ZVW30',
+        oem: 'OEM-33100-47820',
+        price: 45000,
+        location: 'Galpão A ➔ Corredor 02 ➔ Estante C ➔ Prateleira 1',
+        stockQty: 3,
+        matchedQuery: queryText
+      })
+    } else if (q.includes('câmbio') || q.includes('civic') || q.includes('alternador')) {
+      setVoiceSearchResult({
+        found: true,
+        title: 'Caixa de Câmbio Manual 6 Marchas Civic Si K20',
+        oem: 'OEM-20000-RRB-305',
+        price: 185000,
+        location: 'Galpão A ➔ Corredor 04 ➔ Estante B ➔ Prateleira 4',
+        stockQty: 1,
+        matchedQuery: queryText
+      })
+    } else {
+      setVoiceSearchResult({
+        found: true,
+        title: 'Bomba de Combustível Alta Pressão Bosch',
+        oem: 'OEM-0261520044',
+        price: 28000,
+        location: 'Galpão B ➔ Corredor 01 ➔ Estante A ➔ Prateleira 2',
+        stockQty: 5,
+        matchedQuery: queryText
+      })
+    }
+  }
+
+  // Submeter Nova Ordem de Serviço
+  const handleCreateWorkOrder = (e: React.FormEvent) => {
     e.preventDefault()
-    setVehiclesList(prev => [
-      {
-        id: `v_${Date.now()}`,
-        brand: vehicleForm.brand,
-        model: vehicleForm.model,
-        year: vehicleForm.year,
-        plate: vehicleForm.license_plate,
-        vin: vehicleForm.vin,
-        parts_count: 0,
-        status: 'Em Desmonte'
-      },
-      ...prev
-    ])
-    setVehicleForm({
-      brand: '',
-      model: '',
-      year: '',
-      license_plate: '',
-      vin: '',
-      mileage: '',
-      dismantle_status: 'em_desmonte'
-    })
+    const newWo: WorkOrder = {
+      id: `OS-${Math.floor(800 + Math.random() * 100)}`,
+      title: newOrderForm.title || 'Manutenção Corretiva Geral',
+      client: newOrderForm.client || 'Cliente Oficina',
+      vehicle: newOrderForm.vehicle || 'Veículo em Oficina',
+      mechanic: newOrderForm.mechanic,
+      status: 'aguardando',
+      amount: Number(newOrderForm.amount || 35000),
+      partsUsed: newOrderForm.partsUsed || 'Peças do Estoque Privado',
+      date: 'Agora'
+    }
+    setWorkOrders([newWo, ...workOrders])
+    setShowWorkOrderModal(false)
+    setNewOrderForm({ title: '', client: '', vehicle: '', mechanic: 'Kenji Sato', amount: '', partsUsed: '' })
+    alert('Ordem de Serviço criada com sucesso e adicionada ao Kanban!')
+  }
+
+  // Alternar Status Kanban
+  const handleMoveKanban = (id: string, newStatus: WorkOrder['status']) => {
+    setWorkOrders(prev => prev.map(wo => wo.id === id ? { ...wo, status: newStatus } : wo))
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-[#09090B] text-zinc-100 flex overflow-hidden font-sans">
+      
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-emerald-600 text-white px-4 py-3 rounded-lg shadow-xl flex items-center space-x-2 animate-bounce">
+        <div className="fixed top-6 right-6 z-50 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 animate-bounce border border-emerald-400/30">
           <ShieldCheck className="w-5 h-5 flex-shrink-0" />
-          <span className="text-sm font-medium">{toastMessage}</span>
+          <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
       )}
 
-      {/* Header do Tenant / Organização */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 shadow-2xl backdrop-blur-md">
+      {/* ─────────────────────────────────────────────────────────────
+          1. SIDEBAR LATERAL RECOLHÍVEL (Linear / Stripe Style)
+         ───────────────────────────────────────────────────────────── */}
+      <aside 
+        className={`bg-[#121215] border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 z-30 shrink-0 ${
+          sidebarCollapsed ? 'w-20' : 'w-72'
+        }`}
+      >
+        <div>
+          {/* Header da Sidebar */}
+          <div className="p-4 border-b border-zinc-800/80 flex items-center justify-between">
+            <div className="flex items-center space-x-3 overflow-hidden">
+              <div className="p-2 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/20 shrink-0">
+                <GaidLogo size={24} />
+              </div>
+              {!sidebarCollapsed && (
+                <div className="leading-tight truncate">
+                  <span className="font-extrabold text-sm tracking-tight text-white block truncate">
+                    DAIG <span className="text-blue-400 font-normal">SaaS</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    ENTERPRISE ERP
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Toggle Collapse */}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg transition border border-zinc-800"
+              title={sidebarCollapsed ? 'Expandir Sidebar' : 'Recolher Sidebar'}
+            >
+              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {/* Atalho Command Palette */}
+          <div className="p-3 border-b border-zinc-800/60">
+            <button
+              onClick={() => setShowCommandPalette(true)}
+              className={`w-full py-2.5 px-3 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-blue-500/40 rounded-xl text-xs text-zinc-400 hover:text-white flex items-center justify-between transition group ${
+                sidebarCollapsed ? 'justify-center' : ''
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Command className="w-4 h-4 text-blue-400 group-hover:scale-110 transition" />
+                {!sidebarCollapsed && <span>Buscar ou Comandar...</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-zinc-950 text-zinc-500 rounded border border-zinc-800">
+                  ⌘K
+                </kbd>
+              )}
+            </button>
+          </div>
+
+          {/* ITENS DE NAVEGAÇÃO */}
+          <div className="p-3 space-y-6 overflow-y-auto max-h-[calc(100vh-220px)] scrollbar-none">
+            
+            {/* GRUPO 1: PRINCIPAL */}
+            <div>
+              {!sidebarCollapsed && (
+                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
+                  Gestão & Inteligência
+                </p>
+              )}
+              <nav className="space-y-1">
+                {[
+                  { id: 'overview', label: '📊 Visão Geral KPIs', icon: LayoutDashboard },
+                  { id: 'ai-hub', label: '🤖 IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
+                  { id: 'wms-hierarchy', label: '📍 WMS & Hierarquia', icon: MapPin },
+                  { id: 'workshop-kanban', label: '🔧 Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
+                  { id: 'inventory', label: '📦 Estoque & Peças', icon: Package, badge: `${stats.totalSKUs}` },
+                ].map(item => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id as TabType)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                      </div>
+                      {!sidebarCollapsed && item.badge && (
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-zinc-800 text-blue-400 border border-zinc-700'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+
+            {/* GRUPO 2: OPERAÇÕES & VENDAS */}
+            <div>
+              {!sidebarCollapsed && (
+                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
+                  Vendas & Finanças
+                </p>
+              )}
+              <nav className="space-y-1">
+                {[
+                  { id: 'sales', label: '🛒 Vendas & PDV Balcão', icon: ShoppingCart },
+                  { id: 'purchases', label: '📑 Compras & NF-e XML', icon: FileText },
+                  { id: 'finance', label: '💰 Repasses Stripe', icon: DollarSign },
+                ].map(item => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id as TabType)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                      </div>
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+
+            {/* GRUPO 3: CONFIGURAÇÕES */}
+            <div>
+              {!sidebarCollapsed && (
+                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
+                  Configurações
+                </p>
+              )}
+              <nav className="space-y-1">
+                {[
+                  { id: 'profile', label: '👤 Perfil & Banco Japão', icon: User },
+                  { id: 'api-b2b', label: '🔌 API & Rede B2B', icon: Key },
+                ].map(item => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id as TabType)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                      </div>
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+
+          </div>
+        </div>
+
+        {/* FOOTER DA SIDEBAR */}
+        <div className="p-3 border-t border-zinc-800/80 bg-[#0d0d0f]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2.5 overflow-hidden">
+              <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">
+                {tenantName.slice(0, 2).toUpperCase()}
+              </div>
+              {!sidebarCollapsed && (
+                <div className="leading-tight truncate">
+                  <p className="text-xs font-bold text-white truncate">{tenantName}</p>
+                  <p className="text-[10px] text-zinc-500 truncate">{profileForm.email}</p>
+                </div>
+              )}
+            </div>
+
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => signOut()}
+                className="p-1.5 hover:bg-red-500/10 text-zinc-400 hover:text-red-400 rounded-lg transition"
+                title="Sair da Conta"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* ─────────────────────────────────────────────────────────────
+          2. CONTEÚDO PRINCIPAL (MAIN CONTENT)
+         ───────────────────────────────────────────────────────────── */}
+      <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 sm:p-6 lg:p-8">
+        
+        {/* TOP BAR / BANNER SUPERIOR */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-900/90 border border-zinc-800/80 rounded-2xl p-5 shadow-2xl backdrop-blur-xl">
           <div className="flex items-center space-x-4">
-            <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/20">
-              <Building2 className="w-8 h-8" />
+            <div className="p-3 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl text-white shadow-xl shadow-blue-500/20">
+              <Building2 className="w-7 h-7" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-2xl font-bold tracking-tight text-white">{tenantName}</h1>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <h1 className="text-xl font-bold tracking-tight text-white">{tenantName}</h1>
+                <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
                   {tenantId}
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-1 flex items-center space-x-2">
-                <span>Sistema de Gestão SaaS Multi-Tenant para Lojas</span>
+                <span>Plataforma SaaS Multi-Tenant para Autopeças, Oficina & Desmanche</span>
                 <span>•</span>
                 <span className="text-emerald-400 font-medium flex items-center">
-                  <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Banco de Dados Isolado
+                  <ShieldCheck className="w-3.5 h-3.5 mr-1" /> WMS Sincronizado
                 </span>
               </p>
             </div>
           </div>
 
+          {/* Ações Rápidas do Topbar */}
           <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => setActiveTab('ai-cataloger')}
-              className="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl text-sm flex items-center space-x-2 shadow-lg shadow-blue-600/20 transition"
+              onClick={() => setActiveTab('ai-hub')}
+              className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-blue-600/20 transition"
             >
               <Sparkles className="w-4 h-4 text-blue-200 animate-spin" />
-              <span>Novo Cadastro com IA (30s)</span>
+              <span>Scannear Peça com IA</span>
             </button>
+
+            <button
+              onClick={() => setShowWorkOrderModal(true)}
+              className="px-3.5 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-semibold flex items-center space-x-2 transition"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Nova O.S. Oficina</span>
+            </button>
+
             <Link
               to="/catalog"
-              className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-sm font-semibold flex items-center space-x-2 transition border border-zinc-700"
+              className="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold flex items-center space-x-2 transition border border-zinc-700"
             >
               <Globe className="w-4 h-4 text-emerald-400" />
-              <span>Ver Marketplace DAIG</span>
+              <span>Marketplace DAIG</span>
             </Link>
           </div>
         </div>
-      </div>
 
-      {/* Navegação por Abas dos 10 Módulos do SaaS */}
-      <div className="max-w-7xl mx-auto mb-8 overflow-x-auto">
-        <div className="flex items-center space-x-1.5 bg-zinc-900/90 border border-zinc-800 p-1.5 rounded-2xl min-w-max">
-          {[
-            { id: 'overview', label: '📊 Visão Geral', icon: Package },
-            { id: 'ai-cataloger', label: '🤖 Cadastro IA Automático', icon: Sparkles },
-            { id: 'vin-lookup', label: '🔎 Busca Placa/VIN', icon: Search },
-            { id: 'vehicles', label: '🚗 Veículos & Desmonte', icon: Car },
-            { id: 'inventory', label: '📦 Estoque & Fotos HD', icon: Layers },
-            { id: 'purchases', label: '📑 Compras & NF-e', icon: FileText },
-            { id: 'sales', label: '🛒 Vendas & PDV', icon: ShoppingCart },
-            { id: 'finance', label: '💰 Módulo Financeiro', icon: DollarSign },
-            { id: 'b2b-network', label: '🤝 Rede Desmanches B2B', icon: Building2 },
-            { id: 'api-integrations', label: '🔌 API & Integrações ERP', icon: Key },
-          ].map(tab => {
-            const Icon = tab.icon
-            const isActive = activeTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as TabType)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-2 transition ${
-                  isActive 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' 
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
-                <span>{tab.label}</span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* CONTEÚDO DAS ABAS */}
-      <div className="max-w-7xl mx-auto">
-        
-        {/* ABA 1: VISÃO GERAL / KPIS */}
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 1: VISÃO GERAL / KPIS & DASHBOARD REAL-TIME
+           ───────────────────────────────────────────────────────────── */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* KPI Cards */}
+            {/* KPI Cards Neon */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-lg">
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-blue-500/40 transition">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Estoque Privado</span>
-                  <div className="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><Package className="w-5 h-5" /></div>
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Estoque WMS Privado</span>
+                  <div className="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20"><Package className="w-5 h-5" /></div>
                 </div>
                 <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-white">{stats.totalSKUs} <span className="text-sm font-normal text-zinc-500">peças</span></div>
-                  <p className="text-xs text-blue-400 font-mono mt-1">Valor: ¥ {stats.totalPrivateValue.toLocaleString('ja-JP')} JPY</p>
+                  <div className="text-3xl font-extrabold text-white">{stats.totalSKUs} <span className="text-xs font-normal text-zinc-500">peças catalogadas</span></div>
+                  <p className="text-xs text-blue-400 font-mono mt-1">Valor Total: ¥ {stats.totalPrivateValue.toLocaleString('ja-JP')} JPY</p>
                 </div>
               </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-lg">
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-purple-500/40 transition">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Veículos em Desmonte</span>
-                  <div className="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><Car className="w-5 h-5" /></div>
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Oficina (Ordens de Serviço)</span>
+                  <div className="p-2.5 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20"><Wrench className="w-5 h-5" /></div>
                 </div>
                 <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-white">{vehiclesList.length} <span className="text-sm font-normal text-zinc-500">veículos</span></div>
-                  <p className="text-xs text-purple-400 mt-1">74 peças catalogadas este mês</p>
+                  <div className="text-3xl font-extrabold text-white">{workOrders.length} <span className="text-xs font-normal text-zinc-500">O.S. em andamento</span></div>
+                  <p className="text-xs text-purple-400 font-mono mt-1">4 mecânicos ativos hoje</p>
                 </div>
               </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-lg">
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-emerald-500/40 transition">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Vendas do Mês</span>
-                  <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><ShoppingCart className="w-5 h-5" /></div>
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Faturamento do Mês</span>
+                  <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20"><DollarSign className="w-5 h-5" /></div>
                 </div>
                 <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-emerald-400">¥ 1.420.000 <span className="text-sm font-normal text-zinc-500">JPY</span></div>
-                  <p className="text-xs text-zinc-400 mt-1">Balcão (65%) • Marketplace (35%)</p>
+                  <div className="text-3xl font-extrabold text-emerald-400">¥ 1.420.000 <span className="text-xs font-normal text-zinc-500">JPY</span></div>
+                  <p className="text-xs text-zinc-400 mt-1">Balcão PDV (65%) • Marketplace (35%)</p>
                 </div>
               </div>
 
-              <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-lg">
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Divulgação 1-Clique</span>
-                  <div className="p-2 bg-amber-500/10 text-amber-400 rounded-lg"><Globe className="w-5 h-5" /></div>
+                  <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20"><Globe className="w-5 h-5" /></div>
                 </div>
                 <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-white">{stats.publishedCount} <span className="text-sm font-normal text-zinc-500">online</span></div>
-                  <p className="text-xs text-amber-400 mt-1">{stats.privateCount} mantidas privadas</p>
+                  <div className="text-3xl font-extrabold text-white">{stats.publishedCount} <span className="text-xs font-normal text-zinc-500">online</span></div>
+                  <p className="text-xs text-amber-400 mt-1">{stats.privateCount} mantidas privadas no ERP</p>
                 </div>
               </div>
             </div>
 
-            {/* Ações de Atalho Rápido */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-              <h3 className="text-lg font-bold text-white mb-4">Atalhos Operacionais da Empresa</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button
-                  onClick={() => setActiveTab('ai-cataloger')}
-                  className="p-4 bg-zinc-950 border border-zinc-800 hover:border-blue-500/50 rounded-xl text-left transition group"
-                >
-                  <Sparkles className="w-6 h-6 text-blue-400 mb-2 group-hover:scale-110 transition" />
-                  <p className="font-semibold text-white text-sm">Cadastro Automático por IA</p>
-                  <p className="text-xs text-zinc-500 mt-1">Preenchimento com foto e tags de compatibilidade</p>
-                </button>
+            {/* Painel WMS Galpão & Atalhos Rápidos */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* Mapa de Galpão / Hierarquia */}
+              <div className="lg:col-span-2 bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-blue-400" />
+                      Visão Física do Galpão & Armazém (WMS)
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      Estrutura física registrada: Galpão ➔ Corredor ➔ Estante ➔ Prateleira ➔ Caixa ➔ Posição.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('wms-hierarchy')}
+                    className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center space-x-1"
+                  >
+                    <span>Navegar WMS</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
 
-                <button
-                  onClick={() => setActiveTab('vin-lookup')}
-                  className="p-4 bg-zinc-950 border border-zinc-800 hover:border-purple-500/50 rounded-xl text-left transition group"
-                >
-                  <Search className="w-6 h-6 text-purple-400 mb-2 group-hover:scale-110 transition" />
-                  <p className="font-semibold text-white text-sm">Pesquisa Placa / VIN</p>
-                  <p className="text-xs text-zinc-500 mt-1">Localização instantânea de peças por chassi ou placa</p>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('vehicles')}
-                  className="p-4 bg-zinc-950 border border-zinc-800 hover:border-emerald-500/50 rounded-xl text-left transition group"
-                >
-                  <Car className="w-6 h-6 text-emerald-400 mb-2 group-hover:scale-110 transition" />
-                  <p className="font-semibold text-white text-sm">Entrada de Veículos</p>
-                  <p className="text-xs text-zinc-500 mt-1">Registro de carros recebidos para desmonte</p>
-                </button>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                  {[
+                    { zone: 'Galpão A', label: 'Motores & Transmissão', count: '142 peças', color: 'from-blue-600/20 to-indigo-600/20 border-blue-500/30' },
+                    { zone: 'Galpão B', label: 'Lataria & Iluminação', count: '98 peças', color: 'from-purple-600/20 to-pink-600/20 border-purple-500/30' },
+                    { zone: 'Galpão C', label: 'Injeção & Sensores', count: '64 peças', color: 'from-emerald-600/20 to-teal-600/20 border-emerald-500/30' },
+                    { zone: 'Corredor 04', label: 'Caixas de Câmbio JDM', count: '28 caixas', color: 'from-amber-600/20 to-orange-600/20 border-amber-500/30' },
+                    { zone: 'Estante B-3', label: 'ECUs & Chicotes', count: '45 caixas', color: 'from-cyan-600/20 to-blue-600/20 border-cyan-500/30' },
+                    { zone: 'Área de Doca', label: 'Carros em Desmonte', count: '3 veículos', color: 'from-red-600/20 to-rose-600/20 border-red-500/30' },
+                  ].map((z, idx) => (
+                    <div key={idx} className={`p-4 rounded-xl bg-gradient-to-br ${z.color} border text-left space-y-1`}>
+                      <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase">{z.zone}</span>
+                      <p className="font-bold text-xs text-white leading-tight">{z.label}</p>
+                      <p className="text-[11px] font-mono text-zinc-300">{z.count}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
+
+              {/* Status do Mecânico & Oficina */}
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-4">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Wrench className="w-5 h-5 text-purple-400" />
+                  Mecânicos da Oficina Hoje
+                </h3>
+
+                <div className="space-y-3">
+                  {[
+                    { name: 'Kenji Sato', role: 'Especialista Motores JDM', status: 'O.S. #801 em andamento', avatar: 'KS' },
+                    { name: 'Hiroshi Tanaka', role: 'Técnico de Transmissão', status: 'O.S. #802 em andamento', avatar: 'HT' },
+                    { name: 'Takeshi Lin', role: 'Suspensão & Freios 3D', status: 'Testes de Qualidade', avatar: 'TL' },
+                  ].map((m, i) => (
+                    <div key={i} className="p-3 bg-zinc-950 rounded-xl border border-zinc-800/80 flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-300 font-bold text-xs flex items-center justify-center shrink-0">
+                        {m.avatar}
+                      </div>
+                      <div className="leading-tight truncate">
+                        <p className="text-xs font-bold text-white truncate">{m.name}</p>
+                        <p className="text-[11px] text-zinc-400 truncate">{m.role}</p>
+                        <span className="text-[10px] text-emerald-400 font-mono block mt-0.5">{m.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
         )}
 
-        {/* ABA 2: CADASTRO AUTOMÁTICO COM IA */}
-        {activeTab === 'ai-cataloger' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-4 mb-6">
-              <div>
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 2: CENTRAL DE INTELIGÊNCIA ARTIFICIAL (RECONHECIMENTO, OCR & VOZ)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'ai-hub' && (
+          <div className="space-y-6 max-w-5xl mx-auto">
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+              <div className="border-b border-zinc-800 pb-4 mb-6">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-blue-400" />
-                  Cadastro Automático de Peças com IA
+                  <Sparkles className="w-6 h-6 text-blue-400" />
+                  Hub de Inteligência Artificial & Visão Computacional
                 </h2>
                 <p className="text-xs text-zinc-400 mt-1">
-                  A IA analisa a foto, preenche o formulário completo e adiciona tags de compatibilidade automáticas.
+                  Fotografe a peça para identificação visual, faça leitura de gravações metálicas via OCR ou consulte o estoque por voz.
                 </p>
               </div>
-              <button
-                onClick={handleSimulateAiScan}
-                disabled={isAiAnalyzing}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-2 transition shadow-lg shadow-blue-600/20"
-              >
-                <Camera className="w-4 h-4" />
-                <span>{isAiAnalyzing ? 'Analisando Imagem com IA...' : 'Escanear Foto de Peça'}</span>
-              </button>
-            </div>
 
-            {aiSuccessMessage && (
-              <div className="mb-6 p-4 bg-emerald-950/60 border border-emerald-800 rounded-xl text-emerald-300 text-xs font-medium flex items-center space-x-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                <span>{aiSuccessMessage}</span>
-              </div>
-            )}
+              {/* SEÇÃO 1: RECONHECIMENTO POR FOTO E OCR */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                {/* Upload / Scanner por Foto */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Camera className="w-4 h-4 text-blue-400" />
+                      1. Reconhecimento por Foto de Peça
+                    </span>
+                    <span className="text-[10px] font-mono bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20">
+                      OpenAI Vision
+                    </span>
+                  </div>
 
-            <form className="space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Nome da Peça / Produto *</label>
-                  <input
-                    type="text"
-                    value={aiForm.title}
-                    onChange={(e) => setAiForm({ ...aiForm, title: e.target.value })}
-                    placeholder="Ex: Farol Dianteiro LED Esquerdo"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 transition"
-                  />
-                </div>
+                  <div className="border-2 border-dashed border-zinc-800 hover:border-blue-500/60 rounded-xl p-6 text-center transition cursor-pointer bg-zinc-900/40">
+                    <Camera className="w-10 h-10 text-blue-400 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-white">Arraste a foto da peça ou acione a câmera</p>
+                    <p className="text-[11px] text-zinc-500 mt-1">Identificação automática de OEM, lado, compatibilidade e preço sugerido</p>
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Código OEM / Part Number</label>
-                  <input
-                    type="text"
-                    value={aiForm.oem_code}
-                    onChange={(e) => setAiForm({ ...aiForm, oem_code: e.target.value })}
-                    placeholder="Ex: OEM-33100-T9A-T21"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-mono text-white focus:border-blue-500 transition"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Categoria</label>
-                  <select
-                    value={aiForm.category}
-                    onChange={(e) => setAiForm({ ...aiForm, category: e.target.value })}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 transition"
+                  <button
+                    onClick={handleSimulateAiImageScan}
+                    disabled={isAiScanning}
+                    className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-blue-600/20"
                   >
-                    <option>Motor & Periféricos</option>
-                    <option>Transmissão & Câmbio</option>
-                    <option>Lataria & Iluminação</option>
-                    <option>Suspensão & Freios</option>
-                    <option>Injeção Eletrônica & Sensores</option>
-                  </select>
+                    <Sparkles className="w-4 h-4" />
+                    <span>{isAiScanning ? 'Analisando Imagem com IA...' : 'Simular Reconhecimento por Foto'}</span>
+                  </button>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Preço de Venda (JPY ¥) *</label>
-                  <input
-                    type="number"
-                    value={aiForm.price}
-                    onChange={(e) => setAiForm({ ...aiForm, price: e.target.value })}
-                    placeholder="38000"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-semibold text-white focus:border-blue-500 transition"
-                  />
+                {/* OCR Gravura Metálica */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Cpu className="w-4 h-4 text-purple-400" />
+                      2. OCR (Leitura de Gravura & Etiquetas)
+                    </span>
+                    <span className="text-[10px] font-mono bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">
+                      OCR Metal Scanner
+                    </span>
+                  </div>
+
+                  <div className="border-2 border-dashed border-zinc-800 hover:border-purple-500/60 rounded-xl p-6 text-center transition cursor-pointer bg-zinc-900/40">
+                    <QrCode className="w-10 h-10 text-purple-400 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-white">Fotografe códigos gravados no metal ou etiquetas</p>
+                    <p className="text-[11px] text-zinc-500 mt-1">Lê números de série em blocos de motor, turbos e chassis</p>
+                  </div>
+
+                  <button
+                    onClick={handleSimulateOcr}
+                    disabled={isOcrScanning}
+                    className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-purple-600/20"
+                  >
+                    <Cpu className="w-4 h-4" />
+                    <span>{isOcrScanning ? 'Executando OCR no Metal...' : 'Simular Leitura OCR em Bloco'}</span>
+                  </button>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Preço de Custo Privado (JPY ¥)</label>
-                  <input
-                    type="number"
-                    value={aiForm.cost_price}
-                    onChange={(e) => setAiForm({ ...aiForm, cost_price: e.target.value })}
-                    placeholder="12000"
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-300 focus:border-blue-500 transition"
-                  />
-                </div>
               </div>
 
-              {/* Tags de Compatibilidade Automáticas da IA */}
-              <div>
-                <label className="block text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1">
-                  <Tag className="w-3.5 h-3.5" />
-                  Tags de Compatibilidade Veicular (Geradas pela IA)
-                </label>
-                <input
-                  type="text"
-                  value={aiForm.compatibility_tags}
-                  onChange={(e) => setAiForm({ ...aiForm, compatibility_tags: e.target.value })}
-                  placeholder="Ex: Honda Fit GK3, Toyota Prius ZVW30, Nissan Note E12"
-                  className="w-full bg-zinc-950 border border-amber-500/30 rounded-xl px-4 py-2.5 text-sm font-mono text-amber-200 focus:border-amber-500 transition"
-                />
-                <p className="text-[11px] text-zinc-500 mt-1">Essas tags permitem encontrar a peça ao pesquisar por qualquer modelo ou ano compatível.</p>
-              </div>
+              {/* RESULTADO DA IA DE FOTO */}
+              {aiAnalysisResult && (
+                <div className="mb-6 p-5 bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-800/80 rounded-2xl space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <h3 className="font-bold text-white text-sm">Peça Identificada com Sucesso pela IA!</h3>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded font-mono text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Precisão: 99.4%
+                    </span>
+                  </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-1">Descrição Técnica da Peça</label>
-                <textarea
-                  rows={3}
-                  value={aiForm.description}
-                  onChange={(e) => setAiForm({ ...aiForm, description: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-white focus:border-blue-500 transition"
-                />
-              </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs pt-2">
+                    <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
+                      <span className="text-zinc-400 block text-[10px]">Nome da Peça</span>
+                      <span className="font-bold text-white">{aiAnalysisResult.name}</span>
+                    </div>
+                    <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
+                      <span className="text-zinc-400 block text-[10px]">Código OEM</span>
+                      <span className="font-mono font-bold text-amber-300">{aiAnalysisResult.oem}</span>
+                    </div>
+                    <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
+                      <span className="text-zinc-400 block text-[10px]">Preço Sugerido (JPY)</span>
+                      <span className="font-bold text-emerald-400">¥ {aiAnalysisResult.suggestedPrice.toLocaleString('ja-JP')}</span>
+                    </div>
+                  </div>
 
-              {/* Chave de Publicação em 1-Clique */}
-              <div className="flex items-center justify-between p-4 bg-zinc-950 border border-zinc-800 rounded-xl">
-                <div className="flex items-center space-x-3">
-                  <Globe className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <p className="text-xs font-bold text-white">Publicar Simultaneamente no Marketplace DAIG</p>
-                    <p className="text-[11px] text-zinc-500">Expor esta peça com 1 clique para compradores públicos do Japão</p>
+                  <div className="p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 text-xs space-y-1">
+                    <p className="text-zinc-300 font-semibold flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-blue-400" /> Localização WMS Recomendada:
+                    </p>
+                    <p className="font-mono text-amber-200 text-[11px]">{aiAnalysisResult.wmsLocation}</p>
                   </div>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={aiForm.is_published_to_marketplace}
-                  onChange={(e) => setAiForm({ ...aiForm, is_published_to_marketplace: e.target.checked })}
-                  className="w-5 h-5 rounded bg-zinc-900 border-zinc-700 text-emerald-500 focus:ring-0 cursor-pointer"
-                />
+              )}
+
+              {/* RESULTADO DO OCR */}
+              {ocrResult && (
+                <div className="mb-6 p-4 bg-purple-950/60 border border-purple-800/80 rounded-2xl text-purple-200 text-xs font-mono flex items-center space-x-3 animate-in fade-in">
+                  <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0" />
+                  <span>{ocrResult}</span>
+                </div>
+              )}
+
+              {/* SEÇÃO 2: BUSCA POR VOZ E LINGUAGEM NATURAL */}
+              <div className="pt-4 border-t border-zinc-800">
+                <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
+                  <Mic className="w-5 h-5 text-cyan-400" />
+                  Busca Inteligente por Voz & Linguagem Natural
+                </h3>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Digite ou fale frases como: "Preciso do farol direito de um Gol 2018" ou "Onde está a caixa de câmbio do Civic 2017?".
+                </p>
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <input
+                      type="text"
+                      placeholder='Ex: "Farol direito do Gol 2018", "Alternador Bosch Corolla"...'
+                      value={voiceQuery}
+                      onChange={(e) => setVoiceQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && voiceQuery) handleVoiceSearchSubmit(voiceQuery)
+                      }}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:border-cyan-500 transition"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!isListeningVoice) {
+                        setIsListeningVoice(true)
+                        setVoiceQuery('Preciso do farol direito do Prius ZVW30...')
+                        setTimeout(() => {
+                          setIsListeningVoice(false)
+                          handleVoiceSearchSubmit('Preciso do farol direito do Prius ZVW30')
+                        }, 1800)
+                      }
+                    }}
+                    className={`px-4 py-3 rounded-xl text-xs font-semibold flex items-center space-x-2 transition ${
+                      isListeningVoice 
+                        ? 'bg-red-600 text-white animate-pulse' 
+                        : 'bg-zinc-800 hover:bg-zinc-700 text-cyan-300 border border-zinc-700'
+                    }`}
+                  >
+                    {isListeningVoice ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                    <span>{isListeningVoice ? 'Ouvindo...' : 'Falar por Voz'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => voiceQuery && handleVoiceSearchSubmit(voiceQuery)}
+                    className="px-5 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-cyan-600/20"
+                  >
+                    Consultar IA
+                  </button>
+                </div>
+
+                {/* RESULTADO DA BUSCA POR VOZ */}
+                {voiceSearchResult && (
+                  <div className="mt-4 p-4 bg-cyan-950/60 border border-cyan-800/80 rounded-2xl text-xs space-y-2 animate-in fade-in">
+                    <p className="text-cyan-300 font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4" /> IA localizou no estoque:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                      <div className="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+                        <span className="text-zinc-500 block text-[10px]">Item Encontrado</span>
+                        <span className="font-bold text-white">{voiceSearchResult.title}</span>
+                      </div>
+                      <div className="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+                        <span className="text-zinc-500 block text-[10px]">Endereço WMS</span>
+                        <span className="font-mono font-bold text-amber-300">{voiceSearchResult.location}</span>
+                      </div>
+                      <div className="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+                        <span className="text-zinc-500 block text-[10px]">Preço & Qtd</span>
+                        <span className="font-bold text-emerald-400">¥ {voiceSearchResult.price.toLocaleString('ja-JP')} ({voiceSearchResult.stockQty} unidades)</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 3: LOCALIZAÇÃO FISICA WMS & HIERARQUIA COMPLETA
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'wms-hierarchy' && (
+          <div className="space-y-6">
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+              <div className="border-b border-zinc-800 pb-4 mb-6">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <MapPin className="w-6 h-6 text-amber-400" />
+                  Hierarquia Física do Estoque WMS
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Navegue pela estrutura física de armazenagem do galpão em 6 níveis hierárquicos: Galpão ➔ Corredor ➔ Estante ➔ Prateleira ➔ Caixa ➔ Posição.
+                </p>
+              </div>
+
+              {/* Seletor da Hierarquia */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+                {[
+                  { label: '1. Galpão', key: 'warehouse', value: wmsFilter.warehouse, options: ['Galpão A (Principal)', 'Galpão B (Lataria)', 'Galpão C (Miudezas)'] },
+                  { label: '2. Corredor', key: 'aisle', value: wmsFilter.aisle, options: ['Corredor 01', 'Corredor 02', 'Corredor 03', 'Corredor 04 (Motor & Transmissão)'] },
+                  { label: '3. Estante', key: 'rack', value: wmsFilter.rack, options: ['Estante A', 'Estante B', 'Estante C', 'Estante D'] },
+                  { label: '4. Prateleira', key: 'shelf', value: wmsFilter.shelf, options: ['Prateleira 1 (Térreo)', 'Prateleira 2', 'Prateleira 3', 'Prateleira 4 (Topo)'] },
+                  { label: '5. Caixa', key: 'box', value: wmsFilter.box, options: ['Caixa 01', 'Caixa 12', 'Caixa 24', 'Sem Caixa'] },
+                  { label: '6. Posição', key: 'position', value: wmsFilter.position, options: ['Posição 01', 'Posição 08', 'Posição 16'] },
+                ].map(h => (
+                  <div key={h.key} className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-1">
+                    <label className="block text-[10px] font-mono font-bold text-amber-400 uppercase">{h.label}</label>
+                    <select
+                      value={h.value}
+                      onChange={(e) => setWmsFilter({ ...wmsFilter, [h.key]: e.target.value })}
+                      className="w-full bg-zinc-900 border border-zinc-700 text-xs text-white rounded-lg p-1.5 focus:border-amber-400"
+                    >
+                      {h.options.map(opt => <option key={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                ))}
+              </div>
+
+              {/* Caminho Ativo & Etiqueta Inteligente */}
+              <div className="p-4 bg-zinc-950 border border-amber-500/30 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono text-zinc-400 uppercase">Posição Física Selecionada:</span>
+                  <p className="text-sm font-mono font-bold text-amber-300">
+                    {wmsFilter.warehouse} ➔ {wmsFilter.aisle} ➔ {wmsFilter.rack} ➔ {wmsFilter.shelf} ➔ {wmsFilter.box} ➔ {wmsFilter.position}
+                  </p>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => {
-                    alert('Peça salva no estoque privado com sucesso!')
-                    refetch()
-                  }}
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20"
-                >
-                  Salvar Peça no Estoque Privado
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPrintingStickerPart({
-                      id: `part_ai_${Date.now()}`,
-                      title: aiForm.title || 'Módulo ECU Engine Control Unit',
-                      oem_code: aiForm.oem_code || 'OEM-37820-5R0-J61',
-                      price: Number(aiForm.price || 38000),
-                    })
-                  }}
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-sm rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2"
+                  onClick={() => setPrintingStickerPart({
+                    id: `wms_pos_${Date.now()}`,
+                    title: `Item em ${wmsFilter.position}`,
+                    oem_code: 'OEM-JDM-9918',
+                    price: 45000
+                  })}
+                  className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center space-x-2 shrink-0"
                 >
                   <Printer className="w-4 h-4" />
                   <span>Imprimir Etiqueta WMS QR</span>
                 </button>
               </div>
-            </form>
+
+            </div>
           </div>
         )}
 
-        {/* ABA 3: PESQUISA POR PLACA / VIN */}
-        {activeTab === 'vin-lookup' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-              <Search className="w-5 h-5 text-purple-400" />
-              Pesquisa Avançada por Placa, Chassi (VIN) ou Modelo
-            </h2>
-            <p className="text-xs text-zinc-400 mb-6">
-              Localize instantaneamente qualquer peça no seu armazém digitando o Chassi, Placa ou Modelo do carro desmontado.
-            </p>
-
-            <div className="flex gap-3 mb-6">
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                <input
-                  type="text"
-                  value={vinSearchQuery}
-                  onChange={(e) => setVinSearchQuery(e.target.value)}
-                  placeholder="Digite a Placa (ex: 品川 300 な 45-89), VIN (ex: JTDKN3DU0J) ou Modelo (ex: Prius)..."
-                  className="w-full bg-zinc-950 border border-zinc-800 text-sm text-white pl-10 pr-4 py-3 rounded-xl focus:border-purple-500 transition"
-                />
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 4: OFICINA MECÂNICA (QUADRO KANBAN DE O.S.)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'workshop-kanban' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Wrench className="w-6 h-6 text-purple-400" />
+                  Oficina Mecânica — Quadro Kanban de Ordens de Serviço
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Acompanhamento visual em tempo real de reparos, manutenções, peças utilizadas e orçamentos.
+                </p>
               </div>
-              <button className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-purple-600/20">
-                Buscar Peças
+
+              <button
+                onClick={() => setShowWorkOrderModal(true)}
+                className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-purple-600/20 flex items-center space-x-2 shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Nova Ordem de Serviço (O.S.)</span>
               </button>
             </div>
 
-            <div className="border border-dashed border-zinc-800 rounded-xl p-8 text-center">
-              <Car className="w-10 h-10 text-purple-400 mx-auto mb-2 opacity-60" />
-              <p className="text-sm font-semibold text-white">Pronto para Busca por Placa/VIN</p>
-              <p className="text-xs text-zinc-500 mt-1">Digite os dados acima para filtrar componentes vinculados aos veículos em desmonte.</p>
+            {/* QUADRO KANBAN (4 COLUNAS) */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[
+                { key: 'aguardando', title: '⏳ Aguardando Vistoria', color: 'border-amber-500/40 text-amber-400 bg-amber-500/10' },
+                { key: 'em_manutencao', title: '🔧 Em Manutenção', color: 'border-blue-500/40 text-blue-400 bg-blue-500/10' },
+                { key: 'testes', title: '🧪 Testes & Qualidade', color: 'border-purple-500/40 text-purple-400 bg-purple-500/10' },
+                { key: 'pronto', title: '✅ Pronto para Entrega', color: 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10' },
+              ].map(col => {
+                const colOrders = workOrders.filter(w => w.status === col.key)
+                return (
+                  <div key={col.key} className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-4 space-y-3 min-h-[420px]">
+                    <div className={`p-2.5 rounded-xl border ${col.color} flex items-center justify-between`}>
+                      <span className="text-xs font-bold">{col.title}</span>
+                      <span className="text-[11px] font-mono font-extrabold">{colOrders.length}</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {colOrders.map(wo => (
+                        <div key={wo.id} className="bg-zinc-950 border border-zinc-800 hover:border-zinc-700 rounded-xl p-4 space-y-2.5 shadow-lg group transition">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                              {wo.id}
+                            </span>
+                            <span className="text-[10px] text-zinc-500 font-mono">{wo.date}</span>
+                          </div>
+
+                          <h4 className="font-bold text-xs text-white leading-snug">{wo.title}</h4>
+                          
+                          <div className="text-[11px] text-zinc-400 space-y-0.5 font-mono">
+                            <p><span className="text-zinc-500">Cliente:</span> {wo.client}</p>
+                            <p><span className="text-zinc-500">Veículo:</span> {wo.vehicle}</p>
+                            <p><span className="text-zinc-500">Mecânico:</span> <span className="text-purple-300 font-bold">{wo.mechanic}</span></p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-emerald-400 font-mono">¥ {wo.amount.toLocaleString('ja-JP')} JPY</span>
+                            
+                            {/* Troca Rápida de Status */}
+                            <select
+                              value={wo.status}
+                              onChange={(e) => handleMoveKanban(wo.id, e.target.value as WorkOrder['status'])}
+                              className="bg-zinc-900 border border-zinc-700 text-[10px] text-zinc-300 rounded px-1.5 py-1 focus:outline-none"
+                            >
+                              <option value="aguardando">Aguardando</option>
+                              <option value="em_manutencao">Manutenção</option>
+                              <option value="testes">Testes</option>
+                              <option value="pronto">Pronto</option>
+                            </select>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}
 
-        {/* ABA 4: CADASTRO DE VEÍCULOS PARA DESMONTE */}
-        {activeTab === 'vehicles' && (
-          <div className="space-y-6">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Car className="w-5 h-5 text-emerald-400" />
-                Entrada de Veículos para Desmonte
-              </h2>
-
-              <form onSubmit={handleAddVehicle} className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-6">
-                <input
-                  type="text"
-                  placeholder="Marca (ex: Toyota)"
-                  value={vehicleForm.brand}
-                  onChange={(e) => setVehicleForm({ ...vehicleForm, brand: e.target.value })}
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Modelo (ex: Prius ZVW30)"
-                  value={vehicleForm.model}
-                  onChange={(e) => setVehicleForm({ ...vehicleForm, model: e.target.value })}
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white"
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="Ano (ex: 2018)"
-                  value={vehicleForm.year}
-                  onChange={(e) => setVehicleForm({ ...vehicleForm, year: e.target.value })}
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white"
-                />
-                <input
-                  type="text"
-                  placeholder="Placa Japonesa"
-                  value={vehicleForm.license_plate}
-                  onChange={(e) => setVehicleForm({ ...vehicleForm, license_plate: e.target.value })}
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white"
-                />
-                <input
-                  type="text"
-                  placeholder="Chassi / VIN"
-                  value={vehicleForm.vin}
-                  onChange={(e) => setVehicleForm({ ...vehicleForm, vin: e.target.value })}
-                  className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-mono"
-                />
-                <button
-                  type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl px-4 py-2 transition"
-                >
-                  Registrar Veículo
-                </button>
-              </form>
-
-              {/* Lista de Veículos em Desmonte */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-zinc-800 text-zinc-400 text-xs">
-                      <th className="py-2.5 px-3">Veículo</th>
-                      <th className="py-2.5 px-3">Placa Japão</th>
-                      <th className="py-2.5 px-3">Chassi / VIN</th>
-                      <th className="py-2.5 px-3">Peças Catalogadas</th>
-                      <th className="py-2.5 px-3">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
-                    {vehiclesList.map(v => (
-                      <tr key={v.id} className="hover:bg-zinc-800/40">
-                        <td className="py-3 px-3 font-semibold text-white">{v.brand} {v.model} ({v.year})</td>
-                        <td className="py-3 px-3 font-mono text-xs">{v.plate}</td>
-                        <td className="py-3 px-3 font-mono text-xs text-zinc-400">{v.vin}</td>
-                        <td className="py-3 px-3 text-emerald-400 font-bold">{v.parts_count} peças</td>
-                        <td className="py-3 px-3">
-                          <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                            {v.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ABA 5: CONTROLE DE ESTOQUE & FOTOS HD (COM CHAVE 1-CLIQUE) */}
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 5: ESTOQUE PRIVADO & MARKETPLACE (COM FOTOS HD)
+           ───────────────────────────────────────────────────────────── */}
         {activeTab === 'inventory' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="relative flex-1 max-w-md">
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                 <input
                   type="text"
-                  placeholder="Buscar por nome, código OEM ou categoria..."
+                  placeholder="Buscar por nome, OEM ou categoria..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-950 border border-zinc-800 text-sm text-zinc-100 placeholder-zinc-500 pl-10 pr-4 py-2.5 rounded-xl focus:outline-none focus:border-blue-500 transition"
+                  className="w-full bg-zinc-950 border border-zinc-800 text-xs text-zinc-100 placeholder-zinc-500 pl-10 pr-4 py-2.5 rounded-xl focus:border-blue-500 transition"
                 />
               </div>
 
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setFilterCategory('all')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
-                    filterCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                    filterCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
                   Todas ({stats.totalSKUs})
                 </button>
                 <button
                   onClick={() => setFilterCategory('published')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
-                    filterCategory === 'published' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                    filterCategory === 'published' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
-                  Publicadas no DAIG ({stats.publishedCount})
+                  Marketplace DAIG ({stats.publishedCount})
                 </button>
                 <button
                   onClick={() => setFilterCategory('private')}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
-                    filterCategory === 'private' ? 'bg-zinc-700 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                    filterCategory === 'private' ? 'bg-zinc-700 text-white' : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
-                  Gestão Privada ({stats.privateCount})
+                  Estoque Privado ({stats.privateCount})
                 </button>
               </div>
             </div>
-
-            {/* Ações em Lote */}
-            {selectedPartIds.length > 0 && (
-              <div className="mb-4 p-3 bg-blue-950/60 border border-blue-800/80 rounded-xl flex items-center justify-between">
-                <span className="text-xs font-medium text-blue-300">{selectedPartIds.length} peça(s) selecionada(s)</span>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => batchPublish('available')}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition"
-                  >
-                    Publicar no Marketplace em 1 Clique
-                  </button>
-                  <button
-                    onClick={() => batchPublish('draft')}
-                    className="px-3 py-1.5 bg-zinc-800 text-zinc-300 text-xs font-semibold rounded-lg transition border border-zinc-700"
-                  >
-                    Reverter para Privado
-                  </button>
-                </div>
-              </div>
-            )}
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm border-collapse">
@@ -711,15 +1135,15 @@ export default function TenantDashboard() {
                         type="checkbox"
                         onChange={(e) => handleSelectAll(e.target.checked)}
                         checked={selectedPartIds.length === filteredParts.length && filteredParts.length > 0}
-                        className="rounded bg-zinc-950 border-zinc-700 text-blue-600 focus:ring-0"
+                        className="rounded bg-zinc-950 border-zinc-700 text-blue-600"
                       />
                     </th>
                     <th className="py-3 px-4">Peça / Produto</th>
                     <th className="py-3 px-4">OEM / Código</th>
-                    <th className="py-3 px-4">Localização (Prateleira)</th>
+                    <th className="py-3 px-4">Posição WMS</th>
                     <th className="py-3 px-4">Preço Estoque</th>
-                    <th className="py-3 px-4 text-center">Etiqueta WMS</th>
-                    <th className="py-3 px-4 text-center">Divulgação no Marketplace</th>
+                    <th className="py-3 px-4 text-center">Etiqueta QR</th>
+                    <th className="py-3 px-4 text-center">1-Clique Marketplace</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
@@ -728,21 +1152,21 @@ export default function TenantDashboard() {
                     const isSelected = selectedPartIds.includes(part.id)
 
                     return (
-                      <tr key={part.id} className={`hover:bg-zinc-800/40 transition ${isSelected ? 'bg-blue-950/20' : ''}`}>
+                      <tr key={part.id} className={`hover:bg-zinc-900/60 transition ${isSelected ? 'bg-blue-950/20' : ''}`}>
                         <td className="py-3.5 px-3">
                           <input
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleSelectOne(part.id)}
-                            className="rounded bg-zinc-950 border-zinc-700 text-blue-600 focus:ring-0"
+                            className="rounded bg-zinc-950 border-zinc-700 text-blue-600"
                           />
                         </td>
                         <td className="py-3.5 px-4 font-medium text-white">
                           <div className="flex items-center space-x-3">
                             {part.images?.[0] ? (
-                              <img src={part.images[0]} alt={part.title} className="w-10 h-10 rounded-lg object-cover bg-zinc-800 border border-zinc-700 flex-shrink-0" />
+                              <img src={part.images[0]} alt={part.title} className="w-10 h-10 rounded-lg object-cover bg-zinc-800 border border-zinc-700 shrink-0" />
                             ) : (
-                              <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 flex-shrink-0">
+                              <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 shrink-0">
                                 <Package className="w-5 h-5" />
                               </div>
                             )}
@@ -754,8 +1178,8 @@ export default function TenantDashboard() {
                         </td>
                         <td className="py-3.5 px-4 font-mono text-xs text-zinc-300">{part.oem_code || 'OEM-PENDENTE'}</td>
                         <td className="py-3.5 px-4">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono bg-zinc-800 text-amber-300 border border-zinc-700">
-                            <QrCode className="w-3 h-3 mr-1 text-amber-400" /> Prateleira B-04
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono bg-zinc-900 text-amber-300 border border-zinc-800">
+                            <QrCode className="w-3 h-3 mr-1 text-amber-400" /> Galpão A - B04
                           </span>
                         </td>
                         <td className="py-3.5 px-4 font-semibold text-white">¥ {Number(part.price || 0).toLocaleString('ja-JP')} JPY</td>
@@ -765,21 +1189,18 @@ export default function TenantDashboard() {
                             className="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-xs font-semibold flex items-center justify-center space-x-1 transition mx-auto"
                           >
                             <Printer className="w-3.5 h-3.5" />
-                            <span>Etiqueta QR</span>
+                            <span>Imprimir</span>
                           </button>
                         </td>
                         <td className="py-3.5 px-4 text-center">
                           <button
                             onClick={() => togglePublish(part.id, isPublished)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                               isPublished ? 'bg-emerald-500' : 'bg-zinc-700'
                             }`}
                           >
                             <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isPublished ? 'translate-x-6' : 'translate-x-1'}`} />
                           </button>
-                          <span className={`block text-[11px] mt-1 font-medium ${isPublished ? 'text-emerald-400' : 'text-zinc-500'}`}>
-                            {isPublished ? 'Publicado no DAIG' : 'Estoque Privado'}
-                          </span>
                         </td>
                       </tr>
                     )
@@ -790,65 +1211,15 @@ export default function TenantDashboard() {
           </div>
         )}
 
-        {/* ABA 6: COMPRAS & ENTRADA POR NF-E */}
-        {activeTab === 'purchases' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-400" />
-                  Compras & Entrada por Nota Fiscal (NF-e / XML)
-                </h2>
-                <p className="text-xs text-zinc-400 mt-1">
-                  Gerencie compras de leilões e seguradoras no Japão com lançamento automático no estoque.
-                </p>
-              </div>
-              <button
-                onClick={() => setShowNfeModal(true)}
-                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center space-x-2 shrink-0"
-              >
-                <Upload className="w-4 h-4" />
-                <span>Importar XML de NF-e</span>
-              </button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-800 text-zinc-400 text-xs">
-                    <th className="py-2.5 px-3">Nota Fiscal / Chave</th>
-                    <th className="py-2.5 px-3">Fornecedor / Leilão</th>
-                    <th className="py-2.5 px-3">Data de Entrada</th>
-                    <th className="py-2.5 px-3">Valor Total (JPY)</th>
-                    <th className="py-2.5 px-3">Status NF-e</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
-                  {purchaseInvoices.map(inv => (
-                    <tr key={inv.id} className="hover:bg-zinc-800/40">
-                      <td className="py-3 px-3 font-mono text-xs text-white">{inv.id}</td>
-                      <td className="py-3 px-3 font-semibold text-white">{inv.supplier}</td>
-                      <td className="py-3 px-3 text-xs text-zinc-400">{inv.date}</td>
-                      <td className="py-3 px-3 font-bold text-white">¥ {inv.value.toLocaleString('ja-JP')} JPY</td>
-                      <td className="py-3 px-3">
-                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          {inv.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* ABA 7: VENDAS & PDV BALCÃO */}
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 6: VENDAS & PDV BALCÃO
+           ───────────────────────────────────────────────────────────── */}
         {activeTab === 'sales' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <ShoppingCart className="w-5 h-5 text-emerald-400" />
+                  <ShoppingCart className="w-6 h-6 text-emerald-400" />
                   Vendas & PDV Balcão
                 </h2>
                 <p className="text-xs text-zinc-400 mt-1">
@@ -857,12 +1228,13 @@ export default function TenantDashboard() {
               </div>
               <button
                 onClick={() => setShowPdvModal(true)}
-                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center space-x-2 shrink-0"
+                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center space-x-2 shrink-0"
               >
                 <Plus className="w-4 h-4" />
                 <span>Nova Venda no Balcão (PDV)</span>
               </button>
             </div>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
@@ -876,7 +1248,7 @@ export default function TenantDashboard() {
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
                   {salesList.map(sale => (
-                    <tr key={sale.id} className="hover:bg-zinc-800/40">
+                    <tr key={sale.id} className="hover:bg-zinc-900/60">
                       <td className="py-3 px-3 font-mono text-xs text-white">{sale.id}</td>
                       <td className="py-3 px-3 font-semibold text-white">{sale.customer}</td>
                       <td className="py-3 px-3 text-xs text-zinc-300">{sale.items}</td>
@@ -894,90 +1266,240 @@ export default function TenantDashboard() {
           </div>
         )}
 
-        {/* ABA 8: MÓDULO FINANCEIRO */}
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 7: COMPRAS & ENTRADA NF-E
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'purchases' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-blue-400" />
+                  Compras & Entrada por Nota Fiscal (NF-e / XML)
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Gerencie compras de leilões e seguradoras no Japão com lançamento automático no estoque.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowNfeModal(true)}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center space-x-2 shrink-0"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Importar XML de NF-e</span>
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800 text-zinc-400 text-xs">
+                    <th className="py-2.5 px-3">Nota Fiscal / Chave</th>
+                    <th className="py-2.5 px-3">Fornecedor / Leilão</th>
+                    <th className="py-2.5 px-3">Data de Entrada</th>
+                    <th className="py-2.5 px-3">Valor Total (JPY)</th>
+                    <th className="py-2.5 px-3">Status NF-e</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
+                  {purchaseInvoices.map(inv => (
+                    <tr key={inv.id} className="hover:bg-zinc-900/60">
+                      <td className="py-3 px-3 font-mono text-xs text-white">{inv.id}</td>
+                      <td className="py-3 px-3 font-semibold text-white">{inv.supplier}</td>
+                      <td className="py-3 px-3 text-xs text-zinc-400">{inv.date}</td>
+                      <td className="py-3 px-3 font-bold text-white">¥ {inv.value.toLocaleString('ja-JP')} JPY</td>
+                      <td className="py-3 px-3">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          {inv.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 8: FINANCEIRO & REPASSES STRIPE
+           ───────────────────────────────────────────────────────────── */}
         {activeTab === 'finance' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-6">
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-emerald-400" />
+              <DollarSign className="w-6 h-6 text-emerald-400" />
               Módulo Financeiro & Repasses Stripe Connect
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Faturamento Bruto</span>
+                <span className="text-xs text-zinc-400">Faturamento Bruto Mês</span>
                 <p className="text-2xl font-bold text-white mt-1">¥ 1.420.000 JPY</p>
               </div>
               <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Saldo em Custódia (Escrow Aprovado)</span>
+                <span className="text-xs text-zinc-400">Saldo em Custódia (Escrow)</span>
                 <p className="text-2xl font-bold text-sky-400 mt-1">¥ 185.000 JPY</p>
-                <p className="text-[11px] text-zinc-500 mt-0.5">Aguardando confirmação de entrega do comprador</p>
               </div>
               <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
                 <span className="text-xs text-zinc-400">Repassado via Stripe Connect</span>
                 <p className="text-2xl font-bold text-emerald-400 mt-1">¥ 755.000 JPY</p>
-                <p className="text-[11px] text-emerald-400/80 mt-0.5">Depositado na conta bancária vinculada</p>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Painel Stripe Connect Express / Custom */}
-            <div className="p-5 bg-gradient-to-r from-indigo-950/60 to-purple-950/60 border border-indigo-800/60 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <ShieldCheck className="w-5 h-5 text-indigo-400" />
-                  <h3 className="font-bold text-white text-sm">Conta Stripe Connect Express (Japão)</h3>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Ativa & Conectada
-                  </span>
-                </div>
-                <p className="text-xs text-zinc-300">
-                  Sua conta bancária japonesa (Furikomi) está configurada para receber repasses automáticos de 90% do valor de cada venda assim que a entrega for confirmada.
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 9: PERFIL DO LOJISTA & BANCO DO JAPÃO (DADOS PRESERVADOS)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'profile' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto space-y-6">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <User className="w-6 h-6 text-blue-400" />
+                  Perfil do Lojista & Conta Bancária Japão (Furikomi)
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Gerencie informações da empresa, endereço de expedição no Japão e dados de repasse.
                 </p>
               </div>
 
-              <div className="flex items-center space-x-3 flex-shrink-0">
-                <Link
-                  to="/admin/transactions"
-                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition shadow-lg shadow-indigo-600/20 flex items-center space-x-2"
+              {!editingProfile ? (
+                <button
+                  onClick={() => setEditingProfile(true)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition"
                 >
-                  <DollarSign className="w-4 h-4" />
-                  <span>Gerenciar Repasses Escrow</span>
-                </Link>
+                  Editar Informações
+                </button>
+              ) : (
+                <button
+                  onClick={() => setEditingProfile(false)}
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold transition"
+                >
+                  Cancelar Edição
+                </button>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveProfile} className="space-y-6">
+              {/* DADOS DA CONTA */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-white border-b border-zinc-800 pb-2">Informações da Conta</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Nome Completo / Empresa *</label>
+                    <input
+                      type="text"
+                      disabled={!editingProfile}
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white disabled:opacity-60"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">E-mail Cadastrado</label>
+                    <input
+                      type="email"
+                      disabled
+                      value={profileForm.email}
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-400 cursor-not-allowed"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Telefone de Contato</label>
+                    <input
+                      type="text"
+                      disabled={!editingProfile}
+                      value={profileForm.phone}
+                      onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Código Postal Japão (CEP)</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        disabled={!editingProfile}
+                        value={profileForm.zip_code}
+                        onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
+                        onBlur={handlePostalBlur}
+                        placeholder="Ex: 231-0005"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-mono text-white disabled:opacity-60"
+                      />
+                      {postalLoading && <Loader2 className="w-4 h-4 animate-spin absolute right-3 top-3 text-blue-400" />}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Endereço de Expedição no Japão</label>
+                  <input
+                    type="text"
+                    disabled={!editingProfile}
+                    value={profileForm.address}
+                    onChange={(e) => setProfileForm({ ...profileForm, address: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white disabled:opacity-60"
+                  />
+                </div>
               </div>
-            </div>
+
+              {/* CONTA BANCÁRIA JAPÃO */}
+              <div className="p-5 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-3">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  Conta Bancária para Repasses (Furikomi 振込)
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-zinc-500 block">Banco</span>
+                    <span className="font-bold text-white">{profileForm.japan_bank_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block">Agência</span>
+                    <span className="font-bold text-white">{profileForm.japan_branch_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block">Número da Conta</span>
+                    <span className="font-mono font-bold text-emerald-400">{profileForm.japan_account_number}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block">Titular (Katakana)</span>
+                    <span className="font-mono font-bold text-white">{profileForm.japan_account_holder}</span>
+                  </div>
+                </div>
+              </div>
+
+              {editingProfile && (
+                <button
+                  type="submit"
+                  disabled={savingProfile}
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20"
+                >
+                  {savingProfile ? 'Salvando Alterações...' : 'Salvar Alterações do Perfil'}
+                </button>
+              )}
+            </form>
           </div>
         )}
 
-        {/* ABA 9: REDE B2B DE DESMANCHES */}
-        {activeTab === 'b2b-network' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-blue-400" />
-              Marketplace Interno entre Desmanches (Rede B2B)
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 10: API REST & REDE B2B
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'api-b2b' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl max-w-3xl mx-auto space-y-6">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Key className="w-6 h-6 text-amber-400" />
+              API REST & Integração ERP Sincronizada
             </h2>
-            <p className="text-xs text-zinc-400 mb-6">
-              Compre e troque peças raras direto com outros desmanches parceiros cadastrados na rede privada DAIG.
-            </p>
-            <div className="border border-dashed border-zinc-800 rounded-xl p-8 text-center">
-              <Building2 className="w-10 h-10 text-blue-400 mx-auto mb-2 opacity-60" />
-              <p className="text-sm font-semibold text-white">Rede B2B Ativa no Japão</p>
-              <p className="text-xs text-zinc-500 mt-1">50 oficinas e desmanches em Kanagawa e Tóquio conectados.</p>
-            </div>
-          </div>
-        )}
-
-        {/* ABA 10: API & INTEGRAÇÃO COM ERPS */}
-        {activeTab === 'api-integrations' && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl max-w-3xl mx-auto">
-            <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-              <Key className="w-5 h-5 text-amber-400" />
-              API para Integração com ERPs Externos
-            </h2>
-            <p className="text-xs text-zinc-400 mb-6">
-              Conecte seu sistema legado via API REST para sincronizar estoque, peças e Ordens de Serviço (O.S.).
-            </p>
-
-            <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800 mb-6">
-              <label className="block text-xs text-zinc-400 mb-2">Chave Secreta da API (API Key)</label>
+            
+            <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
+              <label className="block text-xs text-zinc-400 mb-2">Sua Chave Secreta da API</label>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -997,22 +1519,75 @@ export default function TenantDashboard() {
                 </button>
               </div>
             </div>
-
-            <div className="space-y-2 text-xs font-mono text-zinc-400 bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-              <p className="text-zinc-200 font-bold text-sm mb-1">Endpoints da API REST:</p>
-              <p><span className="text-emerald-400">GET</span> /api/v1/tenant/inventory</p>
-              <p><span className="text-blue-400">POST</span> /api/v1/tenant/parts</p>
-              <p><span className="text-purple-400">POST</span> /api/v1/tenant/work-orders</p>
-            </div>
           </div>
         )}
 
-      </div>
+      </main>
 
-      {/* MODAL 1: IMPRESSÃO DE ETIQUETA QR WMS */}
+      {/* ─────────────────────────────────────────────────────────────
+          COMMAND PALETTE (Cmd + K) MODAL
+         ───────────────────────────────────────────────────────────── */}
+      {showCommandPalette && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-20 p-4">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-zinc-800 flex items-center space-x-3">
+              <Command className="w-5 h-5 text-blue-400" />
+              <input
+                type="text"
+                autoFocus
+                placeholder="Digite um comando ou busque uma peça/O.S..."
+                value={cmdSearch}
+                onChange={(e) => setCmdSearch(e.target.value)}
+                className="w-full bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none"
+              />
+              <button onClick={() => setShowCommandPalette(false)} className="text-zinc-500 hover:text-white text-xs">
+                ESC
+              </button>
+            </div>
+
+            <div className="p-3 max-h-80 overflow-y-auto space-y-1 text-xs">
+              <p className="text-[10px] font-mono text-zinc-500 uppercase px-3 py-1">Atalhos Rápidos</p>
+              
+              <button
+                onClick={() => { setActiveTab('ai-hub'); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-blue-400" /> Scannear Peça por Imagem (IA)</span>
+                <span className="text-[10px] font-mono text-zinc-500">Ir para IA Hub</span>
+              </button>
+
+              <button
+                onClick={() => { setActiveTab('wms-hierarchy'); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400" /> Navegar na Hierarquia WMS</span>
+                <span className="text-[10px] font-mono text-zinc-500">Galpão ➔ Corredor</span>
+              </button>
+
+              <button
+                onClick={() => { setShowWorkOrderModal(true); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><Plus className="w-4 h-4 text-purple-400" /> Criar Nova Ordem de Serviço (O.S.)</span>
+                <span className="text-[10px] font-mono text-zinc-500">Oficina</span>
+              </button>
+
+              <button
+                onClick={() => { setShowPdvModal(true); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><ShoppingCart className="w-4 h-4 text-emerald-400" /> Nova Venda no Balcão (PDV)</span>
+                <span className="text-[10px] font-mono text-zinc-500">Caixa</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: IMPRESSÃO ETIQUETA QR */}
       {printingStickerPart && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-md w-full animate-in fade-in zoom-in-95 duration-200">
+          <div className="max-w-md w-full">
             <QRStickerPrint
               partTitle={printingStickerPart.title}
               oemCode={printingStickerPart.oem_code || 'OEM-JDM-7718'}
@@ -1027,19 +1602,104 @@ export default function TenantDashboard() {
         </div>
       )}
 
-      {/* MODAL 2: VENDAS PDV BALCÃO */}
+      {/* MODAL: NOVA ORDEM DE SERVIÇO (O.S. OFICINA) */}
+      {showWorkOrderModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <Wrench className="w-5 h-5 text-purple-400" />
+                Nova Ordem de Serviço (O.S. Oficina)
+              </h3>
+              <button onClick={() => setShowWorkOrderModal(false)} className="text-zinc-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateWorkOrder} className="space-y-3 text-xs">
+              <div>
+                <label className="block text-zinc-400 mb-1 font-semibold">Descrição do Serviço *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Troca de Inversor Híbrido & Diagnóstico ECU"
+                  value={newOrderForm.title}
+                  onChange={(e) => setNewOrderForm({ ...newOrderForm, title: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Cliente *</label>
+                  <input
+                    type="text"
+                    placeholder="Nome do cliente"
+                    value={newOrderForm.client}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, client: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Veículo *</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Toyota Prius 2018"
+                    value={newOrderForm.vehicle}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, vehicle: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Mecânico Responsável</label>
+                  <select
+                    value={newOrderForm.mechanic}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, mechanic: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
+                  >
+                    <option>Kenji Sato</option>
+                    <option>Hiroshi Tanaka</option>
+                    <option>Takeshi Lin</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Valor Orçamento (JPY)</label>
+                  <input
+                    type="number"
+                    placeholder="85000"
+                    value={newOrderForm.amount}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, amount: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-bold text-emerald-400 focus:border-purple-500"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-purple-600/20 transition mt-2"
+              >
+                Cadastrar Ordem de Serviço
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: VENDAS PDV BALCÃO */}
       {showPdvModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <div className="flex items-center space-x-2">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-emerald-400" />
-                <h3 className="font-bold text-white text-base">Nova Venda no Balcão (PDV)</h3>
-              </div>
-              <button
-                onClick={() => setShowPdvModal(false)}
-                className="p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg transition"
-              >
+                Nova Venda no Balcão (PDV)
+              </h3>
+              <button onClick={() => setShowPdvModal(false)} className="text-zinc-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -1060,48 +1720,48 @@ export default function TenantDashboard() {
                 setShowPdvModal(false)
                 alert(`Venda concluída com sucesso! Recibo impresso. Troco: ¥ ${Math.max(0, Number(pdvForm.receivedAmount || 0) - priceNum).toLocaleString('ja-JP')} JPY`)
               }}
-              className="space-y-4"
+              className="space-y-3 text-xs"
             >
               <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-1">Peça / Item Vendido *</label>
+                <label className="block text-zinc-400 mb-1 font-semibold">Peça / Item Vendido *</label>
                 <input
                   type="text"
-                  placeholder="Ex: Farol LED Prius ZVW30 (ou digite o nome)"
+                  placeholder="Ex: Farol LED Prius ZVW30"
                   value={pdvForm.partTitle}
                   onChange={(e) => setPdvForm({ ...pdvForm, partTitle: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 transition"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-emerald-500"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Cliente / Destino</label>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Cliente</label>
                   <input
                     type="text"
                     value={pdvForm.customer}
                     onChange={(e) => setPdvForm({ ...pdvForm, customer: e.target.value })}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 transition"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-emerald-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Valor Total (JPY ¥) *</label>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Valor Total (JPY ¥) *</label>
                   <input
                     type="number"
                     value={pdvForm.price}
                     onChange={(e) => setPdvForm({ ...pdvForm, price: e.target.value })}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-bold text-emerald-400 focus:border-emerald-500 transition"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-bold text-emerald-400 focus:border-emerald-500"
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-1">Forma de Pagamento</label>
+                <label className="block text-zinc-400 mb-1 font-semibold">Forma de Pagamento</label>
                 <select
                   value={pdvForm.paymentMethod}
                   onChange={(e) => setPdvForm({ ...pdvForm, paymentMethod: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 transition"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-emerald-500"
                 >
                   <option>Espécie (Dinheiro JPY)</option>
                   <option>Cartão de Crédito (Stripe Terminal)</option>
@@ -1122,7 +1782,7 @@ export default function TenantDashboard() {
                     />
                   </div>
                   <div className="flex justify-between items-center text-xs pt-1 border-t border-zinc-800">
-                    <span className="font-semibold text-zinc-300">Troco a Devolver (Otsuri お釣り):</span>
+                    <span className="font-semibold text-zinc-300">Troco (Otsuri お釣り):</span>
                     <span className="font-extrabold text-amber-400 text-sm">
                       ¥ {Math.max(0, Number(pdvForm.receivedAmount || 0) - Number(pdvForm.price || 0)).toLocaleString('ja-JP')} JPY
                     </span>
@@ -1132,37 +1792,27 @@ export default function TenantDashboard() {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition mt-2"
               >
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Finalizar Venda & Emitir Recibo</span>
+                Finalizar Venda & Emitir Recibo
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* MODAL 3: IMPORTAÇÃO DE NF-E XML */}
+      {/* MODAL: IMPORTAR NF-E XML */}
       {showNfeModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <div className="flex items-center space-x-2">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
                 <FileText className="w-5 h-5 text-blue-400" />
-                <h3 className="font-bold text-white text-base">Importar Nota Fiscal XML (NF-e)</h3>
-              </div>
-              <button
-                onClick={() => setShowNfeModal(false)}
-                className="p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg transition"
-              >
+                Importar Nota Fiscal XML (NF-e)
+              </h3>
+              <button onClick={() => setShowNfeModal(false)} className="text-zinc-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
-            </div>
-
-            <div className="border-2 border-dashed border-zinc-700 hover:border-blue-500 rounded-2xl p-6 text-center bg-zinc-950 transition cursor-pointer">
-              <Upload className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-              <p className="text-xs font-semibold text-white">Arraste o arquivo XML da Nota Fiscal aqui</p>
-              <p className="text-[11px] text-zinc-500 mt-1">Suporta notas fiscais de leilões (USS, TAA, JU), seguradoras e distribuidores</p>
             </div>
 
             <form
@@ -1180,52 +1830,52 @@ export default function TenantDashboard() {
                 setShowNfeModal(false)
                 alert('Nota fiscal XML importada com sucesso! Lote de peças integrado ao estoque privado.')
               }}
-              className="space-y-4"
+              className="space-y-3 text-xs"
             >
               <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-1">Fornecedor / Leilão *</label>
+                <label className="block text-zinc-400 mb-1 font-semibold">Fornecedor / Leilão *</label>
                 <input
                   type="text"
                   value={nfeForm.supplier}
                   onChange={(e) => setNfeForm({ ...nfeForm, supplier: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 transition"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-1">Chave da Nota Fiscal / Documento</label>
+                <label className="block text-zinc-400 mb-1 font-semibold">Chave da Nota Fiscal / Documento</label>
                 <input
                   type="text"
                   value={nfeForm.key}
                   onChange={(e) => setNfeForm({ ...nfeForm, key: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:border-blue-500 transition"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-mono text-white focus:border-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-1">Valor Total da Nota (JPY ¥) *</label>
+                <label className="block text-zinc-400 mb-1 font-semibold">Valor Total (JPY ¥) *</label>
                 <input
                   type="number"
                   value={nfeForm.value}
                   onChange={(e) => setNfeForm({ ...nfeForm, value: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-bold text-white focus:border-blue-500 transition"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-bold text-white focus:border-blue-500"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center justify-center space-x-2"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/20 transition mt-2"
               >
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Confirmar Importação de Estoque</span>
+                Confirmar Importação de Estoque
               </button>
             </form>
           </div>
         </div>
       )}
+
     </div>
   )
 }
