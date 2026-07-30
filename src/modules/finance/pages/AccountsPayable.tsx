@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 import { 
   Server, Database, Cpu, Zap, Globe, Activity, DollarSign, AlertTriangle, 
   CheckCircle2, ExternalLink, TrendingUp, HardDrive, Users, RefreshCw, 
-  ArrowUpRight, ShieldCheck, CreditCard, Lock, Radio, Layers, Sparkles, Box, Gauge
+  ArrowUpRight, ShieldCheck, CreditCard, Lock, Radio, Layers, Sparkles, Box, Gauge, Sliders, Calculator
 } from 'lucide-react'
 import { supabase } from '@/modules/shared/lib/supabase'
+import { calculateCloudAndFinancialGrowth } from '../utils/cloudGrowthEngine'
 
 export default function AccountsPayable() {
   const [loading, setLoading] = useState(false)
@@ -24,6 +25,12 @@ export default function AccountsPayable() {
     activeStoreSubscriptions: 0
   })
 
+  // Interactive Simulator Controls
+  const [simGmv, setSimGmv] = useState<number>(1000000) // Default ¥1,000,000 GMV
+  const [simStores, setSimStores] = useState<number>(5) // Default 5 SaaS stores
+  const [simOrders, setSimOrders] = useState<number>(50) // Default 50 orders
+  const [simBandwidthGb, setSimBandwidthGb] = useState<number>(15) // Default 15 GB
+
   useEffect(() => {
     fetchRealStats()
   }, [])
@@ -32,7 +39,6 @@ export default function AccountsPayable() {
     setLoading(true)
     const startTime = performance.now()
     try {
-      // Direct, safe query helper to confirmed Supabase tables (No CORS, No HEAD 404s)
       const getCount = async (tableName: string) => {
         try {
           const { count, error } = await supabase
@@ -46,7 +52,6 @@ export default function AccountsPayable() {
         }
       }
 
-      // Query core database tables concurrently via standard Supabase REST GET
       const [parts, profiles, transactions] = await Promise.all([
         getCount('parts'),
         getCount('profiles'),
@@ -78,6 +83,18 @@ export default function AccountsPayable() {
       setLoading(false)
     }
   }
+
+  // Calculate Growth Projections via Cloud Growth Engine
+  const projection = calculateCloudAndFinancialGrowth({
+    monthlyGmvJpy: simGmv,
+    activeSaasStores: simStores,
+    monthlyOrdersCount: simOrders,
+    estimatedDbSizeMb: dbStats.dbSizeMb,
+    estimatedStorageGb: dbStats.storageSizeMb,
+    estimatedBandwidthGb: simBandwidthGb
+  })
+
+  const formatJpy = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val)
 
   // 100% Real Live Metrics Array
   const realDatabaseMetrics = [
@@ -140,11 +157,11 @@ export default function AccountsPayable() {
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-              Monitor de Saúde, Cotas & Latência da Nuvem
+              Monitor de Infraestrutura & Modelo de Escala Financeira
             </h1>
 
             <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-              Métricas <strong className="text-emerald-400">100% reais</strong> consultadas diretamente nas tabelas do banco de dados <strong>Supabase PostgreSQL</strong> e servidores <strong>Vercel Edge</strong> em Tóquio.
+              Métricas <strong className="text-emerald-400">100% reais</strong> consultadas diretamente nas tabelas <strong>Supabase PostgreSQL</strong> e simulador avançado de valor baseado na documentação oficial de taxas da <strong>Vercel, Supabase e Stripe (Japão)</strong>.
             </p>
           </div>
 
@@ -171,7 +188,7 @@ export default function AccountsPayable() {
         </div>
       </div>
 
-      {/* ═══ ILLUMINATED NEON STATUS CARDS (CARDS ILUMINADOS COM EFEITOS DE ABERTURA) ═══ */}
+      {/* ═══ ILLUMINATED NEON STATUS CARDS ═══ */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 relative z-10">
         
         {/* Card 1: Vercel Real Ping */}
@@ -269,6 +286,150 @@ export default function AccountsPayable() {
 
       </div>
 
+      {/* ═══ ADVANCED VALUE GROWTH SIMULATOR (VERCEL, SUPABASE & STRIPE OFFICIAL MODEL) ═══ */}
+      <div className="bg-[#121215] border border-emerald-500/40 rounded-3xl p-6 lg:p-8 space-y-6 relative z-10 shadow-[0_0_50px_rgba(16,185,129,0.1)]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+              <Calculator size={20} />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-white">Simulador de Escala de Valor & Margem Líquida</h2>
+              <p className="text-xs text-zinc-400">Cálculos baseados nas regras de precificação oficial Vercel, Supabase e Stripe (Japão JPY)</p>
+            </div>
+          </div>
+          <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono font-bold rounded-full">
+            Modelo Financeiro Oficial
+          </span>
+        </div>
+
+        {/* Simulator Controls Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Input 1: GMV */}
+          <div className="space-y-2.5 bg-[#18181b] p-4 rounded-2xl border border-zinc-800">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-zinc-400">GMV Mensal Vendas:</span>
+              <span className="text-emerald-400 font-mono">{formatJpy(simGmv)}</span>
+            </div>
+            <input 
+              type="range"
+              min="0"
+              max="20000000"
+              step="500000"
+              value={simGmv}
+              onChange={e => setSimGmv(Number(e.target.value))}
+              className="w-full accent-emerald-500 bg-zinc-900 rounded-lg cursor-pointer h-2"
+            />
+            <p className="text-[10px] text-zinc-500 font-mono text-right">0 a ¥20,000,000 / mês</p>
+          </div>
+
+          {/* Input 2: SaaS Stores */}
+          <div className="space-y-2.5 bg-[#18181b] p-4 rounded-2xl border border-zinc-800">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-zinc-400">Lojas SaaS (¥30k/mês):</span>
+              <span className="text-purple-400 font-mono">{simStores} Lojas</span>
+            </div>
+            <input 
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={simStores}
+              onChange={e => setSimStores(Number(e.target.value))}
+              className="w-full accent-purple-500 bg-zinc-900 rounded-lg cursor-pointer h-2"
+            />
+            <p className="text-[10px] text-zinc-500 font-mono text-right">MRR SaaS: {formatJpy(simStores * 30000)}</p>
+          </div>
+
+          {/* Input 3: Orders Count */}
+          <div className="space-y-2.5 bg-[#18181b] p-4 rounded-2xl border border-zinc-800">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-zinc-400">Pedidos Processados:</span>
+              <span className="text-sky-400 font-mono">{simOrders} Pedidos</span>
+            </div>
+            <input 
+              type="range"
+              min="0"
+              max="1000"
+              step="25"
+              value={simOrders}
+              onChange={e => setSimOrders(Number(e.target.value))}
+              className="w-full accent-sky-500 bg-zinc-900 rounded-lg cursor-pointer h-2"
+            />
+            <p className="text-[10px] text-zinc-500 font-mono text-right">Frequência mensal</p>
+          </div>
+
+          {/* Input 4: Bandwidth */}
+          <div className="space-y-2.5 bg-[#18181b] p-4 rounded-2xl border border-zinc-800">
+            <div className="flex justify-between text-xs font-bold">
+              <span className="text-zinc-400">Tráfego de Dados (Egress):</span>
+              <span className="text-amber-400 font-mono">{simBandwidthGb} GB</span>
+            </div>
+            <input 
+              type="range"
+              min="1"
+              max="1500"
+              step="25"
+              value={simBandwidthGb}
+              onChange={e => setSimBandwidthGb(Number(e.target.value))}
+              className="w-full accent-amber-500 bg-zinc-900 rounded-lg cursor-pointer h-2"
+            />
+            <p className="text-[10px] text-zinc-500 font-mono text-right">Cota Free: 100 GB</p>
+          </div>
+        </div>
+
+        {/* Projection Results Dashboard */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+          {/* Gross Revenue */}
+          <div className="bg-[#18181b] border border-zinc-800 p-5 rounded-2xl space-y-1">
+            <span className="text-[11px] text-zinc-400 font-semibold uppercase tracking-wider">Faturamento Bruto DAIG</span>
+            <p className="text-2xl font-black text-emerald-400 font-mono">{formatJpy(projection.totalGrossRevenue)}</p>
+            <p className="text-[10px] text-zinc-500">Comissão (10%): {formatJpy(projection.marketplaceCommission)} + MRR</p>
+          </div>
+
+          {/* Stripe Fee */}
+          <div className="bg-[#18181b] border border-zinc-800 p-5 rounded-2xl space-y-1">
+            <span className="text-[11px] text-zinc-400 font-semibold uppercase tracking-wider">Taxa Stripe Japan (3.6%)</span>
+            <p className="text-2xl font-black text-sky-400 font-mono">{formatJpy(projection.stripeCardFee)}</p>
+            <p className="text-[10px] text-zinc-500">Volume Líquido: {formatJpy(projection.stripeNetVolume)}</p>
+          </div>
+
+          {/* Cloud Infra Cost */}
+          <div className="bg-[#18181b] border border-zinc-800 p-5 rounded-2xl space-y-1">
+            <span className="text-[11px] text-zinc-400 font-semibold uppercase tracking-wider">Custo Nuvem (Vercel + Supabase)</span>
+            <p className="text-2xl font-black text-amber-400 font-mono">
+              {formatJpy(projection.totalCloudCostJpy)} <span className="text-xs text-zinc-500 font-normal">(${projection.totalCloudCostUsd})</span>
+            </p>
+            <p className="text-[10px] text-zinc-500">Vercel: {projection.vercelTier} | Supabase: {projection.supabaseTier}</p>
+          </div>
+
+          {/* Net Profit & Margin */}
+          <div className="bg-[#18181b] border border-emerald-500/40 p-5 rounded-2xl space-y-1 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+            <span className="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">Lucro Líquido Estimado</span>
+            <p className="text-2xl font-black text-white font-mono">{formatJpy(projection.netProfitJpy)}</p>
+            <div className="flex justify-between items-center text-[10px] text-emerald-400 font-bold pt-0.5">
+              <span>Margem Operacional:</span>
+              <span className="bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">{projection.netProfitMarginPercentage}%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Scaling Alerts */}
+        <div className="bg-[#18181b] border border-zinc-800/80 p-4 rounded-2xl space-y-2">
+          <span className="text-xs font-bold text-white flex items-center gap-1.5">
+            <AlertTriangle size={14} className="text-amber-400" />
+            Alertas de Escala de Infraestrutura & Recomendações:
+          </span>
+          <ul className="space-y-1 text-xs text-zinc-300 font-mono">
+            {projection.scalingAlerts.map((alert, idx) => (
+              <li key={idx} className="flex items-center gap-2">
+                <span>{alert}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
       {/* ═══ LIVE POSTGRESQL TABLE INSPECTOR ═══ */}
       <div className="bg-[#121215] border border-[#27272a] rounded-3xl p-6 space-y-4 relative z-10">
         <div className="flex items-center justify-between border-b border-[#27272a] pb-4">
@@ -310,53 +471,6 @@ export default function AccountsPayable() {
             <p className="text-2xl font-bold text-teal-400 font-mono">{dbStats.storageFilesCount}</p>
             <p className="text-[10px] text-zinc-500">Mídias</p>
           </div>
-        </div>
-      </div>
-
-      {/* ═══ DETAILED REAL METRICS LIST ═══ */}
-      <div className="bg-[#121215] border border-[#27272a] rounded-3xl p-6 space-y-4 relative z-10">
-        <div className="flex items-center justify-between border-b border-[#27272a] pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <Gauge size={16} />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-white">Métricas de Consumo em Tempo Real</h2>
-              <p className="text-xs text-zinc-400">Monitoramento contínuo das cotas reais do projeto</p>
-            </div>
-          </div>
-          <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-            100% Live Sync
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {realDatabaseMetrics.map((rm, idx) => {
-            const Icon = rm.icon
-            return (
-              <div key={idx} className="bg-[#18181b] border border-zinc-800/80 p-5 rounded-2xl space-y-3 hover:border-zinc-700 transition">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <Icon size={16} className="text-emerald-400" />
-                    <span className="text-xs font-bold text-white">{rm.name}</span>
-                  </div>
-                  <span className="text-xs font-mono text-emerald-400 font-bold">{rm.current}</span>
-                </div>
-
-                <div className="w-full bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
-                  <div 
-                    className={`h-full ${rm.color} ${rm.glowColor} transition-all duration-500 rounded-full`}
-                    style={{ width: `${Math.max(rm.percentage, 2)}%` }}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between text-[10px] text-zinc-500 font-mono">
-                  <span>Métrica: {rm.detail}</span>
-                  <span>Cota Máxima: {rm.limit}</span>
-                </div>
-              </div>
-            )
-          })}
         </div>
       </div>
 
