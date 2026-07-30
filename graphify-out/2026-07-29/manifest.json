@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1785371151.627405,
-    "ast_hash": "470fc5cb8aaf412d6d5584fcf2cac2ce",
+    "mtime": 1785373467.6114018,
+    "ast_hash": "5c5b34796aa3aa09a4b95298afa8ee74",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -2780,8 +2780,8 @@
     "semantic_hash": ""
   },
   "src/modules/finance/pages/SaasControlCenter.tsx": {
-    "mtime": 1785371166.3274047,
-    "ast_hash": "a34ee75572a079c84288fcaf7bd37d3f",
+    "mtime": 1785374194.2794015,
+    "ast_hash": "e0bb87e64d787c61721efa7abba3cf60",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {

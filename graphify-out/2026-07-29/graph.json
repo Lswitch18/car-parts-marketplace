@@ -1269,8 +1269,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 72,
-      "community_name": "@base-ui/react",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1280,8 +1280,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 72,
-      "community_name": "@base-ui/react",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1533,8 +1533,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1544,8 +1544,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "canvas-confetti"
     },
     {
@@ -2094,8 +2094,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
-      "community": 133,
-      "community_name": "devDependencies",
+      "community": 64,
+      "community_name": "@types/react-dom",
       "norm_label": "@types/react-dom"
     },
     {
@@ -2105,8 +2105,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "types_react_dom",
-      "community": 133,
-      "community_name": "devDependencies",
+      "community": 64,
+      "community_name": "@types/react-dom",
       "norm_label": "@types/react-dom"
     },
     {
@@ -2182,8 +2182,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 133,
+      "community_name": "devDependencies",
       "norm_label": "autoprefixer"
     },
     {
@@ -2193,8 +2193,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "autoprefixer",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 133,
+      "community_name": "devDependencies",
       "norm_label": "autoprefixer"
     },
     {
@@ -26540,7 +26540,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L666",
+      "source_location": "L665",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
@@ -49231,5 +49231,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1a31b2ca5ce3f5f1d19e277824857616f179d6fc"
+  "built_at_commit": "8750508dabfed423208aa53cc2b338f45d2bbdcb"
 }

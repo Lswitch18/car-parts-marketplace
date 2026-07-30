@@ -5,25 +5,26 @@ import ProtectedRoute from '@/modules/identity/components/ProtectedRoute'
 import ScrollToTop from '@/modules/shared/components/ScrollToTop'
 import PWARegister from '@/modules/shared/components/PWARegister'
 import GlobalLoader from '@/modules/shared/components/GlobalLoader'
-import { useEffect, Suspense, lazy } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
+import { lazyWithRetry } from '@/modules/shared/lib/lazyWithRetry'
 
-// Lazy Loading
-const MobileStoreHome = lazy(() => import('@/modules/storefront/pages/MobileStoreHome'))
-const Catalog = lazy(() => import('@/modules/parts-catalog/pages/Catalog'))
-const ProductDetail = lazy(() => import('@/modules/parts-catalog/pages/ProductDetail'))
-const CarList = lazy(() => import('@/modules/vehicles/pages/CarList'))
-const Login = lazy(() => import('@/modules/identity/pages/Login'))
-const Register = lazy(() => import('@/modules/identity/pages/Register'))
-const Dashboard = lazy(() => import('@/modules/backoffice/pages/Dashboard'))
-const CreateListing = lazy(() => import('@/modules/parts-catalog/pages/CreateListing'))
-const Profile = lazy(() => import('@/modules/identity/pages/Profile'))
-const Favorites = lazy(() => import('@/modules/parts-catalog/pages/Favorites'))
-const Messages = lazy(() => import('@/modules/chat/pages/Messages'))
-const PaymentCheckout = lazy(() => import('@/modules/transactions/pages/PaymentCheckout'))
-const Auctions = lazy(() => import('@/modules/auctions/pages/Auctions'))
-const PartsLookup = lazy(() => import('@/modules/parts-catalog/pages/PartsLookup'))
+// Lazy Loading com auto-retry
+const MobileStoreHome = lazyWithRetry(() => import('@/modules/storefront/pages/MobileStoreHome'))
+const Catalog = lazyWithRetry(() => import('@/modules/parts-catalog/pages/Catalog'))
+const ProductDetail = lazyWithRetry(() => import('@/modules/parts-catalog/pages/ProductDetail'))
+const CarList = lazyWithRetry(() => import('@/modules/vehicles/pages/CarList'))
+const Login = lazyWithRetry(() => import('@/modules/identity/pages/Login'))
+const Register = lazyWithRetry(() => import('@/modules/identity/pages/Register'))
+const Dashboard = lazyWithRetry(() => import('@/modules/backoffice/pages/Dashboard'))
+const CreateListing = lazyWithRetry(() => import('@/modules/parts-catalog/pages/CreateListing'))
+const Profile = lazyWithRetry(() => import('@/modules/identity/pages/Profile'))
+const Favorites = lazyWithRetry(() => import('@/modules/parts-catalog/pages/Favorites'))
+const Messages = lazyWithRetry(() => import('@/modules/chat/pages/Messages'))
+const PaymentCheckout = lazyWithRetry(() => import('@/modules/transactions/pages/PaymentCheckout'))
+const Auctions = lazyWithRetry(() => import('@/modules/auctions/pages/Auctions'))
+const PartsLookup = lazyWithRetry(() => import('@/modules/parts-catalog/pages/PartsLookup'))
 
 function StoreApp() {
   const { user, initialized, loading, initialize } = useAuthStore()

@@ -1,7 +1,7 @@
 # Graph Report - car-parts-marketplce  (2026-07-29)
 
 ## Corpus Check
-- 365 files · ~863,929 words
+- 365 files · ~863,927 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1a31b2ca`
+- Built from commit: `8750508d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -74,11 +74,11 @@
 - PedidoDetail.tsx
 - NotificationCenter.tsx
 - LogistixDashboard.tsx
+- @types/react-dom
 - @capacitor/core
 - ChatPopup.tsx
 - NotificationCenter.tsx
 - index.ts
-- @base-ui/react
 - dispose
 - useAuthStore
 - J
@@ -375,7 +375,7 @@ Nodes (20): getCityCoords(), getCurrentPositionSafe(), haversineKm(), JP_CITY_CO
 
 ### Community 105 - "dependencies"
 Cohesion: 0.18
-Nodes (11): canvas-confetti, clsx, leaflet, lucide-react, dependencies, canvas-confetti, clsx, leaflet (+3 more)
+Nodes (11): @base-ui/react, clsx, leaflet, lucide-react, dependencies, @base-ui/react, clsx, leaflet (+3 more)
 
 ### Community 111 - "WorkerApp-BWctDf0A.js"
 Cohesion: 0.05
@@ -391,7 +391,7 @@ Nodes (35): atribuirMotorista(), auditLog(), calcularPrazo(), criarRota(), criar
 
 ### Community 133 - "devDependencies"
 Cohesion: 0.09
-Nodes (23): auto-parts-db, @capacitor/cli, devDependencies, auto-parts-db, @capacitor/cli, postcss, supabase, @types/qrcode (+15 more)
+Nodes (23): auto-parts-db, autoprefixer, @capacitor/cli, devDependencies, auto-parts-db, autoprefixer, @capacitor/cli, postcss (+15 more)
 
 ### Community 135 - "compilerOptions"
 Cohesion: 0.08
@@ -649,7 +649,7 @@ Nodes (3): Concluídas ✅, Lista de Tarefas (Work in Progress), Pendentes ⏳
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `jsbarcode`, `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `shadcn`, `@tanstack/react-query`, `three`, `.copy`, `@supabase/supabase-js`, `Wt`, `B`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `@base-ui/react`, `NotificationCenter.tsx`, `@capacitor/core`, `@base-ui/react`, `package.json`, `qrcode`?**
+- **Why does `dependencies` connect `dependencies` to `jsbarcode`, `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `shadcn`, `@tanstack/react-query`, `three`, `.copy`, `@supabase/supabase-js`, `Wt`, `B`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `Catalog-Dz-L_iSM.js`, `@base-ui/react`, `NotificationCenter.tsx`, `@capacitor/core`, `package.json`, `qrcode`?**
   _High betweenness centrality (0.064) - this node is a cross-community bridge._
 - **Why does `qrcode` connect `qrcode` to `dependencies`, `t`?**
   _High betweenness centrality (0.059) - this node is a cross-community bridge._
