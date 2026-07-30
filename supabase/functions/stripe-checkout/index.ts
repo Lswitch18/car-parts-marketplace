@@ -518,10 +518,10 @@ async function createContractSubscription(req: Request) {
 }
 
 const STRIPE_PRICES = {
-  starter: Deno.env.get('STRIPE_PRICE_STARTER') || 'price_1Tyxrsh1CJrkWqOLicU0eb90',
-  pro: Deno.env.get('STRIPE_PRICE_PRO') || 'price_1TyxoUHlCJrkWq0LF9KxBfp2',
-  premium: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lw',
-  enterprise: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lw',
+  starter: Deno.env.get('STRIPE_PRICE_STARTER') || 'price_1TyxrsHlCJrkWqOLicUOeb90',
+  pro: Deno.env.get('STRIPE_PRICE_PRO') || 'price_1TyxoUHlCJrkWqOLF9KxBfp2',
+  premium: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lW',
+  enterprise: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lW',
 };
 
 async function createSubscriptionSession(req: Request) {
