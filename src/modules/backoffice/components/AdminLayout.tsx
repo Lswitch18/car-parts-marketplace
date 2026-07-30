@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Activity, Bell, MoreHorizontal, Search, ChevronRight, Package, Truck, CreditCard, DollarSign, Image as ImageIcon, Users, Star, Building2, Menu, X, Brain } from 'lucide-react';
+import { LayoutDashboard, Activity, Bell, MoreHorizontal, Search, ChevronRight, Package, Truck, CreditCard, DollarSign, Image as ImageIcon, Users, Star, Building2, Menu, X, Brain, Server } from 'lucide-react';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 
 export default function AdminLayout() {
@@ -20,7 +20,7 @@ export default function AdminLayout() {
     { divider: true },
     
     { section: 'OPERATIONS' },
-    { label: 'Fleet & Drivers', path: '/admin/transportation/drivers', icon: Truck },
+    { label: 'Infraestrutura de TI', path: '/admin/finance/payable', icon: Server, badge: 'Live' },
     { divider: true },
 
     { section: 'MARKETPLACE' },
