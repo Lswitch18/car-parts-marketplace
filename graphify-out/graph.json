@@ -1511,8 +1511,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_axios",
-      "community": 56,
-      "community_name": "@base-ui/react",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "axios"
     },
     {
@@ -1522,8 +1522,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "axios",
-      "community": 56,
-      "community_name": "@base-ui/react",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "axios"
     },
     {
@@ -1533,8 +1533,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1544,8 +1544,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "canvas-confetti"
     },
     {
@@ -2094,8 +2094,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
-      "community": 133,
-      "community_name": "devDependencies",
+      "community": 56,
+      "community_name": "@base-ui/react",
       "norm_label": "@types/react-dom"
     },
     {
@@ -2105,8 +2105,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "types_react_dom",
-      "community": 133,
-      "community_name": "devDependencies",
+      "community": 56,
+      "community_name": "@base-ui/react",
       "norm_label": "@types/react-dom"
     },
     {
@@ -2182,8 +2182,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 133,
+      "community_name": "devDependencies",
       "norm_label": "autoprefixer"
     },
     {
@@ -2193,8 +2193,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "autoprefixer",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 133,
+      "community_name": "devDependencies",
       "norm_label": "autoprefixer"
     },
     {
@@ -42870,12 +42870,12 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L159",
+      "source_location": "L225",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "supabase_functions_stripe_checkout_index_createcheckoutsession",
-      "target": "supabase_functions_stripe_checkout_index_calculatefees"
+      "target": "supabase_functions_stripe_checkout_index_calculatefees",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -49357,5 +49357,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "874819347f7dc804d953d0cd00c7a7821ef5056a"
+  "built_at_commit": "dfc0b1b413cf9f7290aaf761ee91dfec7be16d1d"
 }
