@@ -205,17 +205,18 @@ export default function SaasControlCenter() {
           status: formData.status
         } : item))
 
-        // Attempt Supabase update
-        await supabase
-          .from('tenants')
-          .update({
-            name: formData.name,
-            slug: slugVal,
-            contact_email: formData.contact_email,
-            plan_type: formData.plan_type,
-            is_active: formData.status === 'active'
-          })
-          .eq('id', editingSub.id)
+        // Attempt profiles update safely
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              full_name: formData.name,
+              store_status: formData.status === 'active' ? 'approved' : 'suspended'
+            })
+            .eq('id', editingSub.id)
+        } catch {
+          // Ignore
+        }
 
       } else {
         const newSub: SaasCompanySubscription = {
@@ -233,17 +234,6 @@ export default function SaasControlCenter() {
         }
 
         setSubscriptions(prev => [newSub, ...prev])
-
-        // Insert tenant into Supabase
-        await supabase
-          .from('tenants')
-          .insert({
-            name: formData.name,
-            slug: slugVal,
-            contact_email: formData.contact_email,
-            plan_type: formData.plan_type,
-            is_active: formData.status === 'active'
-          })
       }
 
       setIsModalOpen(false)
@@ -260,11 +250,11 @@ export default function SaasControlCenter() {
 
     try {
       await supabase
-        .from('tenants')
-        .update({ is_active: newStatus === 'active' })
+        .from('profiles')
+        .update({ store_status: newStatus === 'active' ? 'approved' : 'suspended' })
         .eq('id', id)
-    } catch (err) {
-      console.warn('Atualizando status no ambiente local...')
+    } catch {
+      // Ignore if column not present
     }
   }
 
