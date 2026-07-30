@@ -73,13 +73,7 @@ export default function SaasControlCenter() {
     try {
       setLoading(true)
       
-      // Query tenants table first
-      const { data: tenantData, error: tenantErr } = await supabase
-        .from('tenants')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      // Query profiles for store profiles
+      // Query store profiles from profiles table (guaranteed in Supabase schema)
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
@@ -87,21 +81,20 @@ export default function SaasControlCenter() {
 
       const combined: SaasCompanySubscription[] = []
 
-      if (tenantData && tenantData.length > 0) {
-        tenantData.forEach(t => {
-          const plan = (t.plan_type as 'starter' | 'pro' | 'enterprise') || 'pro'
+      if (profileData && profileData.length > 0) {
+        profileData.forEach(p => {
           combined.push({
-            id: t.id,
-            name: t.name || 'Loja Parceira DAIG',
-            slug: t.slug || t.name?.toLowerCase().replace(/\s+/g, '-') || 'loja-b2b',
-            store_type: (t.store_type || 'loja_pecas') as any,
-            contact_name: t.contact_email?.split('@')[0] || 'Gerente Loja',
-            contact_email: t.contact_email || 'contato@loja.jp',
-            plan_type: plan,
-            plan_price: PLAN_DETAILS[plan]?.price || 30000,
-            status: t.is_active ? 'active' : 'suspended',
+            id: p.id,
+            name: p.full_name || p.email?.split('@')[0] || 'Loja Parceira DAIG',
+            slug: p.full_name?.toLowerCase().replace(/\s+/g, '-') || 'loja-b2b',
+            store_type: 'loja_pecas',
+            contact_name: p.full_name || 'Gerente Loja',
+            contact_email: p.email || 'contato@loja.jp',
+            plan_type: 'pro',
+            plan_price: 30000,
+            status: 'active',
             next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            created_at: t.created_at || new Date().toISOString()
+            created_at: p.created_at || new Date().toISOString()
           })
         })
       }

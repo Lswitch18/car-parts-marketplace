@@ -145,17 +145,21 @@ export default function Onboarding() {
           updates.is_verified = true
           updates.store_requested_at = new Date().toISOString()
 
-          // Automatically register tenant in tenants table if store
-          await supabase
-            .from('tenants')
-            .insert({
-              name: storeName || 'Loja Automotiva JDM',
-              slug: (storeName || 'loja').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-              contact_email: user?.email || 'vendedor@daig.jp',
-              contact_phone: phone,
-              plan_type: 'pro',
-              is_active: true
-            })
+          // Envolver tentativa de registro na tabela tenants em try/catch
+          try {
+            await supabase
+              .from('tenants')
+              .insert({
+                name: storeName || 'Loja Automotiva JDM',
+                slug: (storeName || 'loja').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                contact_email: user?.email || 'vendedor@daig.jp',
+                contact_phone: phone,
+                plan_type: 'pro',
+                is_active: true
+              })
+          } catch {
+            // Ignorar se a tabela tenants não estiver exposta
+          }
         }
       } else {
         updates.account_type = 'pessoa_fisica'

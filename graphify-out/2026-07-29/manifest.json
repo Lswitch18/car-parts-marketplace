@@ -515,8 +515,8 @@
     "semantic_hash": "e48725915cf51cca6bbb970755fadc3f"
   },
   "src/modules/finance/pages/AccountsPayable.tsx": {
-    "mtime": 1785368478.9914055,
-    "ast_hash": "13c33ab661b2b7eb8f6304fffab98729",
+    "mtime": 1785368698.2234044,
+    "ast_hash": "9024274c8cb781efe3526a4a79183f8a",
     "semantic_hash": ""
   },
   "src/modules/identity/__tests__/authStore.test.ts": {
@@ -2802,6 +2802,11 @@
   "src/modules/shared/__tests__/securitySanitizer.test.ts": {
     "mtime": 1785366991.487403,
     "ast_hash": "0d588c14f9fd73da466639a093bf22d7",
+    "semantic_hash": ""
+  },
+  "supabase/functions/system-metrics/index.ts": {
+    "mtime": 1785368684.4434042,
+    "ast_hash": "65fbed6f2dd66d391d39f5b44b352164",
     "semantic_hash": ""
   }
 }

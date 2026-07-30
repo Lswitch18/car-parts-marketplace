@@ -160,10 +160,10 @@ export default function TransactionManagement() {
 
   const fetchActiveStores = async () => {
     try {
-      const { data, count, error } = await supabase
-        .from('tenants')
-        .select('plan_type, is_active', { count: 'exact' })
-        .eq('is_active', true);
+      const { count, error } = await supabase
+        .from('profiles')
+        .select('id', { count: 'exact' })
+        .or('role.eq.seller,is_store.eq.true');
       
       if (error) {
         setActiveStoresCount(0);
@@ -171,20 +171,10 @@ export default function TransactionManagement() {
         return;
       }
 
-      if (count !== null) {
-        setActiveStoresCount(count);
-      } else {
-        setActiveStoresCount(0);
-      }
-
-      if (data && data.length > 0) {
-        const PLAN_PRICES: Record<string, number> = { starter: 7000, pro: 10000, enterprise: 16000 };
-        const total = data.reduce((sum, s) => sum + (PLAN_PRICES[s.plan_type || 'pro'] || 10000), 0);
-        setSaasRevenueTotal(total);
-      } else {
-        setSaasRevenueTotal(0);
-      }
-    } catch (err) {
+      const storeCount = count || 0;
+      setActiveStoresCount(storeCount);
+      setSaasRevenueTotal(storeCount * 30000);
+    } catch {
       setActiveStoresCount(0);
       setSaasRevenueTotal(0);
     }

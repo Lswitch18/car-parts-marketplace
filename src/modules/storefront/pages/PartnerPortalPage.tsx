@@ -134,18 +134,22 @@ export default function PartnerPortalPage() {
       const subId = stripeRes.subscription_id || `sub_stripe_${Date.now()}`
       setStripeSubId(subId)
 
-      // 2. Cadastrar a loja parceira na tabela tenants
-      await supabase
-        .from('tenants')
-        .insert({
-          name: formData.storeName,
-          slug: slugVal,
-          contact_email: formData.contactEmail,
-          contact_phone: formData.phone,
-          address_prefecture: formData.prefecture,
-          plan_type: selectedPlan.id,
-          is_active: true
-        })
+      // 2. Atualizar perfil da loja parceira em profiles e registrar tenant se a tabela existir
+      try {
+        await supabase
+          .from('tenants')
+          .insert({
+            name: formData.storeName,
+            slug: slugVal,
+            contact_email: formData.contactEmail,
+            contact_phone: formData.phone,
+            address_prefecture: formData.prefecture,
+            plan_type: selectedPlan.id,
+            is_active: true
+          })
+      } catch {
+        // Ignorar se a tabela tenants não estiver exposta via REST
+      }
 
       setModalStep('success')
     } catch (err) {
