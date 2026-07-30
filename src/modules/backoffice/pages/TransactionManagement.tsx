@@ -280,9 +280,9 @@ export default function TransactionManagement() {
     if (activeLedgerFilter === 'receber') {
       list = list.filter(t => t.payment_status === 'pending' || t.payment_status === 'processing');
     } else if (activeLedgerFilter === 'retido') {
-      list = list.filter(t => t.payment_status === 'escrow' || ((t.payment_status === 'paid' || t.payment_status === 'completed') && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed' && t.fulfillment_status !== 'received'));
+      list = list.filter(t => (t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed') && t.payout_status !== 'transferred');
     } else if (activeLedgerFilter === 'pagos') {
-      list = list.filter(t => (t.payment_status === 'paid' || t.payment_status === 'completed') && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed' || t.fulfillment_status === 'received'));
+      list = list.filter(t => t.payout_status === 'transferred');
     }
 
     if (searchQuery.trim()) {
@@ -311,14 +311,14 @@ export default function TransactionManagement() {
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
   const retidoValBruto = transactions
-    .filter(t => t.payment_status === 'escrow' || ((t.payment_status === 'paid' || t.payment_status === 'completed') && t.fulfillment_status !== 'delivered' && t.fulfillment_status !== 'completed' && t.fulfillment_status !== 'received'))
+    .filter(t => (t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed') && t.payout_status !== 'transferred')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
   const retidoStripeFee = retidoValBruto * 0.036;
   const retidoValLiquido = retidoValBruto - retidoStripeFee;
 
   const pagosVal = transactions
-    .filter(t => (t.payment_status === 'paid' || t.payment_status === 'completed') && (t.fulfillment_status === 'delivered' || t.fulfillment_status === 'completed' || t.fulfillment_status === 'received'))
+    .filter(t => t.payout_status === 'transferred')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (1 - commissionRate / 100), 0);
 
   const lucroBruto = transactions

@@ -265,7 +265,7 @@ export const api = {
     },
 
     createSubscriptionCheckout: async (data: {
-      plan_type: 'starter' | 'pro' | 'enterprise';
+      plan_type: 'starter' | 'pro' | 'enterprise' | 'premium';
       store_name: string;
       contact_name: string;
       contact_email: string;

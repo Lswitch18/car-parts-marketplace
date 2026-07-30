@@ -70,6 +70,10 @@ Deno.serve(async (req) => {
       return await createCheckoutSession(req);
     }
 
+    if (action === 'create-subscription') {
+      return await createSubscriptionSession(req);
+    }
+
     if (action === 'create-contract-subscription') {
       return await createContractSubscription(req);
     }
@@ -502,6 +506,86 @@ async function createContractSubscription(req: Request) {
       success: true,
       url: sessionData.url,
       session_id: sessionData.id,
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+}
+
+const STRIPE_PRICES = {
+  starter: Deno.env.get('STRIPE_PRICE_STARTER') || 'price_1Tyxrsh1CJrkWqOLicU0eb90',
+  pro: Deno.env.get('STRIPE_PRICE_PRO') || 'price_1TyxoUHlCJrkWq0LF9KxBfp2',
+  premium: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lw',
+  enterprise: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lw',
+};
+
+async function createSubscriptionSession(req: Request) {
+  let body;
+  try {
+    body = await req.json();
+  } catch (e) {
+    body = {};
+  }
+
+  const { plan_type, store_name, contact_email } = body;
+
+  const priceId = STRIPE_PRICES[plan_type as keyof typeof STRIPE_PRICES] || STRIPE_PRICES.pro;
+
+  if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
+    return new Response(JSON.stringify({ 
+      success: true, 
+      demo_mode: true,
+      subscription_id: `sub_demo_${Date.now()}`,
+      url: `${APP_URL}/dashboard?payment=success&plan=${plan_type}`
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  try {
+    const sessionParams = new URLSearchParams({
+      'mode': 'subscription',
+      'payment_method_types[0]': 'card',
+      'line_items[0][price]': priceId,
+      'line_items[0][quantity]': '1',
+      'success_url': `${APP_URL}/dashboard?subscription=success&plan=${plan_type || 'pro'}`,
+      'cancel_url': `${APP_URL}/partner-portal?subscription=cancelled`,
+      'metadata[plan_type]': plan_type || 'pro',
+      'metadata[store_name]': store_name || '',
+    });
+
+    if (contact_email) {
+      sessionParams.set('customer_email', contact_email);
+    }
+
+    const sessionRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: sessionParams.toString(),
+    });
+
+    const sessionData = await sessionRes.json();
+
+    if (sessionData.error) {
+      return new Response(JSON.stringify({ error: sessionData.error.message }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({
+      success: true,
+      url: sessionData.url,
+      session_id: sessionData.id,
+      subscription_id: sessionData.subscription || sessionData.id,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

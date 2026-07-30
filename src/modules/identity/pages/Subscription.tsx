@@ -98,13 +98,13 @@ export default function Subscription() {
           <div className="relative bg-[#0A0A0F] rounded-[22px] p-8 md:p-10 h-full">
             <div className="flex justify-between items-start mb-8">
               <div>
-                <h3 className="text-2xl font-bold text-white mb-2">Plano Pro</h3>
-                <p className="text-text-secondary">Acesso total e verificação</p>
+                <h3 className="text-2xl font-bold text-white mb-2">Plano Pro SaaS</h3>
+                <p className="text-text-secondary">Acesso total e verificação de empresa</p>
               </div>
               <div className="text-right">
                 <div className="flex items-baseline gap-1">
                   <span className="text-sm text-text-secondary">¥</span>
-                  <span className="text-4xl font-bold text-white">4.500</span>
+                  <span className="text-4xl font-bold text-white">7.980</span>
                 </div>
                 <span className="text-sm text-text-secondary">/mês</span>
               </div>
@@ -144,7 +144,7 @@ export default function Subscription() {
               </span>
             </button>
             <p className="text-center text-xs text-text-secondary mt-4">
-              {t('O pagamento (R$ 150) será convertido e cobrado na sua moeda local.')}
+              {t('Cobrança recorrente mensal em ienes (JP¥ 7.980) via Stripe.')}
             </p>
           </div>
         </div>

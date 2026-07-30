@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 
 export interface PartnerPlan {
-  id: 'starter' | 'pro' | 'enterprise'
+  id: 'starter' | 'pro' | 'enterprise' | 'premium'
   name: string
   subtitle: string
   price: number
@@ -27,7 +27,7 @@ const PARTNER_PLANS: PartnerPlan[] = [
     id: 'starter',
     name: 'Starter JDM',
     subtitle: 'Ideal para pequenos vendedores, oficinas independentes e iniciantes',
-    price: 7000,
+    price: 3980,
     recommendedFor: 'Até 50 anúncios ativos de peças',
     features: [
       'Anúncio de até 50 peças JDM no marketplace',
@@ -36,14 +36,14 @@ const PARTNER_PLANS: PartnerPlan[] = [
       'Envio direto pelo vendedor (Direct Ship Japan)',
       'Suporte standard por e-mail'
     ],
-    buttonText: 'Começar com Starter (¥ 7.000/mês)',
+    buttonText: 'Começar com Starter (¥ 3.980/mês)',
     buttonColor: 'bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700'
   },
   {
     id: 'pro',
     name: 'Pro Store B2B',
     subtitle: 'O plano mais popular para desmanches, oficinas e lojas de autopeças',
-    price: 10000,
+    price: 7980,
     badge: 'MAIS POPULAR',
     popular: true,
     recommendedFor: 'Peças ilimitadas + ERP/SaaS Multi-Tenant',
@@ -55,24 +55,24 @@ const PARTNER_PLANS: PartnerPlan[] = [
       'Subdomínio customizado e marca própria',
       'Suporte prioritário via WhatsApp / Chat'
     ],
-    buttonText: 'Assinar Plano Pro (¥ 10.000/mês)',
+    buttonText: 'Assinar Plano Pro (¥ 7.980/mês)',
     buttonColor: 'bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black shadow-lg shadow-emerald-500/20'
   },
   {
-    id: 'enterprise',
-    name: 'Enterprise Hub',
-    subtitle: 'Para concessionárias, grandes distribuidores e importadoras com API',
-    price: 16000,
-    badge: 'API & ERP FULL',
-    recommendedFor: 'Grandes operações + Acesso à API B2B',
+    id: 'premium',
+    name: 'Premium SaaS + Marketplace',
+    subtitle: 'Solução Enterprise completa com gestão ERP/WMS e presença VIP no marketplace',
+    price: 12480,
+    badge: 'SaaS + MARKETPLACE',
+    recommendedFor: 'Grandes operações + Acesso à API B2B & WMS',
     features: [
       'Tudo do Plano Pro + Chaves de API B2B dedicadas',
-      'Integração via Webhook para ERPs externos e leilões',
-      'Gerente de conta dedicado no Japão',
-      'Contratos de liquidação preferencial e RLS avançado',
+      'Integração de Gestão ERP/WMS de autopeças',
+      'Subdomínio exclusivo e vitrine VIP em destaque no marketplace',
+      'Taxa de comissão de vendas reduzida',
       'Suporte VIP 24/7 em Português e Japonês'
     ],
-    buttonText: 'Contratar Enterprise (¥ 16.000/mês)',
+    buttonText: 'Contratar Premium (¥ 12.480/mês)',
     buttonColor: 'bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-lg shadow-purple-600/20'
   }
 ]
