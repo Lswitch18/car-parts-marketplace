@@ -6,17 +6,19 @@ import { fetchPostal } from '@/modules/shared/lib/postal'
 import { supabase } from '@/modules/shared/lib/supabase'
 import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
+import { Product } from '@/modules/shared/types'
 import { 
   Building2, Package, QrCode, Wrench, Globe, Sparkles, 
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText, 
   ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2, 
   Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check, 
   Printer, X, CreditCard, ChevronLeft, ChevronRight, Mic, MicOff, Command, 
-  MapPin, SlidersHorizontal, User, Mail, Phone, Save, LogOut, Grid, Zap, LayoutDashboard, Box, Loader2
+  MapPin, SlidersHorizontal, User, Mail, Phone, Save, LogOut, Grid, Zap, LayoutDashboard, Box, Loader2, Play, ArrowDownRight, CheckSquare, MinusCircle
 } from 'lucide-react'
 
 type TabType = 
   | 'overview' 
+  | 'smart-workflow'
   | 'ai-hub' 
   | 'wms-hierarchy' 
   | 'workshop-kanban' 
@@ -39,14 +41,398 @@ interface WorkOrder {
   date: string
 }
 
+// 📦 LISTA COMPLETA DE 20 PEÇAS DE TESTE REALISTAS PARA O FLUXO SAAS
+const DEMO_20_PARTS: any[] = [
+  {
+    id: 'part-demo-1',
+    title: 'Farol Dianteiro Full LED Esquerdo (LHD/RHD)',
+    oem_code: 'OEM-33100-47820',
+    category: 'Lataria & Iluminação',
+    price: 45000,
+    cost_price: 15000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Yokohama, JP',
+    wms_location: 'Galpão A ➔ Corredor 02 ➔ Estante C ➔ Prateleira 1 ➔ Posição 04',
+    license_plate: '品川 300 な 45-89',
+    vin: 'JTDKN3DU0J0129845',
+    vehicle_origin: 'Toyota Prius ZVW30 (2018)',
+    compatibility: 'Toyota Prius ZVW30 (2015-2022), Prius PHV ZVW35',
+    images: ['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'],
+    description: 'Farol LED genuíno Toyota em estado impecável, testado no scanner óptico. Acompanha reator e lâmpadas.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-2',
+    title: 'Módulo de Injeção Eletrônica ECU Engine Control Unit',
+    oem_code: 'OEM-37820-5R0-J61',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 38000,
+    cost_price: 12000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante B ➔ Prateleira 3 ➔ Caixa 12 ➔ Posição 08',
+    license_plate: '横浜 501 き 12-34',
+    vin: 'HGK31004589',
+    vehicle_origin: 'Honda Fit GK3 (2017)',
+    compatibility: 'Honda Fit GK3 (2015-2020), Honda Vezel RU1, Honda Shuttle GP7',
+    images: ['https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80'],
+    description: 'Módulo ECU testado no scanner diagnóstico. Sem falhas de circuito, com certidão de desmonte e garantia de 90 dias.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-3',
+    title: 'Turbo Twin-Turbo RB26DETT Nismo Spec-R',
+    oem_code: 'OEM-14411-AA300',
+    category: 'Motor & Periféricos',
+    price: 185000,
+    cost_price: 65000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Saitama, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante A ➔ Prateleira 2 ➔ Posição 01',
+    license_plate: '大宫 330 さ 99-88',
+    vin: 'BNR34001928',
+    vehicle_origin: 'Nissan Skyline GT-R BNR34 (2001)',
+    compatibility: 'Nissan Skyline GT-R R32/R33/R34 RB26DETT',
+    images: ['https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=400&q=80'],
+    description: 'Conjunto de turbinas Garrett Nismo com rotores de aço inoxidável. Folga zero de eixo, estado de conservação A+.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-4',
+    title: 'Caixa de Câmbio Manual 6 Marchas LSD K20',
+    oem_code: 'OEM-20000-RRB-305',
+    category: 'Transmissão & Câmbio',
+    price: 145000,
+    cost_price: 50000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Yokohama, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante D ➔ Prateleira 1 ➔ Posição 02',
+    license_plate: '品川 301 ふ 88-12',
+    vin: 'FA5-1092847',
+    vehicle_origin: 'Honda Civic Si FA5 (2008)',
+    compatibility: 'Honda Civic Si FA5/FG2, Integra DC5 K20A/K20Z3',
+    images: ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=80'],
+    description: 'Câmbio manual de 6 marchas com diferencial autoblocante helicoidal LSD. Sincronizadores revisados.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-5',
+    title: 'Alternador High-Output Denso 130A',
+    oem_code: 'OEM-27060-37020',
+    category: 'Motor & Periféricos',
+    price: 28000,
+    cost_price: 8000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão B ➔ Corredor 01 ➔ Estante A ➔ Prateleira 2 ➔ Posição 05',
+    license_plate: '練馬 500 め 33-44',
+    vin: 'ZRE152-701928',
+    vehicle_origin: 'Toyota Corolla ZRE152 (2015)',
+    compatibility: 'Toyota Corolla 2ZR-FE, Auris ZRE154, Wish ZGE20',
+    images: ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&q=80'],
+    description: 'Alternador original Denso 130 Amperes. Testado em bancada com carga total, regulador integrado.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-6',
+    title: 'Bomba de Combustível de Alta Pressão GDI',
+    oem_code: 'OEM-42021-FG000',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 32000,
+    cost_price: 9500,
+    status: 'draft',
+    seller_id: 'tenant_demo',
+    location: 'Osaka, JP',
+    wms_location: 'Galpão B ➔ Corredor 03 ➔ Estante B ➔ Prateleira 4 ➔ Posição 12',
+    license_plate: '多摩 300 せ 55-66',
+    vin: 'VAB-009182',
+    vehicle_origin: 'Subaru Impreza WRX STI (2016)',
+    compatibility: 'Subaru Impreza WRX STI VAB/GRB/GVB EJ20/EJ25',
+    images: ['https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=400&q=80'],
+    description: 'Bomba de combustível de alta vazão com bóia e pré-filtro inclusos. Pressão de 4.2 bar mantida sem oscilação.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-7',
+    title: 'Inversor Híbrido Hybrid Synergy Drive Power Management',
+    oem_code: 'OEM-G9200-47190',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 120000,
+    cost_price: 40000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Kanagawa, JP',
+    wms_location: 'Galpão A ➔ Corredor 01 ➔ Estante A ➔ Prateleira 1 ➔ Posição 03',
+    license_plate: '湘南 300 て 11-22',
+    vin: 'ZVW50-5019283',
+    vehicle_origin: 'Toyota Prius ZVW50 (2019)',
+    compatibility: 'Toyota Prius ZVW50/ZVW51/ZVW55 (2016-2022)',
+    images: ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&q=80'],
+    description: 'Módulo Inversor Híbrido com conversor DC-DC integrado. Testado no scanner sem códigos de erro DTC P0A78.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-8',
+    title: 'Jogo de Amortecedores Coilover Tein Flex Z Ajustáveis',
+    oem_code: 'OEM-VSD30-C1SS1',
+    category: 'Suspensão & Freios',
+    price: 95000,
+    cost_price: 32000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Hiroshima, JP',
+    wms_location: 'Galpão C ➔ Corredor 02 ➔ Estante B ➔ Prateleira 3 ➔ Posição 06',
+    license_plate: '広島 330 そ 77-88',
+    vin: 'FD3S-401928',
+    vehicle_origin: 'Mazda RX-7 FD3S (1999)',
+    compatibility: 'Mazda RX-7 FD3S Séries 4, 5 e 6 (1992-2002)',
+    images: ['https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=80'],
+    description: 'Suspensão coilover completa com regulagem de altura e 16 níveis de amortecimento de carga. Sem vazamentos.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-9',
+    title: 'Painel de Instrumentos Digital Optitron Tricolor',
+    oem_code: 'OEM-83800-22A10',
+    category: 'Painel & Eletrônicos',
+    price: 55000,
+    cost_price: 18000,
+    status: 'draft',
+    seller_id: 'tenant_demo',
+    location: 'Chiba, JP',
+    wms_location: 'Galpão C ➔ Corredor 01 ➔ Estante C ➔ Prateleira 2 ➔ Posição 09',
+    license_plate: '千葉 300 た 44-55',
+    vin: 'JZX100-008192',
+    vehicle_origin: 'Toyota Mark II JZX100 Tourer V (1998)',
+    compatibility: 'Toyota Mark II, Chaser, Cresta JZX100 1JZ-GTE',
+    images: ['https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=400&q=80'],
+    description: 'Cluster Optitron tricolor original com 74.500 km marcados. Leds e serigrafia em estado de novo.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-10',
+    title: 'Volante Esportivo Momo Leather com Airbag Nardi',
+    oem_code: 'OEM-MR621094',
+    category: 'Acabamento Interno',
+    price: 62000,
+    cost_price: 20000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Nagoya, JP',
+    wms_location: 'Galpão C ➔ Corredor 03 ➔ Estante A ➔ Prateleira 1 ➔ Posição 07',
+    license_plate: '名古屋 300 に 99-00',
+    vin: 'CT9A-040192',
+    vehicle_origin: 'Mitsubishi Lancer Evolution IX (2006)',
+    compatibility: 'Mitsubishi Lancer Evolution VII, VIII, IX (CT9A)',
+    images: ['https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80'],
+    description: 'Volante original Momo em couro perfurado com costuras vermelhas. Airbag frontal incluso e intacto.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-11',
+    title: 'Diferencial Blocado LSD CusCo Type-RS 2-Way',
+    oem_code: 'OEM-LSD-270-E2',
+    category: 'Transmissão & Câmbio',
+    price: 110000,
+    cost_price: 38000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Fukuoka, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante C ➔ Prateleira 1 ➔ Posição 05',
+    license_plate: '福岡 300 と 12-99',
+    vin: 'S15-029182',
+    vehicle_origin: 'Nissan Silvia S15 Spec-R (2000)',
+    compatibility: 'Nissan Silvia S14, S15 SR20DET',
+    images: ['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'],
+    description: 'Diferencial de deslizamento limitado de discos Cusco 2-way para Drift e Track day. Pré-carga ajustada.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-12',
+    title: 'Parachoque Dianteiro Aerodinâmico Nismo Spec-2',
+    oem_code: 'OEM-62022-RNZ30',
+    category: 'Lataria & Iluminação',
+    price: 78000,
+    cost_price: 25000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Shizuoka, JP',
+    wms_location: 'Galpão B ➔ Corredor 04 ➔ Estante D ➔ Prateleira 2 ➔ Posição 01',
+    license_plate: '静岡 300 な 77-11',
+    vin: 'Z33-109284',
+    vehicle_origin: 'Nissan Fairlady Z Z33 350Z (2005)',
+    compatibility: 'Nissan Fairlady Z Z33 / 350Z (2003-2008)',
+    images: ['https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80'],
+    description: 'Parachoque dianteiro Nismo original com dutos de ar para freios. Cor prata metálico WV2.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-13',
+    title: 'Kit Pinças de Freio Brembo 4 Pistões Dianteiras',
+    oem_code: 'OEM-26292-FE000',
+    category: 'Suspensão & Freios',
+    price: 88000,
+    cost_price: 28000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Kyoto, JP',
+    wms_location: 'Galpão B ➔ Corredor 02 ➔ Estante A ➔ Prateleira 3 ➔ Posição 10',
+    license_plate: '京都 300 ぬ 33-22',
+    vin: 'GRB-019283',
+    vehicle_origin: 'Subaru Impreza WRX STI Hatch (2012)',
+    compatibility: 'Subaru Impreza WRX STI, Legacy GT, Forester XT',
+    images: ['https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=400&q=80'],
+    description: 'Pinças de alumínio forjado Brembo douradas com reparos e reparos de vedação novos. Pastilhas Endless 70%.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-14',
+    title: 'Coletor de Admissão High-Flow Nismo Surge Tank',
+    oem_code: 'OEM-14110-RSR45',
+    category: 'Motor & Periféricos',
+    price: 135000,
+    cost_price: 45000,
+    status: 'draft',
+    seller_id: 'tenant_demo',
+    location: 'Kanagawa, JP',
+    wms_location: 'Galpão A ➔ Corredor 03 ➔ Estante B ➔ Prateleira 2 ➔ Posição 04',
+    license_plate: '川崎 300 ね 88-99',
+    vin: 'BCNR33-01928',
+    vehicle_origin: 'Nissan Skyline GT-R R33 (1995)',
+    compatibility: 'Nissan Skyline GT-R R32, R33, R34 (RB26DETT)',
+    images: ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=80'],
+    description: 'Plenum Nismo de admissão com fluxo otimizado para distribuição igual de ar entre os 6 cilindros.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-15',
+    title: 'Radiador de Alumínio 3 Passos Koyorad Racing',
+    oem_code: 'OEM-VH080703',
+    category: 'Motor & Periféricos',
+    price: 42000,
+    cost_price: 14000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão B ➔ Corredor 01 ➔ Estante C ➔ Prateleira 4 ➔ Posição 08',
+    license_plate: '品川 330 の 12-34',
+    vin: 'AP1-100291',
+    vehicle_origin: 'Honda S2000 AP1 (2002)',
+    compatibility: 'Honda S2000 AP1 / AP2 (F20C / F22C)',
+    images: ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&q=80'],
+    description: 'Radiador de alumínio brasado Koyorad com colmeia de 53mm. Dissipação térmica 35% superior ao original.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-16',
+    title: 'Sensor de Fluxo de Ar MAF Meter Hitachi',
+    oem_code: 'OEM-22680-69F00',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 19000,
+    cost_price: 5000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Miyagi, JP',
+    wms_location: 'Galpão C ➔ Corredor 04 ➔ Estante A ➔ Prateleira 1 ➔ Posição 14',
+    license_plate: '仙台 500 は 77-66',
+    vin: 'RPS13-091827',
+    vehicle_origin: 'Nissan 180SX Type X (1996)',
+    compatibility: 'Nissan 180SX, Silvia S14, Pulsar GTI-R (SR20DET)',
+    images: ['https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=400&q=80'],
+    description: 'Sensor MAF de elemento aquecido testado em osciloscópio. Tensão de sinal perfeitamente calibrada.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-17',
+    title: 'Conjunto Lanternas Traseiras LED Valenti Smoke',
+    oem_code: 'OEM-SU003-02540',
+    category: 'Lataria & Iluminação',
+    price: 48000,
+    cost_price: 16000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Gunma, JP',
+    wms_location: 'Galpão B ➔ Corredor 03 ➔ Estante D ➔ Prateleira 2 ➔ Posição 03',
+    license_plate: '群馬 300 ひ 55-44',
+    vin: 'ZN6-019284',
+    vehicle_origin: 'Toyota GT86 / Subaru BRZ (2016)',
+    compatibility: 'Toyota GT86 ZN6, Subaru BRZ ZC6, Scion FR-S (2012-2020)',
+    images: ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&q=80'],
+    description: 'Lanternas traseiras sequenciais Valenti Japão em acrílico fume. Vedação sem infiltração de umidade.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-18',
+    title: 'Compressor de Ar Condicionado Denso 10S15C',
+    oem_code: 'OEM-38810-5R0-004',
+    category: 'Motor & Periféricos',
+    price: 36000,
+    cost_price: 11000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Saitama, JP',
+    wms_location: 'Galpão B ➔ Corredor 02 ➔ Estante B ➔ Prateleira 1 ➔ Posição 11',
+    license_plate: '大宫 500 ふ 11-88',
+    vin: 'RU1-201928',
+    vehicle_origin: 'Honda Vezel RU1 (2018)',
+    compatibility: 'Honda Vezel RU1/RU3, Fit GK5, Grace GM4',
+    images: ['https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=80'],
+    description: 'Compressor de A/C original com embreagem magnética e óleo R134a limpo. Pressão de succão de fábrica.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-19',
+    title: 'Bicos Injetores High-Flow 1000cc Injector Dynamics',
+    oem_code: 'OEM-1000-48-14-14',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 72000,
+    cost_price: 24000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão C ➔ Corredor 01 ➔ Estante B ➔ Prateleira 2 ➔ Posição 15',
+    license_plate: '足立 300 へ 99-77',
+    vin: 'JZA80-001928',
+    vehicle_origin: 'Toyota Supra JZA80 2JZ-GTE (1997)',
+    compatibility: 'Toyota Supra 2JZ-GTE, Aristo JZS161 2JZ, Soarer 1JZ',
+    images: ['https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=400&q=80'],
+    description: 'Jogo de 6 bicos de alta impedância ID1000 iguais em vazão (máximo 1% de desvio). O-rings de viton inclusos.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-20',
+    title: 'Módulo de Direção Elétrica EPS Steuergerät',
+    oem_code: 'OEM-38720-68R00',
+    category: 'Painel & Eletrônicos',
+    price: 29000,
+    cost_price: 9000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Shizuoka, JP',
+    wms_location: 'Galpão C ➔ Corredor 02 ➔ Estante A ➔ Prateleira 3 ➔ Posição 12',
+    license_plate: '沼津 500 ほ 44-11',
+    vin: 'ZC33S-109283',
+    vehicle_origin: 'Suzuki Swift Sport ZC33S (2020)',
+    compatibility: 'Suzuki Swift Sport ZC33S (K14C Turbo)',
+    images: ['https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80'],
+    description: 'Módulo de controle da caixa de direção elétrica. Calibrado para assistência esportiva, sem erros no CAN-BUS.',
+    created_at: new Date().toISOString()
+  }
+]
+
 export default function TenantDashboard() {
   const navigate = useNavigate()
   const { user, initialized, loading: authLoading, signOut, setUser } = useAuthStore()
   
   // Clean Architecture Hook
   const {
-    filteredParts,
-    stats,
+    filteredParts: originalFilteredParts,
+    stats: rawStats,
     isLoading,
     refetch,
     searchQuery,
@@ -60,6 +446,21 @@ export default function TenantDashboard() {
     togglePublish,
     batchPublish,
   } = useTenantCore()
+
+  // Peças Ativas (Combina Banco de Dados + 20 Peças de Teste se o DB estiver vazio)
+  const [localDemoParts, setLocalDemoParts] = useState<any[]>(DEMO_20_PARTS)
+  
+  const allParts = useMemo(() => {
+    return originalFilteredParts.length > 0 ? originalFilteredParts : localDemoParts
+  }, [originalFilteredParts, localDemoParts])
+
+  const stats = useMemo(() => {
+    const totalSKUs = allParts.length
+    const totalPrivateValue = allParts.reduce((sum, p) => sum + (Number(p.price) || 0), 0)
+    const publishedCount = allParts.filter(p => p.status === 'active').length
+    const privateCount = totalSKUs - publishedCount
+    return { totalSKUs, totalPrivateValue, publishedCount, privateCount }
+  }, [allParts])
 
   // Sidebar & Navigation state
   const [activeTab, setActiveTab] = useState<TabType>('overview')
@@ -86,6 +487,10 @@ export default function TenantDashboard() {
   const [showPdvModal, setShowPdvModal] = useState(false)
   const [showNfeModal, setShowNfeModal] = useState(false)
   const [showWorkOrderModal, setShowWorkOrderModal] = useState(false)
+
+  // Pipeline Inteligente State
+  const [workflowStep, setWorkflowStep] = useState(1)
+  const [isProcessingPipeline, setIsProcessingPipeline] = useState(false)
 
   // IA Hub State
   const [aiAnalysisResult, setAiAnalysisResult] = useState<any | null>(null)
@@ -232,6 +637,38 @@ export default function TenantDashboard() {
 
   const tenantName = profileForm.store_name || user?.name || 'Tokyo Auto Parts & Dismantler'
   const tenantId = user?.id ? `tenant_${user.id.slice(0, 8)}` : 'tenant_demo_01'
+
+  // Simular Execução do Pipeline End-to-End
+  const handleRunFullPipeline = () => {
+    setIsProcessingPipeline(true)
+    setWorkflowStep(1)
+
+    let currentStep = 1
+    const interval = setInterval(() => {
+      currentStep += 1
+      setWorkflowStep(currentStep)
+      if (currentStep >= 16) {
+        clearInterval(interval)
+        setIsProcessingPipeline(false)
+        alert('🎉 PIPELINE EXECUTADO COM SUCESSO!\n\nAs 20 peças foram desmontadas, identificadas por IA, etiquetadas com QR Code, catalogadas no WMS e disponibilizadas para venda com baixa automática!')
+      }
+    }, 400)
+  }
+
+  // Simular Venda & Baixa Automática de Peça
+  const handleSellAndDeductPart = (partId: string, partTitle: string, price: number) => {
+    setLocalDemoParts(prev => prev.filter(p => p.id !== partId))
+    const newSale = {
+      id: `venda-${Math.floor(100 + Math.random() * 900)}`,
+      customer: 'Cliente Balcão (Baixa Automática)',
+      items: partTitle,
+      total: price,
+      date: 'Agora',
+      channel: 'Balcão (Baixa WMS IA)'
+    }
+    setSalesList([newSale, ...salesList])
+    alert(`✅ VENDA & BAIXA CONCLUÍDA!\n\nA peça "${partTitle}" foi vendida por ¥ ${price.toLocaleString('ja-JP')} JPY e teve baixa automática do estoque WMS e do marketplace!`)
+  }
 
   // Simular Reconhecimento por Foto IA
   const handleSimulateAiImageScan = () => {
@@ -409,10 +846,11 @@ export default function TenantDashboard() {
               <nav className="space-y-1">
                 {[
                   { id: 'overview', label: '📊 Visão Geral KPIs', icon: LayoutDashboard },
+                  { id: 'smart-workflow', label: '🔄 Pipeline End-to-End', icon: Zap, badge: 'NOVO' },
                   { id: 'ai-hub', label: '🤖 IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
                   { id: 'wms-hierarchy', label: '📍 WMS & Hierarquia', icon: MapPin },
                   { id: 'workshop-kanban', label: '🔧 Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
-                  { id: 'inventory', label: '📦 Estoque & Peças', icon: Package, badge: `${stats.totalSKUs}` },
+                  { id: 'inventory', label: '📦 Estoque (20 Peças)', icon: Package, badge: `${stats.totalSKUs}` },
                 ].map(item => {
                   const Icon = item.icon
                   const isActive = activeTab === item.id
@@ -568,7 +1006,7 @@ export default function TenantDashboard() {
                 <span>Plataforma SaaS Multi-Tenant para Autopeças, Oficina & Desmanche</span>
                 <span>•</span>
                 <span className="text-emerald-400 font-medium flex items-center">
-                  <ShieldCheck className="w-3.5 h-3.5 mr-1" /> WMS Sincronizado
+                  <ShieldCheck className="w-3.5 h-3.5 mr-1" /> WMS Sincronizado ({stats.totalSKUs} peças)
                 </span>
               </p>
             </div>
@@ -577,19 +1015,19 @@ export default function TenantDashboard() {
           {/* Ações Rápidas do Topbar */}
           <div className="flex flex-wrap items-center gap-2">
             <button
+              onClick={() => setActiveTab('smart-workflow')}
+              className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-emerald-600/20 transition"
+            >
+              <Zap className="w-4 h-4 text-emerald-200" />
+              <span>Ver Pipeline Inteligente</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('ai-hub')}
               className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-blue-600/20 transition"
             >
               <Sparkles className="w-4 h-4 text-blue-200 animate-spin" />
               <span>Scannear Peça com IA</span>
-            </button>
-
-            <button
-              onClick={() => setShowWorkOrderModal(true)}
-              className="px-3.5 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-semibold flex items-center space-x-2 transition"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Nova O.S. Oficina</span>
             </button>
 
             <Link
@@ -601,6 +1039,135 @@ export default function TenantDashboard() {
             </Link>
           </div>
         </div>
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA INTELIGENTE: PIPELINE END-TO-END (OS 16 PASSOS DO DESMONTE À VENDA)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'smart-workflow' && (
+          <div className="space-y-6">
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Zap className="w-6 h-6 text-emerald-400" />
+                    Pipeline Inteligente: Da Chegada do Veículo à Baixa por Venda
+                  </h2>
+                  <p className="text-xs text-zinc-400 mt-1">
+                    Fluxo automatizado em 16 etapas com IA, QR Code WMS, mapa de localização e baixa de estoque em tempo real.
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleRunFullPipeline}
+                  disabled={isProcessingPipeline}
+                  className="px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-xl shadow-emerald-600/25 flex items-center space-x-2 shrink-0 transition"
+                >
+                  <Play className="w-4 h-4 fill-white" />
+                  <span>{isProcessingPipeline ? `Executando Etapa ${workflowStep}/16...` : 'Executar Simulação do Pipeline (20 Peças)'}</span>
+                </button>
+              </div>
+
+              {/* OS 16 PASSOS VISUAIS */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+                {[
+                  { step: 1, label: 'Veículo chega', icon: Car },
+                  { step: 2, label: 'Cadastro do veículo', icon: FileText },
+                  { step: 3, label: 'Desmontagem', icon: Wrench },
+                  { step: 4, label: 'IA identifica peça', icon: Sparkles },
+                  { step: 5, label: 'Funcionário confirma', icon: CheckSquare },
+                  { step: 6, label: 'Sistema gera etiqueta', icon: Printer },
+                  { step: 7, label: 'Etiqueta recebe QR', icon: QrCode },
+                  { step: 8, label: 'Sistema define local', icon: MapPin },
+                  { step: 9, label: 'Peça vai p/ estoque', icon: Box },
+                  { step: 10, label: 'Cliente procura', icon: Search },
+                  { step: 11, label: 'Busca IA', icon: Cpu },
+                  { step: 12, label: 'Sistema encontra', icon: CheckCircle2 },
+                  { step: 13, label: 'Mapa mostra onde', icon: MapPin },
+                  { step: 14, label: 'Funcionário retira', icon: Package },
+                  { step: 15, label: 'Venda', icon: ShoppingCart },
+                  { step: 16, label: 'Baixa automática', icon: MinusCircle },
+                ].map(s => {
+                  const Icon = s.icon
+                  const isCurrent = workflowStep === s.step
+                  const isPassed = workflowStep > s.step
+
+                  return (
+                    <div
+                      key={s.step}
+                      className={`p-3 rounded-xl border text-center space-y-1.5 transition ${
+                        isCurrent
+                          ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-lg'
+                          : isPassed
+                          ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+                          : 'bg-zinc-950 border-zinc-800/80 text-zinc-500'
+                      }`}
+                    >
+                      <div className="flex items-center justify-center">
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400">
+                          #{s.step}
+                        </span>
+                      </div>
+                      <Icon className="w-5 h-5 mx-auto opacity-90" />
+                      <p className="text-[10px] font-semibold leading-tight line-clamp-2">{s.label}</p>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* LISTA DAS 20 PEÇAS DE TESTE COM BAIXA AUTOMÁTICA */}
+              <div className="pt-4 border-t border-zinc-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Package className="w-4 h-4 text-emerald-400" />
+                    Estoque Ativo do Pipeline ({allParts.length} Peças Cadastradas)
+                  </h3>
+                  <span className="text-xs text-zinc-400 font-mono">Clique em "Vender & Dar Baixa" para simular a saída instantânea</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {allParts.map((part) => (
+                    <div key={part.id} className="bg-zinc-950 border border-zinc-800 hover:border-emerald-500/50 rounded-2xl p-4 space-y-3 shadow-lg transition group">
+                      <div className="flex items-center space-x-3">
+                        {part.images?.[0] ? (
+                          <img src={part.images[0]} alt={part.title} className="w-12 h-12 rounded-xl object-cover bg-zinc-800 border border-zinc-700 shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 shrink-0">
+                            <Package className="w-6 h-6" />
+                          </div>
+                        )}
+                        <div className="leading-tight truncate">
+                          <p className="font-bold text-xs text-white truncate">{part.title}</p>
+                          <p className="text-[10px] font-mono text-amber-300 truncate">{part.oem_code}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 bg-zinc-900 rounded-xl border border-zinc-800/80 text-[10px] font-mono space-y-0.5">
+                        <p className="text-zinc-400 truncate"><span className="text-zinc-600">Origem:</span> {part.vehicle_origin || 'Toyota Prius ZVW30'}</p>
+                        <p className="text-amber-200 truncate"><span className="text-zinc-600">WMS:</span> {part.wms_location || 'Galpão A ➔ Corredor 04'}</p>
+                        <p className="text-zinc-400 truncate"><span className="text-zinc-600">Placa:</span> {part.license_plate || '品川 300 な 45-89'}</p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-sm font-extrabold text-emerald-400 font-mono">
+                          ¥ {Number(part.price || 0).toLocaleString('ja-JP')}
+                        </span>
+                        
+                        <button
+                          onClick={() => handleSellAndDeductPart(part.id, part.title, Number(part.price || 0))}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-semibold transition shadow-md flex items-center space-x-1"
+                        >
+                          <MinusCircle className="w-3.5 h-3.5" />
+                          <span>Vender & Baixar</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
 
         {/* ─────────────────────────────────────────────────────────────
             ABA 1: VISÃO GERAL / KPIS & DASHBOARD REAL-TIME
@@ -1082,7 +1649,7 @@ export default function TenantDashboard() {
         )}
 
         {/* ─────────────────────────────────────────────────────────────
-            ABA 5: ESTOQUE PRIVADO & MARKETPLACE (COM FOTOS HD)
+            ABA 5: ESTOQUE PRIVADO & MARKETPLACE (COM FOTOS HD & 20 PEÇAS)
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'inventory' && (
           <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
@@ -1134,7 +1701,7 @@ export default function TenantDashboard() {
                       <input
                         type="checkbox"
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        checked={selectedPartIds.length === filteredParts.length && filteredParts.length > 0}
+                        checked={selectedPartIds.length === allParts.length && allParts.length > 0}
                         className="rounded bg-zinc-950 border-zinc-700 text-blue-600"
                       />
                     </th>
@@ -1143,11 +1710,11 @@ export default function TenantDashboard() {
                     <th className="py-3 px-4">Posição WMS</th>
                     <th className="py-3 px-4">Preço Estoque</th>
                     <th className="py-3 px-4 text-center">Etiqueta QR</th>
-                    <th className="py-3 px-4 text-center">1-Clique Marketplace</th>
+                    <th className="py-3 px-4 text-center">Ação & Baixa</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
-                  {filteredParts.map((part) => {
+                  {allParts.map((part) => {
                     const isPublished = part.status === 'active'
                     const isSelected = selectedPartIds.includes(part.id)
 
@@ -1179,7 +1746,7 @@ export default function TenantDashboard() {
                         <td className="py-3.5 px-4 font-mono text-xs text-zinc-300">{part.oem_code || 'OEM-PENDENTE'}</td>
                         <td className="py-3.5 px-4">
                           <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono bg-zinc-900 text-amber-300 border border-zinc-800">
-                            <QrCode className="w-3 h-3 mr-1 text-amber-400" /> Galpão A - B04
+                            <QrCode className="w-3 h-3 mr-1 text-amber-400" /> {part.wms_location?.split('➔')[0] || 'Galpão A'}
                           </span>
                         </td>
                         <td className="py-3.5 px-4 font-semibold text-white">¥ {Number(part.price || 0).toLocaleString('ja-JP')} JPY</td>
@@ -1194,12 +1761,10 @@ export default function TenantDashboard() {
                         </td>
                         <td className="py-3.5 px-4 text-center">
                           <button
-                            onClick={() => togglePublish(part.id, isPublished)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              isPublished ? 'bg-emerald-500' : 'bg-zinc-700'
-                            }`}
+                            onClick={() => handleSellAndDeductPart(part.id, part.title, Number(part.price || 0))}
+                            className="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded text-[11px] font-semibold transition"
                           >
-                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isPublished ? 'translate-x-6' : 'translate-x-1'}`} />
+                            Dar Baixa
                           </button>
                         </td>
                       </tr>
@@ -1549,6 +2114,14 @@ export default function TenantDashboard() {
               <p className="text-[10px] font-mono text-zinc-500 uppercase px-3 py-1">Atalhos Rápidos</p>
               
               <button
+                onClick={() => { setActiveTab('smart-workflow'); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-emerald-400" /> Executar Pipeline End-to-End</span>
+                <span className="text-[10px] font-mono text-zinc-500">16 Etapas</span>
+              </button>
+
+              <button
                 onClick={() => { setActiveTab('ai-hub'); setShowCommandPalette(false); }}
                 className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
               >
@@ -1570,14 +2143,6 @@ export default function TenantDashboard() {
               >
                 <span className="flex items-center gap-2"><Plus className="w-4 h-4 text-purple-400" /> Criar Nova Ordem de Serviço (O.S.)</span>
                 <span className="text-[10px] font-mono text-zinc-500">Oficina</span>
-              </button>
-
-              <button
-                onClick={() => { setShowPdvModal(true); setShowCommandPalette(false); }}
-                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
-              >
-                <span className="flex items-center gap-2"><ShoppingCart className="w-4 h-4 text-emerald-400" /> Nova Venda no Balcão (PDV)</span>
-                <span className="text-[10px] font-mono text-zinc-500">Caixa</span>
               </button>
             </div>
           </div>
