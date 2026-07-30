@@ -215,6 +215,18 @@ async function createCheckoutSession(req: Request) {
     lineItems['line_items[0][price_data][product_data][images][0]'] = part.images[0];
   }
 
+  const { data: sellerProfile } = await supabase
+    .from('profiles')
+    .select('stripe_account_id')
+    .eq('id', seller_id)
+    .single();
+
+  if (sellerProfile?.stripe_account_id) {
+    const fees = calculateFees(amount);
+    lineItems['payment_intent_data[transfer_data][destination]'] = sellerProfile.stripe_account_id;
+    lineItems['payment_intent_data[application_fee_amount]'] = String(Math.round(fees.commission_amount));
+  }
+
   if (shipping) {
     lineItems['shipping_address_collection[allowed_countries][0]'] = 'JP';
     Object.entries(shipping).forEach(([k, v]) => {
