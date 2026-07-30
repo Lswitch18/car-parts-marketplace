@@ -73,28 +73,44 @@ export default function SaasControlCenter() {
     try {
       setLoading(true)
       
-      // Query store profiles from profiles table (guaranteed in Supabase schema)
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
+      // Fetch profiles from database
+      const { data: profileData } = await supabase.from('profiles').select('*')
+
+      // Filter for actual seller/store profiles or provide 1 test SaaS company as requested
+      const storeProfiles = (profileData || []).filter(p => p.role === 'seller' || p.email === 'parceiro@teste.com')
 
       const combined: SaasCompanySubscription[] = []
 
-      if (profileData && profileData.length > 0) {
-        profileData.forEach(p => {
+      if (storeProfiles.length > 0) {
+        storeProfiles.forEach(p => {
           combined.push({
             id: p.id,
-            name: p.full_name || p.email?.split('@')[0] || 'Loja Parceira DAIG',
-            slug: p.full_name?.toLowerCase().replace(/\s+/g, '-') || 'loja-b2b',
+            name: p.full_name || 'Auto Parts Japan Ltd.',
+            slug: 'auto-parts-japan',
             store_type: 'loja_pecas',
-            contact_name: p.full_name || 'Gerente Loja',
-            contact_email: p.email || 'contato@loja.jp',
+            contact_name: p.full_name || 'Aldair (Parceiro Teste)',
+            contact_email: p.email || 'parceiro@teste.com',
             plan_type: 'pro',
             plan_price: 30000,
             status: 'active',
             next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             created_at: p.created_at || new Date().toISOString()
           })
+        })
+      } else {
+        // Default 1 Active Test SaaS Company as requested
+        combined.push({
+          id: 'saas-partner-test-1',
+          name: 'Auto Parts Japan Ltd.',
+          slug: 'auto-parts-japan',
+          store_type: 'loja_pecas',
+          contact_name: 'Aldair (Parceiro Teste)',
+          contact_email: 'parceiro@teste.com',
+          plan_type: 'pro',
+          plan_price: 30000,
+          status: 'active',
+          next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          created_at: new Date().toISOString()
         })
       }
 
