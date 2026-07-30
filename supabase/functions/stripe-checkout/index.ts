@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY')!;
 const APP_URL = Deno.env.get('APP_URL') || 'http://localhost:5173';
 
-const COMMISSION_RATE = 0.10;
+const COMMISSION_RATE = 0.074;
 const STRIPE_FEE_RATE = 0.029;
 const STRIPE_FEE_FIXED = 30;
 

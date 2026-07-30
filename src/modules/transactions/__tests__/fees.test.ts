@@ -6,7 +6,7 @@ describe('calculateFees', () => {
     const result = calculateFees(10000);
 
     expect(result.gross_amount).toBe(10000);
-    expect(result.commission_amount).toBe(1000);
+    expect(result.commission_amount).toBe(740);
     expect(result.stripe_fee).toBe(10000 * STRIPE_FEE_RATE + STRIPE_FEE_FIXED);
     expect(result.platform_fee).toBe(result.commission_amount + result.stripe_fee);
     expect(result.seller_net).toBe(10000 - result.platform_fee);
@@ -23,12 +23,12 @@ describe('calculateFees', () => {
 
   it('calcula fees corretamente para valor pequeno ¥500', () => {
     const result = calculateFees(500);
-    expect(result.commission_amount).toBe(50);
-    expect(result.seller_net).toBe(500 - 50 - (500 * STRIPE_FEE_RATE + STRIPE_FEE_FIXED));
+    expect(result.commission_amount).toBe(37);
+    expect(result.seller_net).toBe(500 - 37 - (500 * STRIPE_FEE_RATE + STRIPE_FEE_FIXED));
   });
 
-  it('commission_rate é 10%', () => {
-    expect(COMMISSION_RATE).toBe(0.10);
+  it('commission_rate é 7.4%', () => {
+    expect(COMMISSION_RATE).toBe(0.074);
   });
 
   it('stripe fee rate é 2.9% + ¥30', () => {

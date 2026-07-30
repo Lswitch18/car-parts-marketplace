@@ -1357,8 +1357,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "package_dependencies_codetrix_studio_capacitor_google_auth",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 64,
+      "community_name": "@types/react-dom",
       "norm_label": "@codetrix-studio/capacitor-google-auth"
     },
     {
@@ -1368,8 +1368,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "codetrix_studio_capacitor_google_auth",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 64,
+      "community_name": "@types/react-dom",
       "norm_label": "@codetrix-studio/capacitor-google-auth"
     },
     {
@@ -1533,8 +1533,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1544,8 +1544,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "canvas-confetti"
     },
     {
@@ -2094,8 +2094,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
-      "community": 64,
-      "community_name": "@types/react-dom",
+      "community": 133,
+      "community_name": "devDependencies",
       "norm_label": "@types/react-dom"
     },
     {
@@ -2105,8 +2105,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "types_react_dom",
-      "community": 64,
-      "community_name": "@types/react-dom",
+      "community": 133,
+      "community_name": "devDependencies",
       "norm_label": "@types/react-dom"
     },
     {
@@ -2182,8 +2182,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
-      "community": 133,
-      "community_name": "devDependencies",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "autoprefixer"
     },
     {
@@ -2193,8 +2193,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "autoprefixer",
-      "community": 133,
-      "community_name": "devDependencies",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "autoprefixer"
     },
     {
@@ -6902,8 +6902,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "entregaspage.tsx"
     },
     {
@@ -6913,8 +6913,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_entrega",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "status_entrega"
     },
     {
@@ -6924,8 +6924,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_color",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "status_color"
     },
     {
@@ -6935,8 +6935,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_entregaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
       "norm_label": "entregaspage()"
     },
     {
@@ -10532,8 +10532,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transactions_tests_adminapi_test",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 63,
+      "community_name": "LogistixDashboard.tsx",
       "norm_label": "adminapi.test.ts"
     },
     {
@@ -10543,8 +10543,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_transactions_tests_adminapi_test_mockfetch",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 63,
+      "community_name": "LogistixDashboard.tsx",
       "norm_label": "mockfetch"
     },
     {
@@ -10554,8 +10554,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_modules_transactions_tests_adminapi_test_importmodule",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 63,
+      "community_name": "LogistixDashboard.tsx",
       "norm_label": "importmodule()"
     },
     {
@@ -13444,7 +13444,7 @@
       "label": "createConnectedAccount()",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L252",
+      "source_location": "L264",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_createconnectedaccount",
       "community": 10,
@@ -13455,7 +13455,7 @@
       "label": "createAccountLink()",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L300",
+      "source_location": "L312",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_createaccountlink",
       "community": 10,
@@ -13466,7 +13466,7 @@
       "label": "createPortalSession()",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L341",
+      "source_location": "L353",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_createportalsession",
       "community": 10,
@@ -13477,7 +13477,7 @@
       "label": "calculateFees()",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L393",
+      "source_location": "L405",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_calculatefees",
       "community": 10,
@@ -13488,7 +13488,7 @@
       "label": "createContractSubscription()",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L409",
+      "source_location": "L421",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_createcontractsubscription",
       "community": 10,
@@ -13499,7 +13499,7 @@
       "label": "STRIPE_PRICES",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L520",
+      "source_location": "L532",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_stripe_prices",
       "community": 10,
@@ -13510,7 +13510,7 @@
       "label": "createSubscriptionSession()",
       "file_type": "code",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L527",
+      "source_location": "L539",
       "_origin": "ast",
       "id": "supabase_functions_stripe_checkout_index_createsubscriptionsession",
       "community": 10,
@@ -42702,7 +42702,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L393",
+      "source_location": "L405",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42724,7 +42724,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L300",
+      "source_location": "L312",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42757,7 +42757,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L252",
+      "source_location": "L264",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42768,7 +42768,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L409",
+      "source_location": "L421",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42779,7 +42779,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L341",
+      "source_location": "L353",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42790,7 +42790,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L527",
+      "source_location": "L539",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42823,7 +42823,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/stripe-checkout/index.ts",
-      "source_location": "L520",
+      "source_location": "L532",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_stripe_checkout_index",
@@ -42872,6 +42872,7 @@
       "source_file": "supabase/functions/stripe-checkout/index.ts",
       "source_location": "L159",
       "weight": 1.0,
+      "_origin": "ast",
       "confidence_score": 1.0,
       "source": "supabase_functions_stripe_checkout_index_createcheckoutsession",
       "target": "supabase_functions_stripe_checkout_index_calculatefees"
@@ -49356,5 +49357,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "3fe0086c74eb79a67b83b6139a9a54b3222a7290"
+  "built_at_commit": "874819347f7dc804d953d0cd00c7a7821ef5056a"
 }

@@ -1,6 +1,6 @@
 import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken, requireAuth } from '../utils/base.ts';
 
-const COMMISSION_RATE = 0.10;
+const COMMISSION_RATE = 0.074;
 const STRIPE_FEE_RATE = 0.029;
 const STRIPE_FEE_FIXED = 30;
 

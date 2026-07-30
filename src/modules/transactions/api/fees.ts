@@ -1,4 +1,4 @@
-export const COMMISSION_RATE = 0.10;
+export const COMMISSION_RATE = 0.074;
 export const STRIPE_FEE_RATE = 0.029;
 export const STRIPE_FEE_FIXED = 30;
 export const CURRENCY = 'jpy';
