@@ -162,8 +162,7 @@ export default function TransactionManagement() {
     try {
       const { count, error } = await supabase
         .from('profiles')
-        .select('id', { count: 'exact' })
-        .or('role.eq.seller,is_store.eq.true');
+        .select('id', { count: 'exact' });
       
       if (error) {
         setActiveStoresCount(0);

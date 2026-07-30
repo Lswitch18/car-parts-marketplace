@@ -77,7 +77,6 @@ export default function SaasControlCenter() {
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
-        .or('role.eq.seller,is_store.eq.true,account_type.neq.pessoa_fisica')
 
       const combined: SaasCompanySubscription[] = []
 
