@@ -374,10 +374,10 @@ export default function TransactionManagement() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-white tracking-tight">Transações & Custódia Escrow</h1>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 border border-zinc-700">JPY</span>
+              <h1 className="text-xl font-bold text-white tracking-tight">Marketplace Ops • Vendas, Envios & Escrow</h1>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">LIVE JPY</span>
             </div>
-            <p className="text-xs text-zinc-400 mt-0.5">Gestão operacional de fluxo de caixa, comissões e repasses Stripe</p>
+            <p className="text-xs text-zinc-400 mt-0.5">Métricas operacionais exclusivas do Marketplace DAIG: volume de vendas JDM, rastreio de envios, custódia escrow e recebimentos</p>
           </div>
         </div>
 

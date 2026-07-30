@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/AdminLayout.tsx": {
-    "mtime": 1785366685.2914014,
-    "ast_hash": "5e669f807a502e49f007a17d8b573662",
+    "mtime": 1785377508.451401,
+    "ast_hash": "a22886bc72dbe70fdb48d02a56bd1a40",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AdminDashboard.tsx": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1785373467.6114018,
-    "ast_hash": "5c5b34796aa3aa09a4b95298afa8ee74",
+    "mtime": 1785377526.3794014,
+    "ast_hash": "371c27a78279903090f3730c47d690cd",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {

@@ -24,7 +24,7 @@ export default function AdminLayout() {
     { divider: true },
 
     { section: 'MARKETPLACE' },
-    { label: 'Transações & Escrow', path: '/admin/transactions', icon: CreditCard },
+    { label: 'Marketplace Ops', path: '/admin/transactions', icon: CreditCard },
     { label: 'Entregas & Rastreio', path: '/admin/deliveries', icon: Package, badge: 'Direct' },
     { label: 'SaaS Subscriptions', path: '/admin/saas', icon: Building2, badge: 'MRR' },
     { label: 'Finance & Payouts', path: '/admin/finance/payable', icon: DollarSign },
