@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { QrCode, Printer, Check, Copy, Tag, Building2, Package } from 'lucide-react'
+import { QrCode, Printer, Check, Copy, Tag, Building2, Package, X } from 'lucide-react'
 
 interface QRStickerPrintProps {
   partTitle: string
@@ -9,6 +9,7 @@ interface QRStickerPrintProps {
   licensePlate?: string
   partId: string
   tenantName?: string
+  onClose?: () => void
 }
 
 /**
@@ -22,7 +23,8 @@ export default function QRStickerPrint({
   wmsLocation = 'Corredor B • Prateleira 04',
   licensePlate = '品川 300 な 45-89',
   partId,
-  tenantName = 'Tokyo Auto Parts'
+  tenantName = 'Tokyo Auto Parts',
+  onClose
 }: QRStickerPrintProps) {
   const [stickerSize, setStickerSize] = useState<'80mm' | '58mm'>('80mm')
   const [copied, setCopied] = useState(false)
@@ -40,31 +42,43 @@ export default function QRStickerPrint({
   }
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl relative">
       <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-4">
         <div className="flex items-center space-x-2">
           <QrCode className="w-5 h-5 text-amber-400" />
           <h3 className="font-bold text-white text-sm">Etiqueta Térmica de Identificação da Peça</h3>
         </div>
         
-        {/* Seletor de Tamanho 80mm vs 58mm */}
-        <div className="flex items-center space-x-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
-          <button
-            onClick={() => setStickerSize('80mm')}
-            className={`px-2.5 py-1 rounded text-[11px] font-semibold transition ${
-              stickerSize === '80mm' ? 'bg-amber-500 text-black font-bold' : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            80mm (Zebra)
-          </button>
-          <button
-            onClick={() => setStickerSize('58mm')}
-            className={`px-2.5 py-1 rounded text-[11px] font-semibold transition ${
-              stickerSize === '58mm' ? 'bg-amber-500 text-black font-bold' : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            58mm (Mini)
-          </button>
+        <div className="flex items-center space-x-2">
+          {/* Seletor de Tamanho 80mm vs 58mm */}
+          <div className="flex items-center space-x-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800">
+            <button
+              onClick={() => setStickerSize('80mm')}
+              className={`px-2.5 py-1 rounded text-[11px] font-semibold transition ${
+                stickerSize === '80mm' ? 'bg-amber-500 text-black font-bold' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              80mm (Zebra)
+            </button>
+            <button
+              onClick={() => setStickerSize('58mm')}
+              className={`px-2.5 py-1 rounded text-[11px] font-semibold transition ${
+                stickerSize === '58mm' ? 'bg-amber-500 text-black font-bold' : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              58mm (Mini)
+            </button>
+          </div>
+
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg transition"
+              title="Fechar"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 

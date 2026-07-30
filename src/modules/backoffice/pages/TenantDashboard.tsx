@@ -2,11 +2,12 @@ import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useTenantCore } from '@/modules/shared/hooks/useTenantCore'
+import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import { 
   Building2, Package, QrCode, Wrench, Globe, Sparkles, 
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText, 
   ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2, 
-  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check
+  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check, Printer, X, CreditCard
 } from 'lucide-react'
 
 type TabType = 
@@ -93,6 +94,27 @@ export default function TenantDashboard() {
   // Estado do Módulo: API Integrações ERP
   const [apiKey, setApiKey] = useState('daig_live_sk_tenant_99482710398412')
   const [copiedKey, setCopiedKey] = useState(false)
+
+  // Estado para Impressão de Etiquetas WMS QR
+  const [printingStickerPart, setPrintingStickerPart] = useState<any | null>(null)
+
+  // Estado para Modal de Vendas PDV Balcão
+  const [showPdvModal, setShowPdvModal] = useState(false)
+  const [pdvForm, setPdvForm] = useState({
+    partTitle: '',
+    customer: 'Oficina / Cliente Balcão',
+    price: '45000',
+    paymentMethod: 'Espécie (Dinheiro JPY)',
+    receivedAmount: '50000'
+  })
+
+  // Estado para Modal de Importação de NF-e XML
+  const [showNfeModal, setShowNfeModal] = useState(false)
+  const [nfeForm, setNfeForm] = useState({
+    supplier: 'Leilão USS Tokyo Bay',
+    key: '35260710049284000192550010000010945',
+    value: '520000'
+  })
 
   // Redirecionar se não estiver autenticado
   if (initialized && !authLoading && !user) {
@@ -462,7 +484,7 @@ export default function TenantDashboard() {
                 />
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => {
@@ -471,7 +493,22 @@ export default function TenantDashboard() {
                   }}
                   className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20"
                 >
-                  Salvar Peça no Estoque Privado do Tenant
+                  Salvar Peça no Estoque Privado
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPrintingStickerPart({
+                      id: `part_ai_${Date.now()}`,
+                      title: aiForm.title || 'Módulo ECU Engine Control Unit',
+                      oem_code: aiForm.oem_code || 'OEM-37820-5R0-J61',
+                      price: Number(aiForm.price || 38000),
+                    })
+                  }}
+                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-sm rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center space-x-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Imprimir Etiqueta WMS QR</span>
                 </button>
               </div>
             </form>
@@ -681,6 +718,7 @@ export default function TenantDashboard() {
                     <th className="py-3 px-4">OEM / Código</th>
                     <th className="py-3 px-4">Localização (Prateleira)</th>
                     <th className="py-3 px-4">Preço Estoque</th>
+                    <th className="py-3 px-4 text-center">Etiqueta WMS</th>
                     <th className="py-3 px-4 text-center">Divulgação no Marketplace</th>
                   </tr>
                 </thead>
@@ -723,6 +761,15 @@ export default function TenantDashboard() {
                         <td className="py-3.5 px-4 font-semibold text-white">¥ {Number(part.price || 0).toLocaleString('ja-JP')} JPY</td>
                         <td className="py-3.5 px-4 text-center">
                           <button
+                            onClick={() => setPrintingStickerPart(part)}
+                            className="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-xs font-semibold flex items-center justify-center space-x-1 transition mx-auto"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            <span>Etiqueta QR</span>
+                          </button>
+                        </td>
+                        <td className="py-3.5 px-4 text-center">
+                          <button
                             onClick={() => togglePublish(part.id, isPublished)}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
                               isPublished ? 'bg-emerald-500' : 'bg-zinc-700'
@@ -746,10 +793,24 @@ export default function TenantDashboard() {
         {/* ABA 6: COMPRAS & ENTRADA POR NF-E */}
         {activeTab === 'purchases' && (
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-blue-400" />
-              Compras & Entrada por Nota Fiscal (NF-e / XML)
-            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-blue-400" />
+                  Compras & Entrada por Nota Fiscal (NF-e / XML)
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Gerencie compras de leilões e seguradoras no Japão com lançamento automático no estoque.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowNfeModal(true)}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center space-x-2 shrink-0"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Importar XML de NF-e</span>
+              </button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
@@ -784,10 +845,24 @@ export default function TenantDashboard() {
         {/* ABA 7: VENDAS & PDV BALCÃO */}
         {activeTab === 'sales' && (
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5 text-emerald-400" />
-              Vendas & PDV Balcão
-            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5 text-emerald-400" />
+                  Vendas & PDV Balcão
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Registre vendas presenciais no balcão da loja com abate instantâneo de estoque e recibo.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowPdvModal(true)}
+                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center space-x-2 shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Nova Venda no Balcão (PDV)</span>
+              </button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
@@ -933,6 +1008,224 @@ export default function TenantDashboard() {
         )}
 
       </div>
+
+      {/* MODAL 1: IMPRESSÃO DE ETIQUETA QR WMS */}
+      {printingStickerPart && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="max-w-md w-full animate-in fade-in zoom-in-95 duration-200">
+            <QRStickerPrint
+              partTitle={printingStickerPart.title}
+              oemCode={printingStickerPart.oem_code || 'OEM-JDM-7718'}
+              price={Number(printingStickerPart.price || 0)}
+              wmsLocation="Corredor B • Prateleira 04"
+              licensePlate="品川 300 な 45-89"
+              partId={printingStickerPart.id}
+              tenantName={tenantName}
+              onClose={() => setPrintingStickerPart(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: VENDAS PDV BALCÃO */}
+      {showPdvModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <ShoppingCart className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-bold text-white text-base">Nova Venda no Balcão (PDV)</h3>
+              </div>
+              <button
+                onClick={() => setShowPdvModal(false)}
+                className="p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const priceNum = Number(pdvForm.price || 0)
+                const newSale = {
+                  id: `venda-${Math.floor(100 + Math.random() * 900)}`,
+                  customer: pdvForm.customer || 'Cliente Balcão',
+                  items: pdvForm.partTitle || 'Farol LED Prius ZVW30',
+                  total: priceNum,
+                  date: 'Hoje, Agora',
+                  channel: `Balcão (${pdvForm.paymentMethod.split(' ')[0]})`
+                }
+                setSalesList([newSale, ...salesList])
+                setShowPdvModal(false)
+                alert(`Venda concluída com sucesso! Recibo impresso. Troco: ¥ ${Math.max(0, Number(pdvForm.receivedAmount || 0) - priceNum).toLocaleString('ja-JP')} JPY`)
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 mb-1">Peça / Item Vendido *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Farol LED Prius ZVW30 (ou digite o nome)"
+                  value={pdvForm.partTitle}
+                  onChange={(e) => setPdvForm({ ...pdvForm, partTitle: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 transition"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Cliente / Destino</label>
+                  <input
+                    type="text"
+                    value={pdvForm.customer}
+                    onChange={(e) => setPdvForm({ ...pdvForm, customer: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 transition"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Valor Total (JPY ¥) *</label>
+                  <input
+                    type="number"
+                    value={pdvForm.price}
+                    onChange={(e) => setPdvForm({ ...pdvForm, price: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-bold text-emerald-400 focus:border-emerald-500 transition"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 mb-1">Forma de Pagamento</label>
+                <select
+                  value={pdvForm.paymentMethod}
+                  onChange={(e) => setPdvForm({ ...pdvForm, paymentMethod: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-emerald-500 transition"
+                >
+                  <option>Espécie (Dinheiro JPY)</option>
+                  <option>Cartão de Crédito (Stripe Terminal)</option>
+                  <option>Transferência Furikomi (Banco Japão)</option>
+                  <option>PayPay / QR Code Mobile</option>
+                </select>
+              </div>
+
+              {pdvForm.paymentMethod.includes('Espécie') && (
+                <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-zinc-400">Valor Recebido do Cliente:</span>
+                    <input
+                      type="number"
+                      value={pdvForm.receivedAmount}
+                      onChange={(e) => setPdvForm({ ...pdvForm, receivedAmount: e.target.value })}
+                      className="bg-zinc-900 border border-zinc-700 text-right text-xs font-bold text-white px-2 py-1 rounded w-28"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-xs pt-1 border-t border-zinc-800">
+                    <span className="font-semibold text-zinc-300">Troco a Devolver (Otsuri お釣り):</span>
+                    <span className="font-extrabold text-amber-400 text-sm">
+                      ¥ {Math.max(0, Number(pdvForm.receivedAmount || 0) - Number(pdvForm.price || 0)).toLocaleString('ja-JP')} JPY
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                <span>Finalizar Venda & Emitir Recibo</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: IMPORTAÇÃO DE NF-E XML */}
+      {showNfeModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-blue-400" />
+                <h3 className="font-bold text-white text-base">Importar Nota Fiscal XML (NF-e)</h3>
+              </div>
+              <button
+                onClick={() => setShowNfeModal(false)}
+                className="p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="border-2 border-dashed border-zinc-700 hover:border-blue-500 rounded-2xl p-6 text-center bg-zinc-950 transition cursor-pointer">
+              <Upload className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+              <p className="text-xs font-semibold text-white">Arraste o arquivo XML da Nota Fiscal aqui</p>
+              <p className="text-[11px] text-zinc-500 mt-1">Suporta notas fiscais de leilões (USS, TAA, JU), seguradoras e distribuidores</p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const newInvoice = {
+                  id: `nfe-${Math.floor(1000 + Math.random() * 9000)}`,
+                  key: nfeForm.key,
+                  supplier: nfeForm.supplier,
+                  date: new Date().toISOString().split('T')[0],
+                  value: Number(nfeForm.value || 0),
+                  status: 'Processada'
+                }
+                setPurchaseInvoices([newInvoice, ...purchaseInvoices])
+                setShowNfeModal(false)
+                alert('Nota fiscal XML importada com sucesso! Lote de peças integrado ao estoque privado.')
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 mb-1">Fornecedor / Leilão *</label>
+                <input
+                  type="text"
+                  value={nfeForm.supplier}
+                  onChange={(e) => setNfeForm({ ...nfeForm, supplier: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white focus:border-blue-500 transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 mb-1">Chave da Nota Fiscal / Documento</label>
+                <input
+                  type="text"
+                  value={nfeForm.key}
+                  onChange={(e) => setNfeForm({ ...nfeForm, key: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:border-blue-500 transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-zinc-400 mb-1">Valor Total da Nota (JPY ¥) *</label>
+                <input
+                  type="number"
+                  value={nfeForm.value}
+                  onChange={(e) => setNfeForm({ ...nfeForm, value: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-bold text-white focus:border-blue-500 transition"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center justify-center space-x-2"
+              >
+                <CheckCircle2 className="w-5 h-5" />
+                <span>Confirmar Importação de Estoque</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
