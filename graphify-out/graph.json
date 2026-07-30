@@ -1511,8 +1511,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 72,
+      "community_name": "axios",
       "norm_label": "axios"
     },
     {
@@ -1522,8 +1522,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "axios",
-      "community": 105,
-      "community_name": "dependencies",
+      "community": 72,
+      "community_name": "axios",
       "norm_label": "axios"
     },
     {
@@ -1533,8 +1533,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1544,8 +1544,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 50,
-      "community_name": "Catalog-Dz-L_iSM.js",
+      "community": 105,
+      "community_name": "dependencies",
       "norm_label": "canvas-confetti"
     },
     {
@@ -5150,7 +5150,7 @@
       "label": "TabType",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_tenantdashboard_tabtype",
       "community": 139,
@@ -5161,7 +5161,7 @@
       "label": "WorkOrder",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L30",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_tenantdashboard_workorder",
       "community": 139,
@@ -6143,8 +6143,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_components_notificationcenter",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 52,
+      "community_name": "QRStickerPrint.tsx",
       "norm_label": "notificationcenter.tsx"
     },
     {
@@ -6154,8 +6154,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_logistics_components_notificationcenter_timeago",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 52,
+      "community_name": "QRStickerPrint.tsx",
       "norm_label": "timeago()"
     },
     {
@@ -6165,8 +6165,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_logistics_components_notificationcenter_notificationcenter",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 52,
+      "community_name": "QRStickerPrint.tsx",
       "norm_label": "notificationcenter()"
     },
     {
@@ -6462,8 +6462,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "logistixdashboard.tsx"
     },
     {
@@ -6473,8 +6473,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_navgroup",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "navgroup"
     },
     {
@@ -6484,8 +6484,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_getnavgroups",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "getnavgroups()"
     },
     {
@@ -6495,8 +6495,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_donut_colors",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "donut_colors"
     },
     {
@@ -6506,8 +6506,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_status_label",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "status_label"
     },
     {
@@ -6517,8 +6517,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_status_color",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "status_color"
     },
     {
@@ -6528,8 +6528,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_kpicard",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "kpicard()"
     },
     {
@@ -6539,8 +6539,8 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_logistixdashboard",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "logistixdashboard()"
     },
     {
@@ -6891,8 +6891,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "entregaspage.tsx"
     },
     {
@@ -6902,8 +6902,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_entrega",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "status_entrega"
     },
     {
@@ -6913,8 +6913,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_color",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "status_color"
     },
     {
@@ -6924,8 +6924,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_entregaspage",
-      "community": 63,
-      "community_name": "LogistixDashboard.tsx",
+      "community": 50,
+      "community_name": "Catalog-Dz-L_iSM.js",
       "norm_label": "entregaspage()"
     },
     {
@@ -10521,8 +10521,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transactions_tests_adminapi_test",
-      "community": 52,
-      "community_name": "QRStickerPrint.tsx",
+      "community": 63,
+      "community_name": "LogistixDashboard.tsx",
       "norm_label": "adminapi.test.ts"
     },
     {
@@ -10532,8 +10532,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_transactions_tests_adminapi_test_mockfetch",
-      "community": 52,
-      "community_name": "QRStickerPrint.tsx",
+      "community": 63,
+      "community_name": "LogistixDashboard.tsx",
       "norm_label": "mockfetch"
     },
     {
@@ -10543,8 +10543,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_modules_transactions_tests_adminapi_test_importmodule",
-      "community": 52,
-      "community_name": "QRStickerPrint.tsx",
+      "community": 63,
+      "community_name": "LogistixDashboard.tsx",
       "norm_label": "importmodule()"
     },
     {
@@ -26144,7 +26144,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -26155,7 +26155,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
@@ -26268,6 +26268,30 @@
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_tenantdashboard",
       "target": "src_modules_shared_lib_supabase_supabase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_tenantdashboard",
+      "target": "src_modules_shared_types_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/modules/backoffice/pages/TenantDashboard.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_modules_backoffice_pages_tenantdashboard",
+      "target": "src_modules_shared_types_index_product",
       "confidence_score": 1.0
     },
     {
@@ -49203,5 +49227,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "84686e1f857e5820d70a7ce3ff721bb9f9504829"
+  "built_at_commit": "048f7ec4730a846014cdb4ae3526c78b2156ee64"
 }

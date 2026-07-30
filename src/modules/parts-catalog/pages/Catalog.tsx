@@ -32,11 +32,16 @@ function SkeletonCard() {
   )
 }
 
+import { Sparkles } from 'lucide-react'
+import MarketplaceAiAssistantModal from '@/modules/parts-catalog/components/MarketplaceAiAssistantModal'
+
 export default function Catalog() {
   const { t } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const { toggleFavorite, isFavorite } = useFavoriteStore()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false)
+
 
   const [filters, setFilters] = useState({
     brand: searchParams.get('brand') || '',
@@ -238,6 +243,15 @@ export default function Catalog() {
                 </p>
               )}
             </div>
+
+            <button
+              onClick={() => setIsAiAssistantOpen(true)}
+              className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/30 flex items-center space-x-2 border border-blue-400/30 transition hover:scale-105 shrink-0"
+            >
+              <Sparkles className="w-4 h-4 text-blue-200 animate-pulse" />
+              <span>Identificar Peça com IA (Foto / OEM / Voz)</span>
+            </button>
+
 
             {/* Search bar */}
             <SearchBar initialValue={filters.search} onSearch={handleSearch} t={t} />
@@ -747,6 +761,12 @@ export default function Catalog() {
           </div>
         </div>
       </div>
+
+      {/* Modal do Assistente de IA para Identificação de Peças */}
+      <MarketplaceAiAssistantModal
+        isOpen={isAiAssistantOpen}
+        onClose={() => setIsAiAssistantOpen(false)}
+      />
     </div>
   )
 }

@@ -470,8 +470,8 @@
     "semantic_hash": "a2e58047851494568786ecc3dfb6277e"
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1785300099.3394501,
-    "ast_hash": "50e8c86e907abcb0f91269daab3c85d9",
+    "mtime": 1785452101.2916515,
+    "ast_hash": "ab2302a87597fb0e2a3ca6e47144eeaf",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785450954.3196368,
-    "ast_hash": "a7a27799084b6a3d8a40969eca5d64fe",
+    "mtime": 1785452090.0356543,
+    "ast_hash": "5969f99fdc1c9703c26fbf67be58e1e2",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {

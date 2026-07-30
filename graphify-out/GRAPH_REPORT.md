@@ -1,16 +1,16 @@
 # Graph Report - car-parts-marketplce  (2026-07-30)
 
 ## Corpus Check
-- 366 files · ~959,889 words
+- 366 files · ~962,499 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1746 nodes · 2602 edges · 204 communities (148 shown, 56 thin omitted)
+- 1746 nodes · 2604 edges · 205 communities (149 shown, 56 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `84686e1f`
+- Built from commit: `048f7ec4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -82,6 +82,7 @@
 - GlobalSearch.tsx
 - @base-ui/react
 - index.ts
+- axios
 - jsbarcode
 - dispose
 - useAuthStore
@@ -210,7 +211,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (204 total, 56 thin omitted)
+## Communities (205 total, 56 thin omitted)
 
 ### Community 0 - "LogistixDashboard-ZhczRoYg.js"
 Cohesion: 0.12
@@ -344,6 +345,10 @@ Nodes (9): BAYS, getWarehouseLocation(), LEVEL_COLORS, LEVELS, POSITIONS, RACKS,
 Cohesion: 0.50
 Nodes (3): ETAPAS, TIPO_LABEL, TrackingPublico()
 
+### Community 50 - "Catalog-Dz-L_iSM.js"
+Cohesion: 0.18
+Nodes (8): STATUS_COLOR, STATUS_ENTREGA, DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup, STATUS_COLOR, STATUS_LABEL
+
 ### Community 51 - "ColetasPage.tsx"
 Cohesion: 0.25
 Nodes (7): 🏛️ 1. Princípios Fundamentais Aplicados, 1. **Single Responsibility Principle (SRP - Princípio da Responsabilidade Única):**, 2. **Don't Repeat Yourself (DRY - Sem Duplicação de Código):**, 📂 2. Estrutura dos Arquivos Criados, ✅ 3. Benefícios da Refatoração, 3. **Dependency Inversion Principle (DIP - Inversão de Dependência):**, Guia de Arquitetura Limpa (Clean Architecture & SOLID) - DAIG
@@ -361,8 +366,8 @@ Cohesion: 0.40
 Nodes (3): EVENT_ICONS, STATUS_COLOR, STATUS_LABEL
 
 ### Community 63 - "LogistixDashboard.tsx"
-Cohesion: 0.09
-Nodes (13): NotificationCenter(), timeAgo(), DEFAULT_ICON, STATUS_COLOR, STATUS_ENTREGA, DONUT_COLORS, getNavGroups(), LogistixDashboard() (+5 more)
+Cohesion: 0.11
+Nodes (5): DEFAULT_ICON, adminApi, DashboardKPIs, importModule(), mockFetch
 
 ### Community 66 - "ChatPopup.tsx"
 Cohesion: 0.40
@@ -390,7 +395,7 @@ Nodes (21): getCityCoords(), getCurrentPositionSafe(), haversineKm(), JP_CITY_CO
 
 ### Community 105 - "dependencies"
 Cohesion: 0.18
-Nodes (11): axios, clsx, leaflet, lucide-react, dependencies, axios, clsx, leaflet (+3 more)
+Nodes (11): canvas-confetti, clsx, leaflet, lucide-react, dependencies, canvas-confetti, clsx, leaflet (+3 more)
 
 ### Community 111 - "WorkerApp-BWctDf0A.js"
 Cohesion: 0.05
@@ -664,7 +669,7 @@ Nodes (3): Concluídas ✅, Lista de Tarefas (Work in Progress), Pendentes ⏳
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `shadcn`, `@tanstack/react-query`, `three`, `.copy`, `@supabase/supabase-js`, `Wt`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `Catalog-Dz-L_iSM.js`, `NotificationCenter.tsx`, `@types/react-dom`, `@capacitor/core`, `@base-ui/react`, `jsbarcode`, `package.json`, `qrcode`?**
+- **Why does `dependencies` connect `dependencies` to `react-dom`, `react-is`, `react-leaflet`, `@react-three/fiber`, `shadcn`, `@tanstack/react-query`, `three`, `.copy`, `@supabase/supabase-js`, `Wt`, `Catalog-Dz-L_iSM.js`, `.clone`, `l`, `l`, `.setAttribute`, `.toString`, `Ye`, `index-BjaIWHBv.js`, `ln`, `.applyMatrix4`, `B`, `xn`, `NotificationCenter.tsx`, `@types/react-dom`, `@capacitor/core`, `@base-ui/react`, `axios`, `jsbarcode`, `package.json`, `qrcode`?**
   _High betweenness centrality (0.066) - this node is a cross-community bridge._
 - **Why does `qrcode` connect `qrcode` to `dependencies`, `t`?**
   _High betweenness centrality (0.061) - this node is a cross-community bridge._
