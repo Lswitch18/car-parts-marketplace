@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785504677.6600733,
-    "ast_hash": "1254544014633b034d72fb073f112eb2",
+    "mtime": 1785509364.8175654,
+    "ast_hash": "1ed978c82bf32fe8d7180264b24e8458",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
