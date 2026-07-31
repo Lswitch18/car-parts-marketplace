@@ -1,1123 +1,2453 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useTenantCore } from '@/modules/shared/hooks/useTenantCore'
+import { fetchPostal } from '@/modules/shared/lib/postal'
 import { supabase } from '@/modules/shared/lib/supabase'
 import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
+import GaidLogo from '@/modules/shared/components/GaidLogo'
+import { Product } from '@/modules/shared/types'
 import { 
-  Menu, Car, Search, Moon, Bell, MessageSquare, Plus, 
-  LayoutDashboard, Package, Tag, ShoppingCart, Users, Building2, 
-  Box, Activity, FileText, Eye, Globe, AlertCircle, Settings, 
-  DollarSign, AlertTriangle, ArrowRight, Upload, SlidersHorizontal, 
-  X, Check, Printer, Filter, RefreshCw, ShieldCheck, ChevronRight, LogOut,
-  Sparkles, CheckCircle2, ChevronDown, ArrowUpRight
+  Building2, Package, QrCode, Wrench, Globe, Sparkles, 
+  Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText, 
+  ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2, 
+  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check, 
+  Printer, X, CreditCard, ChevronLeft, ChevronRight, Mic, MicOff, Command, 
+  MapPin, SlidersHorizontal, User, Mail, Phone, Save, LogOut, Grid, Zap, LayoutDashboard, Box, Loader2, Play, ArrowDownRight, CheckSquare, MinusCircle
 } from 'lucide-react'
 
 type TabType = 
-  | 'dashboard'
-  | 'pecas'
-  | 'categorias'
-  | 'veiculos'
-  | 'pedidos'
-  | 'clientes'
-  | 'fornecedores'
-  | 'estoque'
-  | 'movimentacoes'
-  | 'relatorios'
-  | 'visao-ia'
-  | 'marketplace'
-  | 'alertas'
-  | 'configuracoes'
+  | 'overview' 
+  | 'smart-workflow'
+  | 'ai-hub' 
+  | 'wms-hierarchy' 
+  | 'workshop-kanban' 
+  | 'inventory' 
+  | 'sales' 
+  | 'purchases' 
+  | 'finance' 
+  | 'profile' 
+  | 'api-b2b'
+
+interface WorkOrder {
+  id: string
+  title: string
+  client: string
+  vehicle: string
+  mechanic: string
+  status: 'aguardando' | 'em_manutencao' | 'testes' | 'pronto'
+  amount: number
+  partsUsed: string
+  date: string
+}
+
+// 📦 LISTA COMPLETA DE 20 PEÇAS DE TESTE REALISTAS PARA O FLUXO SAAS
+const DEMO_20_PARTS: any[] = [
+  {
+    id: 'part-demo-1',
+    title: 'Farol Dianteiro Full LED Esquerdo (LHD/RHD)',
+    oem_code: 'OEM-33100-47820',
+    category: 'Lataria & Iluminação',
+    price: 45000,
+    cost_price: 15000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Yokohama, JP',
+    wms_location: 'Galpão A ➔ Corredor 02 ➔ Estante C ➔ Prateleira 1 ➔ Posição 04',
+    license_plate: '品川 300 な 45-89',
+    vin: 'JTDKN3DU0J0129845',
+    vehicle_origin: 'Toyota Prius ZVW30 (2018)',
+    compatibility: 'Toyota Prius ZVW30 (2015-2022), Prius PHV ZVW35',
+    images: ['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'],
+    description: 'Farol LED genuíno Toyota em estado impecável, testado no scanner óptico. Acompanha reator e lâmpadas.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-2',
+    title: 'Módulo de Injeção Eletrônica ECU Engine Control Unit',
+    oem_code: 'OEM-37820-5R0-J61',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 38000,
+    cost_price: 12000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante B ➔ Prateleira 3 ➔ Caixa 12 ➔ Posição 08',
+    license_plate: '横浜 501 き 12-34',
+    vin: 'HGK31004589',
+    vehicle_origin: 'Honda Fit GK3 (2017)',
+    compatibility: 'Honda Fit GK3 (2015-2020), Honda Vezel RU1, Honda Shuttle GP7',
+    images: ['https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80'],
+    description: 'Módulo ECU testado no scanner diagnóstico. Sem falhas de circuito, com certidão de desmonte e garantia de 90 dias.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-3',
+    title: 'Turbo Twin-Turbo RB26DETT Nismo Spec-R',
+    oem_code: 'OEM-14411-AA300',
+    category: 'Motor & Periféricos',
+    price: 185000,
+    cost_price: 65000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Saitama, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante A ➔ Prateleira 2 ➔ Posição 01',
+    license_plate: '大宫 330 さ 99-88',
+    vin: 'BNR34001928',
+    vehicle_origin: 'Nissan Skyline GT-R BNR34 (2001)',
+    compatibility: 'Nissan Skyline GT-R R32/R33/R34 RB26DETT',
+    images: ['https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=400&q=80'],
+    description: 'Conjunto de turbinas Garrett Nismo com rotores de aço inoxidável. Folga zero de eixo, estado de conservação A+.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-4',
+    title: 'Caixa de Câmbio Manual 6 Marchas LSD K20',
+    oem_code: 'OEM-20000-RRB-305',
+    category: 'Transmissão & Câmbio',
+    price: 145000,
+    cost_price: 50000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Yokohama, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante D ➔ Prateleira 1 ➔ Posição 02',
+    license_plate: '品川 301 ふ 88-12',
+    vin: 'FA5-1092847',
+    vehicle_origin: 'Honda Civic Si FA5 (2008)',
+    compatibility: 'Honda Civic Si FA5/FG2, Integra DC5 K20A/K20Z3',
+    images: ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=80'],
+    description: 'Câmbio manual de 6 marchas com diferencial autoblocante helicoidal LSD. Sincronizadores revisados.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-5',
+    title: 'Alternador High-Output Denso 130A',
+    oem_code: 'OEM-27060-37020',
+    category: 'Motor & Periféricos',
+    price: 28000,
+    cost_price: 8000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão B ➔ Corredor 01 ➔ Estante A ➔ Prateleira 2 ➔ Posição 05',
+    license_plate: '練馬 500 め 33-44',
+    vin: 'ZRE152-701928',
+    vehicle_origin: 'Toyota Corolla ZRE152 (2015)',
+    compatibility: 'Toyota Corolla 2ZR-FE, Auris ZRE154, Wish ZGE20',
+    images: ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&q=80'],
+    description: 'Alternador original Denso 130 Amperes. Testado em bancada com carga total, regulador integrado.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-6',
+    title: 'Bomba de Combustível de Alta Pressão GDI',
+    oem_code: 'OEM-42021-FG000',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 32000,
+    cost_price: 9500,
+    status: 'draft',
+    seller_id: 'tenant_demo',
+    location: 'Osaka, JP',
+    wms_location: 'Galpão B ➔ Corredor 03 ➔ Estante B ➔ Prateleira 4 ➔ Posição 12',
+    license_plate: '多摩 300 せ 55-66',
+    vin: 'VAB-009182',
+    vehicle_origin: 'Subaru Impreza WRX STI (2016)',
+    compatibility: 'Subaru Impreza WRX STI VAB/GRB/GVB EJ20/EJ25',
+    images: ['https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=400&q=80'],
+    description: 'Bomba de combustível de alta vazão com bóia e pré-filtro inclusos. Pressão de 4.2 bar mantida sem oscilação.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-7',
+    title: 'Inversor Híbrido Hybrid Synergy Drive Power Management',
+    oem_code: 'OEM-G9200-47190',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 120000,
+    cost_price: 40000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Kanagawa, JP',
+    wms_location: 'Galpão A ➔ Corredor 01 ➔ Estante A ➔ Prateleira 1 ➔ Posição 03',
+    license_plate: '湘南 300 て 11-22',
+    vin: 'ZVW50-5019283',
+    vehicle_origin: 'Toyota Prius ZVW50 (2019)',
+    compatibility: 'Toyota Prius ZVW50/ZVW51/ZVW55 (2016-2022)',
+    images: ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&q=80'],
+    description: 'Módulo Inversor Híbrido com conversor DC-DC integrado. Testado no scanner sem códigos de erro DTC P0A78.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-8',
+    title: 'Jogo de Amortecedores Coilover Tein Flex Z Ajustáveis',
+    oem_code: 'OEM-VSD30-C1SS1',
+    category: 'Suspensão & Freios',
+    price: 95000,
+    cost_price: 32000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Hiroshima, JP',
+    wms_location: 'Galpão C ➔ Corredor 02 ➔ Estante B ➔ Prateleira 3 ➔ Posição 06',
+    license_plate: '広島 330 そ 77-88',
+    vin: 'FD3S-401928',
+    vehicle_origin: 'Mazda RX-7 FD3S (1999)',
+    compatibility: 'Mazda RX-7 FD3S Séries 4, 5 e 6 (1992-2002)',
+    images: ['https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=80'],
+    description: 'Suspensão coilover completa com regulagem de altura e 16 níveis de amortecimento de carga. Sem vazamentos.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-9',
+    title: 'Painel de Instrumentos Digital Optitron Tricolor',
+    oem_code: 'OEM-83800-22A10',
+    category: 'Painel & Eletrônicos',
+    price: 55000,
+    cost_price: 18000,
+    status: 'draft',
+    seller_id: 'tenant_demo',
+    location: 'Chiba, JP',
+    wms_location: 'Galpão C ➔ Corredor 01 ➔ Estante C ➔ Prateleira 2 ➔ Posição 09',
+    license_plate: '千葉 300 た 44-55',
+    vin: 'JZX100-008192',
+    vehicle_origin: 'Toyota Mark II JZX100 Tourer V (1998)',
+    compatibility: 'Toyota Mark II, Chaser, Cresta JZX100 1JZ-GTE',
+    images: ['https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=400&q=80'],
+    description: 'Cluster Optitron tricolor original com 74.500 km marcados. Leds e serigrafia em estado de novo.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-10',
+    title: 'Volante Esportivo Momo Leather com Airbag Nardi',
+    oem_code: 'OEM-MR621094',
+    category: 'Acabamento Interno',
+    price: 62000,
+    cost_price: 20000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Nagoya, JP',
+    wms_location: 'Galpão C ➔ Corredor 03 ➔ Estante A ➔ Prateleira 1 ➔ Posição 07',
+    license_plate: '名古屋 300 に 99-00',
+    vin: 'CT9A-040192',
+    vehicle_origin: 'Mitsubishi Lancer Evolution IX (2006)',
+    compatibility: 'Mitsubishi Lancer Evolution VII, VIII, IX (CT9A)',
+    images: ['https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80'],
+    description: 'Volante original Momo em couro perfurado com costuras vermelhas. Airbag frontal incluso e intacto.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-11',
+    title: 'Diferencial Blocado LSD CusCo Type-RS 2-Way',
+    oem_code: 'OEM-LSD-270-E2',
+    category: 'Transmissão & Câmbio',
+    price: 110000,
+    cost_price: 38000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Fukuoka, JP',
+    wms_location: 'Galpão A ➔ Corredor 04 ➔ Estante C ➔ Prateleira 1 ➔ Posição 05',
+    license_plate: '福岡 300 と 12-99',
+    vin: 'S15-029182',
+    vehicle_origin: 'Nissan Silvia S15 Spec-R (2000)',
+    compatibility: 'Nissan Silvia S14, S15 SR20DET',
+    images: ['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'],
+    description: 'Diferencial de deslizamento limitado de discos Cusco 2-way para Drift e Track day. Pré-carga ajustada.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-12',
+    title: 'Parachoque Dianteiro Aerodinâmico Nismo Spec-2',
+    oem_code: 'OEM-62022-RNZ30',
+    category: 'Lataria & Iluminação',
+    price: 78000,
+    cost_price: 25000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Shizuoka, JP',
+    wms_location: 'Galpão B ➔ Corredor 04 ➔ Estante D ➔ Prateleira 2 ➔ Posição 01',
+    license_plate: '静岡 300 な 77-11',
+    vin: 'Z33-109284',
+    vehicle_origin: 'Nissan Fairlady Z Z33 350Z (2005)',
+    compatibility: 'Nissan Fairlady Z Z33 / 350Z (2003-2008)',
+    images: ['https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&q=80'],
+    description: 'Parachoque dianteiro Nismo original com dutos de ar para freios. Cor prata metálico WV2.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-13',
+    title: 'Kit Pinças de Freio Brembo 4 Pistões Dianteiras',
+    oem_code: 'OEM-26292-FE000',
+    category: 'Suspensão & Freios',
+    price: 88000,
+    cost_price: 28000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Kyoto, JP',
+    wms_location: 'Galpão B ➔ Corredor 02 ➔ Estante A ➔ Prateleira 3 ➔ Posição 10',
+    license_plate: '京都 300 ぬ 33-22',
+    vin: 'GRB-019283',
+    vehicle_origin: 'Subaru Impreza WRX STI Hatch (2012)',
+    compatibility: 'Subaru Impreza WRX STI, Legacy GT, Forester XT',
+    images: ['https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=400&q=80'],
+    description: 'Pinças de alumínio forjado Brembo douradas com reparos e reparos de vedação novos. Pastilhas Endless 70%.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-14',
+    title: 'Coletor de Admissão High-Flow Nismo Surge Tank',
+    oem_code: 'OEM-14110-RSR45',
+    category: 'Motor & Periféricos',
+    price: 135000,
+    cost_price: 45000,
+    status: 'draft',
+    seller_id: 'tenant_demo',
+    location: 'Kanagawa, JP',
+    wms_location: 'Galpão A ➔ Corredor 03 ➔ Estante B ➔ Prateleira 2 ➔ Posição 04',
+    license_plate: '川崎 300 ね 88-99',
+    vin: 'BCNR33-01928',
+    vehicle_origin: 'Nissan Skyline GT-R R33 (1995)',
+    compatibility: 'Nissan Skyline GT-R R32, R33, R34 (RB26DETT)',
+    images: ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&q=80'],
+    description: 'Plenum Nismo de admissão com fluxo otimizado para distribuição igual de ar entre os 6 cilindros.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-15',
+    title: 'Radiador de Alumínio 3 Passos Koyorad Racing',
+    oem_code: 'OEM-VH080703',
+    category: 'Motor & Periféricos',
+    price: 42000,
+    cost_price: 14000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão B ➔ Corredor 01 ➔ Estante C ➔ Prateleira 4 ➔ Posição 08',
+    license_plate: '品川 330 の 12-34',
+    vin: 'AP1-100291',
+    vehicle_origin: 'Honda S2000 AP1 (2002)',
+    compatibility: 'Honda S2000 AP1 / AP2 (F20C / F22C)',
+    images: ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400&q=80'],
+    description: 'Radiador de alumínio brasado Koyorad com colmeia de 53mm. Dissipação térmica 35% superior ao original.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-16',
+    title: 'Sensor de Fluxo de Ar MAF Meter Hitachi',
+    oem_code: 'OEM-22680-69F00',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 19000,
+    cost_price: 5000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Miyagi, JP',
+    wms_location: 'Galpão C ➔ Corredor 04 ➔ Estante A ➔ Prateleira 1 ➔ Posição 14',
+    license_plate: '仙台 500 は 77-66',
+    vin: 'RPS13-091827',
+    vehicle_origin: 'Nissan 180SX Type X (1996)',
+    compatibility: 'Nissan 180SX, Silvia S14, Pulsar GTI-R (SR20DET)',
+    images: ['https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=400&q=80'],
+    description: 'Sensor MAF de elemento aquecido testado em osciloscópio. Tensão de sinal perfeitamente calibrada.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-17',
+    title: 'Conjunto Lanternas Traseiras LED Valenti Smoke',
+    oem_code: 'OEM-SU003-02540',
+    category: 'Lataria & Iluminação',
+    price: 48000,
+    cost_price: 16000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Gunma, JP',
+    wms_location: 'Galpão B ➔ Corredor 03 ➔ Estante D ➔ Prateleira 2 ➔ Posição 03',
+    license_plate: '群馬 300 ひ 55-44',
+    vin: 'ZN6-019284',
+    vehicle_origin: 'Toyota GT86 / Subaru BRZ (2016)',
+    compatibility: 'Toyota GT86 ZN6, Subaru BRZ ZC6, Scion FR-S (2012-2020)',
+    images: ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&q=80'],
+    description: 'Lanternas traseiras sequenciais Valenti Japão em acrílico fume. Vedação sem infiltração de umidade.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-18',
+    title: 'Compressor de Ar Condicionado Denso 10S15C',
+    oem_code: 'OEM-38810-5R0-004',
+    category: 'Motor & Periféricos',
+    price: 36000,
+    cost_price: 11000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Saitama, JP',
+    wms_location: 'Galpão B ➔ Corredor 02 ➔ Estante B ➔ Prateleira 1 ➔ Posição 11',
+    license_plate: '大宫 500 ふ 11-88',
+    vin: 'RU1-201928',
+    vehicle_origin: 'Honda Vezel RU1 (2018)',
+    compatibility: 'Honda Vezel RU1/RU3, Fit GK5, Grace GM4',
+    images: ['https://images.unsplash.com/photo-1502877338535-766e1452684a?w=400&q=80'],
+    description: 'Compressor de A/C original com embreagem magnética e óleo R134a limpo. Pressão de succão de fábrica.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-19',
+    title: 'Bicos Injetores High-Flow 1000cc Injector Dynamics',
+    oem_code: 'OEM-1000-48-14-14',
+    category: 'Injeção Eletrônica & Sensores',
+    price: 72000,
+    cost_price: 24000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Tokyo, JP',
+    wms_location: 'Galpão C ➔ Corredor 01 ➔ Estante B ➔ Prateleira 2 ➔ Posição 15',
+    license_plate: '足立 300 へ 99-77',
+    vin: 'JZA80-001928',
+    vehicle_origin: 'Toyota Supra JZA80 2JZ-GTE (1997)',
+    compatibility: 'Toyota Supra 2JZ-GTE, Aristo JZS161 2JZ, Soarer 1JZ',
+    images: ['https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=400&q=80'],
+    description: 'Jogo de 6 bicos de alta impedância ID1000 iguais em vazão (máximo 1% de desvio). O-rings de viton inclusos.',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'part-demo-20',
+    title: 'Módulo de Direção Elétrica EPS Steuergerät',
+    oem_code: 'OEM-38720-68R00',
+    category: 'Painel & Eletrônicos',
+    price: 29000,
+    cost_price: 9000,
+    status: 'active',
+    seller_id: 'tenant_demo',
+    location: 'Shizuoka, JP',
+    wms_location: 'Galpão C ➔ Corredor 02 ➔ Estante A ➔ Prateleira 3 ➔ Posição 12',
+    license_plate: '沼津 500 ほ 44-11',
+    vin: 'ZC33S-109283',
+    vehicle_origin: 'Suzuki Swift Sport ZC33S (2020)',
+    compatibility: 'Suzuki Swift Sport ZC33S (K14C Turbo)',
+    images: ['https://images.unsplash.com/photo-1563720223185-11003d516935?w=400&q=80'],
+    description: 'Módulo de controle da caixa de direção elétrica. Calibrado para assistência esportiva, sem erros no CAN-BUS.',
+    created_at: new Date().toISOString()
+  }
+]
 
 export default function TenantDashboard() {
   const navigate = useNavigate()
-  const { user, initialized, loading: authLoading, signOut } = useAuthStore()
+  const { user, initialized, loading: authLoading, signOut, setUser } = useAuthStore()
   
-  // Clean Architecture Core Hook for Parts & Stock
+  // Clean Architecture Hook
   const {
-    filteredParts,
-    stats,
+    filteredParts: originalFilteredParts,
+    stats: rawStats,
     isLoading,
     refetch,
     searchQuery,
     setSearchQuery,
     filterCategory,
     setFilterCategory,
+    selectedPartIds,
+    handleSelectAll,
+    handleSelectOne,
+    toastMessage,
+    togglePublish,
+    batchPublish,
   } = useTenantCore()
 
-  // Active Menu Tab State
-  const [activeTab, setActiveTab] = useState<TabType>('dashboard')
+  // Peças Ativas (Combina Banco de Dados + 20 Peças de Teste se o DB estiver vazio)
+  const [localDemoParts, setLocalDemoParts] = useState<any[]>(DEMO_20_PARTS)
+  
+  const allParts = useMemo(() => {
+    return originalFilteredParts.length > 0 ? originalFilteredParts : localDemoParts
+  }, [originalFilteredParts, localDemoParts])
 
-  // Search & Filter States
-  const [headerSearch, setHeaderSearch] = useState('')
-  const [tableCategory, setTableCategory] = useState('all')
-  const [tableSearch, setTableSearch] = useState('')
-  const [darkMode, setDarkMode] = useState(false)
+  const stats = useMemo(() => {
+    const totalSKUs = allParts.length
+    const totalPrivateValue = allParts.reduce((sum, p) => sum + (Number(p.price) || 0), 0)
+    const publishedCount = allParts.filter(p => p.status === 'active').length
+    const privateCount = totalSKUs - publishedCount
+    return { totalSKUs, totalPrivateValue, publishedCount, privateCount }
+  }, [allParts])
 
-  // Computer Vision IA Mock & Upload State
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [aiImagePreview, setAiImagePreview] = useState<string>(
-    'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&q=80'
-  )
-  const [aiConfidence, setAiConfidence] = useState<number>(98.7)
-  const [aiDetectedPart, setAiDetectedPart] = useState<string>('Rodas & Calotas Esportivas V10')
-  const [isAiAnalyzing, setIsAiAnalyzing] = useState(false)
+  // Sidebar & Navigation state
+  const [activeTab, setActiveTab] = useState<TabType>('overview')
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  // Command Palette (Cmd + K)
+  const [showCommandPalette, setShowCommandPalette] = useState(false)
+  const [cmdSearch, setCmdSearch] = useState('')
+
+  // Listener para atalho Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setShowCommandPalette(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // Modals States
-  const [showNovaPecaModal, setShowNovaPecaModal] = useState(false)
-  const [showNovoPedidoModal, setShowNovoPedidoModal] = useState(false)
-  const [showEntradaEstoqueModal, setShowEntradaEstoqueModal] = useState(false)
   const [printingStickerPart, setPrintingStickerPart] = useState<any | null>(null)
+  const [showPdvModal, setShowPdvModal] = useState(false)
+  const [showNfeModal, setShowNfeModal] = useState(false)
+  const [showWorkOrderModal, setShowWorkOrderModal] = useState(false)
 
-  // Form State: Nova Peça
-  const [novaPecaForm, setNovaPecaForm] = useState({
-    title: '',
-    oem_code: '',
-    category: 'Motor & Periféricos',
-    price: '',
-    cost_price: '',
-    stock: '1',
-    compatibility: '',
-    description: '',
-    location: 'Galpão A - Prateleira 02'
+  // Pipeline Inteligente State
+  const [workflowStep, setWorkflowStep] = useState(1)
+  const [isProcessingPipeline, setIsProcessingPipeline] = useState(false)
+
+  // IA Hub State
+  const [aiAnalysisResult, setAiAnalysisResult] = useState<any | null>(null)
+  const [isAiScanning, setIsAiScanning] = useState(false)
+  const [isOcrScanning, setIsOcrScanning] = useState(false)
+  const [ocrResult, setOcrResult] = useState<string | null>(null)
+  const [voiceQuery, setVoiceQuery] = useState('')
+  const [isListeningVoice, setIsListeningVoice] = useState(false)
+  const [voiceSearchResult, setVoiceSearchResult] = useState<any | null>(null)
+
+  // Hierarquia WMS State
+  const [wmsFilter, setWmsFilter] = useState({
+    warehouse: 'Galpão A (Principal)',
+    aisle: 'Corredor 04 (Motor & Transmissão)',
+    rack: 'Estante B',
+    shelf: 'Prateleira 3',
+    box: 'Caixa 12',
+    position: 'Posição 08'
   })
-  const [savingPart, setSavingPart] = useState(false)
 
-  // Demo Fallback Parts matching the screenshot table if database is empty
-  const defaultDemoParts = [
-    {
-      id: 'demo-1',
-      title: 'Kit Tampas de Válvula de Pneu AutoParts Premium',
-      oem_code: 'OEM-VALVE-991',
-      category: 'Acessórios & Tuning',
-      compatibility: 'Universal (Todos os modelos)',
-      stock: 45,
-      price: 89.90,
-      status: 'Em Estoque',
-      wms_location: 'Corredor A • Estante 01'
-    },
-    {
-      id: 'demo-2',
-      title: 'Farol Dianteiro Full LED Esquerdo ZVW30',
-      oem_code: 'OEM-33100-47820',
-      category: 'Lataria & Iluminação',
-      compatibility: 'Toyota Prius ZVW30 (2015-2022)',
-      stock: 12,
-      price: 1450.00,
-      status: 'Em Estoque',
-      wms_location: 'Corredor B • Estante 04'
-    },
-    {
-      id: 'demo-3',
-      title: 'Módulo ECU de Injeção Eletrônica GK3',
-      oem_code: 'OEM-37820-5R0-J61',
-      category: 'Injeção & Sensores',
-      compatibility: 'Honda Fit GK3 (2015-2020)',
-      stock: 3,
-      price: 2380.00,
-      status: 'Baixo Estoque',
-      wms_location: 'Corredor C • Estante 02'
-    },
-    {
-      id: 'demo-4',
-      title: 'Conjunto Twin-Turbo RB26DETT Nismo Spec-R',
-      oem_code: 'OEM-14411-AA300',
-      category: 'Motor & Periféricos',
-      compatibility: 'Nissan Skyline GT-R R32/R33/R34',
-      stock: 2,
-      price: 8500.00,
-      status: 'Em Estoque',
-      wms_location: 'Corredor A • Estante 05'
-    },
-    {
-      id: 'demo-5',
-      title: 'Pastilhas de Freio Cerâmica Brembo Frontal',
-      oem_code: 'OEM-BRM-008912',
-      category: 'Freios & Suspensão',
-      compatibility: 'Subaru Impreza WRX STI (2011-2020)',
-      stock: 28,
-      price: 640.00,
-      status: 'Em Estoque',
-      wms_location: 'Corredor D • Estante 01'
+  // Kanban O.S. State
+  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([
+    { id: 'OS-801', title: 'Troca do Inversor Híbrido & Diagnóstico', client: 'Takahashi Auto Repair', vehicle: 'Toyota Prius ZVW30 (2018)', mechanic: 'Kenji Sato', status: 'aguardando', amount: 85000, partsUsed: 'Módulo Inversor Híbrido OEM', date: 'Hoje, 09:30' },
+    { id: 'OS-802', title: 'Instalação de Kit Turbo & Acerto ECU', client: 'Yamada Drift Team', vehicle: 'Nissan Skyline BNR34 GT-R', mechanic: 'Hiroshi Tanaka', status: 'em_manutencao', amount: 240000, partsUsed: 'Turbo RB26DETT Nismo + ECU Remap', date: 'Hoje, 11:00' },
+    { id: 'OS-803', title: 'Substituição de Amortecedores & Freios', client: 'Sora Tanaka (Particular)', vehicle: 'Honda Fit GK3 (2017)', mechanic: 'Takeshi Lin', status: 'testes', amount: 52000, partsUsed: 'Jogo Amortecedores KYB + Pastilhas', date: 'Ontem' },
+    { id: 'OS-804', title: 'Revisão Geral e Alinhamento 3D', client: 'Kuroda Motors', vehicle: 'Subaru Impreza WRX STI', mechanic: 'Kenji Sato', status: 'pronto', amount: 68000, partsUsed: 'Óleo Motul 5W40 + Filtros OEM', date: '25/07' }
+  ])
+
+  const [newOrderForm, setNewOrderForm] = useState({
+    title: '',
+    client: '',
+    vehicle: '',
+    mechanic: 'Kenji Sato',
+    amount: '',
+    partsUsed: ''
+  })
+
+  // Estado do Módulo: Perfil & Configurações da Loja
+  const [editingProfile, setEditingProfile] = useState(false)
+  const [savingProfile, setSavingProfile] = useState(false)
+  const [postalLoading, setPostalLoading] = useState(false)
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || user?.full_name || 'Tokyo Auto Parts Partner (DAIG SaaS)',
+    email: user?.email || 'teste.partner@daig.jp',
+    phone: user?.phone || '+81 90-1234-5678',
+    address: user?.address || 'Kanagawa-ken, Yokohama-shi, Naka-ku, Honcho 1-2-3',
+    city: user?.city || 'Yokohama',
+    state: user?.state || 'Kanagawa',
+    zip_code: user?.zip_code || '231-0005',
+    store_name: 'Tokyo Auto Parts & Dismantler',
+    japan_bank_name: 'MUFG Bank (三菱UFJ銀行)',
+    japan_branch_name: 'Yokohama Branch (横浜支店 - 041)',
+    japan_account_number: '1092847',
+    japan_account_holder: 'TOKYO AUTO PARTS INC'
+  })
+
+  // Busca CEP Japonês / Brasileiro (Zipcloud / ViaCEP)
+  const handlePostalBlur = useCallback(async () => {
+    const raw = profileForm.zip_code.replace(/\D/g, '')
+    if (raw.length < 5) return
+    setPostalLoading(true)
+    const result = await fetchPostal(raw)
+    if (result) {
+      setProfileForm(prev => ({
+        ...prev,
+        address: result.fullAddress || prev.address,
+        city: result.city || prev.city,
+        state: result.state || prev.state,
+      }))
     }
-  ]
+    setPostalLoading(false)
+  }, [profileForm.zip_code])
 
-  // Combined parts list
-  const displayParts = useMemo(() => {
-    const sourceParts = (filteredParts && filteredParts.length > 0) ? filteredParts : defaultDemoParts
-    return sourceParts.filter(part => {
-      const titleMatches = (part.title || '').toLowerCase().includes(tableSearch.toLowerCase()) ||
-                           (part.oem_code || '').toLowerCase().includes(tableSearch.toLowerCase())
-      const catMatches = tableCategory === 'all' || part.category === tableCategory
-      return titleMatches && catMatches
-    })
-  }, [filteredParts, tableSearch, tableCategory])
-
-  // Handle Image Upload for Computer Vision IA
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    setIsAiAnalyzing(true)
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      if (event.target?.result) {
-        setAiImagePreview(event.target.result as string)
-        setTimeout(() => {
-          setIsAiAnalyzing(false)
-          setAiConfidence(99.4)
-          setAiDetectedPart(file.name.replace(/\.[^/.]+$/, ""))
-        }, 1200)
-      }
-    }
-    reader.readAsDataURL(file)
-  }
-
-  // Submit Handler: Add Part
-  const handleSaveNovaPeca = async (e: React.FormEvent) => {
+  // Salvar Perfil
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSavingPart(true)
+    setSavingProfile(true)
     try {
-      if (user) {
-        await supabase.from('parts').insert({
-          title: novaPecaForm.title,
-          oem_code: novaPecaForm.oem_code,
-          category: novaPecaForm.category,
-          price: parseFloat(novaPecaForm.price) || 0,
-          cost_price: parseFloat(novaPecaForm.cost_price) || 0,
-          stock: parseInt(novaPecaForm.stock) || 1,
-          compatibility: novaPecaForm.compatibility,
-          description: novaPecaForm.description,
-          location: novaPecaForm.location,
-          seller_id: user.id,
-          status: 'active'
-        })
+      if (user?.id) {
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: profileForm.name,
+            phone: profileForm.phone,
+            address: profileForm.address,
+            city: profileForm.city,
+            state: profileForm.state,
+            zip_code: profileForm.zip_code
+          })
+          .eq('id', user.id)
       }
-      refetch()
-      setShowNovaPecaModal(false)
-      setNovaPecaForm({
-        title: '', oem_code: '', category: 'Motor & Periféricos',
-        price: '', cost_price: '', stock: '1', compatibility: '', description: '', location: 'Galpão A'
-      })
-    } catch (err) {
-      console.error(err)
+      setUser({
+        ...user,
+        name: profileForm.name,
+        full_name: profileForm.name,
+        phone: profileForm.phone,
+        address: profileForm.address,
+        city: profileForm.city,
+        state: profileForm.state,
+        zip_code: profileForm.zip_code
+      } as any)
+      setEditingProfile(false)
+      alert('Perfil e Dados da Empresa salvos com sucesso!')
+    } catch (err: any) {
+      alert('Erro ao salvar perfil: ' + err.message)
     } finally {
-      setSavingPart(false)
+      setSavingProfile(false)
     }
   }
 
-  // Redirect if not logged in
+  // PDV State
+  const [salesList, setSalesList] = useState([
+    { id: 'venda-881', customer: 'Oficina Takahashi Auto', items: 'Farol LED Prius ZVW30', total: 45000, date: 'Hoje, 14:30', channel: 'Balcão / PDV' },
+    { id: 'venda-882', customer: 'Hiroshi Tanaka (Cliente B2C)', items: 'Turbo RB26DETT Nismo', total: 185000, date: 'Hoje, 11:15', channel: 'Marketplace DAIG (1-Clique)' },
+  ])
+  const [pdvForm, setPdvForm] = useState({
+    partTitle: '',
+    customer: 'Oficina / Cliente Balcão',
+    price: '45000',
+    paymentMethod: 'Espécie (Dinheiro JPY)',
+    receivedAmount: '50000'
+  })
+
+  // NF-e Purchases State
+  const [purchaseInvoices, setPurchaseInvoices] = useState([
+    { id: 'nfe-1092', key: '35260710049284000192550010000010921', supplier: 'Leilão USS Tokyo Bay', date: '2026-07-22', value: 450000, status: 'Processada' },
+    { id: 'nfe-1093', key: '35260710049284000192550010000010932', supplier: 'Seguradora Sompo Japan', date: '2026-07-26', value: 890000, status: 'Aguardando Estoque' },
+  ])
+  const [nfeForm, setNfeForm] = useState({
+    supplier: 'Leilão USS Tokyo Bay',
+    key: '35260710049284000192550010000010945',
+    value: '520000'
+  })
+
+  // API Key State
+  const [apiKey] = useState('daig_live_sk_tenant_99482710398412')
+  const [copiedKey, setCopiedKey] = useState(false)
+
+  // Redirecionar se não autenticado
   if (initialized && !authLoading && !user) {
     navigate('/login', { replace: true })
     return null
   }
 
+  const tenantName = profileForm.store_name || user?.name || 'Tokyo Auto Parts & Dismantler'
+  const tenantId = user?.id ? `tenant_${user.id.slice(0, 8)}` : 'tenant_demo_01'
+
+  // Simular Execução do Pipeline End-to-End
+  const handleRunFullPipeline = () => {
+    setIsProcessingPipeline(true)
+    setWorkflowStep(1)
+
+    let currentStep = 1
+    const interval = setInterval(() => {
+      currentStep += 1
+      setWorkflowStep(currentStep)
+      if (currentStep >= 16) {
+        clearInterval(interval)
+        setIsProcessingPipeline(false)
+        alert('🎉 PIPELINE EXECUTADO COM SUCESSO!\n\nAs 20 peças foram desmontadas, identificadas por IA, etiquetadas com QR Code, catalogadas no WMS e disponibilizadas para venda com baixa automática!')
+      }
+    }, 400)
+  }
+
+  // Simular Venda & Baixa Automática de Peça
+  const handleSellAndDeductPart = (partId: string, partTitle: string, price: number) => {
+    setLocalDemoParts(prev => prev.filter(p => p.id !== partId))
+    const newSale = {
+      id: `venda-${Math.floor(100 + Math.random() * 900)}`,
+      customer: 'Cliente Balcão (Baixa Automática)',
+      items: partTitle,
+      total: price,
+      date: 'Agora',
+      channel: 'Balcão (Baixa WMS IA)'
+    }
+    setSalesList([newSale, ...salesList])
+    alert(`✅ VENDA & BAIXA CONCLUÍDA!\n\nA peça "${partTitle}" foi vendida por ¥ ${price.toLocaleString('ja-JP')} JPY e teve baixa automática do estoque WMS e do marketplace!`)
+  }
+
+  // Simular Reconhecimento por Foto IA
+  const handleSimulateAiImageScan = () => {
+    setIsAiScanning(true)
+    setAiAnalysisResult(null)
+    setTimeout(() => {
+      setAiAnalysisResult({
+        name: 'Módulo de Injeção Eletrônica ECU Engine Control Unit',
+        oem: 'OEM-37820-5R0-J61',
+        brand: 'Honda',
+        model: 'Fit GK3 / Vezel RU1',
+        yearRange: '2015 - 2020',
+        side: 'Central de Painel',
+        suggestedPrice: 38000,
+        costPrice: 12000,
+        condition: 'Usado Genuíno - Graus A (Testado Scanner 100%)',
+        wmsLocation: 'Galpão A ➔ Corredor 04 ➔ Estante B ➔ Prateleira 3 ➔ Caixa 12 ➔ Posição 08',
+        compatibility: ['Honda Fit GK3 (2015-2020)', 'Honda Vezel RU1', 'Honda Shuttle GP7']
+      })
+      setIsAiScanning(false)
+    }, 1400)
+  }
+
+  // Simular Leitura OCR de Metal
+  const handleSimulateOcr = () => {
+    setIsOcrScanning(true)
+    setOcrResult(null)
+    setTimeout(() => {
+      setOcrResult('GRAVURA DETECTADA: [RB26-778192-N] - BLOCO MOTOR NISSAN SKYLINE R34 GT-R NISMO')
+      setIsOcrScanning(false)
+    }, 1200)
+  }
+
+  // Simular Busca por Voz / Linguagem Natural
+  const handleVoiceSearchSubmit = (queryText: string) => {
+    const q = queryText.toLowerCase()
+    setVoiceSearchResult(null)
+    
+    if (q.includes('farol') || q.includes('gol') || q.includes('prius')) {
+      setVoiceSearchResult({
+        found: true,
+        title: 'Farol Dianteiro LED Esquerdo Prius ZVW30',
+        oem: 'OEM-33100-47820',
+        price: 45000,
+        location: 'Galpão A ➔ Corredor 02 ➔ Estante C ➔ Prateleira 1',
+        stockQty: 3,
+        matchedQuery: queryText
+      })
+    } else if (q.includes('câmbio') || q.includes('civic') || q.includes('alternador')) {
+      setVoiceSearchResult({
+        found: true,
+        title: 'Caixa de Câmbio Manual 6 Marchas Civic Si K20',
+        oem: 'OEM-20000-RRB-305',
+        price: 185000,
+        location: 'Galpão A ➔ Corredor 04 ➔ Estante B ➔ Prateleira 4',
+        stockQty: 1,
+        matchedQuery: queryText
+      })
+    } else {
+      setVoiceSearchResult({
+        found: true,
+        title: 'Bomba de Combustível Alta Pressão Bosch',
+        oem: 'OEM-0261520044',
+        price: 28000,
+        location: 'Galpão B ➔ Corredor 01 ➔ Estante A ➔ Prateleira 2',
+        stockQty: 5,
+        matchedQuery: queryText
+      })
+    }
+  }
+
+  // Submeter Nova Ordem de Serviço
+  const handleCreateWorkOrder = (e: React.FormEvent) => {
+    e.preventDefault()
+    const newWo: WorkOrder = {
+      id: `OS-${Math.floor(800 + Math.random() * 100)}`,
+      title: newOrderForm.title || 'Manutenção Corretiva Geral',
+      client: newOrderForm.client || 'Cliente Oficina',
+      vehicle: newOrderForm.vehicle || 'Veículo em Oficina',
+      mechanic: newOrderForm.mechanic,
+      status: 'aguardando',
+      amount: Number(newOrderForm.amount || 35000),
+      partsUsed: newOrderForm.partsUsed || 'Peças do Estoque Privado',
+      date: 'Agora'
+    }
+    setWorkOrders([newWo, ...workOrders])
+    setShowWorkOrderModal(false)
+    setNewOrderForm({ title: '', client: '', vehicle: '', mechanic: 'Kenji Sato', amount: '', partsUsed: '' })
+    alert('Ordem de Serviço criada com sucesso e adicionada ao Kanban!')
+  }
+
+  // Alternar Status Kanban
+  const handleMoveKanban = (id: string, newStatus: WorkOrder['status']) => {
+    setWorkOrders(prev => prev.map(wo => wo.id === id ? { ...wo, status: newStatus } : wo))
+  }
+
   return (
-    <div className={`min-h-screen font-sans ${darkMode ? 'bg-slate-900 text-white' : 'bg-[#f8fafc] text-slate-800'} flex flex-col`}>
+    <div className="min-h-screen bg-[#09090B] text-zinc-100 flex overflow-hidden font-sans">
       
-      {/* ════════════════ HEADER BAR ════════════════ */}
-      <header className="bg-white border-b border-slate-100 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-        
-        {/* Left: Hamburger & Logo */}
-        <div className="flex items-center gap-4">
-          <button 
-            type="button"
-            className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
-            aria-label="Abrir menu"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
-          {/* Logo Brand: AutoParts Gestão Inteligente */}
-          <Link to="/dashboard" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-sm shadow-indigo-600/30 group-hover:scale-105 transition-transform">
-              <Car className="w-6 h-6 stroke-[2.2]" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-lg text-slate-900 leading-none tracking-tight">AutoParts</span>
-              <span className="text-xs text-slate-400 font-medium leading-tight mt-0.5">Gestão Inteligente</span>
-            </div>
-          </Link>
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-6 right-6 z-50 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 animate-bounce border border-emerald-400/30">
+          <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+          <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
+      )}
 
-        {/* Center: Search Input Bar */}
-        <div className="hidden md:flex items-center flex-1 max-w-lg mx-8">
-          <div className="relative w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-            <input 
-              type="text" 
-              value={headerSearch}
-              onChange={(e) => setHeaderSearch(e.target.value)}
-              placeholder="Buscar por peça, código, modelo ou veículo..."
-              className="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-slate-200/80 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-xl pl-10 pr-20 py-2 text-sm text-slate-700 placeholder:text-slate-400 transition focus:outline-none"
-            />
-            <div className="absolute right-3 top-2.5 flex items-center">
-              <span className="bg-white border border-slate-200 text-slate-400 text-[10px] font-mono px-1.5 py-0.5 rounded shadow-2xs font-semibold">
-                ctrl + k
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Actions, Notifications & Primary Button */}
-        <div className="flex items-center gap-3">
-          
-          {/* Dark Mode Toggle */}
-          <button 
-            type="button"
-            onClick={() => setDarkMode(!darkMode)}
-            className="p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer"
-            title="Alternar Modo Escuro"
-          >
-            <Moon className="w-5 h-5" />
-          </button>
-
-          {/* Notifications Bell */}
-          <button 
-            type="button"
-            className="p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition relative cursor-pointer"
-            title="Notificações"
-          >
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white font-bold text-[10px] rounded-full flex items-center justify-center border-2 border-white">
-              12
-            </span>
-          </button>
-
-          {/* Chat Messages */}
-          <button 
-            type="button"
-            onClick={() => navigate('/messages')}
-            className="p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition cursor-pointer"
-            title="Mensagens"
-          >
-            <MessageSquare className="w-5 h-5" />
-          </button>
-
-          {/* Primary Action: + Nova Peça */}
-          <button
-            type="button"
-            onClick={() => setShowNovaPecaModal(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-sm shadow-indigo-600/30 transition cursor-pointer active:scale-95"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" />
-            <span>Nova Peça</span>
-          </button>
-
-        </div>
-      </header>
-
-      {/* ════════════════ MAIN BODY WRAPPER ════════════════ */}
-      <div className="flex flex-1 overflow-hidden">
-        
-        {/* ──────────────── LEFT SIDEBAR NAVIGATION ──────────────── */}
-        <aside className="w-64 bg-white border-r border-slate-100 p-4 flex flex-col justify-between hidden md:flex shrink-0">
-          
-          <nav className="space-y-1">
-            
-            {/* Dashboard (Active Highlight) */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition cursor-pointer ${
-                activeTab === 'dashboard' 
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20' 
-                  : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <LayoutDashboard className="w-5 h-5" />
-              <span>Dashboard</span>
-            </button>
-
-            {/* Peças */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('pecas')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'pecas' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Package className="w-5 h-5 text-slate-400" />
-              <span>Peças</span>
-            </button>
-
-            {/* Categorias */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('categorias')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'categorias' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Tag className="w-5 h-5 text-slate-400" />
-              <span>Categorias</span>
-            </button>
-
-            {/* Veículos */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('veiculos')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'veiculos' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Car className="w-5 h-5 text-slate-400" />
-              <span>Veículos</span>
-            </button>
-
-            {/* Pedidos */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('pedidos')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'pedidos' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <ShoppingCart className="w-5 h-5 text-slate-400" />
-              <span>Pedidos</span>
-            </button>
-
-            {/* Clientes */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('clientes')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'clientes' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Users className="w-5 h-5 text-slate-400" />
-              <span>Clientes</span>
-            </button>
-
-            {/* Fornecedores */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('fornecedores')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'fornecedores' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Building2 className="w-5 h-5 text-slate-400" />
-              <span>Fornecedores</span>
-            </button>
-
-            {/* Estoque */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('estoque')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'estoque' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Box className="w-5 h-5 text-slate-400" />
-              <span>Estoque</span>
-            </button>
-
-            {/* Movimentações */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('movimentacoes')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'movimentacoes' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Activity className="w-5 h-5 text-slate-400" />
-              <span>Movimentações</span>
-            </button>
-
-            {/* Relatórios */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('relatorios')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'relatorios' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <FileText className="w-5 h-5 text-slate-400" />
-              <span>Relatórios</span>
-            </button>
-
-            {/* Visão Computacional (IA Badge) */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('visao-ia')}
-              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'visao-ia' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Eye className="w-5 h-5 text-slate-400" />
-                <span>Visão Computacional</span>
+      {/* ─────────────────────────────────────────────────────────────
+          1. SIDEBAR LATERAL RECOLHÍVEL (Linear / Stripe Style)
+         ───────────────────────────────────────────────────────────── */}
+      <aside 
+        className={`bg-[#121215] border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 z-30 shrink-0 ${
+          sidebarCollapsed ? 'w-20' : 'w-72'
+        }`}
+      >
+        <div>
+          {/* Header da Sidebar */}
+          <div className="p-4 border-b border-zinc-800/80 flex items-center justify-between">
+            <div className="flex items-center space-x-3 overflow-hidden">
+              <div className="p-2 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/20 shrink-0">
+                <GaidLogo size={24} />
               </div>
-              <span className="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold px-1.5 py-0.5 rounded-md">
-                IA
-              </span>
-            </button>
-
-            {/* Marketplace (Novo Badge) */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('marketplace')}
-              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'marketplace' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <Globe className="w-5 h-5 text-slate-400" />
-                <span>Marketplace</span>
-              </div>
-              <span className="bg-indigo-100 text-indigo-700 text-[10px] font-extrabold px-1.5 py-0.5 rounded-md">
-                Novo
-              </span>
-            </button>
-
-            {/* Alertas (6 Badge) */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('alertas')}
-              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'alertas' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 text-slate-400" />
-                <span>Alertas</span>
-              </div>
-              <span className="bg-rose-500 text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                6
-              </span>
-            </button>
-
-            {/* Configurações */}
-            <button
-              type="button"
-              onClick={() => setActiveTab('configuracoes')}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition cursor-pointer ${
-                activeTab === 'configuracoes' ? 'bg-indigo-50 text-indigo-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              <Settings className="w-5 h-5 text-slate-400" />
-              <span>Configurações</span>
-            </button>
-
-          </nav>
-
-          {/* Bottom Card in Sidebar: Marketplace Promo */}
-          <div className="bg-indigo-50/70 border border-indigo-100/80 rounded-2xl p-4 mt-6">
-            <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block mb-1">
-              VENDA MAIS COM O
-            </span>
-            <h4 className="font-extrabold text-slate-900 text-base leading-tight">
-              Marketplace
-            </h4>
-          </div>
-
-        </aside>
-
-        {/* ──────────────── DASHBOARD MAIN CONTENT ──────────────── */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-          
-          {/* ════ TOP 4 STAT CARDS ════ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            
-            {/* Card 1: Estoque Total */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-slate-200 transition">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-xs font-semibold tracking-wide">Estoque Total</span>
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                  <Box className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="my-2">
-                <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">8.472</h3>
-                <p className="text-xs font-bold text-emerald-600 flex items-center gap-1 mt-1">
-                  <span>+12.5%</span>
-                  <span className="text-slate-400 font-normal">vs mês anterior</span>
-                </p>
-              </div>
-              {/* Blue Sparkline SVG */}
-              <div className="h-8 w-full mt-2">
-                <svg className="w-full h-full overflow-visible" viewBox="0 0 200 40">
-                  <path 
-                    d="M 0,30 Q 50,38 100,20 T 200,10" 
-                    fill="none" 
-                    stroke="#3b82f6" 
-                    strokeWidth="3" 
-                    strokeLinecap="round" 
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Card 2: Valor do Estoque */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-slate-200 transition">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-xs font-semibold tracking-wide">Valor do Estoque</span>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 stroke-[2.5]" />
-                </div>
-              </div>
-              <div className="my-2">
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                  R$ 1.246.890,50
-                </h3>
-                <p className="text-xs font-bold text-emerald-600 flex items-center gap-1 mt-1">
-                  <span>+8,3%</span>
-                  <span className="text-slate-400 font-normal">vs mês anterior</span>
-                </p>
-              </div>
-              {/* Green Sparkline SVG */}
-              <div className="h-8 w-full mt-2">
-                <svg className="w-full h-full overflow-visible" viewBox="0 0 200 40">
-                  <path 
-                    d="M 0,35 Q 60,15 120,25 T 200,8" 
-                    fill="none" 
-                    stroke="#10b981" 
-                    strokeWidth="3" 
-                    strokeLinecap="round" 
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Card 3: Pedidos (Mês) */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-slate-200 transition">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-xs font-semibold tracking-wide">Pedidos (Mês)</span>
-                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                  <ShoppingCart className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="my-2">
-                <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">320</h3>
-                <p className="text-xs font-bold text-emerald-600 flex items-center gap-1 mt-1">
-                  <span>+15,2%</span>
-                  <span className="text-slate-400 font-normal">vs mês anterior</span>
-                </p>
-              </div>
-              {/* Purple Sparkline SVG */}
-              <div className="h-8 w-full mt-2">
-                <svg className="w-full h-full overflow-visible" viewBox="0 0 200 40">
-                  <path 
-                    d="M 0,28 Q 70,36 140,16 T 200,12" 
-                    fill="none" 
-                    stroke="#a855f7" 
-                    strokeWidth="3" 
-                    strokeLinecap="round" 
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Card 4: Peças em Falta */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col justify-between relative overflow-hidden group hover:border-slate-200 transition">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-400 text-xs font-semibold tracking-wide">Peças em Falta</span>
-                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                  <AlertTriangle className="w-5 h-5" />
-                </div>
-              </div>
-              <div className="my-2">
-                <h3 className="text-3xl font-extrabold text-slate-900 tracking-tight">24</h3>
-                <p className="text-xs font-bold text-rose-500 flex items-center gap-1 mt-1">
-                  <span>-5,1%</span>
-                  <span className="text-slate-400 font-normal">vs mês anterior</span>
-                </p>
-              </div>
-              {/* Amber Sparkline SVG */}
-              <div className="h-8 w-full mt-2">
-                <svg className="w-full h-full overflow-visible" viewBox="0 0 200 40">
-                  <path 
-                    d="M 0,15 Q 60,10 120,30 T 200,22" 
-                    fill="none" 
-                    stroke="#f59e0b" 
-                    strokeWidth="3" 
-                    strokeLinecap="round" 
-                  />
-                </svg>
-              </div>
-            </div>
-
-          </div>
-
-          {/* ════ MIDDLE ROW: ACESSO RÁPIDO & VISÃO COMPUTACIONAL IA ════ */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            {/* Left Box: Acesso Rápido (col-span-2) */}
-            <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-100 shadow-xs">
-              <h3 className="text-base font-bold text-slate-900 mb-4">Acesso rápido</h3>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                
-                {/* 1. Nova Peça */}
-                <button
-                  type="button"
-                  onClick={() => setShowNovaPecaModal(true)}
-                  className="bg-indigo-50/70 hover:bg-indigo-100/80 border border-indigo-100 rounded-2xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 group active:scale-95"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shadow-indigo-600/30 group-hover:scale-110 transition-transform">
-                    <Plus className="w-5 h-5 stroke-[3]" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">Nova Peça</span>
-                </button>
-
-                {/* 2. Novo Pedido */}
-                <button
-                  type="button"
-                  onClick={() => setShowNovoPedidoModal(true)}
-                  className="bg-sky-50/70 hover:bg-sky-100/80 border border-sky-100 rounded-2xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 group active:scale-95"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <ShoppingCart className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">Novo Pedido</span>
-                </button>
-
-                {/* 3. Buscar Peça */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const el = document.getElementById('inventory-search-input')
-                    el?.focus()
-                  }}
-                  className="bg-emerald-50/70 hover:bg-emerald-100/80 border border-emerald-100 rounded-2xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 group active:scale-95"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Search className="w-5 h-5 stroke-[2.5]" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">Buscar Peça</span>
-                </button>
-
-                {/* 4. Entrada no Estoque */}
-                <button
-                  type="button"
-                  onClick={() => setShowEntradaEstoqueModal(true)}
-                  className="bg-amber-50/70 hover:bg-amber-100/80 border border-amber-100 rounded-2xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 group active:scale-95"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <ArrowRight className="w-5 h-5 stroke-[2.5]" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">Entrada no Estoque</span>
-                </button>
-
-                {/* 5. Relatórios */}
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('relatorios')}
-                  className="bg-purple-50/70 hover:bg-purple-100/80 border border-purple-100 rounded-2xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 group active:scale-95"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">Relatórios</span>
-                </button>
-
-                {/* 6. Marketplace */}
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('marketplace')}
-                  className="bg-rose-50/70 hover:bg-rose-100/80 border border-rose-100 rounded-2xl p-4 text-center transition cursor-pointer flex flex-col items-center justify-center gap-2 group active:scale-95"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <Globe className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">Marketplace</span>
-                </button>
-
-              </div>
-            </div>
-
-            {/* Right Box: Visão Computacional IA (col-span-1) */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs flex flex-col gap-4">
-              
-              {/* Header Title */}
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-base text-slate-900">Visão Computacional</h3>
-                <span className="bg-indigo-100 text-indigo-700 text-xs font-extrabold px-2 py-0.5 rounded-md">
-                  IA
-                </span>
-              </div>
-
-              {/* Upload Drag & Drop Area */}
-              <input 
-                type="file" 
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                accept="image/*"
-                className="hidden"
-              />
-              <div 
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/30 hover:bg-indigo-50/60 rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2 group"
-              >
-                <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Upload className="w-5 h-5 stroke-[2.5]" />
-                </div>
-                <div className="text-xs">
-                  <span className="font-bold text-slate-800">Arraste uma imagem aqui </span>
-                  <span className="text-slate-500">ou clique para selecionar</span>
-                </div>
-                <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase">
-                  JPG, PNG, WEBP até 10MB
-                </span>
-              </div>
-
-              {/* Image Preview Box with Confidence Badge */}
-              <div className="relative rounded-xl overflow-hidden shadow-xs border border-slate-100 group">
-                <img 
-                  src={aiImagePreview} 
-                  alt="Previa Visão Computacional" 
-                  className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-2 left-2">
-                  <span className="bg-emerald-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg shadow-sm flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    {aiConfidence}% confiança
+              {!sidebarCollapsed && (
+                <div className="leading-tight truncate">
+                  <span className="font-extrabold text-sm tracking-tight text-white block truncate">
+                    DAIG <span className="text-blue-400 font-normal">SaaS</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                    ENTERPRISE ERP
                   </span>
                 </div>
-                {isAiAnalyzing && (
-                  <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center text-white font-bold text-xs gap-2">
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    Analisando peça...
+              )}
+            </div>
+
+            {/* Toggle Collapse */}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg transition border border-zinc-800"
+              title={sidebarCollapsed ? 'Expandir Sidebar' : 'Recolher Sidebar'}
+            >
+              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {/* Atalho Command Palette */}
+          <div className="p-3 border-b border-zinc-800/60">
+            <button
+              onClick={() => setShowCommandPalette(true)}
+              className={`w-full py-2.5 px-3 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-blue-500/40 rounded-xl text-xs text-zinc-400 hover:text-white flex items-center justify-between transition group ${
+                sidebarCollapsed ? 'justify-center' : ''
+              }`}
+            >
+              <div className="flex items-center space-x-2">
+                <Command className="w-4 h-4 text-blue-400 group-hover:scale-110 transition" />
+                {!sidebarCollapsed && <span>Buscar ou Comandar...</span>}
+              </div>
+              {!sidebarCollapsed && (
+                <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-zinc-950 text-zinc-500 rounded border border-zinc-800">
+                  ⌘K
+                </kbd>
+              )}
+            </button>
+          </div>
+
+          {/* ITENS DE NAVEGAÇÃO */}
+          <div className="p-3 space-y-6 overflow-y-auto max-h-[calc(100vh-220px)] scrollbar-none">
+            
+            {/* GRUPO 1: PRINCIPAL */}
+            <div>
+              {!sidebarCollapsed && (
+                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
+                  Gestão & Inteligência
+                </p>
+              )}
+              <nav className="space-y-1">
+                {[
+                  { id: 'overview', label: '📊 Visão Geral KPIs', icon: LayoutDashboard },
+                  { id: 'smart-workflow', label: '🔄 Pipeline End-to-End', icon: Zap, badge: 'NOVO' },
+                  { id: 'ai-hub', label: '🤖 IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
+                  { id: 'wms-hierarchy', label: '📍 WMS & Hierarquia', icon: MapPin },
+                  { id: 'workshop-kanban', label: '🔧 Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
+                  { id: 'inventory', label: '📦 Estoque (20 Peças)', icon: Package, badge: `${stats.totalSKUs}` },
+                ].map(item => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id as TabType)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                      </div>
+                      {!sidebarCollapsed && item.badge && (
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono ${
+                          isActive ? 'bg-white/20 text-white' : 'bg-zinc-800 text-blue-400 border border-zinc-700'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+
+            {/* GRUPO 2: OPERAÇÕES & VENDAS */}
+            <div>
+              {!sidebarCollapsed && (
+                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
+                  Vendas & Finanças
+                </p>
+              )}
+              <nav className="space-y-1">
+                {[
+                  { id: 'sales', label: '🛒 Vendas & PDV Balcão', icon: ShoppingCart },
+                  { id: 'purchases', label: '📑 Compras & NF-e XML', icon: FileText },
+                  { id: 'finance', label: '💰 Repasses Stripe', icon: DollarSign },
+                ].map(item => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id as TabType)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                      </div>
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+
+            {/* GRUPO 3: CONFIGURAÇÕES */}
+            <div>
+              {!sidebarCollapsed && (
+                <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
+                  Configurações
+                </p>
+              )}
+              <nav className="space-y-1">
+                {[
+                  { id: 'profile', label: '👤 Perfil & Banco Japão', icon: User },
+                  { id: 'api-b2b', label: '🔌 API & Rede B2B', icon: Key },
+                ].map(item => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id as TabType)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+                        isActive
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
+                          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                        {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
+                      </div>
+                    </button>
+                  )
+                })}
+              </nav>
+            </div>
+
+          </div>
+        </div>
+
+        {/* FOOTER DA SIDEBAR */}
+        <div className="p-3 border-t border-zinc-800/80 bg-[#0d0d0f]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2.5 overflow-hidden">
+              <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">
+                {tenantName.slice(0, 2).toUpperCase()}
+              </div>
+              {!sidebarCollapsed && (
+                <div className="leading-tight truncate">
+                  <p className="text-xs font-bold text-white truncate">{tenantName}</p>
+                  <p className="text-[10px] text-zinc-500 truncate">{profileForm.email}</p>
+                </div>
+              )}
+            </div>
+
+            {!sidebarCollapsed && (
+              <button
+                onClick={() => signOut()}
+                className="p-1.5 hover:bg-red-500/10 text-zinc-400 hover:text-red-400 rounded-lg transition"
+                title="Sair da Conta"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </aside>
+
+      {/* ─────────────────────────────────────────────────────────────
+          2. CONTEÚDO PRINCIPAL (MAIN CONTENT)
+         ───────────────────────────────────────────────────────────── */}
+      <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 sm:p-6 lg:p-8">
+        
+        {/* TOP BAR / BANNER SUPERIOR */}
+        <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-900/90 border border-zinc-800/80 rounded-2xl p-5 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl text-white shadow-xl shadow-blue-500/20">
+              <Building2 className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h1 className="text-xl font-bold tracking-tight text-white">{tenantName}</h1>
+                <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  {tenantId}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1 flex items-center space-x-2">
+                <span>Plataforma SaaS Multi-Tenant para Autopeças, Oficina & Desmanche</span>
+                <span>•</span>
+                <span className="text-emerald-400 font-medium flex items-center">
+                  <ShieldCheck className="w-3.5 h-3.5 mr-1" /> WMS Sincronizado ({stats.totalSKUs} peças)
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* Ações Rápidas do Topbar */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setActiveTab('smart-workflow')}
+              className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-emerald-600/20 transition"
+            >
+              <Zap className="w-4 h-4 text-emerald-200" />
+              <span>Ver Pipeline Inteligente</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('ai-hub')}
+              className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-blue-600/20 transition"
+            >
+              <Sparkles className="w-4 h-4 text-blue-200 animate-spin" />
+              <span>Scannear Peça com IA</span>
+            </button>
+
+            <Link
+              to="/catalog"
+              className="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold flex items-center space-x-2 transition border border-zinc-700"
+            >
+              <Globe className="w-4 h-4 text-emerald-400" />
+              <span>Marketplace DAIG</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA INTELIGENTE: PIPELINE END-TO-END (OS 16 PASSOS DO DESMONTE À VENDA)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'smart-workflow' && (
+          <div className="space-y-6">
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Zap className="w-6 h-6 text-emerald-400" />
+                    Pipeline Inteligente: Da Chegada do Veículo à Baixa por Venda
+                  </h2>
+                  <p className="text-xs text-zinc-400 mt-1">
+                    Fluxo automatizado em 16 etapas com IA, QR Code WMS, mapa de localização e baixa de estoque em tempo real.
+                  </p>
+                </div>
+
+                <button
+                  onClick={handleRunFullPipeline}
+                  disabled={isProcessingPipeline}
+                  className="px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-xl shadow-emerald-600/25 flex items-center space-x-2 shrink-0 transition"
+                >
+                  <Play className="w-4 h-4 fill-white" />
+                  <span>{isProcessingPipeline ? `Executando Etapa ${workflowStep}/16...` : 'Executar Simulação do Pipeline (20 Peças)'}</span>
+                </button>
+              </div>
+
+              {/* OS 16 PASSOS VISUAIS */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+                {[
+                  { step: 1, label: 'Veículo chega', icon: Car },
+                  { step: 2, label: 'Cadastro do veículo', icon: FileText },
+                  { step: 3, label: 'Desmontagem', icon: Wrench },
+                  { step: 4, label: 'IA identifica peça', icon: Sparkles },
+                  { step: 5, label: 'Funcionário confirma', icon: CheckSquare },
+                  { step: 6, label: 'Sistema gera etiqueta', icon: Printer },
+                  { step: 7, label: 'Etiqueta recebe QR', icon: QrCode },
+                  { step: 8, label: 'Sistema define local', icon: MapPin },
+                  { step: 9, label: 'Peça vai p/ estoque', icon: Box },
+                  { step: 10, label: 'Cliente procura', icon: Search },
+                  { step: 11, label: 'Busca IA', icon: Cpu },
+                  { step: 12, label: 'Sistema encontra', icon: CheckCircle2 },
+                  { step: 13, label: 'Mapa mostra onde', icon: MapPin },
+                  { step: 14, label: 'Funcionário retira', icon: Package },
+                  { step: 15, label: 'Venda', icon: ShoppingCart },
+                  { step: 16, label: 'Baixa automática', icon: MinusCircle },
+                ].map(s => {
+                  const Icon = s.icon
+                  const isCurrent = workflowStep === s.step
+                  const isPassed = workflowStep > s.step
+
+                  return (
+                    <div
+                      key={s.step}
+                      className={`p-3 rounded-xl border text-center space-y-1.5 transition ${
+                        isCurrent
+                          ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-lg'
+                          : isPassed
+                          ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+                          : 'bg-zinc-950 border-zinc-800/80 text-zinc-500'
+                      }`}
+                    >
+                      <div className="flex items-center justify-center">
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400">
+                          #{s.step}
+                        </span>
+                      </div>
+                      <Icon className="w-5 h-5 mx-auto opacity-90" />
+                      <p className="text-[10px] font-semibold leading-tight line-clamp-2">{s.label}</p>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* LISTA DAS 20 PEÇAS DE TESTE COM BAIXA AUTOMÁTICA */}
+              <div className="pt-4 border-t border-zinc-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Package className="w-4 h-4 text-emerald-400" />
+                    Estoque Ativo do Pipeline ({allParts.length} Peças Cadastradas)
+                  </h3>
+                  <span className="text-xs text-zinc-400 font-mono">Clique em "Vender & Dar Baixa" para simular a saída instantânea</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {allParts.map((part) => (
+                    <div key={part.id} className="bg-zinc-950 border border-zinc-800 hover:border-emerald-500/50 rounded-2xl p-4 space-y-3 shadow-lg transition group">
+                      <div className="flex items-center space-x-3">
+                        {part.images?.[0] ? (
+                          <img src={part.images[0]} alt={part.title} className="w-12 h-12 rounded-xl object-cover bg-zinc-800 border border-zinc-700 shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 shrink-0">
+                            <Package className="w-6 h-6" />
+                          </div>
+                        )}
+                        <div className="leading-tight truncate">
+                          <p className="font-bold text-xs text-white truncate">{part.title}</p>
+                          <p className="text-[10px] font-mono text-amber-300 truncate">{part.oem_code}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 bg-zinc-900 rounded-xl border border-zinc-800/80 text-[10px] font-mono space-y-0.5">
+                        <p className="text-zinc-400 truncate"><span className="text-zinc-600">Origem:</span> {part.vehicle_origin || 'Toyota Prius ZVW30'}</p>
+                        <p className="text-amber-200 truncate"><span className="text-zinc-600">WMS:</span> {part.wms_location || 'Galpão A ➔ Corredor 04'}</p>
+                        <p className="text-zinc-400 truncate"><span className="text-zinc-600">Placa:</span> {part.license_plate || '品川 300 な 45-89'}</p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-sm font-extrabold text-emerald-400 font-mono">
+                          ¥ {Number(part.price || 0).toLocaleString('ja-JP')}
+                        </span>
+                        
+                        <button
+                          onClick={() => handleSellAndDeductPart(part.id, part.title, Number(part.price || 0))}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-semibold transition shadow-md flex items-center space-x-1"
+                        >
+                          <MinusCircle className="w-3.5 h-3.5" />
+                          <span>Vender & Baixar</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 1: VISÃO GERAL / KPIS & DASHBOARD REAL-TIME
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            {/* KPI Cards Neon */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-blue-500/40 transition">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Estoque WMS Privado</span>
+                  <div className="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20"><Package className="w-5 h-5" /></div>
+                </div>
+                <div className="mt-3">
+                  <div className="text-3xl font-extrabold text-white">{stats.totalSKUs} <span className="text-xs font-normal text-zinc-500">peças catalogadas</span></div>
+                  <p className="text-xs text-blue-400 font-mono mt-1">Valor Total: ¥ {stats.totalPrivateValue.toLocaleString('ja-JP')} JPY</p>
+                </div>
+              </div>
+
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-purple-500/40 transition">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Oficina (Ordens de Serviço)</span>
+                  <div className="p-2.5 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20"><Wrench className="w-5 h-5" /></div>
+                </div>
+                <div className="mt-3">
+                  <div className="text-3xl font-extrabold text-white">{workOrders.length} <span className="text-xs font-normal text-zinc-500">O.S. em andamento</span></div>
+                  <p className="text-xs text-purple-400 font-mono mt-1">4 mecânicos ativos hoje</p>
+                </div>
+              </div>
+
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-emerald-500/40 transition">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Faturamento do Mês</span>
+                  <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20"><DollarSign className="w-5 h-5" /></div>
+                </div>
+                <div className="mt-3">
+                  <div className="text-3xl font-extrabold text-emerald-400">¥ 1.420.000 <span className="text-xs font-normal text-zinc-500">JPY</span></div>
+                  <p className="text-xs text-zinc-400 mt-1">Balcão PDV (65%) • Marketplace (35%)</p>
+                </div>
+              </div>
+
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Divulgação 1-Clique</span>
+                  <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20"><Globe className="w-5 h-5" /></div>
+                </div>
+                <div className="mt-3">
+                  <div className="text-3xl font-extrabold text-white">{stats.publishedCount} <span className="text-xs font-normal text-zinc-500">online</span></div>
+                  <p className="text-xs text-amber-400 mt-1">{stats.privateCount} mantidas privadas no ERP</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Painel WMS Galpão & Atalhos Rápidos */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* Mapa de Galpão / Hierarquia */}
+              <div className="lg:col-span-2 bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-blue-400" />
+                      Visão Física do Galpão & Armazém (WMS)
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      Estrutura física registrada: Galpão ➔ Corredor ➔ Estante ➔ Prateleira ➔ Caixa ➔ Posição.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('wms-hierarchy')}
+                    className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center space-x-1"
+                  >
+                    <span>Navegar WMS</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+                  {[
+                    { zone: 'Galpão A', label: 'Motores & Transmissão', count: '142 peças', color: 'from-blue-600/20 to-indigo-600/20 border-blue-500/30' },
+                    { zone: 'Galpão B', label: 'Lataria & Iluminação', count: '98 peças', color: 'from-purple-600/20 to-pink-600/20 border-purple-500/30' },
+                    { zone: 'Galpão C', label: 'Injeção & Sensores', count: '64 peças', color: 'from-emerald-600/20 to-teal-600/20 border-emerald-500/30' },
+                    { zone: 'Corredor 04', label: 'Caixas de Câmbio JDM', count: '28 caixas', color: 'from-amber-600/20 to-orange-600/20 border-amber-500/30' },
+                    { zone: 'Estante B-3', label: 'ECUs & Chicotes', count: '45 caixas', color: 'from-cyan-600/20 to-blue-600/20 border-cyan-500/30' },
+                    { zone: 'Área de Doca', label: 'Carros em Desmonte', count: '3 veículos', color: 'from-red-600/20 to-rose-600/20 border-red-500/30' },
+                  ].map((z, idx) => (
+                    <div key={idx} className={`p-4 rounded-xl bg-gradient-to-br ${z.color} border text-left space-y-1`}>
+                      <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase">{z.zone}</span>
+                      <p className="font-bold text-xs text-white leading-tight">{z.label}</p>
+                      <p className="text-[11px] font-mono text-zinc-300">{z.count}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Status do Mecânico & Oficina */}
+              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-4">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Wrench className="w-5 h-5 text-purple-400" />
+                  Mecânicos da Oficina Hoje
+                </h3>
+
+                <div className="space-y-3">
+                  {[
+                    { name: 'Kenji Sato', role: 'Especialista Motores JDM', status: 'O.S. #801 em andamento', avatar: 'KS' },
+                    { name: 'Hiroshi Tanaka', role: 'Técnico de Transmissão', status: 'O.S. #802 em andamento', avatar: 'HT' },
+                    { name: 'Takeshi Lin', role: 'Suspensão & Freios 3D', status: 'Testes de Qualidade', avatar: 'TL' },
+                  ].map((m, i) => (
+                    <div key={i} className="p-3 bg-zinc-950 rounded-xl border border-zinc-800/80 flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-300 font-bold text-xs flex items-center justify-center shrink-0">
+                        {m.avatar}
+                      </div>
+                      <div className="leading-tight truncate">
+                        <p className="text-xs font-bold text-white truncate">{m.name}</p>
+                        <p className="text-[11px] text-zinc-400 truncate">{m.role}</p>
+                        <span className="text-[10px] text-emerald-400 font-mono block mt-0.5">{m.status}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 2: CENTRAL DE INTELIGÊNCIA ARTIFICIAL (RECONHECIMENTO, OCR & VOZ)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'ai-hub' && (
+          <div className="space-y-6 max-w-5xl mx-auto">
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+              <div className="border-b border-zinc-800 pb-4 mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <Sparkles className="w-6 h-6 text-blue-400" />
+                      Hub de Inteligência Artificial & Visão Computacional
+                    </h2>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Fotografe a peça para identificação visual: a IA autopreenche todo o formulário de cadastro em até 30 segundos!
+                    </p>
+                  </div>
+
+                  <div className="px-3.5 py-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 rounded-xl flex items-center space-x-2 text-xs text-emerald-300 font-bold shrink-0">
+                    <Zap className="w-4 h-4 text-emerald-400" />
+                    <span>Cadastro por IA em 30s</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* SEÇÃO 1: RECONHECIMENTO POR FOTO E OCR */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                {/* Upload / Scanner por Foto */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Camera className="w-4 h-4 text-blue-400" />
+                      1. Reconhecimento por Foto de Peça
+                    </span>
+                    <span className="text-[10px] font-mono bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20">
+                      OpenAI Vision
+                    </span>
+                  </div>
+
+                  <div className="border-2 border-dashed border-zinc-800 hover:border-blue-500/60 rounded-xl p-6 text-center transition cursor-pointer bg-zinc-900/40">
+                    <Camera className="w-10 h-10 text-blue-400 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-white">Arraste a foto da peça ou acione a câmera</p>
+                    <p className="text-[11px] text-zinc-500 mt-1">Identificação automática de OEM, lado, compatibilidade e preço sugerido</p>
+                  </div>
+
+                  <button
+                    onClick={handleSimulateAiImageScan}
+                    disabled={isAiScanning}
+                    className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-blue-600/20"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>{isAiScanning ? 'Analisando Imagem com IA...' : 'Simular Reconhecimento por Foto'}</span>
+                  </button>
+                </div>
+
+                {/* OCR Gravura Metálica */}
+                <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Cpu className="w-4 h-4 text-purple-400" />
+                      2. OCR (Leitura de Gravura & Etiquetas)
+                    </span>
+                    <span className="text-[10px] font-mono bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded border border-purple-500/20">
+                      OCR Metal Scanner
+                    </span>
+                  </div>
+
+                  <div className="border-2 border-dashed border-zinc-800 hover:border-purple-500/60 rounded-xl p-6 text-center transition cursor-pointer bg-zinc-900/40">
+                    <QrCode className="w-10 h-10 text-purple-400 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-white">Fotografe códigos gravados no metal ou etiquetas</p>
+                    <p className="text-[11px] text-zinc-500 mt-1">Lê números de série em blocos de motor, turbos e chassis</p>
+                  </div>
+
+                  <button
+                    onClick={handleSimulateOcr}
+                    disabled={isOcrScanning}
+                    className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition shadow-lg shadow-purple-600/20"
+                  >
+                    <Cpu className="w-4 h-4" />
+                    <span>{isOcrScanning ? 'Executando OCR no Metal...' : 'Simular Leitura OCR em Bloco'}</span>
+                  </button>
+                </div>
+
+              </div>
+
+              {/* RESULTADO DA IA DE FOTO */}
+              {aiAnalysisResult && (
+                <div className="mb-6 p-5 bg-gradient-to-br from-blue-950/60 to-indigo-950/60 border border-blue-800/80 rounded-2xl space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <h3 className="font-bold text-white text-sm">Peça Identificada com Sucesso pela IA!</h3>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded font-mono text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      Precisão: 99.4%
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs pt-2">
+                    <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
+                      <span className="text-zinc-400 block text-[10px]">Nome da Peça</span>
+                      <span className="font-bold text-white">{aiAnalysisResult.name}</span>
+                    </div>
+                    <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
+                      <span className="text-zinc-400 block text-[10px]">Código OEM</span>
+                      <span className="font-mono font-bold text-amber-300">{aiAnalysisResult.oem}</span>
+                    </div>
+                    <div className="bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
+                      <span className="text-zinc-400 block text-[10px]">Preço Sugerido (JPY)</span>
+                      <span className="font-bold text-emerald-400">¥ {aiAnalysisResult.suggestedPrice.toLocaleString('ja-JP')}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 text-xs space-y-1">
+                    <p className="text-zinc-300 font-semibold flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-blue-400" /> Localização WMS Recomendada:
+                    </p>
+                    <p className="font-mono text-amber-200 text-[11px]">{aiAnalysisResult.wmsLocation}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* RESULTADO DO OCR */}
+              {ocrResult && (
+                <div className="mb-6 p-4 bg-purple-950/60 border border-purple-800/80 rounded-2xl text-purple-200 text-xs font-mono flex items-center space-x-3 animate-in fade-in">
+                  <CheckCircle2 className="w-5 h-5 text-purple-400 flex-shrink-0" />
+                  <span>{ocrResult}</span>
+                </div>
+              )}
+
+              {/* SEÇÃO 2: BUSCA POR VOZ E LINGUAGEM NATURAL */}
+              <div className="pt-4 border-t border-zinc-800">
+                <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
+                  <Mic className="w-5 h-5 text-cyan-400" />
+                  Busca Inteligente por Voz & Linguagem Natural
+                </h3>
+                <p className="text-xs text-zinc-400 mb-4">
+                  Digite ou fale frases como: "Preciso do farol direito de um Gol 2018" ou "Onde está a caixa de câmbio do Civic 2017?".
+                </p>
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <input
+                      type="text"
+                      placeholder='Ex: "Farol direito do Gol 2018", "Alternador Bosch Corolla"...'
+                      value={voiceQuery}
+                      onChange={(e) => setVoiceQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && voiceQuery) handleVoiceSearchSubmit(voiceQuery)
+                      }}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:border-cyan-500 transition"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (!isListeningVoice) {
+                        setIsListeningVoice(true)
+                        setVoiceQuery('Preciso do farol direito do Prius ZVW30...')
+                        setTimeout(() => {
+                          setIsListeningVoice(false)
+                          handleVoiceSearchSubmit('Preciso do farol direito do Prius ZVW30')
+                        }, 1800)
+                      }
+                    }}
+                    className={`px-4 py-3 rounded-xl text-xs font-semibold flex items-center space-x-2 transition ${
+                      isListeningVoice 
+                        ? 'bg-red-600 text-white animate-pulse' 
+                        : 'bg-zinc-800 hover:bg-zinc-700 text-cyan-300 border border-zinc-700'
+                    }`}
+                  >
+                    {isListeningVoice ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                    <span>{isListeningVoice ? 'Ouvindo...' : 'Falar por Voz'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => voiceQuery && handleVoiceSearchSubmit(voiceQuery)}
+                    className="px-5 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-cyan-600/20"
+                  >
+                    Consultar IA
+                  </button>
+                </div>
+
+                {/* RESULTADO DA BUSCA POR VOZ */}
+                {voiceSearchResult && (
+                  <div className="mt-4 p-4 bg-cyan-950/60 border border-cyan-800/80 rounded-2xl text-xs space-y-2 animate-in fade-in">
+                    <p className="text-cyan-300 font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4" /> IA localizou no estoque:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                      <div className="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+                        <span className="text-zinc-500 block text-[10px]">Item Encontrado</span>
+                        <span className="font-bold text-white">{voiceSearchResult.title}</span>
+                      </div>
+                      <div className="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+                        <span className="text-zinc-500 block text-[10px]">Endereço WMS</span>
+                        <span className="font-mono font-bold text-amber-300">{voiceSearchResult.location}</span>
+                      </div>
+                      <div className="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+                        <span className="text-zinc-500 block text-[10px]">Preço & Qtd</span>
+                        <span className="font-bold text-emerald-400">¥ {voiceSearchResult.price.toLocaleString('ja-JP')} ({voiceSearchResult.stockQty} unidades)</span>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
 
             </div>
-
           </div>
+        )}
 
-          {/* ════ BOTTOM SECTION: PEÇAS EM ESTOQUE TABLE ════ */}
-          <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-xs space-y-4">
-            
-            {/* Header Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h3 className="text-lg font-bold text-slate-900">Peças em Estoque</h3>
-              
-              <div className="flex flex-wrap items-center gap-3">
-                
-                {/* Select Category */}
-                <select 
-                  value={tableCategory}
-                  onChange={(e) => setTableCategory(e.target.value)}
-                  className="bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                >
-                  <option value="all">Todas categorias</option>
-                  <option value="Acessórios & Tuning">Acessórios & Tuning</option>
-                  <option value="Lataria & Iluminação">Lataria & Iluminação</option>
-                  <option value="Injeção & Sensores">Injeção & Sensores</option>
-                  <option value="Motor & Periféricos">Motor & Periféricos</option>
-                  <option value="Freios & Suspensão">Freios & Suspensão</option>
-                </select>
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 3: LOCALIZAÇÃO FISICA WMS & HIERARQUIA COMPLETA
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'wms-hierarchy' && (
+          <div className="space-y-6">
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+              <div className="border-b border-zinc-800 pb-4 mb-6">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <MapPin className="w-6 h-6 text-amber-400" />
+                  Hierarquia Física do Estoque WMS
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Navegue pela estrutura física de armazenagem do galpão em 6 níveis hierárquicos: Galpão ➔ Corredor ➔ Estante ➔ Prateleira ➔ Caixa ➔ Posição.
+                </p>
+              </div>
 
-                {/* Table Search Input */}
-                <div className="relative">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-                  <input 
-                    id="inventory-search-input"
-                    type="text" 
-                    value={tableSearch}
-                    onChange={(e) => setTableSearch(e.target.value)}
-                    placeholder="Buscar..."
-                    className="pl-9 bg-slate-50 focus:bg-white border border-slate-200 focus:border-indigo-500 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 w-44 sm:w-56"
-                  />
+              {/* Seletor da Hierarquia */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+                {[
+                  { label: '1. Galpão', key: 'warehouse', value: wmsFilter.warehouse, options: ['Galpão A (Principal)', 'Galpão B (Lataria)', 'Galpão C (Miudezas)'] },
+                  { label: '2. Corredor', key: 'aisle', value: wmsFilter.aisle, options: ['Corredor 01', 'Corredor 02', 'Corredor 03', 'Corredor 04 (Motor & Transmissão)'] },
+                  { label: '3. Estante', key: 'rack', value: wmsFilter.rack, options: ['Estante A', 'Estante B', 'Estante C', 'Estante D'] },
+                  { label: '4. Prateleira', key: 'shelf', value: wmsFilter.shelf, options: ['Prateleira 1 (Térreo)', 'Prateleira 2', 'Prateleira 3', 'Prateleira 4 (Topo)'] },
+                  { label: '5. Caixa', key: 'box', value: wmsFilter.box, options: ['Caixa 01', 'Caixa 12', 'Caixa 24', 'Sem Caixa'] },
+                  { label: '6. Posição', key: 'position', value: wmsFilter.position, options: ['Posição 01', 'Posição 08', 'Posição 16'] },
+                ].map(h => (
+                  <div key={h.key} className="bg-zinc-950 p-3 rounded-xl border border-zinc-800 space-y-1">
+                    <label className="block text-[10px] font-mono font-bold text-amber-400 uppercase">{h.label}</label>
+                    <select
+                      value={h.value}
+                      onChange={(e) => setWmsFilter({ ...wmsFilter, [h.key]: e.target.value })}
+                      className="w-full bg-zinc-900 border border-zinc-700 text-xs text-white rounded-lg p-1.5 focus:border-amber-400"
+                    >
+                      {h.options.map(opt => <option key={opt}>{opt}</option>)}
+                    </select>
+                  </div>
+                ))}
+              </div>
+
+              {/* Caminho Ativo & Etiqueta Inteligente */}
+              <div className="p-4 bg-zinc-950 border border-amber-500/30 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono text-zinc-400 uppercase">Posição Física Selecionada:</span>
+                  <p className="text-sm font-mono font-bold text-amber-300">
+                    {wmsFilter.warehouse} ➔ {wmsFilter.aisle} ➔ {wmsFilter.rack} ➔ {wmsFilter.shelf} ➔ {wmsFilter.box} ➔ {wmsFilter.position}
+                  </p>
                 </div>
 
-                {/* Filtros Button */}
-                <button 
-                  type="button"
-                  className="bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-700 flex items-center gap-2 transition cursor-pointer"
+                <button
+                  onClick={() => setPrintingStickerPart({
+                    id: `wms_pos_${Date.now()}`,
+                    title: `Item em ${wmsFilter.position}`,
+                    oem_code: 'OEM-JDM-9918',
+                    price: 45000
+                  })}
+                  className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center space-x-2 shrink-0"
                 >
-                  <SlidersHorizontal className="w-4 h-4 text-slate-500" />
-                  <span>Filtros</span>
+                  <Printer className="w-4 h-4" />
+                  <span>Imprimir Etiqueta WMS QR</span>
                 </button>
+              </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 4: OFICINA MECÂNICA (QUADRO KANBAN DE O.S.)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'workshop-kanban' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Wrench className="w-6 h-6 text-purple-400" />
+                  Oficina Mecânica — Quadro Kanban de Ordens de Serviço
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Acompanhamento visual em tempo real de reparos, manutenções, peças utilizadas e orçamentos.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowWorkOrderModal(true)}
+                className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-purple-600/20 flex items-center space-x-2 shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Nova Ordem de Serviço (O.S.)</span>
+              </button>
+            </div>
+
+            {/* QUADRO KANBAN (4 COLUNAS) */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[
+                { key: 'aguardando', title: '⏳ Aguardando Vistoria', color: 'border-amber-500/40 text-amber-400 bg-amber-500/10' },
+                { key: 'em_manutencao', title: '🔧 Em Manutenção', color: 'border-blue-500/40 text-blue-400 bg-blue-500/10' },
+                { key: 'testes', title: '🧪 Testes & Qualidade', color: 'border-purple-500/40 text-purple-400 bg-purple-500/10' },
+                { key: 'pronto', title: '✅ Pronto para Entrega', color: 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10' },
+              ].map(col => {
+                const colOrders = workOrders.filter(w => w.status === col.key)
+                return (
+                  <div key={col.key} className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-4 space-y-3 min-h-[420px]">
+                    <div className={`p-2.5 rounded-xl border ${col.color} flex items-center justify-between`}>
+                      <span className="text-xs font-bold">{col.title}</span>
+                      <span className="text-[11px] font-mono font-extrabold">{colOrders.length}</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {colOrders.map(wo => (
+                        <div key={wo.id} className="bg-zinc-950 border border-zinc-800 hover:border-zinc-700 rounded-xl p-4 space-y-2.5 shadow-lg group transition">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                              {wo.id}
+                            </span>
+                            <span className="text-[10px] text-zinc-500 font-mono">{wo.date}</span>
+                          </div>
+
+                          <h4 className="font-bold text-xs text-white leading-snug">{wo.title}</h4>
+                          
+                          <div className="text-[11px] text-zinc-400 space-y-0.5 font-mono">
+                            <p><span className="text-zinc-500">Cliente:</span> {wo.client}</p>
+                            <p><span className="text-zinc-500">Veículo:</span> {wo.vehicle}</p>
+                            <p><span className="text-zinc-500">Mecânico:</span> <span className="text-purple-300 font-bold">{wo.mechanic}</span></p>
+                          </div>
+
+                          <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between">
+                            <span className="text-xs font-extrabold text-emerald-400 font-mono">¥ {wo.amount.toLocaleString('ja-JP')} JPY</span>
+                            
+                            {/* Troca Rápida de Status */}
+                            <select
+                              value={wo.status}
+                              onChange={(e) => handleMoveKanban(wo.id, e.target.value as WorkOrder['status'])}
+                              className="bg-zinc-900 border border-zinc-700 text-[10px] text-zinc-300 rounded px-1.5 py-1 focus:outline-none"
+                            >
+                              <option value="aguardando">Aguardando</option>
+                              <option value="em_manutencao">Manutenção</option>
+                              <option value="testes">Testes</option>
+                              <option value="pronto">Pronto</option>
+                            </select>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 5: ESTOQUE PRIVADO & MARKETPLACE (COM FOTOS HD & 20 PEÇAS)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'inventory' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="relative flex-1 max-w-md">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar por nome, OEM ou categoria..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 text-xs text-zinc-100 placeholder-zinc-500 pl-10 pr-4 py-2.5 rounded-xl focus:border-blue-500 transition"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setFilterCategory('all')}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                    filterCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  Todas ({stats.totalSKUs})
+                </button>
+                <button
+                  onClick={() => setFilterCategory('published')}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                    filterCategory === 'published' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  Marketplace DAIG ({stats.publishedCount})
+                </button>
+                <button
+                  onClick={() => setFilterCategory('private')}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                    filterCategory === 'private' ? 'bg-zinc-700 text-white' : 'bg-zinc-800 text-zinc-400'
+                  }`}
+                >
+                  Estoque Privado ({stats.privateCount})
+                </button>
               </div>
             </div>
 
-            {/* Inventory Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left text-sm border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-100 text-[11px] font-extrabold uppercase text-slate-400 tracking-wider">
-                    <th className="py-3 px-4">PEÇA</th>
-                    <th className="py-3 px-4">CÓDIGO</th>
-                    <th className="py-3 px-4">CATEGORIA</th>
-                    <th className="py-3 px-4">COMPATIBILIDADE</th>
-                    <th className="py-3 px-4">ESTOQUE</th>
-                    <th className="py-3 px-4">PREÇO</th>
-                    <th className="py-3 px-4">STATUS</th>
-                    <th className="py-3 px-4 text-right">ETIQUETA WMS</th>
+                  <tr className="border-b border-zinc-800 text-zinc-400 font-medium text-xs">
+                    <th className="py-3 px-3 w-10">
+                      <input
+                        type="checkbox"
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        checked={selectedPartIds.length === allParts.length && allParts.length > 0}
+                        className="rounded bg-zinc-950 border-zinc-700 text-blue-600"
+                      />
+                    </th>
+                    <th className="py-3 px-4">Peça / Produto</th>
+                    <th className="py-3 px-4">OEM / Código</th>
+                    <th className="py-3 px-4">Posição WMS</th>
+                    <th className="py-3 px-4">Preço Estoque</th>
+                    <th className="py-3 px-4 text-center">Etiqueta QR</th>
+                    <th className="py-3 px-4 text-center">Ação & Baixa</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
-                  {displayParts.map((part) => (
-                    <tr key={part.id} className="hover:bg-slate-50/80 transition">
-                      
-                      {/* PEÇA */}
-                      <td className="py-3.5 px-4 font-semibold text-slate-900 max-w-xs truncate">
-                        {part.title}
-                      </td>
+                <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
+                  {allParts.map((part) => {
+                    const isPublished = part.status === 'active'
+                    const isSelected = selectedPartIds.includes(part.id)
 
-                      {/* CÓDIGO */}
-                      <td className="py-3.5 px-4 font-mono text-slate-500 text-[11px]">
-                        {part.oem_code || 'OEM-778-912'}
-                      </td>
+                    return (
+                      <tr key={part.id} className={`hover:bg-zinc-900/60 transition ${isSelected ? 'bg-blue-950/20' : ''}`}>
+                        <td className="py-3.5 px-3">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleSelectOne(part.id)}
+                            className="rounded bg-zinc-950 border-zinc-700 text-blue-600"
+                          />
+                        </td>
+                        <td className="py-3.5 px-4 font-medium text-white">
+                          <div className="flex items-center space-x-3">
+                            {part.images?.[0] ? (
+                              <img src={part.images[0]} alt={part.title} className="w-10 h-10 rounded-lg object-cover bg-zinc-800 border border-zinc-700 shrink-0" />
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 shrink-0">
+                                <Package className="w-5 h-5" />
+                              </div>
+                            )}
+                            <div>
+                              <p className="line-clamp-1 font-semibold text-white">{part.title}</p>
+                              <p className="text-xs text-zinc-400">{part.category || 'Peça Automotiva'}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-xs text-zinc-300">{part.oem_code || 'OEM-PENDENTE'}</td>
+                        <td className="py-3.5 px-4">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono bg-zinc-900 text-amber-300 border border-zinc-800">
+                            <QrCode className="w-3 h-3 mr-1 text-amber-400" /> {part.wms_location?.split('➔')[0] || 'Galpão A'}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 font-semibold text-white">¥ {Number(part.price || 0).toLocaleString('ja-JP')} JPY</td>
+                        <td className="py-3.5 px-4 text-center">
+                          <button
+                            onClick={() => setPrintingStickerPart(part)}
+                            className="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-xs font-semibold flex items-center justify-center space-x-1 transition mx-auto"
+                          >
+                            <Printer className="w-3.5 h-3.5" />
+                            <span>Imprimir</span>
+                          </button>
+                        </td>
+                        <td className="py-3.5 px-4 text-center">
+                          <button
+                            onClick={() => handleSellAndDeductPart(part.id, part.title, Number(part.price || 0))}
+                            className="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded text-[11px] font-semibold transition"
+                          >
+                            Dar Baixa
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-                      {/* CATEGORIA */}
-                      <td className="py-3.5 px-4 text-slate-600">
-                        {part.category || 'Peças Gerais'}
-                      </td>
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 6: VENDAS & PDV BALCÃO
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'sales' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <ShoppingCart className="w-6 h-6 text-emerald-400" />
+                  Vendas & PDV Balcão
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Registre vendas presenciais no balcão da loja com abate instantâneo de estoque e recibo.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowPdvModal(true)}
+                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center space-x-2 shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Nova Venda no Balcão (PDV)</span>
+              </button>
+            </div>
 
-                      {/* COMPATIBILIDADE */}
-                      <td className="py-3.5 px-4 text-slate-500 max-w-xs truncate">
-                        {(part as any).compatibility || 'Universal'}
-                      </td>
-
-                      {/* ESTOQUE */}
-                      <td className="py-3.5 px-4 font-bold text-slate-900">
-                        {(part as any).stock || 1} un
-                      </td>
-
-                      {/* PREÇO */}
-                      <td className="py-3.5 px-4 font-extrabold text-slate-900">
-                        R$ {(part.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </td>
-
-                      {/* STATUS */}
-                      <td className="py-3.5 px-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                          part.status === 'Baixo Estoque' 
-                            ? 'bg-amber-100 text-amber-800' 
-                            : 'bg-emerald-100 text-emerald-800'
-                        }`}>
-                          {part.status || 'Em Estoque'}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800 text-zinc-400 text-xs">
+                    <th className="py-2.5 px-3">Pedido / Venda</th>
+                    <th className="py-2.5 px-3">Cliente / Destino</th>
+                    <th className="py-2.5 px-3">Itens</th>
+                    <th className="py-2.5 px-3">Canal de Venda</th>
+                    <th className="py-2.5 px-3">Total (JPY)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
+                  {salesList.map(sale => (
+                    <tr key={sale.id} className="hover:bg-zinc-900/60">
+                      <td className="py-3 px-3 font-mono text-xs text-white">{sale.id}</td>
+                      <td className="py-3 px-3 font-semibold text-white">{sale.customer}</td>
+                      <td className="py-3 px-3 text-xs text-zinc-300">{sale.items}</td>
+                      <td className="py-3 px-3">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                          {sale.channel}
                         </span>
                       </td>
-
-                      {/* ETIQUETA WMS PRINT BUTTON */}
-                      <td className="py-3.5 px-4 text-right">
-                        <button
-                          type="button"
-                          onClick={() => setPrintingStickerPart(part)}
-                          className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition inline-flex items-center gap-1.5 font-semibold text-xs cursor-pointer"
-                          title="Imprimir Etiqueta WMS QR"
-                        >
-                          <Printer className="w-4 h-4" />
-                          <span className="hidden sm:inline">Etiqueta</span>
-                        </button>
-                      </td>
-
+                      <td className="py-3 px-3 font-extrabold text-emerald-400">¥ {sale.total.toLocaleString('ja-JP')} JPY</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-
           </div>
+        )}
 
-        </main>
-      </div>
-
-      {/* ════════════════ MODAL: NOVA PEÇA ════════════════ */}
-      {showNovaPecaModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
-                <Package className="w-5 h-5 text-indigo-600" />
-                Cadastrar Nova Peça
-              </h3>
-              <button 
-                onClick={() => setShowNovaPecaModal(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 7: COMPRAS & ENTRADA NF-E
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'purchases' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-blue-400" />
+                  Compras & Entrada por Nota Fiscal (NF-e / XML)
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Gerencie compras de leilões e seguradoras no Japão com lançamento automático no estoque.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowNfeModal(true)}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition shadow-lg shadow-blue-600/20 flex items-center space-x-2 shrink-0"
               >
+                <Upload className="w-4 h-4" />
+                <span>Importar XML de NF-e</span>
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800 text-zinc-400 text-xs">
+                    <th className="py-2.5 px-3">Nota Fiscal / Chave</th>
+                    <th className="py-2.5 px-3">Fornecedor / Leilão</th>
+                    <th className="py-2.5 px-3">Data de Entrada</th>
+                    <th className="py-2.5 px-3">Valor Total (JPY)</th>
+                    <th className="py-2.5 px-3">Status NF-e</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/60 text-zinc-200">
+                  {purchaseInvoices.map(inv => (
+                    <tr key={inv.id} className="hover:bg-zinc-900/60">
+                      <td className="py-3 px-3 font-mono text-xs text-white">{inv.id}</td>
+                      <td className="py-3 px-3 font-semibold text-white">{inv.supplier}</td>
+                      <td className="py-3 px-3 text-xs text-zinc-400">{inv.date}</td>
+                      <td className="py-3 px-3 font-bold text-white">¥ {inv.value.toLocaleString('ja-JP')} JPY</td>
+                      <td className="py-3 px-3">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          {inv.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 8: FINANCEIRO & REPASSES STRIPE
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'finance' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <DollarSign className="w-6 h-6 text-emerald-400" />
+              Módulo Financeiro & Repasses Stripe Connect
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
+                <span className="text-xs text-zinc-400">Faturamento Bruto Mês</span>
+                <p className="text-2xl font-bold text-white mt-1">¥ 1.420.000 JPY</p>
+              </div>
+              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
+                <span className="text-xs text-zinc-400">Saldo em Custódia (Escrow)</span>
+                <p className="text-2xl font-bold text-sky-400 mt-1">¥ 185.000 JPY</p>
+              </div>
+              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
+                <span className="text-xs text-zinc-400">Repassado via Stripe Connect</span>
+                <p className="text-2xl font-bold text-emerald-400 mt-1">¥ 755.000 JPY</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 9: PERFIL DO LOJISTA & BANCO DO JAPÃO (DADOS PRESERVADOS)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'profile' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto space-y-6">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <User className="w-6 h-6 text-blue-400" />
+                  Perfil do Lojista & Conta Bancária Japão (Furikomi)
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Gerencie informações da empresa, endereço de expedição no Japão e dados de repasse.
+                </p>
+              </div>
+
+              {!editingProfile ? (
+                <button
+                  onClick={() => setEditingProfile(true)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition"
+                >
+                  Editar Informações
+                </button>
+              ) : (
+                <button
+                  onClick={() => setEditingProfile(false)}
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl text-xs font-semibold transition"
+                >
+                  Cancelar Edição
+                </button>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveProfile} className="space-y-6">
+              {/* DADOS DA CONTA */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-white border-b border-zinc-800 pb-2">Informações da Conta</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Nome Completo / Empresa *</label>
+                    <input
+                      type="text"
+                      disabled={!editingProfile}
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white disabled:opacity-60"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">E-mail Cadastrado</label>
+                    <input
+                      type="email"
+                      disabled
+                      value={profileForm.email}
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-400 cursor-not-allowed"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Telefone de Contato</label>
+                    <input
+                      type="text"
+                      disabled={!editingProfile}
+                      value={profileForm.phone}
+                      onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white disabled:opacity-60"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Código Postal Japão (CEP)</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        disabled={!editingProfile}
+                        value={profileForm.zip_code}
+                        onChange={(e) => setProfileForm({ ...profileForm, zip_code: e.target.value })}
+                        onBlur={handlePostalBlur}
+                        placeholder="Ex: 231-0005"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm font-mono text-white disabled:opacity-60"
+                      />
+                      {postalLoading && <Loader2 className="w-4 h-4 animate-spin absolute right-3 top-3 text-blue-400" />}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-400 mb-1">Endereço de Expedição no Japão</label>
+                  <input
+                    type="text"
+                    disabled={!editingProfile}
+                    value={profileForm.address}
+                    onChange={(e) => setProfileForm({ ...profileForm, address: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-white disabled:opacity-60"
+                  />
+                </div>
+              </div>
+
+              {/* CONTA BANCÁRIA JAPÃO */}
+              <div className="p-5 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-3">
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  Conta Bancária para Repasses (Furikomi 振込)
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-zinc-500 block">Banco</span>
+                    <span className="font-bold text-white">{profileForm.japan_bank_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block">Agência</span>
+                    <span className="font-bold text-white">{profileForm.japan_branch_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block">Número da Conta</span>
+                    <span className="font-mono font-bold text-emerald-400">{profileForm.japan_account_number}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500 block">Titular (Katakana)</span>
+                    <span className="font-mono font-bold text-white">{profileForm.japan_account_holder}</span>
+                  </div>
+                </div>
+              </div>
+
+              {editingProfile && (
+                <button
+                  type="submit"
+                  disabled={savingProfile}
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-emerald-600/20"
+                >
+                  {savingProfile ? 'Salvando Alterações...' : 'Salvar Alterações do Perfil'}
+                </button>
+              )}
+            </form>
+          </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 10: API REST & REDE B2B
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'api-b2b' && (
+          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl max-w-3xl mx-auto space-y-6">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Key className="w-6 h-6 text-amber-400" />
+              API REST & Integração ERP Sincronizada
+            </h2>
+            
+            <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
+              <label className="block text-xs text-zinc-400 mb-2">Sua Chave Secreta da API</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={apiKey}
+                  readOnly
+                  className="w-full bg-zinc-900 border border-zinc-700 text-xs font-mono text-amber-300 p-2.5 rounded-lg"
+                />
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(apiKey)
+                    setCopiedKey(true)
+                    setTimeout(() => setCopiedKey(false), 2000)
+                  }}
+                  className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded-lg transition"
+                >
+                  {copiedKey ? 'Copiado!' : 'Copiar Key'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* ─────────────────────────────────────────────────────────────
+          COMMAND PALETTE (Cmd + K) MODAL
+         ───────────────────────────────────────────────────────────── */}
+      {showCommandPalette && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-20 p-4">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-4 border-b border-zinc-800 flex items-center space-x-3">
+              <Command className="w-5 h-5 text-blue-400" />
+              <input
+                type="text"
+                autoFocus
+                placeholder="Digite um comando ou busque uma peça/O.S..."
+                value={cmdSearch}
+                onChange={(e) => setCmdSearch(e.target.value)}
+                className="w-full bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none"
+              />
+              <button onClick={() => setShowCommandPalette(false)} className="text-zinc-500 hover:text-white text-xs">
+                ESC
+              </button>
+            </div>
+
+            <div className="p-3 max-h-80 overflow-y-auto space-y-1 text-xs">
+              <p className="text-[10px] font-mono text-zinc-500 uppercase px-3 py-1">Atalhos Rápidos</p>
+              
+              <button
+                onClick={() => { setActiveTab('smart-workflow'); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-emerald-400" /> Executar Pipeline End-to-End</span>
+                <span className="text-[10px] font-mono text-zinc-500">16 Etapas</span>
+              </button>
+
+              <button
+                onClick={() => { setActiveTab('ai-hub'); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-blue-400" /> Scannear Peça por Imagem (IA)</span>
+                <span className="text-[10px] font-mono text-zinc-500">Ir para IA Hub</span>
+              </button>
+
+              <button
+                onClick={() => { setActiveTab('wms-hierarchy'); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400" /> Navegar na Hierarquia WMS</span>
+                <span className="text-[10px] font-mono text-zinc-500">Galpão ➔ Corredor</span>
+              </button>
+
+              <button
+                onClick={() => { setShowWorkOrderModal(true); setShowCommandPalette(false); }}
+                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
+              >
+                <span className="flex items-center gap-2"><Plus className="w-4 h-4 text-purple-400" /> Criar Nova Ordem de Serviço (O.S.)</span>
+                <span className="text-[10px] font-mono text-zinc-500">Oficina</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: IMPRESSÃO ETIQUETA QR */}
+      {printingStickerPart && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="max-w-md w-full">
+            <QRStickerPrint
+              partTitle={printingStickerPart.title}
+              oemCode={printingStickerPart.oem_code || 'OEM-JDM-7718'}
+              price={Number(printingStickerPart.price || 0)}
+              wmsLocation="Corredor B • Prateleira 04"
+              licensePlate="品川 300 な 45-89"
+              partId={printingStickerPart.id}
+              tenantName={tenantName}
+              onClose={() => setPrintingStickerPart(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: NOVA ORDEM DE SERVIÇO (O.S. OFICINA) */}
+      {showWorkOrderModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <Wrench className="w-5 h-5 text-purple-400" />
+                Nova Ordem de Serviço (O.S. Oficina)
+              </h3>
+              <button onClick={() => setShowWorkOrderModal(false)} className="text-zinc-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveNovaPeca} className="space-y-3 text-xs">
+            <form onSubmit={handleCreateWorkOrder} className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Título da Peça</label>
-                <input 
-                  type="text" 
+                <label className="block text-zinc-400 mb-1 font-semibold">Descrição do Serviço *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Troca de Inversor Híbrido & Diagnóstico ECU"
+                  value={newOrderForm.title}
+                  onChange={(e) => setNewOrderForm({ ...newOrderForm, title: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
                   required
-                  placeholder="Ex: Farol Dianteiro Full LED Esquerdo"
-                  value={novaPecaForm.title}
-                  onChange={(e) => setNovaPecaForm({...novaPecaForm, title: e.target.value})}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Código OEM</label>
-                  <input 
-                    type="text" 
-                    placeholder="OEM-33100-47820"
-                    value={novaPecaForm.oem_code}
-                    onChange={(e) => setNovaPecaForm({...novaPecaForm, oem_code: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  <label className="block text-zinc-400 mb-1 font-semibold">Cliente *</label>
+                  <input
+                    type="text"
+                    placeholder="Nome do cliente"
+                    value={newOrderForm.client}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, client: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Categoria</label>
-                  <select 
-                    value={novaPecaForm.category}
-                    onChange={(e) => setNovaPecaForm({...novaPecaForm, category: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  <label className="block text-zinc-400 mb-1 font-semibold">Veículo *</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: Toyota Prius 2018"
+                    value={newOrderForm.vehicle}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, vehicle: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Mecânico Responsável</label>
+                  <select
+                    value={newOrderForm.mechanic}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, mechanic: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-purple-500"
                   >
-                    <option value="Motor & Periféricos">Motor & Periféricos</option>
-                    <option value="Lataria & Iluminação">Lataria & Iluminação</option>
-                    <option value="Injeção & Sensores">Injeção & Sensores</option>
-                    <option value="Freios & Suspensão">Freios & Suspensão</option>
-                    <option value="Acessórios & Tuning">Acessórios & Tuning</option>
+                    <option>Kenji Sato</option>
+                    <option>Hiroshi Tanaka</option>
+                    <option>Takeshi Lin</option>
                   </select>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Preço Venda (R$)</label>
-                  <input 
-                    type="number" 
-                    required
-                    placeholder="1450"
-                    value={novaPecaForm.price}
-                    onChange={(e) => setNovaPecaForm({...novaPecaForm, price: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-slate-700 block mb-1">Custo (R$)</label>
-                  <input 
-                    type="number" 
-                    placeholder="500"
-                    value={novaPecaForm.cost_price}
-                    onChange={(e) => setNovaPecaForm({...novaPecaForm, cost_price: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="font-bold text-slate-700 block mb-1">Estoque Quantidade</label>
-                  <input 
-                    type="number" 
-                    value={novaPecaForm.stock}
-                    onChange={(e) => setNovaPecaForm({...novaPecaForm, stock: e.target.value})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  <label className="block text-zinc-400 mb-1 font-semibold">Valor Orçamento (JPY)</label>
+                  <input
+                    type="number"
+                    placeholder="85000"
+                    value={newOrderForm.amount}
+                    onChange={(e) => setNewOrderForm({ ...newOrderForm, amount: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-bold text-emerald-400 focus:border-purple-500"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="font-bold text-slate-700 block mb-1">Compatibilidade de Veículos</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Toyota Prius ZVW30 (2015-2022)"
-                  value={novaPecaForm.compatibility}
-                  onChange={(e) => setNovaPecaForm({...novaPecaForm, compatibility: e.target.value})}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                />
-              </div>
-
-              <div className="pt-3 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowNovaPecaModal(false)}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={savingPart}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition shadow-sm"
-                >
-                  {savingPart ? 'Salvando...' : 'Salvar Peça'}
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-purple-600/20 transition mt-2"
+              >
+                Cadastrar Ordem de Serviço
+              </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* ════════════════ MODAL: NOVO PEDIDO / PDV BALCÃO ════════════════ */}
-      {showNovoPedidoModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5 text-sky-600" />
-                Registrar Novo Pedido / PDV
+      {/* MODAL: VENDAS PDV BALCÃO */}
+      {showPdvModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5 text-emerald-400" />
+                Nova Venda no Balcão (PDV)
               </h3>
-              <button onClick={() => setShowNovoPedidoModal(false)} className="p-1 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setShowPdvModal(false)} className="text-zinc-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-slate-500">
-              Venda rápida no balcão ou emissão de pedido instantâneo com redução automática de estoque.
-            </p>
-            <div className="space-y-3 text-xs">
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const priceNum = Number(pdvForm.price || 0)
+                const newSale = {
+                  id: `venda-${Math.floor(100 + Math.random() * 900)}`,
+                  customer: pdvForm.customer || 'Cliente Balcão',
+                  items: pdvForm.partTitle || 'Farol LED Prius ZVW30',
+                  total: priceNum,
+                  date: 'Hoje, Agora',
+                  channel: `Balcão (${pdvForm.paymentMethod.split(' ')[0]})`
+                }
+                setSalesList([newSale, ...salesList])
+                setShowPdvModal(false)
+                alert(`Venda concluída com sucesso! Recibo impresso. Troco: ¥ ${Math.max(0, Number(pdvForm.receivedAmount || 0) - priceNum).toLocaleString('ja-JP')} JPY`)
+              }}
+              className="space-y-3 text-xs"
+            >
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Cliente</label>
-                <input type="text" placeholder="Oficina Takahashi Auto / Cliente Balcão" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2" />
+                <label className="block text-zinc-400 mb-1 font-semibold">Peça / Item Vendido *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Farol LED Prius ZVW30"
+                  value={pdvForm.partTitle}
+                  onChange={(e) => setPdvForm({ ...pdvForm, partTitle: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-emerald-500"
+                  required
+                />
               </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Cliente</label>
+                  <input
+                    type="text"
+                    value={pdvForm.customer}
+                    onChange={(e) => setPdvForm({ ...pdvForm, customer: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-zinc-400 mb-1 font-semibold">Valor Total (JPY ¥) *</label>
+                  <input
+                    type="number"
+                    value={pdvForm.price}
+                    onChange={(e) => setPdvForm({ ...pdvForm, price: e.target.value })}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-bold text-emerald-400 focus:border-emerald-500"
+                    required
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Valor Total (R$)</label>
-                <input type="number" placeholder="1450.00" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold" />
+                <label className="block text-zinc-400 mb-1 font-semibold">Forma de Pagamento</label>
+                <select
+                  value={pdvForm.paymentMethod}
+                  onChange={(e) => setPdvForm({ ...pdvForm, paymentMethod: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-emerald-500"
+                >
+                  <option>Espécie (Dinheiro JPY)</option>
+                  <option>Cartão de Crédito (Stripe Terminal)</option>
+                  <option>Transferência Furikomi (Banco Japão)</option>
+                  <option>PayPay / QR Code Mobile</option>
+                </select>
               </div>
-            </div>
-            <div className="pt-2 flex justify-end gap-2">
-              <button onClick={() => setShowNovoPedidoModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold">
-                Cancelar
+
+              {pdvForm.paymentMethod.includes('Espécie') && (
+                <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-zinc-400">Valor Recebido do Cliente:</span>
+                    <input
+                      type="number"
+                      value={pdvForm.receivedAmount}
+                      onChange={(e) => setPdvForm({ ...pdvForm, receivedAmount: e.target.value })}
+                      className="bg-zinc-900 border border-zinc-700 text-right text-xs font-bold text-white px-2 py-1 rounded w-28"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-xs pt-1 border-t border-zinc-800">
+                    <span className="font-semibold text-zinc-300">Troco (Otsuri お釣り):</span>
+                    <span className="font-extrabold text-amber-400 text-sm">
+                      ¥ {Math.max(0, Number(pdvForm.receivedAmount || 0) - Number(pdvForm.price || 0)).toLocaleString('ja-JP')} JPY
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition mt-2"
+              >
+                Finalizar Venda & Emitir Recibo
               </button>
-              <button onClick={() => setShowNovoPedidoModal(false)} className="px-5 py-2 bg-sky-600 text-white rounded-xl font-bold shadow-sm">
-                Concluir Pedido 🚀
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* ════════════════ MODAL: ENTRADA NO ESTOQUE ════════════════ */}
-      {showEntradaEstoqueModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-100">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
-                <ArrowRight className="w-5 h-5 text-amber-600" />
-                Entrada no Estoque
+      {/* MODAL: IMPORTAR NF-E XML */}
+      {showNfeModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#121215] border border-zinc-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-400" />
+                Importar Nota Fiscal XML (NF-e)
               </h3>
-              <button onClick={() => setShowEntradaEstoqueModal(false)} className="p-1 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setShowNfeModal(false)} className="text-zinc-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-slate-500">
-              Importação via NF-e XML ou entrada manual de novo lote de desmonte.
-            </p>
-            <div className="border-2 border-dashed border-amber-200 bg-amber-50/30 rounded-2xl p-6 text-center text-xs">
-              <Upload className="w-6 h-6 text-amber-600 mx-auto mb-2" />
-              <span className="font-bold text-slate-800">Arraste a Nota Fiscal XML aqui</span>
-            </div>
-            <div className="pt-2 flex justify-end gap-2">
-              <button onClick={() => setShowEntradaEstoqueModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold">
-                Fechar
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const newInvoice = {
+                  id: `nfe-${Math.floor(1000 + Math.random() * 9000)}`,
+                  key: nfeForm.key,
+                  supplier: nfeForm.supplier,
+                  date: new Date().toISOString().split('T')[0],
+                  value: Number(nfeForm.value || 0),
+                  status: 'Processada'
+                }
+                setPurchaseInvoices([newInvoice, ...purchaseInvoices])
+                setShowNfeModal(false)
+                alert('Nota fiscal XML importada com sucesso! Lote de peças integrado ao estoque privado.')
+              }}
+              className="space-y-3 text-xs"
+            >
+              <div>
+                <label className="block text-zinc-400 mb-1 font-semibold">Fornecedor / Leilão *</label>
+                <input
+                  type="text"
+                  value={nfeForm.supplier}
+                  onChange={(e) => setNfeForm({ ...nfeForm, supplier: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 mb-1 font-semibold">Chave da Nota Fiscal / Documento</label>
+                <input
+                  type="text"
+                  value={nfeForm.key}
+                  onChange={(e) => setNfeForm({ ...nfeForm, key: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-mono text-white focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-400 mb-1 font-semibold">Valor Total (JPY ¥) *</label>
+                <input
+                  type="number"
+                  value={nfeForm.value}
+                  onChange={(e) => setNfeForm({ ...nfeForm, value: e.target.value })}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 font-bold text-white focus:border-blue-500"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/20 transition mt-2"
+              >
+                Confirmar Importação de Estoque
               </button>
-            </div>
+            </form>
           </div>
         </div>
-      )}
-
-      {/* ════════════════ MODAL: QR ETIQUETA PRINT WMS ════════════════ */}
-      {printingStickerPart && (
-        <QRStickerPrint
-          partTitle={printingStickerPart.title}
-          oemCode={printingStickerPart.oem_code}
-          price={printingStickerPart.price}
-          wmsLocation={printingStickerPart.wms_location}
-          partId={printingStickerPart.id}
-          onClose={() => setPrintingStickerPart(null)}
-        />
       )}
 
     </div>
