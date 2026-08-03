@@ -234,7 +234,7 @@ export default function Profile() {
     <div className="min-h-screen bg-[#0a0a0a] py-8">
       <div className="max-w-3xl mx-auto px-4">
         <h1 className="font-display text-3xl font-bold text-white mb-8">
-          Meu Perfil
+          {t('Meu Perfil')}
         </h1>
 
         {/* Navigation Tabs */}
@@ -249,7 +249,7 @@ export default function Profile() {
             }`}
           >
             <User className="w-4 h-4 text-cyan-400" />
-            <span>Dados Pessoais & Perfil</span>
+            <span>{t('Dados Pessoais & Perfil')}</span>
           </button>
 
           <button
@@ -368,7 +368,7 @@ export default function Profile() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Nome completo</label>
+                <label className="block text-gray-400 text-sm mb-2">{t('Nome completo')}</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
@@ -381,7 +381,7 @@ export default function Profile() {
               </div>
 
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Telefone</label>
+                <label className="block text-gray-400 text-sm mb-2">{t('Telefone')}</label>
                 <div className="relative">
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <input
@@ -395,7 +395,7 @@ export default function Profile() {
             </div>
 
             <div>
-              <label className="block text-gray-400 text-sm mb-2">Endereço</label>
+              <label className="block text-gray-400 text-sm mb-2">{t('Endereço')}</label>
               <div className="relative">
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
@@ -403,14 +403,14 @@ export default function Profile() {
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   className="w-full pl-12 pr-4 py-3 bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl text-white outline-none transition"
-                  placeholder="Rua, número, complemento"
+                  placeholder={t('Rua, número, complemento')}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Cidade</label>
+                <label className="block text-gray-400 text-sm mb-2">{t('Cidade')}</label>
                 <input
                   type="text"
                   value={formData.city}
@@ -420,7 +420,7 @@ export default function Profile() {
               </div>
 
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Estado</label>
+                <label className="block text-gray-400 text-sm mb-2">{t('Estado')}</label>
                 <input
                   type="text"
                   value={formData.state}
@@ -430,7 +430,7 @@ export default function Profile() {
               </div>
 
               <div>
-                <label className="block text-gray-400 text-sm mb-2">CEP</label>
+                <label className="block text-gray-400 text-sm mb-2">{t('CEP')}</label>
                 <div className="relative">
                   <input
                     type="text"
@@ -462,10 +462,10 @@ export default function Profile() {
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Salvando...</span>
+                  <span>{t('Salvando...')}</span>
                 </>
               ) : (
-                <span>Salvar Alterações</span>
+                <span>{t('Salvar Alterações')}</span>
               )}
             </button>
           </form>
@@ -475,11 +475,11 @@ export default function Profile() {
         <div className="card p-8 mt-8 border border-[#2a2a2a] bg-[#0e0e0e] rounded-xl animate-in fade-in slide-in-from-bottom duration-500">
           <div className="flex items-center space-x-3 mb-6">
             <Shield className="w-6 h-6 text-[#00e5ff]" />
-            <h2 className="text-xl font-semibold text-white">Autenticação de Dois Fatores (MFA)</h2>
+            <h2 className="text-xl font-semibold text-white">{t('Autenticação de Dois Fatores (MFA)')}</h2>
           </div>
 
           <p className="text-sm text-gray-400 mb-6 leading-relaxed">
-            Adicione uma camada extra de segurança à sua conta exigindo um código de verificação sempre que fizer login. Recomendado para todos os vendedores e administradores.
+            {t('Adicione uma camada extra de segurança à sua conta exigindo um código de verificação sempre que fizer login.')}
           </p>
 
           {mfaError && (
@@ -492,10 +492,10 @@ export default function Profile() {
             <button
               onClick={handleEnrollMfa}
               disabled={mfaLoading}
-              className="px-6 py-3 bg-gradient-to-r from-[#00e5ff] to-[#00b0ff] hover:opacity-90 text-black font-semibold rounded-lg transition-all flex items-center space-x-2"
+              className="px-6 py-3 bg-gradient-to-r from-[#00e5ff] to-[#00b0ff] hover:opacity-90 text-black font-semibold rounded-lg transition-all flex items-center space-x-2 cursor-pointer"
             >
               {mfaLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <QrCode className="w-5 h-5" />}
-              <span>Ativar Autenticação de 2 Fatores (TOTP)</span>
+              <span>{t('Ativar Autenticação de 2 Fatores (TOTP)')}</span>
             </button>
           )}
 
@@ -521,18 +521,18 @@ export default function Profile() {
                   <button
                     type="submit"
                     disabled={mfaLoading}
-                    className="px-6 py-3 bg-[#00e5ff] text-black font-semibold rounded-lg hover:bg-[#00c8e6] transition-colors flex items-center space-x-2"
+                    className="px-6 py-3 bg-[#00e5ff] text-black font-semibold rounded-lg hover:bg-[#00c8e6] transition-colors flex items-center space-x-2 cursor-pointer"
                   >
                     {mfaLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-                    <span>Confirmar Código</span>
+                    <span>{t('Confirmar Código')}</span>
                   </button>
                 </form>
                 <button
                   type="button"
                   onClick={() => { setMfaStatus('disabled'); setQrCode(null); }}
-                  className="mt-2 text-sm text-gray-500 hover:text-white transition-colors block"
+                  className="mt-2 text-sm text-gray-500 hover:text-white transition-colors block cursor-pointer"
                 >
-                  Cancelar
+                  {t('Cancelar')}
                 </button>
               </div>
             </div>
@@ -542,7 +542,7 @@ export default function Profile() {
             <div className="space-y-4">
               <div className="flex items-center space-x-3 text-green-400 font-medium mb-4">
                 <CheckCircle2 className="w-5 h-5" />
-                <span>Seu MFA está ativado e protegendo sua conta!</span>
+                <span>{t('Seu MFA está ativado e protegendo sua conta!')}</span>
               </div>
               {factors.map(f => (
                 <div key={f.id} className="flex justify-between items-center p-4 bg-[#1a1a1a] rounded-lg border border-[#2a2a2a]">
@@ -553,9 +553,9 @@ export default function Profile() {
                   <button
                     onClick={() => handleUnenrollMfa(f.id)}
                     disabled={mfaLoading}
-                    className="text-xs text-red-500 hover:text-red-400 transition-colors"
+                    className="text-xs text-red-500 hover:text-red-400 transition-colors cursor-pointer"
                   >
-                    Desativar
+                    {t('Desativar')}
                   </button>
                 </div>
               ))}
