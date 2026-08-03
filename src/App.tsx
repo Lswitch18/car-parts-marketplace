@@ -10,6 +10,7 @@ import { useEffect, Suspense } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { lazyWithRetry } from '@/modules/shared/lib/lazyWithRetry'
+import { isSaaSUser } from '@/modules/identity/utils/tenantPermissions'
 
 // Lazy Loading das páginas com auto-retry para evitar erros pós-deploy Vercel
 const Home = lazyWithRetry(() => import('@/modules/storefront/pages/Home'))
@@ -73,8 +74,8 @@ function App() {
       navigate('/admin/dashboard', { replace: true })
     } else if (!user.onboarding_completed) {
       navigate('/onboarding', { replace: true })
-    } else if (user.role === 'seller') {
-      navigate('/dashboard', { replace: true })
+    } else if (isSaaSUser(user)) {
+      navigate('/tenant-dashboard', { replace: true })
     } else {
       navigate('/catalog', { replace: true })
     }

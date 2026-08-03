@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
+import { isSaaSUser } from '@/modules/identity/utils/tenantPermissions'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import {
@@ -188,7 +189,7 @@ export default function Onboarding() {
   }
 
   const goToDashboard = () => {
-    if (accountType === 'empresa' || user?.role === 'seller' || storeType) {
+    if (isSaaSUser(user) || accountType === 'empresa') {
       navigate('/tenant-dashboard', { replace: true })
     } else {
       navigate('/catalog', { replace: true })
