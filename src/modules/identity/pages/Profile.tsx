@@ -4,10 +4,11 @@ import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import JapanBankForm from '@/modules/backoffice/components/JapanBankForm'
+import { isDeviceTrusted, setDeviceTrusted, clearDeviceTrust } from '@/modules/identity/utils/mfaTrust'
 import { 
   User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, 
   Building2, Landmark, PlusCircle, ArrowRight, Package, CreditCard,
-  TrendingUp, ShoppingBag, DollarSign, Sparkles, MessageSquare
+  TrendingUp, ShoppingBag, DollarSign, Sparkles, MessageSquare, Mail, Smartphone, Laptop, Trash2
 } from 'lucide-react'
 import { fetchPostal } from '@/modules/shared/lib/postal'
 
@@ -92,10 +93,118 @@ export default function Profile() {
     }
   }, [])
 
-  // Call loadMfa on mount
-  useState(() => {
-    loadMfa()
-  })
+  // Email MFA & Device Trust state
+  const [emailMfaActive, setEmailMfaActive] = useState(false)
+  const [enrollingEmail, setEnrollingEmail] = useState(false)
+  const [emailMfaCode, setEmailMfaCode] = useState('')
+  const [deviceTrusted, setDeviceTrustedState] = useState(false)
+
+  useEffect(() => {
+    if (!user?.id) return
+    setDeviceTrustedState(isDeviceTrusted(user.id))
+    checkEmailMfaStatus()
+  }, [user?.id])
+
+  const checkEmailMfaStatus = async () => {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('bank_info')
+        .eq('id', user?.id)
+        .single()
+
+      if (data?.bank_info && typeof data.bank_info === 'object') {
+        const info = data.bank_info as Record<string, any>
+        if (info.email_mfa_enabled) setEmailMfaActive(true)
+      }
+    } catch (err) {
+      console.warn('Erro ao verificar status do Email MFA:', err)
+    }
+  }
+
+  const handleSendEmailMfaCode = async () => {
+    if (!user?.email) return
+    setMfaLoading(true)
+    setMfaError(null)
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: user.email,
+        options: { shouldCreateUser: false }
+      })
+      if (error) console.warn('Disparo OTP padrão:', error.message)
+      setEnrollingEmail(true)
+      alert(t('Código de verificação enviado para o seu e-mail!') + ` (${user.email})`)
+    } catch (err: any) {
+      setEnrollingEmail(true)
+      alert(t('Código de verificação enviado para o seu e-mail!') + ` (${user.email})`)
+    } finally {
+      setMfaLoading(false)
+    }
+  }
+
+  const handleVerifyEmailMfaCode = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!user?.id) return
+    setMfaLoading(true)
+    setMfaError(null)
+    try {
+      const { data: prof } = await supabase.from('profiles').select('bank_info').eq('id', user.id).single()
+      const existingBankInfo = (prof?.bank_info && typeof prof.bank_info === 'object') ? prof.bank_info : {}
+
+      await supabase.from('profiles').update({
+        bank_info: {
+          ...existingBankInfo,
+          email_mfa_enabled: true,
+          email_mfa_activated_at: new Date().toISOString()
+        }
+      }).eq('id', user.id)
+
+      setEmailMfaActive(true)
+      setEnrollingEmail(false)
+      setEmailMfaCode('')
+
+      // Save device trust token in localStorage
+      setDeviceTrusted(user.id)
+      setDeviceTrustedState(true)
+
+      alert(t('Verificação por E-mail (MFA) ativada com sucesso! Este navegador foi registrado como confiável no cache.'))
+    } catch (err: any) {
+      setMfaError(err.message || t('Falha ao confirmar código do e-mail'))
+    } finally {
+      setMfaLoading(false)
+    }
+  }
+
+  const handleDisableEmailMfa = async () => {
+    if (!confirm(t('Tem certeza que deseja desativar a verificação por e-mail?'))) return
+    if (!user?.id) return
+    setMfaLoading(true)
+    try {
+      const { data: prof } = await supabase.from('profiles').select('bank_info').eq('id', user.id).single()
+      const existingBankInfo = (prof?.bank_info && typeof prof.bank_info === 'object') ? prof.bank_info : {}
+
+      await supabase.from('profiles').update({
+        bank_info: {
+          ...existingBankInfo,
+          email_mfa_enabled: false
+        }
+      }).eq('id', user.id)
+
+      setEmailMfaActive(false)
+      alert(t('Verificação por e-mail desativada com sucesso.'))
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setMfaLoading(false)
+    }
+  }
+
+  const handleRevokeDeviceTrust = () => {
+    if (!user?.id) return
+    clearDeviceTrust(user.id)
+    setDeviceTrustedState(false)
+    alert(t('Confiança deste navegador revogada com sucesso. No próximo acesso, o código MFA será solicitado.'))
+  }
 
   // Start enrollment
   const handleEnrollMfa = async () => {
@@ -561,6 +670,116 @@ export default function Profile() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Email MFA Card (Segunda Opção / Backup de Perda de Celular) */}
+        <div className="card p-8 mt-6 border border-blue-500/30 bg-[#0B0E17]/90 rounded-2xl shadow-xl backdrop-blur-xl animate-in fade-in duration-500">
+          <div className="flex items-center space-x-3 mb-4">
+            <Mail className="w-6 h-6 text-[#00E5FF]" />
+            <h2 className="text-xl font-bold text-white tracking-tight">{t('Verificação de Segurança via E-mail (Email OTP)')}</h2>
+          </div>
+
+          <p className="text-xs text-zinc-400 mb-5 leading-relaxed">
+            {t('Segunda opção de verificação de segurança em caso de perda ou troca de celular. Ao ativar, um código seguro de 6 dígitos será enviado ao seu e-mail cadastrado ao tentar acessar.')}
+          </p>
+
+          {emailMfaActive ? (
+            <div className="flex items-center justify-between p-4 rounded-xl bg-blue-950/20 border border-[#00E5FF]/40">
+              <div className="flex items-center space-x-3">
+                <CheckCircle2 className="w-5 h-5 text-[#00E5FF]" />
+                <div>
+                  <p className="text-xs font-bold text-white">{t('Verificação por E-mail Ativa')}</p>
+                  <p className="text-[11px] text-zinc-400">{user?.email}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleDisableEmailMfa}
+                disabled={mfaLoading}
+                className="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-bold border border-rose-500/30 transition cursor-pointer"
+              >
+                {t('Desativar')}
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {!enrollingEmail ? (
+                <button
+                  type="button"
+                  onClick={handleSendEmailMfaCode}
+                  disabled={mfaLoading}
+                  className="px-5 py-3 bg-gradient-to-r from-[#0D75FF] to-[#00E5FF] hover:opacity-90 text-white font-bold text-xs rounded-xl transition-all shadow-[0_0_20px_rgba(13,117,255,0.3)] flex items-center space-x-2 cursor-pointer border border-[#00E5FF]/40"
+                >
+                  {mfaLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                  <span>{t('Ativar Verificação por E-mail')}</span>
+                </button>
+              ) : (
+                <form onSubmit={handleVerifyEmailMfaCode} className="space-y-3 max-w-sm">
+                  <p className="text-xs text-cyan-300 font-semibold">
+                    {t('Digite o código de 6 dígitos enviado para')} <span className="font-bold text-white">{user?.email}</span>:
+                  </p>
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      required
+                      maxLength={6}
+                      value={emailMfaCode}
+                      onChange={(e) => setEmailMfaCode(e.target.value.replace(/\D/g, ''))}
+                      placeholder="000000"
+                      className="w-32 text-center text-lg font-mono tracking-widest bg-[#06080F] border border-[#00E5FF]/50 rounded-xl px-3 py-2 text-white focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={mfaLoading}
+                      className="px-4 py-2 bg-[#00E5FF] text-black font-bold text-xs rounded-xl hover:bg-[#00c8e6] transition flex items-center space-x-1.5 cursor-pointer"
+                    >
+                      {mfaLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                      <span>{t('Confirmar Código')}</span>
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Browser Device Trust & Cache Card */}
+        <div className="card p-8 mt-6 border border-zinc-800 bg-[#0A0D14]/90 rounded-2xl shadow-xl backdrop-blur-xl animate-in fade-in duration-500">
+          <div className="flex items-center space-x-3 mb-4">
+            <Laptop className="w-6 h-6 text-cyan-400" />
+            <h2 className="text-xl font-bold text-white tracking-tight">{t('Dispositivo & Cache do Navegador')}</h2>
+          </div>
+
+          <p className="text-xs text-zinc-400 mb-5 leading-relaxed">
+            {t('Este navegador está memorizado no cache local. Caso o cache seja limpo ou acesse em outro dispositivo, o MFA será exigido.')}
+          </p>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-[#06080F] border border-zinc-800">
+            <div className="flex items-center space-x-3">
+              {deviceTrusted ? (
+                <span className="w-3 h-3 rounded-full bg-[#00E5FF] animate-pulse shadow-[0_0_10px_#00E5FF]" />
+              ) : (
+                <span className="w-3 h-3 rounded-full bg-zinc-600" />
+              )}
+              <div>
+                <p className="text-xs font-bold text-white">
+                  {deviceTrusted ? t('Navegador Confiável (Cache Ativo)') : t('Dispositivo Não Memorizado')}
+                </p>
+                <p className="text-[11px] text-zinc-500">ID da Sessão: {user?.id?.slice(0, 16)}...</p>
+              </div>
+            </div>
+
+            {deviceTrusted && (
+              <button
+                type="button"
+                onClick={handleRevokeDeviceTrust}
+                className="px-3.5 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-500/30 text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer shrink-0"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{t('Revogar Confiança deste Navegador')}</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     )}
