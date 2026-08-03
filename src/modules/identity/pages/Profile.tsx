@@ -1,9 +1,13 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import JapanBankForm from '@/modules/backoffice/components/JapanBankForm'
-import { User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, Building2, Landmark, PlusCircle, ArrowRight, Package, CreditCard } from 'lucide-react'
+import { 
+  User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, 
+  Building2, Landmark, PlusCircle, ArrowRight, Package, CreditCard,
+  TrendingUp, ShoppingBag, DollarSign, Sparkles, MessageSquare
+} from 'lucide-react'
 import { fetchPostal } from '@/modules/shared/lib/postal'
 
 export default function Profile() {
@@ -12,6 +16,42 @@ export default function Profile() {
   const location = useLocation()
   const initialTab = location.hash === '#bank' || location.search.includes('tab=bank') ? 'bank' : 'personal'
   const [activeTab, setActiveTab] = useState<'personal' | 'bank'>(initialTab)
+
+  const [sellerMetrics, setSellerMetrics] = useState({
+    activeParts: 0,
+    totalSalesJPY: 0,
+    completedSales: 0
+  })
+
+  useEffect(() => {
+    if (!user?.id) return
+    loadSellerMetrics()
+  }, [user?.id])
+
+  const loadSellerMetrics = async () => {
+    try {
+      const { count } = await supabase
+        .from('parts')
+        .select('*', { count: 'exact', head: true })
+        .eq('seller_id', user?.id)
+
+      const { data: txs } = await supabase
+        .from('transactions')
+        .select('amount, payment_status')
+        .eq('seller_id', user?.id)
+
+      const completed = txs?.filter(t => t.payment_status === 'completed' || t.payment_status === 'paid') || []
+      const total = completed.reduce((sum, t) => sum + (Number(t.amount) || 0), 0)
+
+      setSellerMetrics({
+        activeParts: count || 0,
+        totalSalesJPY: total,
+        completedSales: completed.length
+      })
+    } catch (err) {
+      console.warn('Erro ao carregar métricas:', err)
+    }
+  }
 
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -234,51 +274,72 @@ export default function Profile() {
         {/* Tab 1: Dados Pessoais do Perfil */}
         {activeTab === 'personal' && (
           <div className="space-y-6 animate-in fade-in duration-300">
-            {/* Card do Painel do Vendedor - Cyber Neon Blue */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0E17] via-zinc-950 to-[#0A0D14] border border-blue-500/40 shadow-[0_0_30px_rgba(13,117,255,0.18)]">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                <div className="space-y-1.5 max-w-xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-[#00E5FF]/30 text-cyan-400">
-                    <Package className="w-3.5 h-3.5 text-[#00E5FF]" />
-                    <span>Minhas Vendas & Anúncios</span>
+            {/* Card de Métricas de Vendas (Mobile & Responsive) */}
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0E17] via-zinc-950 to-[#0A0D14] border border-blue-500/40 shadow-[0_0_30px_rgba(13,117,255,0.18)] space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-[#00E5FF]/30 text-cyan-400 mb-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-[#00E5FF]" />
+                    <span>Minhas Vendas & Métricas</span>
                   </div>
                   <h3 className="text-xl font-bold text-white tracking-tight">
-                    Painel do Vendedor
+                    Desempenho da Conta
                   </h3>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Gerencie suas peças anunciadas, acompanhe suas vendas, mensagens de compradores e configure sua conta bancária para recebimentos em ienes (JPY).
+                  <p className="text-xs text-zinc-400 mt-0.5">
+                    Resumo de anúncios ativos, vendas em ienes e atalhos rápidos de gerenciamento.
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-2.5 w-full sm:w-auto flex-shrink-0">
+                <div className="flex items-center space-x-2">
                   <button
                     type="button"
-                    onClick={() => navigate('/dashboard')}
-                    className="w-full px-5 py-3 rounded-xl bg-gradient-to-r from-[#0D75FF] to-[#00E5FF] hover:from-blue-600 hover:to-[#00E5FF] text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-blue-500/25 flex items-center justify-center space-x-2 border border-[#00E5FF]/40"
+                    onClick={() => navigate('/create-listing')}
+                    className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0D75FF] to-[#00E5FF] hover:from-blue-600 hover:to-[#00E5FF] text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-blue-500/25 flex items-center space-x-1.5 border border-[#00E5FF]/40 cursor-pointer"
                   >
-                    <Building2 className="w-4 h-4" />
-                    <span>Acessar Painel do Vendedor</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <PlusCircle className="w-4 h-4" />
+                    <span>Anunciar Peça</span>
                   </button>
 
-                  <div className="flex items-center gap-2 w-full">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/create-listing')}
-                      className="flex-1 px-3 py-2 rounded-xl bg-[#0B0E17] border border-blue-500/30 hover:border-[#00E5FF]/50 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
-                    >
-                      <PlusCircle className="w-3.5 h-3.5 text-[#00E5FF]" />
-                      <span>Anunciar Peça</span>
-                    </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('bank')}
+                    className="px-3.5 py-2.5 rounded-xl bg-[#06080F] border border-blue-500/30 hover:border-[#00E5FF]/50 text-xs font-bold text-cyan-300 hover:text-white transition flex items-center space-x-1.5 cursor-pointer"
+                  >
+                    <Landmark className="w-4 h-4 text-[#00E5FF]" />
+                    <span>Conta (JPY)</span>
+                  </button>
+                </div>
+              </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('bank')}
-                      className="flex-1 px-3 py-2 rounded-xl bg-[#0B0E17] border border-blue-500/30 hover:border-[#00E5FF]/50 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
-                    >
-                      <Landmark className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>Conta (JPY)</span>
-                    </button>
+              {/* Grid Responsivo de Métricas */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                <div className="p-4 rounded-xl bg-[#06080F] border border-zinc-800/80 flex items-center space-x-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF] shrink-0">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Anúncios Ativos</p>
+                    <p className="text-xl font-black text-white font-mono">{sellerMetrics.activeParts}</p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#06080F] border border-zinc-800/80 flex items-center space-x-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-[#00E5FF]/30 flex items-center justify-center text-cyan-400 shrink-0">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Total em Vendas</p>
+                    <p className="text-xl font-black text-white font-mono">¥ {sellerMetrics.totalSalesJPY.toLocaleString()} <span className="text-xs font-normal text-cyan-400 font-sans">JPY</span></p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#06080F] border border-zinc-800/80 flex items-center space-x-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-[#00E5FF]/30 flex items-center justify-center text-[#00E5FF] shrink-0">
+                    <ShoppingBag className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Vendas Finalizadas</p>
+                    <p className="text-xl font-black text-white font-mono">{sellerMetrics.completedSales}</p>
                   </div>
                 </div>
               </div>
