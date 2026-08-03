@@ -444,7 +444,7 @@ export default function Header() {
                   {t('Catálogo de Peças')}
                 </Link>
                 {[
-                  { to: '/dashboard', label: t('Painel do Vendedor'), highlight: true },
+                  { to: '/saas-gateway', label: t('Painel do Vendedor & SaaS'), highlight: true },
                   { to: '/create-listing', label: t('Anunciar Peça') },
                   { to: '/japan-bank-account', label: t('Dados Bancários (Japão JPY)') },
                   { to: '/profile', label: t('Meu Perfil') },

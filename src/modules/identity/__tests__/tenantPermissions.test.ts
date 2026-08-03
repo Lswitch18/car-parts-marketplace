@@ -29,8 +29,8 @@ describe('tenantPermissions Utility', () => {
   it('should identify SaaS users correctly', () => {
     expect(isSaaSUser({ tenant_id: 't-123' } as any)).toBe(true)
     expect(isSaaSUser({ tenant_role: 'tenant_admin' } as any)).toBe(true)
-    expect(isSaaSUser({ account_type: 'desmanche', role: 'seller' } as any)).toBe(false)
-    expect(isSaaSUser({ account_type: 'pessoa_fisica' } as any)).toBe(false)
+    expect(isSaaSUser({ email: 'teste.partner@daig.jp', role: 'partner' } as any)).toBe(true)
+    expect(isSaaSUser({ account_type: 'pessoa_fisica', role: 'buyer' } as any)).toBe(false)
   })
 
   it('should return correct permissions array for role', () => {
