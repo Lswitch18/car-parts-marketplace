@@ -55,6 +55,7 @@ const LegalNotice = lazyWithRetry(() => import('@/modules/storefront/pages/Legal
 const TermsOfService = lazyWithRetry(() => import('@/modules/storefront/pages/TermsOfService'))
 const PrivacyPolicy = lazyWithRetry(() => import('@/modules/storefront/pages/PrivacyPolicy'))
 const JapanBankAccount = lazyWithRetry(() => import('@/modules/backoffice/pages/JapanBankAccount'))
+const SaasGatewayPage = lazyWithRetry(() => import('@/modules/identity/pages/SaasGatewayPage'))
 
 function App() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -75,7 +76,12 @@ function App() {
     } else if (!user.onboarding_completed) {
       navigate('/onboarding', { replace: true })
     } else if (isSaaSUser(user)) {
-      navigate('/tenant-dashboard', { replace: true })
+      const preferred = typeof window !== 'undefined' ? localStorage.getItem(`daig_preferred_gateway_${user.id}`) : null
+      if (preferred) {
+        navigate(preferred, { replace: true })
+      } else {
+        navigate('/saas-gateway', { replace: true })
+      }
     } else {
       navigate('/catalog', { replace: true })
     }
@@ -127,6 +133,8 @@ function App() {
 
                 {/* Rotas Exclusivas do SaaS Multi-Tenant */}
                 <Route element={<ProtectedRoute requireSaaS />}>
+                  <Route path="saas-gateway" element={<SaasGatewayPage />} />
+                  <Route path="portal-selector" element={<SaasGatewayPage />} />
                   <Route path="tenant/dashboard" element={<TenantDashboard />} />
                   <Route path="tenant-dashboard" element={<TenantDashboard />} />
                 </Route>
