@@ -3,10 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
-import { 
-  Cpu, ShoppingBag, ArrowRight, Sparkles, 
-  CheckCircle2
-} from 'lucide-react'
 
 export default function SaasGatewayPage() {
   const { t } = useI18n()
@@ -42,7 +38,6 @@ export default function SaasGatewayPage() {
           </div>
 
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-mono text-cyan-300 bg-blue-500/10 border border-[#00E5FF]/40 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
-            <Sparkles className="w-4 h-4 text-[#00E5FF] animate-pulse" />
             <span>{t('Portal de Acesso Parceiro DAIG')}</span>
           </div>
 
@@ -58,7 +53,7 @@ export default function SaasGatewayPage() {
         {/* 21st.dev Modern Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
           
-          {/* Card 1: AI Auto Parts & SaaS WMS Hub */}
+          {/* Card 1: AI Auto Parts & SaaS WMS Hub (Sem Ícones) */}
           <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-blue-500/40 hover:border-[#00E5FF] rounded-3xl p-7 shadow-[0_0_35px_rgba(13,117,255,0.2)] backdrop-blur-2xl transition-all duration-300 transform hover:scale-[1.02] flex flex-col justify-between">
             <div className="absolute top-0 right-0 p-5">
               <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-[#00E5FF]/40 uppercase tracking-wider">
@@ -66,16 +61,10 @@ export default function SaasGatewayPage() {
               </span>
             </div>
 
-            <div className="space-y-5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0D75FF] to-[#00E5FF] p-0.5 shadow-[0_0_25px_rgba(13,117,255,0.4)]">
-                <div className="w-full h-full bg-[#06080F] rounded-[14px] flex items-center justify-center">
-                  <Cpu className="w-7 h-7 text-[#00E5FF] group-hover:rotate-12 transition-transform duration-300" />
-                </div>
-              </div>
-
+            <div className="space-y-5 pt-2">
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight flex items-center space-x-2">
-                  <span>{t('AI Auto Parts & WMS')}</span>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  {t('AI Auto Parts & WMS')}
                 </h2>
                 <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
                   {t('Gestão inteligente de desmanche, inventário com QR Code, Ordens de Serviço da oficina, Kanban, Visão Computacional e API B2B.')}
@@ -83,17 +72,14 @@ export default function SaasGatewayPage() {
               </div>
 
               <div className="space-y-2 pt-2 border-t border-zinc-800/80">
-                <div className="flex items-center space-x-2 text-xs text-zinc-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{t('ERP de Desmanche JDM & Estoque WMS')}</span>
+                <div className="text-xs text-zinc-300 font-medium">
+                  • {t('ERP de Desmanche JDM & Estoque WMS')}
                 </div>
-                <div className="flex items-center space-x-2 text-xs text-zinc-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{t('Ordens de Serviço (Oficina) & Kanban')}</span>
+                <div className="text-xs text-zinc-300 font-medium">
+                  • {t('Ordens de Serviço (Oficina) & Kanban')}
                 </div>
-                <div className="flex items-center space-x-2 text-xs text-zinc-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{t('Chave de Publicação 1-Clique no Marketplace')}</span>
+                <div className="text-xs text-zinc-300 font-medium">
+                  • {t('Chave de Publicação 1-Clique no Marketplace')}
                 </div>
               </div>
             </div>
@@ -102,10 +88,9 @@ export default function SaasGatewayPage() {
               <button
                 type="button"
                 onClick={() => handleSelectDestination('/tenant-dashboard')}
-                className="w-full min-h-[48px] bg-gradient-to-r from-[#0D75FF] via-blue-600 to-[#00E5FF] hover:opacity-95 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition shadow-[0_0_25px_rgba(13,117,255,0.4)] border border-[#00E5FF]/40 flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+                className="w-full min-h-[48px] bg-gradient-to-r from-[#0D75FF] via-blue-600 to-[#00E5FF] hover:opacity-95 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition shadow-[0_0_25px_rgba(13,117,255,0.4)] border border-[#00E5FF]/40 flex items-center justify-center cursor-pointer active:scale-95"
               >
-                <span>{t('Acessar AI Auto Parts ⚡')}</span>
-                <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
+                <span>{t('Acessar AI Auto Parts')}</span>
               </button>
             </div>
           </div>
@@ -118,16 +103,10 @@ export default function SaasGatewayPage() {
               </span>
             </div>
 
-            <div className="space-y-5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00E5FF] to-blue-600 p-0.5 shadow-[0_0_25px_rgba(0,229,255,0.3)]">
-                <div className="w-full h-full bg-[#06080F] rounded-[14px] flex items-center justify-center">
-                  <ShoppingBag className="w-7 h-7 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
-                </div>
-              </div>
-
+            <div className="space-y-5 pt-2">
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight flex items-center space-x-2">
-                  <span>{t('Marketplace Central')}</span>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  {t('Marketplace Central')}
                 </h2>
                 <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
                   {t('Explorar peças do mercado, adquirir itens genuínos de desmanches homologados no Japão e participar de leilões ao vivo.')}
@@ -135,17 +114,14 @@ export default function SaasGatewayPage() {
               </div>
 
               <div className="space-y-2 pt-2 border-t border-zinc-800/80">
-                <div className="flex items-center space-x-2 text-xs text-zinc-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{t('Catálogo Completo de Peças JDM')}</span>
+                <div className="text-xs text-zinc-300 font-medium">
+                  • {t('Catálogo Completo de Peças JDM')}
                 </div>
-                <div className="flex items-center space-x-2 text-xs text-zinc-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{t('Leilões JDM & Compra Direta')}</span>
+                <div className="text-xs text-zinc-300 font-medium">
+                  • {t('Leilões JDM & Compra Direta')}
                 </div>
-                <div className="flex items-center space-x-2 text-xs text-zinc-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>{t('Checkout Seguro com Stripe Connect')}</span>
+                <div className="text-xs text-zinc-300 font-medium">
+                  • {t('Checkout Seguro com Stripe Connect')}
                 </div>
               </div>
             </div>
@@ -154,10 +130,9 @@ export default function SaasGatewayPage() {
               <button
                 type="button"
                 onClick={() => handleSelectDestination('/catalog')}
-                className="w-full min-h-[48px] bg-[#06080F] hover:bg-blue-950/40 text-cyan-300 hover:text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition border border-blue-500/40 hover:border-[#00E5FF] flex items-center justify-center space-x-2 cursor-pointer active:scale-95 shadow-lg"
+                className="w-full min-h-[48px] bg-[#06080F] hover:bg-blue-950/40 text-cyan-300 hover:text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition border border-blue-500/40 hover:border-[#00E5FF] flex items-center justify-center cursor-pointer active:scale-95 shadow-lg"
               >
-                <span>{t('Acessar Marketplace Central 🛍️')}</span>
-                <ArrowRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-1 transition-transform" />
+                <span>{t('Acessar Marketplace Central')}</span>
               </button>
             </div>
           </div>
