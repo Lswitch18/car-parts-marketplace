@@ -35,7 +35,7 @@ export default function Subscription() {
       setSuccess(true)
       
       setTimeout(() => {
-        navigate('/dashboard')
+        navigate('/tenant-dashboard')
       }, 3000)
 
     } catch (err) {

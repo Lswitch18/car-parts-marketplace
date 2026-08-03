@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { 
-  Cpu, ShoppingBag, ArrowRight, Sparkles, Building2, 
-  Wrench, Layers, ShieldCheck, CheckCircle2, Globe, Store
+  Cpu, ShoppingBag, ArrowRight, Sparkles, 
+  CheckCircle2
 } from 'lucide-react'
 
 export default function SaasGatewayPage() {
@@ -16,9 +15,9 @@ export default function SaasGatewayPage() {
   const [rememberPreference, setRememberPreference] = useState(false)
 
   const handleSelectDestination = (route: string) => {
-    if (rememberPreference) {
+    if (rememberPreference && user?.id) {
       try {
-        localStorage.setItem(`daig_preferred_gateway_${user?.id}`, route)
+        localStorage.setItem(`daig_preferred_gateway_${user.id}`, route)
       } catch (err) {
         console.warn('Erro ao salvar preferência no cache:', err)
       }
@@ -34,15 +33,10 @@ export default function SaasGatewayPage() {
       <div className="absolute bottom-10 right-10 w-[350px] h-[350px] bg-[#00E5FF]/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="w-full max-w-4xl mx-auto space-y-8 relative z-10">
+      <div className="w-full max-w-4xl mx-auto space-y-8 relative z-10 animate-in fade-in duration-500">
         
         {/* Header / Logo Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center space-y-4"
-        >
+        <div className="text-center space-y-4">
           <div className="flex justify-center mb-2">
             <GaidLogo className="h-10 text-cyan-400" />
           </div>
@@ -59,19 +53,13 @@ export default function SaasGatewayPage() {
           <p className="text-sm sm:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
             {t('Escolha o ambiente de trabalho que deseja acessar neste momento:')}
           </p>
-        </motion.div>
+        </div>
 
         {/* 21st.dev Modern Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
           
           {/* Card 1: AI Auto Parts & SaaS WMS Hub */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            whileHover={{ scale: 1.02 }}
-            className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-blue-500/40 hover:border-[#00E5FF] rounded-3xl p-7 shadow-[0_0_35px_rgba(13,117,255,0.2)] backdrop-blur-2xl transition-all flex flex-col justify-between"
-          >
+          <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-blue-500/40 hover:border-[#00E5FF] rounded-3xl p-7 shadow-[0_0_35px_rgba(13,117,255,0.2)] backdrop-blur-2xl transition-all duration-300 transform hover:scale-[1.02] flex flex-col justify-between">
             <div className="absolute top-0 right-0 p-5">
               <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-[#00E5FF]/40 uppercase tracking-wider">
                 {t('SaaS Operacional')}
@@ -120,16 +108,10 @@ export default function SaasGatewayPage() {
                 <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
-          </motion.div>
+          </div>
 
           {/* Card 2: Marketplace DAIG Central */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            whileHover={{ scale: 1.02 }}
-            className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-blue-500/40 hover:border-cyan-400 rounded-3xl p-7 shadow-[0_0_35px_rgba(0,229,255,0.15)] backdrop-blur-2xl transition-all flex flex-col justify-between"
-          >
+          <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-blue-500/40 hover:border-cyan-400 rounded-3xl p-7 shadow-[0_0_35px_rgba(0,229,255,0.15)] backdrop-blur-2xl transition-all duration-300 transform hover:scale-[1.02] flex flex-col justify-between">
             <div className="absolute top-0 right-0 p-5">
               <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-blue-500/10 text-cyan-300 border border-blue-500/40 uppercase tracking-wider">
                 {t('Loja & Leilões')}
@@ -178,17 +160,12 @@ export default function SaasGatewayPage() {
                 <ArrowRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
-          </motion.div>
+          </div>
 
         </div>
 
         {/* Preference Checkbox Footer */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex items-center justify-center space-x-3 pt-2 text-xs text-zinc-400"
-        >
+        <div className="flex items-center justify-center space-x-3 pt-2 text-xs text-zinc-400">
           <label className="flex items-center space-x-2 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -198,7 +175,7 @@ export default function SaasGatewayPage() {
             />
             <span>{t('Lembrar minha preferência de navegação neste dispositivo')}</span>
           </label>
-        </motion.div>
+        </div>
 
       </div>
     </div>

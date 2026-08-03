@@ -331,7 +331,7 @@ export default function CreateListing() {
       }
     },
     onSuccess: () => {
-      navigate('/dashboard')
+      navigate('/tenant-dashboard')
     },
     onSettled: () => setUploading(false)
   })
