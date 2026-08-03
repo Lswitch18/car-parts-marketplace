@@ -18,7 +18,7 @@ const JAPAN_BANKS = [
 ]
 
 export default function JapanBankForm() {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const { user } = useAuthStore()
 
   const [loading, setLoading] = useState(false)
@@ -27,6 +27,9 @@ export default function JapanBankForm() {
   const [termsAccepted, setTermsAccepted] = useState(true)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  // Real Sales & Payout State
+  const [totalSales, setTotalSales] = useState(0)
 
   // Form State
   const [entityType, setEntityType] = useState<'individual' | 'empresa'>('individual')
@@ -39,10 +42,11 @@ export default function JapanBankForm() {
   const [payoutFrequency, setPayoutFrequency] = useState<'daily' | 'weekly' | 'monthly'>('daily')
   const [isVerified, setIsVerified] = useState(true)
 
-  // Load existing bank info from Supabase profiles.bank_info
+  // Load existing bank info & real sales metrics from Supabase
   useEffect(() => {
     if (!user?.id) return
     loadBankInfo()
+    loadSalesData()
   }, [user?.id])
 
   const loadBankInfo = async () => {
@@ -72,6 +76,51 @@ export default function JapanBankForm() {
       console.warn('Erro ao carregar dados bancários do perfil:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadSalesData = async () => {
+    try {
+      const { data: txs } = await supabase
+        .from('transactions')
+        .select('amount, payment_status')
+        .eq('seller_id', user?.id)
+
+      const completed = txs?.filter(t => t.payment_status === 'completed' || t.payment_status === 'paid') || []
+      const total = completed.reduce((sum, t) => sum + (Number(t.amount) || 0), 0)
+      setTotalSales(total)
+    } catch (err) {
+      console.warn('Erro ao calcular total de vendas do usuário:', err)
+    }
+  }
+
+  // Dynamic Payout Date formatting matching selected language
+  const getNextPayoutDateFormatted = () => {
+    const now = new Date()
+    let payoutDate = new Date()
+
+    if (payoutFrequency === 'daily') {
+      payoutDate.setDate(now.getDate() + 1)
+    } else if (payoutFrequency === 'weekly') {
+      const day = now.getDay()
+      const diff = now.getDate() + (day === 0 ? 1 : 8 - day)
+      payoutDate.setDate(diff)
+    } else {
+      payoutDate = new Date(now.getFullYear(), now.getMonth() + 1, 15)
+    }
+
+    const monthNamesPt = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+    const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+    const mIndex = payoutDate.getMonth()
+    const dNum = payoutDate.getDate()
+
+    if (language === 'ja') {
+      return `${mIndex + 1}月${dNum}日`
+    } else if (language === 'en') {
+      return `${monthNamesEn[mIndex]} ${dNum}`
+    } else {
+      return `${dNum} de ${monthNamesPt[mIndex]}`
     }
   }
 
@@ -450,7 +499,7 @@ export default function JapanBankForm() {
         {/* Overview Sidebar Right */}
         <div className="space-y-5">
           
-          {/* Card: Resumo de Recebimentos */}
+          {/* Card: Resumo de Recebimentos (Cálculo Real) */}
           <div className="bg-[#0B0E17]/90 border border-blue-500/30 rounded-2xl p-5 space-y-4 shadow-xl backdrop-blur-xl">
             <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-2">
               {t('Resumo de Recebimentos')}
@@ -459,7 +508,7 @@ export default function JapanBankForm() {
             <div>
               <p className="text-[11px] text-zinc-400">{t('Saldo Disponível')}</p>
               <p className="text-2xl font-black text-white font-mono mt-0.5">
-                ¥ 1.250.000
+                ¥ {totalSales.toLocaleString()}
               </p>
             </div>
 
@@ -467,7 +516,7 @@ export default function JapanBankForm() {
               <p className="text-[11px] text-zinc-400">{t('Próxima Transferência')}</p>
               <p className="text-xs font-bold text-zinc-200 mt-0.5 flex items-center space-x-1.5">
                 <Calendar className="w-3.5 h-3.5 text-[#00E5FF]" />
-                <span>15 de Outubro</span>
+                <span>{getNextPayoutDateFormatted()}</span>
               </p>
             </div>
           </div>
@@ -490,7 +539,7 @@ export default function JapanBankForm() {
                     key={freq.id}
                     type="button"
                     onClick={() => setPayoutFrequency(freq.id as any)}
-                    className={`py-2 rounded-xl text-xs font-bold transition border ${
+                    className={`py-2 rounded-xl text-xs font-bold transition border cursor-pointer ${
                       isSel
                         ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-cyan-300 shadow-sm'
                         : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white'
