@@ -326,11 +326,14 @@ export default function Profile() {
   }
 
 
+  const [postalSuccessMsg, setPostalSuccessMsg] = useState<string | null>(null)
+
   const handlePostalLookup = useCallback(async (codeToFetch?: string) => {
     const targetCode = codeToFetch ?? formData.zip_code
     const raw = targetCode.replace(/\D/g, '')
     if (raw.length < 5) return
     setPostalLoading(true)
+    setPostalSuccessMsg(null)
     const result = await fetchPostal(raw)
     if (result) {
       setFormData(prev => ({
@@ -339,9 +342,11 @@ export default function Profile() {
         city: result.city || prev.city,
         state: result.state || prev.state,
       }))
+      setPostalSuccessMsg(t('Endereço preenchido automaticamente via Zipcloud Japan!'))
+      setTimeout(() => setPostalSuccessMsg(null), 6000)
     }
     setPostalLoading(false)
-  }, [formData.zip_code])
+  }, [formData.zip_code, t])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -694,8 +699,15 @@ export default function Profile() {
               </div>
 
               <div>
-                <label className="block text-gray-400 text-sm mb-2">{t('CEP')}</label>
-                <div className="relative">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-gray-400 text-sm font-medium">{t('CEP')}</label>
+                  <span className="inline-flex items-center space-x-1 text-[10px] font-mono text-cyan-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-[#00E5FF]/30">
+                    <Sparkles className="w-3 h-3 text-[#00E5FF] animate-pulse" />
+                    <span>{t('🇯🇵 Auto-Fill Zipcloud (Japan Post API)')}</span>
+                  </span>
+                </div>
+
+                <div className="relative flex items-center">
                   <input
                     type="text"
                     value={formData.zip_code}
@@ -708,13 +720,35 @@ export default function Profile() {
                       }
                     }}
                     onBlur={() => handlePostalLookup()}
-                    placeholder="Ex: 100-0001 (JP) ou 01001-000 (BR)"
-                    className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl pl-4 pr-10 py-3 text-white outline-none transition"
+                    placeholder="100-0001 (JP) ou 01001-000"
+                    className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl pl-4 pr-28 py-3 text-white font-mono outline-none transition"
                   />
-                  {postalLoading && (
-                    <Loader2 className="w-4 h-4 text-[#00E5FF] animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
-                  )}
+
+                  <button
+                    type="button"
+                    disabled={postalLoading}
+                    onClick={() => handlePostalLookup()}
+                    className="absolute right-2 px-3 py-1.5 bg-[#0D75FF]/20 hover:bg-[#0D75FF]/40 border border-[#00E5FF]/40 text-cyan-300 hover:text-white rounded-lg text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    {postalLoading ? (
+                      <Loader2 className="w-3.5 h-3.5 text-[#00E5FF] animate-spin" />
+                    ) : (
+                      <Sparkles className="w-3.5 h-3.5 text-[#00E5FF]" />
+                    )}
+                    <span>{t('Buscar CEP 🇯🇵')}</span>
+                  </button>
                 </div>
+
+                {postalSuccessMsg && (
+                  <p className="text-xs text-emerald-400 font-medium mt-1.5 flex items-center space-x-1 animate-in fade-in">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>{postalSuccessMsg}</span>
+                  </p>
+                )}
+
+                <p className="text-[11px] text-zinc-500 mt-1">
+                  {t('Digite o CEP de 7 dígitos do Japão (ex: 100-0001 ou 1000001) para autopreencher Estado, Cidade e Endereço.')}
+                </p>
               </div>
             </div>
 
