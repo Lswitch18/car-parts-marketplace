@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
+import { useI18n } from '@/modules/shared/lib/i18n'
 import JapanBankForm from '@/modules/backoffice/components/JapanBankForm'
 import { 
   User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, 
