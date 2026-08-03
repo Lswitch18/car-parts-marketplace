@@ -142,10 +142,10 @@ export default function Profile() {
       setMfaStatus('active')
       setQrCode(null)
       setVerificationCode('')
-      alert('Autenticação de Dois Fatores (MFA) ativada com sucesso!')
+      alert(t('Autenticação de Dois Fatores (MFA) ativada com sucesso!'))
       loadMfa()
     } catch (err: any) {
-      setMfaError(err.message || 'Código de verificação incorreto ou expirado')
+      setMfaError(err.message || t('Código de verificação incorreto ou expirado'))
     } finally {
       setMfaLoading(false)
     }
@@ -153,17 +153,17 @@ export default function Profile() {
 
   // Disable MFA
   const handleUnenrollMfa = async (factorId: string) => {
-    if (!confirm('Tem certeza que deseja desativar a Autenticação de Dois Fatores (MFA)? Isso reduz a segurança da sua conta.')) return
+    if (!confirm(t('Tem certeza que deseja desativar a Autenticação de Dois Fatores (MFA)? Isso reduz a segurança da sua conta.'))) return
     setMfaLoading(true)
     setMfaError(null)
     try {
       const { error } = await supabase.auth.mfa.unenroll({ factorId })
       if (error) throw error
       setMfaStatus('disabled')
-      alert('Autenticação de Dois Fatores (MFA) desativada.')
+      alert(t('Autenticação de Dois Fatores (MFA) desativada.'))
       loadMfa()
     } catch (err: any) {
-      setMfaError(err.message || 'Erro ao desativar MFA')
+      setMfaError(err.message || t('Erro ao desativar MFA'))
     } finally {
       setMfaLoading(false)
     }
