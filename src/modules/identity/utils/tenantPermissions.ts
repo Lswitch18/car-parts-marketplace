@@ -19,16 +19,12 @@ export function hasTenantPermission(
 }
 
 /**
- * Helper to check if a user is an active SaaS user (has tenant_id or business account_type or tenant_role).
+ * Helper to check if a user is an active SaaS user (has explicit tenant_id or tenant_role).
  */
 export function isSaaSUser(user: User | null | undefined): boolean {
   if (!user) return false
   if (user.role === 'admin') return true
   if (user.tenant_id || user.tenant_role) return true
-
-  const businessTypes = ['oficina', 'desmanche', 'concessionaria', 'loja_pecas', 'importadora', 'empresa']
-  if (user.account_type && businessTypes.includes(user.account_type)) return true
-  if (user.store_type && businessTypes.includes(user.store_type)) return true
 
   return false
 }
