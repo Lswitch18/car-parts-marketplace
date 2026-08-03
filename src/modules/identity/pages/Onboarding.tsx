@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useI18n } from '@/modules/shared/lib/i18n'
-import { 
-  User, Building2, Wrench, Car, Package, Globe, ChevronRight, CheckCircle2, 
+import {
+  User, Building2, Wrench, Car, Package, Globe, ChevronRight, CheckCircle2,
   Sparkles, Store, ShieldCheck, ArrowRight, Zap, Check, Lock, Landmark, FileText
 } from 'lucide-react'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
@@ -19,7 +19,7 @@ const STORE_TYPES = [
 
 const OnboardingLayout = ({ children, currentStep }: { children: React.ReactNode, currentStep: number }) => (
   <div className="min-h-screen bg-[#09090b] text-zinc-100 flex font-sans selection:bg-emerald-500 selection:text-black relative overflow-hidden">
-    
+
     {/* Background Glow Orbs */}
     <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none" />
     <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-[140px] pointer-events-none" />
@@ -76,7 +76,7 @@ const OnboardingLayout = ({ children, currentStep }: { children: React.ReactNode
 
     {/* Right Content Form Area */}
     <div className="w-full lg:w-[55%] flex flex-col justify-between p-6 sm:p-12 relative z-10 bg-[#09090b]/80 backdrop-blur-2xl">
-      
+
       {/* Step Progress Bar */}
       <div className="max-w-xl mx-auto w-full mb-8">
         <div className="flex items-center justify-between text-[11px] font-mono font-bold text-zinc-400 mb-2 uppercase tracking-wider">
@@ -86,7 +86,7 @@ const OnboardingLayout = ({ children, currentStep }: { children: React.ReactNode
           <span className={currentStep >= 3 ? 'text-emerald-400' : ''}>04 Conclusão</span>
         </div>
         <div className="w-full h-1.5 bg-zinc-800/80 rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-gradient-to-r from-emerald-500 via-sky-500 to-indigo-500 transition-all duration-500 rounded-full"
             style={{ width: `${((currentStep + 1) / 4) * 100}%` }}
           />
@@ -200,7 +200,7 @@ export default function Onboarding() {
     return (
       <OnboardingLayout currentStep={0}>
         <div className="w-full text-center space-y-6 animate-in fade-in zoom-in-95 duration-300">
-          
+
           <div className="relative inline-block">
             <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-500 to-sky-500 p-0.5 shadow-2xl shadow-emerald-500/20 mx-auto">
               <div className="w-full h-full bg-[#121215] rounded-[22px] flex items-center justify-center">
@@ -260,7 +260,7 @@ export default function Onboarding() {
     return (
       <OnboardingLayout currentStep={1}>
         <div className="w-full space-y-6 animate-in fade-in duration-300">
-          
+
           <div className="text-center space-y-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
               Como você usará a plataforma?
@@ -271,13 +271,12 @@ export default function Onboarding() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            
+
             {/* Option 1: Pessoa Física */}
             <div
               onClick={() => { setAccountType('pessoa_fisica'); setStep(2); }}
-              className={`p-6 bg-[#121215] border rounded-2xl cursor-pointer transition-all hover:border-blue-500/50 group relative overflow-hidden ${
-                accountType === 'pessoa_fisica' ? 'border-blue-500 bg-blue-500/[0.04]' : 'border-zinc-800'
-              }`}
+              className={`p-6 bg-[#121215] border rounded-2xl cursor-pointer transition-all hover:border-blue-500/50 group relative overflow-hidden ${accountType === 'pessoa_fisica' ? 'border-blue-500 bg-blue-500/[0.04]' : 'border-zinc-800'
+                }`}
             >
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <User size={24} />
@@ -294,9 +293,8 @@ export default function Onboarding() {
             {/* Option 2: Empresa / Parceiro B2B */}
             <div
               onClick={() => { setAccountType('empresa'); setStep(2); }}
-              className={`p-6 bg-[#121215] border rounded-2xl cursor-pointer transition-all hover:border-emerald-500/50 group relative overflow-hidden ${
-                accountType === 'empresa' ? 'border-emerald-500 bg-emerald-500/[0.04]' : 'border-zinc-800'
-              }`}
+              className={`p-6 bg-[#121215] border rounded-2xl cursor-pointer transition-all hover:border-emerald-500/50 group relative overflow-hidden ${accountType === 'empresa' ? 'border-emerald-500 bg-emerald-500/[0.04]' : 'border-zinc-800'
+                }`}
             >
               <span className="absolute top-3 right-3 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[9px] font-bold rounded">
                 RECOMENDADO PARCEIROS
@@ -333,7 +331,7 @@ export default function Onboarding() {
     return (
       <OnboardingLayout currentStep={2}>
         <div className="w-full space-y-5 animate-in fade-in duration-300">
-          
+
           <div className="text-center space-y-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
               {isEmpresa ? 'Configuração da Loja B2B' : 'Dados do Seu Perfil'}
@@ -344,7 +342,7 @@ export default function Onboarding() {
           </div>
 
           <div className="bg-[#121215] border border-zinc-800 p-6 rounded-2xl space-y-4 shadow-xl">
-            
+
             {/* Nome Completo */}
             <div>
               <label className="block text-xs font-bold text-zinc-400 mb-1">Nome do Responsável / Proprietário *</label>
@@ -384,9 +382,8 @@ export default function Onboarding() {
                         <div
                           key={st.id}
                           onClick={() => setStoreType(st.id)}
-                          className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center gap-2.5 ${
-                            isSel ? 'border-emerald-500 bg-emerald-500/10 text-white' : 'border-zinc-800 bg-[#18181b] text-zinc-400 hover:border-zinc-700'
-                          }`}
+                          className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center gap-2.5 ${isSel ? 'border-emerald-500 bg-emerald-500/10 text-white' : 'border-zinc-800 bg-[#18181b] text-zinc-400 hover:border-zinc-700'
+                            }`}
                         >
                           <Icon size={16} style={{ color: st.color }} />
                           <div className="min-w-0 flex-1">
@@ -465,7 +462,7 @@ export default function Onboarding() {
   return (
     <OnboardingLayout currentStep={3}>
       <div className="w-full text-center space-y-6 animate-in fade-in duration-300">
-        
+
         <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto shadow-2xl shadow-emerald-500/20">
           <CheckCircle2 size={36} />
         </div>
@@ -475,7 +472,7 @@ export default function Onboarding() {
             Tudo Pronto & Configurado! 🚀
           </h1>
           <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">
-            {accountType === 'empresa' 
+            {accountType === 'empresa'
               ? `Sua loja B2B ${storeName || ''} foi criada com sucesso no sistema. Você pode cadastrar peças e ativar os repasses Stripe Connect.`
               : 'Seu perfil foi configurado. Explore o catálogo de peças JDM ou comece a comprar com custódia Escrow.'}
           </p>

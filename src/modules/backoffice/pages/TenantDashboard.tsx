@@ -7,26 +7,26 @@ import { supabase } from '@/modules/shared/lib/supabase'
 import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { Product } from '@/modules/shared/types'
-import { 
-  Building2, Package, QrCode, Wrench, Globe, Sparkles, 
-  Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText, 
-  ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2, 
-  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check, 
-  Printer, X, CreditCard, ChevronLeft, ChevronRight, Mic, MicOff, Command, 
+import {
+  Building2, Package, QrCode, Wrench, Globe, Sparkles,
+  Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText,
+  ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2,
+  Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check,
+  Printer, X, CreditCard, ChevronLeft, ChevronRight, Mic, MicOff, Command,
   MapPin, SlidersHorizontal, User, Mail, Phone, Save, LogOut, Grid, Zap, LayoutDashboard, Box, Loader2, Play, ArrowDownRight, CheckSquare, MinusCircle
 } from 'lucide-react'
 
-type TabType = 
-  | 'overview' 
+type TabType =
+  | 'overview'
   | 'smart-workflow'
-  | 'ai-hub' 
-  | 'wms-hierarchy' 
-  | 'workshop-kanban' 
-  | 'inventory' 
-  | 'sales' 
-  | 'purchases' 
-  | 'finance' 
-  | 'profile' 
+  | 'ai-hub'
+  | 'wms-hierarchy'
+  | 'workshop-kanban'
+  | 'inventory'
+  | 'sales'
+  | 'purchases'
+  | 'finance'
+  | 'profile'
   | 'api-b2b'
 
 interface WorkOrder {
@@ -428,7 +428,7 @@ const DEMO_20_PARTS: any[] = [
 export default function TenantDashboard() {
   const navigate = useNavigate()
   const { user, initialized, loading: authLoading, signOut, setUser } = useAuthStore()
-  
+
   // Clean Architecture Hook
   const {
     filteredParts: originalFilteredParts,
@@ -449,7 +449,7 @@ export default function TenantDashboard() {
 
   // Peças Ativas (Combina Banco de Dados + 20 Peças de Teste se o DB estiver vazio)
   const [localDemoParts, setLocalDemoParts] = useState<any[]>(DEMO_20_PARTS)
-  
+
   const allParts = useMemo(() => {
     return originalFilteredParts.length > 0 ? originalFilteredParts : localDemoParts
   }, [originalFilteredParts, localDemoParts])
@@ -706,7 +706,7 @@ export default function TenantDashboard() {
   const handleVoiceSearchSubmit = (queryText: string) => {
     const q = queryText.toLowerCase()
     setVoiceSearchResult(null)
-    
+
     if (q.includes('farol') || q.includes('gol') || q.includes('prius')) {
       setVoiceSearchResult({
         found: true,
@@ -767,7 +767,7 @@ export default function TenantDashboard() {
 
   return (
     <div className="min-h-screen bg-[#09090B] text-zinc-100 flex overflow-hidden font-sans">
-      
+
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-6 right-6 z-50 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 animate-bounce border border-emerald-400/30">
@@ -779,10 +779,9 @@ export default function TenantDashboard() {
       {/* ─────────────────────────────────────────────────────────────
           1. SIDEBAR LATERAL RECOLHÍVEL (Linear / Stripe Style)
          ───────────────────────────────────────────────────────────── */}
-      <aside 
-        className={`bg-[#121215] border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 z-30 shrink-0 ${
-          sidebarCollapsed ? 'w-20' : 'w-72'
-        }`}
+      <aside
+        className={`bg-[#121215] border-r border-zinc-800/80 flex flex-col justify-between transition-all duration-300 z-30 shrink-0 ${sidebarCollapsed ? 'w-20' : 'w-72'
+          }`}
       >
         <div>
           {/* Header da Sidebar */}
@@ -817,9 +816,8 @@ export default function TenantDashboard() {
           <div className="p-3 border-b border-zinc-800/60">
             <button
               onClick={() => setShowCommandPalette(true)}
-              className={`w-full py-2.5 px-3 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-blue-500/40 rounded-xl text-xs text-zinc-400 hover:text-white flex items-center justify-between transition group ${
-                sidebarCollapsed ? 'justify-center' : ''
-              }`}
+              className={`w-full py-2.5 px-3 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-blue-500/40 rounded-xl text-xs text-zinc-400 hover:text-white flex items-center justify-between transition group ${sidebarCollapsed ? 'justify-center' : ''
+                }`}
             >
               <div className="flex items-center space-x-2">
                 <Command className="w-4 h-4 text-blue-400 group-hover:scale-110 transition" />
@@ -835,7 +833,7 @@ export default function TenantDashboard() {
 
           {/* ITENS DE NAVEGAÇÃO */}
           <div className="p-3 space-y-6 overflow-y-auto max-h-[calc(100vh-220px)] scrollbar-none">
-            
+
             {/* GRUPO 1: PRINCIPAL */}
             <div>
               {!sidebarCollapsed && (
@@ -858,11 +856,10 @@ export default function TenantDashboard() {
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id as TabType)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
-                        isActive
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${isActive
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
                           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-                      }`}
+                        }`}
                       title={sidebarCollapsed ? item.label : undefined}
                     >
                       <div className="flex items-center space-x-3">
@@ -870,9 +867,8 @@ export default function TenantDashboard() {
                         {!sidebarCollapsed && <span className="truncate">{item.label}</span>}
                       </div>
                       {!sidebarCollapsed && item.badge && (
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono ${
-                          isActive ? 'bg-white/20 text-white' : 'bg-zinc-800 text-blue-400 border border-zinc-700'
-                        }`}>
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono ${isActive ? 'bg-white/20 text-white' : 'bg-zinc-800 text-blue-400 border border-zinc-700'
+                          }`}>
                           {item.badge}
                         </span>
                       )}
@@ -901,11 +897,10 @@ export default function TenantDashboard() {
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id as TabType)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
-                        isActive
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${isActive
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
                           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-                      }`}
+                        }`}
                       title={sidebarCollapsed ? item.label : undefined}
                     >
                       <div className="flex items-center space-x-3">
@@ -936,11 +931,10 @@ export default function TenantDashboard() {
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id as TabType)}
-                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
-                        isActive
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition ${isActive
                           ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25'
                           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
-                      }`}
+                        }`}
                       title={sidebarCollapsed ? item.label : undefined}
                     >
                       <div className="flex items-center space-x-3">
@@ -988,7 +982,7 @@ export default function TenantDashboard() {
           2. CONTEÚDO PRINCIPAL (MAIN CONTENT)
          ───────────────────────────────────────────────────────────── */}
       <main className="flex-1 overflow-y-auto bg-[#09090B] p-4 sm:p-6 lg:p-8">
-        
+
         {/* TOP BAR / BANNER SUPERIOR */}
         <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-900/90 border border-zinc-800/80 rounded-2xl p-5 shadow-2xl backdrop-blur-xl">
           <div className="flex items-center space-x-4">
@@ -1094,13 +1088,12 @@ export default function TenantDashboard() {
                   return (
                     <div
                       key={s.step}
-                      className={`p-3 rounded-xl border text-center space-y-1.5 transition ${
-                        isCurrent
+                      className={`p-3 rounded-xl border text-center space-y-1.5 transition ${isCurrent
                           ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-lg'
                           : isPassed
-                          ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
-                          : 'bg-zinc-950 border-zinc-800/80 text-zinc-500'
-                      }`}
+                            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+                            : 'bg-zinc-950 border-zinc-800/80 text-zinc-500'
+                        }`}
                     >
                       <div className="flex items-center justify-center">
                         <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400">
@@ -1151,7 +1144,7 @@ export default function TenantDashboard() {
                         <span className="text-sm font-extrabold text-emerald-400 font-mono">
                           ¥ {Number(part.price || 0).toLocaleString('ja-JP')}
                         </span>
-                        
+
                         <button
                           onClick={() => handleSellAndDeductPart(part.id, part.title, Number(part.price || 0))}
                           className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-semibold transition shadow-md flex items-center space-x-1"
@@ -1223,7 +1216,7 @@ export default function TenantDashboard() {
 
             {/* Painel WMS Galpão & Atalhos Rápidos */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
+
               {/* Mapa de Galpão / Hierarquia */}
               <div className="lg:col-span-2 bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl">
                 <div className="flex items-center justify-between mb-4">
@@ -1321,7 +1314,7 @@ export default function TenantDashboard() {
 
               {/* SEÇÃO 1: RECONHECIMENTO POR FOTO E OCR */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                
+
                 {/* Upload / Scanner por Foto */}
                 <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-4">
                   <div className="flex items-center justify-between">
@@ -1461,11 +1454,10 @@ export default function TenantDashboard() {
                         }, 1800)
                       }
                     }}
-                    className={`px-4 py-3 rounded-xl text-xs font-semibold flex items-center space-x-2 transition ${
-                      isListeningVoice 
-                        ? 'bg-red-600 text-white animate-pulse' 
+                    className={`px-4 py-3 rounded-xl text-xs font-semibold flex items-center space-x-2 transition ${isListeningVoice
+                        ? 'bg-red-600 text-white animate-pulse'
                         : 'bg-zinc-800 hover:bg-zinc-700 text-cyan-300 border border-zinc-700'
-                    }`}
+                      }`}
                   >
                     {isListeningVoice ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                     <span>{isListeningVoice ? 'Ouvindo...' : 'Falar por Voz'}</span>
@@ -1625,7 +1617,7 @@ export default function TenantDashboard() {
                           </div>
 
                           <h4 className="font-bold text-xs text-white leading-snug">{wo.title}</h4>
-                          
+
                           <div className="text-[11px] text-zinc-400 space-y-0.5 font-mono">
                             <p><span className="text-zinc-500">Cliente:</span> {wo.client}</p>
                             <p><span className="text-zinc-500">Veículo:</span> {wo.vehicle}</p>
@@ -1634,7 +1626,7 @@ export default function TenantDashboard() {
 
                           <div className="pt-2 border-t border-zinc-800/80 flex items-center justify-between">
                             <span className="text-xs font-extrabold text-emerald-400 font-mono">¥ {wo.amount.toLocaleString('ja-JP')} JPY</span>
-                            
+
                             {/* Troca Rápida de Status */}
                             <select
                               value={wo.status}
@@ -1677,25 +1669,22 @@ export default function TenantDashboard() {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setFilterCategory('all')}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
-                    filterCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
-                  }`}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${filterCategory === 'all' ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400'
+                    }`}
                 >
                   Todas ({stats.totalSKUs})
                 </button>
                 <button
                   onClick={() => setFilterCategory('published')}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
-                    filterCategory === 'published' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400'
-                  }`}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${filterCategory === 'published' ? 'bg-emerald-600 text-white' : 'bg-zinc-800 text-zinc-400'
+                    }`}
                 >
                   Marketplace DAIG ({stats.publishedCount})
                 </button>
                 <button
                   onClick={() => setFilterCategory('private')}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${
-                    filterCategory === 'private' ? 'bg-zinc-700 text-white' : 'bg-zinc-800 text-zinc-400'
-                  }`}
+                  className={`px-3 py-2 rounded-xl text-xs font-semibold transition ${filterCategory === 'private' ? 'bg-zinc-700 text-white' : 'bg-zinc-800 text-zinc-400'
+                    }`}
                 >
                   Estoque Privado ({stats.privateCount})
                 </button>
@@ -1959,7 +1948,7 @@ export default function TenantDashboard() {
               {/* DADOS DA CONTA */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-white border-b border-zinc-800 pb-2">Informações da Conta</h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-zinc-400 mb-1">Nome Completo / Empresa *</label>
@@ -2071,7 +2060,7 @@ export default function TenantDashboard() {
               <Key className="w-6 h-6 text-amber-400" />
               API REST & Integração ERP Sincronizada
             </h2>
-            
+
             <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
               <label className="block text-xs text-zinc-400 mb-2">Sua Chave Secreta da API</label>
               <div className="flex gap-2">
@@ -2121,7 +2110,7 @@ export default function TenantDashboard() {
 
             <div className="p-3 max-h-80 overflow-y-auto space-y-1 text-xs">
               <p className="text-[10px] font-mono text-zinc-500 uppercase px-3 py-1">Atalhos Rápidos</p>
-              
+
               <button
                 onClick={() => { setActiveTab('smart-workflow'); setShowCommandPalette(false); }}
                 className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"

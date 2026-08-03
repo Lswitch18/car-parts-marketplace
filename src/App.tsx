@@ -81,7 +81,7 @@ function App() {
   }, [user, initialized, loading, location.pathname, navigate])
 
   const isPartnerDomain = typeof window !== 'undefined' && (
-    window.location.hostname.startsWith('partner.') || 
+    window.location.hostname.startsWith('partner.') ||
     window.location.hostname.startsWith('b2b.') ||
     window.location.hostname.includes('partner-')
   )
@@ -95,7 +95,7 @@ function App() {
             <Route index element={isPartnerDomain ? <PartnerPortalPage /> : <Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            
+
             {/* Páginas Públicas (sem login) */}
             <Route path="catalog" element={<Catalog />} />
             <Route path="parts" element={<PartsLookup />} />
@@ -108,14 +108,12 @@ function App() {
             <Route path="tokushouhou" element={<LegalNotice />} />
             <Route path="terms" element={<TermsOfService />} />
             <Route path="privacy" element={<PrivacyPolicy />} />
-            
+
             {/* Rotas Protegidas (Exigem Login) */}
             <Route element={<ProtectedRoute />}>
               <Route path="onboarding" element={<Onboarding />} />
               <Route element={<OnboardingGuard />}>
                 <Route path="dashboard" element={<Dashboard />} />
-                <Route path="tenant/dashboard" element={<TenantDashboard />} />
-                <Route path="tenant-dashboard" element={<TenantDashboard />} />
                 <Route path="bank-account" element={<JapanBankAccount />} />
                 <Route path="japan-bank-account" element={<JapanBankAccount />} />
                 <Route path="create-listing" element={<CreateListing />} />
@@ -125,6 +123,12 @@ function App() {
                 <Route path="checkout/:id" element={<PaymentCheckout />} />
                 <Route path="motion-frame" element={<MotionFramePage />} />
                 <Route path="subscription" element={<Subscription />} />
+
+                {/* Rotas Exclusivas do SaaS Multi-Tenant */}
+                <Route element={<ProtectedRoute requireSaaS />}>
+                  <Route path="tenant/dashboard" element={<TenantDashboard />} />
+                  <Route path="tenant-dashboard" element={<TenantDashboard />} />
+                </Route>
               </Route>
             </Route>
           </Route>
