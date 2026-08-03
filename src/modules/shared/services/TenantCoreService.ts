@@ -34,18 +34,22 @@ export interface CreateWorkOrderInput {
 export class TenantCoreService {
 
   /**
-   * Busca todo o estoque privado do Tenant
+   * Busca todo o estoque privado do Tenant de forma isolada por tenantId ou userId
    */
-  static async getTenantInventory(userId: string): Promise<Product[]> {
-    if (!userId) return []
-    const { data, error } = await supabase
-      .from('parts')
-      .select('*')
-      .eq('seller_id', userId)
-      .order('created_at', { ascending: false })
+  static async getTenantInventory(userId: string, tenantId?: string): Promise<Product[]> {
+    if (!userId && !tenantId) return []
+    
+    let query = supabase.from('parts').select('*')
+    if (tenantId) {
+      query = query.eq('tenant_id', tenantId)
+    } else {
+      query = query.eq('seller_id', userId)
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false })
 
     if (error) {
-      console.error('[TenantCoreService] Erro ao carregar estoque:', error)
+      console.error('[TenantCoreService] Erro ao carregar estoque do tenant:', error)
       throw new Error(error.message || 'Falha ao buscar estoque do tenant')
     }
 
