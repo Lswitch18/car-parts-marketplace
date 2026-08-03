@@ -1,13 +1,18 @@
 import { useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
-import { User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, Building2, Landmark, PlusCircle, ArrowRight, Package } from 'lucide-react'
+import JapanBankForm from '@/modules/backoffice/components/JapanBankForm'
+import { User, Phone, MapPin, Camera, Loader2, Shield, QrCode, CheckCircle2, Building2, Landmark, PlusCircle, ArrowRight, Package, CreditCard } from 'lucide-react'
 import { fetchPostal } from '@/modules/shared/lib/postal'
 
 export default function Profile() {
   const navigate = useNavigate()
   const { user, setUser } = useAuthStore()
+  const location = useLocation()
+  const initialTab = location.hash === '#bank' || location.search.includes('tab=bank') ? 'bank' : 'personal'
+  const [activeTab, setActiveTab] = useState<'personal' | 'bank'>(initialTab)
+
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -190,57 +195,96 @@ export default function Profile() {
           Meu Perfil
         </h1>
 
-        {/* Card do Painel do Vendedor */}
-        <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.12)]">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div className="space-y-1.5 max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                <Package className="w-3.5 h-3.5" />
-                <span>Minhas Vendas & Anúncios</span>
-              </div>
-              <h3 className="text-xl font-bold text-white tracking-tight">
-                Painel do Vendedor
-              </h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Gerencie suas peças anunciadas, acompanhe suas vendas, mensagens de compradores e configure sua conta bancária para recebimentos em ienes (JPY).
-              </p>
-            </div>
+        {/* Navigation Tabs */}
+        <div className="flex items-center space-x-3 border-b border-zinc-800 pb-3 mb-6">
+          <button
+            type="button"
+            onClick={() => setActiveTab('personal')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 ${
+              activeTab === 'personal'
+                ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 shadow-lg shadow-emerald-600/10'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent'
+            }`}
+          >
+            <User className="w-4 h-4" />
+            <span>Dados Pessoais & Perfil</span>
+          </button>
 
-            <div className="flex flex-col gap-2.5 w-full sm:w-auto flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => navigate('/dashboard')}
-                className="w-full px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2"
-              >
-                <Building2 className="w-4 h-4" />
-                <span>Acessar Painel do Vendedor</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <div className="flex items-center gap-2 w-full">
-                <button
-                  type="button"
-                  onClick={() => navigate('/create-listing')}
-                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
-                >
-                  <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Anunciar Peça</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => navigate('/japan-bank-account')}
-                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
-                >
-                  <Landmark className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Conta (JPY)</span>
-                </button>
-              </div>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab('bank')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 ${
+              activeTab === 'bank'
+                ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 shadow-lg shadow-emerald-600/10'
+                : 'text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent'
+            }`}
+          >
+            <Landmark className="w-4 h-4" />
+            <span>Conta Bancária (Japão JPY)</span>
+          </button>
         </div>
 
-        <div className="card p-8">
+        {/* Tab 2: Configuração de Conta Bancária Japonesa */}
+        {activeTab === 'bank' && (
+          <div className="animate-in fade-in duration-300">
+            <JapanBankForm />
+          </div>
+        )}
+
+        {/* Tab 1: Dados Pessoais do Perfil */}
+        {activeTab === 'personal' && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            {/* Card do Painel do Vendedor */}
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.12)]">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                <div className="space-y-1.5 max-w-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                    <Package className="w-3.5 h-3.5" />
+                    <span>Minhas Vendas & Anúncios</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">
+                    Painel do Vendedor
+                  </h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Gerencie suas peças anunciadas, acompanhe suas vendas, mensagens de compradores e configure sua conta bancária para recebimentos em ienes (JPY).
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2.5 w-full sm:w-auto flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/dashboard')}
+                    className="w-full px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2"
+                  >
+                    <Building2 className="w-4 h-4" />
+                    <span>Acessar Painel do Vendedor</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+
+                  <div className="flex items-center gap-2 w-full">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/create-listing')}
+                      className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                    >
+                      <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Anunciar Peça</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('bank')}
+                      className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                    >
+                      <Landmark className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Conta (JPY)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card p-8">
           <div className="flex items-center space-x-6 mb-8">
             <div className="relative">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
@@ -454,6 +498,8 @@ export default function Profile() {
           )}
         </div>
       </div>
+    )}
     </div>
+  </div>
   )
 }
