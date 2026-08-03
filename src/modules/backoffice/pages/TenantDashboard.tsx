@@ -7,6 +7,7 @@ import { supabase } from '@/modules/shared/lib/supabase'
 import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { Product } from '@/modules/shared/types'
+import AiPartQuickUploadModal from '@/modules/backoffice/components/AiPartQuickUploadModal'
 import {
   Building2, Package, QrCode, Wrench, Globe, Sparkles,
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText,
@@ -487,6 +488,7 @@ export default function TenantDashboard() {
   const [showPdvModal, setShowPdvModal] = useState(false)
   const [showNfeModal, setShowNfeModal] = useState(false)
   const [showWorkOrderModal, setShowWorkOrderModal] = useState(false)
+  const [showAiUploadModal, setShowAiUploadModal] = useState(false)
 
   // Pipeline Inteligente State
   const [workflowStep, setWorkflowStep] = useState(1)
@@ -843,12 +845,12 @@ export default function TenantDashboard() {
               )}
               <nav className="space-y-1">
                 {[
-                  { id: 'overview', label: '📊 Visão Geral KPIs', icon: LayoutDashboard },
-                  { id: 'smart-workflow', label: '🔄 Pipeline End-to-End', icon: Zap, badge: 'NOVO' },
-                  { id: 'ai-hub', label: '🤖 IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
-                  { id: 'wms-hierarchy', label: '📍 WMS & Hierarquia', icon: MapPin },
-                  { id: 'workshop-kanban', label: '🔧 Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
-                  { id: 'inventory', label: '📦 Estoque (20 Peças)', icon: Package, badge: `${stats.totalSKUs}` },
+                  { id: 'overview', label: 'Visão Geral KPIs', icon: LayoutDashboard },
+                  { id: 'smart-workflow', label: 'Pipeline End-to-End', icon: Zap, badge: 'NOVO' },
+                  { id: 'ai-hub', label: 'IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
+                  { id: 'wms-hierarchy', label: 'WMS & Hierarquia', icon: MapPin },
+                  { id: 'workshop-kanban', label: 'Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
+                  { id: 'inventory', label: 'Estoque de Peças', icon: Package, badge: `${stats.totalSKUs}` },
                 ].map(item => {
                   const Icon = item.icon
                   const isActive = activeTab === item.id
@@ -887,9 +889,9 @@ export default function TenantDashboard() {
               )}
               <nav className="space-y-1">
                 {[
-                  { id: 'sales', label: '🛒 Vendas & PDV Balcão', icon: ShoppingCart },
-                  { id: 'purchases', label: '📑 Compras & NF-e XML', icon: FileText },
-                  { id: 'finance', label: '💰 Repasses Stripe', icon: DollarSign },
+                  { id: 'sales', label: 'Vendas & PDV Balcão', icon: ShoppingCart },
+                  { id: 'purchases', label: 'Compras & NF-e XML', icon: FileText },
+                  { id: 'finance', label: 'Repasses Stripe', icon: DollarSign },
                 ].map(item => {
                   const Icon = item.icon
                   const isActive = activeTab === item.id
@@ -1009,11 +1011,19 @@ export default function TenantDashboard() {
           {/* Ações Rápidas do Topbar */}
           <div className="flex flex-wrap items-center gap-2">
             <button
+              onClick={() => setShowAiUploadModal(true)}
+              className="px-4 py-2 bg-gradient-to-r from-[#0D75FF] via-blue-600 to-[#00E5FF] hover:opacity-95 text-white font-extrabold rounded-xl text-xs flex items-center space-x-2 shadow-[0_0_20px_rgba(0,229,255,0.3)] border border-[#00E5FF]/40 transition cursor-pointer active:scale-95"
+            >
+              <Sparkles className="w-4 h-4 text-cyan-200 animate-pulse" />
+              <span>Cadastre uma Peça em 30s com IA</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('smart-workflow')}
               className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-emerald-600/20 transition"
             >
               <Zap className="w-4 h-4 text-emerald-200" />
-              <span>Ver Pipeline Inteligente</span>
+              <span>Pipeline Inteligente</span>
             </button>
 
             <button
@@ -2438,6 +2448,13 @@ export default function TenantDashboard() {
           </div>
         </div>
       )}
+
+      {/* Modal de Cadastro em 30s com AI Auto Parts por DAIG */}
+      <AiPartQuickUploadModal
+        isOpen={showAiUploadModal}
+        onClose={() => setShowAiUploadModal(false)}
+        sellerId={user?.id}
+      />
 
     </div>
   )
