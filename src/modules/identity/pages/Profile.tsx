@@ -12,6 +12,7 @@ import {
 import { fetchPostal } from '@/modules/shared/lib/postal'
 
 export default function Profile() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const { user, setUser } = useAuthStore()
   const location = useLocation()
@@ -261,7 +262,7 @@ export default function Profile() {
             }`}
           >
             <Landmark className="w-4 h-4 text-[#00E5FF]" />
-            <span>Conta Bancária (Japão JPY)</span>
+            <span>{t('Conta Bancária (Japão)')}</span>
           </button>
         </div>
 
@@ -281,13 +282,13 @@ export default function Profile() {
                 <div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-[#00E5FF]/30 text-cyan-400 mb-1">
                     <TrendingUp className="w-3.5 h-3.5 text-[#00E5FF]" />
-                    <span>Minhas Vendas & Métricas</span>
+                    <span>{t('Painel de Vendas & Desempenho')}</span>
                   </div>
                   <h3 className="text-xl font-bold text-white tracking-tight">
-                    Desempenho da Conta
+                    {t('Desempenho da Conta')}
                   </h3>
                   <p className="text-xs text-zinc-400 mt-0.5">
-                    Resumo de anúncios ativos, vendas em ienes e atalhos rápidos de gerenciamento.
+                    {t('Resumo de anúncios ativos, vendas acumuladas e atalhos de gerenciamento.')}
                   </p>
                 </div>
 
@@ -298,7 +299,7 @@ export default function Profile() {
                     className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0D75FF] to-[#00E5FF] hover:from-blue-600 hover:to-[#00E5FF] text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-blue-500/25 flex items-center space-x-1.5 border border-[#00E5FF]/40 cursor-pointer"
                   >
                     <PlusCircle className="w-4 h-4" />
-                    <span>Anunciar Peça</span>
+                    <span>{t('Anunciar Peça')}</span>
                   </button>
 
                   <button
@@ -307,7 +308,7 @@ export default function Profile() {
                     className="px-3.5 py-2.5 rounded-xl bg-[#06080F] border border-blue-500/30 hover:border-[#00E5FF]/50 text-xs font-bold text-cyan-300 hover:text-white transition flex items-center space-x-1.5 cursor-pointer"
                   >
                     <Landmark className="w-4 h-4 text-[#00E5FF]" />
-                    <span>Conta (JPY)</span>
+                    <span>{t('Conta Bancária')}</span>
                   </button>
                 </div>
               </div>
@@ -319,7 +320,7 @@ export default function Profile() {
                     <Package className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Anúncios Ativos</p>
+                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">{t('Anúncios Ativos')}</p>
                     <p className="text-xl font-black text-white font-mono">{sellerMetrics.activeParts}</p>
                   </div>
                 </div>
@@ -329,8 +330,8 @@ export default function Profile() {
                     <DollarSign className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Total em Vendas</p>
-                    <p className="text-xl font-black text-white font-mono">¥ {sellerMetrics.totalSalesJPY.toLocaleString()} <span className="text-xs font-normal text-cyan-400 font-sans">JPY</span></p>
+                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">{t('Total em Vendas')}</p>
+                    <p className="text-xl font-black text-white font-mono">¥ {sellerMetrics.totalSalesJPY.toLocaleString()}</p>
                   </div>
                 </div>
 
@@ -339,7 +340,7 @@ export default function Profile() {
                     <ShoppingBag className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">Vendas Finalizadas</p>
+                    <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">{t('Vendas Finalizadas')}</p>
                     <p className="text-xl font-black text-white font-mono">{sellerMetrics.completedSales}</p>
                   </div>
                 </div>

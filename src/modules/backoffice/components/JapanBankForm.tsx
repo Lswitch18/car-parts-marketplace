@@ -9,9 +9,9 @@ import {
 } from 'lucide-react'
 
 const JAPAN_BANKS = [
-  { id: 'MUFG', name: 'MUFG (三菱UFJ銀行)', code: '0005', color: '#00E5FF' },
+  { id: 'MUFG', name: 'MUFG Bank (三菱UFJ銀行)', code: '0005', color: '#00E5FF' },
   { id: 'SMBC', name: 'SMBC (三井住友銀行)', code: '0009', color: '#0D75FF' },
-  { id: 'Mizuho', name: 'Mizuho (みずほ銀行)', code: '0001', color: '#3B82F6' },
+  { id: 'Mizuho', name: 'Mizuho Bank (みずほ銀行)', code: '0001', color: '#3B82F6' },
   { id: 'JapanPost', name: 'Japan Post Bank (ゆうちょ銀行)', code: '9900', color: '#38BDF8' },
   { id: 'Outro', name: 'Outro Banco no Japão', code: '0000', color: '#A1A1AA' }
 ]
@@ -27,7 +27,7 @@ export default function JapanBankForm() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  // Bank Form State matching Image 2
+  // Form State
   const [entityType, setEntityType] = useState<'individual' | 'empresa'>('individual')
   const [accountHolder, setAccountHolder] = useState('')
   const [selectedBank, setSelectedBank] = useState('MUFG')
@@ -113,7 +113,7 @@ export default function JapanBankForm() {
       if (error) throw error
 
       setIsVerified(true)
-      setSuccessMessage(t('Dados da conta bancária japonesa salvos com sucesso!'))
+      setSuccessMessage(t('Dados da conta bancária salvos com sucesso!'))
       setTimeout(() => setSuccessMessage(null), 4000)
     } catch (err: any) {
       console.error('Erro ao salvar dados bancários:', err)
@@ -136,8 +136,8 @@ export default function JapanBankForm() {
         }
       }
     } catch (err: any) {
-      console.warn('Nota sobre configuração Stripe Connect:', err)
-      alert(t('Conta de repasse Stripe Connect vinculada ao perfil com sucesso.'))
+      console.warn('Nota sobre configuração de pagamentos:', err)
+      alert(t('Conta de repasse vinculada ao perfil com sucesso.'))
     } finally {
       setConnectingStripe(false)
     }
@@ -160,13 +160,13 @@ export default function JapanBankForm() {
         <div>
           <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-1">
             <Landmark className="w-4 h-4 text-[#00E5FF]" />
-            <span>{t('Configurações de Pagamento & Repasses JPY')}</span>
+            <span>{t('Configurações de Pagamento e Transferências')}</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-            {t('Registro de Conta Bancária Japonesa (JPY)')}
+            {t('Registro de Conta Bancária no Japão')}
           </h2>
           <p className="text-xs text-zinc-400 mt-1">
-            {t('Cadastre os dados da sua conta corrente no Japão para recebimento de vendas em ienes.')}
+            {t('Cadastre sua conta bancária japonesa para receber o valor de suas vendas diretamente em ienes.')}
           </p>
         </div>
 
@@ -206,10 +206,10 @@ export default function JapanBankForm() {
             </div>
           )}
 
-          {/* 1. Tipo de Conta (Individual vs Empresa) */}
+          {/* 1. Tipo de Titularidade */}
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-2">
-              {t('Tipo de Conta (Física / Jurídica)')}
+              {t('Tipo de Titularidade')}
             </label>
             <div className="grid grid-cols-2 gap-3 max-w-xs">
               <button
@@ -221,7 +221,7 @@ export default function JapanBankForm() {
                     : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
                 }`}
               >
-                <span>{t('Individual')}</span>
+                <span>{t('Pessoa Física')}</span>
               </button>
               
               <button
@@ -233,33 +233,33 @@ export default function JapanBankForm() {
                     : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
                 }`}
               >
-                <span>{t('Empresa')}</span>
+                <span>{t('Pessoa Jurídica')}</span>
               </button>
             </div>
           </div>
 
-          {/* 2. Nome do Titular da Conta (口座名義) */}
+          {/* 2. Nome do Titular da Conta */}
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-1">
-              {t('Nome do Titular da Conta (口座名義) *')}
+              {t('Nome do Titular da Conta *')}
             </label>
             <input
               type="text"
               required
               value={accountHolder}
               onChange={(e) => setAccountHolder(e.target.value)}
-              placeholder="Ex: ヤマダ タロウ ou YAMADA TARO"
+              placeholder="Ex: YAMADA TARO"
               className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 focus:outline-none transition shadow-inner"
             />
             <p className="text-[11px] text-zinc-500 mt-1">
-              {t('Digite o nome idêntico ao cadastrado no banco (em Katakana ou Alfabeto).')}
+              {t('Digite o nome exatamente como consta no cadastro do banco (em Katakana ou Alfabeto).')}
             </p>
           </div>
 
-          {/* 3. Nome do Banco no Japão (日本国内銀行) */}
+          {/* 3. Instituição Bancária no Japão */}
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-2">
-              {t('Nome do Banco no Japão (日本国内銀行) *')}
+              {t('Instituição Bancária no Japão *')}
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {JAPAN_BANKS.map((b) => {
@@ -294,18 +294,18 @@ export default function JapanBankForm() {
                   required
                   value={customBankName}
                   onChange={(e) => setCustomBankName(e.target.value)}
-                  placeholder="Nome do Banco (Ex: Shinkin Bank / 信用金庫)"
+                  placeholder="Nome da Instituição Bancária"
                   className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none transition"
                 />
               </div>
             )}
           </div>
 
-          {/* 4. Agência (支店コード) & Número da Conta (口座番号) */}
+          {/* 4. Código da Agência & Número da Conta */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-zinc-300 mb-1">
-                {t('Agência / Branch Code (支店コード) *')}
+                {t('Código da Agência *')}
               </label>
               <input
                 type="text"
@@ -320,7 +320,7 @@ export default function JapanBankForm() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-300 mb-1">
-                {t('Número da Conta (口座番号) *')}
+                {t('Número da Conta *')}
               </label>
               <input
                 type="text"
@@ -334,10 +334,10 @@ export default function JapanBankForm() {
             </div>
           </div>
 
-          {/* 5. Tipo de Conta Japonesa (Futsu 普通 / Toza 当座) */}
+          {/* 5. Modalidade da Conta */}
           <div>
             <label className="block text-xs font-bold text-zinc-300 mb-2">
-              {t('Tipo de Conta (口座種別) *')}
+              {t('Modalidade da Conta *')}
             </label>
             <div className="grid grid-cols-2 gap-3 max-w-sm">
               <button
@@ -349,8 +349,8 @@ export default function JapanBankForm() {
                     : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
-                <p className="font-bold">{t('Futsu 普通')}</p>
-                <p className="text-[10px] font-normal text-zinc-400">{t('Conta Corrente Normal')}</p>
+                <p className="font-bold">{t('Conta Corrente (Futsu)')}</p>
+                <p className="text-[10px] font-normal text-zinc-400">{t('Uso padrão individual e comercial')}</p>
               </button>
 
               <button
@@ -362,25 +362,25 @@ export default function JapanBankForm() {
                     : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
-                <p className="font-bold">{t('Toza 当座')}</p>
-                <p className="text-[10px] font-normal text-zinc-400">{t('Conta Corrente Especial')}</p>
+                <p className="font-bold">{t('Conta Empresarial (Toza)')}</p>
+                <p className="text-[10px] font-normal text-zinc-400">{t('Conta corrente corporativa')}</p>
               </button>
             </div>
           </div>
 
-          {/* 6. Card: Termos de Tecnologia DAIG & Cadastro Stripe Connect */}
+          {/* 6. Card: Termos de Serviço e Processamento de Dados */}
           <div className="p-4.5 rounded-xl bg-[#06080F] border border-blue-500/30 space-y-3 shadow-inner">
             <div className="flex items-center space-x-2 text-xs font-bold text-[#00E5FF]">
               <ShieldCheck className="w-4 h-4 text-[#00E5FF]" />
-              <span>{t('Termos de Tecnologia & Stripe Connect')}</span>
+              <span>{t('Termos de Serviço e Processamento de Dados')}</span>
             </div>
 
             <p className="text-[11px] text-zinc-400 leading-relaxed">
-              {t('A DAIG é uma empresa de tecnologia fornecedora da plataforma. Ao efetuar o cadastro, você concorda com a coleta e o processamento de dados de transações web exclusivamente para conciliação financeira e repasses em ienes (JPY).')}
+              {t('A DAIG é a empresa fornecedora de tecnologia e infraestrutura digital. Ao se cadastrar, você concorda com o processamento seguro de dados para viabilizar a conciliação e transferência dos valores de suas vendas.')}
             </p>
 
             <p className="text-[11px] text-zinc-400 leading-relaxed">
-              {t('O cadastro oficial da empresa e os repasses bancários são operados com segurança pela infraestrutura do Stripe Connect Express (PCI-DSS).')}
+              {t('Os repasses e a validação cadastral são executados com criptografia avançada e padrões internacionais de segurança financeira.')}
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-zinc-800/80">
@@ -393,7 +393,7 @@ export default function JapanBankForm() {
                   className="mt-0.5 w-4 h-4 rounded bg-zinc-900 border-zinc-700 text-blue-500 focus:ring-0 cursor-pointer"
                 />
                 <span className="text-xs text-zinc-300 group-hover:text-white transition leading-snug">
-                  {t('Aceito a coleta de dados de transações web e os termos da DAIG Technology')}
+                  {t('Concordo com os termos de processamento de dados e tecnologia da DAIG')}
                 </span>
               </label>
 
@@ -408,7 +408,7 @@ export default function JapanBankForm() {
                 ) : (
                   <Lock className="w-3.5 h-3.5" />
                 )}
-                <span>{t('Conectar / Validar Cadastro no Stripe Connect Express ↗')}</span>
+                <span>{t('Conectar Processador Financeiro ↗')}</span>
               </button>
             </div>
           </div>
@@ -428,7 +428,7 @@ export default function JapanBankForm() {
               ) : (
                 <>
                   <Save className="w-4 h-4 text-white" />
-                  <span>{t('Salvar Registro de Conta Bancária')}</span>
+                  <span>{t('Salvar Dados da Conta Bancária')}</span>
                 </>
               )}
             </button>
@@ -439,21 +439,21 @@ export default function JapanBankForm() {
         {/* Overview Sidebar Right */}
         <div className="space-y-5">
           
-          {/* Card: Visão Geral dos Pagamentos */}
+          {/* Card: Resumo de Recebimentos */}
           <div className="bg-[#0B0E17]/90 border border-blue-500/30 rounded-2xl p-5 space-y-4 shadow-xl backdrop-blur-xl">
             <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-2">
-              {t('Visão Geral dos Pagamentos')}
+              {t('Resumo de Recebimentos')}
             </h3>
 
             <div>
-              <p className="text-[11px] text-zinc-400">{t('Saldo Total de Pagamento')}</p>
+              <p className="text-[11px] text-zinc-400">{t('Saldo Disponível')}</p>
               <p className="text-2xl font-black text-white font-mono mt-0.5">
-                ¥1,250,000 <span className="text-xs font-normal text-[#00E5FF] font-sans">JPY</span>
+                ¥ 1.250.000
               </p>
             </div>
 
             <div className="pt-2 border-t border-zinc-800/60">
-              <p className="text-[11px] text-zinc-400">{t('Próximo Pagamento Agendado')}</p>
+              <p className="text-[11px] text-zinc-400">{t('Próxima Transferência')}</p>
               <p className="text-xs font-bold text-zinc-200 mt-0.5 flex items-center space-x-1.5">
                 <Calendar className="w-3.5 h-3.5 text-[#00E5FF]" />
                 <span>15 de Outubro</span>
@@ -500,7 +500,7 @@ export default function JapanBankForm() {
           <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/30 space-y-2">
             <div className="flex items-center space-x-2 text-xs font-bold text-[#00E5FF]">
               <ShieldCheck className="w-4 h-4" />
-              <span>{t('Ambiente Criptografado')}</span>
+              <span>{t('Proteção e Criptografia Bancária')}</span>
             </div>
             <p className="text-[11px] text-zinc-400 leading-normal">
               {t('Seus dados bancários estão protegidos com padrão internacional de segurança financeira.')}
