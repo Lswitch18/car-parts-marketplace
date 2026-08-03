@@ -16,7 +16,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
   const { toggleFavorite, isFavorite } = useFavoriteStore();
 
   const calculateFees = (amount: number) => {
-    const commissionRate = 0.10;
+    const commissionRate = 0.06;
     const stripeRate = 0.029;
     const stripeFixed = 30;
     
