@@ -393,7 +393,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] py-8">
-      <div className="max-w-3xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="font-display text-3xl font-bold text-white mb-8">
           {t('Meu Perfil')}
         </h1>
@@ -677,33 +677,14 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">{t('Cidade')}</label>
-                <input
-                  type="text"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-white outline-none transition"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-400 text-sm mb-2">{t('Estado')}</label>
-                <input
-                  type="text"
-                  value={formData.state}
-                  onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-white outline-none transition"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-gray-400 text-sm font-medium">{t('CEP')}</label>
-                  <span className="inline-flex items-center space-x-1 text-[10px] font-mono text-cyan-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-[#00E5FF]/30">
-                    <Sparkles className="w-3 h-3 text-[#00E5FF] animate-pulse" />
-                    <span>{t('🇯🇵 Auto-Fill Zipcloud (Japan Post API)')}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {/* CEP com Busca Japonesa Zipcloud */}
+              <div className="sm:col-span-2 lg:col-span-1">
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2">
+                  <label className="text-gray-300 text-xs font-bold uppercase tracking-wider">{t('CEP (Japão / Brasil)')}</label>
+                  <span className="inline-flex items-center space-x-1 text-[10px] font-mono text-cyan-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-[#00E5FF]/30 whitespace-nowrap">
+                    <Sparkles className="w-3 h-3 text-[#00E5FF] animate-pulse shrink-0" />
+                    <span>{t('🇯🇵 Zipcloud Auto-Fill')}</span>
                   </span>
                 </div>
 
@@ -721,21 +702,21 @@ export default function Profile() {
                     }}
                     onBlur={() => handlePostalLookup()}
                     placeholder="100-0001 (JP) ou 01001-000"
-                    className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl pl-4 pr-28 py-3 text-white font-mono outline-none transition"
+                    className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl pl-4 pr-24 py-3 text-white font-mono text-xs outline-none transition"
                   />
 
                   <button
                     type="button"
                     disabled={postalLoading}
                     onClick={() => handlePostalLookup()}
-                    className="absolute right-2 px-3 py-1.5 bg-[#0D75FF]/20 hover:bg-[#0D75FF]/40 border border-[#00E5FF]/40 text-cyan-300 hover:text-white rounded-lg text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
+                    className="absolute right-1.5 px-2.5 py-1.5 bg-[#0D75FF]/20 hover:bg-[#0D75FF]/40 border border-[#00E5FF]/40 text-cyan-300 hover:text-white rounded-lg text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer disabled:opacity-50 whitespace-nowrap"
                   >
                     {postalLoading ? (
-                      <Loader2 className="w-3.5 h-3.5 text-[#00E5FF] animate-spin" />
+                      <Loader2 className="w-3 h-3 text-[#00E5FF] animate-spin" />
                     ) : (
-                      <Sparkles className="w-3.5 h-3.5 text-[#00E5FF]" />
+                      <Sparkles className="w-3 h-3 text-[#00E5FF]" />
                     )}
-                    <span>{t('Buscar CEP 🇯🇵')}</span>
+                    <span>{t('Buscar 🇯🇵')}</span>
                   </button>
                 </div>
 
@@ -749,6 +730,28 @@ export default function Profile() {
                 <p className="text-[11px] text-zinc-500 mt-1">
                   {t('Digite o CEP de 7 dígitos do Japão (ex: 100-0001 ou 1000001) para autopreencher Estado, Cidade e Endereço.')}
                 </p>
+              </div>
+
+              {/* Cidade */}
+              <div>
+                <label className="block text-gray-300 text-xs font-bold uppercase tracking-wider mb-2">{t('Cidade')}</label>
+                <input
+                  type="text"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-white text-xs outline-none transition"
+                />
+              </div>
+
+              {/* Estado */}
+              <div>
+                <label className="block text-gray-300 text-xs font-bold uppercase tracking-wider mb-2">{t('Estado')}</label>
+                <input
+                  type="text"
+                  value={formData.state}
+                  onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-white text-xs outline-none transition"
+                />
               </div>
             </div>
 
