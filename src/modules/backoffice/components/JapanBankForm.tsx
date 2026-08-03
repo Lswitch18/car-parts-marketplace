@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { api } from '@/modules/transactions/api/api'
 import { 
   Building2, Landmark, CheckCircle2, ShieldCheck, 
-  Calendar, DollarSign, Lock, AlertCircle, Save, Loader2, RefreshCw, Zap
+  Calendar, DollarSign, Lock, AlertCircle, Save, Loader2, RefreshCw, Zap, ExternalLink
 } from 'lucide-react'
 
 const JAPAN_BANKS = [
@@ -393,7 +394,17 @@ export default function JapanBankForm() {
                   className="mt-0.5 w-4 h-4 rounded bg-zinc-900 border-zinc-700 text-blue-500 focus:ring-0 cursor-pointer"
                 />
                 <span className="text-xs text-zinc-300 group-hover:text-white transition leading-snug">
-                  {t('Concordo com os termos de processamento de dados e tecnologia da DAIG')}
+                  {t('Concordo com os termos de processamento de dados e tecnologia da DAIG')}{' '}
+                  <Link 
+                    to="/terms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[#00E5FF] hover:underline font-bold inline-flex items-center gap-0.5 ml-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <span>({t('acesse aqui')})</span>
+                    <ExternalLink className="w-3 h-3 text-[#00E5FF]" />
+                  </Link>
                 </span>
               </label>
 

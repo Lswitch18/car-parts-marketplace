@@ -97,6 +97,7 @@ const translations: { [lang: string]: Translation } = {
     'Os repasses e a validação cadastral são executados com criptografia avançada e padrões internacionais de segurança financeira.': '送金および登録情報の確認は、高度な暗号化と国際金融セキュリティ基準に準拠して実行されます。',
     'Conectar Processador Financeiro ↗': '決済システム連携・本人確認を行う ↗',
     'Concordo com os termos de processamento de dados e tecnologia da DAIG': 'DAIGのデータ処理およびテクノロジー利用規約に同意します',
+    'acesse aqui': 'こちらをクリック',
     'Por favor, aceite os termos de processamento de dados para continuar.': '続行するにはデータ処理利用規約に同意してください。',
 
     'Catálogo': 'カタログ',
