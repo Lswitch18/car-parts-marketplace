@@ -681,7 +681,7 @@ export default function Profile() {
               {/* CEP com Busca Japonesa Zipcloud */}
               <div className="sm:col-span-2 lg:col-span-1">
                 <div className="flex flex-wrap items-center justify-between gap-1.5 mb-2">
-                  <label className="text-gray-300 text-xs font-bold uppercase tracking-wider">{t('CEP (Japão / Brasil)')}</label>
+                  <label className="text-gray-300 text-xs font-bold uppercase tracking-wider">{t('CEP (Japão)')}</label>
                   <span className="inline-flex items-center space-x-1 text-[10px] font-mono text-cyan-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-[#00E5FF]/30 whitespace-nowrap">
                     <Sparkles className="w-3 h-3 text-[#00E5FF] animate-pulse shrink-0" />
                     <span>{t('🇯🇵 Zipcloud Auto-Fill')}</span>
@@ -701,7 +701,7 @@ export default function Profile() {
                       }
                     }}
                     onBlur={() => handlePostalLookup()}
-                    placeholder="100-0001 (JP) ou 01001-000"
+                    placeholder="100-0001 (JP)"
                     className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl pl-4 pr-24 py-3 text-white font-mono text-xs outline-none transition"
                   />
 

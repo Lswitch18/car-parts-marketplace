@@ -117,6 +117,7 @@ const translations: { [lang: string]: Translation } = {
     '🇯🇵 Zipcloud Auto-Fill': '🇯🇵 Zipcloud 自動入力',
     'Buscar CEP 🇯🇵': '郵便番号検索 🇯🇵',
     'Buscar 🇯🇵': '検索 🇯🇵',
+    'CEP (Japão)': '郵便番号 (日本)',
     'CEP (Japão / Brasil)': '郵便番号 (日本 / ブラジル)',
     'Digite o CEP de 7 dígitos do Japão (ex: 100-0001 ou 1000001) para autopreencher Estado, Cidade e Endereço.': '日本の7桁の郵便番号（例：100-0001または1000001）を入力すると、都道府県・市区町村・住所が自動入力されます。',
     'Endereço preenchido automaticamente via Zipcloud Japan!': 'Zipcloud Japanにより住所が自動入力されました！',
