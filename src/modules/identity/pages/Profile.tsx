@@ -200,26 +200,26 @@ export default function Profile() {
           <button
             type="button"
             onClick={() => setActiveTab('personal')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 border ${
               activeTab === 'personal'
-                ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 shadow-lg shadow-emerald-600/10'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent'
+                ? 'bg-[#0D75FF]/20 text-cyan-300 border-[#00E5FF]/50 shadow-[0_0_20px_rgba(13,117,255,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0B0E17] border-transparent'
             }`}
           >
-            <User className="w-4 h-4" />
+            <User className="w-4 h-4 text-cyan-400" />
             <span>Dados Pessoais & Perfil</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('bank')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 border ${
               activeTab === 'bank'
-                ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 shadow-lg shadow-emerald-600/10'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent'
+                ? 'bg-[#0D75FF]/20 text-cyan-300 border-[#00E5FF]/50 shadow-[0_0_20px_rgba(13,117,255,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0B0E17] border-transparent'
             }`}
           >
-            <Landmark className="w-4 h-4" />
+            <Landmark className="w-4 h-4 text-[#00E5FF]" />
             <span>Conta Bancária (Japão JPY)</span>
           </button>
         </div>
@@ -234,12 +234,12 @@ export default function Profile() {
         {/* Tab 1: Dados Pessoais do Perfil */}
         {activeTab === 'personal' && (
           <div className="space-y-6 animate-in fade-in duration-300">
-            {/* Card do Painel do Vendedor */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 border border-emerald-500/40 shadow-[0_0_30px_rgba(16,185,129,0.12)]">
+            {/* Card do Painel do Vendedor - Cyber Neon Blue */}
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-[#0B0E17] via-zinc-950 to-[#0A0D14] border border-blue-500/40 shadow-[0_0_30px_rgba(13,117,255,0.18)]">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1.5 max-w-xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-                    <Package className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-[#00E5FF]/30 text-cyan-400">
+                    <Package className="w-3.5 h-3.5 text-[#00E5FF]" />
                     <span>Minhas Vendas & Anúncios</span>
                   </div>
                   <h3 className="text-xl font-bold text-white tracking-tight">
@@ -254,7 +254,7 @@ export default function Profile() {
                   <button
                     type="button"
                     onClick={() => navigate('/dashboard')}
-                    className="w-full px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2"
+                    className="w-full px-5 py-3 rounded-xl bg-gradient-to-r from-[#0D75FF] to-[#00E5FF] hover:from-blue-600 hover:to-[#00E5FF] text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-blue-500/25 flex items-center justify-center space-x-2 border border-[#00E5FF]/40"
                   >
                     <Building2 className="w-4 h-4" />
                     <span>Acessar Painel do Vendedor</span>
@@ -265,18 +265,18 @@ export default function Profile() {
                     <button
                       type="button"
                       onClick={() => navigate('/create-listing')}
-                      className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                      className="flex-1 px-3 py-2 rounded-xl bg-[#0B0E17] border border-blue-500/30 hover:border-[#00E5FF]/50 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
                     >
-                      <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+                      <PlusCircle className="w-3.5 h-3.5 text-[#00E5FF]" />
                       <span>Anunciar Peça</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setActiveTab('bank')}
-                      className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
+                      className="flex-1 px-3 py-2 rounded-xl bg-[#0B0E17] border border-blue-500/30 hover:border-[#00E5FF]/50 text-xs font-medium text-zinc-300 hover:text-white transition flex items-center justify-center gap-1.5"
                     >
-                      <Landmark className="w-3.5 h-3.5 text-amber-400" />
+                      <Landmark className="w-3.5 h-3.5 text-cyan-400" />
                       <span>Conta (JPY)</span>
                     </button>
                   </div>
@@ -284,14 +284,16 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="card p-8">
+            <div className="card p-8 bg-[#0B0E17]/90 border border-blue-500/30 rounded-2xl shadow-xl backdrop-blur-xl">
           <div className="flex items-center space-x-6 mb-8">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#ff3d00] to-[#00e5ff] flex items-center justify-center">
-                <User className="w-10 h-10 text-white" />
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#0D75FF] to-[#00E5FF] flex items-center justify-center p-0.5 shadow-[0_0_25px_rgba(13,117,255,0.35)]">
+                <div className="w-full h-full bg-[#06080F] rounded-full flex items-center justify-center">
+                  <User className="w-10 h-10 text-cyan-400" />
+                </div>
               </div>
-              <button className="absolute bottom-0 right-0 p-2 bg-[#ff3d00] rounded-full text-white">
-                <Camera className="w-4 h-4" />
+              <button className="absolute bottom-0 right-0 p-2 bg-[#0D75FF] hover:bg-[#00E5FF] text-white rounded-full transition shadow-md">
+                <Camera className="w-4 h-4 text-white" />
               </button>
             </div>
             <div>
@@ -310,7 +312,7 @@ export default function Profile() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white"
+                    className="w-full pl-12 pr-4 py-3 bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl text-white outline-none transition"
                   />
                 </div>
               </div>
@@ -323,7 +325,7 @@ export default function Profile() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white"
+                    className="w-full pl-12 pr-4 py-3 bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl text-white outline-none transition"
                   />
                 </div>
               </div>
@@ -337,7 +339,7 @@ export default function Profile() {
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full pl-12 pr-4 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-white"
+                  className="w-full pl-12 pr-4 py-3 bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl text-white outline-none transition"
                   placeholder="Rua, número, complemento"
                 />
               </div>
@@ -350,7 +352,7 @@ export default function Profile() {
                   type="text"
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-white outline-none transition"
                 />
               </div>
 
@@ -360,7 +362,7 @@ export default function Profile() {
                   type="text"
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-white"
+                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-white outline-none transition"
                 />
               </div>
 
@@ -380,10 +382,10 @@ export default function Profile() {
                     }}
                     onBlur={() => handlePostalLookup()}
                     placeholder="Ex: 100-0001 (JP) ou 01001-000 (BR)"
-                    className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg pl-4 pr-10 py-3 text-white"
+                    className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl pl-4 pr-10 py-3 text-white outline-none transition"
                   />
                   {postalLoading && (
-                    <Loader2 className="w-4 h-4 text-[#ff3d00] animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+                    <Loader2 className="w-4 h-4 text-[#00E5FF] animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
                   )}
                 </div>
               </div>
@@ -392,7 +394,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#ff3d00] hover:bg-[#dd2c00] text-white py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+              className="w-full bg-gradient-to-r from-[#0D75FF] via-blue-600 to-[#00E5FF] hover:from-blue-600 hover:to-[#00E5FF] text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50 flex items-center justify-center space-x-2 shadow-[0_0_25px_rgba(13,117,255,0.35)] border border-[#00E5FF]/40 cursor-pointer"
             >
               {loading ? (
                 <>

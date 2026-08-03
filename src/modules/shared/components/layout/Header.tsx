@@ -265,21 +265,6 @@ export default function Header() {
 
                     <div className="p-2 space-y-1">
                       <Link
-                        to="/dashboard"
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all"
-                        style={{ color: '#10B981', background: 'rgba(16,185,129,0.08)' }}
-                        onMouseEnter={(e) =>
-                          ((e.currentTarget as HTMLElement).style.background = 'rgba(16,185,129,0.18)')
-                        }
-                        onMouseLeave={(e) =>
-                          ((e.currentTarget as HTMLElement).style.background = 'rgba(16,185,129,0.08)')
-                        }
-                      >
-                        <Building2 className="w-4 h-4 text-emerald-400" />
-                        {t('Painel do Vendedor')}
-                      </Link>
-
-                      <Link
                         to="/create-listing"
                         className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
                         style={{ color: '#B0B5C0' }}
@@ -292,25 +277,8 @@ export default function Header() {
                           ;(e.currentTarget as HTMLElement).style.background = 'transparent'
                         }}
                       >
-                        <Package className="w-4 h-4 text-zinc-400" />
+                        <Package className="w-4 h-4 text-cyan-400" />
                         {t('Anunciar Peça')}
-                      </Link>
-
-                      <Link
-                        to="/japan-bank-account"
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all"
-                        style={{ color: '#B0B5C0' }}
-                        onMouseEnter={(e) => {
-                          ;(e.currentTarget as HTMLElement).style.color = '#FFFFFF'
-                          ;(e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)'
-                        }}
-                        onMouseLeave={(e) => {
-                          ;(e.currentTarget as HTMLElement).style.color = '#B0B5C0'
-                          ;(e.currentTarget as HTMLElement).style.background = 'transparent'
-                        }}
-                      >
-                        <Landmark className="w-4 h-4 text-amber-400" />
-                        {t('Dados Bancários (Japão JPY)')}
                       </Link>
 
                       <Link

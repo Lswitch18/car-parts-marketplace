@@ -3,15 +3,15 @@ import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { 
   Building2, Landmark, CheckCircle2, ShieldCheck, 
-  Calendar, DollarSign, Lock, AlertCircle, Save, Loader2, RefreshCw 
+  Calendar, DollarSign, Lock, AlertCircle, Save, Loader2, RefreshCw, Zap
 } from 'lucide-react'
 
 const JAPAN_BANKS = [
-  { id: 'MUFG', name: 'MUFG (三菱UFJ銀行)', code: '0005', color: '#E60012' },
-  { id: 'SMBC', name: 'SMBC (三井住友銀行)', code: '0009', color: '#006837' },
-  { id: 'Mizuho', name: 'Mizuho (みずほ銀行)', code: '0001', color: '#002060' },
-  { id: 'JapanPost', name: 'Japan Post Bank (ゆうちょ銀行)', code: '9900', color: '#1B75BC' },
-  { id: 'Outro', name: 'Outro Banco no Japão', code: '0000', color: '#71717A' }
+  { id: 'MUFG', name: 'MUFG (三菱UFJ銀行)', code: '0005', color: '#00E5FF' },
+  { id: 'SMBC', name: 'SMBC (三井住友銀行)', code: '0009', color: '#0D75FF' },
+  { id: 'Mizuho', name: 'Mizuho (みずほ銀行)', code: '0001', color: '#3B82F6' },
+  { id: 'JapanPost', name: 'Japan Post Bank (ゆうちょ銀行)', code: '9900', color: '#38BDF8' },
+  { id: 'Outro', name: 'Outro Banco no Japão', code: '0000', color: '#A1A1AA' }
 ]
 
 export default function JapanBankForm() {
@@ -60,7 +60,6 @@ export default function JapanBankForm() {
         if (info.payout_frequency) setPayoutFrequency(info.payout_frequency)
         if (typeof info.is_verified === 'boolean') setIsVerified(info.is_verified)
       } else {
-        // Pre-fill defaults from user profile
         setAccountHolder((user?.full_name || user?.name || '').toUpperCase())
       }
     } catch (err) {
@@ -116,7 +115,7 @@ export default function JapanBankForm() {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-12 text-zinc-400">
-        <Loader2 className="w-6 h-6 animate-spin mr-2 text-emerald-400" />
+        <Loader2 className="w-6 h-6 animate-spin mr-2 text-cyan-400" />
         <span>Carregando dados bancários...</span>
       </div>
     )
@@ -125,11 +124,11 @@ export default function JapanBankForm() {
   return (
     <div className="space-y-6 text-zinc-100 font-sans">
       
-      {/* Top Banner Title Matching Image 2 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0d1512] border border-emerald-500/30 rounded-2xl p-5 shadow-xl">
+      {/* Top Banner Title - Cyber Neon Blue Style */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0A0D14]/90 border border-blue-500/30 rounded-2xl p-5 shadow-[0_0_30px_rgba(13,117,255,0.15)] backdrop-blur-xl">
         <div>
-          <div className="flex items-center space-x-2 text-xs font-mono text-emerald-400 uppercase tracking-wider mb-1">
-            <Landmark className="w-4 h-4" />
+          <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 uppercase tracking-wider mb-1">
+            <Landmark className="w-4 h-4 text-[#00E5FF]" />
             <span>Configurações de Pagamento & Repasses JPY</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
@@ -142,13 +141,13 @@ export default function JapanBankForm() {
 
         <div className="flex items-center space-x-2 shrink-0">
           {isVerified ? (
-            <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1.5 shadow-lg shadow-emerald-500/10">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-500/10 text-cyan-300 border border-[#00E5FF]/40 flex items-center space-x-1.5 shadow-[0_0_15px_rgba(0,229,255,0.2)]">
+              <CheckCircle2 className="w-4 h-4 text-[#00E5FF]" />
               <span>Conta Bancária Verificada</span>
             </span>
           ) : (
-            <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center space-x-1.5">
-              <AlertCircle className="w-4 h-4 text-amber-400" />
+            <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-900/30 text-blue-300 border border-blue-500/30 flex items-center space-x-1.5">
+              <AlertCircle className="w-4 h-4 text-blue-400" />
               <span>Pendente de Registro</span>
             </span>
           )}
@@ -159,12 +158,12 @@ export default function JapanBankForm() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Form Column Left */}
-        <form onSubmit={handleSaveBankInfo} className="lg:col-span-2 bg-[#10141b] border border-zinc-800/90 rounded-2xl p-6 space-y-5 shadow-2xl">
+        <form onSubmit={handleSaveBankInfo} className="lg:col-span-2 bg-[#0B0E17]/90 border border-blue-500/30 rounded-2xl p-6 space-y-5 shadow-2xl backdrop-blur-xl">
           
           {/* Notification Messages */}
           {successMessage && (
-            <div className="p-3.5 bg-emerald-950/80 border border-emerald-500/50 rounded-xl text-emerald-300 text-xs font-semibold flex items-center space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3.5 bg-blue-950/80 border border-[#00E5FF]/50 rounded-xl text-cyan-300 text-xs font-semibold flex items-center space-x-2 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+              <CheckCircle2 className="w-4 h-4 text-[#00E5FF] shrink-0" />
               <span>{successMessage}</span>
             </div>
           )}
@@ -187,8 +186,8 @@ export default function JapanBankForm() {
                 onClick={() => setEntityType('individual')}
                 className={`py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 border ${
                   entityType === 'individual'
-                    ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-600/10'
-                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
+                    ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-cyan-300 shadow-[0_0_20px_rgba(13,117,255,0.35)]'
+                    : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
                 }`}
               >
                 <span>Individual</span>
@@ -199,8 +198,8 @@ export default function JapanBankForm() {
                 onClick={() => setEntityType('empresa')}
                 className={`py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 border ${
                   entityType === 'empresa'
-                    ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-600/10'
-                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
+                    ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-cyan-300 shadow-[0_0_20px_rgba(13,117,255,0.35)]'
+                    : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
                 }`}
               >
                 <span>Empresa</span>
@@ -219,7 +218,7 @@ export default function JapanBankForm() {
               value={accountHolder}
               onChange={(e) => setAccountHolder(e.target.value)}
               placeholder="Ex: ヤマダ タロウ ou YAMADA TARO"
-              className="w-full bg-[#0a0d12] border border-zinc-800 focus:border-emerald-500 rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 focus:outline-none transition"
+              className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 focus:outline-none transition shadow-inner"
             />
             <p className="text-[11px] text-zinc-500 mt-1">
               Digite o nome idêntico ao cadastrado no banco (em Katakana ou Alfabeto).
@@ -241,11 +240,11 @@ export default function JapanBankForm() {
                     onClick={() => setSelectedBank(b.id)}
                     className={`p-3 rounded-xl border text-left transition flex items-center space-x-3 ${
                       isSel
-                        ? 'bg-emerald-950/40 border-emerald-500 text-white ring-1 ring-emerald-500/40'
-                        : 'bg-[#0a0d12] border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                        ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-white ring-1 ring-[#00E5FF]/40 shadow-[0_0_20px_rgba(13,117,255,0.25)]'
+                        : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
                     }`}
                   >
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold font-mono shrink-0" style={{ backgroundColor: `${b.color}25`, color: b.color }}>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold font-mono shrink-0 bg-[#0D75FF]/20 text-[#00E5FF] border border-[#00E5FF]/30">
                       {b.id[0]}
                     </div>
                     <div className="min-w-0 flex-1 truncate">
@@ -265,7 +264,7 @@ export default function JapanBankForm() {
                   value={customBankName}
                   onChange={(e) => setCustomBankName(e.target.value)}
                   placeholder="Nome do Banco (Ex: Shinkin Bank / 信用金庫)"
-                  className="w-full bg-[#0a0d12] border border-zinc-800 focus:border-emerald-500 rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none transition"
+                  className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none transition"
                 />
               </div>
             )}
@@ -284,7 +283,7 @@ export default function JapanBankForm() {
                 value={branchCode}
                 onChange={(e) => setBranchCode(e.target.value.replace(/\D/g, ''))}
                 placeholder="Ex: 123"
-                className="w-full bg-[#0a0d12] border border-zinc-800 focus:border-emerald-500 rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 font-mono focus:outline-none transition"
+                className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 font-mono focus:outline-none transition"
               />
             </div>
 
@@ -299,7 +298,7 @@ export default function JapanBankForm() {
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
                 placeholder="Ex: 1234567"
-                className="w-full bg-[#0a0d12] border border-zinc-800 focus:border-emerald-500 rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 font-mono focus:outline-none transition"
+                className="w-full bg-[#06080F] border border-zinc-800 focus:border-[#00E5FF] rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 font-mono focus:outline-none transition"
               />
             </div>
           </div>
@@ -315,8 +314,8 @@ export default function JapanBankForm() {
                 onClick={() => setAccountTypeJapan('futsu')}
                 className={`py-3 px-4 rounded-xl text-xs font-bold transition border text-left ${
                   accountTypeJapan === 'futsu'
-                    ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-600/10'
-                    : 'bg-[#0a0d12] border-zinc-800 text-zinc-400 hover:text-white'
+                    ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-cyan-300 shadow-[0_0_20px_rgba(13,117,255,0.35)]'
+                    : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
                 <p className="font-bold">Futsu 普通</p>
@@ -328,8 +327,8 @@ export default function JapanBankForm() {
                 onClick={() => setAccountTypeJapan('toza')}
                 className={`py-3 px-4 rounded-xl text-xs font-bold transition border text-left ${
                   accountTypeJapan === 'toza'
-                    ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-md shadow-emerald-600/10'
-                    : 'bg-[#0a0d12] border-zinc-800 text-zinc-400 hover:text-white'
+                    ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-cyan-300 shadow-[0_0_20px_rgba(13,117,255,0.35)]'
+                    : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
                 <p className="font-bold">Toza 当座</p>
@@ -338,21 +337,21 @@ export default function JapanBankForm() {
             </div>
           </div>
 
-          {/* Save Button */}
+          {/* Save Button with Neon Blue Styling */}
           <div className="pt-3">
             <button
               type="submit"
               disabled={saving}
-              className="w-full py-4 px-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center space-x-2 cursor-pointer"
+              className="w-full py-4 px-6 bg-gradient-to-r from-[#0D75FF] via-blue-600 to-[#00E5FF] hover:from-blue-600 hover:to-[#00E5FF] text-white font-black text-xs uppercase tracking-wider rounded-xl transition shadow-[0_0_30px_rgba(13,117,255,0.4)] disabled:opacity-50 flex items-center justify-center space-x-2 cursor-pointer border border-[#00E5FF]/40"
             >
               {saving ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin text-zinc-950" />
+                  <RefreshCw className="w-4 h-4 animate-spin text-white" />
                   <span>Salvando no Servidor...</span>
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4 text-zinc-950" />
+                  <Save className="w-4 h-4 text-white" />
                   <span>Salvar Registro de Conta Bancária</span>
                 </>
               )}
@@ -361,11 +360,11 @@ export default function JapanBankForm() {
 
         </form>
 
-        {/* Overview Sidebar Right Matching Image 2 */}
+        {/* Overview Sidebar Right */}
         <div className="space-y-5">
           
           {/* Card: Visão Geral dos Pagamentos */}
-          <div className="bg-[#10141b] border border-zinc-800/90 rounded-2xl p-5 space-y-4 shadow-xl">
+          <div className="bg-[#0B0E17]/90 border border-blue-500/30 rounded-2xl p-5 space-y-4 shadow-xl backdrop-blur-xl">
             <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-2">
               Visão Geral dos Pagamentos
             </h3>
@@ -373,21 +372,21 @@ export default function JapanBankForm() {
             <div>
               <p className="text-[11px] text-zinc-400">Saldo Total de Pagamento</p>
               <p className="text-2xl font-black text-white font-mono mt-0.5">
-                ¥1,250,000 <span className="text-xs font-normal text-emerald-400 font-sans">JPY</span>
+                ¥1,250,000 <span className="text-xs font-normal text-[#00E5FF] font-sans">JPY</span>
               </p>
             </div>
 
             <div className="pt-2 border-t border-zinc-800/60">
               <p className="text-[11px] text-zinc-400">Próximo Pagamento Agendado</p>
               <p className="text-xs font-bold text-zinc-200 mt-0.5 flex items-center space-x-1.5">
-                <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+                <Calendar className="w-3.5 h-3.5 text-[#00E5FF]" />
                 <span>15 de Outubro</span>
               </p>
             </div>
           </div>
 
           {/* Card: Frequência de Transferência */}
-          <div className="bg-[#10141b] border border-zinc-800/90 rounded-2xl p-5 space-y-4 shadow-xl">
+          <div className="bg-[#0B0E17]/90 border border-blue-500/30 rounded-2xl p-5 space-y-4 shadow-xl backdrop-blur-xl">
             <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider border-b border-zinc-800 pb-2">
               Frequência de Transferência
             </h3>
@@ -406,8 +405,8 @@ export default function JapanBankForm() {
                     onClick={() => setPayoutFrequency(freq.id as any)}
                     className={`py-2 rounded-xl text-xs font-bold transition border ${
                       isSel
-                        ? 'bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-sm'
-                        : 'bg-[#0a0d12] border-zinc-800 text-zinc-400 hover:text-white'
+                        ? 'bg-[#0D75FF]/20 border-[#00E5FF] text-cyan-300 shadow-sm'
+                        : 'bg-[#06080F] border-zinc-800 text-zinc-400 hover:text-white'
                     }`}
                   >
                     {freq.label}
@@ -422,8 +421,8 @@ export default function JapanBankForm() {
           </div>
 
           {/* Security Box */}
-          <div className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/20 space-y-2">
-            <div className="flex items-center space-x-2 text-xs font-bold text-emerald-400">
+          <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/30 space-y-2">
+            <div className="flex items-center space-x-2 text-xs font-bold text-[#00E5FF]">
               <ShieldCheck className="w-4 h-4" />
               <span>Ambiente Criptografado</span>
             </div>
