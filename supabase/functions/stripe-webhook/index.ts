@@ -4,8 +4,13 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const STRIPE_WEBHOOK_SECRET = Deno.env.get('STRIPE_WEBHOOK_SECRET')!;
 const APP_URL = Deno.env.get('APP_URL') || 'http://localhost:5173';
+
+const SIGNATURE_TOLERANCE_MS = 5 * 60 * 1000;
+
+function getWebhookSecret(): string {
+  return Deno.env.get('STRIPE_WEBHOOK_SECRET') || '';
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -442,6 +447,11 @@ async function verifyStripeSignature(
 
   if (!timestamp || !sigValue) return false;
 
+  const timestampMs = Number(timestamp) * 1000;
+  if (!Number.isFinite(timestampMs) || Math.abs(Date.now() - timestampMs) > SIGNATURE_TOLERANCE_MS) {
+    return false;
+  }
+
   const signedPayload = `${timestamp}.${payload}`;
   const encoder = new TextEncoder();
 
@@ -552,9 +562,14 @@ async function handleEvent(event: StripeEvent) {
   }
 }
 
-Deno.serve(async (req) => {
+export async function handler(req: Request): Promise<Response> {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  const webhookSecret = getWebhookSecret();
+  if (!webhookSecret || webhookSecret === 'whsec_') {
+    return errorResponse('Webhook not configured: STRIPE_WEBHOOK_SECRET is required', 503);
   }
 
   try {
@@ -565,16 +580,7 @@ Deno.serve(async (req) => {
 
     const payload = await req.text();
 
-    if (!STRIPE_WEBHOOK_SECRET || STRIPE_WEBHOOK_SECRET === 'whsec_') {
-      const event = JSON.parse(payload) as StripeEvent;
-      console.log('[Webhook] DEMO MODE - skipping signature verification');
-      console.log('[Webhook] Event received:', event.type);
-
-      await handleEvent(event);
-      return successResponse({ received: true });
-    }
-
-    const isValid = await verifyStripeSignature(payload, signature, STRIPE_WEBHOOK_SECRET);
+    const isValid = await verifyStripeSignature(payload, signature, webhookSecret);
     if (!isValid) {
       return errorResponse('Invalid Stripe signature', 400);
     }
@@ -591,4 +597,6 @@ Deno.serve(async (req) => {
     const errMsg = err instanceof Error ? err.message : String(err);
     return errorResponse(`Webhook error: ${errMsg}`, 500);
   }
-});
+}
+
+Deno.serve(handler);
