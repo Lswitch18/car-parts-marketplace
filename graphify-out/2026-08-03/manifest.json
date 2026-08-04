@@ -2705,8 +2705,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785795157.1766188,
-    "ast_hash": "971114e87ac22aa88aa6d1d55de229b3",
+    "mtime": 1785767563.3406212,
+    "ast_hash": "9a4d32a51efb50c00b60dc3a5d8e4b8d",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -2922,11 +2922,6 @@
   "src/modules/transactions/services/stripeConnectService.ts": {
     "mtime": 1785792391.8166244,
     "ast_hash": "ad02ca45b62173b79c69cd8eeb497bf3",
-    "semantic_hash": ""
-  },
-  "src/modules/backoffice/components/AiPartQuickUploadModal.tsx": {
-    "mtime": 1785794952.4726126,
-    "ast_hash": "c53a5aec082ed827e573f347ff689190",
     "semantic_hash": ""
   }
 }

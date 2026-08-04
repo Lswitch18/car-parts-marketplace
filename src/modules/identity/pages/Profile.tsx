@@ -81,13 +81,14 @@ export default function Profile() {
           amount: 100,
           payment_status: 'completed',
           created_at: new Date().toISOString(),
-          parts: {
+          part_id: '1d7c0ab1-f8a0-4f58-9b6e-555cb8d18978',
+          parts: [{
             id: '1d7c0ab1-f8a0-4f58-9b6e-555cb8d18978',
             title: 'Kit Tampas de Válvula de Pneu Alumínio Vermelho JDM (4 Unidades) - ¥100 Teste',
             price: 100,
             images: ['https://clqubcryhbrjlupkgeva.supabase.co/storage/v1/object/public/parts-images/cheap-valve-caps-100yen-1784900541314.png'],
             category: 'Acessórios & Tuning'
-          }
+          }]
         }]
       }
 

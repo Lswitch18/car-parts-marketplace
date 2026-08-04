@@ -22,7 +22,7 @@ async function deriveEncryptionKey(passphrase: string, salt: Uint8Array): Promis
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt,
+      salt: salt as unknown as BufferSource,
       iterations: 100000,
       hash: 'SHA-256',
     },

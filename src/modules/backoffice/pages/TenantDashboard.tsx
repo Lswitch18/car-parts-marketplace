@@ -8,6 +8,7 @@ import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { Product } from '@/modules/shared/types'
 import AiPartQuickUploadModal from '@/modules/backoffice/components/AiPartQuickUploadModal'
+import { useTenantRealData } from '@/modules/shared/hooks/useTenantRealData'
 import {
   Building2, Package, QrCode, Wrench, Globe, Sparkles,
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText,
@@ -448,20 +449,31 @@ export default function TenantDashboard() {
     batchPublish,
   } = useTenantCore()
 
-  // Peças Ativas (Combina Banco de Dados + 20 Peças de Teste se o DB estiver vazio)
+  // Hook de Dados Reais do Banco de Dados Supabase (Isolamento Multi-Tenant Estrito)
+  const { 
+    loading: realDataLoading, 
+    realParts, 
+    realWorkOrders, 
+    realTransactions, 
+    realMetrics,
+    tenantInfo 
+  } = useTenantRealData()
+
+  // Peças Ativas (Prioriza banco de dados real do Tenant)
   const [localDemoParts, setLocalDemoParts] = useState<any[]>(DEMO_20_PARTS)
 
   const allParts = useMemo(() => {
+    if (realParts && realParts.length > 0) return realParts
     return originalFilteredParts.length > 0 ? originalFilteredParts : localDemoParts
-  }, [originalFilteredParts, localDemoParts])
+  }, [realParts, originalFilteredParts, localDemoParts])
 
   const stats = useMemo(() => {
-    const totalSKUs = allParts.length
-    const totalPrivateValue = allParts.reduce((sum, p) => sum + (Number(p.price) || 0), 0)
-    const publishedCount = allParts.filter(p => p.status === 'active').length
+    const totalSKUs = realParts && realParts.length > 0 ? realMetrics.totalSKUs : allParts.length
+    const totalPrivateValue = realParts && realParts.length > 0 ? realMetrics.totalStockValue : allParts.reduce((sum, p) => sum + (Number(p.price) || 0), 0)
+    const publishedCount = realParts && realParts.length > 0 ? realMetrics.activePublicCount : allParts.filter(p => p.status === 'active').length
     const privateCount = totalSKUs - publishedCount
     return { totalSKUs, totalPrivateValue, publishedCount, privateCount }
-  }, [allParts])
+  }, [realMetrics, realParts, allParts])
 
   // Sidebar & Navigation state
   const [activeTab, setActiveTab] = useState<TabType>('overview')
@@ -1177,51 +1189,85 @@ export default function TenantDashboard() {
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* KPI Cards Neon */}
+            {/* 21st.dev Cyber Neon Professional ERP KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-blue-500/40 transition">
+              
+              {/* Card 1: Estoque WMS Privado */}
+              <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-blue-500/30 hover:border-[#00E5FF] rounded-2xl p-6 shadow-[0_0_30px_rgba(13,117,255,0.12)] backdrop-blur-2xl transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Estoque WMS Privado</span>
-                  <div className="p-2.5 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20"><Package className="w-5 h-5" /></div>
+                  <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">Estoque WMS Privado</span>
+                  <div className="p-3 bg-blue-500/10 text-cyan-400 rounded-xl border border-[#00E5FF]/30 shadow-[0_0_15px_rgba(0,229,255,0.2)]">
+                    <Package className="w-5 h-5" />
+                  </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-white">{stats.totalSKUs} <span className="text-xs font-normal text-zinc-500">peças catalogadas</span></div>
-                  <p className="text-xs text-blue-400 font-mono mt-1">Valor Total: ¥ {stats.totalPrivateValue.toLocaleString('ja-JP')} JPY</p>
+                <div className="mt-4">
+                  <div className="text-3xl font-black text-white tracking-tight flex items-baseline space-x-2">
+                    <span>{stats.totalSKUs}</span>
+                    <span className="text-xs font-semibold text-zinc-400 uppercase font-mono">peças catalogadas</span>
+                  </div>
+                  <p className="text-xs text-[#00E5FF] font-mono font-semibold mt-2 flex items-center space-x-1">
+                    <span>Valor Total:</span>
+                    <span className="text-white">¥ {stats.totalPrivateValue.toLocaleString('ja-JP')} JPY</span>
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-purple-500/40 transition">
+              {/* Card 2: Oficina (Ordens de Serviço) */}
+              <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-purple-500/30 hover:border-purple-400 rounded-2xl p-6 shadow-[0_0_30px_rgba(168,85,247,0.12)] backdrop-blur-2xl transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Oficina (Ordens de Serviço)</span>
-                  <div className="p-2.5 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20"><Wrench className="w-5 h-5" /></div>
+                  <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">Oficina (Ordens de Serviço)</span>
+                  <div className="p-3 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                    <Wrench className="w-5 h-5" />
+                  </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-white">{workOrders.length} <span className="text-xs font-normal text-zinc-500">O.S. em andamento</span></div>
-                  <p className="text-xs text-purple-400 font-mono mt-1">4 mecânicos ativos hoje</p>
+                <div className="mt-4">
+                  <div className="text-3xl font-black text-white tracking-tight flex items-baseline space-x-2">
+                    <span>{realWorkOrders && realWorkOrders.length > 0 ? realWorkOrders.length : workOrders.length}</span>
+                    <span className="text-xs font-semibold text-zinc-400 uppercase font-mono">O.S. ativas</span>
+                  </div>
+                  <p className="text-xs text-purple-300 font-mono font-semibold mt-2 flex items-center space-x-1">
+                    <span>{workOrders.filter(w => w.status !== 'pronto').length} em andamento hoje</span>
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-emerald-500/40 transition">
+              {/* Card 3: Faturamento do Mês */}
+              <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-emerald-500/30 hover:border-emerald-400 rounded-2xl p-6 shadow-[0_0_30px_rgba(16,185,129,0.12)] backdrop-blur-2xl transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Faturamento do Mês</span>
-                  <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20"><DollarSign className="w-5 h-5" /></div>
+                  <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">Faturamento do Mês</span>
+                  <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-emerald-400">¥ 1.420.000 <span className="text-xs font-normal text-zinc-500">JPY</span></div>
-                  <p className="text-xs text-zinc-400 mt-1">Balcão PDV (65%) • Marketplace (35%)</p>
+                <div className="mt-4">
+                  <div className="text-3xl font-black text-emerald-400 tracking-tight font-mono">
+                    ¥ {(realMetrics.monthlySalesVolume > 0 ? realMetrics.monthlySalesVolume : 1420000).toLocaleString('ja-JP')}
+                  </div>
+                  <p className="text-xs text-zinc-400 mt-2 font-mono">
+                    Balcão PDV (65%) • Marketplace (35%)
+                  </p>
                 </div>
               </div>
 
-              <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-5 shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition">
+              {/* Card 4: Divulgação 1-Clique */}
+              <div className="group relative bg-gradient-to-b from-[#0B0E17] to-[#0A0D14] border border-amber-500/30 hover:border-amber-400 rounded-2xl p-6 shadow-[0_0_30px_rgba(245,158,11,0.12)] backdrop-blur-2xl transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Divulgação 1-Clique</span>
-                  <div className="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20"><Globe className="w-5 h-5" /></div>
+                  <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">Divulgação 1-Clique</span>
+                  <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                    <Globe className="w-5 h-5" />
+                  </div>
                 </div>
-                <div className="mt-3">
-                  <div className="text-3xl font-extrabold text-white">{stats.publishedCount} <span className="text-xs font-normal text-zinc-500">online</span></div>
-                  <p className="text-xs text-amber-400 mt-1">{stats.privateCount} mantidas privadas no ERP</p>
+                <div className="mt-4">
+                  <div className="text-3xl font-black text-white tracking-tight flex items-baseline space-x-2">
+                    <span>{stats.publishedCount}</span>
+                    <span className="text-xs font-semibold text-emerald-400 uppercase font-mono">online</span>
+                  </div>
+                  <p className="text-xs text-amber-400 font-mono font-semibold mt-2">
+                    {stats.privateCount} mantidas privadas no ERP
+                  </p>
                 </div>
               </div>
+
             </div>
 
             {/* Painel WMS Galpão & Atalhos Rápidos */}
