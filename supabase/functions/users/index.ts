@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
 
     if (req.method === 'GET') {
       if (action === 'me') return await getCurrentUser(req);
-      if (action === 'list') return await listUsers();
+      if (action === 'list') return await listUsers(req);
       const userId = action?.match(/^[0-9a-f-]{36}$/) ? action : url.searchParams.get('id');
       if (userId) return await getUser(userId);
     }
@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
 
     if (req.method === 'POST' && action === 'verify') {
       const body = await req.json();
-      return await verifyUser(body);
+      return await verifyUser(req, body);
     }
 
     return new Response(JSON.stringify(errorResponse('Endpoint não encontrado')), {
@@ -33,7 +33,8 @@ Deno.serve(async (req) => {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify(errorResponse(err.message)), {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify(errorResponse(errMsg)), {
       status: 500,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
@@ -101,8 +102,8 @@ async function getUser(userId: string) {
   });
 }
 
-async function listUsers() {
-  const url = new URL(req?.url || 'http://localhost');
+async function listUsers(req: Request) {
+  const url = new URL(req.url);
   const page = parseInt(url.searchParams.get('page') || '1');
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100);
   const role = url.searchParams.get('role') || undefined;
@@ -143,7 +144,6 @@ const updateProfileSchema = z.object({
   cep: z.string().regex(/^\d{3}-\d{4}$|^\d{7}$/, "CEP do Japão inválido (deve ser 123-4567 ou 1234567)").optional(),
   avatar_url: z.string().url("Avatar URL inválido").optional().or(z.literal('')),
   bio: z.string().max(500).optional(),
-  role: z.enum(['buyer', 'seller', 'admin']).optional(),
 });
 
 async function updateProfile(req: Request, body: Record<string, unknown>) {
@@ -202,13 +202,40 @@ async function updateProfile(req: Request, body: Record<string, unknown>) {
   });
 }
 
-async function verifyUser(body: Record<string, unknown>) {
-  const { user_id, admin_key } = body;
+async function verifyUser(req: Request, body: Record<string, unknown>) {
+  const token = getAuthUser(req);
+  if (!token) {
+    return new Response(JSON.stringify(errorResponse('Token required')), {
+      status: 401,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
 
-  const expectedAdminKey = Deno.env.get('ADMIN_VERIFY_KEY');
-  if (admin_key !== expectedAdminKey) {
-    return new Response(JSON.stringify(errorResponse('Chave de administração inválida')), {
+  const user = await verifyToken(token);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const { data: callerProfile, error: callerError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (callerError || !callerProfile || callerProfile.role !== 'admin') {
+    return new Response(JSON.stringify(errorResponse('Apenas administradores podem verificar usuários')), {
       status: 403,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const user_id = body?.user_id;
+  if (!user_id || typeof user_id !== 'string') {
+    return new Response(JSON.stringify(errorResponse('user_id é obrigatório')), {
+      status: 400,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
   }

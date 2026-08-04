@@ -17,7 +17,7 @@ function createMinimalUser(sessionUser: Session['user']): User {
     full_name: name,
     name,
     avatar_url: meta?.avatar_url || meta?.picture || null,
-    role: meta?.role || 'buyer',
+    role: 'buyer',
     created_at: sessionUser.created_at || new Date().toISOString(),
   }
 }
@@ -69,9 +69,8 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
 
     if (profileError || !profile) {
       const meta = sessionUser.user_metadata || {}
-      const roleFromMeta = meta?.role || 'buyer'
-      console.log('[authStore] Profile not found. Creating new profile with role:', roleFromMeta)
-      
+      console.log('[authStore] Profile not found. Creating new profile with default role: buyer')
+
       let { data: newProfile, error: createError } = await supabase
         .from('profiles')
         .insert({
@@ -83,7 +82,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
           rating: 0,
           total_sales: 0,
           is_verified: false,
-          role: roleFromMeta,
+          role: 'buyer',
         })
         .select()
         .single()
@@ -103,7 +102,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
               rating: 0,
               total_sales: 0,
               is_verified: false,
-              role: roleFromMeta,
+              role: 'buyer',
             })
             .select()
             .single()
@@ -358,9 +357,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { user } = get()
     if (!user) return
     try {
+      const { role: _ignoredRole, is_verified: _ignoredVerified, ...safeUpdates } = updates
       let { data, error } = await supabase
         .from('profiles')
-        .update(updates)
+        .update(safeUpdates)
         .eq('id', user.id)
         .select()
         .single()
@@ -371,7 +371,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         if (refreshed?.session) {
           const { data: retryData, error: retryErr } = await supabase
             .from('profiles')
-            .update(updates)
+            .update(safeUpdates)
             .eq('id', user.id)
             .select()
             .single()
