@@ -16,13 +16,24 @@ export default defineConfig({
         host: true
     },
     build: {
+        cssMinify: false,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-                    'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
-                    'vendor-supabase': ['@supabase/supabase-js'],
-                    'vendor-query': ['@tanstack/react-query'],
+                manualChunks: function (id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('@supabase/supabase-js'))
+                            return 'vendor-supabase';
+                        if (id.includes('@tanstack/react-query'))
+                            return 'vendor-query';
+                        if (id.includes('@react-three/') || id.includes('node_modules/three'))
+                            return 'vendor-three';
+                        if (id.includes('react-router'))
+                            return 'vendor-react';
+                        if (id.includes('react-dom'))
+                            return 'vendor-react';
+                        if (id.includes('node_modules/react'))
+                            return 'vendor-react';
+                    }
                 }
             }
         }
