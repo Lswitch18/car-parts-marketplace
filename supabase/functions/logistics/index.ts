@@ -417,6 +417,8 @@ Deno.serve(async (req) => {
       return await listShipments(req);
     }
     if (segments[0] === 'oms' && segments[1] === 'shipments' && segments[2] && req.method === 'GET') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       return await getShipment(segments[2]);
     }
     if (segments[0] === 'oms' && segments[1] === 'shipments' && segments[2] && req.method === 'PUT') {
@@ -430,12 +432,18 @@ Deno.serve(async (req) => {
       return await gerarEtiquetas(req);
     }
     if (segments[0] === 'oms' && segments[1] === 'labels' && segments[2] === 'zpl' && segments[3]) {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       return await handleLabelsZPL(req, segments[3]);
     }
     if (segments[0] === 'oms' && segments[1] === 'labels' && segments[2] === 'preview' && segments[3]) {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       return await handleLabelsPreview(req, segments[3]);
     }
     if (segments[0] === 'oms' && segments[1] === 'labels' && segments[2] === 'html' && segments[3]) {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       const { data: shipment } = await supabase.from('admin_shipments')
         .select('*, pedido:admin_pedidos!pedido_id(*), cliente:admin_clientes!cliente_id(*), origem:admin_armazens!armazem_origem_id(*)')
         .eq('id', segments[3]).single();
@@ -453,6 +461,8 @@ Deno.serve(async (req) => {
       return await registrarDropoff(body, user);
     }
     if (path.startsWith('/dropoff')) {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       const agenciaId = segments[1] === 'agency' ? segments[2] : undefined;
       return await listDropoffs(agenciaId);
     }
@@ -549,6 +559,8 @@ Deno.serve(async (req) => {
 
     // Listar zonas
     if (path === '/wms/zones' && req.method === 'GET') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       const url2 = new URL(req.url);
       const arm = url2.searchParams.get('armazem_id') || '';
       let q = supabase.from('admin_zonas').select('*');
@@ -559,6 +571,8 @@ Deno.serve(async (req) => {
 
     // Layout 3D do armazém
     if (path?.startsWith('/wms/layout/') && req.method === 'GET') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       const armId = path.replace('/wms/layout/', '');
       if (!armId) return json({ error: 'armazem_id obrigatório' }, 400);
 
@@ -654,6 +668,8 @@ Deno.serve(async (req) => {
 
     // Dashboard
     if (path === '/dashboard' && req.method === 'GET') {
+      const user = await requireAdmin(req);
+      if (!user) return json({ error: 'Não autorizado' }, 401);
       return await dashboard();
     }
 

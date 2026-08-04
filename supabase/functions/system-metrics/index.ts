@@ -12,12 +12,33 @@ function corsHeaders() {
   };
 }
 
+async function requireAdmin(req: Request) {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) return false;
+
+  const { data: { user }, error } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
+  if (error || !user) return false;
+
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+  return !!profile?.role?.includes('admin');
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders() });
   }
 
   try {
+    if (!(await requireAdmin(req))) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Não autorizado' }),
+        {
+          status: 401,
+          headers: { ...corsHeaders(), 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
     const startTime = performance.now();
 
     // Helper function to safely get table count without throwing 404s
@@ -44,7 +65,7 @@ Deno.serve(async (req: Request) => {
     // Query storage bucket safely
     let storageFilesCount = 0;
     try {
-      const { data } = await supabase.storage.from('part-images').list('', { limit: 100 });
+      const { data } = await supabase.storage.from('parts-images').list('', { limit: 100 });
       if (data) storageFilesCount = data.length;
     } catch {
       storageFilesCount = 0;

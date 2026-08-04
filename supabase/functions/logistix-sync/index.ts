@@ -30,6 +30,30 @@ function generatePedidoCode(): string {
   return `#PED-${timestamp}-${random}`;
 }
 
+async function authorize(req: Request) {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) return null;
+
+  const token = authHeader.replace('Bearer ', '');
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (serviceRoleKey && token === serviceRoleKey) {
+    return { serviceRole: true as const, user: null };
+  }
+
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile?.role?.includes('admin')) return null;
+
+  return { serviceRole: false as const, user };
+}
+
 async function syncTransaction(transactionId: string) {
   console.log('[LogistixSync] Iniciando sincronização:', transactionId);
 
@@ -140,6 +164,8 @@ Deno.serve(async (req) => {
       const action = url.searchParams.get('action');
 
       if (action === 'list') {
+        const auth = await authorize(req);
+        if (!auth) return error('Não autorizado', 401);
         const { data } = await supabase
           .from('admin_pedidos')
           .select('*')
@@ -152,6 +178,9 @@ Deno.serve(async (req) => {
     }
 
     if (req.method === 'POST') {
+      const auth = await authorize(req);
+      if (!auth) return error('Não autorizado', 401);
+
       const body = await req.json();
       const { transaction_id } = body;
 

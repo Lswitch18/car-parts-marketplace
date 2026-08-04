@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
       if (action === 'list') return await listTransactions(req);
       if (action === 'calculate') return calculateFeesEndpoint(req);
       const txId = action?.match(/^[0-9a-f-]{36}$/) ? action : url.searchParams.get('id');
-      if (txId) return await getTransaction(txId);
+      if (txId) return await getTransaction(req, txId);
     }
 
     if (req.method === 'POST') {
@@ -140,7 +140,48 @@ async function listTransactions(req: Request) {
   });
 }
 
-async function getTransaction(txId: string) {
+async function getTransaction(req: Request, txId: string) {
+  const token = getAuthUser(req);
+  if (!token) {
+    return new Response(JSON.stringify(errorResponse('Token required')), {
+      status: 401,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const user = await verifyToken(token);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const { data: txOwnership } = await supabase
+    .from('transactions')
+    .select('buyer_id, seller_id')
+    .eq('id', txId)
+    .single();
+
+  if (txOwnership) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    const isAdmin = profile?.role?.includes('admin');
+    const isBuyer = txOwnership.buyer_id === user.id;
+    const isSeller = txOwnership.seller_id === user.id;
+
+    if (!isAdmin && !isBuyer && !isSeller) {
+      return new Response(JSON.stringify(errorResponse('Não autorizado')), {
+        status: 403,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
+  }
+
   const { data, error } = await supabase
     .from('transactions')
     .select(`
@@ -674,12 +715,53 @@ function calculateFeesEndpoint(req: Request) {
 }
 
 async function recoverTransaction(req: Request, body: any) {
+  const token = getAuthUser(req);
+  if (!token) {
+    return new Response(JSON.stringify(errorResponse('Token required')), {
+      status: 401,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
+  const user = await verifyToken(token);
+  if (!user) {
+    return new Response(JSON.stringify(errorResponse('Invalid token')), {
+      status: 401,
+      headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+    });
+  }
+
   const { transaction_id } = body || {};
   if (!transaction_id) {
     return new Response(JSON.stringify(errorResponse('transaction_id é obrigatório')), {
       status: 400,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
+  }
+
+  const { data: txOwnership } = await supabase
+    .from('transactions')
+    .select('buyer_id, seller_id')
+    .eq('id', transaction_id)
+    .single();
+
+  if (txOwnership) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    const isAdmin = profile?.role?.includes('admin');
+    const isBuyer = txOwnership.buyer_id === user.id;
+    const isSeller = txOwnership.seller_id === user.id;
+
+    if (!isAdmin && !isBuyer && !isSeller) {
+      return new Response(JSON.stringify(errorResponse('Não autorizado')), {
+        status: 403,
+        headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
+      });
+    }
   }
 
   // Fetch transaction details
