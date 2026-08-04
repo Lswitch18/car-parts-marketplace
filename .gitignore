@@ -37,9 +37,13 @@ __pycache__
 
 # Reports and Documentation
 project-reports/
+docs/
 
 # PDFs
 *.pdf
+
+# Markdown (documentação/relatórios fora do versionamento)
+*.md
 
 # Terraform
 terraform/
