@@ -46,7 +46,7 @@ export default function TransportesPage() {
     queryFn: async () => {
       const supabase = (await import('@/modules/shared/lib/supabase')).supabase;
       const { data } = await supabase
-        .from('profiles')
+        .from('admin_profiles')
         .select('id, full_name, email')
         .order('full_name');
       return data || [];

@@ -50,10 +50,10 @@ export function useTenantRealData() {
 
     setLoading(true)
     try {
-      // 1. Busca perfil & dados do tenant
+      // 1. Busca perfil do usuário
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('*, tenants(*)')
+        .from('my_profile')
+        .select('*')
         .eq('id', user.id)
         .single()
 

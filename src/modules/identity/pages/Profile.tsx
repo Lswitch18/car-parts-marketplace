@@ -156,7 +156,7 @@ export default function Profile() {
   const checkEmailMfaStatus = async () => {
     try {
       const { data } = await supabase
-        .from('profiles')
+        .from('my_profile')
         .select('bank_info')
         .eq('id', user?.id)
         .single()
@@ -196,7 +196,7 @@ export default function Profile() {
     setMfaLoading(true)
     setMfaError(null)
     try {
-      const { data: prof } = await supabase.from('profiles').select('bank_info').eq('id', user.id).single()
+      const { data: prof } = await supabase.from('my_profile').select('bank_info').eq('id', user.id).single()
       const existingBankInfo = (prof?.bank_info && typeof prof.bank_info === 'object') ? prof.bank_info : {}
 
       await supabase.from('profiles').update({
@@ -228,7 +228,7 @@ export default function Profile() {
     if (!user?.id) return
     setMfaLoading(true)
     try {
-      const { data: prof } = await supabase.from('profiles').select('bank_info').eq('id', user.id).single()
+      const { data: prof } = await supabase.from('my_profile').select('bank_info').eq('id', user.id).single()
       const existingBankInfo = (prof?.bank_info && typeof prof.bank_info === 'object') ? prof.bank_info : {}
 
       await supabase.from('profiles').update({

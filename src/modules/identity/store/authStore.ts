@@ -44,7 +44,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
   try {
     console.debug('[authStore] Querying profiles table for userId:', userId)
     let { data: profile, error: profileError } = await supabase
-      .from('profiles')
+      .from('my_profile')
       .select('*')
       .eq('id', userId)
       .single()
@@ -54,7 +54,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
       const { data: refreshed } = await supabase.auth.refreshSession()
       if (refreshed?.session) {
         const { data: retryProfile, error: retryError } = await supabase
-          .from('profiles')
+          .from('my_profile')
           .select('*')
           .eq('id', userId)
           .single()
@@ -84,7 +84,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
           is_verified: false,
           role: 'buyer',
         })
-        .select()
+        .select('id, full_name, avatar_url, rating, total_sales, is_verified, created_at, updated_at')
         .single()
 
       if (createError && (createError.code === 'PGRST303' || createError.message?.includes('JWT expired'))) {
@@ -115,7 +115,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
         if (createError.code === '23505') {
           console.log('[authStore] Conflict (23505) during profile creation. Retrying query.')
           const { data: retry } = await supabase
-            .from('profiles')
+            .from('my_profile')
             .select('*')
             .eq('id', userId)
             .single()
@@ -132,7 +132,7 @@ async function fetchAndMapProfile(userId: string, sessionUser: Session['user']):
         return createMinimalUser(sessionUser)
       }
       console.log('[authStore] New profile created successfully.')
-      profile = newProfile
+      profile = { ...newProfile, email: sessionUser.email ?? '', role: 'buyer' }
     }
 
     console.log('[authStore] Profile mapped successfully. User role:', profile.role)
@@ -358,29 +358,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (!user) return
     try {
       const { role: _ignoredRole, is_verified: _ignoredVerified, ...safeUpdates } = updates
-      let { data, error } = await supabase
-        .from('profiles')
-        .update(safeUpdates)
-        .eq('id', user.id)
-        .select()
-        .single()
 
-      if (error && (error.code === 'PGRST303' || error.message?.includes('JWT expired'))) {
-        console.warn('[authStore] JWT expired during updateProfile. Refreshing session...')
-        const { data: refreshed } = await supabase.auth.refreshSession()
-        if (refreshed?.session) {
-          const { data: retryData, error: retryErr } = await supabase
-            .from('profiles')
-            .update(safeUpdates)
-            .eq('id', user.id)
-            .select()
-            .single()
-          data = retryData
-          error = retryErr
+      const applyUpdate = async () => {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update(safeUpdates)
+          .eq('id', user.id)
+        if (updateError) throw updateError
+        const { data, error: readError } = await supabase
+          .from('my_profile')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+        if (readError) throw readError
+        return data
+      }
+
+      let data: any
+      try {
+        data = await applyUpdate()
+      } catch (err: any) {
+        if (err?.code === 'PGRST303' || err?.message?.includes('JWT expired')) {
+          console.warn('[authStore] JWT expired during updateProfile. Refreshing session...')
+          const { data: refreshed } = await supabase.auth.refreshSession()
+          if (refreshed?.session) {
+            data = await applyUpdate()
+          } else {
+            throw err
+          }
+        } else {
+          throw err
         }
       }
 
-      if (error) throw error
       const updated = { ...data, name: data.full_name } as User
       set({ user: updated, isAdmin: updated.role === 'admin' })
     } catch (error) {

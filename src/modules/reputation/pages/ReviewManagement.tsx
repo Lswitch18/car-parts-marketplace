@@ -40,14 +40,33 @@ export default function ReviewManagement() {
           rating,
           comment,
           created_at,
-          reviewer:profiles!reviewer_id(full_name, email),
-          reviewee:profiles!reviewed_id(full_name, email),
+          reviewer:profiles!reviewer_id(id, full_name),
+          reviewee:profiles!reviewed_id(id, full_name),
           transaction:transactions(id, amount)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setReviews(data || []);
+
+      const rows = (data || []).map((r: any) => ({ ...r }));
+      const profileIds = Array.from(
+        new Set(rows.flatMap((r: any) => [r.reviewer?.id, r.reviewee?.id]).filter(Boolean))
+      );
+      if (profileIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('admin_profiles')
+          .select('id, email')
+          .in('id', profileIds);
+        if (!profilesError) {
+          const emailMap = new Map((profiles || []).map((p: any) => [p.id, p.email]));
+          rows.forEach((r: any) => {
+            if (r.reviewer?.id) r.reviewer.email = emailMap.get(r.reviewer.id)
+            if (r.reviewee?.id) r.reviewee.email = emailMap.get(r.reviewee.id)
+          });
+        }
+      }
+
+      setReviews(rows);
     } catch (err: any) {
       setError(err.message || 'An error occurred while loading reviews.');
     } finally {

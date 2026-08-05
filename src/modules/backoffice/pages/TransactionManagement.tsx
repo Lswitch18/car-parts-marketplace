@@ -224,14 +224,33 @@ export default function TransactionManagement() {
           payment_status,
           fulfillment_status,
           created_at,
-          buyer:profiles!transactions_buyer_id_fkey(email, full_name, rating),
-          seller:profiles!transactions_seller_id_fkey(email, full_name, rating),
+          buyer:profiles!transactions_buyer_id_fkey(id, full_name, rating),
+          seller:profiles!transactions_seller_id_fkey(id, full_name, rating),
           part:parts!transactions_part_id_fkey(title, description, price, images)
         `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      setTransactions(data || []);
+      const rows = (data || []).map((tx: any) => ({ ...tx }));
+
+      const profileIds = Array.from(
+        new Set(rows.flatMap((tx: any) => [tx.buyer?.id, tx.seller?.id]).filter(Boolean))
+      );
+      if (profileIds.length > 0) {
+        const { data: profiles, error: profilesError } = await supabase
+          .from('admin_profiles')
+          .select('id, email')
+          .in('id', profileIds);
+        if (!profilesError) {
+          const emailMap = new Map((profiles || []).map((p: any) => [p.id, p.email]));
+          rows.forEach((tx: any) => {
+            if (tx.buyer?.id) tx.buyer.email = emailMap.get(tx.buyer.id)
+            if (tx.seller?.id) tx.seller.email = emailMap.get(tx.seller.id)
+          });
+        }
+      }
+
+      setTransactions(rows);
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {

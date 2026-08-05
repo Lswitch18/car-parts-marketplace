@@ -29,7 +29,7 @@ export default function ContactsManagement() {
 
       // Fetch pending/active B2B companies
       const { data: b2bData } = await supabase
-        .from('profiles')
+        .from('admin_profiles')
         .select('id, full_name, email, role, is_store, store_verified, status, created_at')
         .eq('is_store', true)
         .order('created_at', { ascending: false });

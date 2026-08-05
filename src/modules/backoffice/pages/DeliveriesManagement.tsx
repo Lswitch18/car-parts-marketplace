@@ -90,16 +90,37 @@ export default function DeliveriesManagement() {
           payment_status,
           fulfillment_status,
           created_at,
-          buyer:profiles!transactions_buyer_id_fkey(email, full_name),
-          seller:profiles!transactions_seller_id_fkey(email, full_name, store_name),
+          buyer:profiles!transactions_buyer_id_fkey(id, full_name),
+          seller:profiles!transactions_seller_id_fkey(id, full_name),
           part:parts!transactions_part_id_fkey(title)
         `)
         .order('created_at', { ascending: false })
 
       if (error) throw error
 
-      if (data && data.length > 0) {
-        const formatted: DeliveryTransaction[] = data.map((tx: any) => ({
+      let rows = data || []
+      if (rows.length > 0) {
+        const profileIds = Array.from(
+          new Set(rows.flatMap((tx: any) => [tx.buyer?.id, tx.seller?.id]).filter(Boolean))
+        )
+        if (profileIds.length > 0) {
+          const { data: profiles, error: profilesError } = await supabase
+            .from('admin_profiles')
+            .select('id, email, store_name')
+            .in('id', profileIds)
+          if (!profilesError) {
+            const profileMap = new Map((profiles || []).map((p: any) => [p.id, p]))
+            rows = rows.map((tx: any) => {
+              const buyer = tx.buyer ? { ...tx.buyer, email: profileMap.get(tx.buyer.id)?.email } : tx.buyer
+              const seller = tx.seller ? { ...tx.seller, email: profileMap.get(tx.seller.id)?.email, store_name: profileMap.get(tx.seller.id)?.store_name } : tx.seller
+              return { ...tx, buyer, seller }
+            })
+          }
+        }
+      }
+
+      if (rows.length > 0) {
+        const formatted: DeliveryTransaction[] = rows.map((tx: any) => ({
           id: tx.id,
           created_at: tx.created_at,
           amount: parseFloat(tx.amount || 0),

@@ -19,7 +19,7 @@ export default function MapaPage() {
     queryKey: ['admin', 'drivers-map'],
     queryFn: async () => {
       const supabase = (await import('@/modules/shared/lib/supabase')).supabase;
-      const { data } = await supabase.from('profiles').select('id, full_name, email').order('full_name');
+      const { data } = await supabase.from('admin_profiles').select('id, full_name, email').order('full_name');
       return data || [];
     }
   });

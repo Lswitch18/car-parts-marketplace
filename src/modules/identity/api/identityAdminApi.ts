@@ -6,10 +6,10 @@ import { supabase } from '@/modules/shared/lib/supabase';
  */
 export async function getIdentityPulse() {
   try {
-    const totalRes = await supabase.from('profiles').select('id', { count: 'exact' });
-    const adminRes = await supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'admin');
-    const sellerRes = await supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'seller');
-    const pendingStoresRes = await supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'seller');
+    const totalRes = await supabase.from('admin_profiles').select('id', { count: 'exact' });
+    const adminRes = await supabase.from('admin_profiles').select('id', { count: 'exact' }).eq('role', 'admin');
+    const sellerRes = await supabase.from('admin_profiles').select('id', { count: 'exact' }).eq('role', 'seller');
+    const pendingStoresRes = await supabase.from('admin_profiles').select('id', { count: 'exact' }).eq('role', 'seller');
 
     const totalCount = totalRes.count || totalRes.data?.length || 0;
     const adminCount = adminRes.count || adminRes.data?.length || 0;

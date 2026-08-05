@@ -35,8 +35,8 @@ export class StripeConnectService {
 
     // 1. Busca perfil do usuário
     const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('id, email, full_name, bank_info, stripe_account_id')
+      .from('my_profile')
+      .select('id, email, full_name, stripe_account_id')
       .eq('id', userId)
       .single()
 
@@ -45,23 +45,18 @@ export class StripeConnectService {
       throw new Error('Falha ao buscar perfil para Stripe Connect')
     }
 
-    let accountId = profile.stripe_account_id || (profile.bank_info as any)?.stripe_account_id
+    let accountId = profile.stripe_account_id
 
     // 2. Se a conta Stripe Connect ainda não estiver vinculada, gera e salva a conta Connect
     if (!accountId) {
       accountId = `acct_japan_connect_${userId.replace(/-/g, '').slice(0, 12)}`
-      const updatedBankInfo = {
-        ...((profile.bank_info as Record<string, any>) || {}),
-        stripe_account_id: accountId,
-        is_verified: true,
-        updated_at: new Date().toISOString()
-      }
 
       await supabase
         .from('profiles')
         .update({
           stripe_account_id: accountId,
-          bank_info: updatedBankInfo
+          is_verified: true,
+          updated_at: new Date().toISOString()
         })
         .eq('id', userId)
     }
@@ -148,14 +143,14 @@ export class StripeConnectService {
    */
   static async getConnectAccountDetails(userId: string): Promise<StripeConnectAccountInfo | null> {
     const { data: profile } = await supabase
-      .from('profiles')
-      .select('stripe_account_id, bank_info')
+      .from('my_profile')
+      .select('stripe_account_id')
       .eq('id', userId)
       .single()
 
     if (!profile) return null
 
-    const info = (profile.bank_info as Record<string, any>) || {}
+    const info = {} as Record<string, any>
     const accountId = profile.stripe_account_id || info.stripe_account_id || `acct_japan_connect_${userId.replace(/-/g, '').slice(0, 12)}`
 
     return {

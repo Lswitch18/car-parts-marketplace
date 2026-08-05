@@ -53,7 +53,7 @@ export default function JapanBankForm() {
     setLoading(true)
     try {
       const { data } = await supabase
-        .from('profiles')
+        .from('my_profile')
         .select('bank_info, is_verified')
         .eq('id', user?.id)
         .single()

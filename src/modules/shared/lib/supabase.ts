@@ -47,7 +47,7 @@ export const getCurrentUserProfile = async () => {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
   const { data: profile, error } = await supabase
-    .from('profiles')
+    .from('my_profile')
     .select('*')
     .eq('id', user.id)
     .single()
@@ -212,8 +212,8 @@ export const getAdminStats = async () => {
 export const getUsers = async () => {
   try {
     const { data, error } = await supabase
-      .from('profiles')
-      .select('id, email, full_name, role, rating, is_verified, created_at, last_login_at')
+      .from('admin_profiles')
+      .select('id, email, full_name, role, rating, is_verified, created_at, ultimo_login')
       .order('created_at', { ascending: false })
       
     if (error) throw error
@@ -264,8 +264,8 @@ export const getTransactions = async () => {
         payment_status,
         fulfillment_status,
         created_at,
-        profiles!transactions_buyer_id_fkey(email, full_name),
-        profiles!transactions_seller_id_fkey(email, full_name),
+        profiles!transactions_buyer_id_fkey(id, full_name),
+        profiles!transactions_seller_id_fkey(id, full_name),
         parts!transactions_part_id_fkey(title)
       `)
       .order('created_at', { ascending: false })

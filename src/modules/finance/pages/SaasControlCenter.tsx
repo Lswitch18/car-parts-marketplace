@@ -74,7 +74,7 @@ export default function SaasControlCenter() {
       setLoading(true)
       
       // Fetch profiles from database
-      const { data: profileData } = await supabase.from('profiles').select('*')
+      const { data: profileData } = await supabase.from('admin_profiles').select('*')
 
       // Filter for actual seller/store profiles or provide 1 test SaaS company as requested
       const storeProfiles = (profileData || []).filter(p => p.role === 'seller' || p.email === 'parceiro@teste.com')
