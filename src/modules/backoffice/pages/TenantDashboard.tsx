@@ -506,6 +506,10 @@ export default function TenantDashboard() {
   const [showAiUploadModal, setShowAiUploadModal] = useState(false)
   const [showYieldModal, setShowYieldModal] = useState(false)
 
+  // Finance Drawer & Escrow State
+  const [showFinanceDrawer, setShowFinanceDrawer] = useState(false)
+  const [financeDrawerType, setFinanceDrawerType] = useState<'escrow' | 'payout' | 'tax'>('payout')
+
   // IA Hub State
   const [aiAnalysisResult, setAiAnalysisResult] = useState<any | null>(null)
   const [isAiScanning, setIsAiScanning] = useState(false)
@@ -1809,29 +1813,207 @@ export default function TenantDashboard() {
         )}
 
         {/* ─────────────────────────────────────────────────────────────
-            ABA 8: FINANCEIRO & REPASSES STRIPE
+            ABA 8: MÓDULO FINANCEIRO, REPASSES STRIPE CONNECT & COMPLIANCE
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'finance' && (
-          <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <DollarSign className="w-6 h-6 text-emerald-400" />
-              Módulo Financeiro & Repasses Stripe Connect
-            </h2>
+          <div className="space-y-6 animate-in fade-in duration-300">
+            
+            {/* Header do Módulo Financeiro */}
+            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <DollarSign className="w-6 h-6 text-emerald-400" />
+                  Módulo Financeiro & Repasses Stripe Connect
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Gestão integrada de faturamento bruto, retenção em custódia (Escrow), repasses bancários no Japão e imposto JCT (10%).
+                </p>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Faturamento Bruto Mês</span>
-                <p className="text-2xl font-bold text-white mt-1">¥ 1.420.000 JPY</p>
-              </div>
-              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Saldo em Custódia (Escrow)</span>
-                <p className="text-2xl font-bold text-sky-400 mt-1">¥ 185.000 JPY</p>
-              </div>
-              <div className="bg-zinc-950 p-4 rounded-xl border border-zinc-800">
-                <span className="text-xs text-zinc-400">Repassado via Stripe Connect</span>
-                <p className="text-2xl font-bold text-emerald-400 mt-1">¥ 755.000 JPY</p>
+              <div className="flex items-center space-x-3 shrink-0">
+                <span className="px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>Stripe Connect: Ativo (Zengin JP)</span>
+                </span>
               </div>
             </div>
+
+            {/* 3 CARDS DE MÉTRICAS INTERATIVAS COM GLOW CYBER NEON */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              
+              {/* Card 1: Faturamento Bruto Mês */}
+              <div 
+                onClick={() => { setFinanceDrawerType('payout'); setShowFinanceDrawer(true); }}
+                className="bg-gradient-to-br from-[#0C101A] to-[#0A0D14] border border-blue-500/30 hover:border-cyan-400 p-5 rounded-2xl shadow-[0_0_20px_rgba(13,117,255,0.1)] transition cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400">Faturamento Bruto (Mês)</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 text-cyan-300 border border-blue-500/30">
+                    +18.4%
+                  </span>
+                </div>
+                <p className="text-2xl font-black text-white mt-2 group-hover:text-cyan-300 transition">¥ 1.420.000 JPY</p>
+                <div className="flex items-center justify-between text-[11px] text-zinc-500 mt-3 pt-3 border-t border-zinc-800/80">
+                  <span>Balcão PDV: 65%</span>
+                  <span>Marketplace: 35%</span>
+                </div>
+              </div>
+
+              {/* Card 2: Saldo em Custódia (Escrow) */}
+              <div 
+                onClick={() => { setFinanceDrawerType('escrow'); setShowFinanceDrawer(true); }}
+                className="bg-gradient-to-br from-[#0C101A] to-[#0A0D14] border border-sky-500/30 hover:border-sky-400 p-5 rounded-2xl shadow-[0_0_20px_rgba(0,229,255,0.1)] transition cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400">Saldo em Custódia (Escrow)</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/10 text-sky-300 border border-sky-500/30">
+                    3 Pedidos
+                  </span>
+                </div>
+                <p className="text-2xl font-black text-sky-400 mt-2 group-hover:text-sky-300 transition">¥ 185.000 JPY</p>
+                <div className="flex items-center justify-between text-[11px] text-zinc-500 mt-3 pt-3 border-t border-zinc-800/80">
+                  <span>Aguardando Entrega</span>
+                  <span className="text-sky-400 underline font-semibold">Ver Custódias →</span>
+                </div>
+              </div>
+
+              {/* Card 3: Repassado via Stripe Connect */}
+              <div 
+                onClick={() => { setFinanceDrawerType('payout'); setShowFinanceDrawer(true); }}
+                className="bg-gradient-to-br from-[#0C101A] to-[#0A0D14] border border-emerald-500/30 hover:border-emerald-400 p-5 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)] transition cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-400">Repassado via Stripe Connect</span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    Pago
+                  </span>
+                </div>
+                <p className="text-2xl font-black text-emerald-400 mt-2 group-hover:text-emerald-300 transition">¥ 755.000 JPY</p>
+                <div className="flex items-center justify-between text-[11px] text-zinc-500 mt-3 pt-3 border-t border-zinc-800/80">
+                  <span>Conta Zengin (Japão)</span>
+                  <span className="text-emerald-400 underline font-semibold">Ver Repasses →</span>
+                </div>
+              </div>
+
+            </div>
+
+            {/* GRÁFICO SVG SPARKLINE DE TENDÊNCIA DE FATURAMENTO + JCT 10% BREAKDOWN */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* Gráfico de Tendência SVG */}
+              <div className="lg:col-span-2 bg-[#121215] border border-zinc-800 rounded-2xl p-6 space-y-4 shadow-xl">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-cyan-400" />
+                      Evolução do Faturamento & Recebíveis (Últimos 30 Dias)
+                    </h3>
+                    <p className="text-xs text-zinc-400">Curva diária de transações no Balcão PDV e Marketplace DAIG em JPY (¥)</p>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                    +18.4% WoW
+                  </span>
+                </div>
+
+                {/* SVG Visualizer */}
+                <div className="h-44 w-full relative pt-2">
+                  <svg className="w-full h-full overflow-visible" viewBox="0 0 500 120" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="financeGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.4" />
+                        <stop offset="100%" stopColor="#0D75FF" stopOpacity="0.0" />
+                      </linearGradient>
+                    </defs>
+                    {/* Area fill */}
+                    <path
+                      d="M 0 100 Q 50 80, 100 85 T 200 60 T 300 40 T 400 30 T 500 15 L 500 120 L 0 120 Z"
+                      fill="url(#financeGradient)"
+                    />
+                    {/* Stroke line */}
+                    <path
+                      d="M 0 100 Q 50 80, 100 85 T 200 60 T 300 40 T 400 30 T 500 15"
+                      fill="none"
+                      stroke="#00E5FF"
+                      strokeWidth="3"
+                    />
+                    {/* Data Points */}
+                    <circle cx="100" cy="85" r="4" fill="#00E5FF" />
+                    <circle cx="200" cy="60" r="4" fill="#00E5FF" />
+                    <circle cx="300" cy="40" r="4" fill="#00E5FF" />
+                    <circle cx="400" cy="30" r="4" fill="#00E5FF" />
+                    <circle cx="500" cy="15" r="5" fill="#FFFFFF" stroke="#00E5FF" strokeWidth="2" />
+                  </svg>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2 text-center text-xs font-mono pt-2 border-t border-zinc-800/60 text-zinc-400">
+                  <div>Semana 1: <span className="text-white font-bold">¥ 280k</span></div>
+                  <div>Semana 2: <span className="text-white font-bold">¥ 340k</span></div>
+                  <div>Semana 3: <span className="text-white font-bold">¥ 390k</span></div>
+                  <div>Semana 4: <span className="text-cyan-300 font-bold">¥ 410k</span></div>
+                </div>
+              </div>
+
+              {/* Card de Tax Compliance Japão JCT 10% (インボイス制度) */}
+              <div className="bg-[#121215] border border-purple-500/30 rounded-2xl p-6 space-y-4 shadow-xl flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                    <span className="text-xs font-mono font-bold text-purple-400 uppercase tracking-wider">Imposto Japão JCT 10%</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                      消費税 10%
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 text-xs font-mono">
+                    <div className="flex justify-between text-zinc-400">
+                      <span>Faturamento Bruto:</span>
+                      <span className="text-white font-bold">¥ 1.420.000 JPY</span>
+                    </div>
+                    <div className="flex justify-between text-purple-300">
+                      <span>Imposto JCT (10% 税込):</span>
+                      <span className="font-bold">- ¥ 142.000 JPY</span>
+                    </div>
+                    <div className="flex justify-between text-emerald-400 pt-2 border-t border-zinc-800 font-bold text-sm">
+                      <span>Faturamento Líquido:</span>
+                      <span>¥ 1.278.000 JPY</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-zinc-950 rounded-xl border border-zinc-800 space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-zinc-400">Invoice System (インボイス):</span>
+                    <span className="text-emerald-400 font-mono font-bold">Validado</span>
+                  </div>
+                  <p className="text-[10px] font-mono text-zinc-500 truncate">Registro T-Number: T1234567890123</p>
+                </div>
+              </div>
+
+            </div>
+
+            {/* WIDGET DE DIVISÃO SOCIETÁRIA DE ROYALTIES / DIVIDENDOS 90% / 10% */}
+            <div className="bg-gradient-to-r from-[#0B0E17] via-[#0A192F] to-[#0B0E17] border border-cyan-500/30 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <Scale className="w-5 h-5 text-cyan-400" />
+                  <h4 className="text-sm font-bold text-white">Projeção de Distribuição de Dividendos (Sociedade DAIG 90/10)</h4>
+                </div>
+                <p className="text-xs text-zinc-400">
+                  Cálculo automático de repasse líquido aos sócios após dedução do imposto JCT (10%) e fundo de reserva operacional.
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-4 shrink-0">
+                <div className="p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 text-center font-mono">
+                  <p className="text-[10px] text-purple-400 font-bold uppercase">Patrick Suzuki (90%)</p>
+                  <p className="text-sm font-black text-white mt-0.5">¥ 1.150.200 JPY</p>
+                </div>
+                <div className="p-3 bg-zinc-900/90 rounded-xl border border-blue-500/30 text-center font-mono">
+                  <p className="text-[10px] text-cyan-400 font-bold uppercase">Wellynton (10% | 50% IP)</p>
+                  <p className="text-sm font-black text-white mt-0.5">¥ 127.800 JPY</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         )}
 
@@ -2374,6 +2556,83 @@ export default function TenantDashboard() {
         isOpen={showYieldModal}
         onClose={() => setShowYieldModal(false)}
       />
+
+      {/* GAVETA LATERAL (SLIDE-OVER DRAWER): EXTRATO FINANCEIRO & CUSTÓDIAS STRIPE */}
+      {showFinanceDrawer && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-end transition-opacity animate-in fade-in duration-200">
+          <div className="bg-[#0B0E17] border-l border-zinc-800 max-w-lg w-full h-full p-6 space-y-6 overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-300">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+              <div className="flex items-center space-x-2">
+                <DollarSign className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-bold text-white text-base">
+                  {financeDrawerType === 'escrow' ? 'Extrato de Saldos em Custódia (Escrow)' : 'Extrato de Repasses Stripe Connect'}
+                </h3>
+              </div>
+              <button 
+                onClick={() => setShowFinanceDrawer(false)}
+                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 bg-zinc-950 rounded-xl border border-zinc-800 space-y-2 text-xs font-mono">
+              <div className="flex justify-between text-zinc-400">
+                <span>Destino de Transferência:</span>
+                <span className="text-white font-bold">Conta Bancária Zengin (Japão 🇯🇵)</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>Status de Inscrição:</span>
+                <span className="text-emerald-400 font-bold">Stripe Connect Verified</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-bold">Transações Recentes</p>
+              
+              <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                <div className="flex justify-between text-xs font-bold text-white">
+                  <span>Farol Full LED Prius ZVW30</span>
+                  <span className="text-emerald-400">+ ¥ 45.000 JPY</span>
+                </div>
+                <div className="flex justify-between text-[11px] text-zinc-400">
+                  <span>ID: tx_stripe_99182</span>
+                  <span className="text-emerald-400">Repassado • Zengin JP</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                <div className="flex justify-between text-xs font-bold text-white">
+                  <span>Módulo ECU Honda Fit GK5</span>
+                  <span className="text-sky-400">¥ 38.000 JPY</span>
+                </div>
+                <div className="flex justify-between text-[11px] text-zinc-400">
+                  <span>ID: tx_stripe_99183</span>
+                  <span className="text-sky-400">Em Custódia (Escrow)</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                <div className="flex justify-between text-xs font-bold text-white">
+                  <span>Kit Freios Brembo GT 6-Piston</span>
+                  <span className="text-emerald-400">+ ¥ 185.000 JPY</span>
+                </div>
+                <div className="flex justify-between text-[11px] text-zinc-400">
+                  <span>ID: tx_stripe_99184</span>
+                  <span className="text-emerald-400">Repassado • Zengin JP</span>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowFinanceDrawer(false)}
+              className="w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs rounded-xl border border-zinc-700 transition"
+            >
+              Fechar Extrato
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   )
