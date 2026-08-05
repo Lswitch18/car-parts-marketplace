@@ -905,9 +905,9 @@
     "semantic_hash": "2e46567db62489269c1fe96ab883cba9"
   },
   "src/modules/shared/components/LanguageDetector.tsx": {
-    "mtime": 1782480918.91316,
-    "ast_hash": "14054584a43a5cc638fef694f16976cc",
-    "semantic_hash": "14054584a43a5cc638fef694f16976cc"
+    "mtime": 1785954146.6867867,
+    "ast_hash": "8e3fbf196204c3f65282f5fd5bf740e4",
+    "semantic_hash": ""
   },
   "src/modules/shared/components/PWARegister.tsx": {
     "mtime": 1781833815.5836163,
@@ -975,9 +975,9 @@
     "semantic_hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
   },
   "src/modules/shared/lib/i18n.tsx": {
-    "mtime": 1785794473.4446235,
-    "ast_hash": "9327ac63535c8bb94097a214295bc468",
-    "semantic_hash": "9327ac63535c8bb94097a214295bc468"
+    "mtime": 1785954138.4507868,
+    "ast_hash": "64951bb676bb0644c0a34e9e8774a3eb",
+    "semantic_hash": ""
   },
   "src/modules/shared/lib/postal.ts": {
     "mtime": 1784906592.0498693,
@@ -1020,9 +1020,9 @@
     "semantic_hash": "23233f83bf232184dc901de57be216d5"
   },
   "src/modules/storefront/pages/MobileStoreHome.tsx": {
-    "mtime": 1781927374.406534,
-    "ast_hash": "998bdc5b57bd701bea8d447b1bb58b5a",
-    "semantic_hash": "998bdc5b57bd701bea8d447b1bb58b5a"
+    "mtime": 1785954154.8747845,
+    "ast_hash": "2a044300179bbd5442cf040e6dea223d",
+    "semantic_hash": ""
   },
   "src/modules/transactions/__tests__/adminApi.test.ts": {
     "mtime": 1781833815.3396163,
