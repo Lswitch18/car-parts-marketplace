@@ -36,9 +36,9 @@ ACORDO_SOCIOS_MARKDOWN = """
 
 ---
 
-### CLÁUSULA SEGUNDA — CESSÃO IRREVOGÁVEL DE PROPRIEDADE INTELECTUAL (IP ASSIGNMENT)
-2.1. O SÓCIO DESENVOLVEDOR cede e transfere à empresa **DAIG AUTO PARTS**, de forma integral, irrevogável, irretratável e sem limitação territorial ou temporal, a totalidade dos direitos patrimoniais de Propriedade Intelectual referentes ao software, código-fonte, arquitetura multi-tenant, algoritmos de inteligência artificial, visão computacional, bancos de dados, design de interfaces e marcas.  
-2.2. É vedada a utilização, cópia, cessão ou licenciamento de qualquer módulo da plataforma para terceiros sem autorização prévia por escrito do SÓCIO MAJORITÁRIO.
+### CLÁUSULA SEGUNDA — CO-TITULARIDADE DE PROPRIEDADE INTELECTUAL (50% WELLYNTON / 50% DAIG)
+2.1. O SÓCIO DESENVOLVEDOR (**WELLYNTON SANTOS JERONIMO**) transfere à empresa **DAIG AUTO PARTS** a quota de **50% (cinquenta por cento)** dos direitos patrimoniais de Propriedade Intelectual referentes ao software, código-fonte, arquitetura multi-tenant, algoritmos de inteligência artificial, visão computacional e bancos de dados, retendo **50% (cinquenta por cento)** da titularidade em seu nome pessoal.  
+2.2. A empresa **DAIG AUTO PARTS** possui licença exclusiva de exploração comercial da tecnologia para a operação do marketplace e ERP de desmanches no Japão e exterior, sendo preservada a co-titularidade do desenvolvedor.
 
 ---
 

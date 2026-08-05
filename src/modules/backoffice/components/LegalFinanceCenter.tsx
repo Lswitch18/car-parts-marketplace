@@ -98,7 +98,7 @@ export default function LegalFinanceCenter() {
 
             <div className="p-3 bg-zinc-900/80 rounded-xl border border-zinc-800 text-xs font-mono space-y-1 text-zinc-300">
               <p><span className="text-zinc-500">Foro de Validade:</span> São Paulo, SP (Brasil)</p>
-              <p><span className="text-zinc-500">Propriedade Intelectual:</span> Cessão Total à DAIG</p>
+              <p><span className="text-zinc-500">Propriedade Intelectual:</span> Co-Titularidade 50% Wellynton / 50% DAIG</p>
               <p><span className="text-zinc-500">Status Cartório:</span> Pronto p/ Firma Reconhecida</p>
             </div>
 
@@ -136,19 +136,19 @@ export default function LegalFinanceCenter() {
                 </button>
               </div>
 
-              {/* Doc 2: Cessão Irrevogável de IP */}
+              {/* Doc 2: Co-Titularidade de IP (50%) */}
               <div className="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-white">Termo de Cessão de IP</span>
+                  <span className="font-bold text-xs text-white">Termo de Co-Titularidade (50% IP)</span>
                   <span className="text-[10px] font-mono text-cyan-400">Código-Fonte</span>
                 </div>
-                <p className="text-[11px] text-zinc-400">Garante a transferência exclusiva de todo o código e modelos de IA para a DAIG.</p>
+                <p className="text-[11px] text-zinc-400">Transfere 50% de IP à DAIG e preserva 50% da titularidade em nome de Wellynton.</p>
                 <button
                   onClick={() => handleDownloadPdf('cessao-ip')}
                   className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-cyan-300 rounded-lg text-xs font-semibold flex items-center justify-center space-x-1 transition"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Gerar Certidão de IP</span>
+                  <span>Gerar Certidão de IP 50%</span>
                 </button>
               </div>
 

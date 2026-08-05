@@ -26,9 +26,9 @@ Esta skill estabelece a estrutura jurídica, societária, governança corporativ
 
 ## 📜 2. Cláusulas Pétreas do Acordo de Sócios (Shareholders' Agreement)
 
-### 🔹 1. Cessão de Propriedade Intelectual (IP Assignment)
-- **Regra Imutável**: 100% do código-fonte, algoritmos de IA, modelos de visão computacional, bancos de dados, marcas, domínios, UI/UX e arquitetura desenvolvidos por Wellynton Santos Jeronimo ou por terceiros pertencem **exclusivamente à pessoa jurídica da DAIG**.
-- Nenhuma parte do código-fonte pode ser licenciada, revendida, compartilhada ou reutilizada fora dos ativos da DAIG sem autorização por escrito do Sócio Majoritário (Patrick Suzuki).
+### 🔹 1. Co-Titularidade de Propriedade Intelectual (50% Wellynton / 50% DAIG)
+- **Cessão Parcial (50%)**: O Sócio Desenvolvedor (**Wellynton Santos Jeronimo**) transfere **50% dos direitos patrimoniais de Propriedade Intelectual** do código-fonte, algoritmos de IA, visão computacional e arquitetura para a pessoa jurídica **DAIG Auto Parts**, retendo **50% da titularidade em seu nome pessoal**.
+- **Licença Exclusiva de Uso Comercial**: A DAIG Auto Parts possui licença exclusiva de exploração comercial da plataforma para o mercado de autopeças, WMS e desmanches, preservando o direito de co-titularidade do desenvolvedor.
 
 ### 🔹 2. Tomada de Decisão & Governança (Voting Rights & Veto)
 - **Decisões Operacionais e Estratégicas**: Administradas pelo Sócio Majoritário **Patrick Suzuki (90%)**, detentor do poder de voto deliberativo final sobre orçamentos, vendas da empresa, contratações, termos de serviço e alocação de capital.
