@@ -581,7 +581,7 @@ export default function Profile() {
                   <div className="space-y-2.5">
                     {purchasedItems.map((item) => {
                       const part = item.parts || {}
-                      const img = part.images?.[0] || 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'
+                      const img = part.images?.[0] || '/parts/turbo_ihi_vf52.png'
                       return (
                         <div key={item.id} className="p-3.5 rounded-xl bg-[#06080F] border border-blue-500/20 hover:border-[#00E5FF]/40 transition flex items-center justify-between gap-4">
                           <div className="flex items-center space-x-3.5 min-w-0">

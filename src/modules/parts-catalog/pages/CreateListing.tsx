@@ -459,7 +459,7 @@ export default function CreateListing() {
           <button
             type="button"
             onClick={() => {
-              setImages(['https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400&q=80'])
+              setImages(['/parts/farol_full_led.png'])
               setAnalyzing(true)
               setAiProgress(10)
               setTimeout(() => setAiProgress(60), 300)

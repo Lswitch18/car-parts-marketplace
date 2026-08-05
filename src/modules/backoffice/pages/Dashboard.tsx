@@ -55,7 +55,7 @@ export default function Dashboard() {
   // Visão Computacional IA Mock & Upload State
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [aiImagePreview, setAiImagePreview] = useState<string>(
-    'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=600&q=80'
+    '/parts/turbo_ihi_vf52.png'
   )
   const [aiConfidence, setAiConfidence] = useState<number>(98.7)
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false)

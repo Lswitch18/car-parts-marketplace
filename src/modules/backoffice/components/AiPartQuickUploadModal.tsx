@@ -35,7 +35,7 @@ export default function AiPartQuickUploadModal({
   const [wmsLocation, setWmsLocation] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
 
-  // Simulated AI Presets
+  // Simulated AI Presets with real auto part images
   const AI_DEMO_PRESETS = [
     {
       title: 'Turbocompressor IHI VF52 RHD JDM Genuíno',
@@ -44,7 +44,7 @@ export default function AiPartQuickUploadModal({
       price: 88000,
       vehicle: 'Subaru Impreza WRX STI GRB (2012)',
       wms: 'Galpão A1 ➔ Prateleira 03 ➔ Posição 12',
-      image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=500&q=80'
+      image: '/parts/turbo_ihi_vf52.png'
     },
     {
       title: 'Farol Dianteiro Full LED Esquerdo Optic-Scan',
@@ -53,7 +53,7 @@ export default function AiPartQuickUploadModal({
       price: 45000,
       vehicle: 'Toyota Prius ZVW30 (2018)',
       wms: 'Galpão A ➔ Corredor 02 ➔ Estante C ➔ Posição 04',
-      image: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=500&q=80'
+      image: '/parts/farol_full_led.png'
     },
     {
       title: 'Módulo de Injeção Eletrônica ECU Engine Control',
@@ -62,7 +62,7 @@ export default function AiPartQuickUploadModal({
       price: 38000,
       vehicle: 'Honda Fit GK5 RS 1.5 i-VTEC (2017)',
       wms: 'Galpão B ➔ Corredor 01 ➔ Estante A ➔ Posição 02',
-      image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=500&q=80'
+      image: '/parts/modulo_ecu.png'
     }
   ]
 

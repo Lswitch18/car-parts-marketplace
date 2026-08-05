@@ -134,7 +134,6 @@ function AnimatedKpiCard({
 
 export default function SaasControlCenter() {
   const { t } = useI18n()
-  const navigate = useNavigate()
   const { user } = useAuthStore()
 
   const [loading, setLoading] = useState(true)
