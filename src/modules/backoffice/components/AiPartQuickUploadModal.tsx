@@ -349,15 +349,19 @@ export default function AiPartQuickUploadModal({
                 />
               </div>
 
-              {/* Condição / Estado */}
+              {/* Grade de Conservação Certificada */}
               <div className="space-y-1">
-                <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold">{t('Estado de Conservação')}</label>
-                <input 
-                  type="text" 
+                <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold">{t('Grade de Conservação (Certificação)')}</label>
+                <select 
                   value={condition} 
                   onChange={(e) => setCondition(e.target.value)}
                   className="w-full bg-[#0B0E17] border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-emerald-400 font-semibold outline-none focus:border-[#00E5FF]"
-                />
+                >
+                  <option value="Grade A+ 🟢 (Genuíno Impecável / Testado)">Grade A+ 🟢 (Genuíno Impecável / Testado)</option>
+                  <option value="Grade A 🔵 (Leve Marca Estética / 100% OK)">Grade A 🔵 (Leve Marca Estética / 100% OK)</option>
+                  <option value="Grade B 🟡 (Requer Limpeza / Pintura)">Grade B 🟡 (Requer Limpeza / Pintura)</option>
+                  <option value="Grade C 🔴 (Para Recondicionamento)">Grade C 🔴 (Para Recondicionamento)</option>
+                </select>
               </div>
 
               {/* Preço Sugerido JPY */}
@@ -371,9 +375,14 @@ export default function AiPartQuickUploadModal({
                 />
               </div>
 
-              {/* Preço de Custo JPY */}
+              {/* Preço de Custo JPY & Margem Real de Lucro */}
               <div className="space-y-1">
-                <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold">{t('Preço de Custo (JPY)')}</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold">{t('Preço de Custo (JPY)')}</label>
+                  <span className="text-[10px] font-mono text-emerald-400 font-bold">
+                    Margem Bruta: {price > 0 ? (((price - costPrice) / price) * 100).toFixed(0) : 0}%
+                  </span>
+                </div>
                 <input 
                   type="number" 
                   value={costPrice} 

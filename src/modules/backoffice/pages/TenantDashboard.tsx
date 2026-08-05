@@ -8,6 +8,7 @@ import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { Product } from '@/modules/shared/types'
 import AiPartQuickUploadModal from '@/modules/backoffice/components/AiPartQuickUploadModal'
+import VehicleStrippingYieldModal from '@/modules/backoffice/components/VehicleStrippingYieldModal'
 import { parseCompatibilityTextToTags } from '@/modules/shared/components/CompatibilityTagInput'
 import { useTenantRealData } from '@/modules/shared/hooks/useTenantRealData'
 import {
@@ -501,6 +502,7 @@ export default function TenantDashboard() {
   const [showNfeModal, setShowNfeModal] = useState(false)
   const [showWorkOrderModal, setShowWorkOrderModal] = useState(false)
   const [showAiUploadModal, setShowAiUploadModal] = useState(false)
+  const [showYieldModal, setShowYieldModal] = useState(false)
 
   // IA Hub State
   const [aiAnalysisResult, setAiAnalysisResult] = useState<any | null>(null)
@@ -1005,6 +1007,14 @@ export default function TenantDashboard() {
             >
               <Sparkles className="w-4 h-4 text-cyan-200 animate-pulse" />
               <span>Cadastre uma Peça em 30s com IA</span>
+            </button>
+
+            <button
+              onClick={() => setShowYieldModal(true)}
+              className="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-purple-600/20 transition cursor-pointer active:scale-95"
+            >
+              <Car className="w-4 h-4 text-purple-200" />
+              <span>Triagem Veículo Doador</span>
             </button>
 
             <button
@@ -2347,6 +2357,12 @@ export default function TenantDashboard() {
         isOpen={showAiUploadModal}
         onClose={() => setShowAiUploadModal(false)}
         sellerId={user?.id}
+      />
+
+      {/* Modal de Triagem e Rendimento de Veículo Doador (Pilar 4) */}
+      <VehicleStrippingYieldModal
+        isOpen={showYieldModal}
+        onClose={() => setShowYieldModal(false)}
       />
 
     </div>
