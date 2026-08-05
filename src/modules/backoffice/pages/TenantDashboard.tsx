@@ -830,16 +830,16 @@ export default function TenantDashboard() {
             <div>
               {!sidebarCollapsed && (
                 <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
-                  Gestão & Inteligência
+                  Gestão
                 </p>
               )}
               <nav className="space-y-1">
                 {[
-                  { id: 'overview', label: 'Visão Geral KPIs', icon: LayoutDashboard },
-                  { id: 'ai-hub', label: 'IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
-                  { id: 'wms-hierarchy', label: 'WMS & Hierarquia', icon: MapPin },
-                  { id: 'workshop-kanban', label: 'Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
-                  { id: 'inventory', label: 'Estoque de Peças', icon: Package, badge: `${stats.totalSKUs}` },
+                  { id: 'overview', label: 'Visão', icon: LayoutDashboard },
+                  { id: 'ai-hub', label: 'Inteligência', icon: Sparkles, badge: 'PRO' },
+                  { id: 'wms-hierarchy', label: 'Localização', icon: MapPin },
+                  { id: 'workshop-kanban', label: 'Oficina', icon: Wrench, badge: `${workOrders.length}` },
+                  { id: 'inventory', label: 'Estoque', icon: Package, badge: `${stats.totalSKUs}` },
                 ].map(item => {
                   const Icon = item.icon
                   const isActive = activeTab === item.id
@@ -873,14 +873,14 @@ export default function TenantDashboard() {
             <div>
               {!sidebarCollapsed && (
                 <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
-                  Vendas & Finanças
+                  Operações
                 </p>
               )}
               <nav className="space-y-1">
                 {[
-                  { id: 'sales', label: 'Vendas & PDV Balcão', icon: ShoppingCart },
-                  { id: 'purchases', label: 'Compras & NF-e XML', icon: FileText },
-                  { id: 'finance', label: 'Repasses Stripe', icon: DollarSign },
+                  { id: 'sales', label: 'Vendas', icon: ShoppingCart },
+                  { id: 'purchases', label: 'Compras', icon: FileText },
+                  { id: 'finance', label: 'Finanças', icon: DollarSign },
                 ].map(item => {
                   const Icon = item.icon
                   const isActive = activeTab === item.id
@@ -908,13 +908,13 @@ export default function TenantDashboard() {
             <div>
               {!sidebarCollapsed && (
                 <p className="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest px-3 mb-2">
-                  Configurações
+                  Ajustes
                 </p>
               )}
               <nav className="space-y-1">
                 {[
-                  { id: 'profile', label: '👤 Perfil & Banco Japão', icon: User },
-                  { id: 'api-b2b', label: '🔌 API & Rede B2B', icon: Key },
+                  { id: 'profile', label: 'Perfil', icon: User },
+                  { id: 'api-b2b', label: 'Integrações', icon: Key },
                 ].map(item => {
                   const Icon = item.icon
                   const isActive = activeTab === item.id
