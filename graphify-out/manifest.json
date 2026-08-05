@@ -2705,8 +2705,8 @@
     "semantic_hash": "7856c340572f64063f3e4ebd6be94e2e"
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785953836.046786,
-    "ast_hash": "f7bfe2aec01361d79e2ae816adf25141",
+    "mtime": 1785957323.094781,
+    "ast_hash": "17d60b7477d5ba26d010579ba203fb36",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -3022,6 +3022,161 @@
   "src/modules/backoffice/components/VehicleStrippingYieldModal.tsx": {
     "mtime": 1785953776.642775,
     "ast_hash": "8c2500bc3c17a186814ae999f7cc35a0",
+    "semantic_hash": ""
+  },
+  ".agents/skills/corporate-legal-counsel/SKILL.md": {
+    "mtime": 1785956486.2547755,
+    "ast_hash": "fe42ddd2d0d576ac6e156a12c99caf1a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/custom-hitech-icons/SKILL.md": {
+    "mtime": 1785949333.3747828,
+    "ast_hash": "149f62b9f2c224a4e1ce240dd382b380",
+    "semantic_hash": ""
+  },
+  ".agents/skills/gsap-scroll-premium-animations/SKILL.md": {
+    "mtime": 1785947258.31478,
+    "ast_hash": "f105a28c05e349fb63a249a64d8f51f4",
+    "semantic_hash": ""
+  },
+  ".agents/skills/japan-legal-tax-compliance/SKILL.md": {
+    "mtime": 1785954846.7067838,
+    "ast_hash": "830c3965f0bcf1d98d4e24acc40606ab",
+    "semantic_hash": ""
+  },
+  ".agents/skills/saas-multitenant-erp/SKILL.md": {
+    "mtime": 1785796075.680624,
+    "ast_hash": "0f1e6bdb4087f991a27fe1cdc659a533",
+    "semantic_hash": ""
+  },
+  ".agents/skills/shift-left-sast-security/SKILL.md": {
+    "mtime": 1785954855.970784,
+    "ast_hash": "271c4edc39832db0f184ab9adbf293e2",
+    "semantic_hash": ""
+  },
+  "scripts/check_production_readiness.mjs": {
+    "mtime": 1785955392.9147828,
+    "ast_hash": "69f9e5b332593bd35a4f8feabe9aac5e",
+    "semantic_hash": ""
+  },
+  "scripts/check_recent_transactions.mjs": {
+    "mtime": 1785292261.9412177,
+    "ast_hash": "91b1e4232def133fa9829fae6ae9c5bf",
+    "semantic_hash": ""
+  },
+  "scripts/check_user_auth.mjs": {
+    "mtime": 1785940289.8427796,
+    "ast_hash": "8c248c8c47f067b009427820936b2114",
+    "semantic_hash": ""
+  },
+  "scripts/check_wellynton.mjs": {
+    "mtime": 1785769033.1766186,
+    "ast_hash": "61d1b51f1f4972cbecbcee0c92d926c7",
+    "semantic_hash": ""
+  },
+  "scripts/create_partner_user.mjs": {
+    "mtime": 1785287590.1612184,
+    "ast_hash": "9dd7286e869aef95bd165f634a4b6a02",
+    "semantic_hash": ""
+  },
+  "scripts/create_patrick_user_and_transfer.mjs": {
+    "mtime": 1785771708.3606207,
+    "ast_hash": "577afd4e61b62120167214c55834993d",
+    "semantic_hash": ""
+  },
+  "scripts/delete_test_transactions.mjs": {
+    "mtime": 1785350652.4354005,
+    "ast_hash": "ae42fbb5891ab415f09f7ca9ec87fca7",
+    "semantic_hash": ""
+  },
+  "scripts/fix_wellynton_role.mjs": {
+    "mtime": 1785769172.3446183,
+    "ast_hash": "7a14225f85e462ad4bf65d5f4cb22fa3",
+    "semantic_hash": ""
+  },
+  "scripts/generate_acordo_socios_pdf.py": {
+    "mtime": 1785956500.8707755,
+    "ast_hash": "46ff1bd0bc2640db5a30b78374020c22",
+    "semantic_hash": ""
+  },
+  "scripts/insert_100yen_product.mjs": {
+    "mtime": 1784906569.309888,
+    "ast_hash": "5a42e9e1f459685edc5723755f1af935",
+    "semantic_hash": ""
+  },
+  "scripts/inspect_seller_stripe.mjs": {
+    "mtime": 1785292395.513215,
+    "ast_hash": "ed950e8319813605de1c02d6cb15a128",
+    "semantic_hash": ""
+  },
+  "scripts/remove_saas_permission.mjs": {
+    "mtime": 1785541301.2175655,
+    "ast_hash": "64493d4d9392d7e48bdc5bbb78cd5676",
+    "semantic_hash": ""
+  },
+  "scripts/set_seller_password.mjs": {
+    "mtime": 1785292701.5572174,
+    "ast_hash": "d8d27f9087ff5e0e3726e7b234292235",
+    "semantic_hash": ""
+  },
+  "scripts/setup_stripe_connect_for_seller.mjs": {
+    "mtime": 1785292460.8412144,
+    "ast_hash": "a5b8e45323dd8f36f0ee7db9387063a4",
+    "semantic_hash": ""
+  },
+  "scripts/setup_test_environment.mjs": {
+    "mtime": 1785767594.4766214,
+    "ast_hash": "d6ccff3fb1dbf8708bb4ef8abdf0341d",
+    "semantic_hash": ""
+  },
+  "scripts/snapshot-sast-pre-remediation.mjs": {
+    "mtime": 1785860877.3025377,
+    "ast_hash": "8a7d55800ce263a3dca888eb3ae80480",
+    "semantic_hash": ""
+  },
+  "scripts/snapshot-storage.mjs": {
+    "mtime": 1785872031.5585432,
+    "ast_hash": "63a39558e2c15d3a964d608a0d9193f9",
+    "semantic_hash": ""
+  },
+  "scripts/test_seller_payout.mjs": {
+    "mtime": 1785944220.406783,
+    "ast_hash": "e22fe99899f5603acc2044d30a02a030",
+    "semantic_hash": ""
+  },
+  "scripts/test_stripe_connect_authenticated.mjs": {
+    "mtime": 1785294510.025216,
+    "ast_hash": "3814df1e69503a29f79f6bcd7dad32ea",
+    "semantic_hash": ""
+  },
+  "scripts/test_stripe_connect_curl.mjs": {
+    "mtime": 1785294406.75321,
+    "ast_hash": "a5f824b09e96544634e63ff666c7d307",
+    "semantic_hash": ""
+  },
+  "scripts/test_stripe_payout_simulation.mjs": {
+    "mtime": 1785771411.1726217,
+    "ast_hash": "8c168728f356f023c8c58c9ffbe3a5ce",
+    "semantic_hash": ""
+  },
+  "scripts/test_user_creation.mjs": {
+    "mtime": 1785287301.9012191,
+    "ast_hash": "bcf8f43aa36487513df66a1704aa812e",
+    "semantic_hash": ""
+  },
+  "scripts/update_test_passwords.mjs": {
+    "mtime": 1785767984.260618,
+    "ast_hash": "bd5285bf250f03d4d9707c3fee4fcfcc",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/components/LegalFinanceCenter.tsx": {
+    "mtime": 1785956625.1067767,
+    "ast_hash": "d70b6332aa98f84b5bbe69308f04778c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/fullstack-innovation-valuation/SKILL.md": {
+    "mtime": 1785957032.1427479,
+    "ast_hash": "dbd54d5762973f829e91f322e4ffcef4",
     "semantic_hash": ""
   }
 }
