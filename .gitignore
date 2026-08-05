@@ -66,6 +66,7 @@ apks/
 
 # Scratch and export files
 *.mjs
+!scripts/*.mjs
 daig_documentacao.zip
 exports/
 
