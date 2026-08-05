@@ -235,8 +235,8 @@
     "semantic_hash": "18a93c312d310813263c6eafe978a45f"
   },
   "package.json": {
-    "mtime": 1785861266.2665408,
-    "ast_hash": "34ce341ed6bcaaa41fec5312cf808571",
+    "mtime": 1785947444.346781,
+    "ast_hash": "77aae2e86a291857b26230c71fe6e9d7",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -470,9 +470,9 @@
     "semantic_hash": "a2e58047851494568786ecc3dfb6277e"
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1785510024.429566,
-    "ast_hash": "5b250c28b5114c2aeb2c5518d9306f33",
-    "semantic_hash": "5b250c28b5114c2aeb2c5518d9306f33"
+    "mtime": 1785949769.8827815,
+    "ast_hash": "8f4803f27a704dbbb64d2c376acbd70d",
+    "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
     "mtime": 1785898949.270033,
@@ -550,8 +550,8 @@
     "semantic_hash": "291c384d0587090ee797ec16be168159"
   },
   "src/modules/identity/pages/Profile.tsx": {
-    "mtime": 1785898800.5102704,
-    "ast_hash": "38bf4c83bf79cf9cb43a3a8bd3ab669c",
+    "mtime": 1785949749.2987816,
+    "ast_hash": "d7c811dbef928804f7275a91a6823c08",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Register.tsx": {
@@ -835,9 +835,9 @@
     "semantic_hash": "859410c9f19fe895a617749ed1769513"
   },
   "src/modules/parts-catalog/pages/CreateListing.tsx": {
-    "mtime": 1785793988.0526195,
-    "ast_hash": "32ddad1f632af35f7ec16e09e002abd5",
-    "semantic_hash": "32ddad1f632af35f7ec16e09e002abd5"
+    "mtime": 1785949734.1947815,
+    "ast_hash": "d1e23908a932a131bb3c285b6ceec8df",
+    "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/Favorites.tsx": {
     "mtime": 1781833814.3836164,
@@ -2705,9 +2705,9 @@
     "semantic_hash": "7856c340572f64063f3e4ebd6be94e2e"
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785796252.6846201,
-    "ast_hash": "5f4d7423ccfb4448c3ac1144fada49c2",
-    "semantic_hash": "5f4d7423ccfb4448c3ac1144fada49c2"
+    "mtime": 1785952857.7187774,
+    "ast_hash": "ec11d55ad7ef137f2605730d75f1e02f",
+    "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
     "mtime": 1785286599.6892173,
@@ -2780,8 +2780,8 @@
     "semantic_hash": ""
   },
   "src/modules/finance/pages/SaasControlCenter.tsx": {
-    "mtime": 1785898903.2300935,
-    "ast_hash": "9a8279ce96852672da72aed01852fc34",
+    "mtime": 1785949553.1747797,
+    "ast_hash": "950dc1474d5e95c568d647e47f748cb6",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {
@@ -2845,9 +2845,9 @@
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/components/MarketplaceAiAssistantModal.tsx": {
-    "mtime": 1785452976.8436363,
-    "ast_hash": "2a987e3ce7dcdde82e3a2d9c749f5ce3",
-    "semantic_hash": "2a987e3ce7dcdde82e3a2d9c749f5ce3"
+    "mtime": 1785952396.514774,
+    "ast_hash": "d11538bec562e433329eadf55e7288e3",
+    "semantic_hash": ""
   },
   "src/modules/shared/lib/aiPartIdentifier.ts": {
     "mtime": 1785452953.0516362,
@@ -2925,9 +2925,9 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/AiPartQuickUploadModal.tsx": {
-    "mtime": 1785794952.4726126,
-    "ast_hash": "c53a5aec082ed827e573f347ff689190",
-    "semantic_hash": "c53a5aec082ed827e573f347ff689190"
+    "mtime": 1785952349.2627728,
+    "ast_hash": "855cb98403df0002db84d3dbfe8b375d",
+    "semantic_hash": ""
   },
   "scripts/backup_to_gdrive.py": {
     "mtime": 1785805107.0210996,
@@ -2957,6 +2957,61 @@
   "supabase/migrations/20260804_part9_rls_hardening.sql": {
     "mtime": 1785898577.9866474,
     "ast_hash": "e8a56b9fe610b1bb13a95697929d9e66",
+    "semantic_hash": ""
+  },
+  ".agents/skills/gsap-scroll-premium-animations/examples/hooks-gsap-animations.ts": {
+    "mtime": 1785947288.61078,
+    "ast_hash": "92c7c67e431b064e44a692920bc9493a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/gsap-scroll-premium-animations/examples/saas-hero-section.tsx": {
+    "mtime": 1785947343.3227808,
+    "ast_hash": "1f68f4d675dde80e027098ceaf71383d",
+    "semantic_hash": ""
+  },
+  ".agents/skills/custom-hitech-icons/examples/icon-wrappers.tsx": {
+    "mtime": 1785949343.1507823,
+    "ast_hash": "e50a7802a4b019775c06f0f5c0ffec52",
+    "semantic_hash": ""
+  },
+  ".agents/skills/custom-hitech-icons/resources/custom-svg-icons.tsx": {
+    "mtime": 1785949349.5227814,
+    "ast_hash": "151112c75d718f67b89f322e34c6a1e2",
+    "semantic_hash": ""
+  },
+  "public/parts/farol_full_led.png": {
+    "mtime": 1785949691.1867843,
+    "ast_hash": "a842aab399e49b7eeee77396363d5034",
+    "semantic_hash": ""
+  },
+  "public/parts/filtro_ar.png": {
+    "mtime": 1785949691.2067845,
+    "ast_hash": "eebe55aa6d63753ae857b1d7cb90e310",
+    "semantic_hash": ""
+  },
+  "public/parts/freio_brembo.png": {
+    "mtime": 1785949691.2027843,
+    "ast_hash": "cd5716b43919e976602223ce328482ab",
+    "semantic_hash": ""
+  },
+  "public/parts/modulo_ecu.png": {
+    "mtime": 1785949691.1987844,
+    "ast_hash": "1bd510ad8cbf5eaeab48521ea0827eac",
+    "semantic_hash": ""
+  },
+  "public/parts/turbo_ihi_vf52.png": {
+    "mtime": 1785949691.1787844,
+    "ast_hash": "fef9384d85c5e493b66621212b211d72",
+    "semantic_hash": ""
+  },
+  "public/parts/volante_jdm.png": {
+    "mtime": 1785949691.2027843,
+    "ast_hash": "5e5c8cd992d6406d33c25d750f6d5a9f",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/components/CompatibilityTagInput.tsx": {
+    "mtime": 1785952302.0107732,
+    "ast_hash": "507da3e504488f890527375e1d553ca3",
     "semantic_hash": ""
   }
 }
