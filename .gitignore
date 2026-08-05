@@ -45,6 +45,7 @@ docs/
 
 # Markdown (documentação/relatórios fora do versionamento)
 *.md
+!.agents/**/*.md
 
 # Terraform
 terraform/
