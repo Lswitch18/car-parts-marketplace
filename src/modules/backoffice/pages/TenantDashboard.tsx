@@ -9,10 +9,11 @@ import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { Product } from '@/modules/shared/types'
 import AiPartQuickUploadModal from '@/modules/backoffice/components/AiPartQuickUploadModal'
 import VehicleStrippingYieldModal from '@/modules/backoffice/components/VehicleStrippingYieldModal'
+import LegalFinanceCenter from '@/modules/backoffice/components/LegalFinanceCenter'
 import { parseCompatibilityTextToTags } from '@/modules/shared/components/CompatibilityTagInput'
 import { useTenantRealData } from '@/modules/shared/hooks/useTenantRealData'
 import {
-  Building2, Package, QrCode, Wrench, Globe, Sparkles,
+  Building2, Package, QrCode, Wrench, Globe, Sparkles, Scale,
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText,
   ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2,
   Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check,
@@ -31,6 +32,7 @@ type TabType =
   | 'finance'
   | 'profile'
   | 'api-b2b'
+  | 'legal-finance'
 
 interface WorkOrder {
   id: string
@@ -915,6 +917,7 @@ export default function TenantDashboard() {
               )}
               <nav className="space-y-1">
                 {[
+                  { id: 'legal-finance', label: 'Jurídico (90/10)', icon: Scale },
                   { id: 'profile', label: 'Perfil', icon: User },
                   { id: 'api-b2b', label: 'Integrações', icon: Key },
                 ].map(item => {
@@ -2004,6 +2007,13 @@ export default function TenantDashboard() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 11: JURÍDICO & GOVERNANÇA (90/10)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'legal-finance' && (
+          <LegalFinanceCenter />
         )}
 
       </main>
