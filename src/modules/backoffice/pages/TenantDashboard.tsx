@@ -646,6 +646,20 @@ export default function TenantDashboard() {
 
   const tenantName = profileForm.store_name || user?.name || 'Tokyo Auto Parts & Dismantler'
   const tenantId = user?.id ? `tenant_${user.id.slice(0, 8)}` : 'tenant_demo_01'
+  // Simular Venda & Baixa Automática de Peça
+  const handleSellAndDeductPart = (partId: string, partTitle: string, price: number) => {
+    setLocalDemoParts(prev => prev.filter(p => p.id !== partId))
+    const newSale = {
+      id: `venda-${Math.floor(100 + Math.random() * 900)}`,
+      customer: 'Cliente Balcão (Baixa Automática)',
+      items: partTitle,
+      total: price,
+      date: 'Agora',
+      channel: 'Balcão (Baixa WMS IA)'
+    }
+    setSalesList([newSale, ...salesList])
+    alert(`✅ VENDA & BAIXA CONCLUÍDA!\n\nA peça "${partTitle}" foi vendida por ¥ ${price.toLocaleString('ja-JP')} JPY e teve baixa automática do estoque WMS e do marketplace!`)
+  }
 
   // Simular Reconhecimento por Foto IA
   const handleSimulateAiImageScan = () => {
@@ -1009,28 +1023,6 @@ export default function TenantDashboard() {
             </Link>
           </div>
         </div>
-
-        {/* ─────────────────────────────────────────────────────────────
-                        <span className="text-sm font-extrabold text-emerald-400 font-mono">
-                          ¥ {Number(part.price || 0).toLocaleString('ja-JP')}
-                        </span>
-
-                        <button
-                          onClick={() => handleSellAndDeductPart(part.id, part.title, Number(part.price || 0))}
-                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-semibold transition shadow-md flex items-center space-x-1"
-                        >
-                          <MinusCircle className="w-3.5 h-3.5" />
-                          <span>Vender & Baixar</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-          </div>
-        )}
 
         {/* ─────────────────────────────────────────────────────────────
             ABA 1: VISÃO GERAL / KPIS & DASHBOARD REAL-TIME
