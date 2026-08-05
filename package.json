@@ -22,7 +22,7 @@
     "@base-ui/react": "^1.6.0",
     "@capacitor/android": "^5.7.0",
     "@capacitor/core": "^5.7.0",
-    "@capacitor/ios": "^5.7.8",
+    "@capacitor/ios": "^8.5.0",
     "@codetrix-studio/capacitor-google-auth": "^3.3.6",
     "@fontsource-variable/geist": "^5.2.9",
     "@gsap/react": "^2.1.2",
