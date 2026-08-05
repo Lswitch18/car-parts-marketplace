@@ -117,8 +117,6 @@ export default function JapanBankForm() {
 
     if (language === 'ja') {
       return `${mIndex + 1}月${dNum}日`
-    } else if (language === 'en') {
-      return `${monthNamesEn[mIndex]} ${dNum}`
     } else {
       return `${dNum} de ${monthNamesPt[mIndex]}`
     }
