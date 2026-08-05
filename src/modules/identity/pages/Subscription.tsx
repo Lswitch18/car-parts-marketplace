@@ -1,43 +1,35 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/modules/identity/store/authStore'
-import { supabase } from '@/modules/shared/lib/supabase'
+import { api } from '@/modules/transactions/api/api'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { Sparkles, CheckCircle, ChevronRight, ShieldCheck, Zap, Globe } from 'lucide-react'
 
 export default function Subscription() {
   const { t } = useI18n()
   const navigate = useNavigate()
-  const { user, updateProfile } = useAuthStore()
+  const { user } = useAuthStore()
   const [processing, setProcessing] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [success] = useState(false)
 
   const handleSubscribe = async () => {
     setProcessing(true)
     try {
-      // Mock payment simulation
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const result = await api.stripe.createSubscriptionCheckout({
+        plan_type: 'pro',
+        store_name: user?.full_name || 'Minha Loja',
+        contact_name: user?.full_name || '',
+        contact_email: user?.email || '',
+        amount_jpy: 7980,
+        payment_method: 'card'
+      })
 
-      const updates = {
-        store_verified: true,
-        store_status: 'approved',
-        store_approved_at: new Date().toISOString()
+      if (result.url) {
+        window.location.href = result.url
+        return
       }
 
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user?.id)
-
-      if (error) throw error
-
-      await updateProfile(updates as any)
-      setSuccess(true)
-      
-      setTimeout(() => {
-        navigate('/tenant-dashboard')
-      }, 3000)
-
+      throw new Error('Não foi possível gerar a sessão de pagamento do Stripe.')
     } catch (err) {
       console.error('Subscription error:', err)
       alert(t('Ocorreu um erro ao processar a assinatura.'))

@@ -361,6 +361,11 @@ async function handleCheckoutCompleted(session: any) {
       await notifyKonbiniPending(transaction_id);
     }
   }
+
+  const userId = session.metadata?.user_id;
+  if (userId && session.mode === 'subscription' && session.payment_status === 'paid') {
+    await verifySubscription(userId, session.id);
+  }
 }
 
 async function handlePaymentFailed(payment: any) {
@@ -423,6 +428,56 @@ async function handleTransferCreated(transfer: any) {
   const sellerId = transfer.metadata?.seller_id;
   if (sellerId) {
     console.log(`[Webhook] Transfer created for seller ${sellerId}: ${transfer.amount}`);
+  }
+}
+
+async function verifySubscription(userId: string, sessionId: string) {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', userId)
+    .single();
+
+  if (!profile) {
+    console.warn(`[Webhook] Subscription paid for unknown user ${userId}; skipping verification`);
+    return;
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      store_verified: true,
+      store_status: 'approved',
+      store_approved_at: new Date().toISOString(),
+    })
+    .eq('id', userId);
+
+  if (error) {
+    console.error(`[Webhook] Error verifying store for user ${userId}:`, error);
+  } else {
+    console.log(`[Webhook] Store verified for user ${userId} (checkout ${sessionId})`);
+  }
+}
+
+async function revokeSubscription(subscription: any) {
+  const userId = subscription.metadata?.user_id;
+  if (!userId) {
+    console.warn('[Webhook] Subscription cancelled without user_id metadata; skipping revocation');
+    return;
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      store_verified: false,
+      store_status: 'pending',
+    })
+    .eq('id', userId);
+
+  if (error) {
+    console.error(`[Webhook] Error revoking store for user ${userId}:`, error);
+  } else {
+    console.log(`[Webhook] Store verification revoked for user ${userId}`);
   }
 }
 
@@ -553,6 +608,9 @@ async function handleEvent(event: StripeEvent) {
       break;
     case 'transfer.created':
       await handleTransferCreated(event.data.object);
+      break;
+    case 'customer.subscription.deleted':
+      await revokeSubscription(event.data.object);
       break;
     case 'payout.paid':
       await handlePayoutPaid(event.data.object);

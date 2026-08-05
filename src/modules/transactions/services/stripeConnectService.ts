@@ -61,8 +61,7 @@ export class StripeConnectService {
         .from('profiles')
         .update({
           stripe_account_id: accountId,
-          bank_info: updatedBankInfo,
-          store_verified: true
+          bank_info: updatedBankInfo
         })
         .eq('id', userId)
     }
@@ -101,8 +100,6 @@ export class StripeConnectService {
       const { error: updateErr } = await supabase
         .from('transactions')
         .update({
-          payment_status: 'completed',
-          fulfillment_status: 'delivered',
           stripe_transfer_id: transferId,
           commission_amount: platformCommission,
           seller_net: sellerPayout,
@@ -121,8 +118,6 @@ export class StripeConnectService {
           seller_id: sellerId,
           part_id: partId,
           amount: amount,
-          payment_status: 'completed',
-          fulfillment_status: 'delivered',
           stripe_transfer_id: transferId,
           commission_amount: platformCommission,
           seller_net: sellerPayout

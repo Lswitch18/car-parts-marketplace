@@ -75,33 +75,8 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
 
       if (transactionError) throw transactionError;
 
-      // Check if Stripe is configured
-      const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-      
-      if (stripePublicKey && stripePublicKey.startsWith('pk_')) {
-        // If Stripe is configured, redirect to checkout
-        // For now, simulate successful payment for demo
-        const { error: updateError } = await supabase
-          .from('transactions')
-          .update({
-            payment_status: 'paid'
-          })
-          .eq('id', transaction.id);
-
-        if (updateError) throw updateError;
-      } else {
-        // Demo mode: simulate payment
-        const { error: updateError } = await supabase
-          .from('transactions')
-          .update({
-            payment_status: 'paid'
-          })
-          .eq('id', transaction.id);
-
-        if (updateError) throw updateError;
-      }
-
-      setStep('confirmation');
+      window.location.href = `/checkout/${partId}`;
+      return;
     } catch (err: any) {
       setError(err.message || 'Erro ao processar compra');
       setStep('payment');

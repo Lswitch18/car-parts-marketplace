@@ -62,11 +62,6 @@ export default function SimulateSale({ onComplete }: Props) {
 
       const transaction = tx.transaction || tx
 
-      await supabase
-        .from('transactions')
-        .update({ payment_status: 'escrow' })
-        .eq('id', transaction.id)
-
       await supabase.from('messages').insert({
         sender_id: user.id,
         receiver_id: part.seller_id,

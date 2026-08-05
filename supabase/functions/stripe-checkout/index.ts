@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'create-subscription') {
-      return await createSubscriptionSession(req);
+      return await createSubscriptionSession(req, currentUser);
     }
 
     if (action === 'create-contract-subscription') {
@@ -606,7 +606,7 @@ const STRIPE_PRICES = {
   enterprise: Deno.env.get('STRIPE_PRICE_PREMIUM') || 'price_1Tyy1DHlCJrkWqOLsteFp2lW',
 };
 
-async function createSubscriptionSession(req: Request) {
+async function createSubscriptionSession(req: Request, currentUser: { id: string }) {
   let body;
   try {
     body = await req.json();
@@ -619,12 +619,8 @@ async function createSubscriptionSession(req: Request) {
   const priceId = STRIPE_PRICES[plan_type as keyof typeof STRIPE_PRICES] || STRIPE_PRICES.pro;
 
   if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
-    return new Response(JSON.stringify({ 
-      success: true, 
-      demo_mode: true,
-      subscription_id: `sub_demo_${Date.now()}`,
-      url: `${APP_URL}/dashboard?payment=success&plan=${plan_type}`
-    }), {
+    return new Response(JSON.stringify({ error: 'Pagamento via Stripe não configurado' }), {
+      status: 503,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
@@ -637,6 +633,7 @@ async function createSubscriptionSession(req: Request) {
       'line_items[0][quantity]': '1',
       'success_url': `${APP_URL}/dashboard?subscription=success&plan=${plan_type || 'pro'}`,
       'cancel_url': `${APP_URL}/partner-portal?subscription=cancelled`,
+      'metadata[user_id]': currentUser.id,
       'metadata[plan_type]': plan_type || 'pro',
       'metadata[store_name]': store_name || '',
     });

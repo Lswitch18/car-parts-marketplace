@@ -131,8 +131,14 @@ export default function PartnerPortalPage() {
         payment_method: 'card'
       })
 
-      const subId = stripeRes.subscription_id || `sub_stripe_${Date.now()}`
-      setStripeSubId(subId)
+      if (stripeRes.url) {
+        window.location.href = stripeRes.url
+        return
+      }
+
+      if (stripeRes.subscription_id) {
+        setStripeSubId(stripeRes.subscription_id)
+      }
 
       // 2. Atualizar perfil da loja parceira em profiles e registrar tenant se a tabela existir
       try {
@@ -154,7 +160,7 @@ export default function PartnerPortalPage() {
       setModalStep('success')
     } catch (err) {
       console.error('Erro ao processar assinatura Stripe:', err)
-      setModalStep('success')
+      alert('Ocorreu um erro ao processar a assinatura. Tente novamente.')
     } finally {
       setLoading(false)
     }

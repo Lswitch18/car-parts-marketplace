@@ -272,33 +272,21 @@ export const api = {
       amount_jpy: number;
       payment_method: 'card';
     }) => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        const token = session?.access_token;
-        const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/create-subscription`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify(data),
-        });
-        const result = await response.json();
-        if (!response.ok || !result.success) {
-          return {
-            success: true,
-            subscription_id: `sub_live_${Math.random().toString(36).substring(2, 14)}`,
-            status: 'active'
-          };
-        }
-        return result;
-      } catch (err) {
-        return {
-          success: true,
-          subscription_id: `sub_live_${Math.random().toString(36).substring(2, 14)}`,
-          status: 'active'
-        };
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token;
+      const response = await fetch(`${FUNCTIONS_URL}/stripe-checkout/create-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Falha ao criar sessão de assinatura do Stripe');
       }
+      return result;
     },
   },
 
