@@ -16,7 +16,7 @@ export default function MobileStoreHome() {
   }, [])
 
   const toggleLanguage = () => {
-    const langs = ['ja', 'pt', 'en'] as const
+    const langs = ['pt', 'ja'] as const
     const nextIndex = (langs.indexOf(language as any) + 1) % langs.length
     setLanguage(langs[nextIndex])
   }

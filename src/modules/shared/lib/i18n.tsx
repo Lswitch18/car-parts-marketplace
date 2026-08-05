@@ -1224,7 +1224,7 @@ const translations: { [lang: string]: Translation } = {
   }
 }
 
-type Language = 'pt' | 'en' | 'ja'
+export type Language = 'pt' | 'ja'
 
 interface I18nContextType {
   language: Language
@@ -1237,20 +1237,20 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined)
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('daig-language');
-    if (saved === 'pt' || saved === 'en' || saved === 'ja') {
+    if (saved === 'pt' || saved === 'ja') {
       return saved as Language;
     }
     
     // Tenta usar o idioma do navegador
     if (typeof navigator !== 'undefined' && navigator.language) {
       const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'pt' || browserLang === 'en' || browserLang === 'ja') {
+      if (browserLang === 'pt' || browserLang === 'ja') {
         return browserLang as Language;
       }
     }
 
-    // Default para Japonês caso não ache
-    return 'ja'
+    // Default para Português (PT-BR)
+    return 'pt'
   })
 
   const setLanguage = (lang: Language) => {

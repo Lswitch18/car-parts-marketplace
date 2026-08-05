@@ -21,7 +21,6 @@ export default function LanguageDetector({ mobileCompact = false }: { mobileComp
   const languages = [
     { code: 'pt', name: 'Português', flag: '🇧🇷' },
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
-    { code: 'en', name: 'English', flag: '🇺🇸' },
   ]
 
   const langCode = language.split('-')[0]
@@ -64,7 +63,7 @@ export default function LanguageDetector({ mobileCompact = false }: { mobileComp
               <button
                 key={lang.code}
                 onClick={() => {
-                  setLanguage(lang.code as 'pt' | 'en' | 'ja')
+                  setLanguage(lang.code as 'pt' | 'ja')
                   setShowDropdown(false)
                 }}
                 className={`w-full text-left px-4 py-3 flex items-center space-x-3 transition-colors ${
