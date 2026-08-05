@@ -20,7 +20,6 @@ import {
 
 type TabType =
   | 'overview'
-  | 'smart-workflow'
   | 'ai-hub'
   | 'wms-hierarchy'
   | 'workshop-kanban'
@@ -502,10 +501,6 @@ export default function TenantDashboard() {
   const [showWorkOrderModal, setShowWorkOrderModal] = useState(false)
   const [showAiUploadModal, setShowAiUploadModal] = useState(false)
 
-  // Pipeline Inteligente State
-  const [workflowStep, setWorkflowStep] = useState(1)
-  const [isProcessingPipeline, setIsProcessingPipeline] = useState(false)
-
   // IA Hub State
   const [aiAnalysisResult, setAiAnalysisResult] = useState<any | null>(null)
   const [isAiScanning, setIsAiScanning] = useState(false)
@@ -651,38 +646,6 @@ export default function TenantDashboard() {
 
   const tenantName = profileForm.store_name || user?.name || 'Tokyo Auto Parts & Dismantler'
   const tenantId = user?.id ? `tenant_${user.id.slice(0, 8)}` : 'tenant_demo_01'
-
-  // Simular Execução do Pipeline End-to-End
-  const handleRunFullPipeline = () => {
-    setIsProcessingPipeline(true)
-    setWorkflowStep(1)
-
-    let currentStep = 1
-    const interval = setInterval(() => {
-      currentStep += 1
-      setWorkflowStep(currentStep)
-      if (currentStep >= 16) {
-        clearInterval(interval)
-        setIsProcessingPipeline(false)
-        alert('🎉 PIPELINE EXECUTADO COM SUCESSO!\n\nAs 20 peças foram desmontadas, identificadas por IA, etiquetadas com QR Code, catalogadas no WMS e disponibilizadas para venda com baixa automática!')
-      }
-    }, 400)
-  }
-
-  // Simular Venda & Baixa Automática de Peça
-  const handleSellAndDeductPart = (partId: string, partTitle: string, price: number) => {
-    setLocalDemoParts(prev => prev.filter(p => p.id !== partId))
-    const newSale = {
-      id: `venda-${Math.floor(100 + Math.random() * 900)}`,
-      customer: 'Cliente Balcão (Baixa Automática)',
-      items: partTitle,
-      total: price,
-      date: 'Agora',
-      channel: 'Balcão (Baixa WMS IA)'
-    }
-    setSalesList([newSale, ...salesList])
-    alert(`✅ VENDA & BAIXA CONCLUÍDA!\n\nA peça "${partTitle}" foi vendida por ¥ ${price.toLocaleString('ja-JP')} JPY e teve baixa automática do estoque WMS e do marketplace!`)
-  }
 
   // Simular Reconhecimento por Foto IA
   const handleSimulateAiImageScan = () => {
@@ -858,7 +821,6 @@ export default function TenantDashboard() {
               <nav className="space-y-1">
                 {[
                   { id: 'overview', label: 'Visão Geral KPIs', icon: LayoutDashboard },
-                  { id: 'smart-workflow', label: 'Pipeline End-to-End', icon: Zap, badge: 'NOVO' },
                   { id: 'ai-hub', label: 'IA Hub (Visão & Voz)', icon: Sparkles, badge: 'IA PRO' },
                   { id: 'wms-hierarchy', label: 'WMS & Hierarquia', icon: MapPin },
                   { id: 'workshop-kanban', label: 'Oficina (Kanban O.S.)', icon: Wrench, badge: `${workOrders.length}` },
@@ -1031,14 +993,6 @@ export default function TenantDashboard() {
             </button>
 
             <button
-              onClick={() => setActiveTab('smart-workflow')}
-              className="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-emerald-600/20 transition"
-            >
-              <Zap className="w-4 h-4 text-emerald-200" />
-              <span>Pipeline Inteligente</span>
-            </button>
-
-            <button
               onClick={() => setActiveTab('ai-hub')}
               className="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs flex items-center space-x-2 shadow-lg shadow-blue-600/20 transition"
             >
@@ -1057,112 +1011,6 @@ export default function TenantDashboard() {
         </div>
 
         {/* ─────────────────────────────────────────────────────────────
-            ABA INTELIGENTE: PIPELINE END-TO-END (OS 16 PASSOS DO DESMONTE À VENDA)
-           ───────────────────────────────────────────────────────────── */}
-        {activeTab === 'smart-workflow' && (
-          <div className="space-y-6">
-            <div className="bg-[#121215] border border-zinc-800/80 rounded-2xl p-6 shadow-xl space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
-                <div>
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <Zap className="w-6 h-6 text-emerald-400" />
-                    Pipeline Inteligente: Da Chegada do Veículo à Baixa por Venda
-                  </h2>
-                  <p className="text-xs text-zinc-400 mt-1">
-                    Fluxo automatizado em 16 etapas com IA, QR Code WMS, mapa de localização e baixa de estoque em tempo real.
-                  </p>
-                </div>
-
-                <button
-                  onClick={handleRunFullPipeline}
-                  disabled={isProcessingPipeline}
-                  className="px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-xl shadow-emerald-600/25 flex items-center space-x-2 shrink-0 transition"
-                >
-                  <Play className="w-4 h-4 fill-white" />
-                  <span>{isProcessingPipeline ? `Executando Etapa ${workflowStep}/16...` : 'Executar Simulação do Pipeline (20 Peças)'}</span>
-                </button>
-              </div>
-
-              {/* OS 16 PASSOS VISUAIS */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
-                {[
-                  { step: 1, label: 'Veículo chega', icon: Car },
-                  { step: 2, label: 'Cadastro do veículo', icon: FileText },
-                  { step: 3, label: 'Desmontagem', icon: Wrench },
-                  { step: 4, label: 'IA identifica peça', icon: Sparkles },
-                  { step: 5, label: 'Funcionário confirma', icon: CheckSquare },
-                  { step: 6, label: 'Sistema gera etiqueta', icon: Printer },
-                  { step: 7, label: 'Etiqueta recebe QR', icon: QrCode },
-                  { step: 8, label: 'Sistema define local', icon: MapPin },
-                  { step: 9, label: 'Peça vai p/ estoque', icon: Box },
-                  { step: 10, label: 'Cliente procura', icon: Search },
-                  { step: 11, label: 'Busca IA', icon: Cpu },
-                  { step: 12, label: 'Sistema encontra', icon: CheckCircle2 },
-                  { step: 13, label: 'Mapa mostra onde', icon: MapPin },
-                  { step: 14, label: 'Funcionário retira', icon: Package },
-                  { step: 15, label: 'Venda', icon: ShoppingCart },
-                  { step: 16, label: 'Baixa automática', icon: MinusCircle },
-                ].map(s => {
-                  const Icon = s.icon
-                  const isCurrent = workflowStep === s.step
-                  const isPassed = workflowStep > s.step
-
-                  return (
-                    <div
-                      key={s.step}
-                      className={`p-3 rounded-xl border text-center space-y-1.5 transition ${isCurrent
-                          ? 'bg-blue-600/20 border-blue-500 text-blue-300 ring-2 ring-blue-500/40 shadow-lg'
-                          : isPassed
-                            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
-                            : 'bg-zinc-950 border-zinc-800/80 text-zinc-500'
-                        }`}
-                    >
-                      <div className="flex items-center justify-center">
-                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400">
-                          #{s.step}
-                        </span>
-                      </div>
-                      <Icon className="w-5 h-5 mx-auto opacity-90" />
-                      <p className="text-[10px] font-semibold leading-tight line-clamp-2">{s.label}</p>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* LISTA DAS 20 PEÇAS DE TESTE COM BAIXA AUTOMÁTICA */}
-              <div className="pt-4 border-t border-zinc-800 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Package className="w-4 h-4 text-emerald-400" />
-                    Estoque Ativo do Pipeline ({allParts.length} Peças Cadastradas)
-                  </h3>
-                  <span className="text-xs text-zinc-400 font-mono">Clique em "Vender & Dar Baixa" para simular a saída instantânea</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {allParts.map((part) => (
-                    <div key={part.id} className="bg-zinc-950 border border-zinc-800 hover:border-emerald-500/50 rounded-2xl p-4 space-y-3 shadow-lg transition group">
-                      <div className="flex items-center space-x-3">
-                        {part.images?.[0] ? (
-                          <img src={part.images[0]} alt={part.title} className="w-12 h-12 rounded-xl object-cover bg-zinc-800 border border-zinc-700 shrink-0" />
-                        ) : (
-                          <div className="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 shrink-0">
-                            <Package className="w-6 h-6" />
-                          </div>
-                        )}
-                        <div className="leading-tight truncate">
-                          <p className="font-bold text-xs text-white truncate">{part.title}</p>
-                          <p className="text-[10px] font-mono text-amber-300 truncate">{part.oem_code}</p>
-                        </div>
-                      </div>
-
-                      <div className="p-2.5 bg-zinc-900 rounded-xl border border-zinc-800/80 text-[10px] font-mono space-y-0.5">
-                        <p className="text-zinc-400 truncate"><span className="text-zinc-600">Origem:</span> {part.vehicle_origin || 'Toyota Prius ZVW30'}</p>
-                        <p className="text-amber-200 truncate"><span className="text-zinc-600">WMS:</span> {part.wms_location || 'Galpão A ➔ Corredor 04'}</p>
-                        <p className="text-zinc-400 truncate"><span className="text-zinc-600">Placa:</span> {part.license_plate || '品川 300 な 45-89'}</p>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-1">
                         <span className="text-sm font-extrabold text-emerald-400 font-mono">
                           ¥ {Number(part.price || 0).toLocaleString('ja-JP')}
                         </span>
@@ -2166,14 +2014,6 @@ export default function TenantDashboard() {
 
             <div className="p-3 max-h-80 overflow-y-auto space-y-1 text-xs">
               <p className="text-[10px] font-mono text-zinc-500 uppercase px-3 py-1">Atalhos Rápidos</p>
-
-              <button
-                onClick={() => { setActiveTab('smart-workflow'); setShowCommandPalette(false); }}
-                className="w-full p-2.5 hover:bg-zinc-900 rounded-xl text-left flex items-center justify-between text-zinc-300 hover:text-white transition"
-              >
-                <span className="flex items-center gap-2"><Zap className="w-4 h-4 text-emerald-400" /> Executar Pipeline End-to-End</span>
-                <span className="text-[10px] font-mono text-zinc-500">16 Etapas</span>
-              </button>
 
               <button
                 onClick={() => { setActiveTab('ai-hub'); setShowCommandPalette(false); }}
