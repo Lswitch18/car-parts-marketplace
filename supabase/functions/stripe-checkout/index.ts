@@ -43,13 +43,22 @@ function isRateLimited(ip: string): boolean {
   return record.count > MAX_REQUESTS_PER_WINDOW;
 }
 
+async function isAdmin(userId: string): Promise<boolean> {
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single();
+  return !!profile?.role?.includes('admin');
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   // Security: Require auth for all stripe operations
-  const { response: authRes } = await requireAuth(req);
+  const { user, response: authRes } = await requireAuth(req);
   if (authRes) return authRes;
 
   // Security: Anti-DDoS / Rate Limiting
@@ -62,12 +71,14 @@ Deno.serve(async (req) => {
     });
   }
 
+  const currentUser = user;
+
   try {
     const url = new URL(req.url);
     const action = url.pathname.split('/').pop();
 
     if (action === 'create-checkout') {
-      return await createCheckoutSession(req);
+      return await createCheckoutSession(req, currentUser);
     }
 
     if (action === 'create-subscription') {
@@ -75,19 +86,19 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'create-contract-subscription') {
-      return await createContractSubscription(req);
+      return await createContractSubscription(req, currentUser);
     }
 
     if (action === 'create-connected-account') {
-      return await createConnectedAccount(req);
+      return await createConnectedAccount(req, currentUser);
     }
 
     if (action === 'account-link') {
-      return await createAccountLink(req);
+      return await createAccountLink(req, currentUser);
     }
 
     if (action === 'portal') {
-      return await createPortalSession(req);
+      return await createPortalSession(req, currentUser);
     }
 
     return new Response(JSON.stringify({ error: 'Endpoint not found' }), {
@@ -116,7 +127,7 @@ const createCheckoutSchema = z.object({
   title: z.string().optional(),
 });
 
-async function createCheckoutSession(req: Request) {
+async function createCheckoutSession(req: Request, currentUser: any) {
   let body;
   try {
     body = await req.json();
@@ -137,7 +148,7 @@ async function createCheckoutSession(req: Request) {
     });
   }
 
-  const { transaction_id, part_id, buyer_id, seller_id, amount: clientAmount, shipping, auction_id, title: customTitle } = parseResult.data;
+  const { transaction_id, shipping, auction_id } = parseResult.data;
 
   // ── Buscar transação no banco de dados como fonte da verdade (segurança contra adulteração de preço)
   const { data: tx, error: txError } = await supabase
@@ -153,6 +164,20 @@ async function createCheckoutSession(req: Request) {
     });
   }
 
+  // ── IDOR: apenas comprador, vendedor ou admin podem gerar checkout desta transação
+  const isTxBuyer = tx.buyer_id === currentUser.id;
+  const isTxSeller = tx.seller_id === currentUser.id;
+  const isCurrentAdmin = await isAdmin(currentUser.id);
+  if (!isTxBuyer && !isTxSeller && !isCurrentAdmin) {
+    return new Response(JSON.stringify({ error: 'Não autorizado' }), {
+      status: 403,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  const buyer_id = tx.buyer_id;
+  const seller_id = tx.seller_id;
+  const part_id = tx.part_id;
   const amount = tx.amount;
 
   if (!STRIPE_SECRET_KEY || STRIPE_SECRET_KEY === 'sk_test_') {
@@ -180,7 +205,7 @@ async function createCheckoutSession(req: Request) {
     .eq('id', part_id)
     .single();
 
-  const productName = customTitle || part?.title || 'Peça automotiva';
+  const productName = part?.title || 'Peça automotiva';
 
   const lineItems: Record<string, string> = {
     'mode': 'payment',
@@ -261,12 +286,22 @@ async function createCheckoutSession(req: Request) {
   });
 }
 
-async function createConnectedAccount(req: Request) {
+async function createConnectedAccount(req: Request, currentUser: any) {
   const { seller_id, email } = await req.json();
 
   if (!seller_id) {
     return new Response(JSON.stringify({ error: 'seller_id required' }), {
       status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // ── IDOR: apenas o próprio seller (ou admin) pode criar a conta conectada
+  const isOwnSeller = seller_id === currentUser.id;
+  const isCurrentAdmin = await isAdmin(currentUser.id);
+  if (!isOwnSeller && !isCurrentAdmin) {
+    return new Response(JSON.stringify({ error: 'Não autorizado' }), {
+      status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
@@ -309,12 +344,28 @@ async function createConnectedAccount(req: Request) {
   });
 }
 
-async function createAccountLink(req: Request) {
-  const { account_id, seller_id } = await req.json();
+async function createAccountLink(req: Request, currentUser: any) {
+  const { account_id } = await req.json();
 
   if (!account_id) {
     return new Response(JSON.stringify({ error: 'account_id required' }), {
       status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // ── IDOR: a conta Stripe deve pertencer ao próprio usuário (ou admin)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('stripe_account_id')
+    .eq('id', currentUser.id)
+    .single();
+
+  const isOwnAccount = profile?.stripe_account_id === account_id;
+  const isCurrentAdmin = await isAdmin(currentUser.id);
+  if (!isOwnAccount && !isCurrentAdmin) {
+    return new Response(JSON.stringify({ error: 'Não autorizado' }), {
+      status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
@@ -350,12 +401,22 @@ async function createAccountLink(req: Request) {
   });
 }
 
-async function createPortalSession(req: Request) {
+async function createPortalSession(req: Request, currentUser: any) {
   const { seller_id } = await req.json();
 
   if (!seller_id) {
     return new Response(JSON.stringify({ error: 'seller_id required' }), {
       status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // ── IDOR: apenas o próprio seller (ou admin) pode abrir o portal do billing
+  const isOwnSeller = seller_id === currentUser.id;
+  const isCurrentAdmin = await isAdmin(currentUser.id);
+  if (!isOwnSeller && !isCurrentAdmin) {
+    return new Response(JSON.stringify({ error: 'Não autorizado' }), {
+      status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
@@ -418,12 +479,21 @@ function calculateFees(amount: number, rate: number = COMMISSION_RATE) {
   };
 }
 
-async function createContractSubscription(req: Request) {
+async function createContractSubscription(req: Request, currentUser: any) {
   const { contract_id } = await req.json();
 
   if (!contract_id) {
     return new Response(JSON.stringify({ error: 'Missing contract_id' }), {
       status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // ── Segurança: apenas admin pode criar subscription de contrato B2B
+  const isCurrentAdmin = await isAdmin(currentUser.id);
+  if (!isCurrentAdmin) {
+    return new Response(JSON.stringify({ error: 'Não autorizado' }), {
+      status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
