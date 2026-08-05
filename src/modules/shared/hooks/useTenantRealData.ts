@@ -84,20 +84,32 @@ export function useTenantRealData() {
       setRealTransactions(txData || [])
 
       // 4. Busca Ordens de Serviço Reais da Oficina
-      const { data: woData } = await supabase
-        .from('work_orders')
-        .select('*')
-        .order('created_at', { ascending: false })
+      try {
+        const { data: woData, error: woErr } = await supabase
+          .from('work_orders')
+          .select('*')
+          .order('created_at', { ascending: false })
 
-      setRealWorkOrders((woData as any[]) || [])
+        if (!woErr && woData) {
+          setRealWorkOrders((woData as any[]) || [])
+        }
+      } catch (e) {
+        // Ignora caso a tabela esteja em sincronização no PostgREST
+      }
 
       // 5. Busca Notas Fiscais NFe de Compras
-      const { data: nfeData } = await supabase
-        .from('nfe_invoices')
-        .select('*')
-        .order('created_at', { ascending: false })
+      try {
+        const { data: nfeData, error: nfeErr } = await supabase
+          .from('nfe_invoices')
+          .select('*')
+          .order('created_at', { ascending: false })
 
-      setRealNfeInvoices((nfeData as any[]) || [])
+        if (!nfeErr && nfeData) {
+          setRealNfeInvoices((nfeData as any[]) || [])
+        }
+      } catch (e) {
+        // Ignora caso a tabela esteja em sincronização no PostgREST
+      }
 
     } catch (err) {
       console.warn('[useTenantRealData] Erro ao carregar dados reais do banco:', err)
