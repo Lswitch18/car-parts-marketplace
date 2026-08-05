@@ -35,10 +35,11 @@ export interface User {
 }
 
 export type TenantRole =
-  | 'tenant_admin'    // Dono / Diretor do Desmanche ou Oficina
-  | 'tenant_manager'  // Gerente de Estoque / WMS
+  | 'tenant_admin'    // Gestor Geral / Proprietário do Desmanche
+  | 'tenant_manager'  // Gerente Operacional / Supervisor
   | 'tenant_mechanic' // Mecânico / Técnico da Oficina
   | 'tenant_operator' // Atendente de Balcão / Caixa
+  | 'security_officer' // Equipe de Segurança e Auditoria
 
 export type TenantPermission =
   | 'manage_tenant'       // Editar dados da empresa e assinatura
@@ -48,6 +49,8 @@ export type TenantPermission =
   | 'publish_marketplace' // Alternar chave de 1-clique para o Marketplace
   | 'manage_work_orders'  // Criar e atualizar Ordens de Serviço (O.S.)
   | 'print_qr_labels'     // Imprimir etiquetas térmicas
+  | 'manage_team_roles'   // Gerenciar papeis e permissoes da equipe
+  | 'audit_security_logs' // Visualizar logs de auditoria de seguranca
 
 export const TENANT_ROLE_PERMISSIONS: Record<TenantRole, TenantPermission[]> = {
   tenant_admin: [
@@ -58,6 +61,8 @@ export const TENANT_ROLE_PERMISSIONS: Record<TenantRole, TenantPermission[]> = {
     'publish_marketplace',
     'manage_work_orders',
     'print_qr_labels',
+    'manage_team_roles',
+    'audit_security_logs'
   ],
   tenant_manager: [
     'manage_inventory',
@@ -72,6 +77,10 @@ export const TENANT_ROLE_PERMISSIONS: Record<TenantRole, TenantPermission[]> = {
   tenant_operator: [
     'manage_work_orders',
   ],
+  security_officer: [
+    'audit_security_logs',
+    'manage_users'
+  ]
 }
 
 

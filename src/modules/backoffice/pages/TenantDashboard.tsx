@@ -10,10 +10,12 @@ import { Product } from '@/modules/shared/types'
 import AiPartQuickUploadModal from '@/modules/backoffice/components/AiPartQuickUploadModal'
 import VehicleStrippingYieldModal from '@/modules/backoffice/components/VehicleStrippingYieldModal'
 import LegalFinanceCenter from '@/modules/backoffice/components/LegalFinanceCenter'
+import TenantTeamManager from '@/modules/backoffice/components/TenantTeamManager'
+import SecurityAuditCenter from '@/modules/backoffice/components/SecurityAuditCenter'
 import { parseCompatibilityTextToTags } from '@/modules/shared/components/CompatibilityTagInput'
 import { useTenantRealData } from '@/modules/shared/hooks/useTenantRealData'
 import {
-  Building2, Package, QrCode, Wrench, Globe, Sparkles, Scale,
+  Building2, Package, QrCode, Wrench, Globe, Sparkles, Scale, Users, Shield,
   Search, ShieldCheck, AlertCircle, RefreshCw, Car, FileText,
   ShoppingCart, DollarSign, Key, Cpu, Tag, CheckCircle2,
   Plus, Eye, Filter, ArrowRight, Layers, Smartphone, Upload, Camera, Check,
@@ -33,6 +35,8 @@ type TabType =
   | 'profile'
   | 'api-b2b'
   | 'legal-finance'
+  | 'team'
+  | 'security-audit'
 
 interface WorkOrder {
   id: string
@@ -921,6 +925,8 @@ export default function TenantDashboard() {
               )}
               <nav className="space-y-1">
                 {[
+                  { id: 'team', label: 'Equipe & Cargos', icon: Users },
+                  { id: 'security-audit', label: 'Segurança & RLS', icon: ShieldCheck },
                   { id: 'legal-finance', label: 'Jurídico (90/10)', icon: Scale },
                   { id: 'profile', label: 'Perfil', icon: User },
                   { id: 'api-b2b', label: 'Integrações', icon: Key },
@@ -2196,6 +2202,20 @@ export default function TenantDashboard() {
            ───────────────────────────────────────────────────────────── */}
         {activeTab === 'legal-finance' && (
           <LegalFinanceCenter />
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 12: GESTÃO DE EQUIPE & PERMISSÕES (RBAC)
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'team' && (
+          <TenantTeamManager />
+        )}
+
+        {/* ─────────────────────────────────────────────────────────────
+            ABA 13: CENTRAL DE SEGURANÇA & AUDITORIA RLS
+           ───────────────────────────────────────────────────────────── */}
+        {activeTab === 'security-audit' && (
+          <SecurityAuditCenter />
         )}
 
       </main>
