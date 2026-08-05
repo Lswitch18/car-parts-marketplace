@@ -235,8 +235,8 @@
     "semantic_hash": "18a93c312d310813263c6eafe978a45f"
   },
   "package.json": {
-    "mtime": 1785947444.346781,
-    "ast_hash": "77aae2e86a291857b26230c71fe6e9d7",
+    "mtime": 1785861266.2665408,
+    "ast_hash": "34ce341ed6bcaaa41fec5312cf808571",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -2780,8 +2780,8 @@
     "semantic_hash": ""
   },
   "src/modules/finance/pages/SaasControlCenter.tsx": {
-    "mtime": 1785947724.1147823,
-    "ast_hash": "98a2cbc0c85a6a95c5c560672e8bee05",
+    "mtime": 1785898903.2300935,
+    "ast_hash": "9a8279ce96852672da72aed01852fc34",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {
@@ -2957,16 +2957,6 @@
   "supabase/migrations/20260804_part9_rls_hardening.sql": {
     "mtime": 1785898577.9866474,
     "ast_hash": "e8a56b9fe610b1bb13a95697929d9e66",
-    "semantic_hash": ""
-  },
-  ".agents/skills/gsap-scroll-premium-animations/examples/hooks-gsap-animations.ts": {
-    "mtime": 1785947288.61078,
-    "ast_hash": "92c7c67e431b064e44a692920bc9493a",
-    "semantic_hash": ""
-  },
-  ".agents/skills/gsap-scroll-premium-animations/examples/saas-hero-section.tsx": {
-    "mtime": 1785947343.3227808,
-    "ast_hash": "1f68f4d675dde80e027098ceaf71383d",
     "semantic_hash": ""
   }
 }

@@ -647,3 +647,140 @@ select option {
   background-image: linear-gradient(to right, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
                     linear-gradient(to bottom, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
 }
+
+/* ═══════════════════════════════════════════════════════════
+ *  GSAP + Cyber Neon Premium Animation Utilities
+ * ═══════════════════════════════════════════════════════════ */
+
+/* Shimmer Skeleton */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(13, 117, 255, 0.04) 0%,
+    rgba(13, 117, 255, 0.12) 50%,
+    rgba(13, 117, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Neon Glow Pulse */
+.neon-pulse {
+  animation: neonPulse 3s ease-in-out infinite;
+}
+
+.neon-pulse-cyan {
+  animation: neonPulseCyan 3s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(13, 117, 255, 0.15), 0 0 60px rgba(13, 117, 255, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(13, 117, 255, 0.3), 0 0 80px rgba(13, 117, 255, 0.1);
+  }
+}
+
+@keyframes neonPulseCyan {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.1), 0 0 50px rgba(0, 229, 255, 0.03);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.2), 0 0 70px rgba(0, 229, 255, 0.07);
+  }
+}
+
+/* Gradient Border Animado */
+.gradient-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    #0D75FF 0%,
+    #00E5FF 33%,
+    #7000FF 66%,
+    #0D75FF 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientRotate 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism Ultra Premium */
+.glass-ultra {
+  background: rgba(11, 14, 23, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(13, 117, 255, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(13, 117, 255, 0.05);
+}
+
+.glass-ultra:hover {
+  border-color: rgba(13, 117, 255, 0.25);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(13, 117, 255, 0.08);
+}
+
+/* Floating Animation */
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Glow Text */
+.glow-text-blue {
+  text-shadow: 0 0 10px rgba(13, 117, 255, 0.5), 0 0 30px rgba(13, 117, 255, 0.2);
+}
+
+.glow-text-cyan {
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 30px rgba(0, 229, 255, 0.2);
+}
+
+/* Status Badges Glow */
+.status-glow-active {
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
+.status-glow-trial {
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.status-glow-pending {
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.status-glow-suspended {
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}

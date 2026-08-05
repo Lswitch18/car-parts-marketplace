@@ -1,0 +1,247 @@
+/* ═══════════════════════════════════════════════════════════
+ *  Premium Animation CSS Library
+ *  Efeitos visuais avançados para SaaS multitenant
+ * ═══════════════════════════════════════════════════════════ */
+
+/* ─── 1. Shimmer Loading (Skeleton Premium) ─────────────── */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(13, 117, 255, 0.04) 0%,
+    rgba(13, 117, 255, 0.12) 50%,
+    rgba(13, 117, 255, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── 2. Neon Glow Pulse ────────────────────────────────── */
+.neon-pulse {
+  animation: neonPulse 3s ease-in-out infinite;
+}
+
+.neon-pulse-cyan {
+  animation: neonPulseCyan 3s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(13, 117, 255, 0.15),
+      0 0 60px rgba(13, 117, 255, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(13, 117, 255, 0.3),
+      0 0 80px rgba(13, 117, 255, 0.1);
+  }
+}
+
+@keyframes neonPulseCyan {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(0, 229, 255, 0.1),
+      0 0 50px rgba(0, 229, 255, 0.03);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(0, 229, 255, 0.2),
+      0 0 70px rgba(0, 229, 255, 0.07);
+  }
+}
+
+/* ─── 3. Gradient Border Animado ────────────────────────── */
+.gradient-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    #0D75FF 0%,
+    #00E5FF 33%,
+    #7000FF 66%,
+    #0D75FF 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientRotate 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ─── 4. Glassmorphism Ultra ────────────────────────────── */
+.glass-ultra {
+  background: rgba(11, 14, 23, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(13, 117, 255, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(13, 117, 255, 0.05);
+}
+
+.glass-ultra:hover {
+  border-color: rgba(13, 117, 255, 0.25);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(13, 117, 255, 0.08);
+}
+
+/* ─── 5. Floating Animation ─────────────────────────────── */
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.float-fast {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* ─── 6. Scan Line (Cyber Effect) ───────────────────────── */
+.scan-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 229, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: scanLine 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanLine {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+/* ─── 7. Glow Text ─────────────────────────────────────── */
+.glow-text-blue {
+  text-shadow:
+    0 0 10px rgba(13, 117, 255, 0.5),
+    0 0 30px rgba(13, 117, 255, 0.2);
+}
+
+.glow-text-cyan {
+  text-shadow:
+    0 0 10px rgba(0, 229, 255, 0.5),
+    0 0 30px rgba(0, 229, 255, 0.2);
+}
+
+/* ─── 8. Status Glow Badges ─────────────────────────────── */
+.status-active {
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+.status-trial {
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  animation: statusPulseWarning 2s ease-in-out infinite;
+}
+
+.status-suspended {
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes statusPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(16, 185, 129, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.6); }
+}
+
+@keyframes statusPulseWarning {
+  0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(245, 158, 11, 0.6); }
+}
+
+/* ─── 9. Chart Line Draw (stroke animation) ─────────────── */
+.chart-line-draw {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: drawLine 2s ease-out forwards;
+}
+
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ─── 10. Entrance Animations (utility classes) ──────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.fade-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── 11. Reduced Motion ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer,
+  .neon-pulse,
+  .neon-pulse-cyan,
+  .gradient-border::before,
+  .float,
+  .float-slow,
+  .float-fast,
+  .scan-line::after,
+  .status-active,
+  .status-trial,
+  .chart-line-draw {
+    animation: none !important;
+  }
+
+  .fade-up,
+  .fade-scale {
+    transition: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
