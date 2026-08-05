@@ -8,6 +8,7 @@ import QRStickerPrint from '@/modules/backoffice/components/QRStickerPrint'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { Product } from '@/modules/shared/types'
 import AiPartQuickUploadModal from '@/modules/backoffice/components/AiPartQuickUploadModal'
+import { parseCompatibilityTextToTags } from '@/modules/shared/components/CompatibilityTagInput'
 import { useTenantRealData } from '@/modules/shared/hooks/useTenantRealData'
 import {
   Building2, Package, QrCode, Wrench, Globe, Sparkles,
@@ -1633,7 +1634,21 @@ export default function TenantDashboard() {
                             )}
                             <div>
                               <p className="line-clamp-1 font-semibold text-white">{part.title}</p>
-                              <p className="text-xs text-zinc-400">{part.category || 'Peça Automotiva'}</p>
+                              <div className="flex items-center gap-1 mt-1 flex-wrap">
+                                <span className="text-[10px] text-zinc-400 mr-1">{part.category || 'Peça Automotiva'}</span>
+                                {part.compatibility && parseCompatibilityTextToTags(part.compatibility).slice(0, 3).map((tag, idx) => (
+                                  <span 
+                                    key={idx} 
+                                    className={`px-1.5 py-0.5 rounded text-[9px] font-mono border ${
+                                      tag.type === 'chassis' ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30' :
+                                      tag.type === 'engine' ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' :
+                                      'bg-blue-500/10 text-blue-300 border-blue-500/30'
+                                    }`}
+                                  >
+                                    {tag.label}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
                           </div>
                         </td>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useI18n } from '@/modules/shared/lib/i18n'
+import CompatibilityTagInput from '@/modules/shared/components/CompatibilityTagInput'
 import { 
   Sparkles, Camera, Cpu, CheckCircle2, 
   X, Save, Layers, PackageCheck, AlertCircle
@@ -336,14 +337,15 @@ export default function AiPartQuickUploadModal({
                 />
               </div>
 
-              {/* Compatibilidade de Veículos */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold">{t('Compatibilidade de Veículos')}</label>
-                <input 
-                  type="text" 
-                  value={compatibility} 
-                  onChange={(e) => setCompatibility(e.target.value)}
-                  className="w-full bg-[#0B0E17] border border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-200 outline-none focus:border-[#00E5FF]"
+              {/* Compatibilidade de Veículos com Tags Interativas IA */}
+              <div className="space-y-1 sm:col-span-2">
+                <label className="text-[11px] font-mono text-zinc-400 uppercase font-bold flex items-center justify-between">
+                  <span>{t('Tags de Compatibilidade Veicular (Auto-Parser IA)')}</span>
+                  <span className="text-[10px] text-cyan-400 font-mono">Chassi • Motor • Anos</span>
+                </label>
+                <CompatibilityTagInput
+                  value={compatibility}
+                  onChange={(val) => setCompatibility(val)}
                 />
               </div>
 

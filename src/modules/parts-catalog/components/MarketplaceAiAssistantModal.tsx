@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Sparkles, Camera, Search, Cpu, X, CheckCircle2, ArrowRight, Package, Tag, Building2, Globe } from 'lucide-react'
 import { identifyPartInformation, IdentifiedPartInfo } from '@/modules/shared/lib/aiPartIdentifier'
+import { parseCompatibilityTextToTags } from '@/modules/shared/components/CompatibilityTagInput'
 import { Link } from 'react-router-dom'
 
 interface MarketplaceAiAssistantModalProps {
@@ -196,9 +197,22 @@ export default function MarketplaceAiAssistantModal({ isOpen, onClose }: Marketp
                 </div>
               </div>
 
-              <div className="p-3 bg-zinc-900 rounded-xl border border-zinc-800 text-xs">
-                <span className="text-zinc-400 block text-[10px]">Modelos Compatíveis:</span>
-                <p className="font-mono text-zinc-300 text-[11px] mt-0.5">{result.compatibilityList.join(' • ')}</p>
+              <div className="p-3 bg-zinc-900 rounded-xl border border-zinc-800 text-xs space-y-1.5">
+                <span className="text-zinc-400 block text-[10px] uppercase font-mono font-bold">Tags de Compatibilidade Veicular:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {parseCompatibilityTextToTags(result.compatibilityList.join(' • ')).map((tag, idx) => (
+                    <span
+                      key={idx}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono border font-semibold ${
+                        tag.type === 'chassis' ? 'bg-[#00E5FF]/10 text-cyan-300 border-[#00E5FF]/40' :
+                        tag.type === 'engine' ? 'bg-amber-500/10 text-amber-300 border-amber-500/40' :
+                        'bg-blue-500/10 text-blue-300 border-blue-500/40'
+                      }`}
+                    >
+                      {tag.label}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div className="pt-2 flex justify-end">
