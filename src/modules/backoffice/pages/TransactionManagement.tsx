@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
@@ -12,6 +12,12 @@ import {
   CheckCircle2, Clock, Eye, Sparkles, Save, X, RefreshCw,
   Calendar, Search, Loader2, ArrowUpRight, Lock, Info, Mail, Send
 } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ─── Transaction Detail Modal ──────────────────────────────────────────────────
 function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatMoney }: {
@@ -34,8 +40,21 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
   const bankInfo = tx.seller?.bank_info;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#121215] border border-[#27272a] rounded-xl w-full max-w-xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4" 
+      onClick={onClose}
+    >
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 320 }}
+        className="bg-[#121215] border border-cyan-500/30 rounded-xl w-full max-w-xl shadow-2xl shadow-cyan-500/10 overflow-hidden" 
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#27272a] bg-[#18181b]">
@@ -168,8 +187,8 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
             Fechar
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -190,6 +209,58 @@ export default function TransactionManagement() {
   const [savingRate, setSavingRate] = useState(false);
   const [activeStoresCount, setActiveStoresCount] = useState<number>(0);
   const [saasRevenueTotal, setSaasRevenueTotal] = useState<number>(0);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (loading) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from('.ops-header', {
+        y: -20,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out'
+      });
+
+      gsap.from('.ledger-card', {
+        y: 30,
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'power3.out',
+        delay: 0.1
+      });
+
+      gsap.from('.ops-toolbar', {
+        y: 15,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        delay: 0.25
+      });
+
+      gsap.from('.ops-table-container', {
+        y: 25,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        delay: 0.35
+      });
+
+      gsap.from('.ops-table-row', {
+        y: 10,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.04,
+        ease: 'power2.out',
+        delay: 0.45
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, { dependencies: [loading, filteredTransactions.length], scope: containerRef });
 
   useEffect(() => {
     fetchTransactions();
@@ -455,10 +526,10 @@ export default function TransactionManagement() {
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-zinc-200 font-sans pb-20 bg-[#09090b]">
+    <div ref={containerRef} className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-zinc-200 font-sans pb-20 bg-[#09090b]">
       
       {/* ═══ CLEAN OPERATIONAL HEADER ═══ */}
-      <div className="bg-[#121215] border border-[#27272a] p-5 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="ops-header bg-[#121215] border border-[#27272a] p-5 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center gap-3.5">
           <div className="p-2.5 rounded-lg bg-[#18181b] border border-[#27272a]">
             <GaidLogo size={36} />
@@ -501,7 +572,7 @@ export default function TransactionManagement() {
         {/* Card 1: A Receber (Pendente / Abandonada) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
+          className={`ledger-card bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/5 relative group ${
             activeLedgerFilter === 'receber' ? 'border-amber-500/60 bg-amber-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
@@ -528,7 +599,7 @@ export default function TransactionManagement() {
         {/* Card 2: Custódia Retida (Escrow no Stripe) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
+          className={`ledger-card bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-sky-500/60 hover:shadow-lg hover:shadow-sky-500/5 relative group ${
             activeLedgerFilter === 'retido' ? 'border-sky-500/60 bg-sky-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
@@ -564,7 +635,7 @@ export default function TransactionManagement() {
         {/* Card 3: Pagos ao Vendedor */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-zinc-500 relative group ${
+          className={`ledger-card bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-emerald-500/60 hover:shadow-lg hover:shadow-emerald-500/5 relative group ${
             activeLedgerFilter === 'pagos' ? 'border-emerald-500/60 bg-emerald-500/[0.03]' : 'border-[#27272a]'
           }`}
         >
@@ -589,7 +660,7 @@ export default function TransactionManagement() {
         </div>
 
         {/* Card 4: Lucro Plataforma */}
-        <div className="bg-[#121215] border border-[#27272a] rounded-xl p-4 space-y-2 relative group">
+        <div className="ledger-card bg-[#121215] border border-[#27272a] hover:border-emerald-500/40 rounded-xl p-4 space-y-2 relative group transition-all">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
               <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
@@ -624,7 +695,7 @@ export default function TransactionManagement() {
       </div>
 
       {/* ═══ OPERATIONAL TOOLBAR (Search + Filter + Actions) ═══ */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="ops-toolbar flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         
         <div className="flex items-center gap-3 flex-wrap">
           {/* Search Bar */}
@@ -678,7 +749,7 @@ export default function TransactionManagement() {
       </div>
 
       {/* ═══ CLEAN OPERATIONAL TABLE ═══ */}
-      <div className="bg-[#121215] border border-[#27272a] rounded-xl overflow-hidden shadow-lg">
+      <div className="ops-table-container bg-[#121215] border border-[#27272a] rounded-xl overflow-hidden shadow-lg">
         
         {/* Table Header */}
         <div className="hidden md:grid grid-cols-12 gap-3 px-5 py-3 border-b border-[#27272a] bg-[#18181b] text-[10px] text-zinc-400 uppercase tracking-wider font-bold">
@@ -700,7 +771,7 @@ export default function TransactionManagement() {
               return (
                 <div 
                   key={tx.id}
-                  className="grid grid-cols-1 md:grid-cols-12 gap-3 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
+                  className="ops-table-row grid grid-cols-1 md:grid-cols-12 gap-3 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
                 >
                   {/* Product */}
                   <div className="col-span-3 flex items-center gap-2.5 min-w-0">
@@ -801,15 +872,17 @@ export default function TransactionManagement() {
       </div>
 
       {/* ═══ DETAIL MODAL ═══ */}
-      {selectedTransaction && (
-        <TransactionDetailModal
-          tx={selectedTransaction}
-          onClose={() => setSelectedTransaction(null)}
-          onAction={updateTransactionStatus}
-          commissionRate={commissionRate}
-          formatMoney={formatMoney}
-        />
-      )}
+      <AnimatePresence>
+        {selectedTransaction && (
+          <TransactionDetailModal
+            tx={selectedTransaction}
+            onClose={() => setSelectedTransaction(null)}
+            onAction={updateTransactionStatus}
+            commissionRate={commissionRate}
+            formatMoney={formatMoney}
+          />
+        )}
+      </AnimatePresence>
 
     </div>
   );
