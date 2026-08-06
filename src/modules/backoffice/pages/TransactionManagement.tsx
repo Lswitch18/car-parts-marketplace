@@ -566,96 +566,107 @@ export default function TransactionManagement() {
   return (
     <div ref={containerRef} className="max-w-[1400px] mx-auto p-4 md:p-6 space-y-6 text-zinc-200 font-sans pb-20 bg-[#09090b]">
       
-      {/* ═══ CLEAN OPERATIONAL HEADER ═══ */}
-      <div className="ops-header bg-[#121215] border border-[#27272a] p-5 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
-        <div className="flex items-center gap-3.5">
-          <div className="p-2.5 rounded-lg bg-[#18181b] border border-[#27272a]">
-            <GaidLogo size={36} />
+      {/* ═══ CYBER NEON OPERATIONAL HEADER ═══ */}
+      <div className="ops-header bg-[#0f0f13]/90 backdrop-blur-xl border border-cyan-500/20 p-5 md:p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-[0_0_30px_rgba(6,182,212,0.08)] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="p-3 rounded-xl bg-black/60 border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+            <GaidLogo size={38} />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-white tracking-tight">Marketplace Ops • Vendas, Envios & Escrow</h1>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">LIVE JPY</span>
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white via-zinc-200 to-cyan-400 bg-clip-text text-transparent">
+                Marketplace Ops • Vendas, Envios & Escrow
+              </h1>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.2)] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                LIVE JPY
+              </span>
             </div>
-            <p className="text-xs text-zinc-400 mt-0.5">Métricas operacionais exclusivas do Marketplace DAIG: volume de vendas JDM, rastreio de envios, custódia escrow e recebimentos</p>
+            <p className="text-xs text-zinc-400 mt-1">
+              Métricas operacionais exclusivas do Marketplace DAIG: volume de vendas JDM, rastreio de envios, custódia escrow e recebimentos
+            </p>
           </div>
         </div>
 
         {/* Taxa DAIG Controller */}
-        <div className="flex items-center gap-2.5 bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 shrink-0">
-          <span className="text-zinc-400 text-xs font-medium">{t('Taxa DAIG:')}</span>
+        <div className="flex items-center gap-2.5 bg-black/60 border border-cyan-500/30 rounded-xl px-3.5 py-2.5 shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.1)] relative z-10">
+          <span className="text-zinc-300 text-xs font-semibold flex items-center gap-1">
+            <Sparkles size={12} className="text-cyan-400" />
+            {t('Taxa DAIG:')}
+          </span>
           <input
             type="number"
             value={tempRate}
             onChange={(e) => setTempRate(e.target.value)}
-            className="bg-black border border-zinc-700 rounded px-2 py-0.5 text-white font-mono font-bold text-xs w-12 text-center focus:outline-none focus:border-zinc-500"
+            className="bg-[#121215] border border-cyan-500/40 rounded-lg px-2 py-1 text-white font-mono font-extrabold text-xs w-14 text-center focus:outline-none focus:border-cyan-400 shadow-inner"
             min="0"
             max="100"
           />
-          <span className="text-zinc-400 font-bold text-xs">%</span>
+          <span className="text-cyan-400 font-bold text-xs">%</span>
           <button
             onClick={handleSaveCommissionRate}
             disabled={savingRate}
-            className="px-3 py-1 bg-zinc-700 hover:bg-zinc-600 text-white rounded text-xs font-semibold transition-all disabled:opacity-50 flex items-center gap-1 ml-1"
+            className="px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-extrabold rounded-lg text-xs transition-all disabled:opacity-50 flex items-center gap-1 ml-1 shadow-[0_0_12px_rgba(6,182,212,0.3)]"
           >
-            <Save size={12} />
+            <Save size={13} />
             <span>{savingRate ? '...' : t('Salvar')}</span>
           </button>
         </div>
       </div>
 
-      {/* ═══ CLEAN OPERATIONAL LEDGER CARDS ═══ */}
+      {/* ═══ CYBER NEON OPERATIONAL LEDGER CARDS ═══ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Card 1: A Receber (Pendente / Abandonada) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`ledger-card bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/5 relative group ${
-            activeLedgerFilter === 'receber' ? 'border-amber-500/60 bg-amber-500/[0.03]' : 'border-[#27272a]'
+          className={`ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-amber-500/80 hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] relative group ${
+            activeLedgerFilter === 'receber' ? 'border-amber-500/80 bg-amber-500/[0.05] shadow-[0_0_20px_rgba(245,158,11,0.2)]' : 'border-zinc-800/80'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('A RECEBER')}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('A RECEBER')}</span>
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-amber-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-[#09090b] border border-amber-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
                   Vendas pendentes ou abandonadas no checkout Stripe. Clique para filtrar e disparar e-mail de recuperação via Resend.
                 </div>
               </div>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
               <Clock size={10} /> Pendente
             </span>
           </div>
-          <p className="text-2xl font-bold text-white font-mono tracking-tight">
+          <p className="text-2xl font-black text-white font-mono tracking-tight group-hover:text-amber-400 transition-colors">
             {formatMoney(aReceberVal)}
           </p>
-          <p className="text-[11px] text-zinc-500 mt-2">Clique para listar compras pendentes de recuperação</p>
+          <p className="text-[11px] text-zinc-400 mt-2 font-medium">Clique para listar compras pendentes de recuperação</p>
         </div>
 
         {/* Card 2: Custódia Retida (Escrow no Stripe) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`ledger-card bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-sky-500/60 hover:shadow-lg hover:shadow-sky-500/5 relative group ${
-            activeLedgerFilter === 'retido' ? 'border-sky-500/60 bg-sky-500/[0.03]' : 'border-[#27272a]'
+          className={`ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-sky-500/80 hover:shadow-[0_0_25px_rgba(14,165,233,0.2)] relative group ${
+            activeLedgerFilter === 'retido' ? 'border-sky-500/80 bg-sky-500/[0.05] shadow-[0_0_20px_rgba(14,165,233,0.25)]' : 'border-zinc-800/80'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('CUSTÓDIA RETIDA STRIPE')}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('CUSTÓDIA RETIDA STRIPE')}</span>
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-sky-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-[#09090b] border border-sky-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
                   Fundos retidos com segurança na conta Stripe Escrow JPY até confirmação de entrega pelo cliente.
                 </div>
               </div>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(14,165,233,0.2)]">
               <Lock size={10} /> Escrow 🔒
             </span>
           </div>
-          <p className="text-2xl font-bold text-sky-400 font-mono tracking-tight">
+          <p className="text-2xl font-black text-sky-400 font-mono tracking-tight">
             {formatMoney(retidoValLiquido)}
           </p>
           <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
@@ -665,7 +676,7 @@ export default function TransactionManagement() {
             </div>
             <div className="flex justify-between">
               <span>Taxa Stripe (3.6%):</span>
-              <span className="text-amber-400">-{formatMoney(retidoStripeFee)}</span>
+              <span className="text-amber-400 font-bold">-{formatMoney(retidoStripeFee)}</span>
             </div>
           </div>
         </div>
@@ -673,59 +684,61 @@ export default function TransactionManagement() {
         {/* Card 3: Pagos ao Vendedor */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`ledger-card bg-[#121215] border rounded-xl p-4 cursor-pointer transition-all hover:border-emerald-500/60 hover:shadow-lg hover:shadow-emerald-500/5 relative group ${
-            activeLedgerFilter === 'pagos' ? 'border-emerald-500/60 bg-emerald-500/[0.03]' : 'border-[#27272a]'
+          className={`ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-emerald-500/80 hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] relative group ${
+            activeLedgerFilter === 'pagos' ? 'border-emerald-500/80 bg-emerald-500/[0.05] shadow-[0_0_20px_rgba(16,185,129,0.25)]' : 'border-zinc-800/80'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-[#09090b] border border-emerald-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
                   Repasses efetuados aos vendedores via Stripe Connect após conclusão da entrega do pedido.
                 </div>
               </div>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
               <CheckCircle2 size={10} /> Repassado
             </span>
           </div>
-          <p className="text-2xl font-bold text-white font-mono tracking-tight">
+          <p className="text-2xl font-black text-white font-mono tracking-tight group-hover:text-emerald-400 transition-colors">
             {formatMoney(pagosVal)}
           </p>
-          <p className="text-[11px] text-zinc-500 mt-2">{(100 - commissionRate)}% repassado via Stripe Connect</p>
+          <p className="text-[11px] text-zinc-400 mt-2 font-medium">{(100 - commissionRate)}% repassado via Stripe Connect</p>
         </div>
 
         {/* Card 4: Lucro Plataforma */}
-        <div className="ledger-card bg-[#121215] border border-[#27272a] hover:border-emerald-500/40 rounded-xl p-4 space-y-2 relative group transition-all">
+        <div className="ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400/70 rounded-2xl p-4 space-y-2 relative group transition-all duration-300 shadow-[0_0_25px_rgba(16,185,129,0.12)]">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
               <div className="relative group/tooltip">
                 <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
-                <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-56 p-2 bg-black border border-zinc-700 text-[10px] text-zinc-300 rounded shadow-xl z-20">
+                <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-56 p-2 bg-[#09090b] border border-emerald-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
                   Lucro líquido da DAIG (Comissão de {commissionRate}% sobre vendas - Taxas do Stripe 3.6% + Assinaturas SaaS).
                 </div>
               </div>
             </div>
-            <DollarSign size={14} className="text-emerald-400" />
+            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+              <DollarSign size={14} />
+            </div>
           </div>
-          <p className="text-2xl font-bold text-emerald-400 font-mono tracking-tight">
+          <p className="text-2xl font-black text-emerald-400 font-mono tracking-tight drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             {formatMoney(lucroLiquidoPlataforma)}
           </p>
           <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
             <div className="flex justify-between">
               <span>Bruto ({commissionRate}%):</span>
-              <span className="text-white">{formatMoney(lucroBruto)}</span>
+              <span className="text-white font-bold">{formatMoney(lucroBruto)}</span>
             </div>
             <div className="flex justify-between">
               <span>Taxas Stripe (3.6%):</span>
-              <span className="text-amber-400">-{formatMoney(totalStripeFees)}</span>
+              <span className="text-amber-400 font-bold">-{formatMoney(totalStripeFees)}</span>
             </div>
             <div className="flex justify-between">
               <span>Assinaturas SaaS ({activeStoresCount} Lojas):</span>
-              <span className="text-emerald-400">+{formatMoney(receitaSaaS)}</span>
+              <span className="text-emerald-400 font-bold">+{formatMoney(receitaSaaS)}</span>
             </div>
           </div>
         </div>
