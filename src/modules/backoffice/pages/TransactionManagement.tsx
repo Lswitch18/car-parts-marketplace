@@ -277,28 +277,16 @@ export default function TransactionManagement() {
       setLoading(true);
       let rows: any[] = [];
 
-      // Tenta primeiro consultar com as colunas avançadas de auditoria Stripe
-      const { data, error } = await supabase
-        .from('transactions')
-        .select(`
-          id,
-          amount,
-          payment_status,
-          fulfillment_status,
-          payout_status,
-          stripe_payment_id,
-          stripe_transfer_id,
-          created_at,
-          buyer:profiles!transactions_buyer_id_fkey(id, full_name, rating),
-          seller:profiles!transactions_seller_id_fkey(id, full_name, rating),
-          part:parts!transactions_part_id_fkey(title, description, price, images)
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.warn('[TransactionManagement] Coluna avançada de transação indisponível no esquema remoto, usando fallback seguro:', error.message);
-        // Fallback resiliente caso colunas de payout ainda não tenham sido aplicadas no banco produtivo
-        const { data: fallbackData, error: fallbackError } = await supabase
+      // 🛡️ SHIFT-LEFT SECURITY & RESILIENT API CALL:
+      // Tenta primeiro via Edge Function / Endpoint Seguro api.transactions.list() ou consulta Supabase padrão
+      try {
+        const res = await api.transactions.list({ limit: 100 });
+        if (res && res.transactions) {
+          rows = res.transactions;
+        }
+      } catch (_) {
+        // Fallback resiliente usando query pública direta com seleção apenas de colunas existentes garantidas
+        const { data, error } = await supabase
           .from('transactions')
           .select(`
             id,
@@ -312,53 +300,33 @@ export default function TransactionManagement() {
           `)
           .order('created_at', { ascending: false });
 
-        if (fallbackError) throw fallbackError;
-        rows = (fallbackData || []).map((tx: any) => ({ ...tx }));
-      } else {
+        if (error) throw error;
         rows = (data || []).map((tx: any) => ({ ...tx }));
       }
 
-      // Tenta enriquecer vendedores com bank_info de forma resiliente e silenciosa
-      const sellerIds = Array.from(new Set(rows.map((tx: any) => tx.seller?.id).filter(Boolean)));
-      if (sellerIds.length > 0) {
-        try {
-          const { data: sellerProfiles } = await supabase
-            .from('profiles')
-            .select('id, bank_info')
-            .in('id', sellerIds);
-          if (sellerProfiles) {
-            const bankMap = new Map((sellerProfiles || []).map((p: any) => [p.id, p.bank_info]));
-            rows.forEach((tx: any) => {
-              if (tx.seller?.id && bankMap.has(tx.seller.id)) {
-                tx.seller.bank_info = bankMap.get(tx.seller.id);
-              }
-            });
-          }
-        } catch (_) {
-          // Ignora se bank_info não existir no remoto
-        }
-      }
-
+      // Enriquecimento resiliente de e-mails via admin_profiles sem disparar 400
       const profileIds = Array.from(
         new Set(rows.flatMap((tx: any) => [tx.buyer?.id, tx.seller?.id]).filter(Boolean))
       );
       if (profileIds.length > 0) {
-        const { data: profiles, error: profilesError } = await supabase
-          .from('admin_profiles')
-          .select('id, email')
-          .in('id', profileIds);
-        if (!profilesError) {
-          const emailMap = new Map((profiles || []).map((p: any) => [p.id, p.email]));
-          rows.forEach((tx: any) => {
-            if (tx.buyer?.id) tx.buyer.email = emailMap.get(tx.buyer.id)
-            if (tx.seller?.id) tx.seller.email = emailMap.get(tx.seller.id)
-          });
-        }
+        try {
+          const { data: profiles } = await supabase
+            .from('admin_profiles')
+            .select('id, email')
+            .in('id', profileIds);
+          if (profiles) {
+            const emailMap = new Map((profiles || []).map((p: any) => [p.id, p.email]));
+            rows.forEach((tx: any) => {
+              if (tx.buyer?.id && emailMap.has(tx.buyer.id)) tx.buyer.email = emailMap.get(tx.buyer.id);
+              if (tx.seller?.id && emailMap.has(tx.seller.id)) tx.seller.email = emailMap.get(tx.seller.id);
+            });
+          }
+        } catch (_) {}
       }
 
       setTransactions(rows);
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      setError(err.message || 'Erro ao carregar lista de transações');
     } finally {
       setLoading(false);
     }
