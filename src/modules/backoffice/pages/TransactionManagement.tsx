@@ -277,7 +277,7 @@ export default function TransactionManagement() {
       setLoading(true);
       let rows: any[] = [];
 
-      // Tenta primeiro consultar com as colunas avançadas de auditoria Stripe e bank_info
+      // Tenta primeiro consultar com as colunas avançadas de auditoria Stripe
       const { data, error } = await supabase
         .from('transactions')
         .select(`
@@ -290,14 +290,14 @@ export default function TransactionManagement() {
           stripe_transfer_id,
           created_at,
           buyer:profiles!transactions_buyer_id_fkey(id, full_name, rating),
-          seller:profiles!transactions_seller_id_fkey(id, full_name, bank_info, rating),
+          seller:profiles!transactions_seller_id_fkey(id, full_name, rating),
           part:parts!transactions_part_id_fkey(title, description, price, images)
         `)
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.warn('[TransactionManagement] Coluna avançada indisponível no esquema remoto, usando fallback seguro:', error.message);
-        // Fallback resiliente caso alguma coluna ainda não tenha sido aplicada no banco produtivo
+        console.warn('[TransactionManagement] Coluna avançada de transação indisponível no esquema remoto, usando fallback seguro:', error.message);
+        // Fallback resiliente caso colunas de payout ainda não tenham sido aplicadas no banco produtivo
         const { data: fallbackData, error: fallbackError } = await supabase
           .from('transactions')
           .select(`
@@ -316,6 +316,27 @@ export default function TransactionManagement() {
         rows = (fallbackData || []).map((tx: any) => ({ ...tx }));
       } else {
         rows = (data || []).map((tx: any) => ({ ...tx }));
+      }
+
+      // Tenta enriquecer vendedores com bank_info de forma resiliente e silenciosa
+      const sellerIds = Array.from(new Set(rows.map((tx: any) => tx.seller?.id).filter(Boolean)));
+      if (sellerIds.length > 0) {
+        try {
+          const { data: sellerProfiles } = await supabase
+            .from('profiles')
+            .select('id, bank_info')
+            .in('id', sellerIds);
+          if (sellerProfiles) {
+            const bankMap = new Map((sellerProfiles || []).map((p: any) => [p.id, p.bank_info]));
+            rows.forEach((tx: any) => {
+              if (tx.seller?.id && bankMap.has(tx.seller.id)) {
+                tx.seller.bank_info = bankMap.get(tx.seller.id);
+              }
+            });
+          }
+        } catch (_) {
+          // Ignora se bank_info não existir no remoto
+        }
       }
 
       const profileIds = Array.from(
