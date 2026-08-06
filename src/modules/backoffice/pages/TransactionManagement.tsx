@@ -681,13 +681,13 @@ export default function TransactionManagement() {
       <div className="bg-[#121215] border border-[#27272a] rounded-xl overflow-hidden shadow-lg">
         
         {/* Table Header */}
-        <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 border-b border-[#27272a] bg-[#18181b] text-[10px] text-zinc-400 uppercase tracking-wider font-bold">
-          <div className="col-span-4">Peça / Produto</div>
+        <div className="hidden md:grid grid-cols-12 gap-3 px-5 py-3 border-b border-[#27272a] bg-[#18181b] text-[10px] text-zinc-400 uppercase tracking-wider font-bold">
+          <div className="col-span-3">Peça / Produto</div>
           <div className="col-span-2">Comprador</div>
           <div className="col-span-1 text-right">Valor Total</div>
           <div className="col-span-2 text-center">Status Comprador (Pagou?)</div>
           <div className="col-span-2 text-center">Status Vendedor (Repasse)</div>
-          <div className="col-span-1 text-right">Ações</div>
+          <div className="col-span-2 text-right pr-2">Ações</div>
         </div>
 
         {filteredTransactions.length > 0 ? (
@@ -700,15 +700,15 @@ export default function TransactionManagement() {
               return (
                 <div 
                   key={tx.id}
-                  className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
+                  className="grid grid-cols-1 md:grid-cols-12 gap-3 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
                 >
                   {/* Product */}
-                  <div className="col-span-4 flex items-center gap-3 min-w-0">
+                  <div className="col-span-3 flex items-center gap-2.5 min-w-0">
                     <div className="w-9 h-9 rounded-md bg-black border border-zinc-800 overflow-hidden shrink-0">
                       <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-white font-medium truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
+                      <p className="text-white font-medium truncate text-xs">{tx.part?.title || 'Peça Automotiva JDM'}</p>
                       <p className="text-[10px] text-zinc-500 font-mono">
                         {tx.created_at ? new Date(tx.created_at).toLocaleDateString('ja-JP') : '—'}
                       </p>
@@ -716,18 +716,18 @@ export default function TransactionManagement() {
                   </div>
 
                   {/* Buyer */}
-                  <div className="col-span-2 text-zinc-300 truncate">
+                  <div className="col-span-2 text-zinc-300 truncate text-xs">
                     {tx.buyer?.full_name || tx.buyer?.email || 'N/A'}
                   </div>
 
                   {/* Amount */}
-                  <div className="col-span-1 text-right font-mono font-bold text-white">
+                  <div className="col-span-1 text-right font-mono font-bold text-white text-xs">
                     {formatMoney(tx.amount || 0)}
                   </div>
 
                   {/* Status Buyer (Paid) */}
                   <div className="col-span-2 text-center flex flex-col items-center justify-center gap-0.5">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-semibold border ${
+                    <span className={`inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border w-full max-w-[130px] ${
                       isBuyerPaid
                         ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                         : tx.payment_status === 'pending_payment'
@@ -743,7 +743,7 @@ export default function TransactionManagement() {
 
                   {/* Status Seller Payout (Stripe Connect) */}
                   <div className="col-span-2 text-center flex flex-col items-center justify-center gap-0.5">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-semibold border ${
+                    <span className={`inline-flex items-center justify-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border w-full max-w-[130px] ${
                       isSellerPaid
                         ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                         : isEscrow
@@ -758,12 +758,12 @@ export default function TransactionManagement() {
                   </div>
 
                   {/* Actions */}
-                  <div className="col-span-1 flex items-center gap-1.5 justify-end">
+                  <div className="col-span-2 flex items-center gap-1.5 justify-end">
                     {(!isBuyerPaid && (tx.payment_status === 'pending' || tx.payment_status === 'processing')) && (
                       <button
                         onClick={() => handleRecoverTransaction(tx.id)}
                         disabled={recoveringId === tx.id}
-                        className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 disabled:opacity-50"
+                        className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 disabled:opacity-50 shrink-0"
                         title="Disparar e-mail de recuperação de venda via Resend"
                       >
                         <Mail size={10} />
@@ -773,7 +773,7 @@ export default function TransactionManagement() {
                     {isEscrow && (
                       <button
                         onClick={() => updateTransactionStatus(tx.id, 'transferred', 'payout')}
-                        className="px-2 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1"
+                        className="px-2.5 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 shrink-0 whitespace-nowrap"
                         title="Liberar repasse Stripe Connect ao vendedor"
                       >
                         Liberar 💸
@@ -781,7 +781,7 @@ export default function TransactionManagement() {
                     )}
                     <button
                       onClick={() => setSelectedTransaction(tx)}
-                      className="p-1 rounded bg-[#27272a] hover:bg-[#3f3f46] text-zinc-300 hover:text-white transition-all"
+                      className="p-1.5 rounded bg-[#27272a] hover:bg-[#3f3f46] text-zinc-300 hover:text-white transition-all shrink-0"
                       title="Ver detalhes da auditoria Stripe"
                     >
                       <Eye size={13} />
