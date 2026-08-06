@@ -482,7 +482,27 @@ async function revokeSubscription(subscription: any) {
 }
 
 async function handlePayoutPaid(payout: any) {
-  console.log(`[Webhook] Payout paid: ${payout.id} amount: ${payout.amount}`);
+  const payoutId = payout.id;
+  const amountJpy = payout.amount;
+  const arrivalDate = payout.arrival_date ? new Date(payout.arrival_date * 1000).toISOString() : new Date().toISOString();
+
+  console.log(`[Webhook] Payout PAID confirmado no banco físico Japão: ${payoutId} | Valor: ¥${amountJpy} JPY | Data: ${arrivalDate}`);
+
+  try {
+    // Registra evento de auditoria financeira no Supabase
+    await supabase.from('messages').insert({
+      content: `[SISTEMA FINANCEIRO DAIG] Confirmação Zengin: Depósito bancário de ¥${amountJpy} JPY efetuado com sucesso no banco físico no Japão (Payout ID: ${payoutId}). Data: ${arrivalDate}`,
+      message_type: 'system',
+    });
+  } catch (err) {
+    console.error('[Webhook] Erro ao registrar log audit do Payout:', err);
+  }
+}
+
+async function handlePayoutFailed(payout: any) {
+  const payoutId = payout.id;
+  const failureMessage = payout.failure_message || 'Inconsistência nos dados bancários Zengin';
+  console.error(`[Webhook] Payout FAILED no banco físico Japão: ${payoutId} | Motivo: ${failureMessage}`);
 }
 
 async function verifyStripeSignature(
@@ -614,6 +634,9 @@ async function handleEvent(event: StripeEvent) {
       break;
     case 'payout.paid':
       await handlePayoutPaid(event.data.object);
+      break;
+    case 'payout.failed':
+      await handlePayoutFailed(event.data.object);
       break;
     default:
       console.log(`[Webhook] Unhandled event type: ${event.type}`);
