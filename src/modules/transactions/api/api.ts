@@ -120,7 +120,7 @@ export const api = {
     }) =>
       fetchApi('/transactions/create', { method: 'POST', body: JSON.stringify(data) }),
 
-    update: (id: string, data: { payment_status?: string; fulfillment_status?: string }) =>
+    update: (id: string, data: { payment_status?: string; fulfillment_status?: string; payout_status?: string }) =>
       fetchApi(`/transactions/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
 
     recover: (transactionId: string) =>

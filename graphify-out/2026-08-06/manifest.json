@@ -1000,9 +1000,9 @@
     "semantic_hash": "539e3c52a7bbfb3ad096f46bed9b62bb"
   },
   "src/modules/shared/types/index.ts": {
-    "mtime": 1785767667.50062,
-    "ast_hash": "367fa7757013fd770260fa07d5584768",
-    "semantic_hash": "367fa7757013fd770260fa07d5584768"
+    "mtime": 1785957697.8907835,
+    "ast_hash": "70e3b2606a13ac0e0a9ecc9087f1af08",
+    "semantic_hash": ""
   },
   "src/modules/storefront/__tests__/homeLogic.test.ts": {
     "mtime": 1781836901.1996121,
@@ -2705,8 +2705,8 @@
     "semantic_hash": "7856c340572f64063f3e4ebd6be94e2e"
   },
   "src/modules/backoffice/pages/TenantDashboard.tsx": {
-    "mtime": 1785957323.094781,
-    "ast_hash": "17d60b7477d5ba26d010579ba203fb36",
+    "mtime": 1785957734.1707792,
+    "ast_hash": "20ae8fa39c45b6e938bfeb3db07f11d5",
     "semantic_hash": ""
   },
   "supabase/migrations/20260729_saas_multi_tenant_complete.sql": {
@@ -3177,6 +3177,16 @@
   ".agents/skills/fullstack-innovation-valuation/SKILL.md": {
     "mtime": 1785957032.1427479,
     "ast_hash": "dbd54d5762973f829e91f322e4ffcef4",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/components/SecurityAuditCenter.tsx": {
+    "mtime": 1785957651.2707744,
+    "ast_hash": "3eec67b2af52fc707816294e6fb6caad",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/components/TenantTeamManager.tsx": {
+    "mtime": 1785957642.5627747,
+    "ast_hash": "36a900abe2e690b903efad3c3b68bfa3",
     "semantic_hash": ""
   }
 }

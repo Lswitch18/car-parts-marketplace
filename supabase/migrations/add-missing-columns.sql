@@ -21,7 +21,9 @@ ALTER TABLE public.transactions
 
 ALTER TABLE public.transactions
   ADD COLUMN IF NOT EXISTS auction_id UUID REFERENCES public.parts(id),
-  ADD COLUMN IF NOT EXISTS bid_id UUID REFERENCES public.bids(id);
+  ADD COLUMN IF NOT EXISTS bid_id UUID REFERENCES public.bids(id),
+  ADD COLUMN IF NOT EXISTS payout_status TEXT DEFAULT 'pending',
+  ADD COLUMN IF NOT EXISTS stripe_transfer_id TEXT;
 
 -- Stripe account columns on profiles
 ALTER TABLE public.profiles

@@ -1577,8 +1577,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 224,
+      "community_name": "@base-ui/react",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1588,8 +1588,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 224,
+      "community_name": "@base-ui/react",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1863,8 +1863,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 200,
-      "community_name": "canvas-confetti",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1874,8 +1874,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 200,
-      "community_name": "canvas-confetti",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "canvas-confetti"
     },
     {
@@ -6330,8 +6330,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_storeapp_storeapp",
-      "community": 26,
-      "community_name": "Wt",
+      "community": 191,
+      "community_name": "main.tsx",
       "norm_label": "storeapp()"
     },
     {
@@ -6759,8 +6759,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 26,
-      "community_name": "Wt",
+      "community": 191,
+      "community_name": "main.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -6770,8 +6770,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_main_queryclient",
-      "community": 26,
-      "community_name": "Wt",
+      "community": 191,
+      "community_name": "main.tsx",
       "norm_label": "queryclient"
     },
     {
@@ -6781,8 +6781,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_main_root",
-      "community": 26,
-      "community_name": "Wt",
+      "community": 191,
+      "community_name": "main.tsx",
       "norm_label": "root"
     },
     {
@@ -6858,8 +6858,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "auctions.tsx"
     },
     {
@@ -6869,8 +6869,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_auctionitem",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "auctionitem"
     },
     {
@@ -6880,8 +6880,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_recentbid",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "recentbid"
     },
     {
@@ -6891,8 +6891,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_condition_colors",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "condition_colors"
     },
     {
@@ -6902,8 +6902,8 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "src_modules_auctions_pages_auctions_auctions",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "auctions()"
     },
     {
@@ -7276,8 +7276,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard",
-      "community": 46,
-      "community_name": "ln",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "dashboard.tsx"
     },
     {
@@ -7287,8 +7287,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard_tabtype",
-      "community": 46,
-      "community_name": "ln",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "tabtype"
     },
     {
@@ -7298,8 +7298,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard_dashboard",
-      "community": 46,
-      "community_name": "ln",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "dashboard()"
     },
     {
@@ -7309,8 +7309,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_deliveriesmanagement",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "deliveriesmanagement.tsx"
     },
     {
@@ -7320,8 +7320,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_deliveriesmanagement_deliverytransaction",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "deliverytransaction"
     },
     {
@@ -7331,8 +7331,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_deliveriesmanagement_deliveriesmanagement",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "deliveriesmanagement()"
     },
     {
@@ -7397,8 +7397,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_transactionmanagement",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "transactionmanagement.tsx"
     },
     {
@@ -7408,8 +7408,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_transactionmanagement_transactiondetailmodal",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "transactiondetailmodal()"
     },
     {
@@ -7430,8 +7430,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_usermanagement",
-      "community": 7,
-      "community_name": "n",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "usermanagement.tsx"
     },
     {
@@ -7441,8 +7441,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_usermanagement_predefined_permissions",
-      "community": 7,
-      "community_name": "n",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "predefined_permissions"
     },
     {
@@ -7452,8 +7452,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_usermanagement_usermanagement",
-      "community": 7,
-      "community_name": "n",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "usermanagement()"
     },
     {
@@ -7562,8 +7562,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 184,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "chatpopup.tsx"
     },
     {
@@ -7573,8 +7573,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_chatpopupprops",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 184,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "chatpopupprops"
     },
     {
@@ -7584,8 +7584,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_message",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 184,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "message"
     },
     {
@@ -7595,8 +7595,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_conversation",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 184,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "conversation"
     },
     {
@@ -7606,8 +7606,8 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "src_modules_chat_components_chatpopup_chatpopup",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 184,
+      "community_name": "ChatPopup.tsx",
       "norm_label": "chatpopup()"
     },
     {
@@ -7738,8 +7738,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "saascontrolcenter.tsx"
     },
     {
@@ -7749,8 +7749,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_saascompanysubscription",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "saascompanysubscription"
     },
     {
@@ -7760,8 +7760,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_plan_details",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "plan_details"
     },
     {
@@ -7771,8 +7771,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_store_type_config",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "store_type_config"
     },
     {
@@ -7782,8 +7782,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_animatedkpicard",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "animatedkpicard()"
     },
     {
@@ -7793,8 +7793,8 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "src_modules_finance_pages_saascontrolcenter_saascontrolcenter",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "saascontrolcenter()"
     },
     {
@@ -7870,8 +7870,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_tests_mfatrust_test",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "mfatrust.test.ts"
     },
     {
@@ -7881,8 +7881,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_identity_tests_mfatrust_test_store",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "store"
     },
     {
@@ -7892,8 +7892,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_identity_tests_mfatrust_test_localstoragemock",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "localstoragemock"
     },
     {
@@ -7903,8 +7903,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_tests_tenantpermissions_test",
-      "community": 185,
-      "community_name": "ProtectedRoute.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantpermissions.test.ts"
     },
     {
@@ -8013,8 +8013,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "onboarding.tsx"
     },
     {
@@ -8024,8 +8024,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_store_types",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "store_types"
     },
     {
@@ -8035,8 +8035,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_onboardinglayout",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "onboardinglayout()"
     },
     {
@@ -8046,8 +8046,8 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_onboarding",
-      "community": 185,
-      "community_name": "ProtectedRoute.tsx",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "onboarding()"
     },
     {
@@ -8057,8 +8057,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_profile",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "profile.tsx"
     },
     {
@@ -8068,8 +8068,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_identity_pages_profile_profile",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "profile()"
     },
     {
@@ -8101,8 +8101,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_saasgatewaypage",
-      "community": 7,
-      "community_name": "n",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "saasgatewaypage.tsx"
     },
     {
@@ -8112,8 +8112,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_identity_pages_saasgatewaypage_saasgatewaypage",
-      "community": 7,
-      "community_name": "n",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "saasgatewaypage()"
     },
     {
@@ -8123,8 +8123,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_subscription",
-      "community": 16,
-      "community_name": "r",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "subscription.tsx"
     },
     {
@@ -8134,8 +8134,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_identity_pages_subscription_subscription",
-      "community": 16,
-      "community_name": "r",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "subscription()"
     },
     {
@@ -8167,8 +8167,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_identity_store_authstore_authstate",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "authstate"
     },
     {
@@ -8200,8 +8200,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_utils_mfatrust",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "mfatrust.ts"
     },
     {
@@ -8211,8 +8211,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_identity_utils_mfatrust_isdevicetrusted",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "isdevicetrusted()"
     },
     {
@@ -8222,8 +8222,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_modules_identity_utils_mfatrust_setdevicetrusted",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "setdevicetrusted()"
     },
     {
@@ -8233,8 +8233,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_modules_identity_utils_mfatrust_cleardevicetrust",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "cleardevicetrust()"
     },
     {
@@ -8244,8 +8244,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions",
-      "community": 185,
-      "community_name": "ProtectedRoute.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantpermissions.ts"
     },
     {
@@ -8255,8 +8255,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions_hastenantpermission",
-      "community": 185,
-      "community_name": "ProtectedRoute.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "hastenantpermission()"
     },
     {
@@ -8277,8 +8277,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions_gettenantrolepermissions",
-      "community": 185,
-      "community_name": "ProtectedRoute.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "gettenantrolepermissions()"
     },
     {
@@ -8552,8 +8552,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_components_notificationcenter",
-      "community": 13,
-      "community_name": "r",
+      "community": 200,
+      "community_name": "canvas-confetti",
       "norm_label": "notificationcenter.tsx"
     },
     {
@@ -8563,8 +8563,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_logistics_components_notificationcenter_timeago",
-      "community": 13,
-      "community_name": "r",
+      "community": 200,
+      "community_name": "canvas-confetti",
       "norm_label": "timeago()"
     },
     {
@@ -8574,8 +8574,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_logistics_components_notificationcenter_notificationcenter",
-      "community": 13,
-      "community_name": "r",
+      "community": 200,
+      "community_name": "canvas-confetti",
       "norm_label": "notificationcenter()"
     },
     {
@@ -8871,8 +8871,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "logistixdashboard.tsx"
     },
     {
@@ -8882,8 +8882,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_navgroup",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "navgroup"
     },
     {
@@ -8893,8 +8893,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_getnavgroups",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "getnavgroups()"
     },
     {
@@ -8904,8 +8904,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_donut_colors",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "donut_colors"
     },
     {
@@ -8915,8 +8915,8 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_status_label",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "status_label"
     },
     {
@@ -8926,8 +8926,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_status_color",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "status_color"
     },
     {
@@ -8937,8 +8937,8 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_kpicard",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "kpicard()"
     },
     {
@@ -8948,8 +8948,8 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_logistixdashboard_logistixdashboard",
-      "community": 13,
-      "community_name": "r",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "logistixdashboard()"
     },
     {
@@ -8959,8 +8959,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico",
-      "community": 82,
-      "community_name": "typescript-eslint",
+      "community": 27,
+      "community_name": ".getSize",
       "norm_label": "trackingpublico.tsx"
     },
     {
@@ -8970,8 +8970,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico_etapas",
-      "community": 82,
-      "community_name": "typescript-eslint",
+      "community": 27,
+      "community_name": ".getSize",
       "norm_label": "etapas"
     },
     {
@@ -8981,8 +8981,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico_tipo_label",
-      "community": 82,
-      "community_name": "typescript-eslint",
+      "community": 27,
+      "community_name": ".getSize",
       "norm_label": "tipo_label"
     },
     {
@@ -8992,8 +8992,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_trackingpublico_trackingpublico",
-      "community": 82,
-      "community_name": "typescript-eslint",
+      "community": 27,
+      "community_name": ".getSize",
       "norm_label": "trackingpublico()"
     },
     {
@@ -9135,8 +9135,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_b2bpage",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 183,
+      "community_name": "B2BPage.tsx",
       "norm_label": "b2bpage.tsx"
     },
     {
@@ -9146,8 +9146,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_b2bpage_apikey",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 183,
+      "community_name": "B2BPage.tsx",
       "norm_label": "apikey"
     },
     {
@@ -9157,8 +9157,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_b2bpage_webhookitem",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 183,
+      "community_name": "B2BPage.tsx",
       "norm_label": "webhookitem"
     },
     {
@@ -9168,8 +9168,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_b2bpage_requestlog",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 183,
+      "community_name": "B2BPage.tsx",
       "norm_label": "requestlog"
     },
     {
@@ -9179,8 +9179,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_b2bpage_legalcontract",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 183,
+      "community_name": "B2BPage.tsx",
       "norm_label": "legalcontract"
     },
     {
@@ -9190,8 +9190,8 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_b2bpage_b2bpage",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 183,
+      "community_name": "B2BPage.tsx",
       "norm_label": "b2bpage()"
     },
     {
@@ -9223,8 +9223,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_coletaspage",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 13,
+      "community_name": "r",
       "norm_label": "coletaspage.tsx"
     },
     {
@@ -9234,8 +9234,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_coletaspage_authfetch",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 13,
+      "community_name": "r",
       "norm_label": "authfetch()"
     },
     {
@@ -9245,8 +9245,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_coletaspage_coletaspage",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 13,
+      "community_name": "r",
       "norm_label": "coletaspage()"
     },
     {
@@ -9300,8 +9300,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage",
-      "community": 13,
-      "community_name": "r",
+      "community": 199,
+      "community_name": "EntregasPage.tsx",
       "norm_label": "entregaspage.tsx"
     },
     {
@@ -9311,8 +9311,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_entrega",
-      "community": 13,
-      "community_name": "r",
+      "community": 199,
+      "community_name": "EntregasPage.tsx",
       "norm_label": "status_entrega"
     },
     {
@@ -9322,8 +9322,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_status_color",
-      "community": 13,
-      "community_name": "r",
+      "community": 199,
+      "community_name": "EntregasPage.tsx",
       "norm_label": "status_color"
     },
     {
@@ -9333,8 +9333,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_entregaspage_entregaspage",
-      "community": 13,
-      "community_name": "r",
+      "community": 199,
+      "community_name": "EntregasPage.tsx",
       "norm_label": "entregaspage()"
     },
     {
@@ -9432,8 +9432,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_mapapage_mapapage",
-      "community": 27,
-      "community_name": ".getSize",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "mapapage()"
     },
     {
@@ -9520,8 +9520,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_pedidodetail_pedidodetail",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "pedidodetail()"
     },
     {
@@ -9652,8 +9652,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_relatoriospage",
-      "community": 13,
-      "community_name": "r",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "relatoriospage.tsx"
     },
     {
@@ -9663,8 +9663,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_relatoriospage_relatoriospage",
-      "community": 13,
-      "community_name": "r",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "relatoriospage()"
     },
     {
@@ -9905,8 +9905,8 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "src_modules_logistics_pages_admin_wmspage_wmspage",
-      "community": 39,
-      "community_name": ".clone",
+      "community": 24,
+      "community_name": "PartCard.tsx",
       "norm_label": "wmspage()"
     },
     {
@@ -10290,8 +10290,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_safeimage",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "safeimage.tsx"
     },
     {
@@ -10301,8 +10301,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_safeimage_safeimageprops",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "safeimageprops"
     },
     {
@@ -10312,8 +10312,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_safeimage_safeimage",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "safeimage()"
     },
     {
@@ -10323,8 +10323,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_simulatesale",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "simulatesale.tsx"
     },
     {
@@ -10334,8 +10334,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_simulatesale_part",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "part"
     },
     {
@@ -10345,8 +10345,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_simulatesale_props",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "props"
     },
     {
@@ -10356,8 +10356,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_simulatesale_simulatesale",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "simulatesale()"
     },
     {
@@ -10367,8 +10367,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_categorygrid",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "categorygrid.tsx"
     },
     {
@@ -10378,8 +10378,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_categorygrid_iconmap",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "iconmap"
     },
     {
@@ -10389,8 +10389,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_categorygrid_props",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "props"
     },
     {
@@ -10400,8 +10400,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_categorygrid_categorygrid",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "categorygrid()"
     },
     {
@@ -10411,8 +10411,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_fitmentbadge",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "fitmentbadge.tsx"
     },
     {
@@ -10422,8 +10422,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_fitmentbadge_props",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "props"
     },
     {
@@ -10433,8 +10433,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_fitmentbadge_fitmentbadge",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "fitmentbadge()"
     },
     {
@@ -10444,8 +10444,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partcard",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "partcard.tsx"
     },
     {
@@ -10455,8 +10455,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partcard_props",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "props"
     },
     {
@@ -10466,8 +10466,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partcard_partcard",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "partcard()"
     },
     {
@@ -10477,8 +10477,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partdetaildrawer",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "partdetaildrawer.tsx"
     },
     {
@@ -10488,8 +10488,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partdetaildrawer_props",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "props"
     },
     {
@@ -10499,8 +10499,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partdetaildrawer_partdetaildrawer",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "partdetaildrawer()"
     },
     {
@@ -10543,8 +10543,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_searchinput",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "searchinput.tsx"
     },
     {
@@ -10554,8 +10554,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_searchinput_props",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "props"
     },
     {
@@ -10565,8 +10565,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_searchinput_searchinput",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "searchinput()"
     },
     {
@@ -10576,8 +10576,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_vehicleselector",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "vehicleselector.tsx"
     },
     {
@@ -10587,8 +10587,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_vehicleselector_props",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "props"
     },
     {
@@ -10598,8 +10598,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_vehicleselector_vehicleselector",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "vehicleselector()"
     },
     {
@@ -10620,8 +10620,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_catalog_productui",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "productui"
     },
     {
@@ -10686,8 +10686,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_favorites",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "favorites.tsx"
     },
     {
@@ -10697,8 +10697,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_favorites_favorites",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "favorites()"
     },
     {
@@ -10708,8 +10708,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_partslookup",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "partslookup.tsx"
     },
     {
@@ -10719,8 +10719,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_partslookup_skeletongrid",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "skeletongrid()"
     },
     {
@@ -10730,8 +10730,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_partslookup_partslookup",
-      "community": 16,
-      "community_name": "r",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "partslookup()"
     },
     {
@@ -10763,8 +10763,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_store_favoritestore",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "favoritestore.ts"
     },
     {
@@ -10774,8 +10774,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_store_favoritestore_favoritestate",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "favoritestate"
     },
     {
@@ -10785,8 +10785,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_store_favoritestore_usefavoritestore",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "usefavoritestore"
     },
     {
@@ -11082,8 +11082,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_gaidlogo",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "gaidlogo.tsx"
     },
     {
@@ -11093,8 +11093,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_shared_components_gaidlogo_gaidlogo",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "gaidlogo()"
     },
     {
@@ -11203,8 +11203,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "particlefield.tsx"
     },
     {
@@ -11214,8 +11214,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield_particle",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "particle"
     },
     {
@@ -11225,8 +11225,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield_colors",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "colors"
     },
     {
@@ -11236,8 +11236,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_shared_components_particlefield_particlefield",
-      "community": 49,
-      "community_name": "xn",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "particlefield()"
     },
     {
@@ -11269,8 +11269,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_layout_footer",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "footer.tsx"
     },
     {
@@ -11280,8 +11280,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_shared_components_layout_footer_se_brands_by_country",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "se_brands_by_country"
     },
     {
@@ -11291,8 +11291,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_modules_shared_components_layout_footer_footer",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "footer()"
     },
     {
@@ -11599,8 +11599,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantcore",
-      "community": 46,
-      "community_name": "ln",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "usetenantcore.ts"
     },
     {
@@ -11610,8 +11610,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantcore_usetenantcore",
-      "community": 46,
-      "community_name": "ln",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "usetenantcore()"
     },
     {
@@ -12138,8 +12138,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "postal.ts"
     },
     {
@@ -12149,8 +12149,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_zipcloudresult",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "zipcloudresult"
     },
     {
@@ -12160,8 +12160,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_zipcloudresponse",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "zipcloudresponse"
     },
     {
@@ -12171,8 +12171,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_zippopotamusplace",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "zippopotamusplace"
     },
     {
@@ -12182,8 +12182,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_zippopotamusresponse",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "zippopotamusresponse"
     },
     {
@@ -12193,8 +12193,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_viacepresponse",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "viacepresponse"
     },
     {
@@ -12204,8 +12204,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_postalresult",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "postalresult"
     },
     {
@@ -12215,8 +12215,8 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_fetchzipcloud",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "fetchzipcloud()"
     },
     {
@@ -12226,8 +12226,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_fetchviacep",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "fetchviacep()"
     },
     {
@@ -12237,8 +12237,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_fetchzippopotamus",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "fetchzippopotamus()"
     },
     {
@@ -12248,8 +12248,8 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_countries_by_length",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "countries_by_length"
     },
     {
@@ -12259,8 +12259,8 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "src_modules_shared_lib_postal_fetchpostal",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "fetchpostal()"
     },
     {
@@ -12413,8 +12413,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "src_modules_shared_lib_supabase_supabase",
-      "community": 22,
-      "community_name": "Ne",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "supabase"
     },
     {
@@ -12644,8 +12644,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantcoreservice.ts"
     },
     {
@@ -12655,8 +12655,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantinventorystats",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantinventorystats"
     },
     {
@@ -12666,8 +12666,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_createworkorderinput",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "createworkorderinput"
     },
     {
@@ -12677,8 +12677,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantcoreservice"
     },
     {
@@ -12688,8 +12688,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_gettenantinventory",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".gettenantinventory()"
     },
     {
@@ -12699,8 +12699,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_toggleoneclickpublish",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".toggleoneclickpublish()"
     },
     {
@@ -12710,8 +12710,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_batchsetmarketplacepublish",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".batchsetmarketplacepublish()"
     },
     {
@@ -12721,8 +12721,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_calculatetenantstats",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".calculatetenantstats()"
     },
     {
@@ -12732,8 +12732,8 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_createworkorder",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".createworkorder()"
     },
     {
@@ -12754,8 +12754,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_user",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "user"
     },
     {
@@ -12765,8 +12765,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_tenantrole",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantrole"
     },
     {
@@ -12787,8 +12787,8 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_tenant_role_permissions",
-      "community": 185,
-      "community_name": "ProtectedRoute.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenant_role_permissions"
     },
     {
@@ -12809,8 +12809,8 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_product",
-      "community": 46,
-      "community_name": "ln",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "product"
     },
     {
@@ -12941,8 +12941,8 @@
       "source_location": "L240",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_partcatalogitem",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "partcatalogitem"
     },
     {
@@ -13128,8 +13128,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_mobilestorehome",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "mobilestorehome.tsx"
     },
     {
@@ -13139,8 +13139,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_mobilestorehome_mobilestorehome",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "mobilestorehome()"
     },
     {
@@ -13491,8 +13491,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transactions_components_purchaseflow",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "purchaseflow.tsx"
     },
     {
@@ -13502,8 +13502,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_transactions_components_purchaseflow_purchaseflowprops",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "purchaseflowprops"
     },
     {
@@ -13513,8 +13513,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_transactions_components_purchaseflow_purchaseflow",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "purchaseflow()"
     },
     {
@@ -13733,8 +13733,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transactions_pages_paymentcheckout",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "paymentcheckout.tsx"
     },
     {
@@ -13744,8 +13744,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_transactions_pages_paymentcheckout_part",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "part"
     },
     {
@@ -13755,8 +13755,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_modules_transactions_pages_paymentcheckout_seller",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 16,
+      "community_name": "r",
       "norm_label": "seller"
     },
     {
@@ -13766,8 +13766,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_modules_transactions_pages_paymentcheckout_paymentcheckout",
-      "community": 1,
-      "community_name": "LogistixDashboard-ZhczRoYg.js",
+      "community": 6,
+      "community_name": ".setAttribute",
       "norm_label": "paymentcheckout()"
     },
     {
@@ -17949,6 +17949,116 @@
       "community": 67,
       "community_name": "PartCard.tsx",
       "norm_label": "\ud83d\udccb 6. componentes utilitarios de icone prontos"
+    },
+    {
+      "label": "SKILL.md",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "skill.md"
+    },
+    {
+      "label": "\ud83d\ude80 Fullstack Innovation & Product Valuation Skill (DAIG Auto Parts)",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_fullstack_innovation_product_valuation_skill_daig_auto_parts",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\ude80 fullstack innovation & product valuation skill (daig auto parts)"
+    },
+    {
+      "label": "\ud83c\udfa8 1. Frontend & UX/UI Hi-Tech Cyber Neon (Visual & Performance)",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_1_frontend_ux_ui_hi_tech_cyber_neon_visual_performance",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83c\udfa8 1. frontend & ux/ui hi-tech cyber neon (visual & performance)"
+    },
+    {
+      "label": "\ud83d\udd39 Padr\u00e3o Est\u00e9tico de Alto Valor Percebido",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_padr\u00e3o_est\u00e9tico_de_alto_valor_percebido",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\udd39 padrao estetico de alto valor percebido"
+    },
+    {
+      "label": "\ud83d\udd39 Micro-Intera\u00e7\u00f5es & Anima\u00e7\u00f5es 60 FPS",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_micro_intera\u00e7\u00f5es_anima\u00e7\u00f5es_60_fps",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\udd39 micro-interacoes & animacoes 60 fps"
+    },
+    {
+      "label": "\u26a1 2. Arquitetura Backend Scalable & Performance Extrema",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_2_arquitetura_backend_scalable_performance_extrema",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\u26a1 2. arquitetura backend scalable & performance extrema"
+    },
+    {
+      "label": "\ud83d\udd39 Clean Architecture & DDD (Dom\u00ednio SaaS Multi-Tenant)",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_clean_architecture_ddd_dom\u00ednio_saas_multi_tenant",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\udd39 clean architecture & ddd (dominio saas multi-tenant)"
+    },
+    {
+      "label": "\ud83d\udd39 APIs B2B & Seguran\u00e7a Shift-Left",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_apis_b2b_seguran\u00e7a_shift_left",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\udd39 apis b2b & seguranca shift-left"
+    },
+    {
+      "label": "\ud83d\udc8e 3. Pilares de Inova\u00e7\u00e3o para Eleva\u00e7\u00e3o do Valuation",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_3_pilares_de_inova\u00e7\u00e3o_para_eleva\u00e7\u00e3o_do_valuation",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\udc8e 3. pilares de inovacao para elevacao do valuation"
+    },
+    {
+      "label": "\ud83d\udd0d 4. Protocolo de Code Review & Auditoria Cont\u00ednua",
+      "file_type": "document",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "agents_skills_fullstack_innovation_valuation_skill_4_protocolo_de_code_review_auditoria_cont\u00ednua",
+      "community": 82,
+      "community_name": "typescript-eslint",
+      "norm_label": "\ud83d\udd0d 4. protocolo de code review & auditoria continua"
     },
     {
       "label": "SKILL.md",
@@ -48926,6 +49036,105 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_fullstack_innovation_product_valuation_skill_daig_auto_parts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_fullstack_innovation_product_valuation_skill_daig_auto_parts",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_1_frontend_ux_ui_hi_tech_cyber_neon_visual_performance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_fullstack_innovation_product_valuation_skill_daig_auto_parts",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_2_arquitetura_backend_scalable_performance_extrema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_fullstack_innovation_product_valuation_skill_daig_auto_parts",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_3_pilares_de_inova\u00e7\u00e3o_para_eleva\u00e7\u00e3o_do_valuation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_fullstack_innovation_product_valuation_skill_daig_auto_parts",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_4_protocolo_de_code_review_auditoria_cont\u00ednua",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_1_frontend_ux_ui_hi_tech_cyber_neon_visual_performance",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_micro_intera\u00e7\u00f5es_anima\u00e7\u00f5es_60_fps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_1_frontend_ux_ui_hi_tech_cyber_neon_visual_performance",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_padr\u00e3o_est\u00e9tico_de_alto_valor_percebido",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_2_arquitetura_backend_scalable_performance_extrema",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_apis_b2b_seguran\u00e7a_shift_left",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/fullstack-innovation-valuation/SKILL.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_fullstack_innovation_valuation_skill_2_arquitetura_backend_scalable_performance_extrema",
+      "target": "agents_skills_fullstack_innovation_valuation_skill_clean_architecture_ddd_dom\u00ednio_saas_multi_tenant",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": ".agents/skills/gsap-scroll-premium-animations/SKILL.md",
       "source_location": "L6",
       "weight": 1.0,
@@ -49563,5 +49772,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f4842d1a675ec31636b34290051fb94fb224431f"
+  "built_at_commit": "ac6c34b21e752f168166b6a4a6b6672c339eff14"
 }

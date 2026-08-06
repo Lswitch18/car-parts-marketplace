@@ -17,7 +17,7 @@ import {
 function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatMoney }: {
   tx: any;
   onClose: () => void;
-  onAction: (id: string, status: string, type: 'payment' | 'fulfillment') => void;
+  onAction: (id: string, status: string, type: 'payment' | 'fulfillment' | 'payout') => void;
   commissionRate: number;
   formatMoney: (val: number) => string;
 }) {
@@ -27,15 +27,21 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
   const sellerNet = amount - fee;
   const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString('ja-JP', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
+  const isBuyerPaid = tx.payment_status === 'paid' || tx.payment_status === 'escrow' || tx.payment_status === 'completed';
+  const isSellerPaid = tx.payout_status === 'transferred' || tx.payout_status === 'paid';
+  const isEscrow = isBuyerPaid && !isSellerPaid;
+
+  const bankInfo = tx.seller?.bank_info;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-[#121215] border border-[#27272a] rounded-xl w-full max-w-lg shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-[#121215] border border-[#27272a] rounded-xl w-full max-w-xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#27272a] bg-[#18181b]">
           <div className="flex items-center gap-2">
             <Eye size={16} className="text-zinc-400" />
-            <h3 className="text-sm font-bold text-white">Detalhes da Transação</h3>
+            <h3 className="text-sm font-bold text-white">Auditoria & Detalhes da Venda Stripe</h3>
           </div>
           <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10 text-zinc-400 hover:text-white transition-colors">
             <X size={16} />
@@ -43,25 +49,66 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
         </div>
 
         {/* Product Info */}
-        <div className="p-5 space-y-4">
+        <div className="p-5 space-y-4 max-h-[80vh] overflow-y-auto custom-scrollbar">
           <div className="flex items-center gap-3 bg-[#18181b] p-3 rounded-lg border border-[#27272a]">
             <div className="w-14 h-14 rounded-lg bg-black border border-zinc-800 overflow-hidden shrink-0">
               <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-white font-bold text-sm truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
-              <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-1">
-                <Calendar size={11} /> {createdAt}
+              <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-1 font-mono">
+                <Calendar size={11} /> {createdAt} • ID: #{tx.id?.slice(0, 8)}
+              </p>
+            </div>
+          </div>
+
+          {/* Status Breakdown Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Status 1: Comprador */}
+            <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-3 space-y-1.5">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold flex items-center gap-1">
+                <DollarSign size={11} className="text-emerald-400" /> Status Comprador (Pagamento)
+              </p>
+              <span className={`px-2.5 py-1 rounded-md text-xs font-bold border block text-center ${
+                isBuyerPaid
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  : tx.payment_status === 'pending_payment'
+                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                    : 'bg-zinc-800 text-zinc-400 border-zinc-700'
+              }`}>
+                {isBuyerPaid ? '✅ Pagamento Confirmado (Stripe)' : tx.payment_status === 'pending_payment' ? '🏪 Konbini (Loja Conveniência)' : '⏳ Aguardando Pagamento'}
+              </span>
+              <p className="text-[10px] text-zinc-500 font-mono truncate">
+                Stripe ID: {tx.stripe_payment_id || 'Não registrado'}
+              </p>
+            </div>
+
+            {/* Status 2: Vendedor Repasse */}
+            <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-3 space-y-1.5">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold flex items-center gap-1">
+                <Wallet size={11} className="text-sky-400" /> Status Vendedor (Repasse Stripe)
+              </p>
+              <span className={`px-2.5 py-1 rounded-md text-xs font-bold border block text-center ${
+                isSellerPaid
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                  : isEscrow
+                    ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                    : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+              }`}>
+                {isSellerPaid ? '💸 Repassado (Stripe Connect)' : isEscrow ? '🔒 Retido em Custódia (Escrow)' : '⏳ Aguardando Pagamento'}
+              </span>
+              <p className="text-[10px] text-zinc-500 font-mono truncate">
+                Transfer ID: {tx.stripe_transfer_id || (isEscrow ? 'Aguardando Liberação' : 'N/A')}
               </p>
             </div>
           </div>
 
           {/* Financial Breakdown */}
           <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4 space-y-2.5">
-            <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Detalhamento Financeiro & Taxas Stripe</p>
+            <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Detalhamento Financeiro em JPY (¥)</p>
             <div className="space-y-1.5 text-xs font-mono">
               <div className="flex justify-between text-zinc-300">
-                <span>Valor Total Pago (Stripe):</span>
+                <span>Valor Total Pago pelo Comprador:</span>
                 <span className="font-bold text-white">{formatMoney(amount)}</span>
               </div>
               <div className="flex justify-between text-amber-400/90">
@@ -69,15 +116,29 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
                 <span className="font-bold">-{formatMoney(amount * 0.036)}</span>
               </div>
               <div className="flex justify-between text-cyan-400">
-                <span>Comissão DAIG ({commissionRate}%):</span>
+                <span>Comissão Plataforma DAIG ({commissionRate}%):</span>
                 <span className="font-bold">+{formatMoney(fee)}</span>
               </div>
               <div className="border-t border-[#27272a] pt-2 flex justify-between text-zinc-200">
-                <span className="font-sans font-semibold">Repasse Líquido Vendedor (90%):</span>
-                <span className="font-bold text-emerald-400">{formatMoney(sellerNet)}</span>
+                <span className="font-sans font-semibold">Repasse Líquido ao Vendedor:</span>
+                <span className="font-bold text-emerald-400 text-sm">{formatMoney(sellerNet)}</span>
               </div>
             </div>
           </div>
+
+          {/* Japan Bank Info (Zengin System) */}
+          {bankInfo && (
+            <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-3 space-y-1 text-xs">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Dados Bancários Japão (Zengin / Bank Transfer)</p>
+              <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
+                <div><span className="text-zinc-500">Banco:</span> <span className="text-white font-bold">{bankInfo.bank_name || '—'}</span></div>
+                <div><span className="text-zinc-500">Agência:</span> <span className="text-white">{bankInfo.branch_code || ''} {bankInfo.branch_name || ''}</span></div>
+                <div><span className="text-zinc-500">Tipo:</span> <span className="text-white">{bankInfo.account_type === 'futsu' ? 'Futsu (普通)' : 'Toza (当座)'}</span></div>
+                <div><span className="text-zinc-500">Conta:</span> <span className="text-white font-bold">{bankInfo.account_number || '—'}</span></div>
+                <div className="col-span-2"><span className="text-zinc-500">Titular (Katakana):</span> <span className="text-white font-bold">{bankInfo.account_holder_kana || '—'}</span></div>
+              </div>
+            </div>
+          )}
 
           {/* Parties */}
           <div className="grid grid-cols-2 gap-3">
@@ -90,39 +151,17 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
               <p className="text-xs text-white font-semibold truncate">{tx.seller?.full_name || tx.seller?.email || 'N/A'}</p>
             </div>
           </div>
-
-          {/* Status Badges */}
-          <div className="flex items-center gap-3 pt-1">
-            <div className="flex-1 space-y-1">
-              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Pagamento</p>
-              <span className={`px-2.5 py-1 rounded-md text-xs font-bold border block text-center ${
-                tx.payment_status === 'pending'
-                  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                  : tx.payment_status === 'escrow'
-                    ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
-                    : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-              }`}>
-                {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Retido em Escrow' : '✅ Concluído'}
-              </span>
-            </div>
-            <div className="flex-1 space-y-1">
-              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold">Envio Vendedor (Direct Ship)</p>
-              <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-[#18181b] text-zinc-300 border border-[#27272a] block text-center">
-                {tx.fulfillment_status === 'pending' ? '⏳ Pendente' : tx.fulfillment_status === 'shipped' ? '🚚 Em Trânsito' : tx.fulfillment_status === 'received' ? '📦 Entregue' : '✅ Concluído'}
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* Modal Actions */}
         <div className="p-4 border-t border-[#27272a] bg-[#18181b] flex items-center justify-end gap-3">
-          {tx.payment_status === 'escrow' && (
+          {isEscrow && (
             <button
-              onClick={() => { onAction(tx.id, 'completed', 'payment'); onClose(); }}
-              className="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
+              onClick={() => { onAction(tx.id, 'transferred', 'payout'); onClose(); }}
+              className="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/20"
             >
               <ShieldCheck size={14} />
-              Liberar Repasse
+              Liberar Repasse Vendedor (Stripe) 💸
             </button>
           )}
           <button onClick={onClose} className="px-4 py-2 rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-white text-xs font-medium transition-all">
@@ -223,9 +262,12 @@ export default function TransactionManagement() {
           amount,
           payment_status,
           fulfillment_status,
+          payout_status,
+          stripe_payment_id,
+          stripe_transfer_id,
           created_at,
           buyer:profiles!transactions_buyer_id_fkey(id, full_name, rating),
-          seller:profiles!transactions_seller_id_fkey(id, full_name, rating),
+          seller:profiles!transactions_seller_id_fkey(id, full_name, bank_info, rating),
           part:parts!transactions_part_id_fkey(title, description, price, images)
         `)
         .order('created_at', { ascending: false });
@@ -272,18 +314,25 @@ export default function TransactionManagement() {
     }
   };
 
-  const updateTransactionStatus = async (transactionId: string, status: string, type: 'payment' | 'fulfillment') => {
+  const updateTransactionStatus = async (transactionId: string, status: string, type: 'payment' | 'fulfillment' | 'payout') => {
     try {
       const updateData = type === 'payment' 
         ? { payment_status: status } 
-        : { fulfillment_status: status };
+        : type === 'fulfillment'
+          ? { fulfillment_status: status }
+          : { payout_status: status, payment_status: 'completed' };
         
       await api.transactions.update(transactionId, updateData);
       
       setTransactions(prev =>
         prev.map(t => 
           t.id === transactionId 
-            ? {...t, [type === 'payment' ? 'payment_status' : 'fulfillment_status']: status} 
+            ? {
+                ...t, 
+                ...(type === 'payment' ? { payment_status: status } : {}),
+                ...(type === 'fulfillment' ? { fulfillment_status: status } : {}),
+                ...(type === 'payout' ? { payout_status: status, payment_status: 'completed' } : {})
+              } 
             : t
         )
       );
@@ -610,94 +659,115 @@ export default function TransactionManagement() {
         
         {/* Table Header */}
         <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3 border-b border-[#27272a] bg-[#18181b] text-[10px] text-zinc-400 uppercase tracking-wider font-bold">
-          <div className="col-span-5">Peça / Produto</div>
+          <div className="col-span-4">Peça / Produto</div>
           <div className="col-span-2">Comprador</div>
           <div className="col-span-1 text-right">Valor Total</div>
-          <div className="col-span-1 text-center">Taxa DAIG</div>
-          <div className="col-span-1 text-center">Status</div>
-          <div className="col-span-2 text-right">Ações</div>
+          <div className="col-span-2 text-center">Status Comprador (Pagou?)</div>
+          <div className="col-span-2 text-center">Status Vendedor (Repasse)</div>
+          <div className="col-span-1 text-right">Ações</div>
         </div>
 
         {filteredTransactions.length > 0 ? (
           <div className="divide-y divide-[#27272a]">
-            {filteredTransactions.map((tx) => (
-              <div 
-                key={tx.id}
-                className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
-              >
-                {/* Product */}
-                <div className="col-span-5 flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-md bg-black border border-zinc-800 overflow-hidden shrink-0">
-                    <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
+            {filteredTransactions.map((tx) => {
+              const isBuyerPaid = tx.payment_status === 'paid' || tx.payment_status === 'escrow' || tx.payment_status === 'completed';
+              const isSellerPaid = tx.payout_status === 'transferred' || tx.payout_status === 'paid';
+              const isEscrow = isBuyerPaid && !isSellerPaid;
+
+              return (
+                <div 
+                  key={tx.id}
+                  className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4 px-5 py-3.5 hover:bg-[#18181b] transition-colors items-center text-xs"
+                >
+                  {/* Product */}
+                  <div className="col-span-4 flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-md bg-black border border-zinc-800 overflow-hidden shrink-0">
+                      <SafeImage src={tx.part?.images?.[0]} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-white font-medium truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
+                      <p className="text-[10px] text-zinc-500 font-mono">
+                        {tx.created_at ? new Date(tx.created_at).toLocaleDateString('ja-JP') : '—'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-white font-medium truncate">{tx.part?.title || 'Peça Automotiva JDM'}</p>
-                    <p className="text-[10px] text-zinc-500 font-mono">
-                      {tx.created_at ? new Date(tx.created_at).toLocaleDateString('ja-JP') : '—'}
-                    </p>
+
+                  {/* Buyer */}
+                  <div className="col-span-2 text-zinc-300 truncate">
+                    {tx.buyer?.full_name || tx.buyer?.email || 'N/A'}
                   </div>
-                </div>
 
-                {/* Buyer */}
-                <div className="col-span-2 text-zinc-300 truncate">
-                  {tx.buyer?.full_name || tx.buyer?.email || 'N/A'}
-                </div>
+                  {/* Amount */}
+                  <div className="col-span-1 text-right font-mono font-bold text-white">
+                    {formatMoney(tx.amount || 0)}
+                  </div>
 
-                {/* Amount */}
-                <div className="col-span-1 text-right font-mono font-bold text-white">
-                  {formatMoney(tx.amount || 0)}
-                </div>
+                  {/* Status Buyer (Paid) */}
+                  <div className="col-span-2 text-center flex flex-col items-center justify-center gap-0.5">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-semibold border ${
+                      isBuyerPaid
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : tx.payment_status === 'pending_payment'
+                          ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                          : 'bg-zinc-800 text-zinc-400 border-zinc-700'
+                    }`}>
+                      {isBuyerPaid ? '✅ Pago' : tx.payment_status === 'pending_payment' ? '🏪 Konbini' : '⏳ Pendente'}
+                    </span>
+                    <span className="text-[9px] text-zinc-500 font-mono">
+                      {isBuyerPaid ? 'Stripe Checkout' : tx.payment_status === 'pending_payment' ? 'Loja Conveniência' : 'Aguardando Checkout'}
+                    </span>
+                  </div>
 
-                {/* Fee */}
-                <div className="col-span-1 text-center font-mono text-zinc-400">
-                  {formatMoney((tx.amount || 0) * (commissionRate / 100))}
-                </div>
+                  {/* Status Seller Payout (Stripe Connect) */}
+                  <div className="col-span-2 text-center flex flex-col items-center justify-center gap-0.5">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-semibold border ${
+                      isSellerPaid
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : isEscrow
+                          ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                          : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                    }`}>
+                      {isSellerPaid ? '💸 Repassado' : isEscrow ? '🔒 Custódia Escrow' : '⏳ Aguardando'}
+                    </span>
+                    <span className="text-[9px] text-zinc-500 font-mono">
+                      {isSellerPaid ? 'Stripe Connect' : isEscrow ? 'Retido na Plataforma' : 'Aguardando Pagamento'}
+                    </span>
+                  </div>
 
-                {/* Status */}
-                <div className="col-span-1 text-center">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                    tx.payment_status === 'pending'
-                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                      : tx.payment_status === 'escrow'
-                        ? 'bg-sky-500/10 text-sky-400 border-sky-500/20'
-                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                  }`}>
-                    {tx.payment_status === 'pending' ? '⏳ Pendente' : tx.payment_status === 'escrow' ? '🔒 Escrow' : '✅ Concluído'}
-                  </span>
-                </div>
-
-                {/* Actions */}
-                <div className="col-span-2 flex items-center gap-2 justify-end">
-                  {(tx.payment_status === 'pending' || tx.payment_status === 'processing') && (
+                  {/* Actions */}
+                  <div className="col-span-1 flex items-center gap-1.5 justify-end">
+                    {(!isBuyerPaid && (tx.payment_status === 'pending' || tx.payment_status === 'processing')) && (
+                      <button
+                        onClick={() => handleRecoverTransaction(tx.id)}
+                        disabled={recoveringId === tx.id}
+                        className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 disabled:opacity-50"
+                        title="Disparar e-mail de recuperação de venda via Resend"
+                      >
+                        <Mail size={10} />
+                        {recoveringId === tx.id ? '...' : 'Recuperar'}
+                      </button>
+                    )}
+                    {isEscrow && (
+                      <button
+                        onClick={() => updateTransactionStatus(tx.id, 'transferred', 'payout')}
+                        className="px-2 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1"
+                        title="Liberar repasse Stripe Connect ao vendedor"
+                      >
+                        Liberar 💸
+                      </button>
+                    )}
                     <button
-                      onClick={() => handleRecoverTransaction(tx.id)}
-                      disabled={recoveringId === tx.id}
-                      className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-bold transition-all shadow-sm flex items-center gap-1 disabled:opacity-50"
-                      title="Disparar e-mail de recuperação de venda via Resend"
+                      onClick={() => setSelectedTransaction(tx)}
+                      className="p-1 rounded bg-[#27272a] hover:bg-[#3f3f46] text-zinc-300 hover:text-white transition-all"
+                      title="Ver detalhes da auditoria Stripe"
                     >
-                      <Mail size={11} />
-                      {recoveringId === tx.id ? '...' : 'Recuperar'}
+                      <Eye size={13} />
                     </button>
-                  )}
-                  {tx.payment_status === 'escrow' && (
-                    <button
-                      onClick={() => updateTransactionStatus(tx.id, 'completed', 'payment')}
-                      className="px-2.5 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[11px] font-bold transition-all shadow-sm"
-                    >
-                      Liberar 💸
-                    </button>
-                  )}
-                  <button
-                    onClick={() => setSelectedTransaction(tx)}
-                    className="p-1 rounded bg-[#27272a] hover:bg-[#3f3f46] text-zinc-300 hover:text-white transition-all"
-                    title="Ver detalhes"
-                  >
-                    <Eye size={13} />
-                  </button>
-                </div>
+                  </div>
 
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-12 space-y-2">
