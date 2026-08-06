@@ -1357,8 +1357,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "package",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "package.json"
     },
     {
@@ -1368,8 +1368,8 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "package_name",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "name"
     },
     {
@@ -1379,8 +1379,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "package_private",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "private"
     },
     {
@@ -1390,8 +1390,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "package_version",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "version"
     },
     {
@@ -1401,8 +1401,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "package_type",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "type"
     },
     {
@@ -1577,8 +1577,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 94,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1588,8 +1588,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 94,
+      "community_name": "PedidosPage.tsx",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1753,8 +1753,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "package_dependencies_react_three_fiber",
-      "community": 172,
-      "community_name": "NotificationCenter.tsx",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "@react-three/fiber"
     },
     {
@@ -1764,8 +1764,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "react_three_fiber",
-      "community": 172,
-      "community_name": "NotificationCenter.tsx",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "@react-three/fiber"
     },
     {
@@ -1863,8 +1863,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 171,
-      "community_name": "canvas-confetti",
+      "community": 172,
+      "community_name": "NotificationCenter.tsx",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1874,8 +1874,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 171,
-      "community_name": "canvas-confetti",
+      "community": 172,
+      "community_name": "NotificationCenter.tsx",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1929,8 +1929,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "package_dependencies_dotenv",
-      "community": 20,
-      "community_name": "index-B_no5lKC.js",
+      "community": 146,
+      "community_name": "GlobalSearch.tsx",
       "norm_label": "dotenv"
     },
     {
@@ -1940,8 +1940,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "dotenv",
-      "community": 20,
-      "community_name": "index-B_no5lKC.js",
+      "community": 146,
+      "community_name": "GlobalSearch.tsx",
       "norm_label": "dotenv"
     },
     {
@@ -2424,8 +2424,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "package_devdependencies_capacitor_cli",
-      "community": 180,
-      "community_name": "@capacitor/cli",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "@capacitor/cli"
     },
     {
@@ -2435,8 +2435,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "capacitor_cli",
-      "community": 180,
-      "community_name": "@capacitor/cli",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "@capacitor/cli"
     },
     {
@@ -2490,8 +2490,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_react",
-      "community": 146,
-      "community_name": "GlobalSearch.tsx",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "@testing-library/react"
     },
     {
@@ -2501,8 +2501,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "testing_library_react",
-      "community": 146,
-      "community_name": "GlobalSearch.tsx",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "@testing-library/react"
     },
     {
@@ -2512,8 +2512,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_user_event",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 181,
+      "community_name": "@testing-library/user-event",
       "norm_label": "@testing-library/user-event"
     },
     {
@@ -2523,8 +2523,8 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "testing_library_user_event",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 181,
+      "community_name": "@testing-library/user-event",
       "norm_label": "@testing-library/user-event"
     },
     {
@@ -2534,8 +2534,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "package_devdependencies_types_qrcode",
-      "community": 202,
-      "community_name": "@types/qrcode",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "@types/qrcode"
     },
     {
@@ -2545,8 +2545,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "types_qrcode",
-      "community": 202,
-      "community_name": "@types/qrcode",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "@types/qrcode"
     },
     {
@@ -2600,8 +2600,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "package_devdependencies_types_three",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 183,
+      "community_name": "@types/three",
       "norm_label": "@types/three"
     },
     {
@@ -2611,8 +2611,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "types_three",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 183,
+      "community_name": "@types/three",
       "norm_label": "@types/three"
     },
     {
@@ -2666,8 +2666,8 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 171,
+      "community_name": "canvas-confetti",
       "norm_label": "autoprefixer"
     },
     {
@@ -2677,8 +2677,8 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "autoprefixer",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 171,
+      "community_name": "canvas-confetti",
       "norm_label": "autoprefixer"
     },
     {
@@ -2732,8 +2732,8 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "package_devdependencies_postcss",
-      "community": 200,
-      "community_name": "postcss",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "postcss"
     },
     {
@@ -2743,8 +2743,8 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "postcss",
-      "community": 200,
-      "community_name": "postcss",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "postcss"
     },
     {
@@ -2754,8 +2754,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "package_devdependencies_supabase",
-      "community": 20,
-      "community_name": "index-B_no5lKC.js",
+      "community": 180,
+      "community_name": "@capacitor/cli",
       "norm_label": "supabase"
     },
     {
@@ -2765,8 +2765,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "supabase",
-      "community": 20,
-      "community_name": "index-B_no5lKC.js",
+      "community": 180,
+      "community_name": "@capacitor/cli",
       "norm_label": "supabase"
     },
     {
@@ -2864,8 +2864,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "package_overrides",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "overrides"
     },
     {
@@ -2875,8 +2875,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "package_overrides_babel_core",
-      "community": 34,
-      "community_name": "GaidLogo.tsx",
+      "community": 4,
+      "community_name": "vendor-react-DqCMjyrC.js",
       "norm_label": "@babel/core"
     },
     {
@@ -4779,8 +4779,8 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "src_app_app",
-      "community": 49,
-      "community_name": "xn",
+      "community": 185,
+      "community_name": "ProtectedRoute.tsx",
       "norm_label": "app()"
     },
     {
@@ -5032,8 +5032,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "src_storeapp_storeapp",
-      "community": 191,
-      "community_name": "main.tsx",
+      "community": 26,
+      "community_name": "Wt",
       "norm_label": "storeapp()"
     },
     {
@@ -5461,8 +5461,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_main",
-      "community": 191,
-      "community_name": "main.tsx",
+      "community": 26,
+      "community_name": "Wt",
       "norm_label": "main.tsx"
     },
     {
@@ -5472,8 +5472,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_main_queryclient",
-      "community": 191,
-      "community_name": "main.tsx",
+      "community": 26,
+      "community_name": "Wt",
       "norm_label": "queryclient"
     },
     {
@@ -5483,8 +5483,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_main_root",
-      "community": 191,
-      "community_name": "main.tsx",
+      "community": 26,
+      "community_name": "Wt",
       "norm_label": "root"
     },
     {
@@ -5780,8 +5780,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_qrstickerprint",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "qrstickerprint.tsx"
     },
     {
@@ -5791,8 +5791,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_qrstickerprint_qrstickerprintprops",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "qrstickerprintprops"
     },
     {
@@ -5802,8 +5802,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_qrstickerprint_qrstickerprint",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "qrstickerprint()"
     },
     {
@@ -5813,8 +5813,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_securityauditcenter",
-      "community": 7,
-      "community_name": "n",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "securityauditcenter.tsx"
     },
     {
@@ -5824,8 +5824,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_securityauditcenter_auditlogevent",
-      "community": 7,
-      "community_name": "n",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "auditlogevent"
     },
     {
@@ -5835,8 +5835,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_securityauditcenter_demo_audit_logs",
-      "community": 7,
-      "community_name": "n",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "demo_audit_logs"
     },
     {
@@ -5846,8 +5846,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_securityauditcenter_securityauditcenter",
-      "community": 7,
-      "community_name": "n",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "securityauditcenter()"
     },
     {
@@ -5857,8 +5857,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_tenantteammanager",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantteammanager.tsx"
     },
     {
@@ -5868,8 +5868,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_tenantteammanager_teammember",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "teammember"
     },
     {
@@ -5879,8 +5879,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_tenantteammanager_initial_members",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "initial_members"
     },
     {
@@ -5890,8 +5890,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_tenantteammanager_tenantteammanager",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantteammanager()"
     },
     {
@@ -5934,8 +5934,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_tests_securityauditcenter_test",
-      "community": 7,
-      "community_name": "n",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "securityauditcenter.test.tsx"
     },
     {
@@ -5945,8 +5945,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_components_tests_tenantteammanager_test",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantteammanager.test.tsx"
     },
     {
@@ -6000,8 +6000,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "aiopspage.tsx"
     },
     {
@@ -6011,8 +6011,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_analysislogentry",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "analysislogentry"
     },
     {
@@ -6022,8 +6022,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_healthstatus",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "healthstatus"
     },
     {
@@ -6033,8 +6033,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_loadlog",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "loadlog()"
     },
     {
@@ -6044,8 +6044,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_savelog",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "savelog()"
     },
     {
@@ -6055,8 +6055,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_resizeimage",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "resizeimage()"
     },
     {
@@ -6066,8 +6066,8 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_hudcorners",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "hudcorners()"
     },
     {
@@ -6077,8 +6077,8 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_aiopspage_aiopspage",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "aiopspage()"
     },
     {
@@ -6088,8 +6088,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "dashboard.tsx"
     },
     {
@@ -6099,8 +6099,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard_tabtype",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tabtype"
     },
     {
@@ -6110,8 +6110,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_dashboard_dashboard",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "dashboard()"
     },
     {
@@ -6121,8 +6121,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_deliveriesmanagement",
-      "community": 7,
-      "community_name": "n",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "deliveriesmanagement.tsx"
     },
     {
@@ -6132,8 +6132,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_deliveriesmanagement_deliverytransaction",
-      "community": 7,
-      "community_name": "n",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "deliverytransaction"
     },
     {
@@ -6143,8 +6143,8 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_deliveriesmanagement_deliveriesmanagement",
-      "community": 7,
-      "community_name": "n",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "deliveriesmanagement()"
     },
     {
@@ -6715,8 +6715,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_tests_tenantpermissions_test",
-      "community": 49,
-      "community_name": "xn",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantpermissions.test.ts"
     },
     {
@@ -6748,8 +6748,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_components_onboardingguard",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 5,
+      "community_name": "vendor-three-BAVKA0D-.js",
       "norm_label": "onboardingguard.tsx"
     },
     {
@@ -6759,8 +6759,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_identity_components_onboardingguard_onboardingguard",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 5,
+      "community_name": "vendor-three-BAVKA0D-.js",
       "norm_label": "onboardingguard()"
     },
     {
@@ -6825,8 +6825,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "onboarding.tsx"
     },
     {
@@ -6836,8 +6836,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_store_types",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "store_types"
     },
     {
@@ -6847,8 +6847,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_onboardinglayout",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "onboardinglayout()"
     },
     {
@@ -6858,8 +6858,8 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "src_modules_identity_pages_onboarding_onboarding",
-      "community": 24,
-      "community_name": "PartCard.tsx",
+      "community": 185,
+      "community_name": "ProtectedRoute.tsx",
       "norm_label": "onboarding()"
     },
     {
@@ -6935,8 +6935,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_pages_subscription",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "subscription.tsx"
     },
     {
@@ -6946,8 +6946,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_identity_pages_subscription_subscription",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "subscription()"
     },
     {
@@ -7056,8 +7056,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions",
-      "community": 49,
-      "community_name": "xn",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantpermissions.ts"
     },
     {
@@ -7067,8 +7067,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions_hastenantpermission",
-      "community": 49,
-      "community_name": "xn",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "hastenantpermission()"
     },
     {
@@ -7078,8 +7078,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions_issaasuser",
-      "community": 49,
-      "community_name": "xn",
+      "community": 185,
+      "community_name": "ProtectedRoute.tsx",
       "norm_label": "issaasuser()"
     },
     {
@@ -7089,8 +7089,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "src_modules_identity_utils_tenantpermissions_gettenantrolepermissions",
-      "community": 49,
-      "community_name": "xn",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "gettenantrolepermissions()"
     },
     {
@@ -8816,8 +8816,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_api_partsapi",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "partsapi.ts"
     },
     {
@@ -8827,8 +8827,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_api_partsapi_partsfilters",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "partsfilters"
     },
     {
@@ -8838,8 +8838,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_api_partsapi_partsparams",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "partsparams"
     },
     {
@@ -8849,8 +8849,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_api_partsapi_fetchparts",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "fetchparts()"
     },
     {
@@ -9014,8 +9014,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_marketplaceaiassistantmodal",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "marketplaceaiassistantmodal.tsx"
     },
     {
@@ -9025,8 +9025,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_marketplaceaiassistantmodal_marketplaceaiassistantmodalprops",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "marketplaceaiassistantmodalprops"
     },
     {
@@ -9036,8 +9036,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_marketplaceaiassistantmodal_marketplaceaiassistantmodal",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "marketplaceaiassistantmodal()"
     },
     {
@@ -9223,8 +9223,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_fitmentbadge",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "fitmentbadge.tsx"
     },
     {
@@ -9234,8 +9234,8 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_fitmentbadge_props",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "props"
     },
     {
@@ -9245,8 +9245,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_fitmentbadge_fitmentbadge",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "fitmentbadge()"
     },
     {
@@ -9256,8 +9256,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partcard",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "partcard.tsx"
     },
     {
@@ -9267,8 +9267,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partcard_props",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "props"
     },
     {
@@ -9278,8 +9278,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_components_parts_lookup_partcard_partcard",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "partcard()"
     },
     {
@@ -9432,8 +9432,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_parts_catalog_pages_catalog_productui",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "productui"
     },
     {
@@ -9619,8 +9619,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_reputation_pages_reviewmanagement",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "reviewmanagement.tsx"
     },
     {
@@ -9630,8 +9630,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_reputation_pages_reviewmanagement_reviewmanagement",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 7,
+      "community_name": "n",
       "norm_label": "reviewmanagement()"
     },
     {
@@ -9795,8 +9795,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_compatibilitytaginput",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "compatibilitytaginput.tsx"
     },
     {
@@ -9806,8 +9806,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_modules_shared_components_compatibilitytaginput_compatibilitytagtype",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "compatibilitytagtype"
     },
     {
@@ -9817,8 +9817,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_shared_components_compatibilitytaginput_compatibilitytagitem",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "compatibilitytagitem"
     },
     {
@@ -9828,8 +9828,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_shared_components_compatibilitytaginput_parsecompatibilitytexttotags",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "parsecompatibilitytexttotags()"
     },
     {
@@ -9839,8 +9839,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "src_modules_shared_components_compatibilitytaginput_compatibilitytaginputprops",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "compatibilitytaginputprops"
     },
     {
@@ -9850,8 +9850,8 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "src_modules_shared_components_compatibilitytaginput_compatibilitytaginput",
-      "community": 54,
-      "community_name": "@types/three",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "compatibilitytaginput()"
     },
     {
@@ -9894,8 +9894,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_components_gaidlogo",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "gaidlogo.tsx"
     },
     {
@@ -9905,8 +9905,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "src_modules_shared_components_gaidlogo_gaidlogo",
-      "community": 44,
-      "community_name": "Ye",
+      "community": 55,
+      "community_name": "B2BPage.tsx",
       "norm_label": "gaidlogo()"
     },
     {
@@ -10411,8 +10411,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantcore",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "usetenantcore.ts"
     },
     {
@@ -10422,8 +10422,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantcore_usetenantcore",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "usetenantcore()"
     },
     {
@@ -10433,8 +10433,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantrealdata",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "usetenantrealdata.ts"
     },
     {
@@ -10444,8 +10444,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantrealdata_realworkorder",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "realworkorder"
     },
     {
@@ -10455,8 +10455,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantrealdata_realnfeinvoice",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "realnfeinvoice"
     },
     {
@@ -10466,8 +10466,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantrealdata_realtransactionsale",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "realtransactionsale"
     },
     {
@@ -10477,8 +10477,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "src_modules_shared_hooks_usetenantrealdata_usetenantrealdata",
-      "community": 6,
-      "community_name": ".setAttribute",
+      "community": 54,
+      "community_name": "@types/three",
       "norm_label": "usetenantrealdata()"
     },
     {
@@ -10510,8 +10510,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_lib_aipartidentifier",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "aipartidentifier.ts"
     },
     {
@@ -10521,8 +10521,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "src_modules_shared_lib_aipartidentifier_partidentificationinput",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "partidentificationinput"
     },
     {
@@ -10532,8 +10532,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "src_modules_shared_lib_aipartidentifier_identifiedpartinfo",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "identifiedpartinfo"
     },
     {
@@ -10543,8 +10543,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "src_modules_shared_lib_aipartidentifier_identifypartinformation",
-      "community": 10,
-      "community_name": "t",
+      "community": 43,
+      "community_name": ".toString",
       "norm_label": "identifypartinformation()"
     },
     {
@@ -11082,8 +11082,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_lib_rediscache",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "rediscache.ts"
     },
     {
@@ -11093,8 +11093,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_shared_lib_rediscache_getcache",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "getcache()"
     },
     {
@@ -11104,8 +11104,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_modules_shared_lib_rediscache_setcache",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "setcache()"
     },
     {
@@ -11115,8 +11115,8 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "src_modules_shared_lib_rediscache_getrediskeys",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "getrediskeys()"
     },
     {
@@ -11126,8 +11126,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "src_modules_shared_lib_rediscache_deleterediskey",
-      "community": 43,
-      "community_name": ".toString",
+      "community": 10,
+      "community_name": "t",
       "norm_label": "deleterediskey()"
     },
     {
@@ -11456,8 +11456,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantcoreservice.ts"
     },
     {
@@ -11467,8 +11467,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantinventorystats",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantinventorystats"
     },
     {
@@ -11478,8 +11478,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_createworkorderinput",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "createworkorderinput"
     },
     {
@@ -11489,8 +11489,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantcoreservice"
     },
     {
@@ -11500,8 +11500,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_gettenantinventory",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".gettenantinventory()"
     },
     {
@@ -11511,8 +11511,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_toggleoneclickpublish",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".toggleoneclickpublish()"
     },
     {
@@ -11522,8 +11522,8 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_batchsetmarketplacepublish",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".batchsetmarketplacepublish()"
     },
     {
@@ -11533,8 +11533,8 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_calculatetenantstats",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".calculatetenantstats()"
     },
     {
@@ -11544,8 +11544,8 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "src_modules_shared_services_tenantcoreservice_tenantcoreservice_createworkorder",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": ".createworkorder()"
     },
     {
@@ -11577,8 +11577,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_tenantrole",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantrole"
     },
     {
@@ -11588,8 +11588,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_tenantpermission",
-      "community": 94,
-      "community_name": "PedidosPage.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenantpermission"
     },
     {
@@ -11599,8 +11599,8 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_tenant_role_permissions",
-      "community": 49,
-      "community_name": "xn",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "tenant_role_permissions"
     },
     {
@@ -11621,8 +11621,8 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_product",
-      "community": 66,
-      "community_name": "PedidoDetail.tsx",
+      "community": 0,
+      "community_name": "LogistixDashboard-ZhczRoYg.js",
       "norm_label": "product"
     },
     {
@@ -11753,8 +11753,8 @@
       "source_location": "L249",
       "_origin": "ast",
       "id": "src_modules_shared_types_index_partcatalogitem",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 66,
+      "community_name": "PedidoDetail.tsx",
       "norm_label": "partcatalogitem"
     },
     {
@@ -11962,8 +11962,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_partnerportalpage",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "partnerportalpage.tsx"
     },
     {
@@ -11973,8 +11973,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_partnerportalpage_partnerplan",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "partnerplan"
     },
     {
@@ -11984,8 +11984,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_partnerportalpage_partner_plans",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "partner_plans"
     },
     {
@@ -11995,8 +11995,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "src_modules_storefront_pages_partnerportalpage_partnerportalpage",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "partnerportalpage()"
     },
     {
@@ -12149,8 +12149,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_modules_transactions_api_api",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "api.ts"
     },
     {
@@ -12160,8 +12160,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "src_modules_transactions_api_api_apioptions",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "apioptions"
     },
     {
@@ -12171,8 +12171,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "src_modules_transactions_api_api_fetchapi",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "fetchapi()"
     },
     {
@@ -12193,8 +12193,8 @@
       "source_location": "L453",
       "_origin": "ast",
       "id": "src_modules_transactions_api_api_fetchpublic",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "fetchpublic()"
     },
     {
@@ -12204,8 +12204,8 @@
       "source_location": "L467",
       "_origin": "ast",
       "id": "src_modules_transactions_api_api_apiclient",
-      "community": 12,
-      "community_name": ".copy",
+      "community": 49,
+      "community_name": "xn",
       "norm_label": "apiclient"
     },
     {
@@ -17608,6 +17608,127 @@
       "community": 80,
       "community_name": "typescript",
       "norm_label": "\ud83d\udd39 cabecalhos de seguranca http (content security policy)"
+    },
+    {
+      "label": "SKILL.md",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "skill.md"
+    },
+    {
+      "label": "\ud83d\udcb4 Stripe Connect Japan Payouts & Escrow Architecture (DAIG Auto Parts)",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udcb4 stripe connect japan payouts & escrow architecture (daig auto parts)"
+    },
+    {
+      "label": "\ud83d\udca1 1. Conceito Fundamental: Transfer\u00eancia vs Repasse Banc\u00e1rio",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_1_conceito_fundamental_transfer\u00eancia_vs_repasse_banc\u00e1rio",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udca1 1. conceito fundamental: transferencia vs repasse bancario"
+    },
+    {
+      "label": "\u23f1\ufe0f 2. Janelas de Reten\u00e7\u00e3o & Payout Schedule no Jap\u00e3o (Stripe JPY)",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_2_janelas_de_reten\u00e7\u00e3o_payout_schedule_no_jap\u00e3o_stripe_jpy",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\u23f1\ufe0f 2. janelas de retencao & payout schedule no japao (stripe jpy)"
+    },
+    {
+      "label": "\ud83d\udd39 1. Primeiro Repasse Banc\u00e1rio (First Payout Holding Period)",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_1_primeiro_repasse_banc\u00e1rio_first_payout_holding_period",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udd39 1. primeiro repasse bancario (first payout holding period)"
+    },
+    {
+      "label": "\ud83d\udd39 2. Janela Padr\u00e3o de Liquida\u00e7\u00e3o no Jap\u00e3o (Rolling Payout Schedule)",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_2_janela_padr\u00e3o_de_liquida\u00e7\u00e3o_no_jap\u00e3o_rolling_payout_schedule",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udd39 2. janela padrao de liquidacao no japao (rolling payout schedule)"
+    },
+    {
+      "label": "\u26a1 3. Posso Disparar o Repasse Imediatamente ao Vendedor?",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L40",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_3_posso_disparar_o_repasse_imediatamente_ao_vendedor",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\u26a1 3. posso disparar o repasse imediatamente ao vendedor?"
+    },
+    {
+      "label": "\ud83d\udd39 Para a Conta Stripe Connect do Vendedor (Escrow Release via API):",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_para_a_conta_stripe_connect_do_vendedor_escrow_release_via_api",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udd39 para a conta stripe connect do vendedor (escrow release via api):"
+    },
+    {
+      "label": "\ud83d\udd39 Para a Conta Banc\u00e1ria F\u00edsica do Vendedor (TED/Zengin Bank):",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_para_a_conta_banc\u00e1ria_f\u00edsica_do_vendedor_ted_zengin_bank",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udd39 para a conta bancaria fisica do vendedor (ted/zengin bank):"
+    },
+    {
+      "label": "\ud83d\udee0\ufe0f 4. Implementa\u00e7\u00e3o T\u00e9cnica Recomendada (Stripe Edge Function)",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_4_implementa\u00e7\u00e3o_t\u00e9cnica_recomendada_stripe_edge_function",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udee0\ufe0f 4. implementacao tecnica recomendada (stripe edge function)"
+    },
+    {
+      "label": "\ud83d\udcca 5. Checklist de Verifica\u00e7\u00e3o de Saldos e Solu\u00e7\u00e3o de D\u00favidas",
+      "file_type": "document",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "agents_skills_stripe_connect_japan_payouts_skill_5_checklist_de_verifica\u00e7\u00e3o_de_saldos_e_solu\u00e7\u00e3o_de_d\u00favidas",
+      "community": 34,
+      "community_name": "GaidLogo.tsx",
+      "norm_label": "\ud83d\udcca 5. checklist de verificacao de saldos e solucao de duvidas"
     },
     {
       "label": "graphify.md",
@@ -26593,7 +26714,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L834",
+      "source_location": "L838",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
@@ -47808,6 +47929,116 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_1_conceito_fundamental_transfer\u00eancia_vs_repasse_banc\u00e1rio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_2_janelas_de_reten\u00e7\u00e3o_payout_schedule_no_jap\u00e3o_stripe_jpy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_3_posso_disparar_o_repasse_imediatamente_ao_vendedor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_4_implementa\u00e7\u00e3o_t\u00e9cnica_recomendada_stripe_edge_function",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_stripe_connect_japan_payouts_escrow_architecture_daig_auto_parts",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_5_checklist_de_verifica\u00e7\u00e3o_de_saldos_e_solu\u00e7\u00e3o_de_d\u00favidas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_2_janelas_de_reten\u00e7\u00e3o_payout_schedule_no_jap\u00e3o_stripe_jpy",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_1_primeiro_repasse_banc\u00e1rio_first_payout_holding_period",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_2_janelas_de_reten\u00e7\u00e3o_payout_schedule_no_jap\u00e3o_stripe_jpy",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_2_janela_padr\u00e3o_de_liquida\u00e7\u00e3o_no_jap\u00e3o_rolling_payout_schedule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_3_posso_disparar_o_repasse_imediatamente_ao_vendedor",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_para_a_conta_banc\u00e1ria_f\u00edsica_do_vendedor_ted_zengin_bank",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/skills/stripe-connect-japan-payouts/SKILL.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents_skills_stripe_connect_japan_payouts_skill_3_posso_disparar_o_repasse_imediatamente_ao_vendedor",
+      "target": "agents_skills_stripe_connect_japan_payouts_skill_para_a_conta_stripe_connect_do_vendedor_escrow_release_via_api",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": ".agents/workflows/graphify.md",
       "source_location": "L6",
       "weight": 1.0,
@@ -47818,5 +48049,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "bf07064bc7625d59db3c87383c2017a655d14935"
+  "built_at_commit": "1580b2d5e5afb5762dfbcbb6ef40bc7de910873e"
 }
