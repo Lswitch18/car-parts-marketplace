@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1786024331.3501961,
-    "ast_hash": "3d53c70ce078fdf91687f688df4610cb",
+    "mtime": 1786027100.3221958,
+    "ast_hash": "00109bb110d1a9347f23b7e070b12f60",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -3200,8 +3200,13 @@
     "semantic_hash": ""
   },
   ".agents/skills/stripe-connect-japan-payouts/SKILL.md": {
-    "mtime": 1786021028.4861984,
-    "ast_hash": "ca8b53a430c72b5208378c11f3a87504",
+    "mtime": 1786025293.5661986,
+    "ast_hash": "f643b65a95405390130b99bd16c15cf1",
+    "semantic_hash": ""
+  },
+  ".agents/skills/stripe-connect-specialists/SKILL.md": {
+    "mtime": 1786024913.1981988,
+    "ast_hash": "725904db83c94351dde5e4bfa17f13c6",
     "semantic_hash": ""
   }
 }

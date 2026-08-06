@@ -183,15 +183,19 @@
   "181": "@testing-library/user-event",
   "182": "MobileIaVision.tsx",
   "183": "@types/three",
+  "184": "react",
   "185": "ProtectedRoute.tsx",
   "186": "graphify.md",
   "187": "graphify.md",
   "188": "@capacitor/android",
+  "189": "react-router",
+  "190": "@southdevs/capacitor-google-auth",
+  "191": "@testing-library/jest-dom",
+  "192": "@testing-library/react",
+  "193": "vite",
+  "194": "vitest.setup.ts",
   "203": "@types/react",
-  "204": "@types/react-dom",
-  "205": "typescript",
   "214": "generate_acordo_socios_pdf.py",
   "225": "typescript-eslint",
-  "226": "@vitejs/plugin-react",
-  "227": "vitest"
+  "226": "@vitejs/plugin-react"
 }
