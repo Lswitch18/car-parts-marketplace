@@ -235,8 +235,8 @@
     "semantic_hash": "18a93c312d310813263c6eafe978a45f"
   },
   "package.json": {
-    "mtime": 1785947444.346781,
-    "ast_hash": "77aae2e86a291857b26230c71fe6e9d7",
+    "mtime": 1785958450.8707798,
+    "ast_hash": "4b2c1bb31da61d8fec20a2d2a49bc1f9",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1785898949.270033,
-    "ast_hash": "c9df09657120eefbfc7d0541a5288d16",
+    "mtime": 1786018437.0822024,
+    "ast_hash": "a40000a930f580d69e5e66220a947b0a",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": "4a6e421150d484766774f4c0520bc045"
   },
   "src/modules/transactions/api/api.ts": {
-    "mtime": 1785890729.4089284,
-    "ast_hash": "6b1fc0382a9b1d1d292781a8d79211dd",
+    "mtime": 1786017604.018196,
+    "ast_hash": "cc9a0db40376b1b25b9b7876fa0fc2d2",
     "semantic_hash": ""
   },
   "src/modules/transactions/api/fees.ts": {
@@ -1475,9 +1475,9 @@
     "semantic_hash": "06c74895eddc4f8308e63660a42d8514"
   },
   "supabase/migrations/add-missing-columns.sql": {
-    "mtime": 1781211234.1964304,
-    "ast_hash": "b10f5d491978b3b375f496962d0c3f6d",
-    "semantic_hash": "b10f5d491978b3b375f496962d0c3f6d"
+    "mtime": 1786018426.7702005,
+    "ast_hash": "6b92df13c09841c34dfcca1a45333370",
+    "semantic_hash": ""
   },
   "supabase/migrations/armazem-3d-dimensoes.sql": {
     "mtime": 1778865527.098831,
@@ -1735,9 +1735,9 @@
     "semantic_hash": "e08be28f6e1c3e9aa8b2e529202ee084"
   },
   "tsconfig.json": {
-    "mtime": 1781786690.4196227,
-    "ast_hash": "cee37d11245240fc77acac0975e29a5a",
-    "semantic_hash": "cee37d11245240fc77acac0975e29a5a"
+    "mtime": 1786018004.6062,
+    "ast_hash": "a631e6a34360fb3adcc8de9a400095d9",
+    "semantic_hash": ""
   },
   "tsconfig.node.json": {
     "mtime": 1778243533.6725483,
@@ -3187,6 +3187,16 @@
   "src/modules/backoffice/components/TenantTeamManager.tsx": {
     "mtime": 1785957642.5627747,
     "ast_hash": "36a900abe2e690b903efad3c3b68bfa3",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/components/__tests__/SecurityAuditCenter.test.tsx": {
+    "mtime": 1785958331.34678,
+    "ast_hash": "db3a16818b3d41daf973457845f7d635",
+    "semantic_hash": ""
+  },
+  "src/modules/backoffice/components/__tests__/TenantTeamManager.test.tsx": {
+    "mtime": 1785958287.8027804,
+    "ast_hash": "46475bb16fdc74d5909a755cc9d40ed4",
     "semantic_hash": ""
   }
 }

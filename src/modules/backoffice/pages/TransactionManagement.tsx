@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -211,56 +210,6 @@ export default function TransactionManagement() {
   const [saasRevenueTotal, setSaasRevenueTotal] = useState<number>(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    if (loading) return;
-
-    const ctx = gsap.context(() => {
-      gsap.from('.ops-header', {
-        y: -20,
-        opacity: 0,
-        duration: 0.7,
-        ease: 'power3.out'
-      });
-
-      gsap.from('.ledger-card', {
-        y: 30,
-        opacity: 0,
-        scale: 0.96,
-        duration: 0.6,
-        stagger: 0.08,
-        ease: 'power3.out',
-        delay: 0.1
-      });
-
-      gsap.from('.ops-toolbar', {
-        y: 15,
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power2.out',
-        delay: 0.25
-      });
-
-      gsap.from('.ops-table-container', {
-        y: 25,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-        delay: 0.35
-      });
-
-      gsap.from('.ops-table-row', {
-        y: 10,
-        opacity: 0,
-        duration: 0.4,
-        stagger: 0.04,
-        ease: 'power2.out',
-        delay: 0.45
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, { dependencies: [loading, filteredTransactions.length], scope: containerRef });
 
   useEffect(() => {
     fetchTransactions();
@@ -465,6 +414,56 @@ export default function TransactionManagement() {
 
     return list;
   }, [transactions, activeLedgerFilter, searchQuery, sortOrder]);
+
+  useEffect(() => {
+    if (loading || !containerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from('.ops-header', {
+        y: -20,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out'
+      });
+
+      gsap.from('.ledger-card', {
+        y: 30,
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: 'power3.out',
+        delay: 0.1
+      });
+
+      gsap.from('.ops-toolbar', {
+        y: 15,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+        delay: 0.25
+      });
+
+      gsap.from('.ops-table-container', {
+        y: 25,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        delay: 0.35
+      });
+
+      gsap.from('.ops-table-row', {
+        y: 10,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.04,
+        ease: 'power2.out',
+        delay: 0.45
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, [loading, filteredTransactions.length]);
 
   const formatMoney = (val: number) => new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
 

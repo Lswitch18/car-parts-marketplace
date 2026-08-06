@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1786017654.8741956,
-    "ast_hash": "01de0e40e51cafa5fc957a1ae3d973e9",
+    "mtime": 1786018971.926198,
+    "ast_hash": "50831774efdeaab4e887a5c546e6836e",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -1475,8 +1475,8 @@
     "semantic_hash": "06c74895eddc4f8308e63660a42d8514"
   },
   "supabase/migrations/add-missing-columns.sql": {
-    "mtime": 1786017587.862196,
-    "ast_hash": "312a4ffac3d932cb26acba1e50d283a3",
+    "mtime": 1786018426.7702005,
+    "ast_hash": "6b92df13c09841c34dfcca1a45333370",
     "semantic_hash": ""
   },
   "supabase/migrations/armazem-3d-dimensoes.sql": {
@@ -1735,9 +1735,9 @@
     "semantic_hash": "e08be28f6e1c3e9aa8b2e529202ee084"
   },
   "tsconfig.json": {
-    "mtime": 1781786690.4196227,
-    "ast_hash": "cee37d11245240fc77acac0975e29a5a",
-    "semantic_hash": "cee37d11245240fc77acac0975e29a5a"
+    "mtime": 1786018004.6062,
+    "ast_hash": "a631e6a34360fb3adcc8de9a400095d9",
+    "semantic_hash": ""
   },
   "tsconfig.node.json": {
     "mtime": 1778243533.6725483,
