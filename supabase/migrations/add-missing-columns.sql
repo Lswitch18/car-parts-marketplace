@@ -23,10 +23,12 @@ ALTER TABLE public.transactions
   ADD COLUMN IF NOT EXISTS auction_id UUID REFERENCES public.parts(id),
   ADD COLUMN IF NOT EXISTS bid_id UUID REFERENCES public.bids(id),
   ADD COLUMN IF NOT EXISTS payout_status TEXT DEFAULT 'pending',
+  ADD COLUMN IF NOT EXISTS stripe_payment_id TEXT,
   ADD COLUMN IF NOT EXISTS stripe_transfer_id TEXT;
 
--- Stripe account columns on profiles
+-- Stripe account and bank info columns on profiles
 ALTER TABLE public.profiles
+  ADD COLUMN IF NOT EXISTS bank_info JSONB DEFAULT '{}'::jsonb,
   ADD COLUMN IF NOT EXISTS stripe_account_id TEXT,
   ADD COLUMN IF NOT EXISTS stripe_onboarding_complete BOOLEAN DEFAULT false;
 

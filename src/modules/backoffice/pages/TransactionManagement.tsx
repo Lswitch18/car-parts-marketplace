@@ -255,6 +255,9 @@ export default function TransactionManagement() {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
+      let rows: any[] = [];
+
+      // Tenta primeiro consultar com as colunas avançadas de auditoria Stripe e bank_info
       const { data, error } = await supabase
         .from('transactions')
         .select(`
@@ -271,9 +274,29 @@ export default function TransactionManagement() {
           part:parts!transactions_part_id_fkey(title, description, price, images)
         `)
         .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      const rows = (data || []).map((tx: any) => ({ ...tx }));
+
+      if (error) {
+        console.warn('[TransactionManagement] Coluna avançada indisponível no esquema remoto, usando fallback seguro:', error.message);
+        // Fallback resiliente caso alguma coluna ainda não tenha sido aplicada no banco produtivo
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('transactions')
+          .select(`
+            id,
+            amount,
+            payment_status,
+            fulfillment_status,
+            created_at,
+            buyer:profiles!transactions_buyer_id_fkey(id, full_name, rating),
+            seller:profiles!transactions_seller_id_fkey(id, full_name, rating),
+            part:parts!transactions_part_id_fkey(title, description, price, images)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (fallbackError) throw fallbackError;
+        rows = (fallbackData || []).map((tx: any) => ({ ...tx }));
+      } else {
+        rows = (data || []).map((tx: any) => ({ ...tx }));
+      }
 
       const profileIds = Array.from(
         new Set(rows.flatMap((tx: any) => [tx.buyer?.id, tx.seller?.id]).filter(Boolean))
