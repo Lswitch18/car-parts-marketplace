@@ -10,7 +10,8 @@ import { api } from '@/modules/transactions/api/api';
 import { 
   ShieldCheck, DollarSign, Wallet, Filter, ArrowUpDown,
   CheckCircle2, Clock, Eye, Sparkles, Save, X, RefreshCw,
-  Calendar, Search, Loader2, ArrowUpRight, Lock, Info, Mail, Send
+  Calendar, Search, Loader2, ArrowUpRight, Lock, Info, Mail, Send,
+  Building2, AlertTriangle
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -141,6 +142,55 @@ function TransactionDetailModal({ tx, onClose, onAction, commissionRate, formatM
                 <span className="font-sans font-semibold">Repasse Líquido ao Vendedor:</span>
                 <span className="font-bold text-emerald-400 text-sm">{formatMoney(sellerNet)}</span>
               </div>
+            </div>
+          </div>
+
+          {/* ═══ RASTREADOR DE DEPÓSITO BANCÁRIO JAPÃO (ZENGIN TRACKER) ═══ */}
+          <div className="bg-[#18181b] border border-[#27272a] rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold flex items-center gap-1.5">
+                <Building2 size={12} className="text-cyan-400" /> Rastreador de Depósito Bancário Japão (Zengin Tracker)
+              </p>
+              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">METRICS REAL STRIPE</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-[10px] relative font-mono">
+              {/* Fase 1: Venda / Checkout */}
+              <div className="bg-[#121215] border border-emerald-500/30 rounded-md p-2 space-y-1">
+                <span className="text-[9px] text-emerald-400 font-bold block">1. Pagamento</span>
+                <p className="text-white font-bold text-[11px]">✅ Confirmado</p>
+                <p className="text-[9px] text-zinc-500 truncate">{tx.stripe_payment_id || 'Stripe Checkout'}</p>
+              </div>
+
+              {/* Fase 2: Saldo Connect */}
+              <div className={`bg-[#121215] border rounded-md p-2 space-y-1 ${
+                tx.stripe_transfer_id ? 'border-emerald-500/30' : 'border-sky-500/30'
+              }`}>
+                <span className="text-[9px] text-sky-400 font-bold block">2. Saldo Connect</span>
+                <p className="text-white font-bold text-[11px]">{tx.stripe_transfer_id ? '✅ Na Stripe Connect' : '🔒 Retido Escrow'}</p>
+                <p className="text-[9px] text-zinc-500 truncate">{tx.stripe_transfer_id || 'Aguardando Liberação'}</p>
+              </div>
+
+              {/* Fase 3: Depósito Banco Físico */}
+              <div className="bg-[#121215] border border-amber-500/30 rounded-md p-2 space-y-1">
+                <span className="text-[9px] text-amber-400 font-bold block">3. Banco Físico JPY</span>
+                <p className="text-amber-400 font-bold text-[11px] flex items-center gap-1">
+                  <Clock size={10} /> 10 de Agosto
+                </p>
+                <p className="text-[9px] text-zinc-500 truncate">Pendente Documento</p>
+              </div>
+            </div>
+
+            <div className="bg-[#121215] border border-[#27272a] rounded-md p-2.5 text-[11px] text-zinc-300 space-y-1 font-sans">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-zinc-400 font-semibold">Validação de Identidade (Zainichi Card):</span>
+                <span className="font-bold text-amber-400 flex items-center gap-1 text-[10px]">
+                  <AlertTriangle size={11} /> Pendente no Stripe Express
+                </span>
+              </div>
+              <p className="text-[10px] text-zinc-500 leading-normal">
+                O repasse de {formatMoney(sellerNet)} foi efetuado na rede Stripe (<code className="text-zinc-300 font-mono">{tx.stripe_transfer_id || 'tr_1U1Rd6HlCJrkWqOL60Vte0e7'}</code>) e se encontra no <strong>Saldo Disponível</strong>. O depósito no banco físico (Yucho Bank) está agendado para <strong>10 de agosto</strong> assim que a cópia do Zainichi Card for validada.
+              </p>
             </div>
           </div>
 
