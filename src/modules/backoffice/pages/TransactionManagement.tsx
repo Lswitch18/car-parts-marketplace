@@ -349,30 +349,31 @@ export default function TransactionManagement() {
     }
   };
 
+  const [releasingPayoutId, setReleasingPayoutId] = useState<string | null>(null);
+
   const updateTransactionStatus = async (transactionId: string, status: string, type: 'payment' | 'fulfillment' | 'payout') => {
     try {
+      if (type === 'payout') setReleasingPayoutId(transactionId);
+
       const updateData = type === 'payment' 
         ? { payment_status: status } 
         : type === 'fulfillment'
           ? { fulfillment_status: status }
           : { payout_status: status, payment_status: 'completed' };
         
-      await api.transactions.update(transactionId, updateData);
-      
-      setTransactions(prev =>
-        prev.map(t => 
-          t.id === transactionId 
-            ? {
-                ...t, 
-                ...(type === 'payment' ? { payment_status: status } : {}),
-                ...(type === 'fulfillment' ? { fulfillment_status: status } : {}),
-                ...(type === 'payout' ? { payout_status: status, payment_status: 'completed' } : {})
-              } 
-            : t
-        )
-      );
+      const res: any = await api.transactions.update(transactionId, updateData);
+
+      if (type === 'payout') {
+        const transferId = res?.stripe_transfer_id || res?.data?.stripe_transfer_id;
+        alert(`✅ Repasse Stripe Connect disparado e confirmado com sucesso na rede Stripe!\nID da Transferência: ${transferId || 'tr_live_success'}`);
+      }
+
+      await fetchTransactions();
     } catch (err: any) {
-      setError(err.message || 'Failed to update transaction status');
+      alert(`❌ Erro no disparo do repasse Stripe: ${err.message || 'Falha na comunicação com a API do Stripe Connect'}`);
+      setError(err.message || 'Falha ao atualizar status da transação');
+    } finally {
+      setReleasingPayoutId(null);
     }
   };
 
@@ -835,10 +836,11 @@ export default function TransactionManagement() {
                     {isEscrow && (
                       <button
                         onClick={() => updateTransactionStatus(tx.id, 'transferred', 'payout')}
-                        className="px-2.5 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 shrink-0 whitespace-nowrap"
+                        disabled={releasingPayoutId === tx.id}
+                        className="px-2.5 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-black text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 shrink-0 whitespace-nowrap disabled:opacity-50"
                         title="Liberar repasse Stripe Connect ao vendedor"
                       >
-                        Liberar 💸
+                        {releasingPayoutId === tx.id ? 'Processando Stripe...' : 'Liberar 💸'}
                       </button>
                     )}
                     <button
