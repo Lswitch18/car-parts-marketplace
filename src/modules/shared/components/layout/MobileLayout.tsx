@@ -1,7 +1,7 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation } from 'react-router'
 import { PackageSearch, MessageSquare, Gavel, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/modules/identity/store/authStore'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 export default function MobileLayout() {
   const { signOut } = useAuthStore()

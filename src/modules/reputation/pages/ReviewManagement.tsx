@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { 
   Star, Trash2, Search, Filter, MessageSquare, 
   ThumbsUp, ThumbsDown, MessageCircle, DollarSign,

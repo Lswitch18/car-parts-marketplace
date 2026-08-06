@@ -1,90 +1,66 @@
 /**
- * Upstash Redis REST Client
- * Utiliza o fetch nativo para evitar dependências pesadas no bundle.
+ * Redis cache client.
+ * Todas as operações são delegadas à Edge Function `redis-cache`,
+ * que executa os comandos Upstash do lado do servidor (UPSTASH_REDIS_REST_URL/TOKEN
+ * ficam no ambiente da função, NUNCA no bundle do cliente).
  */
 
-const rawUrl = import.meta.env.VITE_UPSTASH_REDIS_REST_URL
-const rawToken = import.meta.env.VITE_UPSTASH_REDIS_REST_TOKEN
+import { supabase } from '@/modules/shared/lib/supabase';
 
-const REDIS_URL = typeof rawUrl === 'string' ? rawUrl.replace(/^["']|["']$/g, '') : ''
-const REDIS_TOKEN = typeof rawToken === 'string' ? rawToken.replace(/^["']|["']$/g, '') : ''
+const FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/redis-cache`;
+
+async function callRedis(body: Record<string, unknown>): Promise<any> {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+
+  const res = await fetch(FUNCTIONS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) return null;
+  const json = await res.json();
+  return json.success ? json.data : null;
+}
 
 export async function getCache(key: string): Promise<any | null> {
-  if (!REDIS_URL || !REDIS_TOKEN) return null
-
   try {
-    const res = await fetch(`${REDIS_URL}/get/${encodeURIComponent(key)}`, {
-      headers: { Authorization: `Bearer ${REDIS_TOKEN}` }
-    })
-    
-    if (!res.ok) return null
-    const json = await res.json()
-    
-    if (json.result) {
-      // O Upstash retorna a string do JSON, então precisamos fazer o parse
-      return JSON.parse(json.result)
-    }
-    return null
+    const value = await callRedis({ action: 'get', key });
+    return value ?? null;
   } catch (error) {
-    console.warn('Redis Cache Miss (Error):', error)
-    return null
+    console.warn('Redis Cache Miss (Error):', error);
+    return null;
   }
 }
 
 export async function setCache(key: string, value: any, expiresInSeconds: number = 3600): Promise<void> {
-  if (!REDIS_URL || !REDIS_TOKEN) return
-
   try {
-    const stringValue = JSON.stringify(value)
-    
-    await fetch(`${REDIS_URL}/`, {
-      method: 'POST',
-      headers: { 
-        Authorization: `Bearer ${REDIS_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      // Usando o comando Redis nativo via REST
-      body: JSON.stringify(['SET', key, stringValue, 'EX', expiresInSeconds])
-    })
+    await callRedis({ action: 'set', key, value, expiresInSeconds });
   } catch (error) {
-    console.warn('Redis Cache Set Error:', error)
+    console.warn('Redis Cache Set Error:', error);
   }
 }
 
 export async function getRedisKeys(pattern: string = '*'): Promise<string[]> {
-  if (!REDIS_URL || !REDIS_TOKEN) return []
   try {
-    const res = await fetch(`${REDIS_URL}/`, {
-      method: 'POST',
-      headers: { 
-        Authorization: `Bearer ${REDIS_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(['KEYS', pattern])
-    })
-    if (!res.ok) return []
-    const json = await res.json()
-    return Array.isArray(json.result) ? json.result : []
+    const keys = await callRedis({ action: 'list', pattern });
+    return Array.isArray(keys) ? keys : [];
   } catch (error) {
-    console.warn('Redis KEYS error:', error)
-    return []
+    console.warn('Redis KEYS error:', error);
+    return [];
   }
 }
 
 export async function deleteRedisKey(key: string): Promise<boolean> {
-  if (!REDIS_URL || !REDIS_TOKEN) return false
   try {
-    const res = await fetch(`${REDIS_URL}/`, {
-      method: 'POST',
-      headers: { 
-        Authorization: `Bearer ${REDIS_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(['DEL', key])
-    })
-    return res.ok
+    const result = await callRedis({ action: 'delete', key });
+    return result !== null;
   } catch (error) {
-    console.warn('Redis DEL error:', error)
-    return false
+    console.warn('Redis DEL error:', error);
+    return false;
   }
 }

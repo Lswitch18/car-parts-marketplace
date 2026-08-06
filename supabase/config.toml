@@ -164,6 +164,8 @@ logistix-sync = { verify_jwt = true }
 logistix-b2b = { verify_jwt = false }
 logistics = { verify_jwt = true }
 system-metrics = { verify_jwt = true }
+redis-cache = { verify_jwt = true }
+ollama-proxy = { verify_jwt = true }
 
 [experimental]
 # Configures Postgres storage engine to use OrioleDB (S3)

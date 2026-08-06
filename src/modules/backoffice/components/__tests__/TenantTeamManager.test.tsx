@@ -1,10 +1,13 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import TenantTeamManager from '@/modules/backoffice/components/TenantTeamManager'
+import { I18nProvider } from '@/modules/shared/lib/i18n'
 import { TenantRole, TenantPermission } from '@/modules/shared/types'
+
+const renderWithProviders = (ui: React.ReactElement) => render(<I18nProvider>{ui}</I18nProvider>)
 
 describe('TenantTeamManager Component', () => {
   test('renders header and initial members', () => {
-    render(<TenantTeamManager />)
+    renderWithProviders(<TenantTeamManager />)
     expect(screen.getByText(/Gestão de Equipe & Controle de Permissões/i)).toBeInTheDocument()
     // Check initial members
     expect(screen.getByText('Patrick Suzuki')).toBeInTheDocument()
@@ -12,7 +15,7 @@ describe('TenantTeamManager Component', () => {
   })
 
   test('opens invite modal and adds a new member', async () => {
-    render(<TenantTeamManager />)
+    renderWithProviders(<TenantTeamManager />)
     const inviteButton = screen.getByRole('button', { name: /Convidar Novo Membro/i })
     fireEvent.click(inviteButton)
 
@@ -30,7 +33,7 @@ describe('TenantTeamManager Component', () => {
 
     // Wait for the new member row to appear
     await waitFor(() => {
-      expect(screen.getByText('Kenji Sato')).toBeInTheDocument()
+      expect(screen.getByText('kenji.sato@daig.jp')).toBeInTheDocument()
     })
   })
 })

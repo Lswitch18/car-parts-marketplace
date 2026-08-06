@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Canvas } from '@react-three/fiber';
 import { 
   ArrowLeft, Cpu, Compass, Activity, Sliders, Gauge, 

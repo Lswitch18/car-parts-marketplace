@@ -257,8 +257,9 @@ export default function TenantTeamManager() {
 
             <form onSubmit={handleSendInvite} className="space-y-4 text-xs">
               <div>
-                <label className="block text-zinc-400 font-semibold mb-1">Nome Completo *</label>
+                <label htmlFor="invite-name" className="block text-zinc-400 font-semibold mb-1">Nome Completo *</label>
                 <input
+                  id="invite-name"
                   type="text"
                   placeholder="Ex: Kenji Sato"
                   value={inviteName}
@@ -269,8 +270,9 @@ export default function TenantTeamManager() {
               </div>
 
               <div>
-                <label className="block text-zinc-400 font-semibold mb-1">E-mail Corporativo *</label>
+                <label htmlFor="invite-email" className="block text-zinc-400 font-semibold mb-1">E-mail Corporativo *</label>
                 <input
+                  id="invite-email"
                   type="email"
                   placeholder="funcionario@daig.jp"
                   value={inviteEmail}
@@ -281,8 +283,9 @@ export default function TenantTeamManager() {
               </div>
 
               <div>
-                <label className="block text-zinc-400 font-semibold mb-1">Cargo / Papel Principal</label>
+                <label htmlFor="invite-role" className="block text-zinc-400 font-semibold mb-1">Cargo / Papel Principal</label>
                 <select
+                  id="invite-role"
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value as TenantRole)}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-white focus:border-blue-500"

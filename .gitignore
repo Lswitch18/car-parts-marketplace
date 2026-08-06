@@ -69,3 +69,9 @@ apks/
 daig_documentacao.zip
 exports/
 
+# TypeScript build artifacts (tsc -b emits config copies)
+vite.config.js
+vite.config.d.ts
+vite.config.tsbuildinfo
+*.tsbuildinfo
+

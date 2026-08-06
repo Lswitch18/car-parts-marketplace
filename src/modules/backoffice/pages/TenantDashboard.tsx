@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useTenantCore } from '@/modules/shared/hooks/useTenantCore'
 import { fetchPostal } from '@/modules/shared/lib/postal'

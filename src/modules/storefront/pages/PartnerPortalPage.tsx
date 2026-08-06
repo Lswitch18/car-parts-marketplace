@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { supabase } from '@/modules/shared/lib/supabase'
 import api from '@/modules/transactions/api/api'
 import GaidLogo from '@/modules/shared/components/GaidLogo'

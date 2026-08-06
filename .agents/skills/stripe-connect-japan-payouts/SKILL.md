@@ -28,12 +28,16 @@ Esta skill estabelece a arquitetura técnica, regras operacionais e diretrizes f
 - **Após o primeiro repasse**: Os repasses futuros passam para o fluxo normal configurado (diário ou semanal).
 
 ### 🔹 2. Janela Padrão de Liquidação no Japão (Rolling Payout Schedule)
+- **Restrição Oficial da API Stripe no Japão**:
+  - A API da Stripe retorna erro ao tentar definir `interval: 'daily'` para merchants no Japão (*"The payout interval 'daily' is not available for merchants in JP"*).
+  - **Solução Recomendada: Repasse Manual Sob Demanda (`interval: 'manual'`)**:
+    - Ao configurar `settings[payouts][schedule][interval] = 'manual'`, o usuário desativa a trava semanal (segunda-feira) e passa a ter o saldo liberado **sob demanda a qualquer momento**.
 - **Alocação de Saldo (`Pending` vs `Available`)**:
   - Quando o comprador paga via Cartão de Crédito ou Konbini, o dinheiro entra primeiro como **`Pending Balance`** (Saldo Pendente).
-  - No Japão (JPY), o tempo de conversão de `Pending` para `Available` (Disponível) leva **4 dias úteis (T+4)**.
+  - No Japão (JPY), o tempo de conversão de `Pending` para `Available` (Disponível) é de **4 dias úteis (T+4)** (`delay_days: 4`).
 - **Frequência de Payout**:
-  - **Semanal (Weekly)**: Exemplo: Toda segunda-feira (*Monday*), o saldo disponível é enviado para a conta bancária do vendedor (Yucho Bank / MUFG / SMBC).
-  - **Diário (Daily - Rolling T+4)**: Repasse diário com atraso de 4 dias úteis.
+  - **Manual / Sob Demanda (`manual`)**: O vendedor (ou a plataforma) pode disparar o saque para a conta bancária Zengin no momento em que desejar, sem esperar pela semana seguinte.
+  - **Semanal (`weekly`)**: Envio automático programado (ex: toda segunda-feira).
 
 ---
 

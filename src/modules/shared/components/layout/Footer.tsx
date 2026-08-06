@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react'
 import GaidLogo from '../GaidLogo'
 import { useAuthStore } from '@/modules/identity/store/authStore'

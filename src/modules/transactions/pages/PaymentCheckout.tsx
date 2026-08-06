@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useAuthStore } from '@/modules/identity/store/authStore'

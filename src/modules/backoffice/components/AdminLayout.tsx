@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
+import { Outlet, Link, useLocation, Navigate } from 'react-router';
 import { LayoutDashboard, Activity, Bell, MoreHorizontal, Search, ChevronRight, Package, Truck, CreditCard, DollarSign, Image as ImageIcon, Users, Star, Building2, Menu, X, Brain, Server } from 'lucide-react';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 

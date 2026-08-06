@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { api } from '@/modules/transactions/api/api';
 import { getRedisKeys, deleteRedisKey, getCache } from '@/modules/shared/lib/redisCache';
+import { ollamaProxy, ollamaProxyJson } from '@/modules/shared/lib/ollamaProxy';
 import {
   Brain, Upload, Zap, Trash2, RefreshCw, CheckCircle2, XCircle,
   Clock, Activity, Server, Cpu, ImageIcon, ChevronDown, ChevronUp,
@@ -115,7 +116,7 @@ export default function AiOpsPage() {
     latencyMs: null,
     models: [],
     runningModels: [],
-    serverUrl: import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat',
+    serverUrl: '',
     lastChecked: null,
   });
 
@@ -187,16 +188,7 @@ export default function AiOpsPage() {
     
     const startStream = async () => {
       try {
-        const baseUrl = import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat';
-        const logsUrl = baseUrl.replace(/\/api\/chat\/?$/, '/api/logs');
-        
-        const response = await fetch(logsUrl, {
-          method: 'GET',
-          headers: {
-            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
-          },
-          signal: abortController.signal
-        });
+        const response = await ollamaProxy({ action: 'logs' });
 
         if (!response.ok) {
           throw new Error('Falha ao conectar no micro-serviço de logs');
@@ -299,69 +291,31 @@ export default function AiOpsPage() {
 
   const runHealthCheck = useCallback(async () => {
     setHealth(prev => ({ ...prev, status: 'checking', latencyMs: null }));
-    const ollamaBase = (import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat').replace('/api/chat', '');
-    const authHeader = import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4';
 
     const start = performance.now();
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-      const [res, psRes] = await Promise.all([
-        fetch(`${ollamaBase}/api/tags`, {
-          method: 'GET',
-          headers: { 'Authorization': authHeader },
-          signal: controller.signal,
-        }),
-        fetch(`${ollamaBase}/api/ps`, {
-          method: 'GET',
-          headers: { 'Authorization': authHeader },
-          signal: controller.signal,
-        }).catch(() => null)
-      ]);
-      clearTimeout(timeoutId);
-
+      const data = await ollamaProxyJson<any>({ action: 'health' });
       const elapsed = Math.round(performance.now() - start);
-
-      if (!res.ok) {
-        setHealth(prev => ({
-          ...prev,
-          status: 'offline',
-          latencyMs: elapsed,
-          models: [],
-          runningModels: [],
-          lastChecked: new Date().toISOString(),
-        }));
-        return;
-      }
-
-      const data = await res.json();
-      const models = (data.models || []).map((m: any) => m.name || m.model || 'unknown');
-
-      let runningModels: string[] = [];
-      if (psRes && psRes.ok) {
-        const psData = await psRes.json();
-        runningModels = (psData.models || []).map((m: any) => m.name || m.model || 'unknown');
-      }
 
       setHealth(prev => ({
         ...prev,
-        status: 'online',
+        status: data.status,
         latencyMs: elapsed,
-        models,
-        runningModels,
+        models: data.models || [],
+        runningModels: data.runningModels || [],
+        serverUrl: data.serverUrl || '',
         lastChecked: new Date().toISOString(),
       }));
 
       // Set default selected model if we have models and it's not set or doesn't exist
-      if (models.length > 0 && !models.includes(selectedModel)) {
-        setSelectedModel(models.includes('qwen3-vl:2b') ? 'qwen3-vl:2b' : models[0]);
+      if ((data.models?.length || 0) > 0 && !data.models.includes(selectedModel)) {
+        setSelectedModel(data.models.includes('qwen3-vl:2b') ? 'qwen3-vl:2b' : data.models[0]);
       }
     } catch (err: any) {
       const elapsed = Math.round(performance.now() - start);
       setHealth(prev => ({
         ...prev,
-        status: err.name === 'AbortError' ? 'timeout' : 'offline',
+        status: 'offline',
         latencyMs: elapsed,
         models: [],
         runningModels: [],
@@ -625,30 +579,24 @@ export default function AiOpsPage() {
         setAnalyzing(false);
       }
     } else {
-      // MODO LOCAL: Chamada direta ao Ollama local
-      setFrontendStatusMessage(t('Enviando imagem diretamente para o modelo Ollama local...'));
+      // MODO LOCAL: Chamada via proxy para o Ollama local
+      setFrontendStatusMessage(t('Enviando imagem para o modelo Ollama local via proxy seguro...'));
       try {
         const base64ImageOnly = playgroundImage.split(',')[1] || playgroundImage;
         const promptVision = systemPrompt;
 
-        const response = await fetch(health.serverUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
-          },
-          body: JSON.stringify({
-            model: selectedModel,
-            messages: [
-              {
-                role: 'user',
-                content: promptVision,
-                images: [base64ImageOnly]
-              }
-            ],
-            format: 'json',
-            stream: false
-          })
+        const response = await ollamaProxy({
+          action: 'chat',
+          model: selectedModel,
+          messages: [
+            {
+              role: 'user',
+              content: promptVision,
+              images: [base64ImageOnly]
+            }
+          ],
+          format: 'json',
+          stream: false
         });
 
         if (!response.ok) {
@@ -725,7 +673,7 @@ export default function AiOpsPage() {
         setAnalyzing(false);
       }
     }
-  }, [playgroundImage, selectedModel, analysisMode, playgroundVin, health.serverUrl, t, loadDbLogs, systemPrompt]);
+  }, [playgroundImage, selectedModel, analysisMode, playgroundVin, t, loadDbLogs, systemPrompt]);
 
   const copyJson = useCallback(() => {
     navigator.clipboard.writeText(analysisRawJson);

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Sparkles, Camera, Search, Cpu, X, CheckCircle2, ArrowRight, Package, Tag, Building2, Globe } from 'lucide-react'
 import { identifyPartInformation, IdentifiedPartInfo } from '@/modules/shared/lib/aiPartIdentifier'
 import { parseCompatibilityTextToTags } from '@/modules/shared/components/CompatibilityTagInput'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 interface MarketplaceAiAssistantModalProps {
   isOpen: boolean

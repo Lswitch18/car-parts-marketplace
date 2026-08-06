@@ -6,7 +6,7 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import { useAuthStore } from '@/modules/identity/store/authStore';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 
 export default function ContactsManagement() {
   const { user } = useAuthStore();

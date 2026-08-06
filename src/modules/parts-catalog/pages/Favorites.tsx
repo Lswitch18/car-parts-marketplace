@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useFavoriteStore } from '@/modules/parts-catalog/store/favoriteStore'
 import { supabase } from '@/modules/shared/lib/supabase'

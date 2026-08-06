@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { isSaaSUser } from '@/modules/identity/utils/tenantPermissions'
 import { supabase } from '@/modules/shared/lib/supabase'

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import GaidLogo from '@/modules/shared/components/GaidLogo';
 import SafeImage from '@/modules/parts-catalog/components/SafeImage';
 import { adminApi } from '@/modules/transactions/api/adminApi';

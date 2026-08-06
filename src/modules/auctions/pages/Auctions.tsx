@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { api } from '@/modules/transactions/api/api'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import ParticleField from '@/modules/shared/components/ParticleField'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import {
   Gavel, Clock, TrendingUp, User, AlertTriangle, ArrowRight, X, ChevronRight, Zap, Timer, Star, Award, ShoppingBag, CreditCard
 } from 'lucide-react'

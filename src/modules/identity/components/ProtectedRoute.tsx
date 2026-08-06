@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router'
 import { useEffect, useRef } from 'react'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { isSaaSUser } from '@/modules/identity/utils/tenantPermissions'

@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useTenantCore } from '@/modules/shared/hooks/useTenantCore'
 import { supabase } from '@/modules/shared/lib/supabase'

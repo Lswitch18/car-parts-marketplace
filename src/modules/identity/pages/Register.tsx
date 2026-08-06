@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { handleSupabaseError, isRateLimitError } from '@/modules/shared/lib/supabaseErrorHandler'
 import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle } from 'lucide-react'

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'
+import { GoogleAuth } from '@southdevs/capacitor-google-auth'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -80,7 +80,7 @@ const loadGsiScript = (): Promise<void> => {
 export const signInWithGoogle = async () => {
   if (Capacitor.isNativePlatform()) {
     try {
-      const googleUser = await GoogleAuth.signIn()
+      const googleUser = await GoogleAuth.signIn({ scopes: ['profile', 'email'] })
       const idToken = googleUser.authentication.idToken
       
       const { data, error } = await supabase.auth.signInWithIdToken({

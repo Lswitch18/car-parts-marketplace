@@ -11,7 +11,7 @@ const buildConfig: UserConfig['build'] = {
   rollupOptions: {
     output: {
       manualChunks: {
-        'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+        'vendor-react': ['react', 'react-dom', 'react-router'],
         'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
         'vendor-supabase': ['@supabase/supabase-js'],
         'vendor-query': ['@tanstack/react-query'],

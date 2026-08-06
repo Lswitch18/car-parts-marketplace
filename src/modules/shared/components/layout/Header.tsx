@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useState, useEffect, useRef } from 'react'
 import {

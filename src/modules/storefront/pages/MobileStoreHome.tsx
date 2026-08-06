@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { PackageSearch, MessageSquare, CreditCard, Gavel, Globe, User, LogOut, Bell, ChevronRight, Zap } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { useAuthStore } from '@/modules/identity/store/authStore'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useEffect, useState } from 'react'
 
 export default function MobileStoreHome() {

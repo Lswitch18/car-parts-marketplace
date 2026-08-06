@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { Search, Compass, Globe, Sparkles, ArrowRight, Shield } from 'lucide-react'
 
 interface CarModel {

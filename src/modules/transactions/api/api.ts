@@ -1,6 +1,7 @@
 import { supabase } from '@/modules/shared/lib/supabase';
 import { BRANDS } from '@/modules/shared/lib/constants';
 import { getCache, setCache } from '@/modules/shared/lib/redisCache';
+import { ollamaProxy } from '@/modules/shared/lib/ollamaProxy';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
@@ -372,42 +373,19 @@ export const api = {
     },
     
     fetchOllamaLogs: async () => {
-      const baseUrl = import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat';
-      const logsUrl = baseUrl.replace(/\/api\/chat\/?$/, '/api/logs');
-      
-      try {
-        const response = await fetch(logsUrl, {
-          method: 'GET',
-          headers: {
-            'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Falha ao buscar logs (HTTP ' + response.status + ')');
-        }
-        
-        const data = await response.json();
-        return data.logs || '';
-      } catch (err: any) {
-        console.error('[fetchOllamaLogs] Request failed:', err);
-        throw new Error(err.message || 'Falha ao conectar no micro-serviço de logs');
+      const response = await ollamaProxy({ action: 'logs' });
+
+      if (!response.ok) {
+        throw new Error('Falha ao buscar logs (HTTP ' + response.status + ')');
       }
+
+      const data = await response.json();
+      return data.logs || '';
     },
     
     pullModel: async (modelName: string) => {
-      const baseUrl = import.meta.env.VITE_OLLAMA_API_URL || 'https://201.46.120.192.nip.io/api/chat';
-      const pullUrl = baseUrl.replace(/\/api\/chat\/?$/, '/api/pull');
-      
-      const response = await fetch(pullUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': import.meta.env.VITE_OLLAMA_API_AUTH || 'Basic YXBpOk0zdW4wbTNAQDE5OTE4'
-        },
-        body: JSON.stringify({ model: modelName, stream: true })
-      });
-      
+      const response = await ollamaProxy({ action: 'pull', model: modelName });
+
       if (!response.ok) {
         throw new Error('Falha ao iniciar download (HTTP ' + response.status + ')');
       }

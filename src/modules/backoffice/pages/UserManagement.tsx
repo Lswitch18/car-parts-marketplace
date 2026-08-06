@@ -3,7 +3,7 @@ import { supabase } from '@/modules/shared/lib/supabase';
 import { adminApi } from '@/modules/transactions/api/adminApi';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { useAuthStore } from '@/modules/identity/store/authStore';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { 
   Users, 
   Briefcase, 

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router'
 import { I18nProvider } from '@/modules/shared/lib/i18n'
 import ProtectedRoute from '@/modules/identity/components/ProtectedRoute'
 import ScrollToTop from '@/modules/shared/components/ScrollToTop'

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List, Package } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
