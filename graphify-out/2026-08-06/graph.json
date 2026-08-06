@@ -1577,8 +1577,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 224,
-      "community_name": "@base-ui/react",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1588,8 +1588,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 224,
-      "community_name": "@base-ui/react",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1863,8 +1863,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "package_dependencies_canvas_confetti",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 171,
+      "community_name": "canvas-confetti",
       "norm_label": "canvas-confetti"
     },
     {
@@ -1874,8 +1874,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "canvas_confetti",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 171,
+      "community_name": "canvas-confetti",
       "norm_label": "canvas-confetti"
     },
     {
@@ -2424,8 +2424,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "package_devdependencies_capacitor_cli",
-      "community": 173,
-      "community_name": "@base-ui/react",
+      "community": 180,
+      "community_name": "@capacitor/cli",
       "norm_label": "@capacitor/cli"
     },
     {
@@ -2435,8 +2435,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "capacitor_cli",
-      "community": 173,
-      "community_name": "@base-ui/react",
+      "community": 180,
+      "community_name": "@capacitor/cli",
       "norm_label": "@capacitor/cli"
     },
     {
@@ -2446,8 +2446,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_js",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 173,
+      "community_name": "@base-ui/react",
       "norm_label": "@eslint/js"
     },
     {
@@ -2457,8 +2457,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "eslint_js",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 173,
+      "community_name": "@base-ui/react",
       "norm_label": "@eslint/js"
     },
     {
@@ -2490,8 +2490,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_react",
-      "community": 201,
-      "community_name": "@testing-library/react",
+      "community": 146,
+      "community_name": "GlobalSearch.tsx",
       "norm_label": "@testing-library/react"
     },
     {
@@ -2501,8 +2501,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "testing_library_react",
-      "community": 201,
-      "community_name": "@testing-library/react",
+      "community": 146,
+      "community_name": "GlobalSearch.tsx",
       "norm_label": "@testing-library/react"
     },
     {
@@ -2688,8 +2688,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 146,
-      "community_name": "GlobalSearch.tsx",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "eslint"
     },
     {
@@ -2699,8 +2699,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "eslint",
-      "community": 146,
-      "community_name": "GlobalSearch.tsx",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "eslint"
     },
     {
@@ -6217,7 +6217,7 @@
       "label": "TransactionDetailModal()",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L17",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_transactionmanagement_transactiondetailmodal",
       "community": 46,
@@ -6228,7 +6228,7 @@
       "label": "TransactionManagement()",
       "file_type": "code",
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L177",
+      "source_location": "L195",
       "_origin": "ast",
       "id": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
       "community": 24,
@@ -26389,7 +26389,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L17",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement",
@@ -26400,7 +26400,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L177",
+      "source_location": "L195",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement",
@@ -26569,7 +26569,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L178",
+      "source_location": "L196",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
@@ -26581,7 +26581,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L179",
+      "source_location": "L197",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
@@ -26593,7 +26593,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L775",
+      "source_location": "L834",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
@@ -47818,5 +47818,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0cf29504cf2e2817d426bf38a3e18e783f79c91e"
+  "built_at_commit": "bf07064bc7625d59db3c87383c2017a655d14935"
 }
