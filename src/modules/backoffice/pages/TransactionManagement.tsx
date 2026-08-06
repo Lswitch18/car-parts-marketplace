@@ -283,7 +283,7 @@ export default function TransactionManagement() {
       // 🛡️ SHIFT-LEFT SECURITY & RESILIENT API CALL:
       // Tenta primeiro via Edge Function / Endpoint Seguro api.transactions.list() ou consulta Supabase padrão
       try {
-        const res = await api.transactions.list({ limit: 100 });
+        const res: any = await api.transactions.list({ limit: 100 });
         if (res && res.transactions) {
           rows = res.transactions;
         }
