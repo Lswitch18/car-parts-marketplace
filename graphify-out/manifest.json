@@ -3233,5 +3233,15 @@
     "mtime": 1786029950.5341966,
     "ast_hash": "2c271435e60d9aeb6cd3a5e1e122a5c0",
     "semantic_hash": ""
+  },
+  ".agents/skills/go-live-readiness-agent/SKILL.md": {
+    "mtime": 1786420952.0156353,
+    "ast_hash": "476b0b9d0c121df1f31f1b94cbce1db8",
+    "semantic_hash": ""
+  },
+  ".agents/skills/marketplace-business-model-analyzer/SKILL.md": {
+    "mtime": 1786420963.327633,
+    "ast_hash": "1c272768da4e85f40c8d761189d06676",
+    "semantic_hash": ""
   }
 }
