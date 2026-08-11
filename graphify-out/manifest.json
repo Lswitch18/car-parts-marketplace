@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1786037058.5141952,
-    "ast_hash": "3588767851fc3b18a53535e39aabe6c5",
+    "mtime": 1786039661.0461957,
+    "ast_hash": "91d6f42adb75e1a0a43995afb002accb",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
@@ -1345,8 +1345,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/stripe-webhook/index.ts": {
-    "mtime": 1785890445.7039373,
-    "ast_hash": "87a55b6dfe0e12a4af199988a4155533",
+    "mtime": 1786038204.5301976,
+    "ast_hash": "ac82bb42d46142ed529a714dfb3c6de2",
     "semantic_hash": ""
   },
   "supabase/functions/transactions/index.ts": {

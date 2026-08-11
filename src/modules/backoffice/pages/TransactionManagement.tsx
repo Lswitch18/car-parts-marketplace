@@ -328,6 +328,9 @@ export default function TransactionManagement() {
             amount,
             payment_status,
             fulfillment_status,
+            payout_status,
+            stripe_transfer_id,
+            stripe_payment_id,
             created_at,
             buyer:profiles!transactions_buyer_id_fkey(id, full_name, rating),
             seller:profiles!transactions_seller_id_fkey(id, full_name, rating),
@@ -511,14 +514,18 @@ export default function TransactionManagement() {
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
   const retidoValBruto = transactions
-    .filter(t => (t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed') && t.payout_status !== 'transferred')
+    .filter(t => {
+      const isBuyerPaid = t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed';
+      const isSellerPaid = Boolean(t.stripe_transfer_id) || t.payout_status === 'transferred' || t.payout_status === 'paid';
+      return isBuyerPaid && !isSellerPaid;
+    })
     .reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
   const retidoStripeFee = retidoValBruto * 0.036;
   const retidoValLiquido = retidoValBruto - retidoStripeFee;
 
   const pagosVal = transactions
-    .filter(t => t.payout_status === 'transferred')
+    .filter(t => Boolean(t.stripe_transfer_id) || t.payout_status === 'transferred' || t.payout_status === 'paid')
     .reduce((sum, t) => sum + parseFloat(t.amount || 0) * (1 - commissionRate / 100), 0);
 
   const lucroBruto = transactions
@@ -527,10 +534,11 @@ export default function TransactionManagement() {
 
   const totalStripeFees = transactions
     .filter(t => t.payment_status === 'paid' || t.payment_status === 'escrow' || t.payment_status === 'completed')
-    .reduce((sum, t) => sum + parseFloat(t.amount || 0) * 0.036, 0);
+    .reduce((sum, t) => sum + Math.round(parseFloat(t.amount || 0) * 0.036), 0);
 
+  const lucroMarketplaceNet = Math.max(0, lucroBruto - totalStripeFees);
   const receitaSaaS = saasRevenueTotal;
-  const lucroLiquidoPlataforma = (lucroBruto - totalStripeFees) + receitaSaaS;
+  const lucroLiquidoPlataforma = lucroMarketplaceNet + receitaSaaS;
 
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/" replace />;
@@ -725,20 +733,20 @@ export default function TransactionManagement() {
             </div>
           </div>
           <p className="text-2xl font-black text-emerald-400 font-mono tracking-tight drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-            {formatMoney(lucroLiquidoPlataforma)}
+            {formatMoney(lucroMarketplaceNet)}
           </p>
           <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
             <div className="flex justify-between">
-              <span>Bruto ({commissionRate}%):</span>
-              <span className="text-white font-bold">{formatMoney(lucroBruto)}</span>
+              <span>Comissão DAIG ({commissionRate}%):</span>
+              <span className="text-cyan-400 font-bold">+{formatMoney(lucroBruto)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Taxas Stripe (3.6%):</span>
+              <span>Taxa Cartão Stripe (3.6%):</span>
               <span className="text-amber-400 font-bold">-{formatMoney(totalStripeFees)}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Assinaturas SaaS ({activeStoresCount} Lojas):</span>
-              <span className="text-emerald-400 font-bold">+{formatMoney(receitaSaaS)}</span>
+            <div className="flex justify-between border-t border-zinc-800 pt-1 font-bold text-white">
+              <span>Lucro Vendas Marketplace:</span>
+              <span className="text-emerald-400 font-bold">{formatMoney(lucroMarketplaceNet)}</span>
             </div>
           </div>
         </div>
