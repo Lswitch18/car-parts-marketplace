@@ -55,10 +55,37 @@ O dinheiro repassado ao vendedor fica protegido até a garantia de entrega:
 
 * **Modo A - Liberação pelo Comprador**:
   * Ao receber o pacote em casa, o comprador abre a caixa, inspeciona a peça e clica em *"Confirmar Recebimento & Peça OK"*.
-  * O dinheiro é liberado imediatamente na conta do vendedor.
+  * O dinheiro é liberado imediatamente para a **Conta Stripe Connect do Vendedor**.
 * **Modo B - Liberação Automática por Rastreio (Auto-Release)**:
   * A plataforma conecta com a API de rastreamento da transportadora.
   * Quando o correio marca o status como **"Entregue" (配達完了 - Haitatsu Kanryo)**, o sistema aguarda **48 horas** (carência para o cliente verificar a peça) e libera o repasse automaticamente se não houver reclamação.
+
+---
+
+### 💳 3.1. Pré-Requisito Obrigatório: Conta Stripe Connect & Banco Cadastrado
+
+Para que o vendedor consiga sacar o dinheiro para o seu banco físico no Japão, existe um passo inicial fundamental:
+
+```mermaid
+graph TD
+    A[1. Venda Concluída] --> B[2. Dinheiro entra na Conta Stripe Connect do Vendedor]
+    B --> C{Vendedor Criou Conta Stripe Connect?}
+    C -- Não --> D[Pendente: Vendedor clica no Link de Onboarding no Painel DAIG]
+    C -- Sim --> E[3. Dados Bancários Zengin Validados]
+    E --> F[4. Depósito Automático no Banco Físico do Vendedor JPY]
+```
+
+1. **Conta Stripe Connect do Vendedor**:
+   * O valor do repasse (90%) sai da conta principal da DAIG e entra primeiro na **Conta Stripe Connect do Vendedor**.
+2. **Onboarding & Cadastro Bancário Japonês (Zengin System)**:
+   * O vendedor **precisa criar/vincular sua conta no Stripe Connect** através do botão no painel da sua loja na DAIG.
+   * No formulário do Stripe Express/Connect, ele insere os dados da sua conta bancária no Japão:
+     * **Nome do Banco** (ex: ゆうちょ銀行 Yucho Bank, MUFG, SMBC)
+     * **Código da Agência (3 dígitos)**
+     * **Número da Conta (7 dígitos)**
+     * **Nome do Titular em Katakana** (Hankaku Katakana - exatamente igual ao cadastro do banco no Japão).
+3. **Saque para o Banco Físico**:
+   * Uma vez liberado o repasse (Modo A ou B) e com a conta bancária cadastrada no Stripe Connect, o saldo cai diretamente na conta física do vendedor no Japão.
 
 ---
 
