@@ -32,44 +32,48 @@ graph LR
     E --> F[6. Confirmação de Entrega & Liberação Escrow]
 ```
 
-### 🔹 As 3 Principais Transportadoras do Japão
+### 🔹 As 4 Principais Transportadoras de Autopeças no Japão
 
 | Transportadora | Nome em Japonês | Uso Principal no Marketplace DAIG | Prazo de Entrega no Japão |
 | :--- | :--- | :--- | :--- |
 | **Yamato Transport** | **Kuroneko Yamato (黑猫宅急便)** | Peças pequenas e médias (faróis, volantes, relógios, módulos) | ⚡ **24 horas (no dia seguinte)** na ilha de Honshu |
-| **Sagawa Express** | **Sagawa Kyubin (佐川急便)** | Peças volumosas e pesadas (para-choques, portas, escapamentos, motores) | 🚚 **24 a 48 horas** |
+| **Seino Transportation** | **Seino Unyu (西濃運輸 / カンガルー便)** | Autopeças pesadas, B2B desmanches, rodas, eixos, motores e transmissões | 🚚 **24 a 48 horas** (Forte em galpões e carga comercial) |
+| **Sagawa Express** | **Sagawa Kyubin (佐川急便)** | Peças volumosas (para-choques, portas, escapamentos, capôs) | 🚚 **24 a 48 horas** |
 | **Japan Post** | **Yu-Pack (日本郵便)** | Encomendas expressas padrão e envios regionais | 📦 **24 a 48 horas** |
 
 ---
 
-### 🛵 2.1. Análise de Coleta em Casa / Galpão (集荷 - Shuka Service): Yamato vs. Japan Post
+### 🛵 2.1. Análise de Coleta em Casa / Galpão (集荷 - Shuka Service): Yamato vs. Seino vs. Japan Post
 
-**Dúvida Frequente**: *"A transportadora retira a peça direto na casa do vendedor ou no galpão do desmanche?"*
+**Dúvida Frequente**: *"A transportadora retira a peça direto na casa do vendedor ou no galpão do desmanche? E a Seino Unyu?"*
 
-**RESPOSTA: SIM! Tanto a Yamato quanto o Japan Post oferecem serviço de Coleta no Endereço (集荷 - Shuka).** No entanto, a **Yamato Kuroneko é altamente recomendada** pelas seguintes razões operacionais:
+**RESPOSTA: SIM! A Yamato, a Seino Unyu e o Japan Post oferecem serviço de Coleta no Endereço / Galpão (集荷 - Shuka).**
 
 ```mermaid
 graph TD
-    A[Venda Confirmada na DAIG] --> B{Forma de Despacho}
-    B -- Opção 1: Coleta no Endereço Shuka --> C[Motorista Yamato vai ao Galpão/Casa do Vendedor e retira a caixa]
-    B -- Opção 2: Postagem em Conveniência 24h --> D[Vendedor entrega em qualquer 7-Eleven ou FamilyMart]
-    C --> E[Código de Rastreio Gerado Automaticamente]
-    D --> E
+    A[Venda Confirmada na DAIG] --> B{Tipo de Autopeça & Despacho}
+    B -- Peças Pequenas/Médias (até 30kg) --> C[Yamato Kuroneko: Coleta Shuka no Galpão ou Conveniência 24h]
+    B -- Peças Pesadas/Motores (30kg a 100kg+) --> D[Seino Unyu / Sagawa: Coleta Shuka de Carga Pesada no Galpão]
+    B -- Envios Regionais Padrão --> E[Japan Post: Coleta Shuka ou Agência]
+    C --> F[Código de Rastreio (12 dígitos) Gerado no Sistema DAIG]
+    D --> F
+    E --> F
 ```
 
-#### 🏆 Comparativo Técnico para o Marketplace DAIG:
+#### 🏆 Comparativo Técnico Completo para o Marketplace DAIG:
 
-| Critério Operacional | 📦 Yamato Transport (Kuroneko Yamato) | 📮 Japan Post (Yu-Pack) |
-| :--- | :--- | :--- |
-| **Retira na Casa / Galpão? (集荷 - Shuka)** | ✅ **SIM!** Com hora marcada (ex: 8h-12h, 14h-16h, 16h-18h, 18h-21h). | ✅ **SIM!** Agendamento via telefone ou site oficial. |
-| **Integração de Coleta Automática via API** | 🚀 **IMPECÁVEL (`Yamato B2 Cloud API`)**. O vendedor clica em *"Solicitar Coleta"* no painel DAIG e a Yamato envia a ordem ao motorista. | ⚠️ Mais burocrático e exige preenchimento manual no site do correio. |
-| **Postagem 24 horas por dia** | 🌙 **SIM!** Pode ser postado em qualquer **7-Eleven** ou **FamilyMart** (24h/365 dias). | 🕒 Limitado aos horários das agências do correio (fecham às 17h/19h) e postos Lawson. |
-| **Limite de Tamanho e Peso** | 📏 Até **200 cm** (soma L+A+P) e até **30 kg** por caixa. | 📏 Até **170 cm** e até **25 kg** no pacote padrão. |
+| Critério Operacional | 📦 Yamato Transport (Kuroneko Yamato) | 🦘 Seino Transportation (西濃運輸 / カンガルー便) | 📮 Japan Post (Yu-Pack) |
+| :--- | :--- | :--- | :--- |
+| **Retira na Casa / Galpão? (集荷 - Shuka)** | ✅ **SIM!** Com janela de hora marcada (ex: 8h-12h, 14h-16h, 16h-18h, 18h-21h). | ✅ **SIM! Especialista em galpões de desmanche (Kaitai-gyo), oficinas e coleta residencial.** | ✅ **SIM!** Agendamento via telefone ou site oficial. |
+| **Integração de Coleta Automática via API** | 🚀 **IMPECÁVEL (`Yamato B2 Cloud API`)**. O vendedor solicita a coleta no painel DAIG em 1 clique. | 🛠️ **EXCELENTE B2B (`Seino Web API / Kangaroo API`)**. Suporte a expedição comercial e pallets. | ⚠️ Mais burocrático, exige cadastro manual no portal do Japan Post. |
+| **Postagem 24 horas por Dia** | 🌙 **SIM!** Pode ser postado a qualquer hora em **7-Eleven** ou **FamilyMart** (24h/365 dias). | 🏢 Coleta direta no galpão ou postagem em filiais/depósitos Seino. | 🕒 Limitado ao horário das agências dos correios (fecham às 17h/19h) e postos Lawson. |
+| **Limites de Dimensão e Peso** | 📏 Até **200 cm** (soma L+A+P) e até **30 kg** por caixa. | 🐘 **ALTA CAPACIDADE!** Suporta cargas pesadas (30kg a 100kg+), caixas de câmbio e motores em pallets. | 📏 Até **170 cm** e até **25 kg** no pacote padrão. |
 
 > 💡 **Recomendação Estratégica**:
-> 1. **Yamato Kuroneko**: Opção padrão integrada no Marketplace DAIG para 90% dos envios (com suporte a coleta automática no galpão do vendedor e entrega de etiquetas com QR Code).
-> 2. **Sagawa Express**: Utilizada como parceira oficial para autopeças gigantes que excedem 200 cm ou 30 kg (como motores inteiros, transmisiões e para-choques).
-> 3. **Japan Post**: Mantida como opção secundária de envio.
+> 1. **Yamato Kuroneko**: Padrão integrado na DAIG para 90% das autopeças pequenas/médias (com coleta no galpão e conveniências 24h).
+> 2. **Seino Unyu (西濃運輸)**: **Parceira B2B Oficial para Desmanches Veiculares** para transporte de motores, transmissões, eixos, suspensões e cargas pesadas retiras diretamente no galpão.
+> 3. **Sagawa Express**: Fallback para peças volumosas e para-choques.
+> 4. **Japan Post**: Opção secundária.
 
 ### 🔹 Como Funciona o Código de Rastreamento (Denpyo Bangou)
 

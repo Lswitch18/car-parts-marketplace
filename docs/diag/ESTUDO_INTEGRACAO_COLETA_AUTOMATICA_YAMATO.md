@@ -93,11 +93,11 @@ const payload = {
 
 1. **Janela de Embalagem (Buffer Time)**:
    * Se a compra acontecer às 14h00, não agende a coleta para as 14h05. É recomendável dar uma margem de **2 a 4 horas** (ou agendar para a manhã do dia seguinte) para o vendedor embalar a peça com plástico bolha e caixa com segurança.
-2. **Peças Fora do Padrão Yamato**:
-   * Para motores inteiros, transmissões ou para-choques gigantes (> 200cm ou > 30kg), o sistema deve identificar o tamanho da peça e direcionar a coleta para a **Sagawa Express (佐川急便)**.
+2. **Peças Fora do Padrão Yamato (Redirecionamento para Seino Unyu / Sagawa)**:
+   * Para motores inteiros, transmissões, eixos ou para-choques gigantes (> 200cm ou > 30kg), o sistema identifica o peso/dimensão do item e aciona a coleta B2B da **Seino Transportation (西濃運輸 - Seino Unyu / カンガルー便)** ou **Sagawa Express**, que possuem estrutura para paletização e caminhões baú com plataforma elevatória.
 
 ---
 
 ## 🏁 4. Conclusão da Análise
 
-Implementar a coleta automática da Yamato **NÃO é complicado**. A infraestrutura da API da Yamato no Japão é moderna, confiável e rápida. Com 1 Edge Function no backend da DAIG, o processo de despacho fica 100% automatizado, elevando a experiência do marketplace ao nível dos maiores E-commerces do Japão (Rakuten, Yahoo! Auctions, Mercari).
+Implementar a coleta automática da Yamato e da Seino **NÃO é complicado**. A infraestrutura das APIs no Japão é moderna, confiável e rápida. Com 1 Edge Function no backend da DAIG, o processo de despacho fica 100% automatizado, elevando a experiência do marketplace ao nível dos maiores E-commerces do Japão (Rakuten, Yahoo! Auctions, Mercari).
