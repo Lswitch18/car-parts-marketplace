@@ -75,6 +75,28 @@ graph TD
 > 3. **Sagawa Express**: Fallback para peças volumosas e para-choques.
 > 4. **Japan Post**: Opção secundária.
 
+---
+
+### 💰 2.2. Comparativo de Preço e Tarifas por Envio (Estimativa em JPY ¥)
+
+No Japão, a precificação do frete é tabelada com base no **Tamanho do Pacote (soma L+A+P em cm)**, **Peso (kg)** e rota geográfica (ex: Kanto para Kansai / Tokyo ➔ Osaka):
+
+| Tamanho / Categoria | Exemplo de Autopeça JDM | 📦 Yamato Kuroneko | 📮 Japan Post (Yu-Pack) | 🦘 Seino Unyu (西濃) | 🚚 Sagawa Express |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Tamanho 60** (< 60cm, até 2kg) | Módulos ECU, relógios, manoplas, emblemas | **~JP¥ 940** | **~JP¥ 870** 🌟 | **~JP¥ 920** | **~JP¥ 910** |
+| **Tamanho 80** (< 80cm, até 5kg) | Volantes, retrovisores, bombas de combustível | **~JP¥ 1.230** | **~JP¥ 1.130** | **~JP¥ 1.150** | **~JP¥ 1.180** |
+| **Tamanho 100** (< 100cm, até 10kg) | Faróis, lanternas, alternadores, pinças de freio | **~JP¥ 1.530** | **~JP¥ 1.450** | **~JP¥ 1.400** | **~JP¥ 1.490** |
+| **Tamanho 120** (< 120cm, até 15kg) | Radiadores, coletores, discos de freio pesados | **~JP¥ 1.850** | **~JP¥ 1.770** | **~JP¥ 1.700** | **~JP¥ 1.810** |
+| **Tamanho 140-160** (< 160cm, até 25kg) | Amortecedores completos, escapamentos pequenos | **~JP¥ 2.510** | **~JP¥ 2.450** | **~JP¥ 2.200** 🌟 | **~JP¥ 2.480** |
+| **Tamanho 180-200** (< 200cm, até 30kg) | Rodas com pneu, para-choques médios | **~JP¥ 3.720** | ❌ Excede limite | **~JP¥ 3.100** 🌟 | **~JP¥ 3.500** |
+| **Carga Pesada / B2B** (30kg a 100kg+) | Motors V6/I4, caixas de câmbio, eixos | ❌ Excede limite | ❌ Excede limite | **~JP¥ 4.500 a ¥8.500** 🏆 (Melhor Preço!) | **~JP¥ 6.000 a ¥9.500** |
+
+#### 📊 Resumo de Análise de Custo-Benefício:
+
+1. **Peças Pequenas e Leves (< 80cm)**: **Japan Post (Yu-Pack)** é cerca de ~JP¥ 70 a ¥100 JPY mais barato por envio. Porém, a **Yamato** empata em benefício devido à postagem 24 horas por dia em lojas 7-Eleven / FamilyMart.
+2. **Peças Padrão de Marketplace (80cm a 120cm)**: **Yamato Kuroneko** possui o melhor equilíbrio entre tarifa competitiva, velocidade de entrega em 24h e integração de API com a DAIG.
+3. **Autopeças Pesadas e Volumosas (> 30kg ou Pallets)**: **Seino Transportation (西濃運輸)** é disparada a **MPOIS ECONÔMICA**, economizando até **30% a 40%** no frete B2B para desmanches veiculares.
+
 ### 🔹 Como Funciona o Código de Rastreamento (Denpyo Bangou)
 
 1. O vendedor despacha o pacote via Coleta no Galpão (**Shuka**) ou entrega na loja de conveniência (**7-Eleven / FamilyMart**).
