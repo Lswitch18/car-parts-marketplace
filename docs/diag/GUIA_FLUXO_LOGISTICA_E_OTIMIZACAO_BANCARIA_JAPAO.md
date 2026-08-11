@@ -40,10 +40,41 @@ graph LR
 | **Sagawa Express** | **Sagawa Kyubin (佐川急便)** | Peças volumosas e pesadas (para-choques, portas, escapamentos, motores) | 🚚 **24 a 48 horas** |
 | **Japan Post** | **Yu-Pack (日本郵便)** | Encomendas expressas padrão e envios regionais | 📦 **24 a 48 horas** |
 
+---
+
+### 🛵 2.1. Análise de Coleta em Casa / Galpão (集荷 - Shuka Service): Yamato vs. Japan Post
+
+**Dúvida Frequente**: *"A transportadora retira a peça direto na casa do vendedor ou no galpão do desmanche?"*
+
+**RESPOSTA: SIM! Tanto a Yamato quanto o Japan Post oferecem serviço de Coleta no Endereço (集荷 - Shuka).** No entanto, a **Yamato Kuroneko é altamente recomendada** pelas seguintes razões operacionais:
+
+```mermaid
+graph TD
+    A[Venda Confirmada na DAIG] --> B{Forma de Despacho}
+    B -- Opção 1: Coleta no Endereço Shuka --> C[Motorista Yamato vai ao Galpão/Casa do Vendedor e retira a caixa]
+    B -- Opção 2: Postagem em Conveniência 24h --> D[Vendedor entrega em qualquer 7-Eleven ou FamilyMart]
+    C --> E[Código de Rastreio Gerado Automaticamente]
+    D --> E
+```
+
+#### 🏆 Comparativo Técnico para o Marketplace DAIG:
+
+| Critério Operacional | 📦 Yamato Transport (Kuroneko Yamato) | 📮 Japan Post (Yu-Pack) |
+| :--- | :--- | :--- |
+| **Retira na Casa / Galpão? (集荷 - Shuka)** | ✅ **SIM!** Com hora marcada (ex: 8h-12h, 14h-16h, 16h-18h, 18h-21h). | ✅ **SIM!** Agendamento via telefone ou site oficial. |
+| **Integração de Coleta Automática via API** | 🚀 **IMPECÁVEL (`Yamato B2 Cloud API`)**. O vendedor clica em *"Solicitar Coleta"* no painel DAIG e a Yamato envia a ordem ao motorista. | ⚠️ Mais burocrático e exige preenchimento manual no site do correio. |
+| **Postagem 24 horas por dia** | 🌙 **SIM!** Pode ser postado em qualquer **7-Eleven** ou **FamilyMart** (24h/365 dias). | 🕒 Limitado aos horários das agências do correio (fecham às 17h/19h) e postos Lawson. |
+| **Limite de Tamanho e Peso** | 📏 Até **200 cm** (soma L+A+P) e até **30 kg** por caixa. | 📏 Até **170 cm** e até **25 kg** no pacote padrão. |
+
+> 💡 **Recomendação Estratégica**:
+> 1. **Yamato Kuroneko**: Opção padrão integrada no Marketplace DAIG para 90% dos envios (com suporte a coleta automática no galpão do vendedor e entrega de etiquetas com QR Code).
+> 2. **Sagawa Express**: Utilizada como parceira oficial para autopeças gigantes que excedem 200 cm ou 30 kg (como motores inteiros, transmisiões e para-choques).
+> 3. **Japan Post**: Mantida como opção secundária de envio.
+
 ### 🔹 Como Funciona o Código de Rastreamento (Denpyo Bangou)
 
-1. O vendedor leva o pacote à agência do correio ou loja de conveniência (7-Eleven / FamilyMart / Lawson).
-2. Ele recebe um código de 12 dígitos (**伝票番号 - Denpyo Bangou**), ex: `3847-1928-4019`.
+1. O vendedor despacha o pacote via Coleta no Galpão (**Shuka**) ou entrega na loja de conveniência (**7-Eleven / FamilyMart**).
+2. Ele recebe o código de 12 dígitos (**伝票番号 - Denpyo Bangou**), ex: `3847-1928-4019`.
 3. O vendedor clica em *"Informar Envio"* no painel DAIG, seleciona a transportadora e cola o código.
 4. O comprador e a plataforma acompanham o rastreamento em tempo real.
 
