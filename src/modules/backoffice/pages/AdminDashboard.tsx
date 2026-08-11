@@ -279,19 +279,19 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Card 4: Transações Totais */}
+            {/* Card 4: Compras Totais */}
             <div 
               onClick={() => navigate('/admin/transactions')}
               className="bg-[#121215] border border-[#27272a] hover:border-zinc-500 rounded-xl p-4 cursor-pointer transition-all group"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Número de Transações')}</span>
+                <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">{t('Número de Compras')}</span>
                 <span className="text-[10px] text-emerald-400 font-mono font-bold flex items-center gap-1">
                   Live
                 </span>
               </div>
               <p className="text-2xl font-bold text-white font-mono tracking-tight">
-                {financeStats.totalTransactions || 1} <span className="text-xs text-zinc-400 font-normal">transações</span>
+                {financeStats.totalTransactions || 1} <span className="text-xs text-zinc-400 font-normal">compras</span>
               </p>
               <div className="mt-3 pt-2 border-t border-[#27272a] flex items-center justify-between text-xs text-zinc-400">
                 <span>Concluídas:</span>
@@ -316,7 +316,7 @@ export default function AdminDashboard() {
           {[
             { icon: Plus, label: '+ Novo Anúncio', desc: 'Cadastrar peças JDM', path: '/create-listing' },
             { icon: Cpu, label: 'Scanner IA 3D', desc: 'Gerar modelo por imagem', path: '/admin/image-to-3d' },
-            { icon: ShieldCheck, label: 'Transações', desc: 'Gestão de envios e entregas', path: '/admin/transactions' },
+            { icon: ShieldCheck, label: 'Compras', desc: 'Gestão de compras, envios e entregas', path: '/admin/transactions' },
             { icon: BarChart3, label: 'Relatórios', desc: 'Balanço e repasses', path: '/admin/finance/payable' },
           ].map((item, i) => {
             const Icon = item.icon;

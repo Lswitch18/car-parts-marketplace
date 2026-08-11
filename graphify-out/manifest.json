@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
-    "mtime": 1786419937.0596201,
-    "ast_hash": "ab2c6dcbc66e7eaac8e842973589c664",
+    "mtime": 1786420548.931627,
+    "ast_hash": "eb6c0a9bc41ca53b8e2d72ddbc7cabc3",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {

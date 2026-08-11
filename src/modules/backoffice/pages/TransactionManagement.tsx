@@ -928,7 +928,7 @@ export default function TransactionManagement() {
         ) : (
           <div className="text-center py-12 space-y-2">
             <ShieldCheck size={28} className="text-zinc-600 mx-auto" />
-            <p className="text-zinc-500 text-xs">{searchQuery ? t('Nenhuma transação encontrada para esta busca.') : t('Nenhuma transação registrada.')}</p>
+            <p className="text-zinc-500 text-xs">{searchQuery ? t('Nenhuma compra encontrada para esta busca.') : t('Nenhuma compra registrada.')}</p>
           </div>
         )}
       </div>
