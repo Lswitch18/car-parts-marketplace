@@ -626,129 +626,131 @@ export default function TransactionManagement() {
       {/* ═══ CYBER NEON OPERATIONAL LEDGER CARDS ═══ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Card 1: A Receber (Pendente / Abandonada) */}
+        {/* Card 1: Lucro em Caixa DAIG (JP¥ 6) - PRIMEIRO CARD NA ESQUERDA */}
         <div 
-          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
-          className={`ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-amber-500/80 hover:shadow-[0_0_25px_rgba(245,158,11,0.15)] relative group ${
-            activeLedgerFilter === 'receber' ? 'border-amber-500/80 bg-amber-500/[0.05] shadow-[0_0_20px_rgba(245,158,11,0.2)]' : 'border-zinc-800/80'
-          }`}
+          className="ledger-card bg-[#0d2118]/95 backdrop-blur-xl border border-emerald-500/60 rounded-2xl p-4 space-y-2 relative group transition-all duration-300 shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:border-emerald-400"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('A RECEBER')}</span>
+              <span className="text-[11px] font-extrabold text-emerald-300 uppercase tracking-wider">{t('LUCRO EM CAIXA DAIG')}</span>
               <div className="relative group/tooltip">
-                <Info size={12} className="text-zinc-500 hover:text-amber-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-[#09090b] border border-amber-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
-                  Vendas pendentes ou abandonadas no checkout Stripe. Clique para filtrar e disparar e-mail de recuperação via Resend.
+                <Info size={12} className="text-emerald-400 hover:text-emerald-200 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-56 p-2 bg-[#09090b] border border-emerald-500/40 text-[10px] text-zinc-200 rounded-lg shadow-2xl z-20">
+                  Lucro líquido em caixa da DAIG retido na plataforma (10% comissão - 3.6% taxas Stripe).
                 </div>
               </div>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
-              <Clock size={10} /> Pendente
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+              💰 Caixa DAIG
             </span>
           </div>
-          <p className="text-2xl font-black text-white font-mono tracking-tight group-hover:text-amber-400 transition-colors">
-            {formatMoney(aReceberVal)}
+          <p className="text-3xl font-black text-emerald-400 font-mono tracking-tight drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+            {formatMoney(lucroMarketplaceNet)}
           </p>
-          <p className="text-[11px] text-zinc-400 mt-2 font-medium">Clique para listar compras pendentes de recuperação</p>
+          <div className="pt-2 border-t border-emerald-500/20 space-y-1 text-[11px] font-mono text-emerald-200/90">
+            <div className="flex justify-between">
+              <span className="text-zinc-300">Comissão DAIG ({commissionRate}%):</span>
+              <span className="text-cyan-300 font-bold">+{formatMoney(lucroBruto)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-zinc-300">Taxa Cartão Stripe (3.6%):</span>
+              <span className="text-amber-300 font-bold">-{formatMoney(totalStripeFees)}</span>
+            </div>
+            <div className="flex justify-between border-t border-emerald-500/30 pt-1 font-bold text-white">
+              <span>Retido em Caixa DAIG:</span>
+              <span className="text-emerald-300 font-bold">{formatMoney(lucroMarketplaceNet)}</span>
+            </div>
+          </div>
         </div>
 
         {/* Card 2: Custódia Retida (Escrow no Stripe) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'retido' ? null : 'retido')}
-          className={`ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-sky-500/80 hover:shadow-[0_0_25px_rgba(14,165,233,0.2)] relative group ${
-            activeLedgerFilter === 'retido' ? 'border-sky-500/80 bg-sky-500/[0.05] shadow-[0_0_20px_rgba(14,165,233,0.25)]' : 'border-zinc-800/80'
+          className={`ledger-card bg-[#0d1c2b]/95 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-sky-400 hover:shadow-[0_0_25px_rgba(14,165,233,0.25)] relative group ${
+            activeLedgerFilter === 'retido' ? 'border-sky-400 bg-sky-500/[0.1] shadow-[0_0_20px_rgba(14,165,233,0.3)]' : 'border-sky-500/40'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('CUSTÓDIA RETIDA STRIPE')}</span>
+              <span className="text-[11px] font-extrabold text-sky-200 uppercase tracking-wider">{t('CUSTÓDIA RETIDA STRIPE')}</span>
               <div className="relative group/tooltip">
-                <Info size={12} className="text-zinc-500 hover:text-sky-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-[#09090b] border border-sky-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
-                  Fundos retidos com segurança na conta Stripe Escrow JPY até confirmação de entrega pelo cliente.
+                <Info size={12} className="text-sky-400 hover:text-sky-200 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-52 p-2 bg-[#09090b] border border-sky-500/40 text-[10px] text-zinc-200 rounded-lg shadow-2xl z-20">
+                  Fundos retidos na conta Stripe Escrow JPY aguardando confirmação de entrega do comprador.
                 </div>
               </div>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-400 border border-sky-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(14,165,233,0.2)]">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 flex items-center gap-1 shadow-[0_0_10px_rgba(14,165,233,0.2)]">
               <Lock size={10} /> Escrow 🔒
             </span>
           </div>
-          <p className="text-2xl font-black text-sky-400 font-mono tracking-tight">
+          <p className="text-3xl font-black text-sky-400 font-mono tracking-tight drop-shadow-[0_0_12px_rgba(14,165,233,0.3)]">
             {formatMoney(retidoValLiquido)}
           </p>
-          <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
+          <div className="pt-2 border-t border-sky-500/20 space-y-1 text-[11px] font-mono text-sky-200/80">
             <div className="flex justify-between">
-              <span>Vendas Brutas Retidas:</span>
+              <span className="text-zinc-300">Vendas Brutas Retidas:</span>
               <span className="text-white font-bold">{formatMoney(retidoValBruto)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Taxa Stripe (3.6%):</span>
-              <span className="text-amber-400 font-bold">-{formatMoney(retidoStripeFee)}</span>
+              <span className="text-zinc-300">Taxa Stripe (3.6%):</span>
+              <span className="text-amber-300 font-bold">-{formatMoney(retidoStripeFee)}</span>
             </div>
           </div>
         </div>
 
-        {/* Card 3: Pagos ao Vendedor */}
+        {/* Card 3: Pagos ao Vendedor (ALTA VISIBILIDADE / SUPER VÍVIDO) */}
         <div 
           onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'pagos' ? null : 'pagos')}
-          className={`ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-emerald-500/80 hover:shadow-[0_0_25px_rgba(16,185,129,0.2)] relative group ${
-            activeLedgerFilter === 'pagos' ? 'border-emerald-500/80 bg-emerald-500/[0.05] shadow-[0_0_20px_rgba(16,185,129,0.25)]' : 'border-zinc-800/80'
+          className={`ledger-card bg-[#0c222e]/95 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.3)] relative group ${
+            activeLedgerFilter === 'pagos' ? 'border-cyan-400 bg-cyan-500/[0.1] shadow-[0_0_25px_rgba(6,182,212,0.35)]' : 'border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.15)]'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
+              <span className="text-[11px] font-extrabold text-cyan-200 uppercase tracking-wider">{t('PAGOS AO VENDEDOR')}</span>
               <div className="relative group/tooltip">
-                <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
-                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-[#09090b] border border-emerald-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
-                  Repasses efetuados aos vendedores via Stripe Connect após conclusão da entrega do pedido.
+                <Info size={12} className="text-cyan-400 hover:text-cyan-200 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-[#09090b] border border-cyan-500/40 text-[10px] text-zinc-200 rounded-lg shadow-2xl z-20">
+                  Repasses efetuados aos vendedores via Stripe Connect após confirmação do pedido.
                 </div>
               </div>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
               <CheckCircle2 size={10} /> Repassado
             </span>
           </div>
-          <p className="text-2xl font-black text-white font-mono tracking-tight group-hover:text-emerald-400 transition-colors">
+          <p className="text-3xl font-black text-white font-mono tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] group-hover:text-cyan-300 transition-colors">
             {formatMoney(pagosVal)}
           </p>
-          <p className="text-[11px] text-zinc-400 mt-2 font-medium">{(100 - commissionRate)}% repassado via Stripe Connect</p>
+          <p className="text-[11px] text-cyan-200/90 mt-2 font-mono font-medium">{(100 - commissionRate)}% repassado via Stripe Connect</p>
         </div>
 
-        {/* Card 4: Lucro Plataforma */}
-        <div className="ledger-card bg-[#0f0f13]/90 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400/70 rounded-2xl p-4 space-y-2 relative group transition-all duration-300 shadow-[0_0_25px_rgba(16,185,129,0.12)]">
-          <div className="flex items-center justify-between">
+        {/* Card 4: Compras Pendentes (A Receber) */}
+        <div 
+          onClick={() => setActiveLedgerFilter(activeLedgerFilter === 'receber' ? null : 'receber')}
+          className={`ledger-card bg-[#261d0d]/95 backdrop-blur-xl border rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.25)] relative group ${
+            activeLedgerFilter === 'receber' ? 'border-amber-400 bg-amber-500/[0.1] shadow-[0_0_20px_rgba(245,158,11,0.3)]' : 'border-amber-500/40'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-extrabold text-zinc-300 uppercase tracking-wider">{t('LUCRO DA PLATAFORMA')}</span>
+              <span className="text-[11px] font-extrabold text-amber-200 uppercase tracking-wider">{t('COMPRAS A RECEBER')}</span>
               <div className="relative group/tooltip">
-                <Info size={12} className="text-zinc-500 hover:text-emerald-400 transition-colors" />
-                <div className="absolute right-0 bottom-full mb-1 hidden group-hover/tooltip:block w-56 p-2 bg-[#09090b] border border-emerald-500/30 text-[10px] text-zinc-300 rounded-lg shadow-2xl z-20">
-                  Lucro líquido da DAIG (Comissão de {commissionRate}% sobre vendas - Taxas do Stripe 3.6% + Assinaturas SaaS).
+                <Info size={12} className="text-amber-400 hover:text-amber-200 transition-colors" />
+                <div className="absolute left-0 bottom-full mb-1 hidden group-hover/tooltip:block w-48 p-2 bg-[#09090b] border border-amber-500/40 text-[10px] text-zinc-200 rounded-lg shadow-2xl z-20">
+                  Vendas pendentes no checkout Stripe ou em Konbini. Clique para listar e disparar recuperação.
                 </div>
               </div>
             </div>
-            <div className="p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-              <DollarSign size={14} />
-            </div>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+              <Clock size={10} /> Pendente
+            </span>
           </div>
-          <p className="text-2xl font-black text-emerald-400 font-mono tracking-tight drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]">
-            {formatMoney(lucroMarketplaceNet)}
+          <p className="text-3xl font-black text-amber-400 font-mono tracking-tight drop-shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+            {formatMoney(aReceberVal)}
           </p>
-          <div className="pt-2 border-t border-[#27272a] space-y-1 text-[11px] font-mono text-zinc-400">
-            <div className="flex justify-between">
-              <span>Comissão DAIG ({commissionRate}%):</span>
-              <span className="text-cyan-400 font-bold">+{formatMoney(lucroBruto)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Taxa Cartão Stripe (3.6%):</span>
-              <span className="text-amber-400 font-bold">-{formatMoney(totalStripeFees)}</span>
-            </div>
-            <div className="flex justify-between border-t border-zinc-800 pt-1 font-bold text-white">
-              <span>Lucro Vendas Marketplace:</span>
-              <span className="text-emerald-400 font-bold">{formatMoney(lucroMarketplaceNet)}</span>
-            </div>
-          </div>
+          <p className="text-[11px] text-amber-200/80 mt-2 font-medium">Carrinhos pendentes de recuperação</p>
         </div>
 
       </div>

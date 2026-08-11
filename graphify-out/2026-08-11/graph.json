@@ -1610,8 +1610,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "package_dependencies_base_ui_react",
-      "community": 119,
-      "community_name": "@base-ui/react",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1621,8 +1621,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "base_ui_react",
-      "community": 119,
-      "community_name": "@base-ui/react",
+      "community": 36,
+      "community_name": "WMSPage.tsx",
       "norm_label": "@base-ui/react"
     },
     {
@@ -1632,8 +1632,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "package_dependencies_capacitor_android",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 188,
+      "community_name": "@capacitor/android",
       "norm_label": "@capacitor/android"
     },
     {
@@ -1643,8 +1643,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "capacitor_android",
-      "community": 36,
-      "community_name": "WMSPage.tsx",
+      "community": 188,
+      "community_name": "@capacitor/android",
       "norm_label": "@capacitor/android"
     },
     {
@@ -27384,7 +27384,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/backoffice/pages/TransactionManagement.tsx",
-      "source_location": "L905",
+      "source_location": "L897",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_backoffice_pages_transactionmanagement_transactionmanagement",
@@ -49241,5 +49241,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "62e4c706ed32bb5d5e63b6b9112390b9e5bfb42f"
+  "built_at_commit": "43d0cc80527292288c5b8fd96c392d3975c50666"
 }
