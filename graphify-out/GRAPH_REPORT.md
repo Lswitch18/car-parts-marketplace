@@ -1,16 +1,16 @@
-# Graph Report - car-parts-marketplce  (2026-08-11)
+# Graph Report - car-parts-marketplce  (2026-08-12)
 
 ## Corpus Check
-- 384 files · ~1,079,596 words
+- 384 files · ~1,081,682 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1660 nodes · 2701 edges · 202 communities (132 shown, 70 thin omitted)
+- 1660 nodes · 2707 edges · 202 communities (132 shown, 70 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7ff84542`
+- Built from commit: `ece37718`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -181,7 +181,7 @@
 - @vitejs/plugin-react
 
 ## God Nodes (most connected - your core abstractions)
-1. `useI18n()` - 94 edges
+1. `useI18n()` - 96 edges
 2. `useAuthStore` - 82 edges
 3. `corsHeaders()` - 47 edges
 4. `supabase` - 46 edges
@@ -262,8 +262,8 @@ Cohesion: 0.11
 Nodes (13): Subscription(), iconMap, Props, PartDetailDrawer(), Props, Props, VehicleSelector(), PartsLookup() (+5 more)
 
 ### Community 13 - "r"
-Cohesion: 0.13
-Nodes (5): DEFAULT_ICON, authFetch(), ColetasPage(), adminApi, DashboardKPIs
+Cohesion: 0.12
+Nodes (5): DEFAULT_ICON, STATUS_COLOR, STATUS_ENTREGA, adminApi, DashboardKPIs
 
 ### Community 14 - "t"
 Cohesion: 0.14
@@ -303,7 +303,7 @@ Nodes (10): AdminDashboard(), AlertItem, AlertOrchestrationParams, calculateFina
 
 ### Community 23 - "constructor"
 Cohesion: 0.12
-Nodes (17): auto-parts-db, @capacitor/cli, eslint-plugin-react-hooks, devDependencies, auto-parts-db, @capacitor/cli, eslint-plugin-react-hooks, @testing-library/dom (+9 more)
+Nodes (17): auto-parts-db, @capacitor/cli, devDependencies, auto-parts-db, @capacitor/cli, postcss, @testing-library/dom, @testing-library/user-event (+9 more)
 
 ### Community 24 - "PartCard.tsx"
 Cohesion: 0.31
@@ -351,7 +351,7 @@ Nodes (10): 💡 1. Conceito Fundamental: Transferência vs Repasse Bancário, �
 
 ### Community 36 - "WMSPage.tsx"
 Cohesion: 0.18
-Nodes (11): axios, @capacitor/android, dependencies, axios, @capacitor/android, react-dom, react-is, @types/leaflet (+3 more)
+Nodes (11): axios, @base-ui/react, dependencies, axios, @base-ui/react, react-dom, react-is, @types/leaflet (+3 more)
 
 ### Community 37 - "adminApi.test.ts"
 Cohesion: 0.20
@@ -454,8 +454,8 @@ Cohesion: 0.40
 Nodes (4): create_excel_spreadsheet(), create_word_document(), Cria um documento Word (.docx) profissional formatado., Cria uma planilha Excel (.xlsx) profissional e formatada.
 
 ### Community 65 - "📱 Mobile-First Hi-Tech Design & AI Skill"
-Cohesion: 0.13
-Nodes (10): SearchResult, TYPE_LABELS, STATUS_COLOR, STATUS_ENTREGA, DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup (+2 more)
+Cohesion: 0.15
+Nodes (10): SearchResult, TYPE_LABELS, authFetch(), ColetasPage(), DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup (+2 more)
 
 ### Community 66 - "PedidoDetail.tsx"
 Cohesion: 0.20
@@ -594,11 +594,11 @@ Nodes (3): queryClient, root, StoreApp()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `dependencies` connect `WMSPage.tsx` to `ws`, `zustand`, `GlobalSearch.tsx`, `index-B_no5lKC.js`, `NotificationCenter.tsx`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `typescript-eslint`, `react`, `react-router`, `@southdevs/capacitor-google-auth`, `PedidoDetail.tsx`, `leaflet`, `@capacitor/core`, `@codetrix-studio/capacitor-google-auth`, `@fontsource-variable/geist`, `framer-motion`, `jsbarcode`, `WorkerApp-BWctDf0A.js`, `lucide-react`, `@capacitor/ios`, `react-leaflet`, `@react-three/drei`, `@base-ui/react`, `recharts`, `shadcn`, `@supabase/supabase-js`, `tailwind-merge`, `tailwindcss`, `@tanstack/react-query`, `three`, `tw-animate-css`?**
-  _High betweenness centrality (0.113) - this node is a cross-community bridge._
-- **Why does `useI18n()` connect `n` to `LogistixDashboard-ZhczRoYg.js`, `LogistixDashboard-ZhczRoYg.js`, `📱 Mobile-First Hi-Tech Design & AI Skill`, `@capacitor/android`, `.setAttribute`, `.clone`, `t`, `.setAttribute`, `Ye`, `.copy`, `EtiquetasPage.tsx`, `.toString`, `r`, `.push`, `Ne`, `B2BPage.tsx`, `.getSize`, `@supabase/supabase-js`?**
-  _High betweenness centrality (0.107) - this node is a cross-community bridge._
+  _High betweenness centrality (0.114) - this node is a cross-community bridge._
+- **Why does `useI18n()` connect `n` to `LogistixDashboard-ZhczRoYg.js`, `LogistixDashboard-ZhczRoYg.js`, `.setAttribute`, `t`, `.copy`, `r`, `.push`, `Ne`, `.getSize`, `@supabase/supabase-js`, `.clone`, `.setAttribute`, `EtiquetasPage.tsx`, `Ye`, `.toString`, `ln`, `B2BPage.tsx`, `📱 Mobile-First Hi-Tech Design & AI Skill`, `@capacitor/android`?**
+  _High betweenness centrality (0.111) - this node is a cross-community bridge._
 - **Why does `qrcode` connect `leaflet` to `EtiquetasPage.tsx`, `WMSPage.tsx`?**
-  _High betweenness centrality (0.103) - this node is a cross-community bridge._
+  _High betweenness centrality (0.104) - this node is a cross-community bridge._
 - **What connects `CustomIconProps`, `build-apk.sh script`, `ANDROID_HOME` to the rest of the system?**
   _562 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `LogistixDashboard-ZhczRoYg.js` be split into smaller, more focused modules?**
