@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>決済フロー資料 - Digital AI Garage (DAIG)</title>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .header {
+      background: #0f172a;
+      color: white;
+      padding: 24px 32px;
+      border-radius: 16px;
+      margin-bottom: 32px;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      color: #38bdf8;
+    }
+    .header p {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    .meta-box {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      font-size: 14px;
+    }
+    .meta-item strong {
+      color: #64748b;
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .section {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .step-number {
+      display: inline-block;
+      background: #0284c7;
+      color: white;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .section h2 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      color: #0369a1;
+    }
+    .section p {
+      margin: 0 0 16px 0;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.6;
+    }
+    .url-badge {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+    .preview-placeholder {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      border: 2px dashed #0284c7;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Digital AI Garage (DAIG) - 決済フロー構成資料</h1>
+    <p>Stripe コンビニ決済およびクレジットカード決済審査提出資料 (Stripe Account: acct_1TtD9VHlCJrkWqOL)</p>
+  </div>
+
+  <div class="meta-box">
+    <div class="meta-item">
+      <strong>販売事業者名 (Seller / Business Name)</strong>
+      Digital AI Garage - DAIG (FORBECI SUZUKI PATRICK HIKARU)
+    </div>
+    <div class="meta-item">
+      <strong>運営統括責任者 (Sales Manager)</strong>
+      FORBECI SUZUKI PATRICK HIKARU (パトリック・スズキ)
+    </div>
+    <div class="meta-item">
+      <strong>所在地 (Business Address)</strong>
+      〒484-0894 愛知県犬山市羽黒13番地 ヴィラカルド (Villa Card, 13 Haguro, Inuyama-shi, Aichi-ken 484-0894, Japan)
+    </div>
+    <div class="meta-item">
+      <strong>連絡先 (Contact Details)</strong>
+      E-mail: contact@daig.jp | TEL: +81 90 9185 1777
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section">
+    <span class="step-number">ステップ 1</span>
+    <h2>トップページ (Home Page)</h2>
+    <div class="url-badge">URL: https://daig.jp</div>
+    <p>ユーザーがWebサイトにアクセスし、JDM自動車部品の検索やカテゴリーブラウジングを行う画面です。</p>
+    <div class="preview-placeholder">
+      [画面キャプチャ 1: トップページ画面 (https://daig.jp)]
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section">
+    <span class="step-number">ステップ 2</span>
+    <h2>商品詳細ページ (Product Detail Page)</h2>
+    <div class="url-badge">URL: https://daig.jp/catalog</div>
+    <p>商品の詳細仕様、適合車種、個別の税込価格（JPY）および発送条件が表示される画面です。ユーザーは「購入手続きへ進む」ボタンをクリックして決済画面へ進みます。</p>
+    <div class="preview-placeholder">
+      [画面キャプチャ 2: 商品詳細ページ画面 (https://daig.jp/product/id)]
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section">
+    <span class="step-number">ステップ 3</span>
+    <h2>決済方法選択および配送先入力画面 (Checkout & Payment Selection Screen)</h2>
+    <div class="url-badge">URL: https://daig.jp/checkout</div>
+    <p>購入者の配送先情報（住所・氏名・電話番号）を入力し、決済方法（クレジットカードまたはコンビニ決済）を選択する画面です。</p>
+    <p>※ コンビニ決済は日本の法令に基づき1回あたり上限300,000円が適用される旨の注意事項が明記されています。</p>
+    <div class="preview-placeholder">
+      [画面キャプチャ 3: 決済方法選択画面 (Stripe Checkout / https://daig.jp/checkout)]
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="section">
+    <span class="step-number">ステップ 4</span>
+    <h2>注文完了・確認画面 (Order Confirmation Screen)</h2>
+    <div class="url-badge">URL: https://daig.jp/checkout/success</div>
+    <p>決済手続き完了後、注文ID、受領内容、およびコンビニ決済用のお支払い番号（バーコード/番号）案内が表示される完了画面です。</p>
+    <div class="preview-placeholder">
+      [画面キャプチャ 4: 注文完了画面]
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="section">
+    <span class="step-number">補足情報</span>
+    <h2>特定商取引法に基づく表記ページ (Commerce Disclosure Page)</h2>
+    <div class="url-badge">URL: https://daig.jp/legal-notice</div>
+    <p>事業者名（FORBECI SUZUKI PATRICK HIKARU）、愛知県犬山市羽黒13番地 ヴィラカルドの所在地情報、連絡先（090-9185-1777 / contact@daig.jp）、商品代金以外の必要料金（送料・JCT10%）、支払時期（カード：即時、コンビニ：3日以内）が明記されている法廷開示ページです。</p>
+  </div>
+
+  <div class="footer">
+    © 2026 Digital AI Garage - DAIG (FORBECI SUZUKI PATRICK HIKARU). All Rights Reserved.
+  </div>
+
+</body>
+</html>

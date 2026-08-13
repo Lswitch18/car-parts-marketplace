@@ -28,7 +28,7 @@ export default function LegalNotice() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
             <div className="space-y-1">
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Vendedor / Empresa (販売事業者名)</span>
-              <p className="text-white font-semibold text-base">Patrick Suzuki (Digital AI Garage - DAIG)</p>
+              <p className="text-white font-semibold text-base">Digital AI Garage - DAIG (FORBECI SUZUKI PATRICK HIKARU)</p>
               <p className="text-xs text-gray-400 font-mono">https://daig.jp</p>
             </div>
 
@@ -36,7 +36,7 @@ export default function LegalNotice() {
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Gerente de Vendas / Representante (運営統括責任者)</span>
               <p className="text-white font-semibold text-base flex items-center gap-1.5">
                 <UserCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                Patrick Suzuki (パトリック・スズキ)
+                FORBECI SUZUKI PATRICK HIKARU (パトリック・スズキ)
               </p>
             </div>
 
@@ -44,7 +44,7 @@ export default function LegalNotice() {
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Endereço Comercial Registrado (所在地)</span>
               <p className="text-white font-medium flex items-center gap-1.5 text-xs">
                 <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
-                Aichi-ken, Inuyama-shi (愛知県犬山市 / Inuyama City, Aichi Prefecture, Japan)
+                〒484-0894 愛知県犬山市羽黒13番地 ヴィラカルド (Villa Card, 13 Haguro, Inuyama-shi, Aichi 484-0894, Japan)
               </p>
             </div>
 
@@ -52,7 +52,7 @@ export default function LegalNotice() {
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">E-mail de Contato (お問い合わせ先メールアドレス)</span>
               <p className="text-white font-medium flex items-center gap-1.5 text-blue-400">
                 <Mail className="w-4 h-4 shrink-0" />
-                patrick.suzuki@daig.jp / support@daig.jp
+                contact@daig.jp
               </p>
             </div>
 
@@ -60,7 +60,7 @@ export default function LegalNotice() {
               <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Telefone de Suporte / 電話番号</span>
               <p className="text-white font-medium flex items-center gap-1.5">
                 <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                +81 50-1234-5678 (Suporte ao Cliente Japão)
+                +81 90 9185 1777 (090-9185-1777)
               </p>
             </div>
 
