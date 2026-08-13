@@ -539,9 +539,18 @@ export default function PaymentCheckout() {
                   </p>
                   <div className="pt-2 flex flex-wrap items-center gap-2 text-[10px] font-mono text-cyan-300">
                     <span className="px-2 py-0.5 rounded bg-blue-500/20 border border-blue-500/30">Stripe Escrow</span>
-                    <span className="px-2 py-0.5 rounded bg-blue-500/20 border border-blue-500/30">Konbini Pay</span>
+                    <span className="px-2 py-0.5 rounded bg-blue-500/20 border border-blue-500/30">Konbini Pay (Max ¥300.000)</span>
                     <span className="px-2 py-0.5 rounded bg-blue-500/20 border border-blue-500/30">Apple / Google Pay</span>
                   </div>
+                  
+                  {(finalPrice || part.price) > 300000 && (
+                    <div className="mt-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-start space-x-2">
+                      <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                      <p className="leading-tight text-[11px]">
+                        <strong>{t('Aviso Regulatório (Japão)')}:</strong> {t('O limite máximo para pagamento em Lojas de Conveniência (Konbini) é de ¥300.000 JPY por transação. Para este item de valor elevado, por favor utilize Cartão de Crédito.')}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
