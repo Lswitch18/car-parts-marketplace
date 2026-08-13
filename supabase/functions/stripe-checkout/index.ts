@@ -225,12 +225,13 @@ async function createCheckoutSession(req: Request, currentUser: any) {
     lineItems['customer_email'] = buyerProfile.email;
   }
 
-  if (STRIPE_PAYMENT_METHOD_CONFIG_ID) {
-    lineItems['payment_method_configuration'] = STRIPE_PAYMENT_METHOD_CONFIG_ID;
+  if (amount <= 300000) {
+    lineItems['payment_method_types[0]'] = 'card';
+    lineItems['payment_method_types[1]'] = 'konbini';
+    lineItems['payment_method_options[konbini][expires_after_days]'] = '3';
+  } else {
+    lineItems['payment_method_types[0]'] = 'card';
   }
-
-  // Opções específicas para pagamento Konbini no Japão
-  lineItems['payment_method_options[konbini][expires_after_days]'] = '3';
 
   if (auction_id) {
     lineItems['metadata[auction_id]'] = auction_id;
