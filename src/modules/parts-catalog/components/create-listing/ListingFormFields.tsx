@@ -130,7 +130,7 @@ export function ListingFormFields({
 
       <div className="card p-5 border border-border/60 bg-surface/50">
         <label className="block text-text-secondary text-sm font-semibold mb-2">
-          {t('Tags de Compatibilidade')} (Kei Cars, JDM, Variantes)
+          {t('Tags de Compatibilidade (Kei Cars, JDM, Variantes)')}
         </label>
         <p className="text-xs text-gray-500 mb-3">
           {t('Adicione outros veículos que também aceitam essa peça. A IA adiciona sugestões automaticamente baseada em códigos OEM.')}
