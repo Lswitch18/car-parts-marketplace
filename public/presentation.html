@@ -3,18 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAIG — Apresentação Executiva & Tutorial do Sistema (Voz Neural Studio)</title>
+  <title>DAIG — Apresentação Executiva & Demonstração Interativa (GSAP Cinema)</title>
+  
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <!-- GSAP Core & Plugins -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
   <style>
     :root {
-      --bg-dark: #07070D;
-      --card-bg: rgba(14, 17, 27, 0.85);
-      --card-border: rgba(13, 117, 255, 0.2);
+      --bg-dark: #05060A;
+      --card-bg: rgba(11, 14, 24, 0.85);
+      --card-border: rgba(13, 117, 255, 0.25);
       --primary: #0D75FF;
-      --primary-glow: rgba(13, 117, 255, 0.4);
+      --primary-glow: rgba(13, 117, 255, 0.5);
       --cyan: #00F0FF;
+      --cyan-glow: rgba(0, 240, 255, 0.4);
       --purple: #8A2BE2;
       --green: #00D97E;
       --text: #F3F4F6;
@@ -25,6 +32,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      user-select: none;
     }
 
     body {
@@ -34,378 +42,398 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
       background-image: 
-        radial-gradient(ellipse at 20% 0%, rgba(13, 117, 255, 0.15) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 100%, rgba(138, 43, 226, 0.15) 0%, transparent 60%);
+        radial-gradient(ellipse at 50% 0%, rgba(13, 117, 255, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 90%, rgba(138, 43, 226, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 10% 80%, rgba(0, 240, 255, 0.12) 0%, transparent 60%);
       background-attachment: fixed;
     }
 
+    /* ─── Top Control Bar ─── */
     header {
-      padding: 1.25rem 2rem;
+      padding: 1.25rem 2.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(7, 7, 13, 0.8);
-      backdrop-filter: blur(12px);
+      background: rgba(5, 6, 10, 0.85);
+      backdrop-filter: blur(20px);
       position: sticky;
       top: 0;
-      z-index: 50;
-      flex-wrap: wrap;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
       gap: 1rem;
     }
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--primary), var(--purple));
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0D75FF, #00F0FF);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 1.2rem;
-      box-shadow: 0 0 20px var(--primary-glow);
-    }
-
-    .logo-text h1 {
       font-size: 1.3rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-weight: 900;
+      color: #000;
+      box-shadow: 0 0 25px var(--cyan-glow);
     }
 
-    .logo-text p {
-      font-size: 0.75rem;
+    .brand-meta h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .brand-meta p {
+      font-size: 0.72rem;
       color: var(--cyan);
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
     }
 
-    .tts-controls {
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      background: rgba(13, 117, 255, 0.1);
-      border: 1px solid var(--card-border);
-      padding: 0.4rem 0.8rem;
-      border-radius: 9999px;
-      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    .voice-select {
-      background: rgba(0, 0, 0, 0.6);
-      color: var(--cyan);
+    .voice-picker {
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 0.4rem 0.8rem;
+      color: var(--cyan);
+      padding: 0.55rem 1.1rem;
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 600;
       outline: none;
       cursor: pointer;
       font-family: 'Outfit', sans-serif;
+      transition: all 0.2s;
     }
 
-    .voice-select option {
-      background: #0E111B;
+    .voice-picker:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+    }
+
+    .voice-picker option {
+      background: #0B0E18;
       color: #fff;
     }
 
-    .btn-tts {
+    .btn-play-all {
       background: linear-gradient(135deg, #0D75FF 0%, #00F0FF 100%);
       color: #000;
       border: none;
-      font-weight: 700;
-      padding: 0.5rem 1.25rem;
+      font-weight: 800;
+      padding: 0.65rem 1.6rem;
       border-radius: 9999px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      transition: all 0.2s ease;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
     }
 
-    .btn-tts:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+    .btn-play-all:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--text);
+    .btn-stop {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 0.5rem 0.9rem;
+      padding: 0.65rem 1.2rem;
       border-radius: 9999px;
       font-size: 0.85rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.3);
+    .btn-stop:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
     }
 
-    .voice-status {
-      font-size: 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--green);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .wave-bars {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      height: 14px;
-    }
-
-    .wave-bar {
-      width: 3px;
-      background: var(--green);
-      border-radius: 2px;
-      height: 4px;
-      transition: height 0.15s ease;
-    }
-
-    .wave-bars.active .wave-bar:nth-child(1) { animation: bounce 0.6s infinite alternate ease-in-out; }
-    .wave-bars.active .wave-bar:nth-child(2) { animation: bounce 0.8s infinite alternate 0.2s ease-in-out; }
-    .wave-bars.active .wave-bar:nth-child(3) { animation: bounce 0.5s infinite alternate 0.4s ease-in-out; }
-    .wave-bars.active .wave-bar:nth-child(4) { animation: bounce 0.7s infinite alternate 0.1s ease-in-out; }
-
-    @keyframes bounce {
-      0% { height: 4px; }
-      100% { height: 14px; box-shadow: 0 0 6px var(--green); }
-    }
-
+    /* ─── Main Stage (Centralizado & Maior) ─── */
     main {
       flex: 1;
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
+      max-width: 1440px;
       width: 100%;
+      margin: 0 auto;
+      padding: 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.75rem;
     }
 
-    .hero-banner {
-      background: linear-gradient(180deg, rgba(13, 117, 255, 0.12) 0%, rgba(14, 17, 27, 0.4) 100%);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 2.5rem 2rem;
-      margin-bottom: 2.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-banner h2 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-      background: linear-gradient(135deg, #FFFFFF 0%, #00F0FF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-banner p {
-      color: var(--text-muted);
-      max-width: 850px;
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .metrics-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 1.5rem;
-    }
-
-    .metric-card {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-    }
-
-    .metric-val {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .metric-lbl {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .timeline-nav {
+    /* ─── Stepper Nav ─── */
+    .stepper-container {
       display: flex;
       gap: 0.75rem;
       overflow-x: auto;
-      padding-bottom: 1rem;
-      margin-bottom: 2rem;
+      padding-bottom: 0.5rem;
     }
 
-    .timeline-tab {
-      background: rgba(14, 17, 27, 0.6);
+    .step-tab {
+      flex: 1;
+      min-width: 180px;
+      background: rgba(14, 17, 27, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-      padding: 0.75rem 1.25rem;
-      border-radius: 12px;
+      padding: 0.9rem 1.2rem;
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.75rem;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    .timeline-tab.active {
-      background: rgba(13, 117, 255, 0.2);
-      border-color: var(--primary);
+    .step-tab:hover {
+      background: rgba(13, 117, 255, 0.15);
+      border-color: rgba(13, 117, 255, 0.3);
+    }
+
+    .step-tab.active {
+      background: linear-gradient(135deg, rgba(13, 117, 255, 0.25), rgba(0, 240, 255, 0.15));
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.25);
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .step-tab.active .step-num {
+      background: var(--cyan);
+      color: #000;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+
+    .step-text {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .step-tab.active .step-text {
       color: #fff;
-      box-shadow: 0 0 20px rgba(13, 117, 255, 0.3);
     }
 
-    .slide-viewer {
+    /* ─── Cinema Stage Container ─── */
+    .cinema-stage {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 24px;
+      border-radius: 28px;
       overflow: hidden;
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      grid-template-columns: 1.35fr 1fr;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(24px);
+      min-height: 580px;
     }
 
-    @media (max-width: 1024px) {
-      .slide-viewer {
+    @media (max-width: 1100px) {
+      .cinema-stage {
         grid-template-columns: 1fr;
       }
     }
 
-    .slide-media {
-      background: #000;
+    /* ─── Left Media Screen (Full Sharp Cropped) ─── */
+    .screen-panel {
       position: relative;
+      background: #000;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
-      min-height: 400px;
+      min-height: 520px;
     }
 
-    .slide-media img {
+    .screen-img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: center top;
       display: block;
+      transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    .timestamp-badge {
+    .screen-panel:hover .screen-img {
+      transform: scale(1.02);
+    }
+
+    .screen-time-tag {
       position: absolute;
-      top: 1rem;
-      left: 1rem;
-      background: rgba(0, 0, 0, 0.75);
+      top: 1.5rem;
+      left: 1.5rem;
+      background: rgba(0, 0, 0, 0.85);
       border: 1px solid var(--cyan);
       color: var(--cyan);
       font-family: 'JetBrains Mono', monospace;
-      padding: 0.3rem 0.75rem;
+      padding: 0.4rem 0.9rem;
       border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      backdrop-filter: blur(8px);
+      font-size: 0.85rem;
+      font-weight: 700;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      z-index: 10;
     }
 
-    .slide-content {
-      padding: 2.5rem;
+    .screen-ambient-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+    }
+
+    /* ─── Right Content & Narration Card ─── */
+    .info-panel {
+      padding: 3rem 2.8rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      background: linear-gradient(180deg, rgba(14, 17, 27, 0.6) 0%, rgba(7, 9, 15, 0.95) 100%);
     }
 
-    .slide-header {
+    .module-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 0.75rem;
+    }
+
+    .slide-heading {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
       margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #FFFFFF 30%, #4D9CFF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .slide-category {
-      font-size: 0.8rem;
-      font-weight: 700;
+    .audio-player-card {
+      background: rgba(13, 117, 255, 0.08);
+      border: 1px solid rgba(13, 117, 255, 0.3);
+      border-radius: 18px;
+      padding: 1.4rem;
+      margin-bottom: 1.75rem;
+      position: relative;
+    }
+
+    .audio-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .voice-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
       color: var(--cyan);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 0.5rem;
       font-family: 'JetBrains Mono', monospace;
-    }
-
-    .slide-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1.3;
-      margin-bottom: 1rem;
-    }
-
-    .narration-box {
-      background: rgba(13, 117, 255, 0.06);
-      border-left: 3px solid var(--primary);
-      padding: 1.25rem;
-      border-radius: 0 12px 12px 0;
-      margin-bottom: 1.5rem;
-    }
-
-    .narration-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.4rem;
       display: flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    .narration-text {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #E5E7EB;
+    .equalizer {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 16px;
     }
 
-    .key-points {
+    .eq-bar {
+      width: 3px;
+      background: var(--cyan);
+      border-radius: 2px;
+      height: 4px;
+      transition: height 0.2s;
+    }
+
+    .equalizer.active .eq-bar:nth-child(1) { animation: eqAnim 0.6s infinite alternate; }
+    .equalizer.active .eq-bar:nth-child(2) { animation: eqAnim 0.8s infinite alternate 0.2s; }
+    .equalizer.active .eq-bar:nth-child(3) { animation: eqAnim 0.5s infinite alternate 0.4s; }
+    .equalizer.active .eq-bar:nth-child(4) { animation: eqAnim 0.7s infinite alternate 0.1s; }
+    .equalizer.active .eq-bar:nth-child(5) { animation: eqAnim 0.9s infinite alternate 0.3s; }
+
+    @keyframes eqAnim {
+      0% { height: 4px; opacity: 0.3; }
+      100% { height: 16px; opacity: 1; box-shadow: 0 0 8px var(--cyan); }
+    }
+
+    .narration-paragraph {
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: #E2E8F0;
+      font-weight: 400;
+    }
+
+    .bullet-list {
       list-style: none;
       margin-bottom: 2rem;
     }
 
-    .key-points li {
+    .bullet-item {
       position: relative;
-      padding-left: 1.5rem;
-      margin-bottom: 0.75rem;
-      font-size: 0.9rem;
+      padding-left: 1.75rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    .key-points li::before {
-      content: '▹';
+    .bullet-item::before {
+      content: '⚡';
       position: absolute;
       left: 0;
+      font-size: 0.85rem;
       color: var(--cyan);
-      font-weight: bold;
     }
 
-    .slide-footer {
+    /* ─── Footer Controls ─── */
+    .controls-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -413,42 +441,14 @@
       padding-top: 1.5rem;
     }
 
-    .nav-buttons {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .btn-nav {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #fff;
-      padding: 0.6rem 1.2rem;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-
-    .btn-nav:hover:not(:disabled) {
-      background: var(--primary);
-      border-color: var(--primary);
-      box-shadow: 0 0 15px var(--primary-glow);
-    }
-
-    .btn-nav:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    .btn-speak-current {
+    .btn-speak-now {
       background: rgba(0, 240, 255, 0.12);
       border: 1px solid var(--cyan);
       color: var(--cyan);
-      padding: 0.6rem 1.25rem;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.85rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -456,121 +456,158 @@
       transition: all 0.2s;
     }
 
-    .btn-speak-current:hover {
+    .btn-speak-now:hover {
       background: var(--cyan);
       color: #000;
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
     }
 
+    .step-arrows {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .btn-arrow {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 0.75rem 1.4rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .btn-arrow:hover:not(:disabled) {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .btn-arrow:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    /* ─── Progress Bar at bottom ─── */
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 16.66%;
+      background: linear-gradient(90deg, var(--primary), var(--cyan));
+      box-shadow: 0 0 10px var(--cyan);
+      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
     footer {
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: 'JetBrains Mono', monospace;
     }
   </style>
 </head>
 <body>
 
+  <!-- ─── Top Header & Controls ─── -->
   <header>
-    <div class="logo-container">
-      <div class="logo-badge">⚡</div>
-      <div class="logo-text">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-meta">
         <h1>DAIG (Digital A.I. Garage)</h1>
-        <p>Apresentação Executiva & Tutorial com Voz Neural Studio</p>
+        <p>Apresentação Executiva & Demonstração Oficial</p>
       </div>
     </div>
 
-    <div class="tts-controls">
-      <select class="voice-select" id="voiceTypeSelect" onchange="changeVoiceType()">
-        <option value="neural-male">🎙️ Voz Studio HD: Antônio (Masculina)</option>
-        <option value="neural-female">🎙️ Voz Studio HD: Francisca (Feminina)</option>
+    <div class="header-actions">
+      <select class="voice-picker" id="voiceSelector" onchange="changeVoiceMode()">
+        <option value="neural-male">🎙️ Antônio (Voz Studio HD - Masculina)</option>
+        <option value="neural-female">🎙️ Francisca (Voz Studio HD - Feminina)</option>
         <option value="webspeech">🌐 Voz Nativa do Navegador (WebSpeech)</option>
       </select>
 
-      <button class="btn-tts" id="playAllBtn" onclick="togglePlayAll()">
-        <span id="playIcon">▶</span> <span id="playLabel">Ouvir Apresentação Completa</span>
+      <button class="btn-play-all" id="playAllBtn" onclick="togglePlayAll()">
+        <span id="playIcon">▶</span> <span id="playLabel">Apresentar Tudo</span>
       </button>
-      <button class="btn-secondary" onclick="stopSpeech()">⏹ Parar</button>
-      <div class="voice-status">
-        <div class="wave-bars" id="waveBars">
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-          <div class="wave-bar"></div>
-        </div>
-        <span id="voiceName">Voz Studio Neural Ativa</span>
-      </div>
+
+      <button class="btn-stop" onclick="stopAudio()">⏹ Parar</button>
     </div>
   </header>
 
+  <!-- ─── Main Cinema Stage ─── -->
   <main>
-    <div class="hero-banner">
-      <h2>Plataforma DAIG: Autopeças JDM, IA Multimodal e SaaS B2B</h2>
-      <p>
-        Análise detalhada frame a frame do vídeo gravado na plataforma oficial de produção (daig.jp). Com motor de voz <strong>Neural Studio HD</strong>, experimente uma locução fluida, natural e expressiva guiando cada módulo da plataforma.
-      </p>
-
-      <div class="metrics-bar">
-        <div class="metric-card">
-          <div class="metric-val">100% IA</div>
-          <div class="metric-lbl">Visão Multimodal Gemini</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-val">¥ 20.000+</div>
-          <div class="metric-lbl">MRR B2B Recorrente</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-val">90% / 10%</div>
-          <div class="metric-lbl">Stripe Escrow Split</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-val">PT ⟷ JA</div>
-          <div class="metric-lbl">I18n Dinâmico Ativo</div>
-        </div>
-      </div>
+    <!-- Stepper Navigation -->
+    <div class="stepper-container" id="stepperNav">
+      <!-- Generated by JS -->
     </div>
 
-    <div class="timeline-nav" id="timelineNav">
-      <!-- Generated via JS -->
-    </div>
-
-    <div class="slide-viewer">
-      <div class="slide-media">
-        <span class="timestamp-badge" id="slideTimestamp">00:00 - 00:45</span>
-        <img id="slideImg" src="" alt="Frame da apresentação">
+    <!-- Cinema Viewer Stage -->
+    <div class="cinema-stage" id="stageContainer">
+      <!-- Screen Left (Cropped Crisp Screenshot) -->
+      <div class="screen-panel" id="screenPanel">
+        <span class="screen-time-tag" id="slideTime">00:00 - 00:45</span>
+        <img class="screen-img" id="slideImg" src="/presentation_frames_clean/frame_001.jpg" alt="Demonstração DAIG">
+        <div class="screen-ambient-glow"></div>
       </div>
 
-      <div class="slide-content">
+      <!-- Info Right (Narration & Details) -->
+      <div class="info-panel" id="infoPanel">
         <div>
-          <div class="slide-header">
-            <div class="slide-category" id="slideCat">Módulo 1</div>
-            <h3 class="slide-title" id="slideTitle">Cadastro Inteligente com Computer Vision</h3>
+          <div class="module-badge" id="slideCategory">
+            <span>●</span> MÓDULO 1: CADASTRO COM IA
           </div>
+          <h2 class="slide-heading" id="slideTitle">
+            Visão Computacional & Interface da DAIG
+          </h2>
 
-          <div class="narration-box">
-            <div class="narration-label">
-              <span>🎙️</span> Locução da Apresentação (Studio Neural Voice)
+          <div class="audio-player-card">
+            <div class="audio-header">
+              <div class="voice-tag">
+                <span>🎙️</span> Locução Neural Studio HD
+              </div>
+              <div class="equalizer" id="audioEq">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+              </div>
             </div>
-            <p class="narration-text" id="slideNarration">
-              Carregando narrativa...
+            <p class="narration-paragraph" id="slideNarration">
+              Carregando narrativa do módulo...
             </p>
           </div>
 
-          <ul class="key-points" id="slidePoints">
-            <!-- Generated via JS -->
+          <ul class="bullet-list" id="slideBullets">
+            <!-- Bullets inserted dynamically -->
           </ul>
         </div>
 
-        <div class="slide-footer">
-          <button class="btn-speak-current" onclick="speakCurrentSlide()">
-            <span>🔊</span> Narrar este slide
-          </button>
+        <div>
+          <div class="controls-row">
+            <button class="btn-speak-now" onclick="speakCurrentSlide()">
+              <span>🔊</span> Ouvir este slide
+            </button>
 
-          <div class="nav-buttons">
-            <button class="btn-nav" id="prevBtn" onclick="prevSlide()">◀ Anterior</button>
-            <button class="btn-nav" id="nextBtn" onclick="nextSlide()">Próximo ▶</button>
+            <div class="step-arrows">
+              <button class="btn-arrow" id="prevBtn" onclick="prevSlide()">◀ Anterior</button>
+              <button class="btn-arrow" id="nextBtn" onclick="nextSlide()">Próximo ▶</button>
+            </div>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="progressBar"></div>
           </div>
         </div>
       </div>
@@ -578,7 +615,7 @@
   </main>
 
   <footer>
-    <p>© 2026 DAIG (Digital A.I. Garage) • Tecnologia JDM Automotiva & Ecossistema SaaS B2B Japão</p>
+    DAIG PLATFORM 2026 • JDM AUTOMOTIVE COMPUTER VISION & MULTI-TENANT SAAS ECOSYSTEM
   </footer>
 
   <script>
@@ -588,12 +625,12 @@
         time: "00:00 - 00:45",
         category: "MÓDULO 1: CADASTRO COM IA",
         title: "Visão Computacional & Interface da DAIG",
-        img: "/presentation_frames/frame_001.jpg",
+        img: "/presentation_frames_clean/frame_001.jpg",
         audioMale: "/presentation_audio/slide_1.mp3",
         audioFemale: "/presentation_audio/slide_f_1.mp3",
         narration: "Sejam bem-vindos à demonstração oficial da DAIG, a primeira plataforma inteligente de autopeças JDM impulsionada por inteligência artificial multimodal no Japão. Aqui na tela de criação de anúncios, o lojista conta com um assistente de Visão Computacional que elimina totalmente a digitação manual de dados técnicos de peças automotivas.",
         points: [
-          "Suporte nativo a idioma Japonês e Português do Brasil com troca instantânea no topo.",
+          "Suporte nativo a idioma Japonês e Português do Brasil com troca instantânea no cabeçalho.",
           "Área de upload de fotos de peças de alta performance (JDM Performance Parts).",
           "Opções entre Venda por Preço Fixo (Kotei Kakaku) ou Leilão ao Vivo (Live Auction)."
         ]
@@ -603,12 +640,12 @@
         time: "00:46 - 01:50",
         category: "MÓDULO 2: PROCESSAMENTO MULTIMODAL",
         title: "Auto-Preenchimento e Reconhecimento Automático",
-        img: "/presentation_frames/frame_016.jpg",
+        img: "/presentation_frames_clean/frame_016.jpg",
         audioMale: "/presentation_audio/slide_2.mp3",
         audioFemale: "/presentation_audio/slide_f_2.mp3",
         narration: "Ao fazer o upload da foto de uma peça, como este conjunto de freios Brembo genuíno da Subaru STI, a nossa rede neural analisa texturas, marcas em relevo e especificações em menos de três segundos. A inteligência artificial identifica automaticamente a marca Subaru, o modelo Impreza WRX STI, a condição da peça, os anos de compatibilidade e escreve uma descrição técnica detalhada em português ou japonês.",
         points: [
-          "Identificação precisa de marca e modelo automotivo sem necessidade de preenchimento manual.",
+          "Identificação precisa de marca e modelo automotivo sem digitação manual.",
           "Geração de descrição técnica refinada com aplicação de engenharia reversa visual.",
           "Geração automática de Tags de Compatibilidade (Kei Cars, JDM e variantes de chassi)."
         ]
@@ -618,7 +655,7 @@
         time: "01:51 - 03:00",
         category: "MÓDULO 3: CATÁLOGO JDM DINÂMICO",
         title: "Vitrine Interativa & Filtros de Alta Performance",
-        img: "/presentation_frames/frame_004.jpg",
+        img: "/presentation_frames_clean/frame_004.jpg",
         audioMale: "/presentation_audio/slide_3.mp3",
         audioFemale: "/presentation_audio/slide_f_3.mp3",
         narration: "Ao navegar para o catálogo público de peças, encontramos uma vitrine moderna no padrão Cyber Neon, exibindo mais de cinco mil peças em estoque. O usuário pode alternar instantaneamente entre a visualização em grade e lista, ordenar por novidades ou popularidade, e filtrar por fabricantes lendários japoneses como Nissan, Toyota, Honda, Subaru, GReddy e HKS.",
@@ -633,7 +670,7 @@
         time: "03:01 - 04:15",
         category: "MÓDULO 4: LOCALIZAÇÃO BILÍNGUE EM TEMPO REAL",
         title: "Internacionalização Dinâmica (PT ⟷ JA)",
-        img: "/presentation_frames/frame_019.jpg",
+        img: "/presentation_frames_clean/frame_019.jpg",
         audioMale: "/presentation_audio/slide_4.mp3",
         audioFemale: "/presentation_audio/slide_f_4.mp3",
         narration: "Um dos grandes diferenciais da DAIG é o seu motor de localização bilíngue em tempo real. Com um simples clique no seletor de idioma, todo o conteúdo dos produtos gravados em Katakana e Kanji no Japão é traduzido de forma fluida para o português, permitindo que importadores, oficinas e entusiastas de todo o mundo encontrem peças raras sem barreira de idioma.",
@@ -648,7 +685,7 @@
         time: "04:16 - 05:10",
         category: "MÓDULO 5: LIQUIDAÇÃO STRIPE & ESCROW",
         title: "Operações Financeiras & Divisão de Receita",
-        img: "/presentation_frames/frame_024.jpg",
+        img: "/presentation_frames_clean/frame_024.jpg",
         audioMale: "/presentation_audio/slide_5.mp3",
         audioFemale: "/presentation_audio/slide_f_5.mp3",
         narration: "Na área administrativa de operações do marketplace, o sistema exibe o fluxo financeiro em Ienes ao vivo. A DAIG opera com custódia segura Escrow via Stripe Connect: a plataforma retém a comissão de dez por cento, cobrindo custos operacionais, e repassa automaticamente noventa por cento do valor da venda ao vendedor cadastrado de forma transparente e blindada contra fraudes.",
@@ -663,7 +700,7 @@
         time: "05:11 - 06:35",
         category: "MÓDULO 6: HUB SAAS MULTI-TENANT",
         title: "Centro de Controle de Assinaturas e MRR",
-        img: "/presentation_frames/frame_025.jpg",
+        img: "/presentation_frames_clean/frame_025.jpg",
         audioMale: "/presentation_audio/slide_6.mp3",
         audioFemale: "/presentation_audio/slide_f_6.mp3",
         narration: "Para consolidar o ecossistema corporativo, a DAIG oferece um Hub SaaS B2B completo para desmanches e lojas parceiras. No painel executivo, acompanhamos o faturamento recorrente mensal, a saúde das assinaturas, os planos Starter, Pro e Enterprise, com taxa de adimplência de cem por cento integrada à cobrança automática do Stripe Billing. Uma solução de alto valuation projetada para liderar o mercado japonês.",
@@ -679,62 +716,89 @@
     let isPlayingAll = false;
     let synth = window.speechSynthesis;
     let currentAudio = null;
-    let voiceMode = 'neural-male'; // 'neural-male' | 'neural-female' | 'webspeech'
+    let voiceMode = 'neural-male';
 
     function init() {
-      const nav = document.getElementById('timelineNav');
-      nav.innerHTML = '';
-
+      // Build Stepper
+      const stepper = document.getElementById('stepperNav');
+      stepper.innerHTML = '';
       slides.forEach((s, idx) => {
         const tab = document.createElement('div');
-        tab.className = `timeline-tab ${idx === 0 ? 'active' : ''}`;
-        tab.id = `tab-${idx}`;
-        tab.innerHTML = `<span>${idx + 1}</span> ${s.title.split('&')[0].trim()}`;
+        tab.className = `step-tab ${idx === 0 ? 'active' : ''}`;
+        tab.id = `step-tab-${idx}`;
+        tab.innerHTML = `
+          <div class="step-num">${idx + 1}</div>
+          <div class="step-text">${s.title.split('&')[0].trim()}</div>
+        `;
         tab.onclick = () => goToSlide(idx);
-        nav.appendChild(tab);
+        stepper.appendChild(tab);
       });
 
-      renderSlide(0);
-      changeVoiceType();
+      renderSlide(0, false);
+      setupKeyboard();
     }
 
-    function changeVoiceType() {
-      voiceMode = document.getElementById('voiceTypeSelect').value;
-      const statusLabel = document.getElementById('voiceName');
-      if (voiceMode === 'neural-male') statusLabel.textContent = 'Antônio (Neural Studio HD)';
-      else if (voiceMode === 'neural-female') statusLabel.textContent = 'Francisca (Neural Studio HD)';
-      else statusLabel.textContent = 'Web Speech Nativo';
+    function changeVoiceMode() {
+      voiceMode = document.getElementById('voiceSelector').value;
     }
 
-    function renderSlide(idx) {
+    function renderSlide(idx, animate = true) {
       currentSlide = idx;
       const s = slides[idx];
 
-      document.getElementById('slideTimestamp').textContent = s.time;
+      // Update contents
+      document.getElementById('slideTime').textContent = s.time;
       document.getElementById('slideImg').src = s.img;
-      document.getElementById('slideCat').textContent = s.category;
+      document.getElementById('slideCategory').innerHTML = `<span>●</span> ${s.category}`;
       document.getElementById('slideTitle').textContent = s.title;
       document.getElementById('slideNarration').textContent = s.narration;
 
-      const pointsContainer = document.getElementById('slidePoints');
-      pointsContainer.innerHTML = '';
-      s.points.forEach(p => {
+      // Update Bullets
+      const bulletsList = document.getElementById('slideBullets');
+      bulletsList.innerHTML = '';
+      s.points.forEach(pt => {
         const li = document.createElement('li');
-        li.textContent = p;
-        pointsContainer.appendChild(li);
+        li.className = 'bullet-item';
+        li.textContent = pt;
+        bulletsList.appendChild(li);
       });
 
-      document.querySelectorAll('.timeline-tab').forEach((tab, i) => {
+      // Update Tabs & Progress
+      document.querySelectorAll('.step-tab').forEach((tab, i) => {
         tab.classList.toggle('active', i === idx);
       });
 
+      document.getElementById('progressBar').style.width = `${((idx + 1) / slides.length) * 100}%`;
       document.getElementById('prevBtn').disabled = idx === 0;
       document.getElementById('nextBtn').disabled = idx === slides.length - 1;
+
+      // GSAP Animations
+      if (animate && window.gsap) {
+        gsap.fromTo("#slideImg", 
+          { opacity: 0, scale: 0.96 }, 
+          { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" }
+        );
+
+        gsap.fromTo("#slideTitle",
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+        );
+
+        gsap.fromTo("#slideNarration",
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.5, delay: 0.1, ease: "power2.out" }
+        );
+
+        gsap.fromTo(".bullet-item",
+          { opacity: 0, x: -15 },
+          { opacity: 1, x: 0, duration: 0.4, stagger: 0.08, delay: 0.2, ease: "power2.out" }
+        );
+      }
     }
 
     function goToSlide(idx) {
-      if (isPlayingAll) stopSpeech();
-      renderSlide(idx);
+      if (isPlayingAll) stopAudio();
+      renderSlide(idx, true);
     }
 
     function prevSlide() {
@@ -745,14 +809,14 @@
       if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
     }
 
-    function setWaveActive(active) {
-      const wave = document.getElementById('waveBars');
-      if (wave) wave.classList.toggle('active', active);
+    function setEqActive(active) {
+      const eq = document.getElementById('audioEq');
+      if (eq) eq.classList.toggle('active', active);
     }
 
     function speakSlide(idx, onEndCallback) {
-      stopSpeech();
-      setWaveActive(true);
+      stopAudio();
+      setEqActive(true);
 
       const s = slides[idx];
 
@@ -761,12 +825,11 @@
         currentAudio = new Audio(audioSrc);
         
         currentAudio.onended = () => {
-          setWaveActive(false);
+          setEqActive(false);
           if (onEndCallback) onEndCallback();
         };
 
         currentAudio.onerror = () => {
-          console.warn('Erro ao carregar MP3 Neural, usando fallback WebSpeech.');
           speakWebSpeech(s.narration, onEndCallback);
         };
 
@@ -780,7 +843,7 @@
 
     function speakWebSpeech(text, onEndCallback) {
       if (!synth) {
-        setWaveActive(false);
+        setEqActive(false);
         return;
       }
       synth.cancel();
@@ -788,17 +851,16 @@
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'pt-BR';
       utter.rate = 1.0;
-      utter.pitch = 1.0;
 
       const voices = synth.getVoices();
       const ptVoice = voices.find(v => v.lang.includes('pt-BR') || v.lang.includes('pt_BR')) || voices.find(v => v.lang.includes('pt'));
       if (ptVoice) utter.voice = ptVoice;
 
       utter.onend = () => {
-        setWaveActive(false);
+        setEqActive(false);
         if (onEndCallback) onEndCallback();
       };
-      utter.onerror = () => setWaveActive(false);
+      utter.onerror = () => setEqActive(false);
 
       synth.speak(utter);
     }
@@ -809,42 +871,53 @@
 
     function togglePlayAll() {
       if (isPlayingAll) {
-        stopSpeech();
+        stopAudio();
       } else {
         isPlayingAll = true;
         document.getElementById('playIcon').textContent = '⏸';
-        document.getElementById('playLabel').textContent = 'Pausar Apresentação';
+        document.getElementById('playLabel').textContent = 'Pausar';
         playSequenceFrom(0);
       }
     }
 
     function playSequenceFrom(idx) {
       if (!isPlayingAll || idx >= slides.length) {
-        stopSpeech();
+        stopAudio();
         return;
       }
 
-      renderSlide(idx);
+      renderSlide(idx, true);
       speakSlide(idx, () => {
         if (isPlayingAll && idx + 1 < slides.length) {
           setTimeout(() => playSequenceFrom(idx + 1), 800);
         } else {
-          stopSpeech();
+          stopAudio();
         }
       });
     }
 
-    function stopSpeech() {
+    function stopAudio() {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
       if (synth) synth.cancel();
-      setWaveActive(false);
+      setEqActive(false);
       isPlayingAll = false;
       document.getElementById('playIcon').textContent = '▶';
-      document.getElementById('playLabel').textContent = 'Ouvir Apresentação Completa';
+      document.getElementById('playLabel').textContent = 'Apresentar Tudo';
+    }
+
+    function setupKeyboard() {
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') nextSlide();
+        else if (e.key === 'ArrowLeft') prevSlide();
+        else if (e.key === ' ') {
+          e.preventDefault();
+          togglePlayAll();
+        }
+      });
     }
 
     window.onload = init;
