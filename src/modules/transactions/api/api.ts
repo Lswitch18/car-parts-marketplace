@@ -20,12 +20,18 @@ async function fetchApi<T>(endpoint: string, options: ApiOptions = {}): Promise<
   // Se um timeout for especificado, usamos o AbortSignal
   const signal = options.timeout ? AbortSignal.timeout(options.timeout) : undefined;
   
+  const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (anonKey) headers['apikey'] = anonKey;
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const response = await fetch(`${FUNCTIONS_URL}${endpoint}`, {
     ...options,
     signal,
     headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
       ...options.headers,
     },
   });

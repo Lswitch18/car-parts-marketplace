@@ -2765,8 +2765,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "package_devdependencies_autoprefixer",
-      "community": 200,
-      "community_name": "autoprefixer",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "autoprefixer"
     },
     {
@@ -2776,8 +2776,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "autoprefixer",
-      "community": 200,
-      "community_name": "autoprefixer",
+      "community": 23,
+      "community_name": "constructor",
       "norm_label": "autoprefixer"
     },
     {
@@ -2787,8 +2787,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 171,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -2798,8 +2798,8 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "eslint",
-      "community": 23,
-      "community_name": "constructor",
+      "community": 171,
+      "community_name": "eslint",
       "norm_label": "eslint"
     },
     {
@@ -14445,7 +14445,7 @@
       "label": "fetchOpenRouterStatus()",
       "file_type": "code",
       "source_file": "supabase/functions/analyze-part/index.ts",
-      "source_location": "L193",
+      "source_location": "L204",
       "_origin": "ast",
       "id": "supabase_functions_analyze_part_index_fetchopenrouterstatus",
       "community": 2,
@@ -14456,7 +14456,7 @@
       "label": "fetchOpenRouterCredits()",
       "file_type": "code",
       "source_file": "supabase/functions/analyze-part/index.ts",
-      "source_location": "L211",
+      "source_location": "L222",
       "_origin": "ast",
       "id": "supabase_functions_analyze_part_index_fetchopenroutercredits",
       "community": 2,
@@ -20909,7 +20909,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/parts-catalog/hooks/useCreateListing.ts",
-      "source_location": "L192",
+      "source_location": "L191",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_parts_catalog_hooks_usecreatelisting_usecreatelisting",
@@ -35734,7 +35734,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/parts-catalog/hooks/useCreateListing.ts",
-      "source_location": "L104",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_modules_parts_catalog_hooks_usecreatelisting_usecreatelisting",
@@ -43219,7 +43219,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/analyze-part/index.ts",
-      "source_location": "L211",
+      "source_location": "L222",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_analyze_part_index",
@@ -43230,7 +43230,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/analyze-part/index.ts",
-      "source_location": "L193",
+      "source_location": "L204",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_analyze_part_index",
@@ -43370,7 +43370,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "supabase/functions/analyze-part/index.ts",
-      "source_location": "L189",
+      "source_location": "L191",
       "weight": 1.0,
       "_origin": "ast",
       "source": "supabase_functions_analyze_part_index_callgemini",
@@ -50771,5 +50771,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "16219c7a45ff0a43464df7f121d523572baa007e"
+  "built_at_commit": "20ffe31f1fecd36739347407d30405eee488a909"
 }

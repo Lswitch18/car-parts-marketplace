@@ -1,16 +1,16 @@
 # Graph Report - car-parts-marketplce  (2026-08-14)
 
 ## Corpus Check
-- 392 files · ~1,116,425 words
+- 392 files · ~1,116,461 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1695 nodes · 2771 edges · 203 communities (131 shown, 72 thin omitted)
+- 1696 nodes · 2772 edges · 206 communities (135 shown, 71 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `20ffe31f`
+- Built from commit: `63de6db5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -178,7 +178,10 @@
 - adminApi.test.ts
 - autoprefixer
 - @types/three
+- UserManagement.tsx
 - @react-three/fiber
+- autoprefixer
+- recharts
 - typescript-eslint
 
 ## God Nodes (most connected - your core abstractions)
@@ -208,15 +211,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (203 total, 72 thin omitted)
+## Communities (206 total, 71 thin omitted)
 
 ### Community 0 - "LogistixDashboard-ZhczRoYg.js"
-Cohesion: 0.05
-Nodes (42): QRStickerPrint(), QRStickerPrintProps, INITIAL_MEMBERS, TeamMember, TenantTeamManager(), Dashboard(), TabType, AuthState (+34 more)
+Cohesion: 0.12
+Nodes (17): AuctionBid, AuctionDetail, AuctionItem, Brand, CarModel, Category, CreateAuctionInput, Fitment (+9 more)
 
 ### Community 1 - "LogistixDashboard-ZhczRoYg.js"
-Cohesion: 0.13
-Nodes (4): TransactionManagement(), loadGsiScript(), signInWithGoogle(), updateTransactionStatus()
+Cohesion: 0.09
+Nodes (10): authFetch(), ColetasPage(), DropoffPage(), MapaPage(), TransportesPage(), loadGsiScript(), signInWithGoogle(), PARTNER_PLANS (+2 more)
 
 ### Community 2 - "vendor-react-DqCMjyrC.js"
 Cohesion: 0.07
@@ -232,15 +235,15 @@ Nodes (14): scripts, build, build:driver, build:store, cap:init, cap:open, cap:s
 
 ### Community 5 - "vendor-three-BAVKA0D-.js"
 Cohesion: 0.04
-Nodes (45): AccountsPayable, AdminDashboard, AdminLayout, AgenciaPage, AiOpsPage, Auctions, CarList, Catalog (+37 more)
+Nodes (44): AccountsPayable, AdminDashboard, AdminLayout, AgenciaPage, AiOpsPage, Auctions, CarList, Catalog (+36 more)
 
 ### Community 6 - ".setAttribute"
-Cohesion: 0.10
-Nodes (23): AdminLayout(), DeliveriesManagement(), DeliveryTransaction, JapanBankAccount(), PREDEFINED_PERMISSIONS, UserManagement(), ContactsManagement(), SaasGatewayPage() (+15 more)
+Cohesion: 0.08
+Nodes (28): AdminLayout(), JAPAN_BANKS, JapanBankForm(), JapanBankAccount(), ContactsManagement(), OnboardingGuard(), SaasGatewayPage(), Subscription() (+20 more)
 
 ### Community 7 - "n"
 Cohesion: 0.07
-Nodes (29): SaasHeroSection(), AiPartQuickUploadModal(), AiPartQuickUploadModalProps, LegalFinanceCenter(), InterchangeMapping, PartInterchangeManager(), PartInterchangeManagerProps, VehicleStrippingYieldModal() (+21 more)
+Nodes (32): SaasHeroSection(), AiPartQuickUploadModal(), AiPartQuickUploadModalProps, LegalFinanceCenter(), InterchangeMapping, PartInterchangeManager(), PartInterchangeManagerProps, AuditLogEvent (+24 more)
 
 ### Community 8 - "i"
 Cohesion: 0.10
@@ -251,20 +254,20 @@ Cohesion: 0.13
 Nodes (35): atribuirMotorista(), auditLog(), calcularPrazo(), criarRota(), criarShipment(), dashboard(), gerarCodigoRastreamento(), gerarEtiquetas() (+27 more)
 
 ### Community 10 - "t"
-Cohesion: 0.07
-Nodes (26): AiOpsPage(), AnalysisLogEntry, HealthStatus, loadLog(), saveLog(), fetchParts(), PartsFilters, PartsParams (+18 more)
+Cohesion: 0.10
+Nodes (11): AnalyticsData, BrandData, CategoryData, DailyStats, DailyStatsData, FinancialData, RecentTransaction, SalesData (+3 more)
 
 ### Community 11 - "axios"
 Cohesion: 0.06
 Nodes (30): DOM, DOM.Iterable, ES2020, node_modules, src, src/**/__tests__/*, vitest/globals, compilerOptions (+22 more)
 
 ### Community 12 - ".copy"
-Cohesion: 0.13
-Nodes (10): JAPAN_BANKS, JapanBankForm(), Subscription(), iconMap, Props, PARTNER_PLANS, PartnerPlan, api (+2 more)
+Cohesion: 0.24
+Nodes (7): iconMap, Props, api, AIResult, MobileIaVision(), playScanSound(), playSuccessSound()
 
 ### Community 13 - "r"
-Cohesion: 0.11
-Nodes (5): DEFAULT_ICON, adminApi, DashboardKPIs, importModule(), mockFetch
+Cohesion: 0.07
+Nodes (20): SearchResult, TYPE_LABELS, NotificationCenter(), timeAgo(), DEFAULT_ICON, STATUS_COLOR, STATUS_ENTREGA, EVENT_ICONS (+12 more)
 
 ### Community 14 - "t"
 Cohesion: 0.14
@@ -304,7 +307,7 @@ Nodes (11): AdminDashboard(), AlertItem, AlertOrchestrationParams, calculateFina
 
 ### Community 23 - "constructor"
 Cohesion: 0.12
-Nodes (17): auto-parts-db, autoprefixer, jsdom, devDependencies, auto-parts-db, autoprefixer, jsdom, @testing-library/dom (+9 more)
+Nodes (17): auto-parts-db, @capacitor/cli, jsdom, devDependencies, auto-parts-db, @capacitor/cli, jsdom, @testing-library/dom (+9 more)
 
 ### Community 24 - "PartCard.tsx"
 Cohesion: 0.25
@@ -319,8 +322,8 @@ Cohesion: 0.10
 Nodes (18): queryClient, root, lazyWithRetry(), Auctions, CarList, Catalog, CreateListing, Dashboard (+10 more)
 
 ### Community 27 - ".getSize"
-Cohesion: 0.15
-Nodes (9): logisticsApi, DropoffPage(), MapaPage(), TransportesPage(), ETAPAS, TIPO_LABEL, TrackingPublico(), mockFetch (+1 more)
+Cohesion: 0.11
+Nodes (13): logisticsApi, EtiquetasPage(), getWarehouseLocation(), LabelCard(), LEVEL_COLORS, emptyForm, PedidoForm, STATUS_COLOR (+5 more)
 
 ### Community 28 - "zt"
 Cohesion: 0.30
@@ -331,8 +334,8 @@ Cohesion: 0.14
 Nodes (13): background_color, categories, description, display, icons, name, orientation, scope (+5 more)
 
 ### Community 30 - "@supabase/supabase-js"
-Cohesion: 0.18
-Nodes (9): AuditLogEvent, DEMO_AUDIT_LOGS, SecurityAuditCenter(), TabType, WorkOrder, RealNfeInvoice, RealTransactionSale, RealWorkOrder (+1 more)
+Cohesion: 0.28
+Nodes (6): QRStickerPrint(), QRStickerPrintProps, Dashboard(), TabType, TabType, WorkOrder
 
 ### Community 31 - "logisticsApi.ts"
 Cohesion: 0.23
@@ -352,7 +355,7 @@ Nodes (10): 💡 1. Conceito Fundamental: Transferência vs Repasse Bancário, �
 
 ### Community 36 - "WMSPage.tsx"
 Cohesion: 0.18
-Nodes (11): axios, @base-ui/react, dependencies, axios, @base-ui/react, react, recharts, tailwind-merge (+3 more)
+Nodes (11): axios, @base-ui/react, canvas-confetti, dependencies, axios, @base-ui/react, canvas-confetti, react (+3 more)
 
 ### Community 37 - "adminApi.test.ts"
 Cohesion: 0.20
@@ -375,12 +378,12 @@ Cohesion: 0.22
 Nodes (8): vite.config.ts, compilerOptions, allowSyntheticDefaultImports, composite, module, moduleResolution, skipLibCheck, include
 
 ### Community 42 - ".setAttribute"
-Cohesion: 0.09
-Nodes (22): ChatPopup(), ChatPopupProps, Conversation, Message, Conversation, Message, Messages(), SafeImage() (+14 more)
+Cohesion: 0.11
+Nodes (19): TransactionManagement(), ChatPopup(), ChatPopupProps, Conversation, Message, Conversation, Message, Messages() (+11 more)
 
 ### Community 43 - ".toString"
 Cohesion: 0.07
-Nodes (35): AiVisionBanner(), AiVisionBannerProps, CarPartScannerAnimation(), Props, ListingFormFields(), Props, ListingImageUpload(), Props (+27 more)
+Nodes (41): AiOpsPage(), AnalysisLogEntry, HealthStatus, loadLog(), saveLog(), fetchParts(), PartsFilters, PartsParams (+33 more)
 
 ### Community 44 - "Ye"
 Cohesion: 0.27
@@ -391,8 +394,8 @@ Cohesion: 0.25
 Nodes (3): isServiceRoleJwt, MockWebSocket, supabaseAdmin
 
 ### Community 46 - "ln"
-Cohesion: 0.07
-Nodes (31): Profile(), localStorageMock, store, clearDeviceTrust(), isDeviceTrusted(), setDeviceTrusted(), Terceiro, TerceirosPage() (+23 more)
+Cohesion: 0.21
+Nodes (11): COUNTRIES_BY_LENGTH, fetchPostal(), fetchViaCEP(), fetchZipcloud(), fetchZippopotamus(), PostalResult, ViaCEPResponse, ZipcloudResponse (+3 more)
 
 ### Community 47 - ".applyMatrix4"
 Cohesion: 0.43
@@ -423,8 +426,8 @@ Cohesion: 0.33
 Nodes (3): corsHeaders(), json(), supabase
 
 ### Community 55 - "B2BPage.tsx"
-Cohesion: 0.18
-Nodes (5): PLAN_DETAILS, SaasCompanySubscription, SaasControlCenter(), STORE_TYPE_CONFIG, STORE_TYPES
+Cohesion: 0.12
+Nodes (9): DeliveriesManagement(), DeliveryTransaction, PLAN_DETAILS, SaasCompanySubscription, SaasControlCenter(), STORE_TYPE_CONFIG, STORE_TYPES, Footer() (+1 more)
 
 ### Community 56 - "@base-ui/react"
 Cohesion: 0.40
@@ -543,8 +546,8 @@ Cohesion: 0.50
 Nodes (3): buildConfig, __dirname, __filename
 
 ### Community 99 - "@capacitor/android"
-Cohesion: 0.15
-Nodes (10): authFetch(), ColetasPage(), STATUS_COLOR, STATUS_ENTREGA, DONUT_COLORS, getNavGroups(), LogistixDashboard(), NavGroup (+2 more)
+Cohesion: 0.13
+Nodes (12): AiVisionBanner(), AiVisionBannerProps, CarPartScannerAnimation(), Props, ListingImageUpload(), Props, useCreateListing(), CreateListing() (+4 more)
 
 ### Community 102 - "@capacitor/ios"
 Cohesion: 0.33
@@ -559,20 +562,32 @@ Cohesion: 0.40
 Nodes (3): STATUS_COLOR, TIPO_COLOR, TIPO_ICON
 
 ### Community 120 - "recharts"
-Cohesion: 0.33
-Nodes (4): emptyForm, PedidoForm, STATUS_COLOR, STATUS_OPTIONS
+Cohesion: 0.19
+Nodes (12): Terceiro, TerceirosPage(), Part, Props, SimulateSale(), calculateFees(), FeeBreakdown, formatBRL() (+4 more)
 
 ### Community 123 - "tailwind-merge"
-Cohesion: 0.50
-Nodes (4): EtiquetasPage(), getWarehouseLocation(), LabelCard(), LEVEL_COLORS
+Cohesion: 0.27
+Nodes (6): ProductUI, useTenantCore(), CreateWorkOrderInput, TenantCoreService, TenantInventoryStats, Product
 
 ### Community 142 - "main.tsx"
 Cohesion: 0.22
 Nodes (8): 🎯 1. Princípios Fundamentais do Mobile-First, 🎨 2. Design System: Estética Cyber Neon Hi-Tech, 🤖 3. Padrões de Integração com Recursos de IA & Câmera, 🛠️ 4. Regras Obrigatórias de Código e Internacionalização, 💡 5. Exemplo de Componente Mobile-First Hi-Tech (React + Tailwind), 📱 Mobile-First Hi-Tech Design & AI Skill, Paleta de Cores e Gradientes, Tipografia e Ícones
 
+### Community 169 - "PedidosPage.tsx"
+Cohesion: 0.47
+Nodes (6): Profile(), localStorageMock, store, clearDeviceTrust(), isDeviceTrusted(), setDeviceTrusted()
+
+### Community 170 - "EtiquetasPage.tsx"
+Cohesion: 0.39
+Nodes (5): INITIAL_MEMBERS, TeamMember, TenantTeamManager(), TenantPermission, TenantRole
+
+### Community 172 - "NotificationCenter.tsx"
+Cohesion: 0.32
+Nodes (3): ConnectPayoutResult, StripeConnectAccountInfo, StripeConnectService
+
 ### Community 174 - "GlobalSearch.tsx"
-Cohesion: 0.40
-Nodes (3): EVENT_ICONS, STATUS_COLOR, STATUS_LABEL
+Cohesion: 0.38
+Nodes (4): FitmentBadge(), Props, Props, PartCatalogItem
 
 ### Community 182 - "MobileIaVision.tsx"
 Cohesion: 0.40
@@ -582,25 +597,29 @@ Nodes (4): 1. Isolamento Estrito de Dados Multi-Tenant (Supabase RLS), 2. Elimin
 Cohesion: 0.40
 Nodes (5): App(), Props, ProtectedRoute(), Onboarding(), isSaaSUser()
 
+### Community 197 - "adminApi.test.ts"
+Cohesion: 0.70
+Nodes (3): getTenantRolePermissions(), hasTenantPermission(), TENANT_ROLE_PERMISSIONS
+
 ## Knowledge Gaps
-- **573 isolated node(s):** `CustomIconProps`, `build-apk.sh script`, `ANDROID_HOME`, `PATH`, `build-store-apk.sh script` (+568 more)
+- **574 isolated node(s):** `CustomIconProps`, `build-apk.sh script`, `ANDROID_HOME`, `PATH`, `build-store-apk.sh script` (+569 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **72 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **71 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `WMSPage.tsx` to `ws`, `zustand`, `GlobalSearch.tsx`, `index-B_no5lKC.js`, `NotificationCenter.tsx`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `typescript-eslint`, `@testing-library/user-event`, `react`, `main.tsx`, `react-router`, `@southdevs/capacitor-google-auth`, `PedidoDetail.tsx`, `@react-three/fiber`, `leaflet`, `@capacitor/core`, `@codetrix-studio/capacitor-google-auth`, `@fontsource-variable/geist`, `framer-motion`, `jsbarcode`, `WorkerApp-BWctDf0A.js`, `lucide-react`, `@capacitor/ios`, `react-leaflet`, `@react-three/drei`, `@base-ui/react`, `shadcn`, `@supabase/supabase-js`, `tailwindcss`, `@tanstack/react-query`, `three`, `tw-animate-css`?**
+- **Why does `dependencies` connect `WMSPage.tsx` to `ws`, `zustand`, `GlobalSearch.tsx`, `index-B_no5lKC.js`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `typescript-eslint`, `@testing-library/user-event`, `react`, `main.tsx`, `react-router`, `@southdevs/capacitor-google-auth`, `PedidoDetail.tsx`, `@react-three/fiber`, `recharts`, `leaflet`, `@capacitor/core`, `@codetrix-studio/capacitor-google-auth`, `@fontsource-variable/geist`, `framer-motion`, `jsbarcode`, `WorkerApp-BWctDf0A.js`, `lucide-react`, `@capacitor/ios`, `react-leaflet`, `@react-three/drei`, `@base-ui/react`, `shadcn`, `@supabase/supabase-js`, `tailwindcss`, `@tanstack/react-query`, `three`, `tw-animate-css`?**
   _High betweenness centrality (0.111) - this node is a cross-community bridge._
-- **Why does `useI18n()` connect `n` to `LogistixDashboard-ZhczRoYg.js`, `LogistixDashboard-ZhczRoYg.js`, `.setAttribute`, `t`, `.copy`, `r`, `.push`, `Ne`, `.getSize`, `@supabase/supabase-js`, `logisticsApi.ts`, `.clone`, `.setAttribute`, `.toString`, `Ye`, `ln`, `B2BPage.tsx`, `ProtectedRoute.tsx`, `@capacitor/android`, `tailwind-merge`?**
+- **Why does `useI18n()` connect `n` to `LogistixDashboard-ZhczRoYg.js`, `.setAttribute`, `r`, `r`, `.push`, `Ne`, `.getSize`, `logisticsApi.ts`, `.clone`, `PedidosPage.tsx`, `EtiquetasPage.tsx`, `.toString`, `.setAttribute`, `Ye`, `B2BPage.tsx`, `ProtectedRoute.tsx`, `UserManagement.tsx`, `@capacitor/android`, `recharts`?**
   _High betweenness centrality (0.090) - this node is a cross-community bridge._
-- **Why does `useCreateListing()` connect `.toString` to `typescript-eslint`, `.setAttribute`, `n`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+- **Why does `useCreateListing()` connect `@capacitor/android` to `.toString`, `typescript-eslint`, `.setAttribute`, `n`?**
+  _High betweenness centrality (0.067) - this node is a cross-community bridge._
 - **What connects `CustomIconProps`, `build-apk.sh script`, `ANDROID_HOME` to the rest of the system?**
-  _573 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _574 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `LogistixDashboard-ZhczRoYg.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.05254237288135593 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
 - **Should `LogistixDashboard-ZhczRoYg.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09 - nodes in this community are weakly interconnected._
 - **Should `vendor-react-DqCMjyrC.js` be split into smaller, more focused modules?**
   _Cohesion score 0.06763717805151176 - nodes in this community are weakly interconnected._
