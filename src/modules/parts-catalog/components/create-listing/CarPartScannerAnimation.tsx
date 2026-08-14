@@ -114,12 +114,35 @@ export function CarPartScannerAnimation({ progress, message }: Props) {
 
       {/* Progresso e Mensagem */}
       <div className="flex-1 ml-8 relative z-10">
-        <div className="flex justify-between items-end mb-3">
+        <div className="flex justify-between items-center mb-3">
           <div className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00E5FF] to-[#0D75FF] tracking-wide">
             {message}
           </div>
-          <div className="text-3xl font-black text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.6)] font-mono">
-            {Math.round(progress)}%
+          
+          {/* Circular Progress Indicator */}
+          <div className="relative w-12 h-12 flex items-center justify-center">
+            <svg className="w-full h-full -rotate-90 drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]" viewBox="0 0 36 36">
+              {/* Background Circle */}
+              <path
+                className="text-[#0D75FF]/20"
+                strokeWidth="3"
+                stroke="currentColor"
+                fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+              {/* Progress Circle */}
+              <path
+                className="text-[#00E5FF] transition-all duration-300 ease-out"
+                strokeDasharray={`${Math.min(100, Math.max(0, progress))}, 100`}
+                strokeWidth="3"
+                strokeLinecap="round"
+                stroke="currentColor"
+                fill="none"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              />
+            </svg>
+            {/* Pulsing inner glow */}
+            <div className="absolute inset-0 bg-[#00E5FF]/20 rounded-full animate-pulse blur-sm" />
           </div>
         </div>
         
