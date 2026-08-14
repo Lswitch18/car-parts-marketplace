@@ -257,52 +257,61 @@ export function useCreateListing() {
           condition: formData.condition || 'new',
           images: uploadedUrls.length > 0 ? uploadedUrls : (images.length > 0 ? images : []),
           status: 'active',
-          year: safeYearStart,
           year_start: safeYearStart,
           year_end: safeYearEnd,
-          brand: matchedBrand?.name || formData.brand || '',
-          model: formData.model || '',
-          category: matchedCat?.name || formData.category || '',
         };
 
+        // Optional columns — only add if we have values
         if (resolvedBrandId) payload.brand_id = resolvedBrandId;
         if (resolvedCategoryId) payload.category_id = resolvedCategoryId;
         if (resolvedModelId) payload.model_id = resolvedModelId;
-        if (model3DUrl) payload.model_3d_url = model3DUrl;
         if (compatibilityTags && compatibilityTags.length > 0) {
           payload.compatibility_tags = compatibilityTags;
-          payload.compatibility = compatibilityTags.join(', ');
-        } else if (formData.model) {
-          payload.compatibility = formData.model;
         }
-        if (partNumber) {
-          payload.part_number = partNumber;
-          payload.oem_code = partNumber;
-        }
+        if (partNumber) payload.part_number = partNumber;
 
-        let { error: insertError } = await supabase.from('parts').insert(payload);
+        // Columns that may or may not exist on the table — try adding them
+        const optionalExtras: Record<string, any> = {};
+        if (matchedBrand?.name || formData.brand) optionalExtras.brand = matchedBrand?.name || formData.brand;
+        if (formData.model) optionalExtras.model = formData.model;
+        if (matchedCat?.name || formData.category) optionalExtras.category = matchedCat?.name || formData.category;
+        if (formData.model) optionalExtras.compatibility = formData.model;
+        if (model3DUrl) optionalExtras.model_3d_url = model3DUrl;
+        if (partNumber) optionalExtras.oem_code = partNumber;
+        optionalExtras.year = safeYearStart;
+
+        // Attempt 1: full payload with all optional extras
+        const fullPayload = { ...payload, ...optionalExtras };
+        console.log('[createListing] Attempt 1 payload:', Object.keys(fullPayload));
+        let { error: insertError } = await supabase.from('parts').insert(fullPayload);
 
         if (insertError) {
-          console.warn('Primary parts insert failed, attempting safe baseline payload:', insertError);
-          const baselinePayload: Record<string, any> = {
-            seller_id: user.id,
-            title: cleanTitle,
-            description: cleanDescription,
-            price: parseFloat(formData.price) || 0,
-            condition: formData.condition || 'new',
-            images: uploadedUrls.length > 0 ? uploadedUrls : (images.length > 0 ? images : []),
-            status: 'active',
-            year: safeYearStart,
-            year_start: safeYearStart,
-            year_end: safeYearEnd,
-          };
-          if (resolvedBrandId) baselinePayload.brand_id = resolvedBrandId;
-          if (resolvedCategoryId) baselinePayload.category_id = resolvedCategoryId;
-          if (formData.model) baselinePayload.model = formData.model;
+          console.warn('[createListing] Attempt 1 failed:', insertError.message, '| code:', insertError.code, '| details:', insertError.details, '| hint:', insertError.hint);
 
-          const retry = await supabase.from('parts').insert(baselinePayload);
-          if (retry.error) {
-            throw retry.error;
+          // Attempt 2: core payload without optional text columns
+          console.log('[createListing] Attempt 2 payload:', Object.keys(payload));
+          const retry2 = await supabase.from('parts').insert(payload);
+
+          if (retry2.error) {
+            console.warn('[createListing] Attempt 2 failed:', retry2.error.message, '| code:', retry2.error.code, '| details:', retry2.error.details, '| hint:', retry2.error.hint);
+
+            // Attempt 3: absolute minimum payload
+            const minPayload: Record<string, any> = {
+              seller_id: user.id,
+              title: cleanTitle,
+              description: cleanDescription,
+              price: parseFloat(formData.price) || 0,
+              condition: formData.condition || 'new',
+              images: uploadedUrls.length > 0 ? uploadedUrls : (images.length > 0 ? images : []),
+              status: 'active',
+            };
+            console.log('[createListing] Attempt 3 (minimum) payload:', Object.keys(minPayload));
+            const retry3 = await supabase.from('parts').insert(minPayload);
+
+            if (retry3.error) {
+              console.error('[createListing] All attempts failed. Last error:', retry3.error.message, '| code:', retry3.error.code, '| details:', retry3.error.details, '| hint:', retry3.error.hint);
+              throw retry3.error;
+            }
           }
         }
       }
