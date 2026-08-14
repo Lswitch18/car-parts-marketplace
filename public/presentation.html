@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DAIG — Apresentação Executiva & Tutorial do Sistema</title>
+  <title>DAIG — Apresentação Executiva & Tutorial do Sistema (Voz Neural Studio)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -51,6 +51,8 @@
       position: sticky;
       top: 0;
       z-index: 50;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     .logo-container {
@@ -89,11 +91,30 @@
     .tts-controls {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
       background: rgba(13, 117, 255, 0.1);
       border: 1px solid var(--card-border);
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 9999px;
+      flex-wrap: wrap;
+    }
+
+    .voice-select {
+      background: rgba(0, 0, 0, 0.6);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .voice-select option {
+      background: #0E111B;
+      color: #fff;
     }
 
     .btn-tts {
@@ -121,7 +142,7 @@
       background: transparent;
       color: var(--text);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 0.9rem;
       border-radius: 9999px;
       font-size: 0.85rem;
       cursor: pointer;
@@ -142,17 +163,29 @@
       gap: 0.4rem;
     }
 
-    .wave-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--green);
-      border-radius: 50%;
-      animation: pulse 1.5s infinite;
+    .wave-bars {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 14px;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px var(--green); }
+    .wave-bar {
+      width: 3px;
+      background: var(--green);
+      border-radius: 2px;
+      height: 4px;
+      transition: height 0.15s ease;
+    }
+
+    .wave-bars.active .wave-bar:nth-child(1) { animation: bounce 0.6s infinite alternate ease-in-out; }
+    .wave-bars.active .wave-bar:nth-child(2) { animation: bounce 0.8s infinite alternate 0.2s ease-in-out; }
+    .wave-bars.active .wave-bar:nth-child(3) { animation: bounce 0.5s infinite alternate 0.4s ease-in-out; }
+    .wave-bars.active .wave-bar:nth-child(4) { animation: bounce 0.7s infinite alternate 0.1s ease-in-out; }
+
+    @keyframes bounce {
+      0% { height: 4px; }
+      100% { height: 14px; box-shadow: 0 0 6px var(--green); }
     }
 
     main {
@@ -184,7 +217,7 @@
 
     .hero-banner p {
       color: var(--text-muted);
-      max-width: 800px;
+      max-width: 850px;
       font-size: 1.05rem;
       line-height: 1.6;
     }
@@ -445,18 +478,29 @@
       <div class="logo-badge">⚡</div>
       <div class="logo-text">
         <h1>DAIG (Digital A.I. Garage)</h1>
-        <p>Apresentação Executiva & Tutorial de Demonstração</p>
+        <p>Apresentação Executiva & Tutorial com Voz Neural Studio</p>
       </div>
     </div>
 
     <div class="tts-controls">
+      <select class="voice-select" id="voiceTypeSelect" onchange="changeVoiceType()">
+        <option value="neural-male">🎙️ Voz Studio HD: Antônio (Masculina)</option>
+        <option value="neural-female">🎙️ Voz Studio HD: Francisca (Feminina)</option>
+        <option value="webspeech">🌐 Voz Nativa do Navegador (WebSpeech)</option>
+      </select>
+
       <button class="btn-tts" id="playAllBtn" onclick="togglePlayAll()">
         <span id="playIcon">▶</span> <span id="playLabel">Ouvir Apresentação Completa</span>
       </button>
       <button class="btn-secondary" onclick="stopSpeech()">⏹ Parar</button>
       <div class="voice-status">
-        <div class="wave-dot"></div>
-        <span id="voiceName">Voz PT-BR Ativa</span>
+        <div class="wave-bars" id="waveBars">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+        <span id="voiceName">Voz Studio Neural Ativa</span>
       </div>
     </div>
   </header>
@@ -465,7 +509,7 @@
     <div class="hero-banner">
       <h2>Plataforma DAIG: Autopeças JDM, IA Multimodal e SaaS B2B</h2>
       <p>
-        Análise detalhada frame a frame do vídeo gravado na plataforma oficial de produção (daig.jp). Descubra como a IA de Visão Computacional, a liquidação em Ienes (JPY) via Stripe Connect e o Hub de Gestão Multi-tenant transformam o comércio de autopeças no Japão.
+        Análise detalhada frame a frame do vídeo gravado na plataforma oficial de produção (daig.jp). Com motor de voz <strong>Neural Studio HD</strong>, experimente uma locução fluida, natural e expressiva guiando cada módulo da plataforma.
       </p>
 
       <div class="metrics-bar">
@@ -507,7 +551,7 @@
 
           <div class="narration-box">
             <div class="narration-label">
-              <span>🎙️</span> Locução da Apresentação (Text-to-Speech)
+              <span>🎙️</span> Locução da Apresentação (Studio Neural Voice)
             </div>
             <p class="narration-text" id="slideNarration">
               Carregando narrativa...
@@ -545,6 +589,8 @@
         category: "MÓDULO 1: CADASTRO COM IA",
         title: "Visão Computacional & Interface da DAIG",
         img: "/presentation_frames/frame_001.jpg",
+        audioMale: "/presentation_audio/slide_1.mp3",
+        audioFemale: "/presentation_audio/slide_f_1.mp3",
         narration: "Sejam bem-vindos à demonstração oficial da DAIG, a primeira plataforma inteligente de autopeças JDM impulsionada por inteligência artificial multimodal no Japão. Aqui na tela de criação de anúncios, o lojista conta com um assistente de Visão Computacional que elimina totalmente a digitação manual de dados técnicos de peças automotivas.",
         points: [
           "Suporte nativo a idioma Japonês e Português do Brasil com troca instantânea no topo.",
@@ -558,6 +604,8 @@
         category: "MÓDULO 2: PROCESSAMENTO MULTIMODAL",
         title: "Auto-Preenchimento e Reconhecimento Automático",
         img: "/presentation_frames/frame_016.jpg",
+        audioMale: "/presentation_audio/slide_2.mp3",
+        audioFemale: "/presentation_audio/slide_f_2.mp3",
         narration: "Ao fazer o upload da foto de uma peça, como este conjunto de freios Brembo genuíno da Subaru STI, a nossa rede neural analisa texturas, marcas em relevo e especificações em menos de três segundos. A inteligência artificial identifica automaticamente a marca Subaru, o modelo Impreza WRX STI, a condição da peça, os anos de compatibilidade e escreve uma descrição técnica detalhada em português ou japonês.",
         points: [
           "Identificação precisa de marca e modelo automotivo sem necessidade de preenchimento manual.",
@@ -571,6 +619,8 @@
         category: "MÓDULO 3: CATÁLOGO JDM DINÂMICO",
         title: "Vitrine Interativa & Filtros de Alta Performance",
         img: "/presentation_frames/frame_004.jpg",
+        audioMale: "/presentation_audio/slide_3.mp3",
+        audioFemale: "/presentation_audio/slide_f_3.mp3",
         narration: "Ao navegar para o catálogo público de peças, encontramos uma vitrine moderna no padrão Cyber Neon, exibindo mais de cinco mil peças em estoque. O usuário pode alternar instantaneamente entre a visualização em grade e lista, ordenar por novidades ou popularidade, e filtrar por fabricantes lendários japoneses como Nissan, Toyota, Honda, Subaru, GReddy e HKS.",
         points: [
           "Filtros segmentados por marcas japonesas, categorias de performance e faixas de preço em Ienes (¥).",
@@ -584,6 +634,8 @@
         category: "MÓDULO 4: LOCALIZAÇÃO BILÍNGUE EM TEMPO REAL",
         title: "Internacionalização Dinâmica (PT ⟷ JA)",
         img: "/presentation_frames/frame_019.jpg",
+        audioMale: "/presentation_audio/slide_4.mp3",
+        audioFemale: "/presentation_audio/slide_f_4.mp3",
         narration: "Um dos grandes diferenciais da DAIG é o seu motor de localização bilíngue em tempo real. Com um simples clique no seletor de idioma, todo o conteúdo dos produtos gravados em Katakana e Kanji no Japão é traduzido de forma fluida para o português, permitindo que importadores, oficinas e entusiastas de todo o mundo encontrem peças raras sem barreira de idioma.",
         points: [
           "Tradução instantânea de termos técnicos automotivos e Katakana para Português.",
@@ -597,7 +649,9 @@
         category: "MÓDULO 5: LIQUIDAÇÃO STRIPE & ESCROW",
         title: "Operações Financeiras & Divisão de Receita",
         img: "/presentation_frames/frame_024.jpg",
-        narration: "Na área administrativa de operações do marketplace, o sistema exibe o fluxo financeiro em Ienes ao vivo. A DAIG opera com custódia segura Escrow via Stripe Connect: a plataforma retém a comissão de 10%, cobrindo custos operacionais, e repassa automaticamente 90% do valor da venda ao vendedor cadastrado de forma transparente e blindada contra fraudes.",
+        audioMale: "/presentation_audio/slide_5.mp3",
+        audioFemale: "/presentation_audio/slide_f_5.mp3",
+        narration: "Na área administrativa de operações do marketplace, o sistema exibe o fluxo financeiro em Ienes ao vivo. A DAIG opera com custódia segura Escrow via Stripe Connect: a plataforma retém a comissão de dez por cento, cobrindo custos operacionais, e repassa automaticamente noventa por cento do valor da venda ao vendedor cadastrado de forma transparente e blindada contra fraudes.",
         points: [
           "Divisão automatizada de comissão: 10% DAIG e 90% repasse direto ao vendedor.",
           "Custódia em Escrow até a confirmação de entrega da peça pelo comprador.",
@@ -610,7 +664,9 @@
         category: "MÓDULO 6: HUB SAAS MULTI-TENANT",
         title: "Centro de Controle de Assinaturas e MRR",
         img: "/presentation_frames/frame_025.jpg",
-        narration: "Para consolidar o ecossistema corporativo, a DAIG oferece um Hub SaaS B2B completo para desmanches e lojas parceiras. No painel executivo, acompanhamos o faturamento recorrente mensal, a saúde das assinaturas, os planos Starter, Pro e Enterprise, com taxa de adimplência de 100% integrada à cobrança automática do Stripe Billing. Uma solução de alto valuation projetada para liderar o mercado japonês.",
+        audioMale: "/presentation_audio/slide_6.mp3",
+        audioFemale: "/presentation_audio/slide_f_6.mp3",
+        narration: "Para consolidar o ecossistema corporativo, a DAIG oferece um Hub SaaS B2B completo para desmanches e lojas parceiras. No painel executivo, acompanhamos o faturamento recorrente mensal, a saúde das assinaturas, os planos Starter, Pro e Enterprise, com taxa de adimplência de cem por cento integrada à cobrança automática do Stripe Billing. Uma solução de alto valuation projetada para liderar o mercado japonês.",
         points: [
           "Monitoramento de MRR (Receita Recorrente Mensal) e projeção de ARR em tempo real.",
           "Gestão unificada de lojas e desmanches credenciados em território japonês.",
@@ -622,7 +678,8 @@
     let currentSlide = 0;
     let isPlayingAll = false;
     let synth = window.speechSynthesis;
-    let currentUtterance = null;
+    let currentAudio = null;
+    let voiceMode = 'neural-male'; // 'neural-male' | 'neural-female' | 'webspeech'
 
     function init() {
       const nav = document.getElementById('timelineNav');
@@ -638,18 +695,15 @@
       });
 
       renderSlide(0);
-      initVoices();
+      changeVoiceType();
     }
 
-    function initVoices() {
-      if (!synth) return;
-      synth.onvoiceschanged = () => {
-        const voices = synth.getVoices();
-        const ptVoice = voices.find(v => v.lang.includes('pt') || v.lang.includes('BR'));
-        if (ptVoice) {
-          document.getElementById('voiceName').textContent = ptVoice.name.replace(/Google|Microsoft/g, '').trim() + ' (PT-BR)';
-        }
-      };
+    function changeVoiceType() {
+      voiceMode = document.getElementById('voiceTypeSelect').value;
+      const statusLabel = document.getElementById('voiceName');
+      if (voiceMode === 'neural-male') statusLabel.textContent = 'Antônio (Neural Studio HD)';
+      else if (voiceMode === 'neural-female') statusLabel.textContent = 'Francisca (Neural Studio HD)';
+      else statusLabel.textContent = 'Web Speech Nativo';
     }
 
     function renderSlide(idx) {
@@ -691,37 +745,66 @@
       if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
     }
 
-    function speakText(text, onEndCallback) {
+    function setWaveActive(active) {
+      const wave = document.getElementById('waveBars');
+      if (wave) wave.classList.toggle('active', active);
+    }
+
+    function speakSlide(idx, onEndCallback) {
+      stopSpeech();
+      setWaveActive(true);
+
+      const s = slides[idx];
+
+      if (voiceMode === 'neural-male' || voiceMode === 'neural-female') {
+        const audioSrc = voiceMode === 'neural-male' ? s.audioMale : s.audioFemale;
+        currentAudio = new Audio(audioSrc);
+        
+        currentAudio.onended = () => {
+          setWaveActive(false);
+          if (onEndCallback) onEndCallback();
+        };
+
+        currentAudio.onerror = () => {
+          console.warn('Erro ao carregar MP3 Neural, usando fallback WebSpeech.');
+          speakWebSpeech(s.narration, onEndCallback);
+        };
+
+        currentAudio.play().catch(() => {
+          speakWebSpeech(s.narration, onEndCallback);
+        });
+      } else {
+        speakWebSpeech(s.narration, onEndCallback);
+      }
+    }
+
+    function speakWebSpeech(text, onEndCallback) {
       if (!synth) {
-        alert('Seu navegador não suporta a Web Speech API. Use o Chrome ou Edge para locução.');
+        setWaveActive(false);
         return;
       }
-
       synth.cancel();
 
-      currentUtterance = new SpeechSynthesisUtterance(text);
-      currentUtterance.lang = 'pt-BR';
-      currentUtterance.rate = 1.05;
-      currentUtterance.pitch = 1.0;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'pt-BR';
+      utter.rate = 1.0;
+      utter.pitch = 1.0;
 
       const voices = synth.getVoices();
       const ptVoice = voices.find(v => v.lang.includes('pt-BR') || v.lang.includes('pt_BR')) || voices.find(v => v.lang.includes('pt'));
-      if (ptVoice) currentUtterance.voice = ptVoice;
+      if (ptVoice) utter.voice = ptVoice;
 
-      currentUtterance.onend = () => {
+      utter.onend = () => {
+        setWaveActive(false);
         if (onEndCallback) onEndCallback();
       };
+      utter.onerror = () => setWaveActive(false);
 
-      currentUtterance.onerror = (e) => {
-        console.warn('TTS Error:', e);
-      };
-
-      synth.speak(currentUtterance);
+      synth.speak(utter);
     }
 
     function speakCurrentSlide() {
-      stopSpeech();
-      speakText(slides[currentSlide].narration);
+      speakSlide(currentSlide);
     }
 
     function togglePlayAll() {
@@ -742,9 +825,9 @@
       }
 
       renderSlide(idx);
-      speakText(slides[idx].narration, () => {
+      speakSlide(idx, () => {
         if (isPlayingAll && idx + 1 < slides.length) {
-          setTimeout(() => playSequenceFrom(idx + 1), 1000);
+          setTimeout(() => playSequenceFrom(idx + 1), 800);
         } else {
           stopSpeech();
         }
@@ -752,7 +835,13 @@
     }
 
     function stopSpeech() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
       if (synth) synth.cancel();
+      setWaveActive(false);
       isPlayingAll = false;
       document.getElementById('playIcon').textContent = '▶';
       document.getElementById('playLabel').textContent = 'Ouvir Apresentação Completa';
