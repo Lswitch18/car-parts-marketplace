@@ -1,4 +1,4 @@
-import { supabase, successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
+import { supabase, successResponse, errorResponse, corsHeaders, requireAuth, checkRateLimit } from '../utils/base.ts';
 import { redisGet, redisSet, cacheKey } from '../utils/redis.ts';
 
 interface PartFilters {
@@ -48,10 +48,14 @@ Deno.serve(async (req) => {
     };
 
     if (action === 'list') {
+      const rl = await checkRateLimit(req, 120, 60);
+      if (rl) return rl;
       return await listParts({ page, limit, sort, order, filters });
     }
 
     if (action === 'get' || action?.match(/^[0-9a-f-]{36}$/)) {
+      const rl = await checkRateLimit(req, 120, 60);
+      if (rl) return rl;
       const partId = action !== 'get' ? action : url.searchParams.get('id');
       if (partId) return await getPart(partId);
     }
@@ -105,7 +109,8 @@ async function listParts(params: ListPartsParams) {
   if (filters.featured) query = query.eq('featured', true);
 
   if (filters.search) {
-    query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    const safe = filters.search.replace(/[\\%_*]/g, (m) => `\\${m}`);
+    query = query.or(`title.ilike.%${safe}%,description.ilike.%${safe}%`);
   }
 
   if (filters.min_price) query = query.gte('price', filters.min_price);

@@ -40,6 +40,16 @@ function redisEnv() {
   return { url, token };
 }
 
+const ALLOWED_KEY_PATTERNS: RegExp[] = [
+  /^catalog:[A-Za-z0-9%&=_+.\-]{1,200}$/,
+  /^ai_analysis_or_[a-f0-9]{64}$/,
+];
+const MAX_VALUE_BYTES = 512 * 1024;
+
+function isAllowedKey(key: string): boolean {
+  return ALLOWED_KEY_PATTERNS.some((p) => p.test(key));
+}
+
 async function redisGet(url: string, token: string, key: string): Promise<unknown> {
   const res = await fetch(`${url}/get/${encodeURIComponent(key)}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -100,6 +110,7 @@ Deno.serve(async (req: Request) => {
 
     if (action === 'get') {
       if (!key) return json(400, { success: false, error: 'key is required' });
+      if (!isAllowedKey(key)) return json(400, { success: false, error: 'key not allowed' });
       const value = await redisGet(env.url, env.token, key);
       return json(200, { success: true, data: value ?? null });
     }
@@ -108,8 +119,13 @@ Deno.serve(async (req: Request) => {
       if (!key || body.value === undefined) {
         return json(400, { success: false, error: 'key and value are required' });
       }
-      const ttl = Math.max(1, Number(body.expiresInSeconds) || 3600);
-      const result = await redisCmd(env.url, env.token, ['SET', key, JSON.stringify(body.value), 'EX', ttl]);
+      if (!isAllowedKey(key)) return json(400, { success: false, error: 'key not allowed' });
+      const serialized = JSON.stringify(body.value);
+      if (serialized.length > MAX_VALUE_BYTES) {
+        return json(400, { success: false, error: 'value too large' });
+      }
+      const ttl = Math.min(Math.max(1, Number(body.expiresInSeconds) || 3600), 86400);
+      const result = await redisCmd(env.url, env.token, ['SET', key, serialized, 'EX', ttl]);
       return json(200, { success: true, data: result });
     }
 
