@@ -120,7 +120,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="onboarding" element={<Onboarding />} />
               <Route element={<OnboardingGuard />}>
-                <Route path="dashboard" element={<Navigate to="/tenant-dashboard" replace />} />
+                <Route path="dashboard" element={<Navigate to="/catalog" replace />} />
                 <Route path="bank-account" element={<JapanBankAccount />} />
                 <Route path="japan-bank-account" element={<JapanBankAccount />} />
                 <Route path="create-listing" element={<CreateListing />} />

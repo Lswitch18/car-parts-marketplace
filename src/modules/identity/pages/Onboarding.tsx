@@ -189,11 +189,7 @@ export default function Onboarding() {
   }
 
   const goToDashboard = () => {
-    if (isSaaSUser(user) || accountType === 'empresa') {
-      navigate('/tenant-dashboard', { replace: true })
-    } else {
-      navigate('/catalog', { replace: true })
-    }
+    navigate('/catalog', { replace: true })
   }
 
   // ═══ STEP 0: WELCOME SCREEN ═══
