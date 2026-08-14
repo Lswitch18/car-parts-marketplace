@@ -1,7 +1,7 @@
 # Graph Report - car-parts-marketplce  (2026-08-14)
 
 ## Corpus Check
-- 392 files · ~1,118,205 words
+- 392 files · ~1,118,218 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9ca2106d`
+- Built from commit: `8248182e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -304,7 +304,7 @@ Nodes (10): AdminDashboard(), AlertItem, AlertOrchestrationParams, calculateFina
 
 ### Community 23 - "constructor"
 Cohesion: 0.12
-Nodes (17): auto-parts-db, eslint, jsdom, devDependencies, auto-parts-db, eslint, jsdom, @testing-library/dom (+9 more)
+Nodes (17): auto-parts-db, @capacitor/cli, jsdom, devDependencies, auto-parts-db, @capacitor/cli, jsdom, @testing-library/dom (+9 more)
 
 ### Community 24 - "PartCard.tsx"
 Cohesion: 0.24
@@ -352,7 +352,7 @@ Nodes (10): 💡 1. Conceito Fundamental: Transferência vs Repasse Bancário, �
 
 ### Community 36 - "WMSPage.tsx"
 Cohesion: 0.18
-Nodes (11): axios, @base-ui/react, clsx, dependencies, axios, @base-ui/react, clsx, react (+3 more)
+Nodes (11): axios, @base-ui/react, dependencies, axios, @base-ui/react, react, recharts, tailwind-merge (+3 more)
 
 ### Community 37 - "adminApi.test.ts"
 Cohesion: 0.20
@@ -594,7 +594,7 @@ Nodes (3): queryClient, root, StoreApp()
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `WMSPage.tsx` to `ws`, `zustand`, `index-B_no5lKC.js`, `recharts`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `typescript-eslint`, `@testing-library/user-event`, `react`, `main.tsx`, `react-router`, `@southdevs/capacitor-google-auth`, `PedidoDetail.tsx`, `@react-three/fiber`, `leaflet`, `canvas-confetti`, `@capacitor/core`, `@codetrix-studio/capacitor-google-auth`, `@fontsource-variable/geist`, `framer-motion`, `jsbarcode`, `WorkerApp-BWctDf0A.js`, `lucide-react`, `@capacitor/ios`, `react-leaflet`, `@react-three/drei`, `@base-ui/react`, `shadcn`, `@supabase/supabase-js`, `tailwindcss`, `@tanstack/react-query`, `three`, `tw-animate-css`?**
+- **Why does `dependencies` connect `WMSPage.tsx` to `ws`, `zustand`, `index-B_no5lKC.js`, `PedidosPage.tsx`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `typescript-eslint`, `@testing-library/user-event`, `react`, `main.tsx`, `react-router`, `@southdevs/capacitor-google-auth`, `PedidoDetail.tsx`, `@react-three/fiber`, `leaflet`, `canvas-confetti`, `@capacitor/core`, `@codetrix-studio/capacitor-google-auth`, `@fontsource-variable/geist`, `framer-motion`, `jsbarcode`, `WorkerApp-BWctDf0A.js`, `lucide-react`, `@capacitor/ios`, `react-leaflet`, `@react-three/drei`, `@base-ui/react`, `shadcn`, `@supabase/supabase-js`, `tailwindcss`, `@tanstack/react-query`, `three`, `tw-animate-css`?**
   _High betweenness centrality (0.110) - this node is a cross-community bridge._
 - **Why does `useI18n()` connect `n` to `LogistixDashboard-ZhczRoYg.js`, `.setAttribute`, `.clone`, `t`, `.setAttribute`, `Ye`, `r`, `ln`, `GlobalSearch.tsx`, `r`, `.get`, `.push`, `Ne`, `B2BPage.tsx`, `recharts`, `tailwind-merge`, `logisticsApi.ts`?**
   _High betweenness centrality (0.088) - this node is a cross-community bridge._

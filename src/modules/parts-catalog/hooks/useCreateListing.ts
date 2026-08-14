@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/modules/identity/store/authStore';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
@@ -12,6 +12,7 @@ import { localizeProductTitle, localizeProductDescription, translateTextAsync } 
 export function useCreateListing() {
   const { t, language } = useI18n();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuthStore();
   
   const [images, setImages] = useState<string[]>([]);
@@ -331,7 +332,9 @@ export function useCreateListing() {
       }
     },
     onSuccess: () => {
-      navigate('/tenant-dashboard');
+      queryClient.invalidateQueries({ queryKey: ['parts'] });
+      queryClient.invalidateQueries({ queryKey: ['catalog'] });
+      navigate('/catalog');
     },
     onError: (err: any) => {
       console.error('Error creating part listing:', err);
