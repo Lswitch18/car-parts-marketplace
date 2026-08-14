@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
 import { fetchPostal } from '@/modules/shared/lib/postal'
+import { localizeProductTitle } from '@/modules/parts-catalog/utils/catalogLocalizer'
 
 interface Part {
   id: string
@@ -576,7 +577,7 @@ export default function PaymentCheckout() {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-bold text-sm leading-snug line-clamp-2">{part.title}</p>
+                    <p className="text-white font-bold text-sm leading-snug line-clamp-2">{localizeProductTitle(part.title, language)}</p>
                     <p className="text-cyan-400 text-xs font-mono mt-1">{part.brands?.name || part.categories?.name || 'JDM Part'}</p>
                   </div>
                 </div>

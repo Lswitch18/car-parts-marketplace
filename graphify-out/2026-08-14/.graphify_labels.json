@@ -199,7 +199,10 @@
   "197": "adminApi.test.ts",
   "198": "autoprefixer",
   "199": "@types/three",
+  "200": "UserManagement.tsx",
   "201": "@react-three/fiber",
+  "202": "autoprefixer",
+  "203": "recharts",
   "214": "generate_acordo_socios_pdf.py",
   "225": "typescript-eslint"
 }

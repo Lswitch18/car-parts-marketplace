@@ -7,6 +7,7 @@ import { useI18n } from '@/modules/shared/lib/i18n';
 import { api } from '@/modules/transactions/api/api';
 import DOMPurify from 'dompurify';
 import { BRANDS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS, CATEGORIES } from '@/modules/shared/lib/constants';
+import { localizeProductTitle, localizeProductDescription } from '@/modules/parts-catalog/utils/catalogLocalizer';
 
 export function useCreateListing() {
   const { t, language } = useI18n();
@@ -94,7 +95,12 @@ export function useCreateListing() {
         return;
       }
 
-      const newTitle = data.title || formData.title;
+      // Localize AI-suggested title and description to match user's current language 100%
+      const rawTitle = data.title || formData.title;
+      const localizedTitle = localizeProductTitle(rawTitle, language);
+
+      const rawDesc = data.description || formData.description;
+      const localizedDesc = localizeProductDescription(rawDesc, language);
 
       // Smart Brand resolution from AI
       let matchedBrandId = formData.brand;
@@ -122,8 +128,8 @@ export function useCreateListing() {
       }
 
       let newFormData = {
-        title: newTitle,
-        description: data.description || formData.description,
+        title: localizedTitle,
+        description: localizedDesc,
         price: data.estimated_price?.toString() || formData.price,
         brand: matchedBrandId,
         model: data.model || formData.model,

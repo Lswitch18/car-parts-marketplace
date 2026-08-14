@@ -364,22 +364,28 @@ Deno.serve(async (req: Request) => {
 
     const imageHash = await sha256(image);
 
+    const langInstruction = (language === 'pt' || language.startsWith('pt'))
+      ? `REGRA CRÍTICA DE IDIOMA: O usuário selecionou 'pt' (Português do Brasil). Você DEVE OBRIGATORIAMENTE gerar os campos "title", "description" e "compatibility_tags" em PORTUGUÊS DO BRASIL fluente e comercial. NÃO retorne caracteres em japonês (Kanji/Katakana/Hiragana) no title ou description.`
+      : (language === 'ja')
+      ? `必須言語ルール：ユーザーは 'ja'（日本語）を選択しました。"title"、"description"、"compatibility_tags" は必ず自然で魅力的な日本語（カタカナ/漢字）で出力してください。`
+      : `CRITICAL LANGUAGE RULE: The user selected 'en' (English). You MUST generate "title", "description", and "compatibility_tags" strictly in fluent English.`;
+
     const promptVision = custom_prompt || `Verifique se a imagem contém uma peça automotiva. Retorne APENAS um JSON estrito com os seguintes campos:
 {
   "is_car_part": boolean (true se a imagem contiver uma peça de carro, etiqueta/sticker de peça, motor, radiador ou componente automotivo, false caso contrário),
   "part_number": string | null (Busque atentamente por etiquetas de manutenção ou códigos impressos na peça, ex: códigos Honda como 87533-R9G-000, 19010-6F6-003, e extraia-os aqui),
-  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
-  "model": string (o modelo do CARRO/VEÍCULO compatível em camelcase, ex: Prius, Aqua, Fit, Note, N-BOX. NÃO retorne o modelo da própria peça, retorne o nome do carro. DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos),
+  "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan, mitsubishi. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
+  "model": string (o modelo do CARRO/VEÍCULO compatível em camelcase, ex: Prius, Aqua, Fit, Note, N-BOX, LancerEvolution. NÃO retorne o modelo da própria peça, retorne o nome do carro. DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos),
   "year_start": number | null (O ano inicial de compatibilidade, entre 1990 e 2024. Ex: 2014),
   "year_end": number | null (O ano final de compatibilidade, entre 1990 e 2024, ou nulo se ainda for fabricado),
   "compatibility_tags": string[] (tags curtas de compatibilidade com marcas, modelos exatos e anos de fabricação compatíveis, ex: ["Honda N-BOX (2017-2023)", "Honda N-WGN (2019-2024)", "Honda N-ONE (2020-2025)"]),
   "category": string (DEVE ser estritamente UM destes slugs: "aero", "body-kits", "brakes", "cooling", "engine", "exhaust", "interior", "lighting", "suspension", "turbo-boost", "wheels-rims", "wings-spoilers"),
-  "title": string,
-  "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Apresente o item anunciado, detalhe seu estado físico/de conservação visual observado, ficha técnica [especificações como amperagem/Ah, dimensões, voltagem/V se aplicável] e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
-  "estimated_price": number,
+  "title": string (Título do anúncio objetivo e atraente),
+  "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda. Apresente o item anunciado, detalhe seu estado físico/de conservação visual observado, ficha técnica e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
+  "estimated_price": number (preço estimado de venda em Ienes Japoneses - JPY),
   "confidence_score": number
 }
-IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com código '${language}'.`;
+${langInstruction}`;
 
     const base64Image = image.split(',')[1] || image;
     let visionResult: any = {};
@@ -535,7 +541,7 @@ Retorne APENAS um JSON válido e estrito contendo:
                 'X-OpenRouter-Title': 'Gaid Parts Scraper'
               },
               body: JSON.stringify({
-                model: 'google/gemini-3.5-flash',
+                model: 'google/gemini-2.0-flash-001',
                 messages: [{ role: 'user', content: promptScraper }],
                 temperature: 0.1,
               })

@@ -11,9 +11,10 @@ import {
   TrendingUp, ShoppingBag, DollarSign, Sparkles, MessageSquare, Mail, Smartphone, Laptop, Trash2
 } from 'lucide-react'
 import { fetchPostal } from '@/modules/shared/lib/postal'
+import { localizeProductTitle } from '@/modules/parts-catalog/utils/catalogLocalizer'
 
 export default function Profile() {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const navigate = useNavigate()
   const { user, setUser } = useAuthStore()
   const location = useLocation()
@@ -591,7 +592,7 @@ export default function Profile() {
                               className="w-12 h-12 rounded-lg object-cover border border-zinc-800 shrink-0" 
                             />
                             <div className="min-w-0">
-                              <p className="text-xs font-bold text-white truncate">{part.title}</p>
+                              <p className="text-xs font-bold text-white truncate">{localizeProductTitle(part.title, language)}</p>
                               <div className="flex items-center space-x-2 text-[11px] text-zinc-400 mt-0.5">
                                 <span>{part.category || 'Peças Automotivas'}</span>
                                 <span>•</span>
