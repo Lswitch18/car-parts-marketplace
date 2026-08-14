@@ -15,13 +15,12 @@ export default function CreateListing() {
           <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl text-red-500">⚠️</span>
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">Limite Mensal Atingido</h2>
+          <h2 className="text-xl font-bold text-white mb-2">{state.t('Limite Mensal Atingido')}</h2>
           <p className="text-text-secondary mb-6">
-            Você atingiu o limite de 50 anúncios gratuitos para pessoa física (Kojin).
-            Abra uma conta Pessoa Jurídica (Hojin) ou torne-se Parceiro Desmanche para envios ilimitados.
+            {state.t('Você atingiu o limite de 50 anúncios gratuitos para pessoa física (Kojin). Abra uma conta Pessoa Jurídica (Hojin) ou torne-se Parceiro Desmanche para envios ilimitados.')}
           </p>
           <button onClick={() => window.location.href = '/settings/profile'} className="btn-primary w-full py-3">
-            Atualizar Perfil para PJ
+            {state.t('Atualizar Perfil para PJ')}
           </button>
         </div>
       </div>
@@ -35,12 +34,12 @@ export default function CreateListing() {
           <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl text-amber-500">⏳</span>
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">Aprovação Pendente</h2>
+          <h2 className="text-xl font-bold text-white mb-2">{state.t('Aprovação Pendente')}</h2>
           <p className="text-text-secondary mb-6">
-            Como lojista, você já anunciou 20 peças. Para remover este limite, precisamos validar seu Kobutsu-sho (Licença de Usados) e sua conta bancária japonesa.
+            {state.t('Como lojista, você já anunciou 20 peças. Para remover este limite, precisamos validar seu Kobutsu-sho (Licença de Usados) e sua conta bancária japonesa.')}
           </p>
           <button onClick={() => window.location.href = '/settings/profile'} className="btn-primary w-full py-3">
-            Concluir Verificação da Loja
+            {state.t('Concluir Verificação da Loja')}
           </button>
         </div>
       </div>

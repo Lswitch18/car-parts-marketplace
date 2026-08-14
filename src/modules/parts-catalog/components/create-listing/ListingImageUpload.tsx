@@ -33,6 +33,9 @@ export function ListingImageUpload({
     return t('Sincronizando Anúncio...');
   };
 
+  const format = (template: string, params: Record<string, string>) =>
+    template.replace(/\{(\w+)\}/g, (_, k: string) => params[k] ?? '');
+
   return (
     <div>
       <label className="block text-text-secondary text-sm mb-2">{t('Fotos do produto')}</label>
@@ -73,7 +76,7 @@ export function ListingImageUpload({
               value={vin}
               onChange={(e) => setVin(e.target.value.toUpperCase())}
               className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text text-sm focus:border-[#0D75FF] focus:outline-none transition-colors"
-              placeholder="Ex: JTD123456789..."
+              placeholder={t('Ex: JTD123456789...')}
             />
           </div>
           
@@ -161,8 +164,8 @@ export function ListingImageUpload({
               </h3>
               <p className="text-sm opacity-80">
                 {isOfficialData 
-                  ? t(`O código OEM ${partNumber} foi validado no catálogo do fabricante. As especificações abaixo são 100% precisas.`) 
-                  : t(`O código ${partNumber} foi lido pela IA, porém não foi encontrado na base oficial. Os dados abaixo são estimativas.`)}
+                  ? format(t('O código OEM {partNumber} foi validado no catálogo do fabricante. As especificações abaixo são 100% precisas.'), { partNumber }) 
+                  : format(t('O código {partNumber} foi lido pela IA, porém não foi encontrado na base oficial. Os dados abaixo são estimativas.'), { partNumber })}
               </p>
             </div>
           </div>

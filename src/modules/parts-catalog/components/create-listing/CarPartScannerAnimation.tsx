@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { motion } from 'framer-motion';
+import { useI18n } from '@/modules/shared/lib/i18n';
 
 export function TurboIcon({ className = "w-16 h-16" }: { className?: string }) {
   return (
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export function CarPartScannerAnimation({ progress, message }: Props) {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -156,7 +158,7 @@ export function CarPartScannerAnimation({ progress, message }: Props) {
         <div className="mt-3 flex gap-2">
           {['Visual Computing', 'Model Matching', 'Pricing Matrix'].map((tag, i) => (
             <span key={tag} className={`text-[10px] uppercase tracking-wider font-bold px-2 py-1 border rounded bg-[#0D75FF]/10 transition-colors ${progress > i * 33 ? 'border-[#00E5FF]/50 text-[#00E5FF]' : 'border-[#0D75FF]/20 text-[#0D75FF]/50'}`}>
-              {tag}
+              {t(tag)}
             </span>
           ))}
         </div>

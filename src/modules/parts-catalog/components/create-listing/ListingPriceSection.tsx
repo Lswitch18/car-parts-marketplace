@@ -27,7 +27,7 @@ export function ListingPriceSection({
               value={formData.startingBid}
               onChange={(e) => setFormData({ ...formData, startingBid: e.target.value })}
               className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text focus:border-primary focus:outline-none"
-              placeholder="Ex: 5000"
+              placeholder={t('Ex: 5000')}
               required={isAuction}
             />
           </div>
@@ -38,7 +38,7 @@ export function ListingPriceSection({
               value={formData.buyNowPrice}
               onChange={(e) => setFormData({ ...formData, buyNowPrice: e.target.value })}
               className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text focus:border-primary focus:outline-none"
-              placeholder="Ex: 15000"
+              placeholder={t('Ex: 15000')}
             />
           </div>
           <div>
@@ -48,10 +48,10 @@ export function ListingPriceSection({
               onChange={(e) => setFormData({ ...formData, auctionDurationHours: e.target.value })}
               className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text focus:border-primary focus:outline-none"
             >
-              <option value="24">24 h (1 dia)</option>
-              <option value="72">72 h (3 dias)</option>
-              <option value="168">168 h (7 dias)</option>
-              <option value="336">336 h (14 dias)</option>
+              <option value="24">{t('24 h (1 dia)')}</option>
+              <option value="72">{t('72 h (3 dias)')}</option>
+              <option value="168">{t('168 h (7 dias)')}</option>
+              <option value="336">{t('336 h (14 dias)')}</option>
             </select>
           </div>
         </div>
@@ -78,7 +78,7 @@ export function ListingPriceSection({
                 setPriceCertification(null);
               }}
               className="w-full px-4 py-3 bg-surface border border-border rounded-lg text-text focus:border-primary focus:outline-none"
-              placeholder="0,00"
+              placeholder={t('0,00')}
               required={!isAuction}
             />
             {priceCertification && (
