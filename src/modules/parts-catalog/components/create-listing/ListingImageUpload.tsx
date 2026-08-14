@@ -83,11 +83,15 @@ export function ListingImageUpload({
                 type="button"
                 onClick={analyzeWithAI}
                 disabled={generating3D}
-                className="relative group w-full flex items-center justify-center space-x-3 bg-gradient-to-r from-[#0D75FF]/20 to-[#00E5FF]/10 hover:from-[#0D75FF]/30 hover:to-[#00E5FF]/20 border border-[#0D75FF]/40 hover:border-[#00E5FF]/80 px-6 py-5 rounded-xl transition-all duration-300 overflow-hidden"
+                className="relative group w-full flex items-center justify-start space-x-5 bg-gradient-to-r from-[#06080F] via-[#0D75FF]/10 to-[#00E5FF]/5 hover:from-[#0D75FF]/20 hover:via-[#0D75FF]/30 hover:to-[#00E5FF]/20 border border-[#0D75FF]/40 hover:border-[#00E5FF]/80 px-6 py-6 rounded-2xl transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(13,117,255,0.15)] hover:shadow-[0_0_30px_rgba(0,229,255,0.3)]"
               >
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(0,229,255,0.15),transparent)] -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-                <div className="p-2.5 rounded-xl bg-black/40 border border-[#00E5FF]/30 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-[#00E5FF] animate-pulse drop-shadow-[0_0_8px_rgba(0,229,255,0.6)]">
+                {/* Reflection effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-[200%] transition-transform duration-1000 skew-x-12 ease-in-out" />
+                <div className="absolute inset-0 bg-[linear-gradient(110deg,transparent,rgba(0,229,255,0.2),transparent)] -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out" />
+                
+                {/* Large Icon Container on the left */}
+                <div className="flex-shrink-0 p-4 rounded-2xl bg-black/50 border border-[#00E5FF]/40 shadow-[0_0_20px_rgba(0,229,255,0.4)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10 text-[#00E5FF] drop-shadow-[0_0_10px_rgba(0,229,255,0.8)]">
                     {/* Robot Head */}
                     <rect x="3" y="7" width="18" height="10" rx="2" />
                     <path d="M12 7V3" />
@@ -99,13 +103,24 @@ export function ListingImageUpload({
                     <path d="M17.268 13.768L20 16.5" />
                   </svg>
                 </div>
-                <div className="flex flex-col items-start text-left">
-                  <span className="text-lg font-bold text-white tracking-wide drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">
-                    {t('Escanear Peça com Inteligência Artificial')}
+
+                <div className="flex flex-col items-start text-left flex-1 relative z-10">
+                  <span className="inline-block px-2 py-1 bg-[#00E5FF]/10 border border-[#00E5FF]/30 rounded text-[10px] text-[#00E5FF] font-bold tracking-widest uppercase mb-2 shadow-[0_0_10px_rgba(0,229,255,0.2)]">
+                    {t('Visão Computacional Ativa')}
                   </span>
-                  <span className="text-xs text-[#00E5FF] font-medium tracking-wider uppercase opacity-80 mt-0.5">
+                  <span className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-[#00E5FF] tracking-wide drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">
+                    {t('Preencha o formulário com IA')}
+                  </span>
+                  <span className="text-sm text-[#0D75FF] font-medium tracking-wider uppercase opacity-90 mt-1">
                     {t('Preenchimento Mágico em 3 segundos')}
                   </span>
+                </div>
+                
+                {/* Decorative right arrow */}
+                <div className="hidden sm:block absolute right-6 text-[#00E5FF] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-300">
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
                 </div>
               </button>
             ) : (
