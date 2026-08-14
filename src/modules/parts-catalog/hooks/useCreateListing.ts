@@ -6,7 +6,7 @@ import { supabase } from '@/modules/shared/lib/supabase';
 import { useI18n } from '@/modules/shared/lib/i18n';
 import { api } from '@/modules/transactions/api/api';
 import DOMPurify from 'dompurify';
-import { BRANDS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '@/modules/shared/lib/constants';
+import { BRANDS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS, CATEGORIES } from '@/modules/shared/lib/constants';
 
 export function useCreateListing() {
   const { t, language } = useI18n();
