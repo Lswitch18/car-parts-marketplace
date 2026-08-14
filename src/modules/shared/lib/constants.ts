@@ -98,6 +98,8 @@ export const BRAND_UUIDS: Record<string, string> = {
   bmw: 'ffffffff-ffff-ffff-ffff-ffffffffffff',
   audi: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
   tesla: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+  suzuki: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+  daihatsu: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
 }
 
 export const UUID_TO_BRAND: Record<string, string> = Object.fromEntries(

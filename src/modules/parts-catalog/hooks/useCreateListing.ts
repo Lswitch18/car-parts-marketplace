@@ -96,15 +96,42 @@ export function useCreateListing() {
       }
 
       const newTitle = data.title || formData.title;
+
+      // Smart Brand resolution from AI
+      let matchedBrandId = formData.brand;
+      if (data.brand) {
+        const brandKey = data.brand.toString().toLowerCase().trim();
+        const b = BRANDS.find(br => br.id.toLowerCase() === brandKey || br.name.toLowerCase() === brandKey);
+        if (b) matchedBrandId = b.id;
+      }
+
+      // Smart Category resolution from AI
+      let matchedCategoryId = formData.category;
+      if (data.category) {
+        const catKey = data.category.toString().toLowerCase().trim();
+        const c = CATEGORIES.find(cat => cat.id.toLowerCase() === catKey || cat.name.toLowerCase() === catKey);
+        if (c) matchedCategoryId = c.id;
+      }
+
+      // Normalize Year Range
+      let startY = data.year_start ? parseInt(data.year_start) : null;
+      let endY = data.year_end ? parseInt(data.year_end) : null;
+      if (startY && endY && startY > endY) {
+        const temp = startY;
+        startY = endY;
+        endY = temp;
+      }
+
       let newFormData = {
         title: newTitle,
         description: data.description || formData.description,
         price: data.estimated_price?.toString() || formData.price,
-        brand: data.brand || formData.brand,
+        brand: matchedBrandId,
         model: data.model || formData.model,
-        category: data.category || formData.category,
-        yearStart: data.year_start?.toString() || formData.yearStart,
-        yearEnd: data.year_end?.toString() || formData.yearEnd,
+        category: matchedCategoryId,
+        condition: data.condition || formData.condition || 'new',
+        yearStart: startY ? startY.toString() : formData.yearStart,
+        yearEnd: endY ? endY.toString() : formData.yearEnd,
       };
 
       if (data.part_number) {
@@ -165,6 +192,28 @@ export function useCreateListing() {
       const cleanTitle = DOMPurify.sanitize(formData.title.trim());
       const cleanDescription = DOMPurify.sanitize(formData.description.trim());
 
+      // Normalize Year Range so startYear <= endYear
+      const rawStart = parseInt(formData.yearStart);
+      const rawEnd = parseInt(formData.yearEnd);
+      const currentYear = new Date().getFullYear();
+      const validStart = !isNaN(rawStart) ? rawStart : (!isNaN(rawEnd) ? rawEnd : currentYear);
+      const validEnd = !isNaN(rawEnd) ? rawEnd : validStart;
+      const safeYearStart = Math.min(validStart, validEnd);
+      const safeYearEnd = Math.max(validStart, validEnd);
+
+      // Safe Brand / Category / Model resolution
+      const brandLower = (formData.brand || '').toLowerCase().trim();
+      const matchedBrand = BRANDS.find(b => b.id.toLowerCase() === brandLower || b.name.toLowerCase() === brandLower);
+      const resolvedBrandKey = matchedBrand ? matchedBrand.id : brandLower;
+      const resolvedBrandId = BRAND_UUIDS[resolvedBrandKey] || (formData.brand?.match(/^[0-9a-f-]{36}$/i) ? formData.brand : null);
+
+      const catLower = (formData.category || '').toLowerCase().trim();
+      const matchedCat = CATEGORIES.find(c => c.id.toLowerCase() === catLower || c.name.toLowerCase() === catLower);
+      const resolvedCatKey = matchedCat ? matchedCat.id : catLower;
+      const resolvedCategoryId = CATEGORY_UUIDS[resolvedCatKey] || (formData.category?.match(/^[0-9a-f-]{36}$/i) ? formData.category : null);
+
+      const resolvedModelId = MODEL_UUIDS[formData.model] || (formData.model?.match(/^[0-9a-f-]{36}$/i) ? formData.model : null);
+
       setUploading(true);
       let uploadedUrls: string[] = [];
 
@@ -184,7 +233,6 @@ export function useCreateListing() {
           uploadedUrls.push(publicUrl);
         }
       } else if (images.length > 0) {
-        // Mock images or base64 (already handled in UI differently usually, but keeping logic)
         uploadedUrls = images;
       }
 
@@ -195,35 +243,77 @@ export function useCreateListing() {
           starting_bid: parseFloat(formData.startingBid),
           buy_now_price: formData.buyNowPrice ? parseFloat(formData.buyNowPrice) : undefined,
           auction_duration_hours: parseInt(formData.auctionDurationHours),
-          condition: formData.condition,
-          brand_id: BRAND_UUIDS[formData.brand as keyof typeof BRAND_UUIDS],
-          category_id: CATEGORY_UUIDS[formData.category as keyof typeof CATEGORY_UUIDS],
-          model_id: MODEL_UUIDS[formData.model as keyof typeof MODEL_UUIDS],
+          condition: formData.condition || 'new',
+          brand_id: resolvedBrandId,
+          category_id: resolvedCategoryId,
+          model_id: resolvedModelId,
           images: uploadedUrls,
         } as any);
       } else {
-        const { error } = await supabase.from('parts').insert({
+        const payload: Record<string, any> = {
           seller_id: user.id,
           title: cleanTitle,
           description: cleanDescription,
-          price: parseFloat(formData.price),
-          brand_id: BRAND_UUIDS[formData.brand as keyof typeof BRAND_UUIDS],
-          model_id: MODEL_UUIDS[formData.model as keyof typeof MODEL_UUIDS],
-          year_start: parseInt(formData.yearStart),
-          year_end: parseInt(formData.yearEnd),
-          category_id: CATEGORY_UUIDS[formData.category as keyof typeof CATEGORY_UUIDS],
-          condition: formData.condition,
-          images: uploadedUrls,
-          model_3d_url: model3DUrl,
+          price: parseFloat(formData.price) || 0,
+          condition: formData.condition || 'new',
+          images: uploadedUrls.length > 0 ? uploadedUrls : (images.length > 0 ? images : []),
           status: 'active',
-          compatibility_tags: compatibilityTags,
-        });
+          year: safeYearStart,
+          year_start: safeYearStart,
+          year_end: safeYearEnd,
+          brand: matchedBrand?.name || formData.brand || '',
+          model: formData.model || '',
+          category: matchedCat?.name || formData.category || '',
+        };
 
-        if (error) throw error;
+        if (resolvedBrandId) payload.brand_id = resolvedBrandId;
+        if (resolvedCategoryId) payload.category_id = resolvedCategoryId;
+        if (resolvedModelId) payload.model_id = resolvedModelId;
+        if (model3DUrl) payload.model_3d_url = model3DUrl;
+        if (compatibilityTags && compatibilityTags.length > 0) {
+          payload.compatibility_tags = compatibilityTags;
+          payload.compatibility = compatibilityTags.join(', ');
+        } else if (formData.model) {
+          payload.compatibility = formData.model;
+        }
+        if (partNumber) {
+          payload.part_number = partNumber;
+          payload.oem_code = partNumber;
+        }
+
+        let { error: insertError } = await supabase.from('parts').insert(payload);
+
+        if (insertError) {
+          console.warn('Primary parts insert failed, attempting safe baseline payload:', insertError);
+          const baselinePayload: Record<string, any> = {
+            seller_id: user.id,
+            title: cleanTitle,
+            description: cleanDescription,
+            price: parseFloat(formData.price) || 0,
+            condition: formData.condition || 'new',
+            images: uploadedUrls.length > 0 ? uploadedUrls : (images.length > 0 ? images : []),
+            status: 'active',
+            year: safeYearStart,
+            year_start: safeYearStart,
+            year_end: safeYearEnd,
+          };
+          if (resolvedBrandId) baselinePayload.brand_id = resolvedBrandId;
+          if (resolvedCategoryId) baselinePayload.category_id = resolvedCategoryId;
+          if (formData.model) baselinePayload.model = formData.model;
+
+          const retry = await supabase.from('parts').insert(baselinePayload);
+          if (retry.error) {
+            throw retry.error;
+          }
+        }
       }
     },
     onSuccess: () => {
       navigate('/tenant-dashboard');
+    },
+    onError: (err: any) => {
+      console.error('Error creating part listing:', err);
+      alert(t('Falha ao cadastrar a peça: ') + (err?.message || t('Por favor, tente novamente.')));
     },
     onSettled: () => setUploading(false)
   });

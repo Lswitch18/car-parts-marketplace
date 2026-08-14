@@ -10,21 +10,29 @@ import { supabase } from '@/modules/shared/lib/supabase';
 const FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/redis-cache`;
 
 async function callRedis(body: Record<string, unknown>): Promise<any> {
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.access_token;
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-  const res = await fetch(FUNCTIONS_URL, {
-    method: 'POST',
-    headers: {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(body),
-  });
+    };
+    if (anonKey) headers['apikey'] = anonKey;
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  if (!res.ok) return null;
-  const json = await res.json();
-  return json.success ? json.data : null;
+    const res = await fetch(FUNCTIONS_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.success ? json.data : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getCache(key: string): Promise<any | null> {
