@@ -87,7 +87,17 @@ export function ListingImageUpload({
               >
                 <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(0,229,255,0.15),transparent)] -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
                 <div className="p-2.5 rounded-xl bg-black/40 border border-[#00E5FF]/30 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
-                  <Sparkles className="w-6 h-6 text-[#00E5FF] animate-pulse drop-shadow-[0_0_8px_rgba(0,229,255,0.6)]" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-[#00E5FF] animate-pulse drop-shadow-[0_0_8px_rgba(0,229,255,0.6)]">
+                    {/* Robot Head */}
+                    <rect x="3" y="7" width="18" height="10" rx="2" />
+                    <path d="M12 7V3" />
+                    <path d="M10 3h4" />
+                    {/* Left eye */}
+                    <circle cx="8.5" cy="12" r="1.5" />
+                    {/* Magnifying glass over right eye */}
+                    <circle cx="15.5" cy="12" r="2.5" />
+                    <path d="M17.268 13.768L20 16.5" />
+                  </svg>
                 </div>
                 <div className="flex flex-col items-start text-left">
                   <span className="text-lg font-bold text-white tracking-wide drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">
