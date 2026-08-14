@@ -359,8 +359,10 @@ Deno.serve(async (req: Request) => {
   "part_number": string | null (Busque atentamente por etiquetas de manutenção ou códigos impressos na peça, ex: códigos Honda como 87533-R9G-000, 19010-6F6-003, e extraia-os aqui),
   "brand": string (a marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan. Se for uma marca de autopeças como Bosch/Denso, retorne a marca do carro em que ela é aplicada),
   "model": string (o modelo do CARRO/VEÍCULO compatível em camelcase, ex: Prius, Aqua, Fit, Note, N-BOX. NÃO retorne o modelo da própria peça, retorne o nome do carro. DICA: Em peças Honda, o código do meio do part number de 3 caracteres (ex: R9G em 87533-R9G-000) identifica o modelo, onde R9G = N-BOX, 5A = Fit, etc. Use isso para evitar palpites visuais incorretos),
+  "year_start": number | null (O ano inicial de compatibilidade, entre 1990 e 2024. Ex: 2014),
+  "year_end": number | null (O ano final de compatibilidade, entre 1990 e 2024, ou nulo se ainda for fabricado),
   "compatibility_tags": string[] (tags curtas de compatibilidade com marcas, modelos exatos e anos de fabricação compatíveis, ex: ["Honda N-BOX (2017-2023)", "Honda N-WGN (2019-2024)", "Honda N-ONE (2020-2025)"]),
-  "category": string,
+  "category": string (DEVE ser estritamente UM destes slugs: "aero", "body-kits", "brakes", "cooling", "engine", "exhaust", "interior", "lighting", "suspension", "turbo-boost", "wheels-rims", "wings-spoilers"),
   "title": string,
   "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Apresente o item anunciado, detalhe seu estado físico/de conservação visual observado, ficha técnica [especificações como amperagem/Ah, dimensões, voltagem/V se aplicável] e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
   "estimated_price": number,
@@ -501,8 +503,10 @@ Retorne APENAS um JSON válido e estrito contendo:
   "part_number": string (o código oficial),
   "brand": string (marca/fabricante do VEÍCULO compatível em lowercase, ex: toyota, honda, nissan),
   "model": string (modelo de CARRO/VEÍCULO compatível, ex: fit, aqua, prius. NÃO retorne o nome do modelo da própria peça),
+  "year_start": number | null (O ano inicial de compatibilidade, entre 1990 e 2024. Ex: 2014),
+  "year_end": number | null (O ano final de compatibilidade, entre 1990 e 2024, ou nulo se ainda for fabricado),
   "compatibility_tags": string[] (tags curtas de compatibilidade com marcas, modelos exatos e anos de fabricação compatíveis, ex: ["Honda N-BOX (2017-2023)", "Honda N-WGN (2019-2024)", "Honda N-ONE (2020-2025)"]),
-  "category": string,
+  "category": string (DEVE ser estritamente UM destes slugs: "aero", "body-kits", "brakes", "cooling", "engine", "exhaust", "interior", "lighting", "suspension", "turbo-boost", "wheels-rims", "wings-spoilers"),
   "title": string,
   "description": string (Descrição comercial e atraente no formato de anúncio de autopeças para venda [ex: 'Excelente oportunidade: Etiqueta original Honda... Ideal para reposição...']. Apresente o item anunciado, detalhe seu estado físico/de conservação visual de catálogo, ficha técnica [especificações como amperagem/Ah, dimensões, voltagem/V se aplicável] e a lista de compatibilidade com marcas/modelos para facilitar a decisão de compra),
   "estimated_price": number (preço estimado de venda da peça em Reais - BRL),
@@ -545,6 +549,8 @@ Retorne APENAS um JSON válido e estrito contendo:
                 finalData.brand = parsedScraper.brand || finalData.brand;
                 finalData.model = parsedScraper.model || finalData.model;
                 finalData.category = parsedScraper.category || finalData.category;
+                finalData.year_start = parsedScraper.year_start || finalData.year_start;
+                finalData.year_end = parsedScraper.year_end || finalData.year_end;
                 finalData.source_url = parsedScraper.source_url;
                 finalData.source = 'web_catalog';
                 

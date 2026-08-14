@@ -103,6 +103,8 @@ export function useCreateListing() {
         brand: data.brand || formData.brand,
         model: data.model || formData.model,
         category: data.category || formData.category,
+        yearStart: data.year_start?.toString() || formData.yearStart,
+        yearEnd: data.year_end?.toString() || formData.yearEnd,
       };
 
       if (data.part_number) {
