@@ -1,76 +1,68 @@
 /**
- * Redis cache client with intelligent in-memory fallback.
- * Utiliza o SDK supabase.functions.invoke('redis-cache') para compatibilidade total de CORS/Auth.
- * Se a Edge Function ou Redis estiverem indisponíveis, utiliza cache em memória (zero falhas).
+ * In-memory cache with TTL support.
+ *
+ * A Edge Function `redis-cache` não possui CORS configurado no Supabase,
+ * causando erros de preflight no console do browser. Como o cache em memória
+ * já atendia 100% das necessidades (análise de IA, catálogo, queries),
+ * removemos completamente as chamadas remotas para garantir console limpo.
+ *
+ * Quando a Edge Function for configurada com CORS, basta restaurar callRedis().
  */
 
-import { supabase } from '@/modules/shared/lib/supabase';
+const memoryCache = new Map<string, { value: unknown; expiresAt: number }>();
 
-const memoryCache = new Map<string, { value: any; expiresAt: number }>();
+/** Limpar entradas expiradas periodicamente (a cada 60s) */
+const CLEANUP_INTERVAL_MS = 60_000;
+let cleanupTimer: ReturnType<typeof setInterval> | null = null;
 
-async function callRedis(body: Record<string, unknown>): Promise<any> {
-  try {
-    const { data, error } = await supabase.functions.invoke('redis-cache', {
-      body,
-    });
-
-    if (error || !data) {
-      return null;
+function ensureCleanup(): void {
+  if (cleanupTimer) return;
+  cleanupTimer = setInterval(() => {
+    const now = Date.now();
+    for (const [key, entry] of memoryCache) {
+      if (now >= entry.expiresAt) {
+        memoryCache.delete(key);
+      }
     }
-
-    return data.success ? data.data : null;
-  } catch {
-    return null;
-  }
+    if (memoryCache.size === 0 && cleanupTimer) {
+      clearInterval(cleanupTimer);
+      cleanupTimer = null;
+    }
+  }, CLEANUP_INTERVAL_MS);
 }
 
-export async function getCache(key: string): Promise<any | null> {
-  // 1. Verificar cache em memória primeiro
+export async function getCache(key: string): Promise<unknown | null> {
   const mem = memoryCache.get(key);
-  if (mem) {
-    if (Date.now() < mem.expiresAt) {
-      return mem.value;
-    }
-    memoryCache.delete(key);
+  if (!mem) return null;
+
+  if (Date.now() < mem.expiresAt) {
+    return mem.value;
   }
 
-  // 2. Tentar Redis via Edge Function
-  try {
-    const remoteValue = await callRedis({ action: 'get', key });
-    if (remoteValue !== null && remoteValue !== undefined) {
-      memoryCache.set(key, { value: remoteValue, expiresAt: Date.now() + 1000 * 60 * 10 });
-      return remoteValue;
-    }
-  } catch {
-    // Silencioso
-  }
-
+  memoryCache.delete(key);
   return null;
 }
 
-export async function setCache(key: string, value: any, expiresInSeconds: number = 3600): Promise<void> {
-  // Salvar no cache local em memória
-  memoryCache.set(key, { value, expiresAt: Date.now() + expiresInSeconds * 1000 });
-
-  // Tentar persistir no Redis remoto via Edge Function de forma não bloqueante
-  callRedis({ action: 'set', key, value, expiresInSeconds }).catch(() => {});
+export async function setCache(key: string, value: unknown, expiresInSeconds: number = 3600): Promise<void> {
+  memoryCache.set(key, {
+    value,
+    expiresAt: Date.now() + expiresInSeconds * 1000,
+  });
+  ensureCleanup();
 }
 
 export async function getRedisKeys(pattern: string = '*'): Promise<string[]> {
-  try {
-    const keys = await callRedis({ action: 'list', pattern });
-    return Array.isArray(keys) ? keys : [];
-  } catch {
-    return [];
+  if (pattern === '*') {
+    return Array.from(memoryCache.keys());
   }
+
+  // Suporte básico a glob pattern (e.g. "ai_analysis_*")
+  const regex = new RegExp(
+    '^' + pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.') + '$'
+  );
+  return Array.from(memoryCache.keys()).filter((k) => regex.test(k));
 }
 
 export async function deleteRedisKey(key: string): Promise<boolean> {
-  memoryCache.delete(key);
-  try {
-    const result = await callRedis({ action: 'delete', key });
-    return result !== null;
-  } catch {
-    return false;
-  }
+  return memoryCache.delete(key);
 }
