@@ -7,7 +7,7 @@ import { useI18n } from '@/modules/shared/lib/i18n';
 import { api } from '@/modules/transactions/api/api';
 import DOMPurify from 'dompurify';
 import { BRANDS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS, CATEGORIES } from '@/modules/shared/lib/constants';
-import { localizeProductTitle, localizeProductDescription } from '@/modules/parts-catalog/utils/catalogLocalizer';
+import { localizeProductTitle, localizeProductDescription, translateTextAsync } from '@/modules/parts-catalog/utils/catalogLocalizer';
 
 export function useCreateListing() {
   const { t, language } = useI18n();
@@ -49,6 +49,48 @@ export function useCreateListing() {
 
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const prevLangRef = useRef<string>(language);
+
+  // Dynamic language switcher: translate filled form fields when user switches language in UI (PT <-> JA)
+  useEffect(() => {
+    if (prevLangRef.current !== language) {
+      const prevLang = prevLangRef.current;
+      prevLangRef.current = language;
+
+      const translateActiveFields = async () => {
+        let updated = false;
+        let newTitle = formData.title;
+        let newDesc = formData.description;
+
+        if (formData.title && formData.title.trim()) {
+          newTitle = await translateTextAsync(formData.title, language);
+          updated = true;
+        }
+
+        if (formData.description && formData.description.trim()) {
+          newDesc = await translateTextAsync(formData.description, language);
+          updated = true;
+        }
+
+        if (updated) {
+          setFormData(prev => ({
+            ...prev,
+            title: newTitle,
+            description: newDesc,
+          }));
+        }
+
+        if (compatibilityTags.length > 0) {
+          const translatedTags = await Promise.all(
+            compatibilityTags.map(tag => translateTextAsync(tag, language))
+          );
+          setCompatibilityTags(translatedTags);
+        }
+      };
+
+      translateActiveFields();
+    }
+  }, [language, formData.title, formData.description, compatibilityTags]);
 
   useEffect(() => {
     return () => {
@@ -97,10 +139,10 @@ export function useCreateListing() {
 
       // Localize AI-suggested title and description to match user's current language 100%
       const rawTitle = data.title || formData.title;
-      const localizedTitle = localizeProductTitle(rawTitle, language);
+      const localizedTitle = await translateTextAsync(rawTitle, language);
 
       const rawDesc = data.description || formData.description;
-      const localizedDesc = localizeProductDescription(rawDesc, language);
+      const localizedDesc = await translateTextAsync(rawDesc, language);
 
       // Smart Brand resolution from AI
       let matchedBrandId = formData.brand;
@@ -150,7 +192,10 @@ export function useCreateListing() {
       }
 
       if (data.compatibility_tags && Array.isArray(data.compatibility_tags)) {
-        setCompatibilityTags(data.compatibility_tags);
+        const translatedTags = await Promise.all(
+          data.compatibility_tags.map((tag: string) => translateTextAsync(tag, language))
+        );
+        setCompatibilityTags(translatedTags);
       } else {
         setCompatibilityTags([]);
       }

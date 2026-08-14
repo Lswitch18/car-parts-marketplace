@@ -369,3 +369,53 @@ export function resolveProductBrandName(
 
   return 'JDM'
 }
+
+const asyncTranslationCache = new Map<string, string>()
+
+/**
+ * Robust async translator for arbitrary automotive descriptions, titles, and tags.
+ * Combines in-memory automotive dictionary with Google GTX endpoint + memory cache.
+ */
+export async function translateTextAsync(text: string, targetLang: string): Promise<string> {
+  if (!text || text.trim() === '') return ''
+  
+  const clean = text.trim()
+  const cacheKey = `${clean}__${targetLang}`
+  if (asyncTranslationCache.has(cacheKey)) {
+    return asyncTranslationCache.get(cacheKey)!
+  }
+
+  // 1. First run through our dictionary
+  const localizedTitle = targetLang === 'ja' 
+    ? localizeProductTitle(clean, 'ja') 
+    : localizeProductDescription(clean, targetLang)
+
+  // If text is short and already translated by dictionary, return it
+  if (clean.length < 50 && localizedTitle !== clean) {
+    asyncTranslationCache.set(cacheKey, localizedTitle)
+    return localizedTitle
+  }
+
+  // 2. Fetch full translation for longer sentences/paragraphs
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(clean)}`
+    const res = await fetch(url)
+    if (res.ok) {
+      const data = await res.json()
+      if (data && data[0] && Array.isArray(data[0])) {
+        const translated = data[0].map((x: any) => x[0]).join('')
+        if (translated && translated.trim()) {
+          const result = cleanSpacing(translated)
+          asyncTranslationCache.set(cacheKey, result)
+          return result
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[translateTextAsync] Online translation failed, using local dictionary:', err)
+  }
+
+  // 3. Fallback to local dictionary
+  asyncTranslationCache.set(cacheKey, localizedTitle)
+  return localizedTitle
+}
