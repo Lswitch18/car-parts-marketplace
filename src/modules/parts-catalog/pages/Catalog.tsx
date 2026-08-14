@@ -8,7 +8,7 @@ import { CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS
 import { useFavoriteStore } from '@/modules/parts-catalog/store/favoriteStore'
 import { fetchParts } from '@/modules/parts-catalog/api/partsApi'
 import { Product } from '@/modules/shared/types'
-import { getCountryFlag, getCountryOrder } from '@/modules/shared/lib/countryFlags'
+import { getCountryFlag, getCountryOrder, getCountryDisplayName, resolveBrandCountry } from '@/modules/shared/lib/countryFlags'
 import { useI18n } from '@/modules/shared/lib/i18n'
 
 // Extend product with relational fields used in UI
@@ -71,7 +71,7 @@ export default function Catalog() {
   const brandsByCountry = useMemo(() => {
     const grouped: Record<string, { id: string; name: string; slug: string; country: string | null }[]> = {}
     for (const b of dbBrands) {
-      const key = b.country || 'Other'
+      const key = resolveBrandCountry(b.name, b.slug, b.country)
       if (!grouped[key]) grouped[key] = []
       grouped[key].push(b)
     }
@@ -135,7 +135,7 @@ export default function Catalog() {
         if (filters.condition) query = query.eq('condition', filters.condition)
         if (filters.minPrice) query = query.gte('price', parseFloat(filters.minPrice))
         if (filters.maxPrice) query = query.lte('price', parseFloat(filters.maxPrice))
-        if (filters.search) query = query.ilike('title', `%${filters.search}%`)
+        if (filters.search) query = query.ilike('title', `%${filters.search.replace(/[\\%_*]/g, (m) => `\\${m}`)}%`)
 
         query = query.order(sortBy, { ascending: false })
 
@@ -278,7 +278,7 @@ export default function Catalog() {
                     {key === 'yearStart' && t('catalog.yearFrom')}
                     {key === 'yearEnd' && t('catalog.yearTo')}
                   </span>
-                  {val}
+                  {key === 'condition' ? conditionLabel(val) : (key === 'category' || key === 'brand') ? t(val) : val}
                   <button
                     onClick={() => updateFilter(key, '')}
                     className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-white/10"
@@ -357,7 +357,7 @@ export default function Catalog() {
                             style={{ color: '#6B7280' }}
                           >
                             <span className="text-base">{flag}</span>
-                            <span className="uppercase tracking-wider">{country}</span>
+                            <span className="uppercase tracking-wider">{getCountryDisplayName(country, t)}</span>
                             <span className="ml-auto text-[10px] opacity-50">{brands.length}</span>
                             <ChevronRight
                               className="w-3 h-3 transition-transform duration-200"
@@ -388,7 +388,7 @@ export default function Catalog() {
                                     }
                                   >
                                     <span className="text-xs opacity-50">{flag}</span>
-                                    <span className="truncate">{brand.name}</span>
+                                    <span className="truncate">{t(brand.name)}</span>
                                   </button>
                                 </div>
                               ))}
@@ -658,7 +658,7 @@ export default function Catalog() {
                       {/* Info */}
                       <div className="p-3.5">
                         <p className="text-[11px] font-semibold mb-0.5 uppercase tracking-wider" style={{ color: '#0D75FF' }}>
-                          {product.brands?.name || 'JDM'}
+                          {t(product.brands?.name || 'JDM')}
                         </p>
                         <h3
                           className="text-sm font-semibold text-white mb-1 truncate transition-colors group-hover:text-[#4d9cff]"
@@ -721,7 +721,7 @@ export default function Catalog() {
                       <div className="flex-1 min-w-0 flex flex-col justify-center">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#0D75FF' }}>
-                            {product.brands?.name || 'JDM'}
+                            {t(product.brands?.name || 'JDM')}
                           </span>
                           <span
                             className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
