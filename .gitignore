@@ -36,6 +36,12 @@ venv/
 __pycache__
 *.pyc
 
+# Video recordings
+*.mkv
+*.mp4
+*.mov
+*.webm
+
 # Reports and Documentation
 project-reports/
 docs/
