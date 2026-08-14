@@ -400,6 +400,17 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ action: 'get_logs' })
     }),
+    certifyPrice: (data: {
+      title: string;
+      brand?: string;
+      model?: string;
+      part_number?: string;
+      condition?: string;
+      suggested_price: number;
+    }) => fetchApi<{ is_fair: boolean; recommended_min: number; recommended_max: number; reasoning: string }>('/certify-price', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
   },
 
   partsLookup: {

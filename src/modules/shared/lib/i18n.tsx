@@ -6,6 +6,19 @@ interface Translation {
 
 const translations: { [lang: string]: Translation } = {
   ja: {
+    // AiVisionBanner Translations
+    'Visão Computacional Ativa': 'コンピュータビジョンが有効',
+    'Deixe a IA preencher tudo para você!': 'AIにすべて自動入力させましょう！',
+    'Não perca tempo digitando. Tire uma foto ou envie a imagem da peça, e a nossa Visão Computacional reconhecerá a marca, modelo e código OEM instantaneamente.': '手動入力の時間を節約。部品の写真を撮るかアップロードするだけで、当社のコンピュータビジョンが瞬時にブランド、モデル、OEMコードを認識します。',
+    'Analisando Peça...': '部品を分析中...',
+    'Escanear Peça Agora': '今すぐスキャンする',
+    'Preencha o título e o preço antes de verificar.': '確認する前にタイトルと価格を入力してください。',
+    'Falha ao certificar o preço.': '価格の確認に失敗しました。',
+    'Certificar com IA': 'AIで価格を確認',
+    'Preço Aprovado pela IA': 'AIによる価格承認',
+    'Atenção ao Preço': '価格の警告',
+    'Faixa Recomendada': '推奨価格帯',
+
     'Leilões': 'オークション',
     'Ao Vivo': 'ライブ',
     'Transmissão Ao Vivo': '生放送',
