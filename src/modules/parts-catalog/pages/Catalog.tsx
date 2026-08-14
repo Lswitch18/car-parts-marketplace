@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List, Package } from 'lucide-react'
+import { Filter, X, Heart, Wrench, ChevronRight, SlidersHorizontal, Search, Zap, Star, BadgeCheck, LayoutGrid, List, Package, Plus } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { CATEGORIES, CONDITIONS, YEARS, BRAND_UUIDS, MODEL_UUIDS, CATEGORY_UUIDS } from '@/modules/shared/lib/constants'
@@ -32,15 +32,11 @@ function SkeletonCard() {
   )
 }
 
-import { Sparkles } from 'lucide-react'
-import MarketplaceAiAssistantModal from '@/modules/parts-catalog/components/MarketplaceAiAssistantModal'
-
 export default function Catalog() {
   const { t } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const { toggleFavorite, isFavorite } = useFavoriteStore()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false)
 
 
   const [filters, setFilters] = useState({
@@ -244,17 +240,18 @@ export default function Catalog() {
               )}
             </div>
 
-            <button
-              onClick={() => setIsAiAssistantOpen(true)}
-              className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-600/30 flex items-center space-x-2 border border-blue-400/30 transition hover:scale-105 shrink-0"
-            >
-              <Sparkles className="w-4 h-4 text-blue-200 animate-pulse" />
-              <span>Identificar Peça com IA (Foto / OEM / Voz)</span>
-            </button>
+            <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+              <Link
+                to="/create-listing"
+                className="px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs md:text-sm rounded-xl shadow-lg shadow-blue-600/30 flex items-center space-x-2 border border-blue-400/30 transition hover:scale-105 shrink-0"
+              >
+                <Plus className="w-4 h-4 text-blue-200" />
+                <span>{t('Anunciar Peça')}</span>
+              </Link>
 
-
-            {/* Search bar */}
-            <SearchBar initialValue={filters.search} onSearch={handleSearch} t={t} />
+              {/* Search bar */}
+              <SearchBar initialValue={filters.search} onSearch={handleSearch} t={t} />
+            </div>
           </div>
 
           {/* Active filter chips */}
@@ -762,11 +759,6 @@ export default function Catalog() {
         </div>
       </div>
 
-      {/* Modal do Assistente de IA para Identificação de Peças */}
-      <MarketplaceAiAssistantModal
-        isOpen={isAiAssistantOpen}
-        onClose={() => setIsAiAssistantOpen(false)}
-      />
     </div>
   )
 }
