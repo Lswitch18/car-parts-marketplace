@@ -164,30 +164,41 @@ async function callOpenRouter(base64Image: string, promptVision: string, apiKey:
 }
 
 /**
- * Call Gemini 2.5 Pro Model directly
+ * Call Gemini Vision Model directly (Gemini 2.0 Flash / 1.5 Flash)
  */
 async function callGemini(base64Image: string, promptVision: string, apiKey: string): Promise<any> {
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { text: promptVision },
-          { inline_data: { mime_type: "image/jpeg", data: base64Image } }
-        ]
-      }],
-      generationConfig: { response_mime_type: "application/json" }
-    })
-  });
+  const models = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+  let lastError: any = null;
 
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    throw new Error(`Gemini API error: ${errData.error?.message || 'Unknown'}`);
+  for (const model of models) {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { text: promptVision },
+              { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+            ]
+          }],
+          generationConfig: { response_mime_type: "application/json" }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const content = cleanJsonMarkdown(data.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
+        return JSON.parse(content);
+      }
+      const errData = await response.json().catch(() => ({}));
+      lastError = new Error(`Gemini (${model}) error: ${errData.error?.message || response.statusText}`);
+    } catch (e) {
+      lastError = e;
+    }
   }
-  const data = await response.json();
-  const content = cleanJsonMarkdown(data.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
-  return JSON.parse(content);
+
+  throw lastError || new Error('Gemini API call failed across all models');
 }
 
 async function fetchOpenRouterStatus(apiKey: string): Promise<any> {
@@ -375,34 +386,35 @@ IMPORTANTE: Retorne os textos descritivos (title e description) no idioma com c�
     let qwenResult: any = null;
     let geminiResult: any = null;
 
-    // FASE 1: VISÃO COMPUTACIONAL REDUNDANTE (Gemini 3.5 Flash como principal + Qwen3-VL como backup)
+    // FASE 1: VISÃO COMPUTACIONAL REDUNDANTE (Gemini 2.0 Flash como principal + fallback)
     if (OPENROUTER_API_KEY) {
-      console.log('[analyze-part] Chamando Gemini 3.5 Flash via OpenRouter como modelo principal...');
+      console.log('[analyze-part] Chamando Gemini 2.0 Flash via OpenRouter...');
       try {
-        geminiResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'google/gemini-3.5-flash');
-        console.log('[analyze-part] Retorno Gemini (OpenRouter):', geminiResult);
-      } catch (err) {
-        console.error('[analyze-part] Erro no Gemini 3.5 Flash via OpenRouter:', err);
+        geminiResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'google/gemini-2.0-flash-001');
+      } catch {
+        try {
+          geminiResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'google/gemini-flash-1.5');
+        } catch (err) {
+          console.error('[analyze-part] Erro no Gemini via OpenRouter:', err);
+        }
       }
     } else if (GEMINI_API_KEY) {
-      console.log('[analyze-part] Chamando Gemini 3.5 Flash via Google API como modelo principal...');
+      console.log('[analyze-part] Chamando Gemini Flash via Google API...');
       try {
         geminiResult = await callGemini(base64Image, promptVision, GEMINI_API_KEY);
-        console.log('[analyze-part] Retorno Gemini (Google API):', geminiResult);
       } catch (err) {
-        console.error('[analyze-part] Erro no Gemini 3.5 Flash via Google API:', err);
+        console.error('[analyze-part] Erro no Gemini via Google API:', err);
       }
     }
 
-    // Se Gemini falhou ou retornou confiança abaixo de 0.95, acionamos Qwen para dupla validação
+    // Se Gemini falhou ou retornou confiança abaixo de 0.95, acionamos Qwen para verificação
     const needsQwen = !geminiResult || geminiResult.confidence_score < 0.95 || !geminiResult.part_number;
     if (needsQwen && OPENROUTER_API_KEY) {
-      console.log('[analyze-part] Chamando Qwen3-VL via OpenRouter para verificação redundante...');
+      console.log('[analyze-part] Chamando Qwen-VL via OpenRouter para verificação...');
       try {
-        qwenResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'qwen/qwen3-vl-235b-a22b-instruct');
-        console.log('[analyze-part] Retorno Qwen (OpenRouter):', qwenResult);
+        qwenResult = await callOpenRouter(base64Image, promptVision, OPENROUTER_API_KEY, 'qwen/qwen-2.5-vl-72b-instruct');
       } catch (err) {
-        console.error('[analyze-part] Erro no Qwen3-VL via OpenRouter:', err);
+        console.error('[analyze-part] Erro no Qwen-VL via OpenRouter:', err);
       }
     }
 

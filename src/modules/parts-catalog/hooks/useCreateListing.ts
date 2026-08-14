@@ -90,8 +90,7 @@ export function useCreateListing() {
       setAnalyzing(false);
 
       if (data.is_car_part === false) {
-        setAiError(t('A imagem não parece ser uma peça automotiva válida. O cadastro foi bloqueado e a imagem removida.'));
-        removeImage(0);
+        setAiError(t('A IA não conseguiu reconhecer todos os detalhes da peça automaticamente. Preencha os campos abaixo para concluir.'));
         return;
       }
 

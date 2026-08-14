@@ -1,7 +1,7 @@
 # Graph Report - car-parts-marketplce  (2026-08-14)
 
 ## Corpus Check
-- 392 files · ~1,116,399 words
+- 392 files · ~1,116,425 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `16219c7a`
+- Built from commit: `20ffe31f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -150,6 +150,7 @@
 - useAnalytics.ts
 - PedidosPage.tsx
 - EtiquetasPage.tsx
+- eslint
 - NotificationCenter.tsx
 - @base-ui/react
 - GlobalSearch.tsx
@@ -177,7 +178,6 @@
 - adminApi.test.ts
 - autoprefixer
 - @types/three
-- autoprefixer
 - @react-three/fiber
 - typescript-eslint
 
@@ -304,7 +304,7 @@ Nodes (11): AdminDashboard(), AlertItem, AlertOrchestrationParams, calculateFina
 
 ### Community 23 - "constructor"
 Cohesion: 0.12
-Nodes (17): auto-parts-db, eslint, jsdom, devDependencies, auto-parts-db, eslint, jsdom, @testing-library/dom (+9 more)
+Nodes (17): auto-parts-db, autoprefixer, jsdom, devDependencies, auto-parts-db, autoprefixer, jsdom, @testing-library/dom (+9 more)
 
 ### Community 24 - "PartCard.tsx"
 Cohesion: 0.25
