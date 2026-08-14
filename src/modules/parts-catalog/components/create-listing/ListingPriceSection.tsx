@@ -105,7 +105,7 @@ export function ListingPriceSection({
             >
               <option value="">{t('Selecione')}</option>
               {CATEGORIES.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <option key={cat.id} value={cat.id}>{t(cat.name)}</option>
               ))}
             </select>
           </div>

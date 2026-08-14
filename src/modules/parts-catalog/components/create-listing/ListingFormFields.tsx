@@ -29,7 +29,7 @@ export function ListingFormFields({
           >
             <option value="">{t('Selecione')}</option>
             {BRANDS.map(brand => (
-              <option key={brand.id} value={brand.id}>{brand.name}</option>
+              <option key={brand.id} value={brand.id}>{t(brand.name)}</option>
             ))}
           </select>
         </div>
