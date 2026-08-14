@@ -50,7 +50,7 @@ export function ListingFormFields({
               >
                 <option value="">{t('Selecione')}</option>
                 {selectedBrand.models.map(model => (
-                  <option key={model} value={model}>{model}</option>
+                  <option key={model} value={model}>{t(model)}</option>
                 ))}
               </select>
             </motion.div>
