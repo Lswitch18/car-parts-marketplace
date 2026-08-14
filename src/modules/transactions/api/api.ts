@@ -347,22 +347,91 @@ export const api = {
           if (typeof parsedData.model === 'string' && parsedData.model.trim()) {
             const rawModel = parsedData.model.trim().toLowerCase();
             const allValidModels = BRANDS.flatMap(b => b.models);
-            
-            const matchedModel = allValidModels.find(m => m.toLowerCase() === rawModel);
-            
+
+            // Alias map: common AI-returned names → internal BRANDS model names
+            const MODEL_ALIASES: Record<string, string> = {
+              'lancerevolution': 'Lancer Evo X',
+              'lancerevo': 'Lancer Evo X',
+              'evo': 'Lancer Evo X',
+              'evox': 'Lancer Evo X',
+              'evoix': 'Lancer Evo VII-IX',
+              'evovii': 'Lancer Evo VII-IX',
+              'evovi': 'Lancer Evo VI',
+              'civictyper': 'Civic Type R EK9',
+              'integrtyper': 'Integra Type R',
+              'integratyper': 'Integra Type R',
+              'wrxsti': 'WRX STI VAB',
+              'wrx': 'WRX STI VAB',
+              'imprezawrx': 'WRX STI GDB',
+              'impreza22b': 'Impreza 22B',
+              'supramk4': 'Supra A80',
+              'supra': 'Supra A80',
+              'supragr': 'Supra GR',
+              'gtr': 'GT-R R35',
+              'gtr35': 'GT-R R35',
+              'gt-rr35': 'GT-R R35',
+              'skyliner34': 'Skyline R34',
+              'skyliner33': 'Skyline R33',
+              'skyliner32': 'Skyline R32',
+              'silvias15': 'Silvia S15',
+              'silvias14': 'Silvia S14',
+              'rx7': 'RX-7 FD3S',
+              'rx7fd': 'RX-7 FD3S',
+              'rx7fc': 'RX-7 FC3S',
+              'rx8': 'RX-8',
+              'mx5': 'MX-5 ND',
+              'miata': 'MX-5 ND',
+              'roadster': 'MX-5 ND',
+              'mr2': 'MR2 SW20',
+              's2000': 'S2000 AP1',
+              'nsx': 'NSX NA1',
+              'ae86': 'AE86 Sprinter Trueno',
+              'trueno': 'AE86 Sprinter Trueno',
+              'hachiroku': 'AE86 Sprinter Trueno',
+              'gt86': 'GT86 / FR-S',
+              'frs': 'GT86 / FR-S',
+              'gr86': 'GR86',
+              'brz': 'BRZ ZC6',
+              'fairladyz': 'Fairlady Z Z34',
+              '3000gt': '3000GT / GTO',
+              'gto': '3000GT / GTO',
+              'eclipse': 'Eclipse',
+              'fto': 'FTO',
+              'n-box': 'N-BOX',
+              'nbox': 'N-BOX',
+            };
+
+            // 1. Try exact match
+            let matchedModel = allValidModels.find(m => m.toLowerCase() === rawModel);
+
+            // 2. Try alias map
+            if (!matchedModel) {
+              const aliased = MODEL_ALIASES[rawModel];
+              if (aliased) {
+                matchedModel = aliased;
+              }
+            }
+
+            // 3. Try partial match (includes)
+            if (!matchedModel) {
+              matchedModel = allValidModels.find(m =>
+                m.toLowerCase().includes(rawModel) || rawModel.includes(m.toLowerCase())
+              ) ?? undefined;
+            }
+
+            // 4. Try splitting camelCase and matching (e.g. 'LancerEvolution' → 'lancer evolution')
+            if (!matchedModel) {
+              const spaced = rawModel.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
+              matchedModel = allValidModels.find(m =>
+                m.toLowerCase().includes(spaced) || spaced.includes(m.toLowerCase())
+              ) ?? undefined;
+            }
+
             if (matchedModel) {
               parsedData.model = matchedModel;
             } else {
-              const partialMatch = allValidModels.find(m => 
-                m.toLowerCase().includes(rawModel) || rawModel.includes(m.toLowerCase())
-              );
-              
-              if (partialMatch) {
-                parsedData.model = partialMatch;
-              } else {
-                // Se não bater com o mapeamento fixo, mantém o modelo e marca sugeridos pela IA
-                console.log('[analyzePart] Modelo não encontrado na lista local, mantendo original:', rawModel);
-              }
+              // Manter o modelo original da IA como fallback textual
+              console.log('[analyzePart] Modelo não encontrado na lista local, mantendo original:', rawModel);
             }
           }
 
