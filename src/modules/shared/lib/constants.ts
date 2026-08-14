@@ -78,8 +78,9 @@ export const CATEGORIES = [
 
 export const CONDITIONS = [
   { id: 'new', label: 'Novo', description: 'Produto novo, na embalagem original' },
-  { id: 'used', label: 'Usado', description: 'Produto usado, em boas condições' },
-  { id: 'refurbished', label: 'Reformado', description: 'Produto revisado e reformado' }
+  { id: 'like_new', label: 'Seminovo', description: 'Produto em estado de novo, quase sem marcas' },
+  { id: 'good', label: 'Usado', description: 'Produto usado, em boas condições de funcionamento' },
+  { id: 'fair', label: 'Marcas de Uso', description: 'Produto usado com marcas visíveis de uso' },
 ]
 
 export const YEARS = Array.from({ length: 35 }, (_, i) => 2024 - i)

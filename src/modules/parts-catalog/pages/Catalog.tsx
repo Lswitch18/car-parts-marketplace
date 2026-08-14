@@ -183,14 +183,17 @@ export default function Catalog() {
 
   const conditionLabel = (c: string) => {
     if (c === 'new') return t('Novo')
-    if (c === 'used') return t('Usado')
-    return t('Reformado')
+    if (c === 'like_new' || c === 'excellent') return t('Seminovo')
+    if (c === 'good' || c === 'used') return t('Usado')
+    if (c === 'fair' || c === 'poor') return t('Marcas de Uso')
+    return t('Usado')
   }
 
   const conditionColor = (c: string) => {
     if (c === 'new') return { bg: 'rgba(0,217,126,0.15)', color: '#00D97E', border: 'rgba(0,217,126,0.3)' }
-    if (c === 'used') return { bg: 'rgba(255,184,0,0.15)', color: '#FFB800', border: 'rgba(255,184,0,0.3)' }
-    return { bg: 'rgba(13,117,255,0.15)', color: '#0D75FF', border: 'rgba(13,117,255,0.3)' }
+    if (c === 'like_new' || c === 'excellent') return { bg: 'rgba(0,229,255,0.15)', color: '#00E5FF', border: 'rgba(0,229,255,0.3)' }
+    if (c === 'good' || c === 'used') return { bg: 'rgba(255,184,0,0.15)', color: '#FFB800', border: 'rgba(255,184,0,0.3)' }
+    return { bg: 'rgba(156,163,175,0.15)', color: '#9CA3AF', border: 'rgba(156,163,175,0.3)' }
   }
 
   return (
