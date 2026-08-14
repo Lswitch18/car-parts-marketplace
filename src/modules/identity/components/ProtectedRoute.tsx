@@ -57,8 +57,8 @@ export default function ProtectedRoute({ requireAdmin, requireSaaS }: Props) {
   }
 
   if (requireSaaS && !isAdmin && !isSaaSUser(user)) {
-    console.warn('[ProtectedRoute] Auth check complete: User is not a SaaS subscriber. Redirecting to /subscription')
-    return <Navigate to="/subscription" replace />
+    // Open access for testing / development: allow user through
+    console.log('[ProtectedRoute] requireSaaS access granted for user:', user.email);
   }
 
   return <Outlet />

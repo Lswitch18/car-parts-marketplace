@@ -101,24 +101,11 @@ export function useCreateListing() {
 
   useEffect(() => {
     if (!user) return;
-    if (user.account_type === 'pessoa_fisica') {
-      const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-      supabase.from('parts').select('id', { count: 'exact' }).eq('seller_id', user.id).gte('created_at', startOfMonth).then(({ count, error }) => {
-        if (!error && count !== null) {
-          setPartsCount(count);
-          if (count >= 50) setShowLimitModal(true);
-        }
-      });
-      return;
-    }
-    if ((user.account_type as string) !== 'pessoa_fisica' && !user.store_verified) {
-      supabase.from('parts').select('id', { count: 'exact' }).eq('seller_id', user.id).then(({ count, error }) => {
-        if (!error && count !== null) {
-          setPartsCount(count);
-          if (count >= 20) setShowUnverifiedModal(true);
-        }
-      });
-    }
+    supabase.from('parts').select('id', { count: 'exact' }).eq('seller_id', user.id).then(({ count, error }) => {
+      if (!error && count !== null) {
+        setPartsCount(count);
+      }
+    });
   }, [user]);
 
   const analyzeWithAI = async () => {

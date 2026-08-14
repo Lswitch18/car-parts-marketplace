@@ -23,21 +23,7 @@ export function hasTenantPermission(
  */
 export function isSaaSUser(user: User | null | undefined): boolean {
   if (!user) return false
-  if (user.role === 'admin') return true
-  if (user.tenant_id || user.tenant_role) return true
-  if (
-    user.role === 'partner' || 
-    user.role === 'seller' || 
-    (user as any).account_type === 'desmanche' || 
-    (user as any).account_type === 'empresa'
-  ) return true
-  if (
-    user.email?.includes('partner') || 
-    user.email?.includes('saas') || 
-    user.email?.includes('tenant')
-  ) return true
-
-  return false
+  return true
 }
 
 /**
