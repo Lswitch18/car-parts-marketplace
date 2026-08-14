@@ -1,4 +1,5 @@
 import { Upload, X, Loader2, Sparkles, Box, CheckCircle, AlertTriangle } from 'lucide-react';
+import { CarPartScannerAnimation } from './CarPartScannerAnimation';
 
 interface Props {
   t: (key: string) => string;
@@ -23,6 +24,15 @@ export function ListingImageUpload({
   t, images, aiError, aiEnabled, vin, analyzing, generating3D, aiProgress, model3DUrl,
   partNumber, isOfficialData, brandMismatch, handleImageChange, removeImage, setVin, analyzeWithAI
 }: Props) {
+  
+  const getProgressMessage = () => {
+    if (aiProgress < 20) return t('Lendo textura e volumetria...');
+    if (aiProgress < 45) return t('Identificando montadora...');
+    if (aiProgress < 75) return t('Buscando cruzamento de especificações OEM...');
+    if (aiProgress < 96) return t('Calculando Matriz de Preço (Mercado Japonês)...');
+    return t('Sincronizando Anúncio...');
+  };
+
   return (
     <div>
       <label className="block text-text-secondary text-sm mb-2">{t('Fotos do produto')}</label>
@@ -53,7 +63,7 @@ export function ListingImageUpload({
       )}
 
       {images.length > 0 && aiEnabled && (
-        <div className="mt-4 space-y-3">
+        <div className="mt-6 space-y-4">
           <div>
             <label className="block text-text-secondary text-xs mb-1">
               {t('Número do Chassi / VIN (Opcional - Ajuda a IA a ser 98% precisa)')}
@@ -62,58 +72,48 @@ export function ListingImageUpload({
               type="text"
               value={vin}
               onChange={(e) => setVin(e.target.value.toUpperCase())}
-              className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text text-sm focus:border-primary focus:outline-none"
+              className="w-full px-4 py-2 bg-surface border border-border rounded-lg text-text text-sm focus:border-[#0D75FF] focus:outline-none transition-colors"
               placeholder="Ex: JTD123456789..."
             />
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
+          
+          <div className="w-full">
             {!analyzing ? (
               <button
                 type="button"
                 onClick={analyzeWithAI}
                 disabled={generating3D}
-                className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-primary/20 to-primary/5 hover:from-primary/30 hover:to-primary/10 text-primary border border-primary/30 px-4 py-3 rounded-lg transition-all"
+                className="relative group w-full flex items-center justify-center space-x-3 bg-gradient-to-r from-[#0D75FF]/20 to-[#00E5FF]/10 hover:from-[#0D75FF]/30 hover:to-[#00E5FF]/20 border border-[#0D75FF]/40 hover:border-[#00E5FF]/80 px-6 py-5 rounded-xl transition-all duration-300 overflow-hidden"
               >
-                <Sparkles className="w-4 h-4" />
-                <span className="text-sm font-medium">{t('Análise de IA (Auto Preenchimento)')}</span>
+                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(0,229,255,0.15),transparent)] -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+                <div className="p-2.5 rounded-xl bg-black/40 border border-[#00E5FF]/30 shadow-[0_0_15px_rgba(0,229,255,0.3)]">
+                  <Sparkles className="w-6 h-6 text-[#00E5FF] animate-pulse drop-shadow-[0_0_8px_rgba(0,229,255,0.6)]" />
+                </div>
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-lg font-bold text-white tracking-wide drop-shadow-[0_0_8px_rgba(0,229,255,0.3)]">
+                    {t('Escanear Peça com Inteligência Artificial')}
+                  </span>
+                  <span className="text-xs text-[#00E5FF] font-medium tracking-wider uppercase opacity-80 mt-0.5">
+                    {t('Preenchimento Mágico em 3 segundos')}
+                  </span>
+                </div>
               </button>
             ) : (
-              <div className="flex-1 relative overflow-hidden bg-surface border border-primary/30 px-4 py-3 rounded-lg flex flex-col justify-center transition-all">
-                <div className="flex justify-between items-center mb-2 relative z-10">
-                  <div className="flex items-center space-x-2">
-                    <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                    <span className="text-sm font-medium text-primary">
-                      {aiProgress < 20 ? t('Lendo imagem e textura...') : 
-                       aiProgress < 45 ? t('Identificando peça e montadora...') : 
-                       aiProgress < 75 ? t('Buscando especificações...') : 
-                       aiProgress < 96 ? t('Consultando valor de mercado...') :
-                       t('Finalizando...')}
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold text-primary">{Math.min(100, Math.round(aiProgress))}%</span>
-                </div>
-                <div className="h-1.5 w-full bg-primary/10 rounded-full overflow-hidden relative z-10 shadow-inner">
-                  <div 
-                    className="h-full bg-gradient-to-r from-[#0D75FF] to-[#00f0ff] transition-all duration-500 ease-out shadow-[0_0_8px_rgba(0,240,255,0.8)]"
-                    style={{ width: `${Math.min(100, aiProgress)}%` }}
-                  ></div>
-                </div>
-                <div className="absolute inset-0 bg-primary/5 animate-pulse rounded-lg"></div>
-              </div>
+              <CarPartScannerAnimation progress={aiProgress} message={getProgressMessage()} />
             )}
             
             {/* Status do 3D Engine */}
             {(generating3D || model3DUrl) && (
-              <div className="flex-1 flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-lg">
+              <div className="mt-3 w-full flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-xl">
                 {generating3D ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin text-purple-500" />
-                    <span className="text-sm font-medium text-purple-400">{t('Renderizando 3D (TripoSR)...')}</span>
+                    <span className="text-sm font-medium text-purple-400">{t('Renderizando volumetria 3D (TripoSR)...')}</span>
                   </>
                 ) : (
                   <>
                     <Box className="w-4 h-4 text-green-500" />
-                    <span className="text-sm font-medium text-green-400">{t('Modelo 3D Gerado com Sucesso!')}</span>
+                    <span className="text-sm font-medium text-green-400">{t('Modelo 3D Interativo Gerado!')}</span>
                   </>
                 )}
               </div>
