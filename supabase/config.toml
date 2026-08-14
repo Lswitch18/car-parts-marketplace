@@ -148,24 +148,30 @@ backend = "postgres"
 # Experimental features may be deprecated any time
 [functions]
 # Edge Functions - todas as funções do projeto
+# verify_jwt=false: a autenticação é validada DENTRO de cada função (requireAuth),
+# e o gateway não bloqueia o preflight OPTIONS do browser (CORS).
+# As functions públicas/sem auth fazem rate limit + whitelist internos.
 parts = { verify_jwt = false }
-users = { verify_jwt = true }
-transactions = { verify_jwt = true }
+users = { verify_jwt = false }
+transactions = { verify_jwt = false }
 auctions = { verify_jwt = false }
 categories = { verify_jwt = false }
 brands = { verify_jwt = false }
-stripe-checkout = { verify_jwt = true }
+stripe-checkout = { verify_jwt = false }
 stripe-webhook = { verify_jwt = false }
-notifications = { verify_jwt = true }
-analytics = { verify_jwt = true }
-admin = { verify_jwt = true }
-analyze-part = { verify_jwt = true }
-logistix-sync = { verify_jwt = true }
+notifications = { verify_jwt = false }
+analytics = { verify_jwt = false }
+admin = { verify_jwt = false }
+analyze-part = { verify_jwt = false }
+logistix-sync = { verify_jwt = false }
 logistix-b2b = { verify_jwt = false }
-logistics = { verify_jwt = true }
-system-metrics = { verify_jwt = true }
-redis-cache = { verify_jwt = true }
-ollama-proxy = { verify_jwt = true }
+logistics = { verify_jwt = false }
+system-metrics = { verify_jwt = false }
+redis-cache = { verify_jwt = false }
+ollama-proxy = { verify_jwt = false }
+certify-price = { verify_jwt = false }
+parts-lookup = { verify_jwt = false }
+generate-3d = { verify_jwt = false }
 
 [experimental]
 # Configures Postgres storage engine to use OrioleDB (S3)

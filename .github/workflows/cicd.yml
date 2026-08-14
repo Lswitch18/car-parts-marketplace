@@ -87,6 +87,18 @@ jobs:
           supabase functions deploy brands --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
           supabase functions deploy stripe-checkout --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
           supabase functions deploy stripe-webhook --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy redis-cache --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy notifications --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy analytics --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy admin --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy logistix-sync --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy logistix-b2b --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy logistics --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy system-metrics --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy ollama-proxy --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy save-to-drive --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy certify-price --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
+          supabase functions deploy parts-lookup --no-verify-jwt --no-verify-types --project-ref ${{ env.SUPABASE_PROJECT_REF }}
 
       - name: Deploy Database Migrations
         env:
