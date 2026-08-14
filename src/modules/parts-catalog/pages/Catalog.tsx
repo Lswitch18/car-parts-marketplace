@@ -10,6 +10,7 @@ import { fetchParts } from '@/modules/parts-catalog/api/partsApi'
 import { Product } from '@/modules/shared/types'
 import { getCountryFlag, getCountryOrder, getCountryDisplayName, resolveBrandCountry } from '@/modules/shared/lib/countryFlags'
 import { useI18n } from '@/modules/shared/lib/i18n'
+import { localizeProductTitle, resolveProductBrandName } from '@/modules/parts-catalog/utils/catalogLocalizer'
 
 // Extend product with relational fields used in UI
 interface ProductUI extends Product {
@@ -33,7 +34,7 @@ function SkeletonCard() {
 }
 
 export default function Catalog() {
-  const { t } = useI18n()
+  const { t, language } = useI18n()
   const [searchParams, setSearchParams] = useSearchParams()
   const { toggleFavorite, isFavorite } = useFavoriteStore()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -658,12 +659,12 @@ export default function Catalog() {
                       {/* Info */}
                       <div className="p-3.5">
                         <p className="text-[11px] font-semibold mb-0.5 uppercase tracking-wider" style={{ color: '#0D75FF' }}>
-                          {t(product.brands?.name || 'JDM')}
+                          {resolveProductBrandName(product.brands?.name, product.title, t)}
                         </p>
                         <h3
                           className="text-sm font-semibold text-white mb-1 truncate transition-colors group-hover:text-[#4d9cff]"
                         >
-                          {product.title}
+                          {localizeProductTitle(product.title, language)}
                         </h3>
                         <p className="text-xs mb-3 truncate" style={{ color: '#6B7280' }}>
                           {t(product.categories?.name || '')}
@@ -721,7 +722,7 @@ export default function Catalog() {
                       <div className="flex-1 min-w-0 flex flex-col justify-center">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#0D75FF' }}>
-                            {t(product.brands?.name || 'JDM')}
+                            {resolveProductBrandName(product.brands?.name, product.title, t)}
                           </span>
                           <span
                             className="text-[10px] font-bold px-1.5 py-0.5 rounded-md"
@@ -731,7 +732,7 @@ export default function Catalog() {
                           </span>
                         </div>
                         <h3 className="text-sm font-semibold text-white truncate group-hover:text-[#4d9cff] transition-colors">
-                          {product.title}
+                          {localizeProductTitle(product.title, language)}
                         </h3>
                         <p className="text-xs mt-0.5" style={{ color: '#6B7280' }}>{t(product.categories?.name || '')}</p>
                       </div>

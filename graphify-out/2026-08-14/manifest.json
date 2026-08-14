@@ -235,8 +235,8 @@
     "semantic_hash": "18a93c312d310813263c6eafe978a45f"
   },
   "package.json": {
-    "mtime": 1786032749.378197,
-    "ast_hash": "8e191655db197bccaee7b76ae464cbee",
+    "mtime": 1786716380.684171,
+    "ast_hash": "25b110016ac32f3c01d3a6b624783bb2",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -830,13 +830,13 @@
     "semantic_hash": "9ae111fa32a92e380e178c2d49a9eeb9"
   },
   "src/modules/parts-catalog/pages/Catalog.tsx": {
-    "mtime": 1786028374.6902003,
-    "ast_hash": "1271f28f86cc7c08086f30a7ec7938fa",
+    "mtime": 1786732256.0721123,
+    "ast_hash": "b3f81fa06dfd3d19315ced64e6220b3e",
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/CreateListing.tsx": {
-    "mtime": 1786028374.6942005,
-    "ast_hash": "8c485d12deb0baebceb3f34115f001f3",
+    "mtime": 1786729776.9845493,
+    "ast_hash": "723470efd32181098ef29d4c7de302f8",
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/Favorites.tsx": {
@@ -960,9 +960,9 @@
     "semantic_hash": "cafeb1b93c1c855838a2a743fd53b241"
   },
   "src/modules/shared/lib/countryFlags.ts": {
-    "mtime": 1781833815.6516163,
-    "ast_hash": "fabce2eafaeb1a77b2f5584bf23be2f3",
-    "semantic_hash": "fabce2eafaeb1a77b2f5584bf23be2f3"
+    "mtime": 1786732202.8641129,
+    "ast_hash": "684a9f9523d004e762674a9d6411eaef",
+    "semantic_hash": ""
   },
   "src/modules/shared/lib/distance.ts": {
     "mtime": 1781833815.6116164,
@@ -975,8 +975,8 @@
     "semantic_hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
   },
   "src/modules/shared/lib/i18n.tsx": {
-    "mtime": 1786544534.9934678,
-    "ast_hash": "63ce24a0168d616347e15ab0528cac7d",
+    "mtime": 1786732480.0921144,
+    "ast_hash": "1d2bd4a5c828671ca0f4d43fb71fcb5d",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/postal.ts": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": "4a6e421150d484766774f4c0520bc045"
   },
   "src/modules/transactions/api/api.ts": {
-    "mtime": 1786027636.2421968,
-    "ast_hash": "bf19423aa550c3c4e08c1338de54fd2c",
+    "mtime": 1786715365.2441716,
+    "ast_hash": "41ccc9c4cc18c4b8eff3f2b9c0e2a342",
     "semantic_hash": ""
   },
   "src/modules/transactions/api/fees.ts": {
@@ -1090,8 +1090,8 @@
     "semantic_hash": "9652cdcc58c56a93bc72779c241629c2"
   },
   "src/modules/transactions/pages/PaymentCheckout.tsx": {
-    "mtime": 1786544565.4494712,
-    "ast_hash": "e1cb6c461d55808fe764f6b52dfc7003",
+    "mtime": 1786579431.8343036,
+    "ast_hash": "02c192b608e2566d13468594d85c6f2b",
     "semantic_hash": ""
   },
   "src/modules/transportation/__tests__/driver-biometrics.test.ts": {
@@ -1270,9 +1270,9 @@
     "semantic_hash": "b4756613c22ebd9762e362d4d306fa3d"
   },
   "supabase/functions/analyze-part/index.ts": {
-    "mtime": 1783779858.6753678,
-    "ast_hash": "c14749a72b9299ae3ec4243bcb44e8ab",
-    "semantic_hash": "c14749a72b9299ae3ec4243bcb44e8ab"
+    "mtime": 1786720294.204173,
+    "ast_hash": "c61258c7d78a0ddf9ac4e7de65fb130f",
+    "semantic_hash": ""
   },
   "supabase/functions/auctions/index.ts": {
     "mtime": 1785438371.1511943,
@@ -1340,8 +1340,8 @@
     "semantic_hash": "384e406462b6dd6e28ca772792eb5779"
   },
   "supabase/functions/stripe-checkout/index.ts": {
-    "mtime": 1785890383.681467,
-    "ast_hash": "df23a12ea16f9938a805f0fe6b31d8f9",
+    "mtime": 1786588164.110302,
+    "ast_hash": "971e74fe4e2b862a69c2be67ba9a6f74",
     "semantic_hash": ""
   },
   "supabase/functions/stripe-webhook/index.ts": {
@@ -2670,9 +2670,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/LegalNotice.tsx": {
-    "mtime": 1785364551.6194015,
-    "ast_hash": "9e5af0b997aceb6fb7bb79925f1bf89b",
-    "semantic_hash": "9e5af0b997aceb6fb7bb79925f1bf89b"
+    "mtime": 1786583018.0103009,
+    "ast_hash": "537138a995522532967e475250a4b47c",
+    "semantic_hash": ""
   },
   "src/modules/storefront/pages/PrivacyPolicy.tsx": {
     "mtime": 1784831059.3613577,
@@ -3242,6 +3242,46 @@
   ".agents/skills/marketplace-business-model-analyzer/SKILL.md": {
     "mtime": 1786420963.327633,
     "ast_hash": "1c272768da4e85f40c8d761189d06676",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/components/create-listing/AiVisionBanner.tsx": {
+    "mtime": 1786716437.0641708,
+    "ast_hash": "7dee47004fa334ddbedbdfd42e9262e2",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/components/create-listing/CarPartScannerAnimation.tsx": {
+    "mtime": 1786729812.4165502,
+    "ast_hash": "b131dd2c1e2d0cb9faee4111c75177d3",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/components/create-listing/ListingFormFields.tsx": {
+    "mtime": 1786720912.0361702,
+    "ast_hash": "8a7d01968d5508b894717e38eeb16bd4",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/components/create-listing/ListingImageUpload.tsx": {
+    "mtime": 1786729797.7845502,
+    "ast_hash": "930dbe56e2ba385a70b097432540636d",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/components/create-listing/ListingPriceSection.tsx": {
+    "mtime": 1786729785.9485524,
+    "ast_hash": "5badef90e4d9afdd1b5207c262c05f44",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/hooks/useCreateListing.ts": {
+    "mtime": 1786720305.3681734,
+    "ast_hash": "81d850bae564d04c9e7387b5e878f1b0",
+    "semantic_hash": ""
+  },
+  "supabase/functions/certify-price/index.ts": {
+    "mtime": 1786715344.3921719,
+    "ast_hash": "2fddb1ea4a602878fd387442a36fd28d",
+    "semantic_hash": ""
+  },
+  "public/ai_vision_banner_1786716243259.jpg": {
+    "mtime": 1786716453.656171,
+    "ast_hash": "626add812d57f0ecfc9d02edbd56a7a8",
     "semantic_hash": ""
   }
 }

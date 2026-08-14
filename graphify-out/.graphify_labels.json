@@ -170,7 +170,6 @@
   "168": "translate_auctions.py",
   "169": "PedidosPage.tsx",
   "170": "EtiquetasPage.tsx",
-  "171": "canvas-confetti",
   "172": "NotificationCenter.tsx",
   "173": "@base-ui/react",
   "174": "GlobalSearch.tsx",
@@ -199,6 +198,8 @@
   "197": "adminApi.test.ts",
   "198": "autoprefixer",
   "199": "@types/three",
+  "200": "autoprefixer",
+  "201": "@react-three/fiber",
   "214": "generate_acordo_socios_pdf.py",
   "225": "typescript-eslint"
 }

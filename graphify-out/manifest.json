@@ -830,8 +830,8 @@
     "semantic_hash": "9ae111fa32a92e380e178c2d49a9eeb9"
   },
   "src/modules/parts-catalog/pages/Catalog.tsx": {
-    "mtime": 1786731663.948112,
-    "ast_hash": "099b6f47b4aef32fc67d240047a06814",
+    "mtime": 1786733900.7481139,
+    "ast_hash": "932e8b24d3f4384af58033c5341fe202",
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/CreateListing.tsx": {
@@ -960,9 +960,9 @@
     "semantic_hash": "cafeb1b93c1c855838a2a743fd53b241"
   },
   "src/modules/shared/lib/countryFlags.ts": {
-    "mtime": 1781833815.6516163,
-    "ast_hash": "fabce2eafaeb1a77b2f5584bf23be2f3",
-    "semantic_hash": "fabce2eafaeb1a77b2f5584bf23be2f3"
+    "mtime": 1786732202.8641129,
+    "ast_hash": "684a9f9523d004e762674a9d6411eaef",
+    "semantic_hash": ""
   },
   "src/modules/shared/lib/distance.ts": {
     "mtime": 1781833815.6116164,
@@ -975,8 +975,8 @@
     "semantic_hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
   },
   "src/modules/shared/lib/i18n.tsx": {
-    "mtime": 1786729766.0765493,
-    "ast_hash": "95b0c7d1f5adf9c573b547fb54cac479",
+    "mtime": 1786732480.0921144,
+    "ast_hash": "1d2bd4a5c828671ca0f4d43fb71fcb5d",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/postal.ts": {
@@ -1325,9 +1325,9 @@
     "semantic_hash": "20a7f4b2b95374e88ecd4471dbf09006"
   },
   "supabase/functions/parts/index.ts": {
-    "mtime": 1782487939.8811579,
-    "ast_hash": "b969c9c56d3808bcfdedcb29a8579618",
-    "semantic_hash": "b969c9c56d3808bcfdedcb29a8579618"
+    "mtime": 1786733131.3961112,
+    "ast_hash": "bdea416e1a7af3f9a9c24d7cbef2ebc2",
+    "semantic_hash": ""
   },
   "supabase/functions/save-to-drive/deno.json": {
     "mtime": 1782535659.587225,
@@ -3220,8 +3220,8 @@
     "semantic_hash": ""
   },
   "supabase/functions/redis-cache/index.ts": {
-    "mtime": 1786027469.8941972,
-    "ast_hash": "2f7a6f6ca5e16f7df80fc5fe74f09f34",
+    "mtime": 1786732960.804113,
+    "ast_hash": "8519c00310b881894f4ebf0ac62e8fc5",
     "semantic_hash": ""
   },
   "vitest.config.ts": {
@@ -3282,6 +3282,11 @@
   "public/ai_vision_banner_1786716243259.jpg": {
     "mtime": 1786716453.656171,
     "ast_hash": "626add812d57f0ecfc9d02edbd56a7a8",
+    "semantic_hash": ""
+  },
+  "src/modules/parts-catalog/utils/catalogLocalizer.ts": {
+    "mtime": 1786733848.808113,
+    "ast_hash": "8092088d82124859b70cb2fc201c9964",
     "semantic_hash": ""
   }
 }
