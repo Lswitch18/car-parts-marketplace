@@ -3290,8 +3290,8 @@
     "semantic_hash": ""
   },
   "public/presentation.html": {
-    "mtime": 1786750134.9641154,
-    "ast_hash": "c9b2ca732f1020c15d287857f0673755",
+    "mtime": 1787235487.5527222,
+    "ast_hash": "a2103b774d61c9634ed8c83cfbbbb2d1",
     "semantic_hash": ""
   },
   "public/presentation_frames/frame_001.jpg": {
@@ -3567,6 +3567,196 @@
   "test-images/video_frames/frame_026.jpg": {
     "mtime": 1786749682.4961092,
     "ast_hash": "c8ebf85c101649025733d9df423ba312",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_001.jpg": {
+    "mtime": 1786751242.4841099,
+    "ast_hash": "a74303baca2ebdeb2e7bd52c80b9fe1b",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_002.jpg": {
+    "mtime": 1786751243.42811,
+    "ast_hash": "dfd9c73debc55c0a56b776fac6debcca",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_003.jpg": {
+    "mtime": 1786751244.2721097,
+    "ast_hash": "058f8ece5c2f52d8ab0d1aae2e4a094a",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_004.jpg": {
+    "mtime": 1786751245.1761098,
+    "ast_hash": "4247f5e0aba68739727807b842e2d883",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_005.jpg": {
+    "mtime": 1786751246.02011,
+    "ast_hash": "0b7c19f170a0d076d8bb4926cc042746",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_006.jpg": {
+    "mtime": 1786751246.90811,
+    "ast_hash": "e292a1f60d96c1c3b8d71716880a8d89",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_007.jpg": {
+    "mtime": 1786751247.66811,
+    "ast_hash": "4efeeb506c81c2c220165695d57a6130",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_008.jpg": {
+    "mtime": 1786751248.52011,
+    "ast_hash": "5edecd86e5d3f1739df3b452571a319a",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_009.jpg": {
+    "mtime": 1786751249.4961097,
+    "ast_hash": "6db903c1f838a02a5049f558958e03f9",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_010.jpg": {
+    "mtime": 1786751250.3001096,
+    "ast_hash": "ea357fa7e0e26508ce88816cc47a57aa",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_011.jpg": {
+    "mtime": 1786751251.2201095,
+    "ast_hash": "a3e2f20cd7689dca8f61dacd4a89f6b4",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_012.jpg": {
+    "mtime": 1786751252.2601094,
+    "ast_hash": "9c5b996e5e73ebf6f701b40d474ad2d9",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_013.jpg": {
+    "mtime": 1786751253.3121092,
+    "ast_hash": "161ad2f310a6b9ef738c21dbc1712c36",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_014.jpg": {
+    "mtime": 1786751254.340109,
+    "ast_hash": "fbe77f5ce862e75aa60d0a49988f3e52",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_015.jpg": {
+    "mtime": 1786751255.3761091,
+    "ast_hash": "bf7020c94b4b95b65bf3449d52c54469",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_016.jpg": {
+    "mtime": 1786751256.368109,
+    "ast_hash": "48a3c4fe00d93cc784bd280b809ab73f",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_017.jpg": {
+    "mtime": 1786751257.536109,
+    "ast_hash": "7104f140a7ded5efd10a1577d5e8b8e4",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_018.jpg": {
+    "mtime": 1786751258.972109,
+    "ast_hash": "7bf156a0f83b67588073dd706b1ea63b",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_019.jpg": {
+    "mtime": 1786751259.848109,
+    "ast_hash": "feb5de89ca04d8b22c36e2e541ff8ef7",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_020.jpg": {
+    "mtime": 1786751260.928109,
+    "ast_hash": "3efcca48aef95412c618baa34bb35579",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_021.jpg": {
+    "mtime": 1786751261.780109,
+    "ast_hash": "3b968e3bcfba4465a259fd89fd8ff3f0",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_022.jpg": {
+    "mtime": 1786751262.5841088,
+    "ast_hash": "af5efe8b46cb4ce78cd00ed64cfd4424",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_023.jpg": {
+    "mtime": 1786751263.816109,
+    "ast_hash": "cb6e173d419f4bc46bcb24ea21397737",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_024.jpg": {
+    "mtime": 1786751264.728109,
+    "ast_hash": "58f851f9f8116e131359f28bbd6e7792",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_025.jpg": {
+    "mtime": 1786751265.768109,
+    "ast_hash": "9685478a08c5028159f59026883b8553",
+    "semantic_hash": ""
+  },
+  "public/presentation_frames_clean/frame_026.jpg": {
+    "mtime": 1786751266.7001092,
+    "ast_hash": "c4466da527c96a06f458ff341b7c70c5",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_1.mp3": {
+    "mtime": 1786750916.2681096,
+    "ast_hash": "0ca34d2721d24597f8f9c38f2085382d",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_2.mp3": {
+    "mtime": 1786750919.5361102,
+    "ast_hash": "b7a21f528d86debd0f0086ea43cbe88b",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_3.mp3": {
+    "mtime": 1786750926.7241096,
+    "ast_hash": "60826183c9ff5e05cf4cfedbf33d45d8",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_4.mp3": {
+    "mtime": 1786750929.9121096,
+    "ast_hash": "fcc0d1f2bb70aaaa3b0b34511e0b52aa",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_5.mp3": {
+    "mtime": 1786750932.9561098,
+    "ast_hash": "a313e5a3ff57bb3581fbb06f70fffef7",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_6.mp3": {
+    "mtime": 1786750936.3961098,
+    "ast_hash": "6a29f4955ba8ff64f528dab113ebe447",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_f_1.mp3": {
+    "mtime": 1786750988.0041132,
+    "ast_hash": "99acf4bcea559ff1e022b38e0a2131a0",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_f_2.mp3": {
+    "mtime": 1786750994.6801133,
+    "ast_hash": "891f68b755b6f02d15efbe28d2ea8f73",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_f_3.mp3": {
+    "mtime": 1786751000.7161133,
+    "ast_hash": "07fdc734330afed483474e18e5e7f1e2",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_f_4.mp3": {
+    "mtime": 1786751005.5161133,
+    "ast_hash": "bc8967f079af536d98c8eefc27498684",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_f_5.mp3": {
+    "mtime": 1786751009.1201134,
+    "ast_hash": "c86948989ef626881dc96dc7f8d3e0a6",
+    "semantic_hash": ""
+  },
+  "public/presentation_audio/slide_f_6.mp3": {
+    "mtime": 1786751012.2401135,
+    "ast_hash": "2e50d760a0c64d8d9c9f72c9bf16d68c",
     "semantic_hash": ""
   }
 }
