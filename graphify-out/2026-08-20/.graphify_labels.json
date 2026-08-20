@@ -145,6 +145,7 @@
   "143": "LegalNotice.tsx",
   "144": "PrivacyPolicy.tsx",
   "145": "components.json",
+  "146": "GlobalSearch.tsx",
   "147": "useAnalytics.ts",
   "148": "useTranslation",
   "149": "capacitor.build.gradle",
@@ -183,6 +184,7 @@
   "182": "MobileIaVision.tsx",
   "183": "@types/three",
   "184": "react",
+  "185": "ProtectedRoute.tsx",
   "186": "graphify.md",
   "187": "graphify.md",
   "188": "main.tsx",
@@ -199,6 +201,7 @@
   "199": "@types/three",
   "200": "UserManagement.tsx",
   "201": "@react-three/fiber",
+  "205": "adminApi.test.ts",
   "206": "canvas-confetti",
   "214": "generate_acordo_socios_pdf.py",
   "225": "typescript-eslint"

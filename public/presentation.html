@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAIG — Apresentação Executiva & Demonstração Oficial (Mobile-First GSAP)</title>
+  <title>DAIG — 公式プレゼンテーション & AIデモンストレーション (JA / PT)</title>
   
-  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <!-- Google Fonts: Outfit, Noto Sans JP & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- GSAP Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <style>
     /* ══════════════════════════════════════════════════════════════════
-       DAIG DESIGN SYSTEM — MOBILE-FIRST CYBER NEON & SPRING PHYSICS
+       DAIG DESIGN SYSTEM — MOBILE-FIRST CYBER NEON & JAPANESE AESTHETICS
        ══════════════════════════════════════════════════════════════════ */
     :root {
       --bg-dark: #020204;
@@ -42,7 +42,7 @@
     body {
       background-color: var(--bg-dark);
       color: var(--text);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Outfit', 'Noto Sans JP', sans-serif;
       min-height: 100vh;
       min-height: -webkit-fill-available;
       display: flex;
@@ -61,7 +61,7 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(4, 5, 8, 0.9);
+      background: rgba(4, 5, 8, 0.92);
       backdrop-filter: blur(20px);
       position: sticky;
       top: 0;
@@ -98,12 +98,13 @@
     }
 
     .brand-info h1 {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 800;
       color: #fff;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: -0.5px;
     }
 
     .brand-info span {
@@ -118,32 +119,37 @@
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
       flex-shrink: 0;
     }
 
-    .voice-select {
+    .lang-select, .voice-select {
       background: rgba(0, 0, 0, 0.8);
       border: 1px solid rgba(0, 240, 255, 0.25);
       color: var(--cyan);
-      padding: 0.65rem 1.25rem;
+      padding: 0.55rem 0.9rem;
       border-radius: 9999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       outline: none;
       cursor: pointer;
-      font-family: 'Outfit', sans-serif;
-      max-width: 200px;
+      font-family: 'Outfit', 'Noto Sans JP', sans-serif;
       text-overflow: ellipsis;
       transition: all 0.25s ease;
     }
 
-    .voice-select:hover {
+    .lang-select {
+      border-color: rgba(13, 117, 255, 0.4);
+      color: #fff;
+      background: rgba(13, 117, 255, 0.12);
+    }
+
+    .lang-select:hover, .voice-select:hover {
       border-color: var(--cyan);
       box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
     }
 
-    .voice-select option {
+    .lang-select option, .voice-select option {
       background: #0B0E18;
       color: #fff;
     }
@@ -153,15 +159,16 @@
       color: #000;
       border: none;
       font-weight: 800;
-      padding: 0.65rem 1.4rem;
+      padding: 0.55rem 1.1rem;
       border-radius: 9999px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.88rem;
+      gap: 0.4rem;
+      font-size: 0.82rem;
       box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
       transition: all 0.25s var(--spring-easing);
+      white-space: nowrap;
     }
 
     .btn-main-play:hover {
@@ -254,19 +261,19 @@
       color: #fff;
     }
 
-    /* ─── Cinema Stage Card (Always Vertical) ─── */
+    /* ─── Presentation Stage Card (Cyber Neon Box) ─── */
     .stage-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 22px;
+      border-radius: 20px;
       overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(13, 117, 255, 0.1);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(24px);
+      backdrop-filter: blur(16px);
+      position: relative;
     }
 
-    /* ─── Screen Area (Normal 16:9 Proportion) ─── */
     .screen-container {
       position: relative;
       background: #000000;
@@ -307,20 +314,22 @@
 
     .swipe-hint {
       position: absolute;
-      bottom: 0.75rem;
-      right: 0.75rem;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      bottom: 0.85rem;
+      right: 0.85rem;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.7rem;
       color: var(--text-muted);
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.65rem;
-      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       pointer-events: none;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
 
-    /* ─── Info & Details Area ─── */
+    /* ─── Content Info Panel ─── */
     .info-container {
       padding: 1.5rem 1.25rem;
       display: flex;
@@ -368,9 +377,9 @@
     .module-tag {
       font-size: 0.7rem;
       font-weight: 800;
-      color: var(--cyan);
-      text-transform: uppercase;
       letter-spacing: 1.5px;
+      color: var(--primary);
+      text-transform: uppercase;
       font-family: 'JetBrains Mono', monospace;
       margin-bottom: 0.4rem;
       display: flex;
@@ -378,23 +387,32 @@
       gap: 0.4rem;
     }
 
-    .slide-headline {
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.3;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, #FFFFFF 30%, #4D9CFF 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .module-tag span {
+      width: 6px;
+      height: 6px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyan);
     }
 
+    .slide-headline {
+      font-size: 1.4rem;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    /* ─── Narration Box & Equalizer ─── */
     .narration-card {
-      background: rgba(13, 117, 255, 0.08);
-      border: 1px solid rgba(13, 117, 255, 0.28);
-      border-radius: 16px;
-      padding: 1.1rem;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-left: 3px solid var(--cyan);
+      border-radius: 14px;
+      padding: 1rem;
       position: relative;
+      margin-bottom: 1.25rem;
     }
 
     .narration-top {
@@ -405,20 +423,19 @@
     }
 
     .voice-indicator {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: var(--cyan);
-      font-family: 'JetBrains Mono', monospace;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
-      text-transform: uppercase;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .equalizer-bars {
       display: flex;
-      align-items: center;
-      gap: 3px;
+      align-items: flex-end;
+      gap: 2px;
       height: 14px;
     }
 
@@ -427,57 +444,59 @@
       background: var(--cyan);
       border-radius: 2px;
       height: 4px;
-      transition: height 0.15s;
+      transition: height 0.15s ease;
     }
 
-    .equalizer-bars.active .eq-bar:nth-child(1) { animation: barHop 0.5s infinite alternate; }
-    .equalizer-bars.active .eq-bar:nth-child(2) { animation: barHop 0.7s infinite alternate 0.15s; }
-    .equalizer-bars.active .eq-bar:nth-child(3) { animation: barHop 0.4s infinite alternate 0.3s; }
-    .equalizer-bars.active .eq-bar:nth-child(4) { animation: barHop 0.6s infinite alternate 0.1s; }
+    .equalizer-bars.active .eq-bar:nth-child(1) { animation: bounceEq 0.5s ease infinite alternate; }
+    .equalizer-bars.active .eq-bar:nth-child(2) { animation: bounceEq 0.7s ease infinite alternate 0.15s; }
+    .equalizer-bars.active .eq-bar:nth-child(3) { animation: bounceEq 0.4s ease infinite alternate 0.3s; }
+    .equalizer-bars.active .eq-bar:nth-child(4) { animation: bounceEq 0.6s ease infinite alternate 0.45s; }
 
-    @keyframes barHop {
-      0% { height: 3px; opacity: 0.3; }
-      100% { height: 14px; opacity: 1; box-shadow: 0 0 6px var(--cyan); }
+    @keyframes bounceEq {
+      0% { height: 3px; }
+      100% { height: 14px; }
     }
 
     .narration-body {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       line-height: 1.6;
       color: #E2E8F0;
+      font-weight: 400;
     }
 
+    /* ─── Key Points List ─── */
     .key-points-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
-      margin-top: 0.5rem;
     }
 
     .key-point-item {
-      position: relative;
-      padding-left: 1.5rem;
-      font-size: 0.86rem;
-      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.85rem;
       line-height: 1.45;
+      color: #CBD5E1;
     }
 
     .key-point-item::before {
-      content: '⚡';
-      position: absolute;
-      left: 0;
-      font-size: 0.75rem;
+      content: "✦";
       color: var(--cyan);
+      font-weight: 900;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
     }
 
-    /* ─── Bottom Navigation Bar (Thumb Friendly) ─── */
+    /* ─── Bottom Navigation & Controls ─── */
     .bottom-nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 0.5rem;
     }
 
     .btn-action-speak {
@@ -494,6 +513,7 @@
       gap: 0.5rem;
       transition: all 0.2s var(--spring-easing);
       box-shadow: 0 4px 12px rgba(0, 240, 255, 0.1);
+      white-space: nowrap;
     }
 
     .btn-action-speak:hover {
@@ -521,6 +541,7 @@
       font-weight: 700;
       font-size: 0.95rem;
       transition: all 0.2s var(--spring-easing), background 0.2s;
+      white-space: nowrap;
     }
 
     .btn-arrow-step:hover:not(:disabled) {
@@ -544,9 +565,9 @@
       width: 100%;
       height: 4px;
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
+      border-radius: 9999px;
       overflow: hidden;
-      margin-top: 0.75rem;
+      margin-top: 1rem;
     }
 
     .progress-bar-fill {
@@ -576,9 +597,8 @@
       .brand-info h1 {
         font-size: 1.25rem;
       }
-      .voice-select {
-        max-width: 220px;
-        font-size: 0.82rem;
+      .lang-select, .voice-select {
+        font-size: 0.85rem;
       }
       .btn-main-play {
         font-size: 0.88rem;
@@ -618,9 +638,6 @@
       .slide-headline {
         font-size: 2.1rem;
       }
-      .voice-select {
-        max-width: none;
-      }
       .swipe-hint {
         display: none;
       }
@@ -634,20 +651,26 @@
     <div class="brand">
       <div class="brand-badge">⚡</div>
       <div class="brand-info">
-        <h1>DAIG (Digital A.I. Garage)</h1>
-        <span>Apresentação Oficial & Demonstração</span>
+        <h1 id="headerTitle">DAIG (Digital A.I. Garage)</h1>
+        <span id="headerSubtitle">JAPAN OFFICIAL AI PRESENTATION</span>
       </div>
     </div>
 
     <div class="header-controls">
-      <select class="voice-select" id="voiceSelect" onchange="onVoiceChange()">
-        <option value="neural-male">🎙️ Antônio (Studio HD)</option>
-        <option value="neural-female">🎙️ Francisca (Studio HD)</option>
-        <option value="webspeech">🌐 Voz Nativa (WebSpeech)</option>
+      <!-- Language Switcher -->
+      <select class="lang-select" id="langSelect" onchange="onLangChange()">
+        <option value="ja" selected>🇯🇵 日本語</option>
+        <option value="pt">🇧🇷 Português</option>
       </select>
 
+      <!-- Dynamic Voice Selector -->
+      <select class="voice-select" id="voiceSelect" onchange="onVoiceChange()">
+        <!-- Injected via JS -->
+      </select>
+
+      <!-- Play All Button -->
       <button class="btn-main-play" id="playAllBtn" onclick="togglePlayAll()">
-        <span id="playIcon">▶</span> <span id="playLabel">Apresentar</span>
+        <span id="playIcon">▶</span> <span id="playLabel">全スライド再生</span>
       </button>
     </div>
   </header>
@@ -659,13 +682,15 @@
       <!-- Injected via JS -->
     </div>
 
-    <!-- Stage Card -->
+    <!-- Stage Box -->
     <div class="stage-card" id="stageCard">
-      <!-- Screen Left / Top -->
-      <div class="screen-container" id="screenContainer">
-        <span class="time-badge" id="slideTime">00:00 - 00:45</span>
-        <img class="screen-image" id="slideImg" src="/presentation_frames_clean/frame_001.jpg" alt="Demonstração DAIG">
-        <div class="swipe-hint">⇄ Deslize para navegar</div>
+      <!-- Screen Media -->
+      <div class="screen-container">
+        <div class="time-badge" id="slideTime">00:00 - 00:45</div>
+        <img src="/presentation_frames_clean/frame_001.jpg" alt="DAIG Slide Preview" class="screen-image" id="slideImg">
+        <div class="swipe-hint">
+          <span>👈</span> <span id="swipeLabel">スワイプで切り替え</span> <span>👉</span>
+        </div>
       </div>
 
       <!-- Info Area -->
@@ -675,16 +700,16 @@
           <!-- Left Column -->
           <div class="info-left-col">
             <div class="module-tag" id="slideCat">
-              <span>●</span> MÓDULO 1: CADASTRO COM IA
+              <span>●</span> モジュール 1: AI自動出品
             </div>
             <h2 class="slide-headline" id="slideTitle">
-              Visão Computacional & Interface da DAIG
+              コンピュータビジョン＆DAIGスマートインターフェース
             </h2>
 
             <div class="narration-card" id="narrationCard">
               <div class="narration-top">
                 <div class="voice-indicator">
-                  <span>🎙️</span> Locução Neural Studio HD
+                  <span>🎙️</span> <span id="voiceBadgeLabel">AI Neural Studio HD</span>
                 </div>
                 <div class="equalizer-bars" id="audioEq">
                   <div class="eq-bar"></div>
@@ -694,14 +719,14 @@
                 </div>
               </div>
               <p class="narration-body" id="slideNarration">
-                Carregando narrativa...
+                読み込み中...
               </p>
             </div>
           </div>
 
           <!-- Right Column -->
           <div class="info-right-col">
-            <div class="points-header">Pontos Chave</div>
+            <div class="points-header" id="pointsHeader">重要ポイント</div>
             <ul class="key-points-list" id="slideBullets">
               <!-- Bullets -->
             </ul>
@@ -712,12 +737,12 @@
         <div class="info-controls-area">
           <div class="bottom-nav">
             <button class="btn-action-speak" onclick="speakCurrentSlide()">
-              <span>🔊</span> Ouvir Slide
+              <span>🔊</span> <span id="speakBtnLabel">スライド音声</span>
             </button>
 
             <div class="nav-arrow-group">
-              <button class="btn-arrow-step" id="prevBtn" onclick="prevSlide()">◀ Anterior</button>
-              <button class="btn-arrow-step" id="nextBtn" onclick="nextSlide()">Próximo ▶</button>
+              <button class="btn-arrow-step" id="prevBtn" onclick="prevSlide()">◀ 前へ</button>
+              <button class="btn-arrow-step" id="nextBtn" onclick="nextSlide()">次へ ▶</button>
             </div>
           </div>
 
@@ -729,104 +754,237 @@
     </div>
   </main>
 
-  <footer>
+  <footer id="footerText">
     DAIG PLATFORM 2026 • JDM AUTOMOTIVE COMPUTER VISION & MULTI-TENANT SAAS ECOSYSTEM
   </footer>
 
   <script>
-    const slides = [
-      {
-        id: 1,
-        time: "00:00 - 00:45",
-        category: "MÓDULO 1: CADASTRO COM IA",
-        title: "Visão Computacional & Interface da DAIG",
-        img: "/presentation_frames_clean/frame_001.jpg",
-        audioMale: "/presentation_audio/slide_1.mp3",
-        audioFemale: "/presentation_audio/slide_f_1.mp3",
-        narration: "Sejam bem-vindos à demonstração oficial da DAIG, a primeira plataforma inteligente de autopeças JDM impulsionada por inteligência artificial multimodal no Japão. Aqui na tela de criação de anúncios, o lojista conta com um assistente de Visão Computacional que elimina totalmente a digitação manual de dados técnicos de peças automotivas.",
-        points: [
-          "Suporte nativo a idioma Japonês e Português do Brasil com troca instantânea.",
-          "Área de upload de fotos de peças de alta performance (JDM Performance Parts).",
-          "Opções entre Venda por Preço Fixo (Kotei Kakaku) ou Leilão ao Vivo (Live Auction)."
+    // ══════════════════════════════════════════════════════════════════
+    // PRESENTATION DATA (BILINGUAL: JA & PT)
+    // ══════════════════════════════════════════════════════════════════
+    const slidesData = {
+      ja: [
+        {
+          id: 1,
+          time: "00:00 - 00:45",
+          category: "モジュール 1: AI自動出品",
+          title: "コンピュータビジョン＆DAIGスマートインターフェース",
+          img: "/presentation_frames_clean/frame_001.jpg",
+          audioMale: "/presentation_audio/slide_ja_1.mp3",
+          audioFemale: "/presentation_audio/slide_ja_f_1.mp3",
+          narration: "DAIG公式プレゼンテーションへようこそ。DAIGは、日本初となるマルチモーダルAIを搭載した次世代JDM自動車パーツプラットフォームです。出品画面では、高度なコンピュータビジョンアシスタントにより、技術仕様や型番の手動入力を完全にゼロにします。",
+          points: [
+            "日本語・ポルトガル語のネイティブ対応とリアルタイム言語切り替え",
+            "高性能JDMパーツ専用の写真アップロード＆AI解析エリア",
+            "固定価格販売（即決）とライブオークション（競り）の2大販売モード"
+          ]
+        },
+        {
+          id: 2,
+          time: "00:46 - 01:50",
+          category: "モジュール 2: マルチモーダル解析",
+          title: "自動入力＆パーツ認識エンジン",
+          img: "/presentation_frames_clean/frame_016.jpg",
+          audioMale: "/presentation_audio/slide_ja_2.mp3",
+          audioFemale: "/presentation_audio/slide_ja_f_2.mp3",
+          narration: "パーツの写真をアップロードするだけで、スバルSTI純正ブレンボブレーキなどの複雑なパーツも、ニューラルネットワークがわずか3秒で解析します。メーカー名、適合車種、年式、パーツ状態を自動判別し、高精度な技術説明文を瞬時に生成します。",
+          points: [
+            "手入力不要のメーカー・車種・型番の高精度自動特定",
+            "画像解析リバースエンジニアリングによる詳細スペックの自動生成",
+            "軽自動車、JDM、各シャシー型式に対応した適合タグの自動付与"
+          ]
+        },
+        {
+          id: 3,
+          time: "01:51 - 03:00",
+          category: "モジュール 3: ダイナミックJDMカタログ",
+          title: "インタラクティブショーケース＆高性能フィルター",
+          img: "/presentation_frames_clean/frame_004.jpg",
+          audioMale: "/presentation_audio/slide_ja_3.mp3",
+          audioFemale: "/presentation_audio/slide_ja_f_3.mp3",
+          narration: "公開パーツカタログでは、サイバーネオンを基調とした洗練されたデザインで、5,000点以上の在庫を美しく表示します。グリッドとリスト表示の即時切り替え、新着・人気順の並び替え、日産、トヨタ、ホンダ、スバル、HKS、GReddyなど伝説的JDMブランドでの絞り込みが可能です。",
+          points: [
+            "日本車メーカー、性能カテゴリ、日本円（JPY）価格帯による詳細フィルター",
+            "高解像度写真と最適化カードを備えたレスポンシブなグリッド＆リスト表示",
+            "新着順、価格順、人気順の高速ソート"
+          ]
+        },
+        {
+          id: 4,
+          time: "03:01 - 04:15",
+          category: "モジュール 4: リアルタイム多言語ローカライズ",
+          title: "ダイナミック国際化エンジン（日・伯）",
+          img: "/presentation_frames_clean/frame_019.jpg",
+          audioMale: "/presentation_audio/slide_ja_4.mp3",
+          audioFemale: "/presentation_audio/slide_ja_f_4.mp3",
+          narration: "DAIGの最大の強みの一つは、リアルタイム多言語ローカライズです。言語セレクターをワンクリックするだけで、日本のカタカナや漢字のパーツ情報が自然なポルトガル語へと瞬時に翻訳されます。世界中のバイヤーやチューニングショップが、言葉の壁なく希少なパーツを見つけることができます。",
+          points: [
+            "自動車専門用語やカタカナ表記の即時・高精度な多言語翻訳",
+            "新品・極美品・中古品の状態をネオンバッジで直感的に視覚化",
+            "日本国内バイヤーとグローバル愛好家の双方に最適なUXを提供"
+          ]
+        },
+        {
+          id: 5,
+          time: "04:16 - 05:10",
+          category: "モジュール 5: Stripe決済＆エスクロー保護",
+          title: "資金決済オペレーション＆自動レベニューシェア",
+          img: "/presentation_frames_clean/frame_024.jpg",
+          audioMale: "/presentation_audio/slide_ja_5.mp3",
+          audioFemale: "/presentation_audio/slide_ja_f_5.mp3",
+          narration: "マーケットプレイスの管理画面では、日本円でのリアルタイムな資金フローを確認できます。DAIGはStripe Connectによる安全なエスクロー信託を採用しており、プラットフォームが10%の手数料を保持し、残り90%をセラーへ自動送金することで、不正を防ぎ安全な取引を実現します。",
+          points: [
+            "手数料の自動分配：DAIG 10%、セラーへの直接送金 90%",
+            "購入者の受取確認まで資金を安全に保護するエスクロー機構",
+            "決済ステータスと送金履歴のリアルタイムトランザクション追跡"
+          ]
+        },
+        {
+          id: 6,
+          time: "05:11 - 06:35",
+          category: "モジュール 6: マルチテナントSaaSハブ",
+          title: "サブスクリプション＆MRR統括コントロールセンター",
+          img: "/presentation_frames_clean/frame_025.jpg",
+          audioMale: "/presentation_audio/slide_ja_6.mp3",
+          audioFemale: "/presentation_audio/slide_ja_f_6.mp3",
+          narration: "法人エコシステムを強化するため、DAIGは自動車解体業者やパートナー店舗向けに包括的なB2B SaaSハブを提供しています。月次経常収益MRR、Starter・Pro・Enterpriseプランの契約状況、回収率100%のStripe Billing連携を一元管理。日本市場をリードする高バリュエーション設計です。",
+          points: [
+            "MRR（月次経常収益）およびARR（年間経常収益）のリアルタイムモニタリング",
+            "日本全国の加盟解体業者・専門ショップの統合管理",
+            "資金調達や事業拡大に最適化された高スケーラブルなマルチテナント設計"
+          ]
+        }
+      ],
+      pt: [
+        {
+          id: 1,
+          time: "00:00 - 00:45",
+          category: "MÓDULO 1: CADASTRO COM IA",
+          title: "Visão Computacional & Interface da DAIG",
+          img: "/presentation_frames_clean/frame_001.jpg",
+          audioMale: "/presentation_audio/slide_1.mp3",
+          audioFemale: "/presentation_audio/slide_f_1.mp3",
+          narration: "Sejam bem-vindos à demonstração oficial da DAIG, a primeira plataforma inteligente de autopeças JDM impulsionada por inteligência artificial multimodal no Japão. Aqui na tela de criação de anúncios, o lojista conta com um assistente de Visão Computacional que elimina totalmente a digitação manual de dados técnicos de peças automotivas.",
+          points: [
+            "Suporte nativo a idioma Japonês e Português do Brasil com troca instantânea.",
+            "Área de upload de fotos de peças de alta performance (JDM Performance Parts).",
+            "Opções entre Venda por Preço Fixo (Kotei Kakaku) ou Leilão ao Vivo (Live Auction)."
+          ]
+        },
+        {
+          id: 2,
+          time: "00:46 - 01:50",
+          category: "MÓDULO 2: PROCESSAMENTO MULTIMODAL",
+          title: "Auto-Preenchimento e Reconhecimento Automático",
+          img: "/presentation_frames_clean/frame_016.jpg",
+          audioMale: "/presentation_audio/slide_2.mp3",
+          audioFemale: "/presentation_audio/slide_f_2.mp3",
+          narration: "Ao fazer o upload da foto de uma peça, como este conjunto de freios Brembo genuíno da Subaru STI, a nossa rede neural analisa texturas, marcas em relevo e especificações em menos de três segundos. A inteligência artificial identifica automaticamente a marca Subaru, o modelo Impreza WRX STI, a condição da peça, os anos de compatibilidade e escreve uma descrição técnica detalhada em português ou japonês.",
+          points: [
+            "Identificação precisa de marca e modelo automotivo sem digitação manual.",
+            "Geração de descrição técnica refinada com aplicação de engenharia reversa visual.",
+            "Geração automática de Tags de Compatibilidade (Kei Cars, JDM e variantes de chassi)."
+          ]
+        },
+        {
+          id: 3,
+          time: "01:51 - 03:00",
+          category: "MÓDULO 3: CATÁLOGO JDM DINÂMICO",
+          title: "Vitrine Interativa & Filtros de Alta Performance",
+          img: "/presentation_frames_clean/frame_004.jpg",
+          audioMale: "/presentation_audio/slide_3.mp3",
+          audioFemale: "/presentation_audio/slide_f_3.mp3",
+          narration: "Ao navegar para o catálogo público de peças, encontramos uma vitrine moderna no padrão Cyber Neon, exibindo mais de cinco mil peças em estoque. O usuário pode alternar instantaneamente entre a visualização em grade e lista, ordenar por novidades ou popularidade, e filtrar por fabricantes lendários japoneses como Nissan, Toyota, Honda, Subaru, GReddy e HKS.",
+          points: [
+            "Filtros segmentados por marcas japonesas, categorias de performance e faixas de preço em Ienes (¥).",
+            "Visualização responsiva em Grade e Lista com cards otimizados e fotos em alta definição.",
+            "Ordenação instantânea por mais recentes, menor preço, maior preço e popularidade."
+          ]
+        },
+        {
+          id: 4,
+          time: "03:01 - 04:15",
+          category: "MÓDULO 4: LOCALIZAÇÃO BILÍNGUE EM TEMPO REAL",
+          title: "Internacionalização Dinâmica (PT ⟷ JA)",
+          img: "/presentation_frames_clean/frame_019.jpg",
+          audioMale: "/presentation_audio/slide_4.mp3",
+          audioFemale: "/presentation_audio/slide_f_4.mp3",
+          narration: "Um dos grandes diferenciais da DAIG é o seu motor de localização bilíngue em tempo real. Com um simples clique no seletor de idioma, todo o conteúdo dos produtos gravados em Katakana e Kanji no Japão é traduzido de forma fluida para o português, permitindo que importadores, oficinas e entusiastas de todo o mundo encontrem peças raras sem barreira de idioma.",
+          points: [
+            "Tradução instantânea de termos técnicos automotivos e Katakana para Português.",
+            "Badges de condição dinâmicos: Novo, Seminovo e Usado com distinção por cores luminosas.",
+            "Experiência perfeita tanto para compradores domésticos no Japão quanto para o mercado global."
+          ]
+        },
+        {
+          id: 5,
+          time: "04:16 - 05:10",
+          category: "MÓDULO 5: LIQUIDAÇÃO STRIPE & ESCROW",
+          title: "Operações Financeiras & Divisão de Receita",
+          img: "/presentation_frames_clean/frame_024.jpg",
+          audioMale: "/presentation_audio/slide_5.mp3",
+          audioFemale: "/presentation_audio/slide_f_5.mp3",
+          narration: "Na área administrativa de operações do marketplace, o sistema exibe o fluxo financeiro em Ienes ao vivo. A DAIG opera com custódia segura Escrow via Stripe Connect: a plataforma retém a comissão de dez por cento, cobrindo custos operacionais, e repassa automaticamente noventa por cento do valor da venda ao vendedor cadastrado de forma transparente e blindada contra fraudes.",
+          points: [
+            "Divisão automatizada de comissão: 10% DAIG e 90% repasse direto ao vendedor.",
+            "Custódia em Escrow até a confirmação de entrega da peça pelo comprador.",
+            "Rastreamento de transações em tempo real com controle de status de pagamento e repasse."
+          ]
+        },
+        {
+          id: 6,
+          time: "05:11 - 06:35",
+          category: "MÓDULO 6: HUB SAAS MULTI-TENANT",
+          title: "Centro de Controle de Assinaturas e MRR",
+          img: "/presentation_frames_clean/frame_025.jpg",
+          audioMale: "/presentation_audio/slide_6.mp3",
+          audioFemale: "/presentation_audio/slide_f_6.mp3",
+          narration: "Para consolidar o ecossistema corporativo, a DAIG oferece um Hub SaaS B2B completo para desmanches e lojas parceiras. No painel executivo, acompanhamos o faturamento recorrente mensal, a saúde das assinaturas, os planos Starter, Pro e Enterprise, com taxa de adimplência de cem por cento integrada à cobrança automática do Stripe Billing. Uma solução de alto valuation projetada para liderar o mercado japonês.",
+          points: [
+            "Monitoramento de MRR (Receita Recorrente Mensal) e projeção de ARR em tempo real.",
+            "Gestão unificada de lojas e desmanches credenciados em território japonês.",
+            "Arquitetura escalável multi-tenant pronta para expansão e rodadas de investimento."
+          ]
+        }
+      ]
+    };
+
+    const uiStrings = {
+      ja: {
+        headerSubtitle: "JAPAN OFFICIAL AI PRESENTATION",
+        playLabel: "全スライド再生",
+        pauseLabel: "一時停止",
+        speakBtn: "スライド音声",
+        prevBtn: "◀ 前へ",
+        nextBtn: "次へ ▶",
+        pointsHeader: "重要ポイント",
+        voiceBadge: "AI Neural Studio HD (JP)",
+        swipeLabel: "スワイプで切り替え",
+        voiceOptions: [
+          { value: "neural-male", label: "🎙️ 啓太 Keita (Studio HD - 男性)" },
+          { value: "neural-female", label: "🎙️ 七海 Nanami (Studio HD - 女性)" },
+          { value: "webspeech", label: "🌐 Web Speech (日本語)" }
         ]
       },
-      {
-        id: 2,
-        time: "00:46 - 01:50",
-        category: "MÓDULO 2: PROCESSAMENTO MULTIMODAL",
-        title: "Auto-Preenchimento e Reconhecimento Automático",
-        img: "/presentation_frames_clean/frame_016.jpg",
-        audioMale: "/presentation_audio/slide_2.mp3",
-        audioFemale: "/presentation_audio/slide_f_2.mp3",
-        narration: "Ao fazer o upload da foto de uma peça, como este conjunto de freios Brembo genuíno da Subaru STI, a nossa rede neural analisa texturas, marcas em relevo e especificações em menos de três segundos. A inteligência artificial identifica automaticamente a marca Subaru, o modelo Impreza WRX STI, a condição da peça, os anos de compatibilidade e escreve uma descrição técnica detalhada em português ou japonês.",
-        points: [
-          "Identificação precisa de marca e modelo automotivo sem digitação manual.",
-          "Geração de descrição técnica refinada com aplicação de engenharia reversa visual.",
-          "Geração automática de Tags de Compatibilidade (Kei Cars, JDM e variantes de chassi)."
-        ]
-      },
-      {
-        id: 3,
-        time: "01:51 - 03:00",
-        category: "MÓDULO 3: CATÁLOGO JDM DINÂMICO",
-        title: "Vitrine Interativa & Filtros de Alta Performance",
-        img: "/presentation_frames_clean/frame_004.jpg",
-        audioMale: "/presentation_audio/slide_3.mp3",
-        audioFemale: "/presentation_audio/slide_f_3.mp3",
-        narration: "Ao navegar para o catálogo público de peças, encontramos uma vitrine moderna no padrão Cyber Neon, exibindo mais de cinco mil peças em estoque. O usuário pode alternar instantaneamente entre a visualização em grade e lista, ordenar por novidades ou popularidade, e filtrar por fabricantes lendários japoneses como Nissan, Toyota, Honda, Subaru, GReddy e HKS.",
-        points: [
-          "Filtros segmentados por marcas japonesas, categorias de performance e faixas de preço em Ienes (¥).",
-          "Visualização responsiva em Grade e Lista com cards otimizados e fotos em alta definição.",
-          "Ordenação instantânea por mais recentes, menor preço, maior preço e popularidade."
-        ]
-      },
-      {
-        id: 4,
-        time: "03:01 - 04:15",
-        category: "MÓDULO 4: LOCALIZAÇÃO BILÍNGUE EM TEMPO REAL",
-        title: "Internacionalização Dinâmica (PT ⟷ JA)",
-        img: "/presentation_frames_clean/frame_019.jpg",
-        audioMale: "/presentation_audio/slide_4.mp3",
-        audioFemale: "/presentation_audio/slide_f_4.mp3",
-        narration: "Um dos grandes diferenciais da DAIG é o seu motor de localização bilíngue em tempo real. Com um simples clique no seletor de idioma, todo o conteúdo dos produtos gravados em Katakana e Kanji no Japão é traduzido de forma fluida para o português, permitindo que importadores, oficinas e entusiastas de todo o mundo encontrem peças raras sem barreira de idioma.",
-        points: [
-          "Tradução instantânea de termos técnicos automotivos e Katakana para Português.",
-          "Badges de condição dinâmicos: Novo, Seminovo e Usado com distinção por cores luminosas.",
-          "Experiência perfeita tanto para compradores domésticos no Japão quanto para o mercado global."
-        ]
-      },
-      {
-        id: 5,
-        time: "04:16 - 05:10",
-        category: "MÓDULO 5: LIQUIDAÇÃO STRIPE & ESCROW",
-        title: "Operações Financeiras & Divisão de Receita",
-        img: "/presentation_frames_clean/frame_024.jpg",
-        audioMale: "/presentation_audio/slide_5.mp3",
-        audioFemale: "/presentation_audio/slide_f_5.mp3",
-        narration: "Na área administrativa de operações do marketplace, o sistema exibe o fluxo financeiro em Ienes ao vivo. A DAIG opera com custódia segura Escrow via Stripe Connect: a plataforma retém a comissão de dez por cento, cobrindo custos operacionais, e repassa automaticamente noventa por cento do valor da venda ao vendedor cadastrado de forma transparente e blindada contra fraudes.",
-        points: [
-          "Divisão automatizada de comissão: 10% DAIG e 90% repasse direto ao vendedor.",
-          "Custódia em Escrow até a confirmação de entrega da peça pelo comprador.",
-          "Rastreamento de transações em tempo real com controle de status de pagamento e repasse."
-        ]
-      },
-      {
-        id: 6,
-        time: "05:11 - 06:35",
-        category: "MÓDULO 6: HUB SAAS MULTI-TENANT",
-        title: "Centro de Controle de Assinaturas e MRR",
-        img: "/presentation_frames_clean/frame_025.jpg",
-        audioMale: "/presentation_audio/slide_6.mp3",
-        audioFemale: "/presentation_audio/slide_f_6.mp3",
-        narration: "Para consolidar o ecossistema corporativo, a DAIG oferece um Hub SaaS B2B completo para desmanches e lojas parceiras. No painel executivo, acompanhamos o faturamento recorrente mensal, a saúde das assinaturas, os planos Starter, Pro e Enterprise, com taxa de adimplência de cem por cento integrada à cobrança automática do Stripe Billing. Uma solução de alto valuation projetada para liderar o mercado japonês.",
-        points: [
-          "Monitoramento de MRR (Receita Recorrente Mensal) e projeção de ARR em tempo real.",
-          "Gestão unificada de lojas e desmanches credenciados em território japonês.",
-          "Arquitetura escalável multi-tenant pronta para expansão e rodadas de investimento."
+      pt: {
+        headerSubtitle: "Apresentação Oficial & Demonstração",
+        playLabel: "Apresentar",
+        pauseLabel: "Pausar",
+        speakBtn: "Ouvir Slide",
+        prevBtn: "◀ Anterior",
+        nextBtn: "Próximo ▶",
+        pointsHeader: "Pontos Chave",
+        voiceBadge: "Locução Neural Studio HD (BR)",
+        swipeLabel: "Arraste para navegar",
+        voiceOptions: [
+          { value: "neural-male", label: "🎙️ Antônio (Studio HD - Masculino)" },
+          { value: "neural-female", label: "🎙️ Francisca (Studio HD - Feminino)" },
+          { value: "webspeech", label: "🌐 Web Speech (Português)" }
         ]
       }
-    ];
+    };
 
+    let currentLang = 'ja';
     let currentSlide = 0;
     let isPlayingAll = false;
     let synth = window.speechSynthesis;
@@ -834,31 +992,76 @@
     let voiceMode = 'neural-male';
 
     function init() {
-      const stepper = document.getElementById('stepperNav');
-      stepper.innerHTML = '';
-      slides.forEach((s, idx) => {
-        const pill = document.createElement('div');
-        pill.className = `step-pill ${idx === 0 ? 'active' : ''}`;
-        pill.id = `step-pill-${idx}`;
-        pill.innerHTML = `
-          <div class="pill-idx">${idx + 1}</div>
-          <div class="pill-title">${s.title.split('&')[0].trim()}</div>
-        `;
-        pill.onclick = () => goToSlide(idx);
-        stepper.appendChild(pill);
-      });
-
+      updateVoiceOptions();
+      buildStepper();
       renderSlide(0, false);
       setupGesturesAndKeys();
+    }
+
+    function onLangChange() {
+      stopAudio();
+      currentLang = document.getElementById('langSelect').value;
+      
+      const ui = uiStrings[currentLang];
+      document.getElementById('headerSubtitle').textContent = ui.headerSubtitle;
+      document.getElementById('playLabel').textContent = isPlayingAll ? ui.pauseLabel : ui.playLabel;
+      document.getElementById('speakBtnLabel').textContent = ui.speakBtn;
+      document.getElementById('prevBtn').textContent = ui.prevBtn;
+      document.getElementById('nextBtn').textContent = ui.nextBtn;
+      document.getElementById('pointsHeader').textContent = ui.pointsHeader;
+      document.getElementById('voiceBadgeLabel').textContent = ui.voiceBadge;
+      document.getElementById('swipeLabel').textContent = ui.swipeLabel;
+
+      updateVoiceOptions();
+      buildStepper();
+      renderSlide(currentSlide, true);
+    }
+
+    function updateVoiceOptions() {
+      const voiceSelect = document.getElementById('voiceSelect');
+      const options = uiStrings[currentLang].voiceOptions;
+      voiceSelect.innerHTML = '';
+      
+      options.forEach(opt => {
+        const el = document.createElement('option');
+        el.value = opt.value;
+        el.textContent = opt.label;
+        if (opt.value === voiceMode) el.selected = true;
+        voiceSelect.appendChild(el);
+      });
     }
 
     function onVoiceChange() {
       voiceMode = document.getElementById('voiceSelect').value;
     }
 
+    function buildStepper() {
+      const stepper = document.getElementById('stepperNav');
+      stepper.innerHTML = '';
+      const currentSlides = slidesData[currentLang];
+
+      currentSlides.forEach((s, idx) => {
+        const pill = document.createElement('div');
+        pill.className = `step-pill ${idx === currentSlide ? 'active' : ''}`;
+        pill.id = `step-pill-${idx}`;
+        
+        let displayTitle = s.title;
+        if (displayTitle.includes('＆')) displayTitle = displayTitle.split('＆')[0].trim();
+        else if (displayTitle.includes('&')) displayTitle = displayTitle.split('&')[0].trim();
+
+        pill.innerHTML = `
+          <div class="pill-idx">${idx + 1}</div>
+          <div class="pill-title">${displayTitle}</div>
+        `;
+        pill.onclick = () => goToSlide(idx);
+        stepper.appendChild(pill);
+      });
+    }
+
     function renderSlide(idx, animate = true) {
       currentSlide = idx;
-      const s = slides[idx];
+      const currentSlides = slidesData[currentLang];
+      const s = currentSlides[idx];
 
       document.getElementById('slideTime').textContent = s.time;
       document.getElementById('slideImg').src = s.img;
@@ -875,7 +1078,7 @@
         bulletsList.appendChild(li);
       });
 
-      // Update active state
+      // Update active pill state
       document.querySelectorAll('.step-pill').forEach((pill, i) => {
         pill.classList.toggle('active', i === idx);
         if (i === idx) {
@@ -883,11 +1086,11 @@
         }
       });
 
-      document.getElementById('progressBar').style.width = `${((idx + 1) / slides.length) * 100}%`;
+      document.getElementById('progressBar').style.width = `${((idx + 1) / currentSlides.length) * 100}%`;
       document.getElementById('prevBtn').disabled = idx === 0;
-      document.getElementById('nextBtn').disabled = idx === slides.length - 1;
+      document.getElementById('nextBtn').disabled = idx === currentSlides.length - 1;
 
-      // GSAP + Framer Motion Spring Easing
+      // GSAP Animations
       if (animate && window.gsap) {
         gsap.fromTo("#slideImg", 
           { opacity: 0.4, scale: 0.94, filter: 'blur(8px)' }, 
@@ -921,7 +1124,8 @@
     }
 
     function nextSlide() {
-      if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
+      const currentSlides = slidesData[currentLang];
+      if (currentSlide < currentSlides.length - 1) goToSlide(currentSlide + 1);
     }
 
     function setEqActive(active) {
@@ -933,7 +1137,7 @@
       stopAudio();
       setEqActive(true);
 
-      const s = slides[idx];
+      const s = slidesData[currentLang][idx];
 
       if (voiceMode === 'neural-male' || voiceMode === 'neural-female') {
         const audioSrc = voiceMode === 'neural-male' ? s.audioMale : s.audioFemale;
@@ -964,12 +1168,17 @@
       synth.cancel();
 
       const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = 'pt-BR';
+      utter.lang = currentLang === 'ja' ? 'ja-JP' : 'pt-BR';
       utter.rate = 1.0;
 
       const voices = synth.getVoices();
-      const ptVoice = voices.find(v => v.lang.includes('pt-BR') || v.lang.includes('pt_BR')) || voices.find(v => v.lang.includes('pt'));
-      if (ptVoice) utter.voice = ptVoice;
+      if (currentLang === 'ja') {
+        const jaVoice = voices.find(v => v.lang.includes('ja-JP') || v.lang.includes('ja_JP') || v.lang.includes('ja'));
+        if (jaVoice) utter.voice = jaVoice;
+      } else {
+        const ptVoice = voices.find(v => v.lang.includes('pt-BR') || v.lang.includes('pt_BR') || v.lang.includes('pt'));
+        if (ptVoice) utter.voice = ptVoice;
+      }
 
       utter.onend = () => {
         setEqActive(false);
@@ -985,25 +1194,27 @@
     }
 
     function togglePlayAll() {
+      const ui = uiStrings[currentLang];
       if (isPlayingAll) {
         stopAudio();
       } else {
         isPlayingAll = true;
         document.getElementById('playIcon').textContent = '⏸';
-        document.getElementById('playLabel').textContent = 'Pausar';
+        document.getElementById('playLabel').textContent = ui.pauseLabel;
         playSequenceFrom(0);
       }
     }
 
     function playSequenceFrom(idx) {
-      if (!isPlayingAll || idx >= slides.length) {
+      const currentSlides = slidesData[currentLang];
+      if (!isPlayingAll || idx >= currentSlides.length) {
         stopAudio();
         return;
       }
 
       renderSlide(idx, true);
       speakSlide(idx, () => {
-        if (isPlayingAll && idx + 1 < slides.length) {
+        if (isPlayingAll && idx + 1 < currentSlides.length) {
           setTimeout(() => playSequenceFrom(idx + 1), 800);
         } else {
           stopAudio();
@@ -1012,6 +1223,7 @@
     }
 
     function stopAudio() {
+      const ui = uiStrings[currentLang];
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
@@ -1021,7 +1233,7 @@
       setEqActive(false);
       isPlayingAll = false;
       document.getElementById('playIcon').textContent = '▶';
-      document.getElementById('playLabel').textContent = 'Apresentar';
+      document.getElementById('playLabel').textContent = ui.playLabel;
     }
 
     // Touch Swipe & Keyboard Navigation

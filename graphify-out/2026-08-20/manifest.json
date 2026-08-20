@@ -3290,8 +3290,8 @@
     "semantic_hash": ""
   },
   "public/presentation.html": {
-    "mtime": 1787242844.9607253,
-    "ast_hash": "0940c124fc37dc45c57cf89aeed8057d",
+    "mtime": 1787235487.5527222,
+    "ast_hash": "a2103b774d61c9634ed8c83cfbbbb2d1",
     "semantic_hash": ""
   },
   "public/presentation_frames/frame_001.jpg": {
@@ -3757,71 +3757,6 @@
   "public/presentation_audio/slide_f_6.mp3": {
     "mtime": 1786751012.2401135,
     "ast_hash": "2e50d760a0c64d8d9c9f72c9bf16d68c",
-    "semantic_hash": ""
-  },
-  "scripts/generate_japanese_presentation_audio.py": {
-    "mtime": 1787241631.8807256,
-    "ast_hash": "0b0c517a0fefcc3392b74e3eef1da59b",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_1.mp3": {
-    "mtime": 1787242776.7727244,
-    "ast_hash": "c078342935b5ca322de8d99b1a4a7c68",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_2.mp3": {
-    "mtime": 1787242781.7927241,
-    "ast_hash": "bf6c70419beb4cb3f927d7cde1f8db42",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_3.mp3": {
-    "mtime": 1787242788.5527241,
-    "ast_hash": "84e9152cac9f943455c7f3a371e301ab",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_4.mp3": {
-    "mtime": 1787242794.904724,
-    "ast_hash": "cb759d6e9bf2a9e98627e8f83396d9b7",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_5.mp3": {
-    "mtime": 1787242801.1647239,
-    "ast_hash": "92a38d98ab0990ae5bc15621fb246870",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_6.mp3": {
-    "mtime": 1787242807.1127238,
-    "ast_hash": "7ea7687c29521cfd4626477587c2a80f",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_f_1.mp3": {
-    "mtime": 1787242779.6447244,
-    "ast_hash": "e73cca078641b334a3ec607f8f7e6de5",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_f_2.mp3": {
-    "mtime": 1787242786.108724,
-    "ast_hash": "7dac06cb7a2361189a8af3a493ef6e78",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_f_3.mp3": {
-    "mtime": 1787242792.936724,
-    "ast_hash": "6a2f182d96d6adf9ad73b78faa567dd9",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_f_4.mp3": {
-    "mtime": 1787242797.1487238,
-    "ast_hash": "6cd42b7a7aa26b5dfa1a6bbc939d8b9a",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_f_5.mp3": {
-    "mtime": 1787242803.4447238,
-    "ast_hash": "bed547c0adf18ebd21b684c6b5108738",
-    "semantic_hash": ""
-  },
-  "public/presentation_audio/slide_ja_f_6.mp3": {
-    "mtime": 1787242812.6007237,
-    "ast_hash": "292b9346093e459ab3c03c79e6fa4d6f",
     "semantic_hash": ""
   }
 }
