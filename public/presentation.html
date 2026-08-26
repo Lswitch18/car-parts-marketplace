@@ -5,30 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>DAIG — 公式プレゼンテーション & AIデモンストレーション (JA / PT)</title>
   
-  <!-- Google Fonts: Outfit, Noto Sans JP & JetBrains Mono -->
+  <!-- Google Fonts: Outfit, Space Grotesk, Syne & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   
   <!-- GSAP Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
   <style>
     /* ══════════════════════════════════════════════════════════════════
-       DAIG DESIGN SYSTEM — MOBILE-FIRST CYBER NEON & JAPANESE AESTHETICS
+       DAIG DESIGN SYSTEM — CLEAN & LUXURY STAGE GARDEN AESTHETICS
        ══════════════════════════════════════════════════════════════════ */
     :root {
-      --bg-dark: #020204;
-      --card-bg: rgba(6, 8, 14, 0.98);
-      --card-border: rgba(13, 117, 255, 0.16);
-      --primary: #0D75FF;
-      --primary-glow: rgba(13, 117, 255, 0.3);
-      --cyan: #00F0FF;
-      --cyan-glow: rgba(0, 240, 255, 0.25);
-      --purple: #8A2BE2;
-      --green: #00D97E;
-      --text: #F8FAFC;
-      --text-muted: #94A3B8;
+      --bg-dark: #050706;
+      --card-bg: #0c100e;
+      --card-border: rgba(16, 185, 129, 0.3);
+      --primary: #10b981; /* Emerald 500 */
+      --primary-glow: rgba(16, 185, 129, 0.15);
+      --cyan: #34d399; /* Emerald 400 */
+      --cyan-glow: rgba(52, 211, 153, 0.25);
+      --purple: #047857; /* Emerald 700 */
+      --green: #10b981;
+      --text: #ffffff;
+      --text-muted: #9ca3af;
       --spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
@@ -48,8 +48,8 @@
       display: flex;
       flex-direction: column;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(13, 117, 255, 0.08) 0%, transparent 60%),
-        radial-gradient(circle at 50% 100%, rgba(0, 240, 255, 0.04) 0%, transparent 50%);
+        radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 60%),
+        radial-gradient(circle at 50% 100%, rgba(52, 211, 153, 0.03) 0%, transparent 50%);
       background-attachment: fixed;
       overflow-x: hidden;
     }
@@ -124,7 +124,7 @@
 
     .lang-select, .voice-select {
       background: rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(0, 240, 255, 0.25);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       color: var(--cyan);
       padding: 0.55rem 0.9rem;
       border-radius: 9999px;
@@ -132,24 +132,24 @@
       font-weight: 700;
       outline: none;
       cursor: pointer;
-      font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+      font-family: 'Outfit', 'Space Grotesk', sans-serif;
       text-overflow: ellipsis;
       transition: all 0.25s ease;
     }
 
     .lang-select {
-      border-color: rgba(13, 117, 255, 0.4);
+      border-color: rgba(16, 185, 129, 0.4);
       color: #fff;
-      background: rgba(13, 117, 255, 0.12);
+      background: rgba(16, 185, 129, 0.12);
     }
 
     .lang-select:hover, .voice-select:hover {
       border-color: var(--cyan);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.25);
     }
 
     .lang-select option, .voice-select option {
-      background: #0B0E18;
+      background: #0c100e;
       color: #fff;
     }
 
@@ -165,13 +165,13 @@
       align-items: center;
       gap: 0.4rem;
       font-size: 0.82rem;
-      box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.35);
       transition: all 0.25s var(--spring-easing);
       white-space: nowrap;
     }
 
     .btn-main-play:hover {
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.55);
+      box-shadow: 0 0 25px rgba(52, 211, 153, 0.55);
       transform: translateY(-2px);
     }
 
@@ -207,7 +207,7 @@
 
     .step-pill {
       flex: 0 0 auto;
-      background: rgba(14, 18, 28, 0.75);
+      background: rgba(12, 16, 14, 0.75); /* Darker green tint */
       border: 1px solid rgba(255, 255, 255, 0.07);
       padding: 0.65rem 1.1rem;
       border-radius: 14px;
@@ -219,15 +219,15 @@
     }
 
     .step-pill:hover {
-      background: rgba(13, 117, 255, 0.12);
-      border-color: rgba(0, 240, 255, 0.35);
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(52, 211, 153, 0.35);
       transform: translateY(-2px);
     }
 
     .step-pill.active {
-      background: linear-gradient(135deg, rgba(13, 117, 255, 0.4), rgba(0, 240, 255, 0.2));
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(52, 211, 153, 0.15));
       border-color: var(--cyan);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
     }
 
     .pill-idx {
@@ -260,13 +260,13 @@
       color: #fff;
     }
 
-    /* ─── Presentation Stage Card (Cyber Neon Box) ─── */
+    /* ─── Presentation Stage Card (Luxury Box) ─── */
     .stage-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(13, 117, 255, 0.1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.05);
       display: flex;
       flex-direction: column;
       backdrop-filter: blur(16px);
@@ -307,7 +307,7 @@
       font-size: 0.78rem;
       font-weight: 800;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.25);
       z-index: 10;
     }
 
@@ -334,7 +334,7 @@
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      background: linear-gradient(180deg, rgba(14, 18, 28, 0.5) 0%, rgba(6, 8, 14, 0.98) 100%);
+      background: linear-gradient(180deg, rgba(12, 16, 14, 0.5) 0%, rgba(5, 7, 6, 0.98) 100%);
     }
 
     .info-details-grid {
@@ -406,7 +406,7 @@
     /* ─── Narration Box & Equalizer ─── */
     .narration-card {
       background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.15); /* Emerald border */
       border-left: 3px solid var(--cyan);
       border-radius: 14px;
       padding: 1rem;
@@ -499,7 +499,7 @@
     }
 
     .btn-action-speak {
-      background: rgba(0, 240, 255, 0.1);
+      background: rgba(16, 185, 129, 0.1);
       border: 1px solid var(--cyan);
       color: var(--cyan);
       padding: 0.85rem 1.6rem;
@@ -511,13 +511,13 @@
       align-items: center;
       gap: 0.5rem;
       transition: all 0.2s var(--spring-easing);
-      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
       white-space: nowrap;
     }
 
     .btn-action-speak:hover {
-      background: rgba(0, 240, 255, 0.18);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+      background: rgba(16, 185, 129, 0.18);
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.35);
       transform: translateY(-2px);
     }
 
@@ -771,7 +771,7 @@
           img: "/presentation_frames_clean/frame_001.jpg",
           audioMale: "/presentation_audio/slide_ja_1.mp3",
           audioFemale: "/presentation_audio/slide_ja_f_1.mp3",
-          narration: "DAIG公式プレゼンテーションへようこそ。DAIGは、日本初となるマルチモーダルAIを搭載した次世代JDM自動車パーツプラットフォームです。出品画面では、高度なコンピュータビジョンアシスタントにより、技術仕様や型番の手動入力を完全にゼロにします。",
+          narration: "ダイグ公式プレゼンテーションへようこそ。ダイグは、日本初となるマルチモーダルAIを搭載した次世代JDM自動車パーツプラットフォームです。出品画面では、高度なコンピュータビジョンアシスタントにより、技術仕様や型番の手動入力を完全にゼロにします。",
           points: [
             "日本語・ポルトガル語のネイティブ対応とリアルタイム言語切り替え",
             "高性能JDMパーツ専用の写真アップロード＆AI解析エリア",
@@ -816,7 +816,7 @@
           img: "/presentation_frames_clean/frame_019.jpg",
           audioMale: "/presentation_audio/slide_ja_4.mp3",
           audioFemale: "/presentation_audio/slide_ja_f_4.mp3",
-          narration: "DAIGの最大の強みの一つは、リアルタイム多言語ローカライズです。言語セレクターをワンクリックするだけで、日本のカタカナや漢字のパーツ情報が自然なポルトガル語へと瞬時に翻訳されます。世界中のバイヤーやチューニングショップが、言葉の壁なく希少なパーツを見つけることができます。",
+          narration: "ダイグの最大の強みの一つは、リアルタイム多言語ローカライズです。言語セレクターをワンクリックするだけで、日本のカタカナや漢字のパーツ情報が自然なポルトガル語へと瞬時に翻訳されます。世界中のバイヤーやチューニングショップが、言葉の壁なく希少なパーツを見つけることができます。",
           points: [
             "自動車専門用語やカタカナ表記の即時・高精度な多言語翻訳",
             "新品・極美品・中古品の状態をネオンバッジで直感的に視覚化",
@@ -831,7 +831,7 @@
           img: "/presentation_frames_clean/frame_024.jpg",
           audioMale: "/presentation_audio/slide_ja_5.mp3",
           audioFemale: "/presentation_audio/slide_ja_f_5.mp3",
-          narration: "マーケットプレイスの管理画面では、日本円でのリアルタイムな資金フローを確認できます。DAIGはStripe Connectによる安全なエスクロー信託を採用しており、プラットフォームが10%の手数料を保持し、残り90%をセラーへ自動送金することで、不正を防ぎ安全な取引を実現します。",
+          narration: "マーケットプレイスの管理画面では、日本円でのリアルタイムな資金フローを確認できます。ダイグはStripe Connectによる安全なエスクロー信託を採用しており、プラットフォームが10%の手数料を保持し、残り90%をセラーへ自動送金することで、不正を防ぎ安全な取引を実現します。",
           points: [
             "手数料の自動分配：DAIG 10%、セラーへの直接送金 90%",
             "購入者の受取確認まで資金を安全に保護するエスクロー機構",
@@ -846,7 +846,7 @@
           img: "/presentation_frames_clean/frame_025.jpg",
           audioMale: "/presentation_audio/slide_ja_6.mp3",
           audioFemale: "/presentation_audio/slide_ja_f_6.mp3",
-          narration: "法人エコシステムを強化するため、DAIGは自動車解体業者やパートナー店舗向けに包括的なB2B SaaSハブを提供しています。月次経常収益MRR、Starter・Pro・Enterpriseプランの契約状況、回収率100%のStripe Billing連携を一元管理。日本市場をリードする高バリュエーション設計です。",
+          narration: "法人エコシステムを強化するため、ダイグは自動車解体業者やパートナー店舗向けに包括的なB2B SaaSハブを提供しています。月次経常収益MRR、Starter・Pro・Enterpriseプランの契約状況、回収率100%のStripe Billing連携を一元管理。日本市場をリードする高バリュエーション設計です。",
           points: [
             "MRR（月次経常収益）およびARR（年間経常収益）のリアルタイムモニタリング",
             "日本全国の加盟解体業者・専門ショップの統合管理",
