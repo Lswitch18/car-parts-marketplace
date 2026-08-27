@@ -687,6 +687,7 @@
       <div class="screen-container">
         <div class="time-badge" id="slideTime">00:00 - 00:45</div>
         <img src="/presentation_frames_clean/frame_001.jpg" alt="DAIG Slide Preview" class="screen-image" id="slideImg">
+        <video class="screen-image" id="slideVideo" style="display: none;" controls preload="auto"></video>
         <div class="swipe-hint">
           <span>👈</span> <span id="swipeLabel">スワイプで切り替え</span> <span>👉</span>
         </div>
@@ -763,6 +764,22 @@
     // ══════════════════════════════════════════════════════════════════
     const slidesData = {
       ja: [
+        {
+          id: 0,
+          time: "00:00",
+          category: "INTRO: AI 自動編集ビデオ",
+          title: "DAIG 会社紹介ビデオ",
+          img: "",
+          video: "/presentation_video.mp4",
+          audioMale: "",
+          audioFemale: "",
+          narration: "これはAuto-Editor AIによって無音部分が自動的にカットされたプレゼンテーションビデオです。再生ボタンを押してご視聴ください。",
+          points: [
+            "AIによる無音部分の自動カット編集",
+            "スムーズな企業プレゼンテーション",
+            "CLIツールによるバックグラウンド処理"
+          ]
+        },
         {
           id: 1,
           time: "00:00 - 00:45",
@@ -852,9 +869,40 @@
             "日本全国の加盟解体業者・専門ショップの統合管理",
             "資金調達や事業拡大に最適化された高スケーラブルなマルチテナント設計"
           ]
+        },
+        {
+          id: 7,
+          time: "06:36 - 08:00",
+          category: "チュートリアル: AI 自動入力手順",
+          title: "AI搭載自動車パーツ管理・出品",
+          img: "/out_01.jpg",
+          audioMale: "",
+          audioFemale: "",
+          narration: "チュートリアルのステップ： 1. ポータルサイト(daig.jp/saas-gateway)にアクセスし、「部品を出品」またはログイン画面へ進みます。 2. ログイン後、AI Auto Parts & WMSセクションにある「ACESSAR AI AUTO PARTS」をクリックして作業スペースに入ります。 3. JDMパーツ出品画面にて、「今すぐスキャンする」または写真をアップロードすると、AIが商品情報を全自動入力します。",
+          points: [
+            "ポータルサイトへのアクセスとログイン手順",
+            "SaaSワークスペース(AI Auto Parts)の選択",
+            "AI画像スキャンによる出品データの完全自動生成"
+          ]
         }
       ],
       pt: [
+        {
+          id: 0,
+          time: "00:00",
+          category: "INTRO: VÍDEO EDITADO POR IA",
+          title: "Apresentação Institucional DAIG",
+          img: "",
+          video: "/presentation_video.mp4",
+          audioMale: "",
+          audioFemale: "",
+          narration: "Este é um vídeo de apresentação institucional onde todos os silêncios e pausas foram removidos automaticamente utilizando a Inteligência Artificial do Auto-Editor no terminal.",
+          points: [
+            "Corte automatizado de silêncios usando IA",
+            "Integração perfeita via Terminal (CLI)",
+            "Apresentação dinâmica e otimizada"
+          ]
+        },
         {
           id: 1,
           time: "00:00 - 00:45",
@@ -943,6 +991,21 @@
             "Monitoramento de MRR (Receita Recorrente Mensal) e projeção de ARR em tempo real.",
             "Gestão unificada de lojas e desmanches credenciados em território japonês.",
             "Arquitetura escalável multi-tenant pronta para expansão e rodadas de investimento."
+          ]
+        },
+        {
+          id: 7,
+          time: "06:36 - 08:00",
+          category: "TUTORIAL: CADASTRO COM IA",
+          title: "Passo-a-passo: Anúncio com Visão Computacional",
+          img: "/out_01.jpg",
+          audioMale: "",
+          audioFemale: "",
+          narration: "Para realizar o cadastro: 1. Acesse o portal daig.jp/saas-gateway e clique em Listar Peças. 2. Após o login, acesse a área de trabalho clicando no botão azul ACESSAR AI AUTO PARTS. 3. Na tela de criação de anúncio, basta fazer o upload da foto ou escanear, e a IA de visão computacional cuidará de preencher a marca, modelo e todas as especificações técnicas de forma autônoma.",
+          points: [
+            "Acesso à plataforma e autenticação",
+            "Seleção do ambiente de trabalho AI Auto Parts",
+            "Automação total de cadastro de peça utilizando scanner de imagem"
           ]
         }
       ]
@@ -1062,7 +1125,22 @@
       const s = currentSlides[idx];
 
       document.getElementById('slideTime').textContent = s.time;
-      document.getElementById('slideImg').src = s.img;
+      
+      const imgEl = document.getElementById('slideImg');
+      const vidEl = document.getElementById('slideVideo');
+      
+      if (s.video) {
+        imgEl.style.display = 'none';
+        vidEl.style.display = 'block';
+        vidEl.src = s.video;
+        if (animate) vidEl.play();
+      } else {
+        vidEl.style.display = 'none';
+        vidEl.pause();
+        imgEl.style.display = 'block';
+        imgEl.src = s.img;
+      }
+
       document.getElementById('slideCat').innerHTML = `<span>●</span> ${s.category}`;
       document.getElementById('slideTitle').textContent = s.title;
       document.getElementById('slideNarration').textContent = s.narration;
@@ -1090,7 +1168,8 @@
 
       // GSAP Animations
       if (animate && window.gsap) {
-        gsap.fromTo("#slideImg", 
+        const targetMedia = s.video ? "#slideVideo" : "#slideImg";
+        gsap.fromTo(targetMedia, 
           { opacity: 0.4, scale: 0.94, filter: 'blur(8px)' }, 
           { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.55, ease: "power2.out" }
         );
