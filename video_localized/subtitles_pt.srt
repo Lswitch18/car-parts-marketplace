@@ -1,0 +1,104 @@
+1
+00:00:01,139 --> 00:00:07,849
+Bem-vindos à apresentação oficial da DAIG — a primeira plataforma de
+
+2
+00:00:07,849 --> 00:00:14,410
+autopeças JDM do Japão com inteligência artificial multimodal. Olá, esta é
+
+3
+00:00:14,410 --> 00:00:18,940
+uma apresentação oficial da digital AI Garage, DAIG. O intuito do
+
+4
+00:00:18,940 --> 00:00:24,390
+vídeo é mostrar como funciona o fluxo de venda via marketplace
+
+5
+00:00:24,390 --> 00:00:30,059
+DAIG. Esta tela apresentada no vídeo é a página inicial, página
+
+6
+00:00:30,059 --> 00:00:32,060
+pública que será arranqueada para a busca no Google. Na tela
+
+7
+00:00:32,060 --> 00:00:36,060
+de cadastro, temos a opção de acessar com uma conta Google
+
+8
+00:00:36,060 --> 00:00:40,299
+para facilitar o acesso de novo leite. Nesta tela também é
+
+9
+00:00:40,299 --> 00:00:44,979
+possível acessar a política de privacidade da nossa empresa, mostrando quais
+
+10
+00:00:44,979 --> 00:00:48,979
+são as práticas de coleta de informação. Após realizar login, o
+
+11
+00:00:48,979 --> 00:00:50,979
+usuário será direcionado para a tela de catálogo, aonde será possível
+
+12
+00:00:50,979 --> 00:00:55,189
+visualizar quais são as peças que já estão disponíveis no marketplace
+
+13
+00:00:55,189 --> 00:00:57,189
+da DAIG. Para publicar uma peça, basta clicar no ícone de
+
+14
+00:00:57,189 --> 00:01:02,969
+novo anúncio, selecionar a imagem da qual deseja publicar, o usuário
+
+15
+00:01:02,969 --> 00:01:06,969
+terá a opção de cadastrar a peça manualmente no marketplace, ou
+
+16
+00:01:06,969 --> 00:01:10,969
+também utilizar a nossa inteligência artificial, que irá analisar a imagem,
+
+17
+00:01:10,969 --> 00:01:15,269
+irá buscar a descrição correta, buscar a compatibilidade de carros e
+
+18
+00:01:15,269 --> 00:01:20,120
+o preço correto no mercado. Essa função pode agilizar o cadastro
+
+19
+00:01:20,120 --> 00:01:24,120
+em até 90%. Como você pode verificar na imagem, aí atroce
+
+20
+00:01:24,120 --> 00:01:33,129
+os detalhes da peça. O recomendável é o usuário revisar as
+
+21
+00:01:33,129 --> 00:01:35,129
+informações, alterar o que precisa ser alterado, e assim ele poderá
+
+22
+00:01:35,129 --> 00:01:39,370
+publicar facilmente a peça, clicando lá embaixo na opção publicar. Após
+
+23
+00:01:39,370 --> 00:01:41,370
+esses passos, a peça já estará disponível na plataforma para a
+
+24
+00:01:41,370 --> 00:01:46,859
+venda, aonde qualquer cliente poderá localizar facilmente a peça no catálogo
+
+25
+00:01:46,859 --> 00:01:57,340
+inicial. No próximo vídeo, iremos mostrar como entrar em contato com
+
+26
+00:01:57,340 --> 00:02:03,799
+o vendedor para a negociação. A DAIG une tecnologia de ponta com segurança financeira via Stripe Connect Escrow em ienes, entregando uma experiência premium para compradores e vendedores no Japão e no mundo.
+
