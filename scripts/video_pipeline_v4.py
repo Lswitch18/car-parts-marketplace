@@ -45,6 +45,10 @@ def generate_tts(text_file, output_audio):
     print(f"TTS salvo em {output_audio}")
 
 def generate_word_srt(audio_file, srt_file, lang):
+    if os.path.exists(srt_file):
+        print(f"[{srt_file}] Já existe, pulando Whisper.")
+        return
+        
     print(f"Gerando legendas palavra-por-palavra para {audio_file}...")
     model = WhisperModel("small", device="cpu", compute_type="int8")
     segments, info = model.transcribe(audio_file, word_timestamps=True, language=lang)
@@ -93,7 +97,7 @@ def burn_subtitles(audio_file, srt_file, output_video):
         "-map", "0:v:0",
         "-map", "1:a:0",
         "-shortest", # Corta o vídeo para terminar junto com o áudio
-        "-vf", f"subtitles={srt_file}:force_style='{style}'",
+        "-vf", f"crop=1230:754:0:40,subtitles={srt_file}:force_style='{style}'",
         output_video
     ]
     
