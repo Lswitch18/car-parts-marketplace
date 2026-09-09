@@ -768,254 +768,35 @@
     // ══════════════════════════════════════════════════════════════════
     // PRESENTATION DATA (BILINGUAL: JA & PT)
     // ══════════════════════════════════════════════════════════════════
-    const slidesData = {
-      ja: [
-        {
-          id: 0,
-          time: "00:00",
-          category: "INTRO: AI 自動編集ビデオ",
-          title: "DAIG 会社紹介ビデオ",
-          img: "",
-          video: "/presentation_video_ja.mp4",
-          audioMale: "",
-          audioFemale: "",
-          narration: "これはAuto-Editor AIによって無音部分が自動的にカットされたプレゼンテーションビデオです。再生ボタンを押してご視聴ください。",
-          points: [
-            "AIによる無音部分の自動カット編集",
-            "スムーズな企業プレゼンテーション",
-            "CLIツールによるバックグラウンド処理"
-          ]
-        },
-        {
-          id: 1,
-          time: "00:00 - 00:45",
-          category: "モジュール 1: AI自動出品",
-          title: "コンピュータビジョン＆DAIGスマートインターフェース",
-          img: "/presentation_frames_clean/frame_001.jpg",
-          audioMale: "/presentation_audio/slide_ja_1.mp3",
-          audioFemale: "/presentation_audio/slide_ja_f_1.mp3",
-          narration: "ダイグ公式プレゼンテーションへようこそ。ダイグは、日本初となるマルチモーダルAIを搭載した次世代JDM自動車パーツプラットフォームです。出品画面では、高度なコンピュータビジョンアシスタントにより、技術仕様や型番の手動入力を完全にゼロにします。",
-          points: [
-            "日本語・ポルトガル語のネイティブ対応とリアルタイム言語切り替え",
-            "高性能JDMパーツ専用の写真アップロード＆AI解析エリア",
-            "固定価格販売（即決）とライブオークション（競り）の2大販売モード"
-          ]
-        },
-        {
-          id: 2,
-          time: "00:46 - 01:50",
-          category: "モジュール 2: マルチモーダル解析",
-          title: "自動入力＆パーツ認識エンジン",
-          img: "/presentation_frames_clean/frame_016.jpg",
-          audioMale: "/presentation_audio/slide_ja_2.mp3",
-          audioFemale: "/presentation_audio/slide_ja_f_2.mp3",
-          narration: "パーツの写真をアップロードするだけで、スバルSTI純正ブレンボブレーキなどの複雑なパーツも、ニューラルネットワークがわずか3秒で解析します。メーカー名、適合車種、年式、パーツ状態を自動判別し、高精度な技術説明文を瞬時に生成します。",
-          points: [
-            "手入力不要のメーカー・車種・型番の高精度自動特定",
-            "画像解析リバースエンジニアリングによる詳細スペックの自動生成",
-            "軽自動車、JDM、各シャシー型式に対応した適合タグの自動付与"
-          ]
-        },
-        {
-          id: 3,
-          time: "01:51 - 03:00",
-          category: "モジュール 3: ダイナミックJDMカタログ",
-          title: "インタラクティブショーケース＆高性能フィルター",
-          img: "/presentation_frames_clean/frame_004.jpg",
-          audioMale: "/presentation_audio/slide_ja_3.mp3",
-          audioFemale: "/presentation_audio/slide_ja_f_3.mp3",
-          narration: "公開パーツカタログでは、サイバーネオンを基調とした洗練されたデザインで、5,000点以上の在庫を美しく表示します。グリッドとリスト表示の即時切り替え、新着・人気順の並び替え、日産、トヨタ、ホンダ、スバル、HKS、GReddyなど伝説的JDMブランドでの絞り込みが可能です。",
-          points: [
-            "日本車メーカー、性能カテゴリ、日本円（JPY）価格帯による詳細フィルター",
-            "高解像度写真と最適化カードを備えたレスポンシブなグリッド＆リスト表示",
-            "新着順、価格順、人気順の高速ソート"
-          ]
-        },
-        {
-          id: 4,
-          time: "03:01 - 04:15",
-          category: "モジュール 4: リアルタイム多言語ローカライズ",
-          title: "ダイナミック国際化エンジン（日・伯）",
-          img: "/presentation_frames_clean/frame_019.jpg",
-          audioMale: "/presentation_audio/slide_ja_4.mp3",
-          audioFemale: "/presentation_audio/slide_ja_f_4.mp3",
-          narration: "ダイグの最大の強みの一つは、リアルタイム多言語ローカライズです。言語セレクターをワンクリックするだけで、日本のカタカナや漢字のパーツ情報が自然なポルトガル語へと瞬時に翻訳されます。世界中のバイヤーやチューニングショップが、言葉の壁なく希少なパーツを見つけることができます。",
-          points: [
-            "自動車専門用語やカタカナ表記の即時・高精度な多言語翻訳",
-            "新品・極美品・中古品の状態をネオンバッジで直感的に視覚化",
-            "日本国内バイヤーとグローバル愛好家の双方に最適なUXを提供"
-          ]
-        },
-        {
-          id: 5,
-          time: "04:16 - 05:10",
-          category: "モジュール 5: Stripe決済＆エスクロー保護",
-          title: "資金決済オペレーション＆自動レベニューシェア",
-          img: "/presentation_frames_clean/frame_024.jpg",
-          audioMale: "/presentation_audio/slide_ja_5.mp3",
-          audioFemale: "/presentation_audio/slide_ja_f_5.mp3",
-          narration: "マーケットプレイスの管理画面では、日本円でのリアルタイムな資金フローを確認できます。ダイグはStripe Connectによる安全なエスクロー信託を採用しており、プラットフォームが10%の手数料を保持し、残り90%をセラーへ自動送金することで、不正を防ぎ安全な取引を実現します。",
-          points: [
-            "手数料の自動分配：DAIG 10%、セラーへの直接送金 90%",
-            "購入者の受取確認まで資金を安全に保護するエスクロー機構",
-            "決済ステータスと送金履歴のリアルタイムトランザクション追跡"
-          ]
-        },
-        {
-          id: 6,
-          time: "05:11 - 06:35",
-          category: "モジュール 6: マルチテナントSaaSハブ",
-          title: "サブスクリプション＆MRR統括コントロールセンター",
-          img: "/presentation_frames_clean/frame_025.jpg",
-          audioMale: "/presentation_audio/slide_ja_6.mp3",
-          audioFemale: "/presentation_audio/slide_ja_f_6.mp3",
-          narration: "法人エコシステムを強化するため、ダイグは自動車解体業者やパートナー店舗向けに包括的なB2B SaaSハブを提供しています。月次経常収益MRR、Starter・Pro・Enterpriseプランの契約状況、回収率100%のStripe Billing連携を一元管理。日本市場をリードする高バリュエーション設計です。",
-          points: [
-            "MRR（月次経常収益）およびARR（年間経常収益）のリアルタイムモニタリング",
-            "日本全国の加盟解体業者・専門ショップの統合管理",
-            "資金調達や事業拡大に最適化された高スケーラブルなマルチテナント設計"
-          ]
-        },
-        {
-          id: 7,
-          time: "06:36 - 08:00",
-          category: "チュートリアル: AI 自動入力手順",
-          title: "AI搭載自動車パーツ管理・出品",
-          img: "/out_01.jpg",
-          audioMale: "",
-          audioFemale: "",
-          narration: "チュートリアルのステップ： 1. ポータルサイト(daig.jp/saas-gateway)にアクセスし、「部品を出品」またはログイン画面へ進みます。 2. ログイン後、AI Auto Parts & WMSセクションにある「ACESSAR AI AUTO PARTS」をクリックして作業スペースに入ります。 3. JDMパーツ出品画面にて、「今すぐスキャンする」または写真をアップロードすると、AIが商品情報を全自動入力します。",
-          points: [
-            "ポータルサイトへのアクセスとログイン手順",
-            "SaaSワークスペース(AI Auto Parts)の選択",
-            "AI画像スキャンによる出品データの完全自動生成"
-          ]
-        }
+
+    // ── ÚNICO slide de vídeo compartilhado — PT-BR & 日本語 ──
+    const videoSlide = {
+      id: 0,
+      time: "00:00",
+      category_ja: "INTRO: AI 自動編集ビデオ",
+      category_pt: "INTRO: VÍDEO EDITADO POR IA",
+      title_ja: "DAIG 会社紹介ビデオ",
+      title_pt: "Apresentação Institucional DAIG",
+      img: "",
+      video: "/presentation_video.mp4",
+      audioMale: "",
+      audioFemale: "",
+      narration_ja: "これはAuto-Editor AIによって無音部分が自動的にカットされたプレゼンテーションビデオです。再生ボタンを押してご視聴ください。",
+      narration_pt: "Este é um vídeo de apresentação institucional onde todos os silêncios e pausas foram removidos automaticamente utilizando a Inteligência Artificial do Auto-Editor no terminal.",
+      points_ja: [
+        "AIによる無音部分の自動カット編集",
+        "スムーズな企業プレゼンテーション",
+        "CLIツールによるバックグラウンド処理"
       ],
-      pt: [
-        {
-          id: 0,
-          time: "00:00",
-          category: "INTRO: VÍDEO EDITADO POR IA",
-          title: "Apresentação Institucional DAIG",
-          img: "",
-          video: "/presentation_video.mp4",
-          audioMale: "",
-          audioFemale: "",
-          narration: "Este é um vídeo de apresentação institucional onde todos os silêncios e pausas foram removidos automaticamente utilizando a Inteligência Artificial do Auto-Editor no terminal.",
-          points: [
-            "Corte automatizado de silêncios usando IA",
-            "Integração perfeita via Terminal (CLI)",
-            "Apresentação dinâmica e otimizada"
-          ]
-        },
-        {
-          id: 1,
-          time: "00:00 - 00:45",
-          category: "MÓDULO 1: CADASTRO COM IA",
-          title: "Visão Computacional & Interface da DAIG",
-          img: "/presentation_frames_clean/frame_001.jpg",
-          audioMale: "/presentation_audio/slide_1.mp3",
-          audioFemale: "/presentation_audio/slide_f_1.mp3",
-          narration: "Sejam bem-vindos à demonstração oficial da DAIG, a primeira plataforma inteligente de autopeças JDM impulsionada por inteligência artificial multimodal no Japão. Aqui na tela de criação de anúncios, o lojista conta com um assistente de Visão Computacional que elimina totalmente a digitação manual de dados técnicos de peças automotivas.",
-          points: [
-            "Suporte nativo a idioma Japonês e Português do Brasil com troca instantânea.",
-            "Área de upload de fotos de peças de alta performance (JDM Performance Parts).",
-            "Opções entre Venda por Preço Fixo (Kotei Kakaku) ou Leilão ao Vivo (Live Auction)."
-          ]
-        },
-        {
-          id: 2,
-          time: "00:46 - 01:50",
-          category: "MÓDULO 2: PROCESSAMENTO MULTIMODAL",
-          title: "Auto-Preenchimento e Reconhecimento Automático",
-          img: "/presentation_frames_clean/frame_016.jpg",
-          audioMale: "/presentation_audio/slide_2.mp3",
-          audioFemale: "/presentation_audio/slide_f_2.mp3",
-          narration: "Ao fazer o upload da foto de uma peça, como este conjunto de freios Brembo genuíno da Subaru STI, a nossa rede neural analisa texturas, marcas em relevo e especificações em menos de três segundos. A inteligência artificial identifica automaticamente a marca Subaru, o modelo Impreza WRX STI, a condição da peça, os anos de compatibilidade e escreve uma descrição técnica detalhada em português ou japonês.",
-          points: [
-            "Identificação precisa de marca e modelo automotivo sem digitação manual.",
-            "Geração de descrição técnica refinada com aplicação de engenharia reversa visual.",
-            "Geração automática de Tags de Compatibilidade (Kei Cars, JDM e variantes de chassi)."
-          ]
-        },
-        {
-          id: 3,
-          time: "01:51 - 03:00",
-          category: "MÓDULO 3: CATÁLOGO JDM DINÂMICO",
-          title: "Vitrine Interativa & Filtros de Alta Performance",
-          img: "/presentation_frames_clean/frame_004.jpg",
-          audioMale: "/presentation_audio/slide_3.mp3",
-          audioFemale: "/presentation_audio/slide_f_3.mp3",
-          narration: "Ao navegar para o catálogo público de peças, encontramos uma vitrine moderna no padrão Cyber Neon, exibindo mais de cinco mil peças em estoque. O usuário pode alternar instantaneamente entre a visualização em grade e lista, ordenar por novidades ou popularidade, e filtrar por fabricantes lendários japoneses como Nissan, Toyota, Honda, Subaru, GReddy e HKS.",
-          points: [
-            "Filtros segmentados por marcas japonesas, categorias de performance e faixas de preço em Ienes (¥).",
-            "Visualização responsiva em Grade e Lista com cards otimizados e fotos em alta definição.",
-            "Ordenação instantânea por mais recentes, menor preço, maior preço e popularidade."
-          ]
-        },
-        {
-          id: 4,
-          time: "03:01 - 04:15",
-          category: "MÓDULO 4: LOCALIZAÇÃO BILÍNGUE EM TEMPO REAL",
-          title: "Internacionalização Dinâmica (PT ⟷ JA)",
-          img: "/presentation_frames_clean/frame_019.jpg",
-          audioMale: "/presentation_audio/slide_4.mp3",
-          audioFemale: "/presentation_audio/slide_f_4.mp3",
-          narration: "Um dos grandes diferenciais da DAIG é o seu motor de localização bilíngue em tempo real. Com um simples clique no seletor de idioma, todo o conteúdo dos produtos gravados em Katakana e Kanji no Japão é traduzido de forma fluida para o português, permitindo que importadores, oficinas e entusiastas de todo o mundo encontrem peças raras sem barreira de idioma.",
-          points: [
-            "Tradução instantânea de termos técnicos automotivos e Katakana para Português.",
-            "Badges de condição dinâmicos: Novo, Seminovo e Usado com distinção por cores luminosas.",
-            "Experiência perfeita tanto para compradores domésticos no Japão quanto para o mercado global."
-          ]
-        },
-        {
-          id: 5,
-          time: "04:16 - 05:10",
-          category: "MÓDULO 5: LIQUIDAÇÃO STRIPE & ESCROW",
-          title: "Operações Financeiras & Divisão de Receita",
-          img: "/presentation_frames_clean/frame_024.jpg",
-          audioMale: "/presentation_audio/slide_5.mp3",
-          audioFemale: "/presentation_audio/slide_f_5.mp3",
-          narration: "Na área administrativa de operações do marketplace, o sistema exibe o fluxo financeiro em Ienes ao vivo. A DAIG opera com custódia segura Escrow via Stripe Connect: a plataforma retém a comissão de dez por cento, cobrindo custos operacionais, e repassa automaticamente noventa por cento do valor da venda ao vendedor cadastrado de forma transparente e blindada contra fraudes.",
-          points: [
-            "Divisão automatizada de comissão: 10% DAIG e 90% repasse direto ao vendedor.",
-            "Custódia em Escrow até a confirmação de entrega da peça pelo comprador.",
-            "Rastreamento de transações em tempo real com controle de status de pagamento e repasse."
-          ]
-        },
-        {
-          id: 6,
-          time: "05:11 - 06:35",
-          category: "MÓDULO 6: HUB SAAS MULTI-TENANT",
-          title: "Centro de Controle de Assinaturas e MRR",
-          img: "/presentation_frames_clean/frame_025.jpg",
-          audioMale: "/presentation_audio/slide_6.mp3",
-          audioFemale: "/presentation_audio/slide_f_6.mp3",
-          narration: "Para consolidar o ecossistema corporativo, a DAIG oferece um Hub SaaS B2B completo para desmanches e lojas parceiras. No painel executivo, acompanhamos o faturamento recorrente mensal, a saúde das assinaturas, os planos Starter, Pro e Enterprise, com taxa de adimplência de cem por cento integrada à cobrança automática do Stripe Billing. Uma solução de alto valuation projetada para liderar o mercado japonês.",
-          points: [
-            "Monitoramento de MRR (Receita Recorrente Mensal) e projeção de ARR em tempo real.",
-            "Gestão unificada de lojas e desmanches credenciados em território japonês.",
-            "Arquitetura escalável multi-tenant pronta para expansão e rodadas de investimento."
-          ]
-        },
-        {
-          id: 7,
-          time: "06:36 - 08:00",
-          category: "TUTORIAL: CADASTRO COM IA",
-          title: "Passo-a-passo: Anúncio com Visão Computacional",
-          img: "/out_01.jpg",
-          audioMale: "",
-          audioFemale: "",
-          narration: "Para realizar o cadastro: 1. Acesse o portal daig.jp/saas-gateway e clique em Listar Peças. 2. Após o login, acesse a área de trabalho clicando no botão azul ACESSAR AI AUTO PARTS. 3. Na tela de criação de anúncio, basta fazer o upload da foto ou escanear, e a IA de visão computacional cuidará de preencher a marca, modelo e todas as especificações técnicas de forma autônoma.",
-          points: [
-            "Acesso à plataforma e autenticação",
-            "Seleção do ambiente de trabalho AI Auto Parts",
-            "Automação total de cadastro de peça utilizando scanner de imagem"
-          ]
-        }
+      points_pt: [
+        "Corte automatizado de silêncios usando IA",
+        "Integração perfeita via Terminal (CLI)",
+        "Apresentação dinâmica e otimizada"
       ]
     };
+
+    // Arrays vazios — apenas o videoSlide compartilhado é exibido via getCurrentSlides()
+    const slidesData = { ja: [], pt: [] };
 
     const uiStrings = {
       ja: {
@@ -1102,10 +883,23 @@
       voiceMode = document.getElementById('voiceSelect').value;
     }
 
+    // Retorna os slides do idioma atual com o videoSlide compartilhado como primeiro
+    function getCurrentSlides() {
+      // Monta o slide de vídeo com as propriedades do idioma atual
+      const lang = currentLang;
+      const vs = Object.assign({}, videoSlide, {
+        category: lang === 'ja' ? videoSlide.category_ja : videoSlide.category_pt,
+        title:    lang === 'ja' ? videoSlide.title_ja    : videoSlide.title_pt,
+        narration: lang === 'ja' ? videoSlide.narration_ja : videoSlide.narration_pt,
+        points:   lang === 'ja' ? videoSlide.points_ja  : videoSlide.points_pt
+      });
+      return [vs, ...slidesData[lang]];
+    }
+
     function buildStepper() {
       const stepper = document.getElementById('stepperNav');
       stepper.innerHTML = '';
-      const currentSlides = slidesData[currentLang];
+      const currentSlides = getCurrentSlides();
 
       currentSlides.forEach((s, idx) => {
         const pill = document.createElement('div');
@@ -1127,7 +921,7 @@
 
     function renderSlide(idx, animate = true) {
       currentSlide = idx;
-      const currentSlides = slidesData[currentLang];
+      const currentSlides = getCurrentSlides();
       const s = currentSlides[idx];
 
       document.getElementById('slideTime').textContent = s.time;
@@ -1139,6 +933,7 @@
         imgEl.style.display = 'none';
         vidEl.style.display = 'block';
         vidEl.src = s.video;
+        vidEl.currentTime = 0; // reset: evita iniciar no meio do vídeo (bug do browser cache)
         vidEl.poster = s.img || '/presentation_frames_clean/frame_001.jpg';
         if (animate) vidEl.play();
       } else {
@@ -1208,7 +1003,7 @@
     }
 
     function nextSlide() {
-      const currentSlides = slidesData[currentLang];
+      const currentSlides = getCurrentSlides();
       if (currentSlide < currentSlides.length - 1) goToSlide(currentSlide + 1);
     }
 
@@ -1227,7 +1022,7 @@
 
       setEqActive(true);
 
-      const s = slidesData[currentLang][idx];
+      const s = getCurrentSlides()[idx];
 
       if (s.video) {
         const vidEl = document.getElementById('slideVideo');
@@ -1306,7 +1101,7 @@
     }
 
     function playSequenceFrom(idx) {
-      const currentSlides = slidesData[currentLang];
+      const currentSlides = getCurrentSlides();
       if (!isPlayingAll || idx >= currentSlides.length) {
         stopAudio();
         return;
