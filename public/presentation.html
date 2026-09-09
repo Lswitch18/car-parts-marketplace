@@ -87,10 +87,16 @@
     }
 
     .brand-info {
-      display: flex;
+      display: none; /* Hide on small screens to prevent overlap */
       flex-direction: column;
       min-width: 0;
       line-height: 1;
+    }
+
+    @media (min-width: 820px) {
+      .brand-info {
+        display: flex;
+      }
     }
 
     .brand-info h1 {
@@ -770,7 +776,7 @@
           category: "INTRO: AI 自動編集ビデオ",
           title: "DAIG 会社紹介ビデオ",
           img: "",
-          video: "/presentation_video.mp4",
+          video: "/presentation_video_ja.mp4",
           audioMale: "",
           audioFemale: "",
           narration: "これはAuto-Editor AIによって無音部分が自動的にカットされたプレゼンテーションビデオです。再生ボタンを押してご視聴ください。",
@@ -1133,6 +1139,7 @@
         imgEl.style.display = 'none';
         vidEl.style.display = 'block';
         vidEl.src = s.video;
+        vidEl.poster = s.img || '/presentation_frames_clean/frame_001.jpg';
         if (animate) vidEl.play();
       } else {
         vidEl.style.display = 'none';
@@ -1211,10 +1218,26 @@
     }
 
     function speakSlide(idx, onEndCallback) {
-      stopAudio();
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      if (synth) synth.cancel();
+
       setEqActive(true);
 
       const s = slidesData[currentLang][idx];
+
+      if (s.video) {
+        const vidEl = document.getElementById('slideVideo');
+        vidEl.play().catch(e => console.log(e));
+        vidEl.onended = () => {
+          setEqActive(false);
+          if (onEndCallback) onEndCallback();
+        };
+        return;
+      }
 
       if (voiceMode === 'neural-male' || voiceMode === 'neural-female') {
         const audioSrc = voiceMode === 'neural-male' ? s.audioMale : s.audioFemale;
@@ -1307,6 +1330,12 @@
         currentAudio = null;
       }
       if (synth) synth.cancel();
+      
+      const vidEl = document.getElementById('slideVideo');
+      if (vidEl && !vidEl.paused) {
+        vidEl.pause();
+      }
+
       setEqActive(false);
       isPlayingAll = false;
       document.getElementById('playIcon').textContent = '▶';
