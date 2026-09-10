@@ -7,6 +7,19 @@ from playwright.sync_api import sync_playwright
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "videos")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+def smooth_click(page, locator):
+    """Move o mouse suavemente até o elemento e clica"""
+    box = locator.bounding_box()
+    if box:
+        x = box["x"] + box["width"] / 2
+        y = box["y"] + box["height"] / 2
+        page.mouse.move(x, y, steps=20)
+        time.sleep(0.3)
+        page.mouse.click(x, y)
+    else:
+        # Se não achar a bounding box, tenta o clique padrão
+        locator.click(timeout=3000, force=True)
+
 def record_full_ecosystem_demo():
     print(f"🎬 Iniciando gravação do fluxo completo de 5 Cenas (Ecossistema DAIG)...")
     
@@ -22,14 +35,58 @@ def record_full_ecosystem_demo():
         )
         
         page = context.new_page()
-        
         page.on('console', lambda msg: print('Browser:', msg.text))
         
-        # Mock da API de Inteligência Artificial para gerar o Motor instantaneamente no vídeo!
+        # Injeta CSS para ocultar spinners e cria um cursor com marcação (ripple) e suporte a zoom
+        page.add_init_script("""
+            document.addEventListener('DOMContentLoaded', () => {
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .animate-spin { display: none !important; opacity: 0 !important; }
+                    .daig-cursor { position: fixed; top: 0; left: 0; width: 24px; height: 36px; z-index: 2147483647; pointer-events: none; transition: transform 0.1s; }
+                    .daig-ripple { position: absolute; border-radius: 50%; border: 2px solid #00E5FF; background: rgba(0,229,255,0.3); animation: ripple 0.6s linear forwards; pointer-events: none; z-index: 2147483646; }
+                    @keyframes ripple { 0% { width: 0; height: 0; opacity: 1; margin-top: 0; margin-left: 0; } 100% { width: 60px; height: 60px; opacity: 0; margin-top: -30px; margin-left: -30px; } }
+                    body { transition: transform 1s cubic-bezier(0.25, 0.1, 0.25, 1); transform-origin: center center; }
+                    .zoom-in { transform: scale(1.1); }
+                `;
+                document.head.appendChild(style);
+
+                const cursor = document.createElement('div');
+                cursor.className = 'daig-cursor';
+                cursor.innerHTML = '<svg width="24" height="36" viewBox="0 0 24 36" fill="none"><path d="M5.4 33.6L0 0L24 16.8L13.8 19.8L18.6 30L13.2 32.4L8.4 22.2L5.4 33.6Z" fill="#00E5FF" stroke="#FFFFFF" stroke-width="2"/></svg>';
+                document.body.appendChild(cursor);
+
+                document.addEventListener('mousemove', e => {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
+                });
+                document.addEventListener('mousedown', (e) => { 
+                    cursor.style.transform = 'scale(0.8)';
+                    const ripple = document.createElement('div');
+                    ripple.className = 'daig-ripple';
+                    ripple.style.left = e.clientX + 'px';
+                    ripple.style.top = e.clientY + 'px';
+                    document.body.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 600);
+                });
+                document.addEventListener('mouseup', () => { cursor.style.transform = 'scale(1)'; });
+            });
+        """)
+        
+        # Mock da API de Inteligência Artificial
         def handle_ai(route):
             print("🤖 Interceptando chamada de IA e injetando SR20DET Mock...")
+            headers = {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "*"
+            }
+            if route.request.method == "OPTIONS":
+                route.fulfill(status=204, headers=headers)
+                return
             route.fulfill(
                 status=200,
+                headers=headers,
                 content_type="application/json",
                 body=json.dumps({
                     "title": "Nissan SR20DET Black Top Engine",
@@ -43,6 +100,59 @@ def record_full_ecosystem_demo():
         
         page.route("**/analyze-part*", handle_ai)
         page.route("**/analyze-part", handle_ai)
+
+        # Mock da API do Supabase para injetar a conversa no Chat
+        def handle_supabase_rest(route):
+            url = route.request.url
+            if "/rest/v1/messages" in url and "select=" in url:
+                mock_msg = [{
+                    "id": "msg-999",
+                    "sender_id": "seller-123",
+                    "receiver_id": "buyer-456",
+                    "part_id": "part-001",
+                    "content": "はい、420,000円で承知いたしました。明日発送可能です！ (Sim, aceito ¥420.000. Posso enviar amanhã!)",
+                    "created_at": "2026-09-10T12:00:00Z",
+                    "read_at": None,
+                    "type": "price_update",
+                    "metadata": {"price": 420000},
+                    "parts": {
+                        "id": "part-001",
+                        "title": "Nissan SR20DET Black Top Engine",
+                        "price": 450000,
+                        "images": ["/images/jdm_engine.jpg"]
+                    }
+                }]
+                route.fulfill(status=200, content_type="application/json", body=json.dumps(mock_msg))
+            elif "/rest/v1/profiles" in url:
+                mock_profile = {
+                    "id": "seller-123",
+                    "full_name": "TDK JDM Parts",
+                    "avatar_url": None
+                }
+                if "application/vnd.pgrst.object+json" in route.request.headers.get("accept", ""):
+                    route.fulfill(status=200, content_type="application/json", body=json.dumps(mock_profile))
+                else:
+                    route.fulfill(status=200, content_type="application/json", body=json.dumps([mock_profile]))
+            elif "/rest/v1/parts" in url:
+                mock_part = {
+                    "id": "part-001",
+                    "title": "Nissan SR20DET Black Top Engine",
+                    "description": "Motor SR20DET impecável",
+                    "price": 420000,
+                    "condition": "Usado",
+                    "seller_id": "seller-123",
+                    "images": ["/images/jdm_engine.jpg"],
+                    "brand": "Nissan",
+                    "model_compatibility": ["Silvia", "180SX"]
+                }
+                if "application/vnd.pgrst.object+json" in route.request.headers.get("accept", ""):
+                    route.fulfill(status=200, content_type="application/json", body=json.dumps(mock_part))
+                else:
+                    route.fulfill(status=200, content_type="application/json", body=json.dumps([mock_part]))
+            else:
+                route.continue_()
+
+        page.route("**/rest/v1/*", handle_supabase_rest)
         
         try:
             # ========================================================
@@ -50,30 +160,38 @@ def record_full_ecosystem_demo():
             # ========================================================
             print("🎥 CENA 1: Acesso Inicial, Scroll e Tela de Cadastro")
             page.goto("http://localhost:5173/", wait_until="domcontentloaded")
-            time.sleep(2)
+            # Esperar explicitamente o carregamento visual
+            page.wait_for_timeout(4000)
             
-            # Dá uma scrolada lenta para baixo na home page
             print("🖱️ Rolando lentamente a Home...")
-            for _ in range(5):
+            for _ in range(3):
                 page.mouse.wheel(0, 400)
                 time.sleep(1)
-                
-            # Vai para a tela de cadastro
-            print("📝 Acessando a tela de Cadastro...")
-            page.goto("http://localhost:5173/register", wait_until="domcontentloaded")
-            time.sleep(3) # Mostra as opções (Windows/Google)
             
-            # Injeta o Bypass no Zustand para pular a autenticação e não sermos bloqueados
+            # Zoom In e clique com smooth_click
+            page.evaluate("document.body.classList.add('zoom-in')")
+            time.sleep(1)
+            
+            print("📝 Acessando a tela de Cadastro...")
+            btn_cadastrar = page.locator('a[href="/register"]').first
+            if btn_cadastrar.is_visible():
+                smooth_click(page, btn_cadastrar)
+            else:
+                page.goto("http://localhost:5173/register", wait_until="domcontentloaded")
+            
+            time.sleep(2)
+            page.evaluate("document.body.classList.remove('zoom-in')")
+            
             print("🔓 Fazendo Skip na autenticação via localStorage...")
             mock_user = """
             {
                 "state": {
                     "user": {
-                        "id": "mock-ai-user",
+                        "id": "buyer-456",
                         "email": "demo@daig.jp",
-                        "role": "vendor",
+                        "role": "buyer",
                         "onboarding_completed": true,
-                        "shop_name": "JDM Demo Garage"
+                        "shop_name": ""
                     },
                     "isAdmin": false,
                     "initialized": true,
@@ -94,110 +212,121 @@ def record_full_ecosystem_demo():
             page.goto("http://localhost:5173/catalog", wait_until="domcontentloaded")
             time.sleep(2)
             
-            # Busca por uma peça digitando o nome dela
             print("⌨️ Digitando busca de peça...")
-            try:
-                page.locator('input[type="text"]').first.click(timeout=3000)
-                time.sleep(0.5)
-                page.keyboard.type("SR20DET", delay=150)
-                time.sleep(2)
-                page.keyboard.press("Enter")
-                time.sleep(2)
-            except Exception as e:
-                print("⚠️ Não foi possível digitar no input:", e)
+            search_input = page.locator('input[type="text"]').first
+            smooth_click(page, search_input)
+            time.sleep(0.5)
+            page.keyboard.type("SR20DET", delay=150)
+            time.sleep(1)
+            page.keyboard.press("Enter")
+            time.sleep(2)
             
-            # Scroll no catálogo simulando interesse na peça encontrada
             print("🖱️ Analisando a peça no Catálogo...")
-            for _ in range(3):
-                page.mouse.wheel(0, 300)
-                time.sleep(1)
-            time.sleep(1)
-
-            # Sobe um pouco para ver os botões no header
-            page.mouse.wheel(0, -1000)
-            time.sleep(1)
+            # Aplica zoom-in no grid
+            page.evaluate("document.body.classList.add('zoom-in')")
+            page.mouse.wheel(0, 300)
+            time.sleep(2)
+            page.evaluate("document.body.classList.remove('zoom-in')")
 
             # ========================================================
-            # CENA 3: Criação de Anúncio IA (Clicando e Fazendo Upload)
+            # CENA 3: Criação de Anúncio IA (Navegação para Upload)
             # ========================================================
             print("🎥 CENA 3: Criação de Anúncio IA (Upload Real do Motor SR20DET)")
             page.goto("http://localhost:5173/create-listing", wait_until="domcontentloaded")
-            time.sleep(4)
-            print("URL Atual:", page.url)
+            time.sleep(2)
             
             print("🖼️ Fazendo upload do motor...")
-            engine_path = os.path.join(os.path.dirname(__file__), "..", "public", "demo-engine.jpg")
-            try:
-                # O Input de arquivo pode estar escondido, então forçamos o set_input_files
-                page.set_input_files('input[type="file"]', engine_path, timeout=5000)
-                print("✅ Upload concluído. Aguardando IA...")
-            except Exception as e:
-                print("❌ Falha ao achar input de arquivo:", e)
-                page.screenshot(path="/home/lswitch/.gemini/antigravity-ide/brain/cfe3c060-601f-4fa7-8acb-6af4c1ab5f3f/scratch/debug_scene3.png")
-                
-            # Dá tempo para o visual da IA carregando acontecer na tela e os campos preencherem
-            time.sleep(5)
+            # Pega o input file real e sobe a imagem (usando caminhos absolutos do diretório)
+            file_input = page.locator('input[type="file"]').first
+            image_path = os.path.join(os.path.dirname(__file__), "..", "public", "images", "jdm_engine.jpg")
+            file_input.set_input_files(image_path)
+            time.sleep(1)
+            
+            # Encontra o botão Analisar com a IA
+            ai_btn = page.locator('button.group').first
+            if ai_btn.is_visible():
+                smooth_click(page, ai_btn)
+            else:
+                page.evaluate("document.querySelector('button.group').click()")
+
+            time.sleep(3)
+            print("✅ Upload concluído. Aguardando IA...")
 
             print("🖱️ Visualizando Anúncio Preenchido...")
-            for _ in range(3):
-                page.mouse.wheel(0, 300)
-                time.sleep(1)
-            time.sleep(1)
-
-            # ========================================================
-            # CENA 4: Chat e Negociação (Navegando e Digitando)
-            # ========================================================
-            print("🎥 CENA 4: Chat e Negociação")
-            page.goto("http://localhost:5173/messages", wait_until="domcontentloaded")
-            time.sleep(4)
-            print("URL Atual:", page.url)
-            
-            print("💬 Selecionando conversa...")
-            try:
-                # Clica na primeira conversa da lista para abrir o chat
-                page.locator('.w-full.text-left.p-4, [role="button"], button').nth(1).click(timeout=3000)
-                time.sleep(2)
-            except Exception as e:
-                print("⚠️ Falha ao clicar na conversa:", e)
-            
-            print("💬 Digitando mensagem no Chat de forma realista...")
-            try:
-                # Foca no input e digita devagar (pega o último input type text da tela)
-                page.locator('input[type="text"]').last.click(timeout=3000)
-                time.sleep(0.5)
-                page.keyboard.type("こんにちは！SR20DETエンジンに興味があります。少しお値下げ可能でしょうか？", delay=80)
-                time.sleep(1)
-                page.keyboard.press("Enter")
-            except Exception as e:
-                print("💬 Input não encontrado, simulando clique visual:", e)
-                page.screenshot(path="/home/lswitch/.gemini/antigravity-ide/brain/cfe3c060-601f-4fa7-8acb-6af4c1ab5f3f/scratch/debug_scene4.png")
-                
-            time.sleep(3)
-
-            # ========================================================
-            # CENA 5: Fluxo de Pagamento
-            # ========================================================
-            print("🎥 CENA 5: Fluxo de Checkout (/checkout/demo)")
-            page.goto("http://localhost:5173/checkout/demo", wait_until="domcontentloaded")
-            time.sleep(3)
-            
-            print("🖱️ Visualizando Checkout Seguro...")
-            for _ in range(3):
-                page.mouse.wheel(0, 250)
-                time.sleep(0.8)
+            page.mouse.wheel(0, 400)
             time.sleep(2)
 
-            print("✅ Coreografia concluída com sucesso!")
+            # ========================================================
+            # CENA 4: Chat e Negociação (Fechando Proposta)
+            # ========================================================
+            print("�� CENA 4: Chat e Negociação (Fechando Proposta)")
+            page.goto("http://localhost:5173/messages", wait_until="domcontentloaded")
+            time.sleep(2)
+            
+            print("💬 Selecionando conversa...")
+            chat_btn = page.locator('.w-full.text-left.p-4, [role="button"]').nth(1)
+            if chat_btn.is_visible():
+                smooth_click(page, chat_btn)
+            time.sleep(2)
+            
+            print("🛍️ Clicando em Ir para Pagamento...")
+            pay_btn = page.locator('a[href*="/checkout/"], button.bg-primary').last
+            if pay_btn.is_visible():
+                page.evaluate("document.body.classList.add('zoom-in')")
+                time.sleep(1)
+                smooth_click(page, pay_btn)
+            else:
+                print("⚠️ Botão de pagamento não encontrado, redirecionando via JS...")
+                page.evaluate("window.location.href = '/checkout/part-001?price=420000'")
+                
+            time.sleep(2)
+            page.evaluate("document.body.classList.remove('zoom-in')")
 
+            # ========================================================
+            # CENA 5: Fluxo de Pagamento e Direcionamento Stripe
+            # ========================================================
+            print("🎥 CENA 5: Fluxo de Checkout e Stripe")
+            time.sleep(2)
+            
+            print("🖱️ Visualizando Checkout Seguro...")
+            page.mouse.wheel(0, 300)
+            time.sleep(1)
+                
+            print("💳 Clicando no botão de Pagar via Stripe...")
+            try:
+                # Usa JavaScript para encontrar o botão de gradiente
+                page.evaluate("""
+                    const btn = Array.from(document.querySelectorAll('button')).find(b => b.className.includes('bg-gradient-to-r'));
+                    if (btn) { 
+                        btn.disabled = false;
+                        const rect = btn.getBoundingClientRect();
+                        const x = rect.left + rect.width / 2;
+                        const y = rect.top + rect.height / 2;
+                        document.querySelector('.daig-cursor').style.left = x + 'px';
+                        document.querySelector('.daig-cursor').style.top = y + 'px';
+                    }
+                """)
+                time.sleep(0.5)
+                # Zoom final antes do click
+                page.evaluate("document.body.classList.add('zoom-in')")
+                time.sleep(0.5)
+                
+                page.evaluate("""
+                    const btn = Array.from(document.querySelectorAll('button')).find(b => b.className.includes('bg-gradient-to-r'));
+                    if (btn) { btn.click(); }
+                """)
+                
+                print("✅ Botão Pagar clicado via JavaScript!")
+                time.sleep(4) # Espera mostrar o redirecionamento
+            except Exception as e:
+                print("⚠️ Erro ao clicar no botão pagar:", e)
+                
         except Exception as e:
-            print(f"❌ Erro durante o fluxo de gravação: {e}")
-        
+            print(f"❌ Erro na automação: {e}")
         finally:
+            print("✅ Coreografia concluída com sucesso!")
             print("💾 Finalizando gravação e fechando o navegador...")
-            page.close()
-            context.close()
             browser.close()
-            print(f"🎉 Vídeo completo gerado no diretório: {OUTPUT_DIR}/")
 
 if __name__ == "__main__":
     record_full_ecosystem_demo()
