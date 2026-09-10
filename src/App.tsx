@@ -56,6 +56,7 @@ const TermsOfService = lazyWithRetry(() => import('@/modules/storefront/pages/Te
 const PrivacyPolicy = lazyWithRetry(() => import('@/modules/storefront/pages/PrivacyPolicy'))
 const JapanBankAccount = lazyWithRetry(() => import('@/modules/backoffice/pages/JapanBankAccount'))
 const SaasGatewayPage = lazyWithRetry(() => import('@/modules/identity/pages/SaasGatewayPage'))
+const PresentationPage = lazyWithRetry(() => import('@/modules/storefront/pages/PresentationPage'))
 
 function App() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -115,6 +116,7 @@ function App() {
             <Route path="tokushouhou" element={<LegalNotice />} />
             <Route path="terms" element={<TermsOfService />} />
             <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="presentation" element={<PresentationPage />} />
 
             {/* Rotas Protegidas (Exigem Login) */}
             <Route element={<ProtectedRoute />}>

@@ -25,6 +25,7 @@ const Messages = lazyWithRetry(() => import('@/modules/chat/pages/Messages'))
 const PaymentCheckout = lazyWithRetry(() => import('@/modules/transactions/pages/PaymentCheckout'))
 const Auctions = lazyWithRetry(() => import('@/modules/auctions/pages/Auctions'))
 const PartsLookup = lazyWithRetry(() => import('@/modules/parts-catalog/pages/PartsLookup'))
+const PresentationPage = lazyWithRetry(() => import('@/modules/storefront/pages/PresentationPage'))
 
 function StoreApp() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -63,6 +64,7 @@ function StoreApp() {
             <Route path="product/:id" element={<ProductDetail />} />
             <Route path="cars" element={<CarList />} />
             <Route path="auctions" element={<Auctions />} />
+            <Route path="presentation" element={<PresentationPage />} />
             
             {/* Rotas Protegidas */}
             <Route element={<ProtectedRoute />}>
