@@ -30,12 +30,7 @@ def record_full_ecosystem_demo():
             page.goto("http://localhost:5173/", wait_until="networkidle")
             time.sleep(2)
             
-            # Navega um pouco pela home para mostrar a apresentação
-            for _ in range(3):
-                page.mouse.wheel(0, 300)
-                time.sleep(0.5)
-            
-            # Injeta o Bypass no Zustand
+            # Injeta o Bypass no Zustand para não sermos bloqueados em rotas protegidas
             print("🔓 Aplicando Auth Bypass via localStorage (Zustand)...")
             mock_user = """
             {
@@ -44,7 +39,8 @@ def record_full_ecosystem_demo():
                         "id": "mock-ai-user",
                         "email": "demo@daig.jp",
                         "role": "vendor",
-                        "onboarding_completed": true
+                        "onboarding_completed": true,
+                        "shop_name": "JDM Demo Garage"
                     },
                     "isAdmin": false,
                     "initialized": true,
@@ -53,68 +49,98 @@ def record_full_ecosystem_demo():
                 "version": 0
             }
             """
-            # Store it in localStorage under the assumed Zustand persist key
-            # Assuming the store might use 'auth-storage' or similar. We will just use page.goto to trigger reload
             page.evaluate(f"window.localStorage.setItem('auth-storage', JSON.stringify({mock_user}));")
             
             # ========================================================
             # CENA 2: Catálogo Inteligente
             # ========================================================
-            print("🎥 CENA 2: Catálogo de Peças")
+            print("🎥 CENA 2: Catálogo de Peças (Navegando)")
             page.goto("http://localhost:5173/catalog", wait_until="networkidle")
-            time.sleep(3)
+            time.sleep(2)
             
-            # Scroll no catálogo simulando interesse em uma peça
+            # Scroll no catálogo simulando interesse
             print("🖱️ Rolando pelo Catálogo...")
-            for _ in range(6):
-                page.mouse.wheel(0, 250)
-                time.sleep(0.4)
+            for _ in range(4):
+                page.mouse.wheel(0, 300)
+                time.sleep(0.5)
+            time.sleep(1)
+
+            # Sobe um pouco para ver os botões no header ou painel
+            page.mouse.wheel(0, -600)
             time.sleep(1)
 
             # ========================================================
-            # CENA 3: Criação de Anúncio IA
+            # CENA 3: Criação de Anúncio IA (Clicando)
             # ========================================================
-            print("🎥 CENA 3: Criação de Anúncio IA (/create-listing)")
-            page.goto("http://localhost:5173/create-listing", wait_until="networkidle")
+            print("🎥 CENA 3: Criação de Anúncio IA (Clicando no botão Anunciar Peça)")
+            try:
+                # O usuário pediu para o robô clicar para criar o anúncio!
+                # Move o mouse para simular a intenção
+                page.mouse.move(1920 // 2, 1080 // 4, steps=15)
+                # Clica no botão "Anunciar Peça" (seja no Header ou no Catálogo)
+                page.locator("text=Anunciar Peça").first.click()
+            except:
+                page.goto("http://localhost:5173/create-listing")
+                
             time.sleep(3)
+            time.sleep(2)
             
-            # Interação com a interface
+            # Simula tentar usar os botões de Preço Fixo vs Leilão
             try:
                 page.locator("text=Leilão Ao Vivo").click(timeout=3000)
                 time.sleep(1.5)
                 page.locator("text=Preço Fixo").click(timeout=3000)
                 time.sleep(1.5)
             except Exception as e:
-                print("Elemento de IA não encontrado, prosseguindo fluxo visual...")
+                pass
 
-            print("🖱️ Rolando pela tela de Anúncio e visualizando IA...")
-            for _ in range(4):
+            print("🖱️ Rolando pela tela de Anúncio...")
+            for _ in range(3):
                 page.mouse.wheel(0, 300)
                 time.sleep(0.5)
-            time.sleep(2)
+            time.sleep(1)
 
             # ========================================================
-            # CENA 4: Chat e Negociação
+            # CENA 4: Chat e Negociação (Clicando e Digitando)
             # ========================================================
-            print("🎥 CENA 4: Chat e Negociação (/messages)")
-            page.goto("http://localhost:5173/messages", wait_until="networkidle")
-            time.sleep(3)
+            print("🎥 CENA 4: Chat e Negociação (Navegando para as mensagens)")
+            try:
+                # Vamos forçar a navegação pro link do chat no Header
+                page.locator('a[href="/messages"]').first.click()
+            except:
+                page.goto("http://localhost:5173/messages")
             
-            # Movendo mouse pela interface de chat
-            page.mouse.move(1920 // 4, 1080 // 3, steps=30)
+            time.sleep(3)
             time.sleep(2)
-            page.mouse.move(1920 // 2, 1080 // 2, steps=30)
+            
+            # Movendo mouse pela interface de chat e digitando!
+            print("💬 Digitando mensagem no Chat...")
+            page.mouse.move(1920 // 2, 1080 // 2, steps=15)
+            
+            # Clica no meio da tela para focar e digita como se fosse no input do chat
+            page.mouse.click(1920 // 2, 1080 // 2)
+            time.sleep(1)
+            # Usa o teclado para simular que encontrou o input (ou se não tiver focado, é apenas demonstrativo)
+            try:
+                # Tenta focar no input real se achar um placeholder comum
+                page.locator('textarea, input[type="text"]').first.click(timeout=2000)
+            except:
+                pass
+                
+            page.keyboard.type("Olá, estou muito interessado nesse motor SR20DET. Aceita oferta?", delay=50)
+            time.sleep(1)
+            # Tenta clicar no botão de enviar (se for de icone, bater ENTER resolve a simulação visual)
+            page.keyboard.press("Enter")
             time.sleep(2)
 
             # ========================================================
             # CENA 5: Fluxo de Pagamento
             # ========================================================
             print("🎥 CENA 5: Fluxo de Checkout (/checkout/demo)")
-            # Vamos para uma URL simulada de checkout
             page.goto("http://localhost:5173/checkout/demo", wait_until="networkidle")
             time.sleep(3)
             
-            print("🖱️ Visualizando Checkout de Custódia...")
+            print("🖱️ Visualizando Checkout...")
             for _ in range(2):
                 page.mouse.wheel(0, 200)
                 time.sleep(0.5)
@@ -127,7 +153,6 @@ def record_full_ecosystem_demo():
         
         finally:
             print("💾 Finalizando gravação e fechando o navegador...")
-            # Fechar a page e o context vai gerar o .webm
             page.close()
             context.close()
             browser.close()
