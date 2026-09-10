@@ -89,12 +89,15 @@ def record_full_ecosystem_demo():
                 headers=headers,
                 content_type="application/json",
                 body=json.dumps({
-                    "title": "Nissan SR20DET Black Top Engine",
-                    "description": "Motor original Nissan SR20DET Black Top retirado de um 180SX Type X. Turbina original em perfeito estado. Compressão testada e garantida.",
-                    "category": "Motores",
-                    "suggested_price": 450000,
-                    "condition": "Usado - Excelente",
-                    "compatibility_tags": ["Nissan", "Silvia", "180SX", "S13", "SR20DET", "Drift"]
+                    "success": True,
+                    "data": {
+                        "title": "Nissan SR20DET Black Top Engine",
+                        "description": "Motor original Nissan SR20DET Black Top retirado de um 180SX Type X. Turbina original em perfeito estado. Compressão testada e garantida.",
+                        "category": "Motores",
+                        "suggested_price": 450000,
+                        "condition": "Usado - Excelente",
+                        "compatibility_tags": ["Nissan", "Silvia", "180SX", "S13", "SR20DET", "Drift"]
+                    }
                 })
             )
         
@@ -159,9 +162,9 @@ def record_full_ecosystem_demo():
             # CENA 1: Landing Page e Auth Bypass
             # ========================================================
             print("🎥 CENA 1: Acesso Inicial, Scroll e Tela de Cadastro")
-            page.goto("http://localhost:5173/", wait_until="domcontentloaded")
-            # Esperar explicitamente o carregamento visual
-            page.wait_for_timeout(4000)
+            page.goto("http://localhost:4173/", wait_until="domcontentloaded")
+            # Esperar um pouco o carregamento visual antes de agir
+            page.wait_for_timeout(1500)
             
             print("🖱️ Rolando lentamente a Home...")
             for _ in range(3):
@@ -177,9 +180,9 @@ def record_full_ecosystem_demo():
             if btn_cadastrar.is_visible():
                 smooth_click(page, btn_cadastrar)
             else:
-                page.goto("http://localhost:5173/register", wait_until="domcontentloaded")
+                page.goto("http://localhost:4173/register", wait_until="domcontentloaded")
             
-            time.sleep(2)
+            time.sleep(1)
             page.evaluate("document.body.classList.remove('zoom-in')")
             
             print("🔓 Fazendo Skip na autenticação via localStorage...")
@@ -209,8 +212,8 @@ def record_full_ecosystem_demo():
             # CENA 2: Catálogo Inteligente
             # ========================================================
             print("🎥 CENA 2: Catálogo de Peças (Busca e Análise)")
-            page.goto("http://localhost:5173/catalog", wait_until="domcontentloaded")
-            time.sleep(2)
+            page.goto("http://localhost:4173/catalog", wait_until="domcontentloaded")
+            time.sleep(1)
             
             print("⌨️ Digitando busca de peça...")
             search_input = page.locator('input[type="text"]').first
@@ -232,8 +235,8 @@ def record_full_ecosystem_demo():
             # CENA 3: Criação de Anúncio IA (Navegação para Upload)
             # ========================================================
             print("🎥 CENA 3: Criação de Anúncio IA (Upload Real do Motor SR20DET)")
-            page.goto("http://localhost:5173/create-listing", wait_until="domcontentloaded")
-            time.sleep(2)
+            page.goto("http://localhost:4173/create-listing", wait_until="domcontentloaded")
+            time.sleep(1)
             
             print("🖼️ Fazendo upload do motor...")
             # Pega o input file real e sobe a imagem (usando caminhos absolutos do diretório)
@@ -249,25 +252,25 @@ def record_full_ecosystem_demo():
             else:
                 page.evaluate("document.querySelector('button.group').click()")
 
-            time.sleep(3)
+            time.sleep(1.5)
             print("✅ Upload concluído. Aguardando IA...")
 
             print("🖱️ Visualizando Anúncio Preenchido...")
             page.mouse.wheel(0, 400)
-            time.sleep(2)
+            time.sleep(0.5)
 
             # ========================================================
             # CENA 4: Chat e Negociação (Fechando Proposta)
             # ========================================================
-            print("�� CENA 4: Chat e Negociação (Fechando Proposta)")
-            page.goto("http://localhost:5173/messages", wait_until="domcontentloaded")
-            time.sleep(2)
+            print("🎥 CENA 4: Chat e Negociação (Fechando Proposta)")
+            page.goto("http://localhost:4173/messages", wait_until="domcontentloaded")
+            time.sleep(1)
             
             print("💬 Selecionando conversa...")
             chat_btn = page.locator('.w-full.text-left.p-4, [role="button"]').nth(1)
             if chat_btn.is_visible():
                 smooth_click(page, chat_btn)
-            time.sleep(2)
+            time.sleep(0.5)
             
             print("🛍️ Clicando em Ir para Pagamento...")
             pay_btn = page.locator('a[href*="/checkout/"], button.bg-primary').last
@@ -279,14 +282,14 @@ def record_full_ecosystem_demo():
                 print("⚠️ Botão de pagamento não encontrado, redirecionando via JS...")
                 page.evaluate("window.location.href = '/checkout/part-001?price=420000'")
                 
-            time.sleep(2)
+            time.sleep(1)
             page.evaluate("document.body.classList.remove('zoom-in')")
 
             # ========================================================
             # CENA 5: Fluxo de Pagamento e Direcionamento Stripe
             # ========================================================
             print("🎥 CENA 5: Fluxo de Checkout e Stripe")
-            time.sleep(2)
+            time.sleep(1)
             
             print("🖱️ Visualizando Checkout Seguro...")
             page.mouse.wheel(0, 300)
