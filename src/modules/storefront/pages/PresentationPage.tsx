@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Volume2, VolumeX, Play } from 'lucide-react';
 
-import { useI18n } from '../shared/lib/i18n';
+import { useI18n } from '@/modules/shared/lib/i18n';
 
 export default function PresentationPage() {
   const { language } = useI18n();
