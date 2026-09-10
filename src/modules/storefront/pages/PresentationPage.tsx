@@ -1,12 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Volume2, VolumeX, Play } from 'lucide-react';
 
+import { useI18n } from '../shared/lib/i18n';
+
 export default function PresentationPage() {
+  const { language } = useI18n();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Sync audio source based on language
+  const audioSrc = language === 'pt' ? '/audio/pitch_pt.mp3' : '/audio/pitch_ja.mp3';
+  const overlayText = language === 'pt' ? 'Clique para Iniciar a Demonstração' : 'クリックしてデモを開始';
+
+  useEffect(() => {
+    // Se o áudio já estiver tocando e o idioma mudar, o src muda
+    // O navegador deve carregar o novo áudio
+    if (audioRef.current && isPlaying) {
+      const wasPlaying = !audioRef.current.paused;
+      audioRef.current.load();
+      if (wasPlaying) {
+         audioRef.current.play().catch(() => {});
+      }
+    }
+  }, [audioSrc]);
 
   const togglePlay = () => {
     if (videoRef.current && audioRef.current) {
@@ -43,8 +62,8 @@ export default function PresentationPage() {
         <source src="/videos/daig-full-demo.webm" type="video/webm" />
       </video>
 
-      <audio ref={audioRef} loop>
-        <source src="/audio/pitch.mp3" type="audio/mpeg" />
+      <audio ref={audioRef} loop key={audioSrc}>
+        <source src={audioSrc} type="audio/mpeg" />
       </audio>
 
       {/* 
@@ -60,7 +79,7 @@ export default function PresentationPage() {
             <Play className="w-10 h-10 text-white ml-2" />
           </div>
           <h2 className="text-2xl font-bold text-white tracking-widest uppercase animate-pulse">
-            Clique para Iniciar a Demonstração
+            {overlayText}
           </h2>
         </div>
       )}
