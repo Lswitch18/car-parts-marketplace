@@ -48,12 +48,23 @@ def record_full_ecosystem_demo():
             # ========================================================
             # CENA 1: Landing Page e Auth Bypass
             # ========================================================
-            print("🎥 CENA 1: Acesso Inicial e Bypass do Zustand Auth")
-            page.goto("http://localhost:5173/")
+            print("🎥 CENA 1: Acesso Inicial, Scroll e Tela de Cadastro")
+            page.goto("http://localhost:5173/", wait_until="domcontentloaded")
             time.sleep(2)
             
-            # Injeta o Bypass no Zustand para não sermos bloqueados em rotas protegidas
-            print("🔓 Aplicando Auth Bypass via localStorage (Zustand)...")
+            # Dá uma scrolada lenta para baixo na home page
+            print("🖱️ Rolando lentamente a Home...")
+            for _ in range(5):
+                page.mouse.wheel(0, 400)
+                time.sleep(1)
+                
+            # Vai para a tela de cadastro
+            print("📝 Acessando a tela de Cadastro...")
+            page.goto("http://localhost:5173/register", wait_until="domcontentloaded")
+            time.sleep(3) # Mostra as opções (Windows/Google)
+            
+            # Injeta o Bypass no Zustand para pular a autenticação e não sermos bloqueados
+            print("🔓 Fazendo Skip na autenticação via localStorage...")
             mock_user = """
             {
                 "state": {
@@ -74,20 +85,32 @@ def record_full_ecosystem_demo():
             page.evaluate(f"window.localStorage.setItem('auth-storage', JSON.stringify({mock_user}));")
             page.evaluate("window.localStorage.setItem('mock_auth_for_video', 'true');")
             page.evaluate("window.localStorage.setItem('daig-language', 'ja');")
-            page.reload(wait_until="networkidle")
+            page.reload(wait_until="domcontentloaded")
             
             # ========================================================
             # CENA 2: Catálogo Inteligente
             # ========================================================
-            print("🎥 CENA 2: Catálogo de Peças (Navegando)")
-            page.goto("http://localhost:5173/catalog")
+            print("🎥 CENA 2: Catálogo de Peças (Busca e Análise)")
+            page.goto("http://localhost:5173/catalog", wait_until="domcontentloaded")
             time.sleep(2)
             
-            # Scroll no catálogo simulando interesse
-            print("🖱️ Rolando pelo Catálogo...")
-            for _ in range(4):
+            # Busca por uma peça digitando o nome dela
+            print("⌨️ Digitando busca de peça...")
+            try:
+                page.locator('input[type="text"]').first.click(timeout=3000)
+                time.sleep(0.5)
+                page.keyboard.type("SR20DET", delay=150)
+                time.sleep(2)
+                page.keyboard.press("Enter")
+                time.sleep(2)
+            except Exception as e:
+                print("⚠️ Não foi possível digitar no input:", e)
+            
+            # Scroll no catálogo simulando interesse na peça encontrada
+            print("🖱️ Analisando a peça no Catálogo...")
+            for _ in range(3):
                 page.mouse.wheel(0, 300)
-                time.sleep(0.8)
+                time.sleep(1)
             time.sleep(1)
 
             # Sobe um pouco para ver os botões no header
@@ -98,7 +121,7 @@ def record_full_ecosystem_demo():
             # CENA 3: Criação de Anúncio IA (Clicando e Fazendo Upload)
             # ========================================================
             print("🎥 CENA 3: Criação de Anúncio IA (Upload Real do Motor SR20DET)")
-            page.goto("http://localhost:5173/create-listing")
+            page.goto("http://localhost:5173/create-listing", wait_until="domcontentloaded")
             time.sleep(4)
             print("URL Atual:", page.url)
             
@@ -125,7 +148,7 @@ def record_full_ecosystem_demo():
             # CENA 4: Chat e Negociação (Navegando e Digitando)
             # ========================================================
             print("🎥 CENA 4: Chat e Negociação")
-            page.goto("http://localhost:5173/messages")
+            page.goto("http://localhost:5173/messages", wait_until="domcontentloaded")
             time.sleep(4)
             print("URL Atual:", page.url)
             
@@ -139,8 +162,8 @@ def record_full_ecosystem_demo():
             
             print("💬 Digitando mensagem no Chat de forma realista...")
             try:
-                # Foca no input e digita devagar
-                page.locator('input[type="text"][placeholder*="Digite"], input[placeholder*="message"], textarea').first.click(timeout=3000)
+                # Foca no input e digita devagar (pega o último input type text da tela)
+                page.locator('input[type="text"]').last.click(timeout=3000)
                 time.sleep(0.5)
                 page.keyboard.type("こんにちは！SR20DETエンジンに興味があります。少しお値下げ可能でしょうか？", delay=80)
                 time.sleep(1)
@@ -155,7 +178,7 @@ def record_full_ecosystem_demo():
             # CENA 5: Fluxo de Pagamento
             # ========================================================
             print("🎥 CENA 5: Fluxo de Checkout (/checkout/demo)")
-            page.goto("http://localhost:5173/checkout/demo")
+            page.goto("http://localhost:5173/checkout/demo", wait_until="domcontentloaded")
             time.sleep(3)
             
             print("🖱️ Visualizando Checkout Seguro...")

@@ -156,9 +156,9 @@
     "semantic_hash": "1162e1cddd7ea769bcacdd1aa7b4ac72"
   },
   "package.json": {
-    "mtime": 1789004652.7324972,
-    "seen": 1789062850.9827833,
-    "ast_hash": "17d466e071e77909bd24fa8821207e3a",
+    "mtime": 1786716380.684171,
+    "seen": 1788987079.5751345,
+    "ast_hash": "25b110016ac32f3c01d3a6b624783bb2",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -324,9 +324,9 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1789007230.9284952,
-    "seen": 1789062850.982893,
-    "ast_hash": "702d3abf9411f40a56c887f15fc0e9d5",
+    "mtime": 1786745801.7601106,
+    "seen": 1788987079.575222,
+    "ast_hash": "d3aef8c5f2c35dc5c11af5dcff2fa5bd",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
@@ -336,9 +336,9 @@
     "semantic_hash": ""
   },
   "src/StoreApp.tsx": {
-    "mtime": 1789007242.176495,
-    "seen": 1789062850.9828975,
-    "ast_hash": "ffbd4cbadd89e6cb05401accc42878a5",
+    "mtime": 1786028374.6702003,
+    "seen": 1788987079.5752254,
+    "ast_hash": "2236b1b81d538245b1b11e7c1d3e2022",
     "semantic_hash": ""
   },
   "src/components/ui/badge.tsx": {
@@ -510,9 +510,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/components/ProtectedRoute.tsx": {
-    "mtime": 1789060883.476476,
-    "seen": 1789062850.9829938,
-    "ast_hash": "6c05a3b529f82f7b605243656416a055",
+    "mtime": 1786744745.228118,
+    "seen": 1788987079.575349,
+    "ast_hash": "8e24c124f5716245ca362d5891531f5c",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Login.tsx": {
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/store/authStore.ts": {
-    "mtime": 1789061295.09647,
-    "seen": 1789062850.983008,
-    "ast_hash": "2a9cf9555510ab20fb295f39dcd55adf",
+    "mtime": 1785898783.662299,
+    "seen": 1788987079.575361,
+    "ast_hash": "0a86b821dbc7ee560cf1585e1f72de49",
     "semantic_hash": ""
   },
   "src/modules/logistics/__tests__/b2b-contracts-flow.spec.ts": {
@@ -2975,6 +2975,12 @@
     "ast_hash": "52a0a5c59e986dccfb920e5e01b5c526",
     "semantic_hash": ""
   },
+  "public/presentation.html": {
+    "mtime": 1788988702.9684968,
+    "seen": 1788988798.8407948,
+    "ast_hash": "3181a501ac7ad1ea2e2e64311cdac3da",
+    "semantic_hash": ""
+  },
   "public/presentation_frames/frame_001.jpg": {
     "mtime": 1786750134.9161153,
     "seen": 1788987079.5760405,
@@ -3867,96 +3873,6 @@
     "mtime": 1788900814.0980697,
     "seen": 1788987079.576306,
     "ast_hash": "b270c164ba4b7e7202a0397f892f1414",
-    "semantic_hash": ""
-  },
-  "public/vendor/driverjs/driver.js": {
-    "mtime": 1789004819.9964986,
-    "seen": 1789062850.9827945,
-    "ast_hash": "d9a86193066ee2160522e9eb6917217e",
-    "semantic_hash": ""
-  },
-  "scripts/generate_demo_video.py": {
-    "mtime": 1789061190.7444718,
-    "seen": 1789062850.9828298,
-    "ast_hash": "26d22a834b56b91c5f4dc5e0483d22d2",
-    "semantic_hash": ""
-  },
-  "scripts/generate_saas_video.py": {
-    "mtime": 1789007258.468495,
-    "seen": 1789062850.9828362,
-    "ast_hash": "333a7f6c7de4e99513553c802a068e59",
-    "semantic_hash": ""
-  },
-  "scripts/test_site_selenium.py": {
-    "mtime": 1789010002.5724986,
-    "seen": 1789062850.9828694,
-    "ast_hash": "743a49427ce08938183c5b8356eb674c",
-    "semantic_hash": ""
-  },
-  "src/modules/shared/hooks/useDriverTour.ts": {
-    "mtime": 1789004889.5284958,
-    "seen": 1789062850.9831886,
-    "ast_hash": "b9fcd1906394afaa06a93017bd97a79c",
-    "semantic_hash": ""
-  },
-  "src/modules/storefront/pages/PresentationPage.tsx": {
-    "mtime": 1789062318.7084692,
-    "seen": 1789062850.9832406,
-    "ast_hash": "23b063809a22dae1f0ce58ec33b66b69",
-    "semantic_hash": ""
-  },
-  ".agents/skills/gsap-immersive-venue/SKILL.md": {
-    "mtime": 1789007068.0884993,
-    "seen": 1789062850.983563,
-    "ast_hash": "32a399dad730fc6d9894d86b9d0b3a09",
-    "semantic_hash": ""
-  },
-  ".agents/skills/gsap-interactive-web-components/SKILL.md": {
-    "mtime": 1789007068.0964992,
-    "seen": 1789062850.983565,
-    "ast_hash": "2902e573a5a7dcb7459422977c4160dd",
-    "semantic_hash": ""
-  },
-  ".agents/skills/video-web-optimizer/SKILL.md": {
-    "mtime": 1789007068.1004992,
-    "seen": 1789062850.9835825,
-    "ast_hash": "1ffea7f8d22e357436ca7710e0dddcac",
-    "semantic_hash": ""
-  },
-  "public/tour-demo.html": {
-    "mtime": 1789004851.7284992,
-    "seen": 1789062850.9836066,
-    "ast_hash": "e8e48304f70db9d3a7a3cc6ca3c0d7b2",
-    "semantic_hash": ""
-  },
-  "evidencia_teste_selenium.png": {
-    "mtime": 1789010018.484499,
-    "seen": 1789062850.9836776,
-    "ast_hash": "018b7762c23fd0e652f5720507278183",
-    "semantic_hash": ""
-  },
-  "public/demo-engine.jpg": {
-    "mtime": 1789059793.9964733,
-    "seen": 1789062850.983703,
-    "ast_hash": "9053f9ed12f7200c9514a6935c2f64cc",
-    "semantic_hash": ""
-  },
-  "public/audio/pitch_ja.mp3": {
-    "mtime": 1789056747.0884728,
-    "seen": 1789062850.9839609,
-    "ast_hash": "82fc7c04728d2b585fb7f3a56563f3a1",
-    "semantic_hash": ""
-  },
-  "public/audio/pitch_pt.mp3": {
-    "mtime": 1789013772.408477,
-    "seen": 1789062850.983962,
-    "ast_hash": "16a02433551bead70cf62beb228a2a77",
-    "semantic_hash": ""
-  },
-  "public/videos/daig-full-demo.webm": {
-    "mtime": 1789061406.2204702,
-    "seen": 1789062850.9840147,
-    "ast_hash": "4e6258561213405023747a71f669fb97",
     "semantic_hash": ""
   }
 }

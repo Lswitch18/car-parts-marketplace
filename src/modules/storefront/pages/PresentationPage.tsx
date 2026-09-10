@@ -60,6 +60,8 @@ export default function PresentationPage() {
         playsInline
       >
         <source src="/videos/daig-full-demo.webm" type="video/webm" />
+        <track kind="subtitles" src="/videos/demo-pt.vtt" srcLang="pt" label="Português (BR)" default />
+        <track kind="subtitles" src="/videos/demo-ja.vtt" srcLang="ja" label="日本語 (JP)" />
       </video>
 
       <audio ref={audioRef} loop key={audioSrc}>
