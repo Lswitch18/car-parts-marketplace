@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-09-08T17:57:29.307751",
+  "elapsed_min": 12.3,
+  "model": "small",
+  "segments": 26,
+  "lang": "pt",
+  "pt_video": "/home/lswitch/car-parts-marketplce/video_localized/DAIG_Final_PT.mp4",
+  "ja_video": "/home/lswitch/car-parts-marketplce/video_localized/DAIG_Final_JA.mp4"
+}

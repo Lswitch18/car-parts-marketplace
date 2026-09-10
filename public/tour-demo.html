@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAIG Interactive Tour Demo • Driver.js Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/vendor/driverjs/driver.css" />
+  
+  <style>
+    :root {
+      --bg: #070a0f;
+      --bg-card: rgba(14, 20, 31, 0.75);
+      --bg-card-hover: rgba(20, 29, 46, 0.85);
+      --border: rgba(0, 240, 255, 0.15);
+      --border-bright: rgba(0, 240, 255, 0.5);
+      --cyan: #00f0ff;
+      --green: #00e599;
+      --purple: #9d4edd;
+      --pink: #ff007f;
+      --text: #f0f4f8;
+      --text-muted: #8b9bb4;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 240, 255, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 90%, rgba(157, 78, 221, 0.08), transparent);
+    }
+
+    /* ─── Top Header ─── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7, 10, 15, 0.85);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      color: #000;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .select-pill {
+      background: rgba(14, 20, 31, 0.8);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .select-pill:hover {
+      border-color: var(--cyan);
+    }
+
+    .btn-sound {
+      background: rgba(14, 20, 31, 0.8);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-sound.active {
+      color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+    }
+
+    .btn-start-tour {
+      background: linear-gradient(135deg, #00f0ff, #0088ff);
+      color: #050b14;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .btn-start-tour:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 28px rgba(0, 240, 255, 0.55);
+    }
+
+    /* ─── Hero Banner ─── */
+    .hero {
+      text-align: center;
+      padding: 38px 20px 20px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 20px;
+      line-height: 1.6;
+    }
+
+    /* ─── Main Grid Layout ─── */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      opacity: 0.6;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-cyan { background: rgba(0, 240, 255, 0.12); color: var(--cyan); border: 1px solid rgba(0, 240, 255, 0.3); }
+    .badge-green { background: rgba(0, 229, 153, 0.12); color: var(--green); border: 1px solid rgba(0, 229, 153, 0.3); }
+    .badge-purple { background: rgba(157, 78, 221, 0.12); color: var(--purple); border: 1px solid rgba(157, 78, 221, 0.3); }
+
+    /* Specific Card Sizes */
+    .card-scanner { grid-column: span 7; }
+    .card-pricing { grid-column: span 5; }
+    .card-stripe { grid-column: span 6; }
+    .card-wms { grid-column: span 6; }
+    .card-publish { grid-column: span 12; text-align: center; }
+
+    /* Mock Scanner Preview */
+    .scanner-box {
+      border: 2px dashed rgba(0, 240, 255, 0.25);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.25);
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .scanner-icon {
+      font-size: 42px;
+      margin-bottom: 8px;
+      display: inline-block;
+      animation: pulseGlow 3s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { transform: scale(1); filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.3)); }
+      to { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.7)); }
+    }
+
+    .scanner-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      text-align: left;
+    }
+
+    .detail-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .detail-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Mock Pricing */
+    .price-display {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      margin: 12px 0;
+    }
+
+    .price-pills {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .price-tag {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .price-tag:hover {
+      background: rgba(0, 240, 255, 0.08);
+      border-color: var(--cyan);
+    }
+
+    /* Stripe Escrow Split */
+    .escrow-bar {
+      height: 18px;
+      border-radius: 9px;
+      background: #111a28;
+      overflow: hidden;
+      display: flex;
+      margin: 16px 0 12px;
+      border: 1px solid var(--border);
+    }
+
+    .split-seller {
+      width: 90%;
+      background: linear-gradient(90deg, #00f0ff, #00e599);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .split-platform {
+      width: 10%;
+      background: #9d4edd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* ─── DRIVER.JS CYBER NEON THEME OVERRIDES ─── */
+    .driver-popover.daig-cyber-popover {
+      background: rgba(11, 16, 26, 0.95) !important;
+      border: 1px solid rgba(0, 240, 255, 0.5) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 24px rgba(0, 240, 255, 0.25) !important;
+      backdrop-filter: blur(20px) !important;
+      color: #f0f4f8 !important;
+      padding: 22px !important;
+      max-width: 360px !important;
+    }
+
+    .daig-cyber-popover .driver-popover-title {
+      font-family: 'Outfit', sans-serif !important;
+      font-size: 17px !important;
+      font-weight: 800 !important;
+      color: #00f0ff !important;
+      margin-bottom: 8px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+
+    .daig-cyber-popover .driver-popover-description {
+      font-family: 'Outfit', sans-serif !important;
+      font-size: 13.5px !important;
+      line-height: 1.55 !important;
+      color: #b0c4de !important;
+      margin-bottom: 18px !important;
+    }
+
+    .daig-cyber-popover .driver-popover-footer {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding-top: 10px !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .daig-cyber-popover .driver-popover-progress-text {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 11px !important;
+      color: #00e599 !important;
+      font-weight: 700 !important;
+    }
+
+    .daig-cyber-popover .driver-popover-btn {
+      font-family: 'Outfit', sans-serif !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      padding: 7px 16px !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+    }
+
+    .daig-cyber-popover .driver-popover-next-btn {
+      background: linear-gradient(135deg, #00f0ff, #0099ff) !important;
+      color: #050b14 !important;
+      border: none !important;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4) !important;
+    }
+
+    .daig-cyber-popover .driver-popover-next-btn:hover {
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.7) !important;
+    }
+
+    .daig-cyber-popover .driver-popover-prev-btn {
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #a0aec0 !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .daig-cyber-popover .driver-popover-close-btn {
+      color: #718096 !important;
+    }
+
+    .daig-cyber-popover .driver-popover-close-btn:hover {
+      color: #ff007f !important;
+    }
+
+    /* Dynamic Zoom on Active Element */
+    .driver-highlighted-element {
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+      transform: scale(1.035) !important;
+      z-index: 100002 !important;
+      box-shadow: 0 0 32px rgba(0, 240, 255, 0.45) !important;
+      border-color: rgba(0, 240, 255, 0.8) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="brand">
+      <span class="brand-badge">DAIG A.I.</span>
+      <div>
+        <div class="brand-title">JDM Auto Parts Platform</div>
+        <div class="brand-subtitle">Driver.js Interactive Guided Tour</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Language Switch -->
+      <select class="select-pill" id="tourLangSelect" onchange="changeTourLanguage()">
+        <option value="pt" selected>🇧🇷 Português</option>
+        <option value="ja">🇯🇵 日本語</option>
+      </select>
+
+      <!-- Sound FX Toggle -->
+      <button class="btn-sound active" id="btnSoundToggle" onclick="toggleSound()">
+        <span id="soundIcon">🔊</span> <span id="soundLabel">Som: ON</span>
+      </button>
+
+      <!-- Start Tour Button -->
+      <button class="btn-start-tour" id="btnStartTour" onclick="launchTour()">
+        <span>✨</span> <span id="btnStartTourText">Iniciar Tour Interativo</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-badge">⚡ DEMONSTRAÇÃO OFICIAL DRIVER.JS</div>
+    <h1 id="heroTitle">Tour Guiado Interativo & Efeitos de Foco</h1>
+    <p id="heroDesc">
+      Experimente o recurso de spotlight, zoom de câmera nos componentes e navegação passo a passo com design Cyber Neon integrado à plataforma DAIG.
+    </p>
+  </section>
+
+  <!-- ─── MAIN DASHBOARD GRID ─── -->
+  <div class="container">
+    
+    <!-- STEP 1: SCANNER COM IA -->
+    <div class="card card-scanner" id="step-ai-scanner">
+      <div class="card-header">
+        <div class="card-title">
+          <span>📸</span> <span id="titleScanner">1. Scanner de Peça por IA (Computer Vision)</span>
+        </div>
+        <span class="card-badge badge-cyan">MODEL: YOLO-V9</span>
+      </div>
+
+      <div class="scanner-box">
+        <div class="scanner-icon">⚡🏎️</div>
+        <div style="font-weight: 700; color: #fff; margin-bottom: 4px;" id="scannerStatus">Turbo Garrett T28 (Nissan Silvia S15)</div>
+        <div style="font-size: 12px; color: var(--text-muted);" id="scannerSub">Reconhecimento visual com 99.4% de precisão</div>
+      </div>
+
+      <div class="scanner-details">
+        <div class="detail-item">
+          <div class="detail-label">OEM NUMBER</div>
+          <div class="detail-value" style="color: var(--cyan);">14411-91F00</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">CONDITIONS</div>
+          <div class="detail-value" style="color: var(--green);">Semi-Novo (Grade A)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: PRECIFICAÇÃO DINÂMICA -->
+    <div class="card card-pricing" id="step-pricing">
+      <div class="card-header">
+        <div class="card-title">
+          <span>💴</span> <span id="titlePricing">2. Cotação de Mercado JPY</span>
+        </div>
+        <span class="card-badge badge-green">AI REALTIME</span>
+      </div>
+
+      <div style="font-size: 12px; color: var(--text-muted);" id="lblSugestao">Preço Sugerido para Venda Rápida:</div>
+      <div class="price-display">¥ 84,500</div>
+
+      <div class="price-pills">
+        <div class="price-tag">
+          <div style="font-size: 10px; color: var(--text-muted);">MÍNIMO</div>
+          <div style="font-weight: 700; font-size: 13px;">¥ 79,000</div>
+        </div>
+        <div class="price-tag" style="border-color: var(--cyan); background: rgba(0, 240, 255, 0.08);">
+          <div style="font-size: 10px; color: var(--cyan);">RECOMENDADO</div>
+          <div style="font-weight: 700; font-size: 13px; color: var(--cyan);">¥ 84,500</div>
+        </div>
+        <div class="price-tag">
+          <div style="font-size: 10px; color: var(--text-muted);">PREMIUM</div>
+          <div style="font-weight: 700; font-size: 13px;">¥ 92,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: REPASSE STRIPE ESCROW -->
+    <div class="card card-stripe" id="step-stripe">
+      <div class="card-header">
+        <div class="card-title">
+          <span>💳</span> <span id="titleStripe">3. Divisão & Custódia Escrow (Stripe)</span>
+        </div>
+        <span class="card-badge badge-purple">ZENGIN BANK JPY</span>
+      </div>
+
+      <div class="escrow-bar">
+        <div class="split-seller">90% REPASSE LOJISTA (¥ 76,050)</div>
+        <div class="split-platform">10% DAIG</div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+        <span>🔒 Pagamento em Custódia Segura</span>
+        <span style="color: var(--green);">✓ Liberação na Entrega</span>
+      </div>
+    </div>
+
+    <!-- STEP 4: ETIQUETAGEM WMS -->
+    <div class="card card-wms" id="step-wms">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🏷️</span> <span id="titleWms">4. WMS & Etiqueta de Desmanche</span>
+        </div>
+        <span class="card-badge badge-cyan">QR CODE AUTO-PRINT</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px; background: rgba(0,0,0,0.2); padding: 14px; border-radius: 10px;">
+        <div style="background: #fff; color: #000; font-weight: 800; font-size: 24px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 6px;">
+          QR
+        </div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700; color: #fff;">Prateleira B-14 • Rack 02</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Código de Rastreamento Z-91823-JP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: PUBLICAR NO MARKETPLACE -->
+    <div class="card card-publish" id="step-publish">
+      <div style="max-width: 600px; margin: 0 auto;">
+        <div style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;" id="titlePublish">5. Lançamento Oficial no Marketplace</div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;" id="descPublish">
+          Clique abaixo para disponibilizar esta peça para compradores no Japão e importadores em todo o mundo.
+        </p>
+        <button class="btn-start-tour" style="margin: 0 auto; padding: 12px 32px; font-size: 15px;" onclick="simulatePublish()">
+          🚀 Publicar Peça Imediatamente
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── SCRIPT (Driver.js + Logic) ─── -->
+  <script src="/vendor/driverjs/driver.js"></script>
+  <script>
+    // ══════════════════════════════════════════════════════════════════
+    // AUDIO SYNTHESIZER (Web Audio API - Clicks & Chimes)
+    // ══════════════════════════════════════════════════════════════════
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playChime(freq = 600, type = 'sine', duration = 0.12) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('btnSoundToggle');
+      const icon = document.getElementById('soundIcon');
+      const label = document.getElementById('soundLabel');
+      
+      btn.classList.toggle('active', soundEnabled);
+      icon.textContent = soundEnabled ? '🔊' : '🔇';
+      label.textContent = soundEnabled ? 'Som: ON' : 'Som: OFF';
+      if (soundEnabled) playChime(800);
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // TOUR STRINGS (BILINGUAL)
+    // ══════════════════════════════════════════════════════════════════
+    let tourLang = 'pt';
+
+    const tourData = {
+      pt: {
+        steps: [
+          {
+            element: '#step-ai-scanner',
+            popover: {
+              title: '🔍 1. Visão Computacional com IA',
+              description: 'O lojista faz o upload da foto da peça e a inteligência artificial detecta automaticamente o código OEM, marca, modelo compatível e condição de conservação.',
+              side: 'bottom',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-pricing',
+            popover: {
+              title: '💴 2. Cotação Dinâmica em Ienes',
+              description: 'O algoritmo analisa milhares de leilões e anúncios no Japão para sugerir o preço ideal de venda rápida em Ienes (¥), garantindo maior liquidez.',
+              side: 'left',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-stripe',
+            popover: {
+              title: '🛡️ 3. Custódia Segura Escrow (Stripe)',
+              description: '90% do valor da peça é transferido com total segurança ao vendedor após a entrega, enquanto a DAIG retém 10% de comissão de forma automatizada.',
+              side: 'right',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-wms',
+            popover: {
+              title: '🏷️ 4. Gestão WMS & Etiquetas com QR',
+              description: 'Geração imediata de etiquetas térmicas e controle de prateleira para desmanches veiculares cadastrados no ecossistema.',
+              side: 'top',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-publish',
+            popover: {
+              title: '🚀 5. Publicação Instantânea Global',
+              description: 'Com apenas um clique, o produto é propagado para compradores em todo o Japão e entusiastas de JDM ao redor do globo.',
+              side: 'top',
+              align: 'center'
+            }
+          }
+        ],
+        nextBtnText: 'Próximo ▶',
+        prevBtnText: '◀ Anterior',
+        doneBtnText: 'Concluir Tour 🏁',
+        progressText: 'Passo {{current}} de {{total}}'
+      },
+      ja: {
+        steps: [
+          {
+            element: '#step-ai-scanner',
+            popover: {
+              title: '🔍 1. AIコンピュータビジョン認識',
+              description: 'パーツの写真をアップロードするだけで、AIがOEM品番、適合車種、コンディション状態を瞬時に自動判別します。',
+              side: 'bottom',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-pricing',
+            popover: {
+              title: '💴 2. AIダイナミック価格設定',
+              description: '日本国内のオークション市場データを分析し、最速成約を見込める最適販売価格を自動提示します。',
+              side: 'left',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-stripe',
+            popover: {
+              title: '🛡️ 3. Stripeエスクロー安全決済',
+              description: '安心のエスクロー信託により、売上の90%が出品者に確実に支払われ、DAIGプラットフォームが10%の手数料を自動配分します。',
+              side: 'right',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-wms',
+            popover: {
+              title: '🏷️ 4. 解体業特化型 WMS＆QRラベル',
+              description: '倉庫棚番号と紐づいたQRバーコードラベルを即時印刷し、正確な在庫ロケーション管理を実現します。',
+              side: 'top',
+              align: 'start'
+            }
+          },
+          {
+            element: '#step-publish',
+            popover: {
+              title: '🚀 5. ワンクリック即時出品',
+              description: 'ワンクリックで日本全国および世界中のJDMファンへ向けた公式マーケットプレイスに即座に出品されます。',
+              side: 'top',
+              align: 'center'
+            }
+          }
+        ],
+        nextBtnText: '次へ ▶',
+        prevBtnText: '◀ 戻る',
+        doneBtnText: 'ツアー完了 🏁',
+        progressText: 'ステップ {{current}} / {{total}}'
+      }
+    };
+
+    function changeTourLanguage() {
+      tourLang = document.getElementById('tourLangSelect').value;
+      const isJa = tourLang === 'ja';
+      
+      document.getElementById('btnStartTourText').textContent = isJa ? 'ツアーを開始する' : 'Iniciar Tour Interativo';
+      document.getElementById('heroTitle').textContent = isJa ? 'インタラクティブガイドツアー（Driver.js）' : 'Tour Guiado Interativo & Efeitos de Foco';
+      document.getElementById('heroDesc').textContent = isJa 
+        ? 'コンポーネントへのスポットライト、カメラズーム効果、Cyber Neonデザインによる直感的なチュートリアルをご体験ください。'
+        : 'Experimente o recurso de spotlight, zoom de câmera nos componentes e navegação passo a passo com design Cyber Neon integrado à plataforma DAIG.';
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // DRIVER.JS INITIALIZATION & LAUNCH
+    // ══════════════════════════════════════════════════════════════════
+    let driverInstance = null;
+
+    function launchTour() {
+      playChime(520);
+      const data = tourData[tourLang];
+
+      const driverFn = window.driver.js.driver;
+      
+      driverInstance = driverFn({
+        showProgress: true,
+        animate: true,
+        overlayColor: 'rgba(5, 8, 14, 0.85)',
+        stagePadding: 8,
+        stageRadius: 16,
+        popoverClass: 'daig-cyber-popover',
+        nextBtnText: data.nextBtnText,
+        prevBtnText: data.prevBtnText,
+        doneBtnText: data.doneBtnText,
+        progressText: data.progressText,
+        steps: data.steps,
+        onHighlightStarted: (element) => {
+          playChime(640, 'triangle', 0.09);
+        },
+        onDestroyed: () => {
+          playChime(880, 'sine', 0.2);
+        }
+      });
+
+      driverInstance.drive();
+    }
+
+    function simulatePublish() {
+      playChime(900, 'sine', 0.25);
+      alert(tourLang === 'ja' 
+        ? '🎉 パーツがマーケットプレイスに正常に出品されました！' 
+        : '🎉 Peça publicada com sucesso no catálogo global da DAIG!');
+    }
+
+    // Auto-init sound on first user touch/click
+    document.addEventListener('click', () => initAudio(), { once: true });
+  </script>
+</body>
+</html>

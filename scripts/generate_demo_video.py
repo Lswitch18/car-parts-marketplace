@@ -1,5 +1,6 @@
 import os
 import time
+import json
 from playwright.sync_api import sync_playwright
 
 # Setup the output directory (public/videos for site usage)
@@ -22,12 +23,33 @@ def record_full_ecosystem_demo():
         
         page = context.new_page()
         
+        page.on('console', lambda msg: print('Browser:', msg.text))
+        
+        # Mock da API de Inteligência Artificial para gerar o Motor instantaneamente no vídeo!
+        def handle_ai(route):
+            print("🤖 Interceptando chamada de IA e injetando SR20DET Mock...")
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body=json.dumps({
+                    "title": "Nissan SR20DET Black Top Engine",
+                    "description": "Motor original Nissan SR20DET Black Top retirado de um 180SX Type X. Turbina original em perfeito estado. Compressão testada e garantida.",
+                    "category": "Motores",
+                    "suggested_price": 450000,
+                    "condition": "Usado - Excelente",
+                    "compatibility_tags": ["Nissan", "Silvia", "180SX", "S13", "SR20DET", "Drift"]
+                })
+            )
+        
+        page.route("**/analyze-part*", handle_ai)
+        page.route("**/analyze-part", handle_ai)
+        
         try:
             # ========================================================
             # CENA 1: Landing Page e Auth Bypass
             # ========================================================
             print("🎥 CENA 1: Acesso Inicial e Bypass do Zustand Auth")
-            page.goto("http://localhost:5173/", wait_until="networkidle")
+            page.goto("http://localhost:5173/")
             time.sleep(2)
             
             # Injeta o Bypass no Zustand para não sermos bloqueados em rotas protegidas
@@ -50,6 +72,7 @@ def record_full_ecosystem_demo():
             }
             """
             page.evaluate(f"window.localStorage.setItem('auth-storage', JSON.stringify({mock_user}));")
+            page.evaluate("window.localStorage.setItem('mock_auth_for_video', 'true');")
             page.evaluate("window.localStorage.setItem('daig-language', 'ja');")
             page.reload(wait_until="networkidle")
             
@@ -57,95 +80,88 @@ def record_full_ecosystem_demo():
             # CENA 2: Catálogo Inteligente
             # ========================================================
             print("🎥 CENA 2: Catálogo de Peças (Navegando)")
-            page.goto("http://localhost:5173/catalog", wait_until="networkidle")
+            page.goto("http://localhost:5173/catalog")
             time.sleep(2)
             
             # Scroll no catálogo simulando interesse
             print("🖱️ Rolando pelo Catálogo...")
             for _ in range(4):
                 page.mouse.wheel(0, 300)
-                time.sleep(0.5)
+                time.sleep(0.8)
             time.sleep(1)
 
-            # Sobe um pouco para ver os botões no header ou painel
-            page.mouse.wheel(0, -600)
+            # Sobe um pouco para ver os botões no header
+            page.mouse.wheel(0, -1000)
             time.sleep(1)
 
             # ========================================================
-            # CENA 3: Criação de Anúncio IA (Clicando)
+            # CENA 3: Criação de Anúncio IA (Clicando e Fazendo Upload)
             # ========================================================
-            print("🎥 CENA 3: Criação de Anúncio IA (Clicando no botão Anunciar Peça)")
-            try:
-                # O usuário pediu para o robô clicar para criar o anúncio!
-                # Move o mouse para simular a intenção
-                page.mouse.move(1920 // 2, 1080 // 4, steps=15)
-                # Clica no botão "Anunciar Peça" (seja no Header ou no Catálogo)
-                page.locator("text=Anunciar Peça").first.click()
-            except:
-                page.goto("http://localhost:5173/create-listing")
-                
-            time.sleep(3)
-            time.sleep(2)
+            print("🎥 CENA 3: Criação de Anúncio IA (Upload Real do Motor SR20DET)")
+            page.goto("http://localhost:5173/create-listing")
+            time.sleep(4)
+            print("URL Atual:", page.url)
             
-            # Simula tentar usar os botões de Preço Fixo vs Leilão
+            print("🖼️ Fazendo upload do motor...")
+            engine_path = os.path.join(os.path.dirname(__file__), "..", "public", "demo-engine.jpg")
             try:
-                page.locator("text=Leilão Ao Vivo").click(timeout=3000)
-                time.sleep(1.5)
-                page.locator("text=Preço Fixo").click(timeout=3000)
-                time.sleep(1.5)
+                # O Input de arquivo pode estar escondido, então forçamos o set_input_files
+                page.set_input_files('input[type="file"]', engine_path, timeout=5000)
+                print("✅ Upload concluído. Aguardando IA...")
             except Exception as e:
-                pass
+                print("❌ Falha ao achar input de arquivo:", e)
+                page.screenshot(path="/home/lswitch/.gemini/antigravity-ide/brain/cfe3c060-601f-4fa7-8acb-6af4c1ab5f3f/scratch/debug_scene3.png")
+                
+            # Dá tempo para o visual da IA carregando acontecer na tela e os campos preencherem
+            time.sleep(5)
 
-            print("🖱️ Rolando pela tela de Anúncio...")
+            print("🖱️ Visualizando Anúncio Preenchido...")
             for _ in range(3):
                 page.mouse.wheel(0, 300)
-                time.sleep(0.5)
+                time.sleep(1)
             time.sleep(1)
 
             # ========================================================
-            # CENA 4: Chat e Negociação (Clicando e Digitando)
+            # CENA 4: Chat e Negociação (Navegando e Digitando)
             # ========================================================
-            print("🎥 CENA 4: Chat e Negociação (Navegando para as mensagens)")
+            print("🎥 CENA 4: Chat e Negociação")
+            page.goto("http://localhost:5173/messages")
+            time.sleep(4)
+            print("URL Atual:", page.url)
+            
+            print("💬 Selecionando conversa...")
             try:
-                # Vamos forçar a navegação pro link do chat no Header
-                page.locator('a[href="/messages"]').first.click()
-            except:
-                page.goto("http://localhost:5173/messages")
+                # Clica na primeira conversa da lista para abrir o chat
+                page.locator('.w-full.text-left.p-4, [role="button"], button').nth(1).click(timeout=3000)
+                time.sleep(2)
+            except Exception as e:
+                print("⚠️ Falha ao clicar na conversa:", e)
             
-            time.sleep(3)
-            time.sleep(2)
-            
-            # Movendo mouse pela interface de chat e digitando!
-            print("💬 Digitando mensagem no Chat...")
-            page.mouse.move(1920 // 2, 1080 // 2, steps=15)
-            
-            # Clica no meio da tela para focar e digita como se fosse no input do chat
-            page.mouse.click(1920 // 2, 1080 // 2)
-            time.sleep(1)
-            # Usa o teclado para simular que encontrou o input (ou se não tiver focado, é apenas demonstrativo)
+            print("💬 Digitando mensagem no Chat de forma realista...")
             try:
-                # Tenta focar no input real se achar um placeholder comum
-                page.locator('textarea, input[type="text"]').first.click(timeout=2000)
-            except:
-                pass
+                # Foca no input e digita devagar
+                page.locator('input[type="text"][placeholder*="Digite"], input[placeholder*="message"], textarea').first.click(timeout=3000)
+                time.sleep(0.5)
+                page.keyboard.type("こんにちは！SR20DETエンジンに興味があります。少しお値下げ可能でしょうか？", delay=80)
+                time.sleep(1)
+                page.keyboard.press("Enter")
+            except Exception as e:
+                print("💬 Input não encontrado, simulando clique visual:", e)
+                page.screenshot(path="/home/lswitch/.gemini/antigravity-ide/brain/cfe3c060-601f-4fa7-8acb-6af4c1ab5f3f/scratch/debug_scene4.png")
                 
-            page.keyboard.type("Olá, estou muito interessado nesse motor SR20DET. Aceita oferta?", delay=50)
-            time.sleep(1)
-            # Tenta clicar no botão de enviar (se for de icone, bater ENTER resolve a simulação visual)
-            page.keyboard.press("Enter")
-            time.sleep(2)
+            time.sleep(3)
 
             # ========================================================
             # CENA 5: Fluxo de Pagamento
             # ========================================================
             print("🎥 CENA 5: Fluxo de Checkout (/checkout/demo)")
-            page.goto("http://localhost:5173/checkout/demo", wait_until="networkidle")
+            page.goto("http://localhost:5173/checkout/demo")
             time.sleep(3)
             
-            print("🖱️ Visualizando Checkout...")
-            for _ in range(2):
-                page.mouse.wheel(0, 200)
-                time.sleep(0.5)
+            print("🖱️ Visualizando Checkout Seguro...")
+            for _ in range(3):
+                page.mouse.wheel(0, 250)
+                time.sleep(0.8)
             time.sleep(2)
 
             print("✅ Coreografia concluída com sucesso!")

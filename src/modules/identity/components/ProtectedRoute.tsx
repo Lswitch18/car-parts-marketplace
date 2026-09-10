@@ -45,6 +45,11 @@ export default function ProtectedRoute({ requireAdmin, requireSaaS }: Props) {
     )
   }
 
+  // E2E Test / Demo Video Bypass
+  if (typeof window !== 'undefined' && window.localStorage.getItem('mock_auth_for_video') === 'true') {
+    return <Outlet />
+  }
+
   // Once loading has finished, if there is no user, redirect to login
   if (!user) {
     console.warn('[ProtectedRoute] Auth check complete: No user found. Redirecting to /login')

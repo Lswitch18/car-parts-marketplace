@@ -75,10 +75,10 @@ export default function PresentationPage() {
           className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center z-50 cursor-pointer backdrop-blur-sm transition-opacity"
           onClick={togglePlay}
         >
-          <div className="w-24 h-24 rounded-full bg-blue-500/20 border border-blue-400 flex items-center justify-center shadow-[0_0_50px_rgba(59,130,246,0.5)] mb-6 hover:scale-110 transition-transform">
+          <div className="w-24 h-24 rounded-full bg-[#00E5FF]/20 border border-[#00E5FF] flex items-center justify-center shadow-[0_0_50px_rgba(0,229,255,0.5)] mb-6 hover:scale-110 transition-transform">
             <Play className="w-10 h-10 text-white ml-2" />
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-widest uppercase animate-pulse">
+          <h2 className="text-2xl font-bold text-white tracking-widest uppercase animate-pulse drop-shadow-[0_0_15px_rgba(0,229,255,0.8)]">
             {overlayText}
           </h2>
         </div>
@@ -88,12 +88,12 @@ export default function PresentationPage() {
       {isPlaying && (
         <button 
           onClick={toggleMute}
-          className="absolute bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-black/50 border border-white/10 flex items-center justify-center backdrop-blur-md hover:bg-black/80 transition-colors"
+          className="absolute bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-black/50 border border-white/10 flex items-center justify-center backdrop-blur-md hover:bg-black/80 hover:border-[#00E5FF] transition-all shadow-[0_0_15px_rgba(0,229,255,0)] hover:shadow-[0_0_20px_rgba(0,229,255,0.4)]"
         >
           {isMuted ? (
             <VolumeX className="w-5 h-5 text-gray-400" />
           ) : (
-            <Volume2 className="w-5 h-5 text-blue-400" />
+            <Volume2 className="w-5 h-5 text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
           )}
         </button>
       )}

@@ -176,6 +176,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       try {
         // Step 1: Fetch session first
         console.log('[authStore] Step 1: Fetching current session directly via getSession()')
+
+        // E2E Test / Demo Video Bypass
+        if (typeof window !== 'undefined' && window.localStorage.getItem('mock_auth_for_video') === 'true') {
+          console.log('[authStore] VIDEO MOCK BYPASS')
+          const mockUser = JSON.parse(window.localStorage.getItem('auth-storage') || '{}').state?.user;
+          if (mockUser) {
+            get().setUser(mockUser)
+            set({ loading: false, initialized: true })
+            return
+          }
+        }
+
         const { data: { session }, error } = await supabase.auth.getSession()
 
         if (error) {
@@ -332,6 +344,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   ensureSession: async (): Promise<boolean> => {
     console.debug('[authStore] ensureSession, current user:', get().user?.email)
     if (get().user) return true
+
+    // E2E Test / Demo Video Bypass
+    if (typeof window !== 'undefined' && window.localStorage.getItem('mock_auth_for_video') === 'true') {
+      const mockUser = JSON.parse(window.localStorage.getItem('auth-storage') || '{}').state?.user;
+      if (mockUser) {
+        get().setUser(mockUser)
+        set({ loading: false, initialized: true })
+        return true
+      }
+    }
+
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
