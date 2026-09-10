@@ -8,6 +8,8 @@ interface Props {
   requireSaaS?: boolean
 }
 
+import BrandLoader from '@/modules/shared/components/BrandLoader'
+
 export default function ProtectedRoute({ requireAdmin, requireSaaS }: Props) {
   const { user, loading, initialized, isAdmin, ensureSession, initialize } = useAuthStore()
   const attempted = useRef(false)
@@ -37,12 +39,7 @@ export default function ProtectedRoute({ requireAdmin, requireSaaS }: Props) {
 
   // While loading, we MUST show the spinner and NEVER redirect to login
   if (!initialized || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-        <p className="ml-4 text-sm text-gray-400">Verificando sessão...</p>
-      </div>
-    )
+    return <BrandLoader text="Verificando sessão..." />
   }
 
   // E2E Test / Demo Video Bypass
