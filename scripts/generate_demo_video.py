@@ -50,6 +50,8 @@ def record_full_ecosystem_demo():
             }
             """
             page.evaluate(f"window.localStorage.setItem('auth-storage', JSON.stringify({mock_user}));")
+            page.evaluate("window.localStorage.setItem('daig-language', 'pt');")
+            page.reload(wait_until="networkidle")
             
             # ========================================================
             # CENA 2: Catálogo Inteligente
