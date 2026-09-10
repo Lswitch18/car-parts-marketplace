@@ -76,11 +76,11 @@ function CustomCursor() {
     <>
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 w-2 h-2 bg-emerald-400 rounded-full pointer-events-none z-[10000] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
+        className="fixed top-0 left-0 w-2 h-2 bg-blue-400 rounded-full pointer-events-none z-[10000] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
       />
       <div
         ref={followerRef}
-        className="fixed top-0 left-0 w-10 h-10 border border-emerald-400/50 rounded-full pointer-events-none z-[10000] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
+        className="fixed top-0 left-0 w-10 h-10 border border-blue-400/50 rounded-full pointer-events-none z-[10000] mix-blend-difference -translate-x-1/2 -translate-y-1/2"
       />
     </>
   );
@@ -130,7 +130,7 @@ export default function PresentationPage() {
 
     tl.from('.hero-logo', { scale: 3, opacity: 0, filter: 'blur(20px)', duration: 1 });
     tl.from('.hero-tagline', { y: 100, opacity: 0, duration: 0.8 }, '-=0.3');
-    tl.to('.hero-video-overlay', { opacity: 0.6, duration: 1 }, '-=0.5');
+    tl.to('.hero-video-overlay', { opacity: 0.75, duration: 1 }, '-=0.5'); // Slightly darker overlay for better visibility of the video
     tl.from('.hero-cta', { y: 60, opacity: 0, scale: 0.8, duration: 0.6, ease: 'back.out(1.7)' });
 
     // Text Reveals
@@ -166,21 +166,21 @@ export default function PresentationPage() {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="bg-black text-white min-h-screen overflow-hidden font-outfit relative">
+    <div ref={containerRef} className="bg-[#020617] text-white min-h-screen overflow-hidden font-outfit relative">
       <CustomCursor />
       
       {/* Film Grain & Vignette */}
       <div className="fixed inset-0 z-50 pointer-events-none opacity-[0.04] bg-[url('data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E')]"></div>
-      <div className="fixed inset-0 z-40 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(0,0,0,0.6)_100%)]"></div>
+      <div className="fixed inset-0 z-40 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(0,0,0,0.8)_100%)]"></div>
 
       {/* Header Controls */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-black/50 backdrop-blur-md border-b border-white/10">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-black/50 backdrop-blur-md border-b border-blue-500/10">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="DAIG" className="w-10 h-10 rounded-full" />
           <h1 className="text-xl font-black tracking-widest uppercase">DAIG</h1>
         </div>
         <select 
-          className="bg-emerald-900/30 border border-emerald-500/50 text-emerald-400 px-4 py-2 rounded-full text-sm font-bold outline-none cursor-pointer hover:border-emerald-400 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all"
+          className="bg-blue-950/30 border border-blue-500/50 text-blue-400 px-4 py-2 rounded-full text-sm font-bold outline-none cursor-pointer hover:border-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all"
           value={lang}
           onChange={(e) => setLang(e.target.value as 'pt' | 'ja')}
         >
@@ -195,14 +195,13 @@ export default function PresentationPage() {
           className="absolute inset-0 w-full h-full object-cover"
           autoPlay muted loop playsInline
         >
-          {/* We use an existing video or a placeholder for background */}
-          <source src="/presentation_video.mp4" type="video/mp4" />
+          <source src="/videos/daig-full-demo.webm" type="video/webm" />
         </video>
         <div className="hero-video-overlay absolute inset-0 bg-black/80" />
         
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
           <div className="hero-logo mb-6">
-            <h1 className="text-8xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-emerald-500">
+            <h1 className="text-8xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-blue-500">
               DAIG
             </h1>
           </div>
@@ -211,7 +210,7 @@ export default function PresentationPage() {
           </h2>
           <button 
             data-cursor-hover 
-            className="hero-cta px-10 py-4 bg-gradient-to-r from-emerald-500 to-emerald-400 text-black font-black uppercase tracking-widest rounded-full shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:shadow-[0_0_50px_rgba(52,211,153,0.6)] hover:scale-105 transition-all duration-300"
+            className="hero-cta px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-black uppercase tracking-widest rounded-full shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:shadow-[0_0_50px_rgba(96,165,250,0.6)] hover:scale-105 transition-all duration-300"
             onClick={() => {
               window.scrollTo({ top: window.innerHeight * 1.5, behavior: 'smooth' });
             }}
@@ -222,11 +221,11 @@ export default function PresentationPage() {
       </section>
 
       {/* Module 1: AI Features */}
-      <section className="module-1-section relative min-h-screen flex items-center py-32 px-6 md:px-20 bg-[#050706]">
+      <section className="module-1-section relative min-h-screen flex items-center py-32 px-6 md:px-20 bg-[#020617]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div className="z-10">
-            <div className="text-emerald-500 font-mono text-sm font-bold tracking-widest uppercase mb-4 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
+            <div className="text-blue-500 font-mono text-sm font-bold tracking-widest uppercase mb-4 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6]"></span>
               {t.module1}
             </div>
             <h3 className="reveal-title text-5xl md:text-6xl font-black leading-tight mb-8">
@@ -238,30 +237,30 @@ export default function PresentationPage() {
             <ul className="space-y-4">
               {t.bullets1.map((bullet, idx) => (
                 <li key={idx} className="bullet-item flex items-center gap-4 text-lg font-medium text-gray-200">
-                  <span className="text-emerald-500 font-black text-xl">✦</span> {bullet}
+                  <span className="text-blue-500 font-black text-xl">✦</span> {bullet}
                 </li>
               ))}
             </ul>
           </div>
           
-          <div className="relative z-10 w-full aspect-square rounded-3xl overflow-hidden border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.1)] group">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-black/80 z-10 mix-blend-overlay group-hover:opacity-50 transition-opacity duration-700"></div>
+          <div className="relative z-10 w-full aspect-square rounded-3xl overflow-hidden border border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.1)] group">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-black/80 z-10 mix-blend-overlay group-hover:opacity-50 transition-opacity duration-700"></div>
             <img src="/presentation_frames_clean/frame_001.jpg" alt="DAIG AI Vision" className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000 ease-out" onError={(e) => e.currentTarget.src = 'https://images.unsplash.com/photo-1617195737496-bc30194e3a19?auto=format&fit=crop&q=80&w=800'} />
           </div>
         </div>
       </section>
 
       {/* Module 2: SaaS Multi-tenant */}
-      <section className="relative min-h-screen flex items-center py-32 px-6 md:px-20 bg-gradient-to-b from-[#050706] to-[#0a0f0d]">
+      <section className="relative min-h-screen flex items-center py-32 px-6 md:px-20 bg-gradient-to-b from-[#020617] to-[#04091a]">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          <div className="relative z-10 w-full aspect-video rounded-3xl overflow-hidden border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.1)] group md:order-1 order-2">
+          <div className="relative z-10 w-full aspect-video rounded-3xl overflow-hidden border border-blue-500/20 shadow-[0_0_50px_rgba(59,130,246,0.1)] group md:order-1 order-2">
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-black/80 z-10 mix-blend-overlay group-hover:opacity-50 transition-opacity duration-700"></div>
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800" alt="SaaS Dashboard" className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000 ease-out" />
           </div>
           
           <div className="z-10 md:order-2 order-1">
-            <div className="text-emerald-500 font-mono text-sm font-bold tracking-widest uppercase mb-4 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
+            <div className="text-blue-500 font-mono text-sm font-bold tracking-widest uppercase mb-4 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_#3b82f6]"></span>
               {t.module2}
             </div>
             <h3 className="text-5xl md:text-6xl font-black leading-tight mb-8">
