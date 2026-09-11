@@ -99,7 +99,9 @@ def flow_landing_hero(page):
     """Cena 0: Landing Page Hero 360"""
     page.goto(BASE_URL)
     _wait_loaded(page)
-    page.wait_for_timeout(2000)
+    
+    # Dá tempo extra para o modelo 3D WebGL carregar na tela inteira
+    page.wait_for_timeout(4500)
     
     # Simula interação no centro da tela para rotacionar o carro 360
     page.mouse.move(page.viewport_size['width'] / 2, page.viewport_size['height'] / 2)
@@ -108,7 +110,7 @@ def flow_landing_hero(page):
     page.wait_for_timeout(1000)
     page.mouse.up()
     
-    page.wait_for_timeout(2000)
+    page.wait_for_timeout(500)
 
 def flow_register(page):
     """Cena 0: Cadastro do Usuário."""

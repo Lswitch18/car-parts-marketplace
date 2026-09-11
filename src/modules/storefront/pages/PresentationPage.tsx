@@ -100,9 +100,7 @@ const DemoVideoPlayer: React.FC = () => {
         audio.currentTime = video.currentTime;
       }
       
-      if (playing && audio.paused) {
-        audio.play().catch(e => console.error(e));
-      } else if (!playing && !audio.paused) {
+      if (!playing && !audio.paused) {
         audio.pause();
       }
     };
@@ -131,9 +129,18 @@ const DemoVideoPlayer: React.FC = () => {
 
   const toggle = () => {
     const v = videoRef.current;
+    const a = audioRef.current;
     if (!v) return;
-    if (v.paused) { v.play(); setPlaying(true); }
-    else { v.pause(); setPlaying(false); }
+    if (v.paused) { 
+        v.play(); 
+        if (a && voiceLang !== 'off') a.play().catch(e => console.error(e));
+        setPlaying(true); 
+    }
+    else { 
+        v.pause(); 
+        if (a) a.pause();
+        setPlaying(false); 
+    }
   };
 
   const onTimeUpdate = () => {
