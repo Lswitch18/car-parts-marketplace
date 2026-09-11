@@ -7,38 +7,41 @@ Grava o vídeo completo de demonstração da plataforma DAIG.
 import os
 import time
 import subprocess
+import argparse
 from playwright.sync_api import sync_playwright
 
 BASE_URL = "http://localhost:5173"
 OUT_DIR = "public/videos"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-AUTH_INIT = """
-(() => {
-  const mockUser = {
-    id: "demo-user-123",
-    name: "Tanaka Hiroshi",
-    full_name: "Tanaka Hiroshi",
-    role: "buyer",
-    email: "tanaka@daig.jp",
-    avatar_url: null,
-    currency: "JPY",
-    onboarding_completed: true,
-    is_verified: true,
-    rating: 5.0,
-    total_sales: 48
-  };
-  window.localStorage.setItem("mock_auth_for_video", "true");
-  window.localStorage.setItem("auth-storage", JSON.stringify({
-    state: { isAuthenticated: true, user: mockUser },
-    version: 0
-  }));
-  window.__SUPPRESS_LOGS = true;
-})();
-"""
+def get_auth_init(lang='pt-BR'):
+    return f"""
+    (() => {{
+      const mockUser = {{
+        id: "demo-user-123",
+        name: "Tanaka Hiroshi",
+        full_name: "Tanaka Hiroshi",
+        role: "buyer",
+        email: "tanaka@daig.jp",
+        avatar_url: null,
+        currency: "JPY",
+        onboarding_completed: true,
+        is_verified: true,
+        rating: 5.0,
+        total_sales: 48
+      }};
+      window.localStorage.setItem("mock_auth_for_video", "true");
+      window.localStorage.setItem("auth-storage", JSON.stringify({{
+        state: {{ isAuthenticated: true, user: mockUser }},
+        version: 0
+      }}));
+      window.localStorage.setItem("daig-language", "{lang}");
+      window.__SUPPRESS_LOGS = true;
+    }})();
+    """
 
-def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900, inject_auth=True):
-    print(f"\n🎬 Capturando: {name}")
+def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900, inject_auth=True, lang='pt-BR'):
+    print(f"\n🎬 Capturando: {name} (Idioma: {lang})")
     
     with sync_playwright() as p:
         browser = p.chromium.launch(
@@ -57,7 +60,7 @@ def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900, inject_aut
         )
         
         if inject_auth:
-            ctx.add_init_script(AUTH_INIT)
+            ctx.add_init_script(get_auth_init(lang))
             
         page = ctx.new_page()
         page.on("console", lambda _: None)
@@ -338,8 +341,14 @@ def merge_videos(inputs: list, output: str):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="DAIG Video Capture")
+    parser.add_argument("--lang", type=str, default="pt-BR", help="Idioma para capturar a UI (ex: pt-BR ou ja-JP)")
+    args = parser.parse_args()
+    
+    lang_suffix = "pt" if args.lang == "pt-BR" else "ja"
+
     print("=" * 60)
-    print("DAIG Full Demo Video Capture Agent V2 (Registration, Chat, Stripe T+4)")
+    print(f"DAIG Full Demo Video Capture Agent V2 (Idioma: {args.lang})")
     print("=" * 60)
     
     scenes = [
@@ -355,15 +364,14 @@ if __name__ == "__main__":
     
     captured = []
     for name, fn, inject_auth in scenes:
-        path = capture_demo(name, fn, inject_auth=inject_auth)
+        path = capture_demo(name, fn, inject_auth=inject_auth, lang=args.lang)
         if path:
             captured.append(path)
     
     if captured:
-        final_output = os.path.join(OUT_DIR, "daig-full-demo-v2.webm")
+        final_output = os.path.join(OUT_DIR, f"daig-full-demo-v2-{lang_suffix}.webm")
         merge_videos(captured, final_output)
         
-        mp4_output = os.path.join(OUT_DIR, "daig-full-demo-v2.mp4")
+        mp4_output = os.path.join(OUT_DIR, f"daig-full-demo-v2-{lang_suffix}.mp4")
         subprocess.run(["ffmpeg", "-y", "-i", final_output, "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-c:a", "copy", mp4_output], capture_output=True)
-        if os.path.exists(mp4_output):
-            print(f"  ✅ MP4: {mp4_output} ({os.path.getsize(mp4_output)/(1024*1024):.1f}MB)")
+        print(f"  ✅ MP4: {mp4_output} ({os.path.getsize(mp4_output)/(1024*1024):.1f}MB)")

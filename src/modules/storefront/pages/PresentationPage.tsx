@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { supabase, getAdminStats } from '@/modules/shared/lib/supabase';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -51,15 +52,6 @@ const FEATURES = [
     desc: 'Emissão de notas fiscais japonesas (Tekikaku Seikyusho), retenção JCT 10% e liquidação Zengin T+4.',
     accent: '#F59E0B',
   },
-];
-
-const STATS = [
-  { value: '¥2.4B', label: 'Volume processado' },
-  { value: '12K+', label: 'Peças catalogadas' },
-  { value: '200+', label: 'Marcas JDM' },
-  { value: 'T+4', label: 'Liquidação Stripe' },
-  { value: '10%', label: 'Comissão DAIG' },
-  { value: '3s', label: 'Foto → Anúncio IA' },
 ];
 
 // ── GSAP Interactive Components ───────────────────────────────────────────────
@@ -221,6 +213,7 @@ const MagneticButton: React.FC<{ children: React.ReactNode, href: string, primar
 const DemoVideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false); // Video audio
@@ -228,8 +221,24 @@ const DemoVideoPlayer: React.FC = () => {
   const [duration, setDuration] = useState(0);
   const [hovered, setHovered] = useState(false);
   
-  const [voiceLang, setVoiceLang] = useState<'pt-BR' | 'ja-JP' | 'off'>('pt-BR');
+  const [uiLang, setUiLang] = useState<'pt' | 'ja'>('pt');
   
+  // Efeito Stagger Reveal com GSAP SplitText
+  useGSAP(() => {
+    if (titleRef.current) {
+      const split = new SplitText(titleRef.current, { type: 'chars, words' });
+      gsap.from(split.chars, {
+        duration: 0.8,
+        y: 40,
+        opacity: 0,
+        rotationX: -90,
+        stagger: 0.02,
+        ease: 'back.out(1.7)',
+        transformOrigin: '50% 50% -20',
+      });
+    }
+  }, []);
+
   // Sync High-Quality Neural Audio with Video
   useEffect(() => {
     const video = videoRef.current;
@@ -237,11 +246,6 @@ const DemoVideoPlayer: React.FC = () => {
     if (!video || !audio) return;
     
     const syncAudio = () => {
-      if (voiceLang === 'off') {
-        audio.pause();
-        return;
-      }
-      
       // Keep audio time in sync with video time
       if (Math.abs(audio.currentTime - video.currentTime) > 0.2) {
         audio.currentTime = video.currentTime;
@@ -260,21 +264,25 @@ const DemoVideoPlayer: React.FC = () => {
       video.removeEventListener('seeked', syncAudio);
     };
   }, [playing, voiceLang]);
-  
-  // Update Audio source when language changes
+  // Update Audio and Video source when language changes
   useEffect(() => {
     if (audioRef.current && videoRef.current) {
-      if (voiceLang !== 'off') {
-        audioRef.current.src = voiceLang === 'pt-BR' ? '/videos/demo-pt.mp3?v=2' : '/videos/demo-ja.mp3?v=2';
-        audioRef.current.currentTime = videoRef.current.currentTime;
-        if (playing) {
-            audioRef.current.play().catch(e => console.error("Audio DOMException:", e));
-        }
-      } else {
-        audioRef.current.pause();
+      const wasPlaying = !videoRef.current.paused;
+      const cTime = videoRef.current.currentTime;
+      
+      videoRef.current.src = uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.webm' : '/videos/daig-full-demo-v2-ja.webm';
+      audioRef.current.src = uiLang === 'pt' ? '/videos/demo-pt.mp3?v=3' : '/videos/demo-ja.mp3?v=3';
+      
+      videoRef.current.load();
+      videoRef.current.currentTime = cTime;
+      audioRef.current.currentTime = cTime;
+      
+      if (wasPlaying || playing) {
+          videoRef.current.play().catch(e => console.error(e));
+          audioRef.current.play().catch(e => console.error(e));
       }
     }
-  }, [voiceLang]);
+  }, [uiLang]);
 
   const toggle = () => {
     const v = videoRef.current;
@@ -283,7 +291,7 @@ const DemoVideoPlayer: React.FC = () => {
     
     if (v.paused) { 
         v.play(); 
-        if (a && voiceLang !== 'off') {
+        if (a) {
             a.play().catch(e => console.error("Audio manual play exception:", e));
         }
         setPlaying(true); 
@@ -331,47 +339,72 @@ const DemoVideoPlayer: React.FC = () => {
   ];
 
   return (
-    <Interactive3DCard>
-      <div
-        style={{ position: 'relative' }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        {/* ÁUDIO FIX INSERIDO NO DOM */}
-        <audio ref={audioRef} preload="auto" style={{ display: 'none' }} />
-
-        {/* Browser chrome bar */}
-        <div style={{ background: '#111', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          {['#FF5F56', '#FFBD2E', '#27C93F'].map(c => (
-            <div key={c} style={{ width: 12, height: 12, borderRadius: '50%', background: c }} />
-          ))}
-          <div style={{ flex: 1, margin: '0 12px', background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)' }}>🔒</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>daig.jp</span>
-          </div>
-          <div style={{ padding: '4px 12px', borderRadius: 6, background: 'rgba(0,229,255,0.12)', border: '1px solid rgba(0,229,255,0.25)', fontSize: 10, color: '#00E5FF', fontWeight: 700, letterSpacing: '0.1em' }}>
-            DEMO AO VIVO
-          </div>
+    <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {/* Cabeçalho do Player com Toggle UI */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h2 ref={titleRef} style={{ margin: 0, fontSize: 32, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em', perspective: 1000 }}>
+            Live Platform <span style={{ color: '#00E5FF', textShadow: '0 0 15px rgba(0,229,255,0.5)' }}>Demo</span>
+          </h2>
+          <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.5)' }}>Versão {uiLang === 'pt' ? 'Português' : 'Japonês'} (V2) • Audio Neural Sync</p>
         </div>
+        
+        {/* Toggle de Idioma Minimalista (Estilo Apple) */}
+        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: 20, padding: 4, border: '1px solid rgba(255,255,255,0.1)' }}>
+          <button 
+            onClick={() => setUiLang('pt')}
+            style={{ padding: '8px 24px', borderRadius: 16, border: 'none', background: uiLang === 'pt' ? 'rgba(0,229,255,0.15)' : 'transparent', color: uiLang === 'pt' ? '#00E5FF' : 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s' }}>
+            PT
+          </button>
+          <button 
+            onClick={() => setUiLang('ja')}
+            style={{ padding: '8px 24px', borderRadius: 16, border: 'none', background: uiLang === 'ja' ? 'rgba(0,229,255,0.15)' : 'transparent', color: uiLang === 'ja' ? '#00E5FF' : 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s' }}>
+            JA
+          </button>
+        </div>
+      </div>
 
-        {/* Video */}
-        <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer' }} onClick={toggle}>
-          <video
-            ref={videoRef}
-            style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
-            onTimeUpdate={onTimeUpdate}
-            onLoadedMetadata={onLoaded}
-            onEnded={() => setPlaying(false)}
-            playsInline
-            preload="metadata"
-            poster="/screenshots/home.jpg"
-            muted={muted}
-          >
-            <source src="/videos/daig-full-demo-v2.webm" type="video/webm" />
-            <source src="/videos/daig-full-demo-v2.mp4" type="video/mp4" />
-            <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt?v=2" label="Português" default={voiceLang === 'pt-BR'} />
-            <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt?v=2" label="日本語" default={voiceLang === 'ja-JP'} />
-          </video>
+      <Interactive3DCard>
+        <div
+          style={{ position: 'relative' }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          {/* ÁUDIO FIX INSERIDO NO DOM */}
+          <audio ref={audioRef} preload="auto" style={{ display: 'none' }} />
+
+          {/* Browser chrome bar */}
+          <div style={{ background: '#111', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            {['#FF5F56', '#FFBD2E', '#27C93F'].map(c => (
+              <div key={c} style={{ width: 12, height: 12, borderRadius: '50%', background: c }} />
+            ))}
+            <div style={{ flex: 1, margin: '0 12px', background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)' }}>🔒</span>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>daig.jp</span>
+            </div>
+            <div style={{ padding: '4px 12px', borderRadius: 6, background: 'rgba(0,229,255,0.12)', border: '1px solid rgba(0,229,255,0.25)', fontSize: 10, color: '#00E5FF', fontWeight: 700, letterSpacing: '0.1em' }}>
+              DEMO AO VIVO
+            </div>
+          </div>
+
+          {/* Video */}
+          <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer' }} onClick={toggle}>
+            <video
+              ref={videoRef}
+              style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
+              onTimeUpdate={onTimeUpdate}
+              onLoadedMetadata={onLoaded}
+              onEnded={() => setPlaying(false)}
+              playsInline
+              preload="metadata"
+              poster="/screenshots/home.jpg"
+              muted={muted}
+            >
+              <source src="/videos/daig-full-demo-v2-pt.webm" type="video/webm" />
+              <source src="/videos/daig-full-demo-v2-pt.mp4" type="video/mp4" />
+              <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt?v=3" label="Português" default={uiLang === 'pt'} />
+              <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt?v=3" label="日本語" default={uiLang === 'ja'} />
+            </video>
 
           {/* Play overlay */}
           {!playing && (
@@ -422,54 +455,48 @@ const DemoVideoPlayer: React.FC = () => {
               ))}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {/* Locutor IA Toggle */}
-              <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.1)', borderRadius: 20, padding: '2px 4px', fontSize: 10, fontWeight: 600 }}>
-                <div style={{ color: 'rgba(255,255,255,0.5)', padding: '0 6px' }}>Narrador IA:</div>
-                <button onClick={(e) => { e.stopPropagation(); setVoiceLang('pt-BR'); }} style={{ background: voiceLang === 'pt-BR' ? '#00E5FF' : 'transparent', color: voiceLang === 'pt-BR' ? '#000' : 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>PT</button>
-                <button onClick={(e) => { e.stopPropagation(); setVoiceLang('ja-JP'); }} style={{ background: voiceLang === 'ja-JP' ? '#00E5FF' : 'transparent', color: voiceLang === 'ja-JP' ? '#000' : 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>JP</button>
-                <button onClick={(e) => { e.stopPropagation(); setVoiceLang('off'); }} style={{ background: voiceLang === 'off' ? 'rgba(255,255,255,0.2)' : 'transparent', color: 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>Off</button>
-              </div>
-              <button onClick={e => { e.stopPropagation(); toggle(); }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
-                {playing ? (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
-                )}
-              </button>
-              <button onClick={e => { e.stopPropagation(); setMuted(m => { if (videoRef.current) videoRef.current.muted = !m; return !m; }); }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
-                {muted
-                  ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="white" strokeWidth="2"/><line x1="23" y1="9" x2="17" y2="15" stroke="white" strokeWidth="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="white" strokeWidth="2"/></svg>
-                  : <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="white" strokeWidth="2"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>
-                }
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <button onClick={e => { e.stopPropagation(); toggle(); }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
+                  {playing ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
+                  )}
+                </button>
+                <button onClick={e => { e.stopPropagation(); setMuted(m => { if (videoRef.current) videoRef.current.muted = !m; return !m; }); }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
+                  {muted
+                    ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="white" strokeWidth="2"/><line x1="23" y1="9" x2="17" y2="15" stroke="white" strokeWidth="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="white" strokeWidth="2"/></svg>
+                    : <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="white" strokeWidth="2"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>
+                  }
+                </button>
               <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', marginLeft: 'auto' }}>
                 {fmt((progress / 100) * duration)} / {fmt(duration)}
               </span>
             </div>
 
-            {/* Chapter labels */}
-            <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
-              {chapters.map((ch, i) => (
-                <button
-                  key={ch.label}
-                  onClick={e => { e.stopPropagation(); if (videoRef.current) { videoRef.current.currentTime = (ch.pct / 100) * videoRef.current.duration; if (videoRef.current.paused) { videoRef.current.play(); setPlaying(true); } } }}
-                  style={{
-                    padding: '3px 10px', borderRadius: 100, fontSize: 10, fontWeight: 600,
-                    background: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.08)',
-                    border: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? '1px solid rgba(0,229,255,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                    color: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? '#00E5FF' : 'rgba(255,255,255,0.5)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {ch.label}
-                </button>
-              ))}
+              {/* Chapter labels */}
+              <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                {chapters.map((ch, i) => (
+                  <button
+                    key={ch.label}
+                    onClick={e => { e.stopPropagation(); if (videoRef.current) { videoRef.current.currentTime = (ch.pct / 100) * videoRef.current.duration; if (videoRef.current.paused) { videoRef.current.play(); setPlaying(true); } } }}
+                    style={{
+                      padding: '3px 10px', borderRadius: 100, fontSize: 10, fontWeight: 600,
+                      background: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.08)',
+                      border: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? '1px solid rgba(0,229,255,0.5)' : '1px solid rgba(255,255,255,0.1)',
+                      color: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? '#00E5FF' : 'rgba(255,255,255,0.5)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {ch.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Interactive3DCard>
+      </Interactive3DCard>
+    </div>
   );
 };
 
@@ -504,6 +531,32 @@ const FeatureCard: React.FC<{ feature: typeof FEATURES[0]; className?: string }>
 export default function PresentationPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroTitleRef = useRef<HTMLHeadingElement>(null);
+
+  const [stats, setStats] = useState([
+    { value: '...', label: 'Valor Negociado' },
+    { value: '...', label: 'Lojas & Clientes' },
+    { value: '...', label: 'Peças Disponíveis' },
+    { value: '...', label: 'Vendas Concluídas' },
+  ]);
+
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const adminStats = await getAdminStats();
+        const { count: partsCount } = await supabase.from('parts').select('id', { count: 'exact', head: true });
+        
+        setStats([
+          { value: `¥${(adminStats.totalGMV).toLocaleString()}`, label: 'Valor Negociado' },
+          { value: `${adminStats.totalUsers}`, label: 'Lojas & Clientes' },
+          { value: `${partsCount || 0}`, label: 'Peças Disponíveis' },
+          { value: `${adminStats.totalTransactions}`, label: 'Vendas Concluídas' },
+        ]);
+      } catch (err) {
+        console.error('Failed to load stats', err);
+      }
+    }
+    loadStats();
+  }, []);
   
   // GSAP Animations
   useGSAP(() => {
@@ -634,8 +687,8 @@ export default function PresentationPage() {
 
         {/* ── STATS BAR ────────────────────────────────────────────── */}
         <div className="stats-container" style={{ maxWidth: 1200, margin: '0 auto 80px', padding: '0 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 1, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
-            {STATS.map((s, i) => (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, borderRadius: 16, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
+            {stats.map((s, i) => (
               <div
                 key={s.label}
                 className="stat-box"
@@ -643,7 +696,7 @@ export default function PresentationPage() {
                   padding: '20px 16px',
                   background: 'rgba(255,255,255,0.025)',
                   textAlign: 'center',
-                  borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                  borderRight: i < stats.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                 }}
               >
                 <div style={{ fontSize: 22, fontWeight: 800, color: '#00E5FF', letterSpacing: -0.5 }}>{s.value}</div>

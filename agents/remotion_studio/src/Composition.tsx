@@ -117,7 +117,7 @@ const SceneRenderer: React.FC<{ scene: Scene }> = ({ scene }) => {
                     background: '#000',
                     transition: 'transform 0.1s'
                 }}>
-                    <OffthreadVideo src={staticFile(`videos/${scene.id}.webm`)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <OffthreadVideo src={staticFile(`videos/${scene.id}.webm`)} startFrom={60} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             </div>
             <Audio src={staticFile(`audio/${scene.id}.mp3`)} />
