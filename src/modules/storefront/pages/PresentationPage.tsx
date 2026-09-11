@@ -81,55 +81,53 @@ const DemoVideoPlayer: React.FC = () => {
   // TTS Voiceover state
   const [voiceLang, setVoiceLang] = useState<'pt-BR' | 'ja-JP' | 'off'>('pt-BR');
   
-  // Web Speech API Narrator
+  const audioRef = useRef<HTMLAudioElement>(null);
+  
+  // Sync High-Quality Neural Audio with Video
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    const audio = audioRef.current;
+    if (!video || !audio) return;
     
-    const handleCueChange = (e: Event) => {
-      if (voiceLang === 'off') return;
+    const syncAudio = () => {
+      if (voiceLang === 'off') {
+        audio.pause();
+        return;
+      }
       
-      const track = e.target as TextTrack;
-      if (!track.activeCues || track.activeCues.length === 0) return;
+      // Keep audio time in sync with video time
+      if (Math.abs(audio.currentTime - video.currentTime) > 0.2) {
+        audio.currentTime = video.currentTime;
+      }
       
-      // Get the current subtitle text
-      const cue = track.activeCues[0] as VTTCue;
-      const text = cue.text;
-      
-      // Stop any ongoing speech
-      window.speechSynthesis.cancel();
-      
-      // Speak the new subtitle
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = voiceLang;
-      utterance.rate = 1.05; // slightly faster to fit the video timing
-      
-      // Try to find a good native voice
-      const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(v => v.lang.includes(voiceLang.split('-')[0]));
-      if (voice) utterance.voice = voice;
-      
-      window.speechSynthesis.speak(utterance);
-    };
-
-    // Attach listener to all text tracks
-    const tracks = video.textTracks;
-    for (let i = 0; i < tracks.length; i++) {
-      tracks[i].addEventListener('cuechange', handleCueChange);
-    }
-    
-    return () => {
-      window.speechSynthesis.cancel();
-      for (let i = 0; i < tracks.length; i++) {
-        tracks[i].removeEventListener('cuechange', handleCueChange);
+      if (playing && audio.paused) {
+        audio.play().catch(e => console.error(e));
+      } else if (!playing && !audio.paused) {
+        audio.pause();
       }
     };
-  }, [voiceLang]);
+    
+    video.addEventListener('timeupdate', syncAudio);
+    video.addEventListener('seeked', syncAudio);
+    
+    return () => {
+      video.removeEventListener('timeupdate', syncAudio);
+      video.removeEventListener('seeked', syncAudio);
+    };
+  }, [playing, voiceLang]);
   
-  // Stop TTS when video is paused
+  // Update Audio source when language changes
   useEffect(() => {
-    if (!playing) window.speechSynthesis.cancel();
-  }, [playing]);
+    if (audioRef.current && videoRef.current) {
+      if (voiceLang !== 'off') {
+        audioRef.current.src = voiceLang === 'pt-BR' ? '/videos/demo-pt.mp3' : '/videos/demo-ja.mp3';
+        audioRef.current.currentTime = videoRef.current.currentTime;
+        if (playing) audioRef.current.play().catch(e => console.error(e));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  }, [voiceLang]);
 
   const toggle = () => {
     const v = videoRef.current;
@@ -267,7 +265,7 @@ const DemoVideoPlayer: React.FC = () => {
               <div style={{ color: 'rgba(255,255,255,0.5)', padding: '0 6px' }}>Narrador IA:</div>
               <button onClick={(e) => { e.stopPropagation(); setVoiceLang('pt-BR'); }} style={{ background: voiceLang === 'pt-BR' ? '#00E5FF' : 'transparent', color: voiceLang === 'pt-BR' ? '#000' : 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>PT</button>
               <button onClick={(e) => { e.stopPropagation(); setVoiceLang('ja-JP'); }} style={{ background: voiceLang === 'ja-JP' ? '#00E5FF' : 'transparent', color: voiceLang === 'ja-JP' ? '#000' : 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>JP</button>
-              <button onClick={(e) => { e.stopPropagation(); setVoiceLang('off'); window.speechSynthesis.cancel(); }} style={{ background: voiceLang === 'off' ? 'rgba(255,255,255,0.2)' : 'transparent', color: 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>Off</button>
+              <button onClick={(e) => { e.stopPropagation(); setVoiceLang('off'); }} style={{ background: voiceLang === 'off' ? 'rgba(255,255,255,0.2)' : 'transparent', color: 'white', border: 'none', padding: '4px 10px', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}>Off</button>
             </div>
             <button onClick={e => { e.stopPropagation(); toggle(); }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
               {playing ? (
