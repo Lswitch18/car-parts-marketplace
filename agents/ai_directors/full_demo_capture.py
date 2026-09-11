@@ -86,7 +86,7 @@ def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900, inject_aut
             return None
 
 
-def _wait_loaded(page, timeout=20000):
+def _wait_loaded(page, timeout=4000):
     try:
         page.wait_for_selector(".animate-spin", state="hidden", timeout=timeout)
     except:
@@ -121,7 +121,7 @@ def flow_register(page):
     
     try:
         # Tenta selecionar "Comprador"
-        page.click("text=Comprador")
+        page.click("text=Comprador", timeout=2000)
         page.wait_for_timeout(1000)
     except: pass
     
@@ -131,7 +131,7 @@ def flow_register(page):
         if btn:
             btn.hover()
             page.wait_for_timeout(1000)
-            btn.click()
+            btn.click(timeout=2000)
     except: pass
     
     page.wait_for_timeout(2000)
