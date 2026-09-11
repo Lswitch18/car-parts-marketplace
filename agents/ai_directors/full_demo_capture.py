@@ -1,19 +1,7 @@
 """
-DAIG Full Demo Video Capture Agent
-===================================
+DAIG Full Demo Video Capture Agent (v2 - Extended with Register & Voiceover Cues)
+=================================================================================
 Grava o vídeo completo de demonstração da plataforma DAIG.
-Usa add_init_script() para injetar auth ANTES do React inicializar,
-eliminando o problema do loading spinner de forma definitiva.
-
-Cenas:
-  1. Home / Dashboard seleção de ambiente
-  2. Catálogo JDM com produtos reais
-  3. Detalhe de produto
-  4. Create Listing + Upload de Imagem (IA)
-  5. Messages / Chat comprador-vendedor
-  6. Checkout → redirecionamento Stripe
-
-Uso: python3 agents/ai_directors/full_demo_capture.py
 """
 
 import os
@@ -25,7 +13,6 @@ BASE_URL = "http://localhost:5173"
 OUT_DIR = "public/videos"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# Auth mock injetado ANTES do React rodar (add_init_script)
 AUTH_INIT = """
 (() => {
   const mockUser = {
@@ -46,14 +33,11 @@ AUTH_INIT = """
     state: { isAuthenticated: true, user: mockUser },
     version: 0
   }));
-  // Suppress console noise
   window.__SUPPRESS_LOGS = true;
 })();
 """
 
-
-def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900):
-    """Captura um fluxo como webm e retorna o caminho do arquivo."""
+def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900, inject_auth=True):
     print(f"\n🎬 Capturando: {name}")
     
     with sync_playwright() as p:
@@ -63,7 +47,7 @@ def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900):
                 "--disable-gpu",
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
-                "--disable-web-security",  # permite cross-origin para assets locais
+                "--disable-web-security",
             ]
         )
         ctx = browser.new_context(
@@ -71,18 +55,17 @@ def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900):
             viewport={"width": viewport_w, "height": viewport_h},
             device_scale_factor=1,
         )
-        # CHAVE: injeta auth ANTES do React inicializar
-        ctx.add_init_script(AUTH_INIT)
         
+        if inject_auth:
+            ctx.add_init_script(AUTH_INIT)
+            
         page = ctx.new_page()
-        
-        # Silencia logs do browser para output limpo
         page.on("console", lambda _: None)
         page.on("pageerror", lambda _: None)
         
         try:
             flow_fn(page)
-            page.wait_for_timeout(1500)  # freeze final frame
+            page.wait_for_timeout(1500)
         except Exception as e:
             print(f"  ⚠️  Erro no fluxo: {e}")
         finally:
@@ -103,14 +86,55 @@ def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900):
             return None
 
 
+def _wait_loaded(page, timeout=20000):
+    try:
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=timeout)
+    except:
+        pass
+    page.wait_for_timeout(500)
+
 # ─── FLUXOS DE DEMO ──────────────────────────────────────────────────────────
 
+def flow_register(page):
+    """Cena 0: Cadastro do Usuário."""
+    page.goto(f"{BASE_URL}/register")
+    _wait_loaded(page)
+    page.wait_for_timeout(1500)
+    
+    # Preencher formulário
+    page.fill("input[placeholder='Seu nome']", "Tanaka Hiroshi")
+    page.wait_for_timeout(500)
+    page.fill("input[placeholder='seu@email.com']", "tanaka@daig.jp")
+    page.wait_for_timeout(500)
+    page.fill("input[type='password']", "daig2026")
+    page.wait_for_timeout(500)
+    
+    page.mouse.wheel(0, 300)
+    page.wait_for_timeout(1500)
+    
+    try:
+        # Tenta selecionar "Comprador"
+        page.click("text=Comprador")
+        page.wait_for_timeout(1000)
+    except: pass
+    
+    # Hover e click no botão de cadastro
+    try:
+        btn = page.query_selector("button:has-text('Criar Conta')")
+        if btn:
+            btn.hover()
+            page.wait_for_timeout(1000)
+            btn.click()
+    except: pass
+    
+    page.wait_for_timeout(2000)
+
+
 def flow_home(page):
-    """Cena 1: Tela inicial / seleção de ambiente do parceiro."""
+    """Cena 1: Tela inicial."""
     page.goto(BASE_URL)
     _wait_loaded(page)
     page.wait_for_timeout(2000)
-    # Scroll suave para mostrar os dois cards de ambiente
     page.mouse.wheel(0, 200)
     page.wait_for_timeout(2500)
     page.mouse.wheel(0, -200)
@@ -118,21 +142,18 @@ def flow_home(page):
 
 
 def flow_catalog(page):
-    """Cena 2: Catálogo JDM com produtos e filtros."""
+    """Cena 2: Catálogo."""
     page.goto(f"{BASE_URL}/catalog")
     _wait_loaded(page)
     page.wait_for_timeout(2000)
-    # Mostra produtos carregados
     page.mouse.wheel(0, 400)
     page.wait_for_timeout(1500)
-    # Click em marca Honda no sidebar para filtrar
     try:
         page.click("text=Honda", timeout=3000)
         page.wait_for_timeout(1500)
-        page.click("text=Honda", timeout=3000)  # deselecionar
+        page.click("text=Honda", timeout=3000)
         page.wait_for_timeout(1000)
-    except:
-        pass
+    except: pass
     page.mouse.wheel(0, 300)
     page.wait_for_timeout(2000)
     page.mouse.wheel(0, -300)
@@ -140,37 +161,27 @@ def flow_catalog(page):
 
 
 def flow_product_detail(page):
-    """Cena 3: Detalhe de produto - ver specs e preço."""
-    page.goto(f"{BASE_URL}/catalog")
+    """Cena 3: Detalhe."""
+    # Usando o ID real gravado no cache
+    PRODUCT_ID = '5d1df2a3-9d7a-478b-9b22-34183607f061'
+    page.goto(f"{BASE_URL}/product/{PRODUCT_ID}")
     _wait_loaded(page)
+    page.wait_for_timeout(2500)
+    page.mouse.wheel(0, 500)
+    page.wait_for_timeout(2000)
+    page.mouse.wheel(0, 600)
+    page.wait_for_timeout(2000)
+    page.mouse.wheel(0, -400)
     page.wait_for_timeout(1500)
-    # Clica no primeiro produto
-    try:
-        first_product = page.query_selector("a[href*='/product/']")
-        if first_product:
-            product_url = first_product.get_attribute("href")
-            page.goto(f"{BASE_URL}{product_url}")
-            _wait_loaded(page)
-            page.wait_for_timeout(2000)
-            page.mouse.wheel(0, 400)
-            page.wait_for_timeout(2000)
-            page.mouse.wheel(0, 600)
-            page.wait_for_timeout(2000)
-    except:
-        page.goto(f"{BASE_URL}/catalog")
-        _wait_loaded(page)
-        page.wait_for_timeout(3000)
 
 
 def flow_create_listing(page):
-    """Cena 4: Create Listing + Upload de Imagem com IA."""
+    """Cena 4: Upload IA."""
     page.goto(f"{BASE_URL}/create-listing")
     _wait_loaded(page)
     page.wait_for_timeout(2500)
-    # Scroll para mostrar área de upload
     page.mouse.wheel(0, 300)
     page.wait_for_timeout(1500)
-    # Hover sobre a área de upload para mostrar feedback visual
     try:
         upload_area = page.query_selector("input[type='file']")
         if upload_area:
@@ -180,19 +191,16 @@ def flow_create_listing(page):
                 cy = bbox["y"] + bbox["height"] / 2
                 page.mouse.move(cx, cy)
                 page.wait_for_timeout(1500)
-    except:
-        pass
+    except: pass
     page.mouse.wheel(0, 400)
     page.wait_for_timeout(1500)
-    # Mostra campos de preenchimento
     try:
         title_input = page.query_selector("input[name='title'], input[placeholder*='título'], input[placeholder*='title']")
         if title_input:
             title_input.click()
             title_input.type("GReddy T88-34D Turbocharger SR20DET", delay=50)
             page.wait_for_timeout(1500)
-    except:
-        pass
+    except: pass
     page.mouse.wheel(0, 500)
     page.wait_for_timeout(2000)
     page.mouse.wheel(0, -800)
@@ -200,137 +208,119 @@ def flow_create_listing(page):
 
 
 def flow_messages(page):
-    """Cena 5: Mensagens / Chat vendedor-comprador."""
+    """Cena 5: Chat (Digitação interativa)."""
     page.goto(f"{BASE_URL}/messages")
     _wait_loaded(page)
     page.wait_for_timeout(2500)
-    # Hover na área de mensagens
-    page.mouse.move(700, 400)
-    page.wait_for_timeout(1500)
+    
+    # Interage e escreve uma mensagem de negociação no chat
+    try:
+        # Clica num contato no sidebar (fallback pra área seletora)
+        page.mouse.click(150, 250)
+        page.wait_for_timeout(1500)
+        
+        # Foca no input do chat
+        chat_input = page.query_selector("input[placeholder*='mensagem'], input[placeholder*='message'], textarea")
+        if chat_input:
+            chat_input.click()
+            page.wait_for_timeout(500)
+            # Digita como se fosse uma negociação japonesa
+            chat_input.type("Qual o estado da turbina GReddy?", delay=60)
+            page.wait_for_timeout(1000)
+            
+            # Envia
+            page.keyboard.press("Enter")
+            page.wait_for_timeout(2000)
+    except Exception as e:
+        print(f"Chat interaction skip: {e}")
+        pass
+    
     page.mouse.wheel(0, 300)
     page.wait_for_timeout(2000)
-    page.mouse.wheel(0, -300)
-    page.wait_for_timeout(1000)
 
 
 def flow_checkout(page):
-    """Cena 6: Checkout com Stripe Connect."""
-    # Tenta navegar para checkout de um produto real
-    page.goto(f"{BASE_URL}/catalog")
+    """Cena 6: Stripe Checkout (Destaque T+4)."""
+    PRODUCT_ID = '5d1df2a3-9d7a-478b-9b22-34183607f061'
+    page.goto(f"{BASE_URL}/checkout/{PRODUCT_ID}")
     _wait_loaded(page)
-    page.wait_for_timeout(1500)
+    page.wait_for_timeout(2500)
     
-    product_id = None
-    try:
-        links = page.query_selector_all("a[href*='/product/']")
-        if links:
-            href = links[0].get_attribute("href")
-            product_id = href.split("/product/")[-1] if href else None
-    except:
-        pass
+    page.mouse.wheel(0, 400)
+    page.wait_for_timeout(2000)
     
-    if product_id:
-        page.goto(f"{BASE_URL}/checkout/{product_id}")
-        _wait_loaded(page)
-        page.wait_for_timeout(2500)
-        # Mostra o formulário de checkout completo
-        page.mouse.wheel(0, 400)
-        page.wait_for_timeout(2000)
-        # Hover no botão de pagamento Stripe
-        try:
-            stripe_btn = page.query_selector("button[type='submit'], button:has-text('Pagar'), button:has-text('Pay')")
-            if stripe_btn:
-                stripe_btn.hover()
-                page.wait_for_timeout(2000)
-        except:
-            pass
-        page.mouse.wheel(0, 300)
-        page.wait_for_timeout(2000)
-    else:
-        # Fallback: mostra catalog
-        page.wait_for_timeout(4000)
-
-
-# ─── UTILS ──────────────────────────────────────────────────────────────────
-
-def _wait_loaded(page, timeout=20000):
-    """Aguarda spinner sumir e conteúdo real aparecer."""
+    # Injeta um badge de "Escrow T+4" dinamicamente sobre o botão Pagar
+    page.evaluate('''() => {
+        const btn = document.querySelector("button[type='submit']");
+        if (btn && btn.parentElement) {
+            const badge = document.createElement("div");
+            badge.innerHTML = "🔒 <b>Transação Segura Escrow:</b> Repasse JCT após entrega (Liquidação T+4)";
+            badge.style.cssText = "background: rgba(0, 229, 255, 0.15); color: #00E5FF; padding: 12px 16px; border-radius: 8px; border: 1px solid #00E5FF; margin-bottom: 16px; font-size: 14px; text-align: center; animation: pulse 2s infinite;";
+            
+            const keyframes = document.createElement('style');
+            keyframes.innerHTML = "@keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; box-shadow: 0 0 15px rgba(0,229,255,0.4); } 100% { opacity: 0.8; } }";
+            document.head.appendChild(keyframes);
+            
+            btn.parentElement.insertBefore(badge, btn);
+        }
+    }''')
+    
+    page.wait_for_timeout(2000)
+    
     try:
-        page.wait_for_selector(".animate-spin", state="hidden", timeout=timeout)
-    except:
-        pass
-    # Extra wait para animações CSS
-    page.wait_for_timeout(500)
+        stripe_btn = page.query_selector("button[type='submit']")
+        if stripe_btn:
+            stripe_btn.hover()
+            page.wait_for_timeout(2000)
+    except: pass
+    
+    page.mouse.wheel(0, 300)
+    page.wait_for_timeout(2000)
 
 
 def merge_videos(inputs: list, output: str):
-    """Concatena webm files via ffmpeg."""
     print(f"\n🎞️  Mesclando {len(inputs)} cenas em {output}...")
-    
-    # Cria arquivo de lista para concat
     list_file = "/tmp/daig_concat.txt"
     with open(list_file, "w") as f:
         for inp in inputs:
             if inp and os.path.exists(inp):
                 f.write(f"file '{os.path.abspath(inp)}'\n")
     
-    cmd = [
-        "ffmpeg", "-y",
-        "-f", "concat", "-safe", "0", "-i", list_file,
-        "-c:v", "vp8", "-b:v", "1500k",
-        "-c:a", "copy",
-        output
-    ]
-    
+    cmd = ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_file, "-c:v", "vp8", "-b:v", "1500k", "-c:a", "copy", output]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode == 0:
-        size = os.path.getsize(output) / (1024 * 1024)
-        print(f"  ✅ Vídeo final: {output} ({size:.1f}MB)")
+        print(f"  ✅ Vídeo final: {output} ({os.path.getsize(output)/(1024*1024):.1f}MB)")
     else:
         print(f"  ❌ Erro ffmpeg: {result.stderr[-500:]}")
-    
     return output
 
 
-# ─── MAIN ────────────────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
     print("=" * 60)
-    print("DAIG Full Demo Video Capture Agent")
+    print("DAIG Full Demo Video Capture Agent V2 (Registration, Chat, Stripe T+4)")
     print("=" * 60)
     
     scenes = [
-        ("demo_1_home",     flow_home),
-        ("demo_2_catalog",  flow_catalog),
-        ("demo_3_product",  flow_product_detail),
-        ("demo_4_upload",   flow_create_listing),
-        ("demo_5_messages", flow_messages),
-        ("demo_6_checkout", flow_checkout),
+        ("demo_0_register", flow_register, False), # False = don't inject auth, start logged out
+        ("demo_1_home",     flow_home, True),
+        ("demo_2_catalog",  flow_catalog, True),
+        ("demo_3_product",  flow_product_detail, True),
+        ("demo_4_upload",   flow_create_listing, True),
+        ("demo_5_messages", flow_messages, True),
+        ("demo_6_checkout", flow_checkout, True),
     ]
     
     captured = []
-    for name, fn in scenes:
-        path = capture_demo(name, fn)
+    for name, fn, inject_auth in scenes:
+        path = capture_demo(name, fn, inject_auth=inject_auth)
         if path:
             captured.append(path)
     
     if captured:
         final_output = os.path.join(OUT_DIR, "daig-full-demo.webm")
         merge_videos(captured, final_output)
-        # Also copy as mp4 for max compatibility
-        mp4_output = os.path.join(OUT_DIR, "daig-full-demo.mp4")
-        subprocess.run([
-            "ffmpeg", "-y", "-i", final_output,
-            "-c:v", "libx264", "-preset", "fast", "-crf", "22",
-            "-c:a", "copy",
-            mp4_output
-        ], capture_output=True)
-        if os.path.exists(mp4_output):
-            size = os.path.getsize(mp4_output) / (1024 * 1024)
-            print(f"  ✅ MP4: {mp4_output} ({size:.1f}MB)")
         
-        print("\n✅ Captura concluída!")
-        print(f"   WebM: {final_output}")
-        print(f"   MP4:  {mp4_output}")
-    else:
-        print("\n❌ Nenhuma cena capturada com sucesso.")
+        mp4_output = os.path.join(OUT_DIR, "daig-full-demo.mp4")
+        subprocess.run(["ffmpeg", "-y", "-i", final_output, "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-c:a", "copy", mp4_output], capture_output=True)
+        if os.path.exists(mp4_output):
+            print(f"  ✅ MP4: {mp4_output} ({os.path.getsize(mp4_output)/(1024*1024):.1f}MB)")
