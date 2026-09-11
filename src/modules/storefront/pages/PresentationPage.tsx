@@ -265,7 +265,7 @@ const DemoVideoPlayer: React.FC = () => {
   useEffect(() => {
     if (audioRef.current && videoRef.current) {
       if (voiceLang !== 'off') {
-        audioRef.current.src = voiceLang === 'pt-BR' ? '/videos/demo-pt.mp3' : '/videos/demo-ja.mp3';
+        audioRef.current.src = voiceLang === 'pt-BR' ? '/videos/demo-pt.mp3?v=2' : '/videos/demo-ja.mp3?v=2';
         audioRef.current.currentTime = videoRef.current.currentTime;
         if (playing) {
             audioRef.current.play().catch(e => console.error("Audio DOMException:", e));
@@ -321,12 +321,13 @@ const DemoVideoPlayer: React.FC = () => {
 
   const chapters = [
     { label: 'Revolução 360°', pct: 0 },
-    { label: 'Cadastro Express', pct: 19.5 },
-    { label: 'Plataforma Unificada', pct: 27.4 },
-    { label: 'Catálogo JDM', pct: 40.9 },
-    { label: 'Gestão de Peças', pct: 52.8 },
-    { label: 'IA para Vendedores', pct: 71.4 },
-    { label: 'Chat & Negociação', pct: 87.5 },
+    { label: 'Cadastro & Google', pct: 8.1 },
+    { label: 'Plataforma Unificada', pct: 19.5 },
+    { label: 'Catálogo JDM', pct: 27.4 },
+    { label: 'Especificações 3D', pct: 40.9 },
+    { label: 'IA para Vendedores', pct: 52.8 },
+    { label: 'Chat com Tradução', pct: 71.4 },
+    { label: 'Pagamento Escrow', pct: 87.5 },
   ];
 
   return (
@@ -368,8 +369,8 @@ const DemoVideoPlayer: React.FC = () => {
           >
             <source src="/videos/daig-full-demo-v2.webm" type="video/webm" />
             <source src="/videos/daig-full-demo-v2.mp4" type="video/mp4" />
-            <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt" label="Português" default={voiceLang === 'pt-BR'} />
-            <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt" label="日本語" default={voiceLang === 'ja-JP'} />
+            <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt?v=2" label="Português" default={voiceLang === 'pt-BR'} />
+            <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt?v=2" label="日本語" default={voiceLang === 'ja-JP'} />
           </video>
 
           {/* Play overlay */}
