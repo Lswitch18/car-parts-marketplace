@@ -263,7 +263,7 @@ const DemoVideoPlayer: React.FC = () => {
       video.removeEventListener('timeupdate', syncAudio);
       video.removeEventListener('seeked', syncAudio);
     };
-  }, [playing, voiceLang]);
+  }, [playing]);
   // Update Audio and Video source when language changes
   useEffect(() => {
     if (audioRef.current && videoRef.current) {
