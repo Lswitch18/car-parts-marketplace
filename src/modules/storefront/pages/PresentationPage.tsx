@@ -321,11 +321,11 @@ const DemoVideoPlayer: React.FC = () => {
 
   const chapters = [
     { label: 'Cadastro', pct: 0 },
-    { label: 'Dashboard', pct: 15 },
-    { label: 'Catálogo', pct: 26 },
-    { label: 'Produto', pct: 40 },
-    { label: 'Upload IA', pct: 55 },
-    { label: 'Chat', pct: 70 },
+    { label: 'Dashboard', pct: 21 },
+    { label: 'Catálogo', pct: 31 },
+    { label: 'Produto', pct: 50 },
+    { label: 'Upload IA', pct: 63 },
+    { label: 'Chat', pct: 74 },
     { label: 'Stripe T+4', pct: 85 },
   ];
 
