@@ -95,6 +95,21 @@ def _wait_loaded(page, timeout=20000):
 
 # ─── FLUXOS DE DEMO ──────────────────────────────────────────────────────────
 
+def flow_landing_hero(page):
+    """Cena 0: Landing Page Hero 360"""
+    page.goto(BASE_URL)
+    _wait_loaded(page)
+    page.wait_for_timeout(2000)
+    
+    # Simula interação no centro da tela para rotacionar o carro 360
+    page.mouse.move(page.viewport_size['width'] / 2, page.viewport_size['height'] / 2)
+    page.mouse.down()
+    page.mouse.move((page.viewport_size['width'] / 2) + 300, page.viewport_size['height'] / 2)
+    page.wait_for_timeout(1000)
+    page.mouse.up()
+    
+    page.wait_for_timeout(2000)
+
 def flow_register(page):
     """Cena 0: Cadastro do Usuário."""
     page.goto(f"{BASE_URL}/register")
@@ -208,7 +223,47 @@ def flow_create_listing(page):
 
 
 def flow_messages(page):
-    """Cena 5: Chat (Digitação interativa)."""
+    """Cena 6: Chat (Digitação interativa com histórico)."""
+    
+    # Mocking network requests for messages and profiles
+    import json
+    
+    def route_messages(route):
+        if route.request.method == "GET":
+            mock_data = [
+                {
+                    "id": "m1", "sender_id": "other-user", "receiver_id": "demo-user-123",
+                    "content": "Ainda tem a turbina disponível?", "message_type": "text", "created_at": "2026-09-10T10:00:00.000Z",
+                    "part_id": "5d1df2a3-9d7a-478b-9b22-34183607f061",
+                    "parts": { "id": "5d1df2a3-9d7a-478b-9b22-34183607f061", "title": "GReddy T88-34D Turbocharger SR20DET", "price": 48000, "images": ["https://example.com/mock.jpg"] }
+                },
+                {
+                    "id": "m2", "sender_id": "demo-user-123", "receiver_id": "other-user",
+                    "content": "Sim, pronta entrega. Envio amanhã pela Yamato.", "message_type": "text", "created_at": "2026-09-10T10:05:00.000Z",
+                    "part_id": "5d1df2a3-9d7a-478b-9b22-34183607f061",
+                    "parts": { "id": "5d1df2a3-9d7a-478b-9b22-34183607f061", "title": "GReddy T88-34D Turbocharger SR20DET", "price": 48000, "images": ["https://example.com/mock.jpg"] }
+                },
+                {
+                    "id": "m3", "sender_id": "other-user", "receiver_id": "demo-user-123",
+                    "content": "Aceita 45,000 JPY nela?", "message_type": "text", "created_at": "2026-09-10T10:10:00.000Z",
+                    "part_id": "5d1df2a3-9d7a-478b-9b22-34183607f061",
+                    "parts": { "id": "5d1df2a3-9d7a-478b-9b22-34183607f061", "title": "GReddy T88-34D Turbocharger SR20DET", "price": 48000, "images": ["https://example.com/mock.jpg"] }
+                }
+            ]
+            route.fulfill(status=200, content_type="application/json", body=json.dumps(mock_data))
+        else:
+            route.continue_()
+            
+    def route_profiles(route):
+        if route.request.method == "GET":
+            mock_profile = {"id": "other-user", "full_name": "Kenji Sato", "avatar_url": None}
+            route.fulfill(status=200, content_type="application/json", body=json.dumps(mock_profile))
+        else:
+            route.continue_()
+
+    page.route("**/rest/v1/messages*", route_messages)
+    page.route("**/rest/v1/profiles*", route_profiles)
+
     page.goto(f"{BASE_URL}/messages")
     _wait_loaded(page)
     page.wait_for_timeout(2500)
@@ -225,7 +280,7 @@ def flow_messages(page):
             chat_input.click()
             page.wait_for_timeout(500)
             # Digita como se fosse uma negociação japonesa
-            chat_input.type("Qual o estado da turbina GReddy?", delay=60)
+            chat_input.type("Se fechar pelo sistema agora, consigo fazer 47,000 JPY com frete incluso.", delay=40)
             page.wait_for_timeout(1000)
             
             # Envia
@@ -301,13 +356,14 @@ if __name__ == "__main__":
     print("=" * 60)
     
     scenes = [
-        ("demo_0_register", flow_register, False), # False = don't inject auth, start logged out
-        ("demo_1_home",     flow_home, True),
-        ("demo_2_catalog",  flow_catalog, True),
-        ("demo_3_product",  flow_product_detail, True),
-        ("demo_4_upload",   flow_create_listing, True),
-        ("demo_5_messages", flow_messages, True),
-        ("demo_6_checkout", flow_checkout, True),
+        ("demo_0_landing",  flow_landing_hero, False),
+        ("demo_1_register", flow_register, False),
+        ("demo_2_home",     flow_home, True),
+        ("demo_3_catalog",  flow_catalog, True),
+        ("demo_4_product",  flow_product_detail, True),
+        ("demo_5_upload",   flow_create_listing, True),
+        ("demo_6_messages", flow_messages, True),
+        ("demo_7_checkout", flow_checkout, True),
     ]
     
     captured = []
