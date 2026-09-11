@@ -64,68 +64,7 @@ const STATS = [
 
 // ── GSAP Interactive Components ───────────────────────────────────────────────
 
-const MorphingNeonText: React.FC = () => {
-  const [activeWord, setActiveWord] = useState<'DIMENSÃO' | 'IMERSÃO'>('DIMENSÃO');
-  const [isMorphing, setIsMorphing] = useState(false);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIsMorphing(true);
-      setTimeout(() => {
-        setActiveWord((prev) => (prev === 'DIMENSÃO' ? 'IMERSÃO' : 'DIMENSÃO'));
-        setIsMorphing(false);
-      }, 350);
-    }, 3800);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <span
-      className="text-neon-secret"
-      onClick={() => {
-        setIsMorphing(true);
-        setTimeout(() => {
-          setActiveWord((prev) => (prev === 'DIMENSÃO' ? 'IMERSÃO' : 'DIMENSÃO'));
-          setIsMorphing(false);
-        }, 250);
-      }}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.1em', cursor: 'pointer', background: 'linear-gradient(135deg,#00E5FF 0%,#0D75FF 45%,#7C3AED 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-    >
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          transition: 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-          opacity: isMorphing ? 0 : 1,
-          transform: isMorphing ? 'translateY(12px) scale(0.92)' : 'translateY(0px) scale(1)',
-          filter: isMorphing ? 'blur(8px)' : 'blur(0px)',
-        }}
-      >
-        <span>{activeWord}</span>
-      </span>
-
-      {/* V⚡VA Glifo Vetorial SVG */}
-      <span style={{ display: 'inline-flex', alignItems: 'center', WebkitTextFillColor: 'initial', color: '#00E5FF' }}>
-        <span>V</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          style={{
-            display: 'inline-block',
-            width: '0.7em',
-            height: '1.2em',
-            verticalAlign: '-0.1em',
-            margin: '0 0.02em',
-            filter: 'drop-shadow(0 0 14px #00E5FF) drop-shadow(0 0 25px rgba(0,229,255,0.6))',
-          }}
-        >
-          <polygon points="14,1 4,13 11,13 9,23 20,9 13,9" />
-        </svg>
-        <span>VA</span>
-      </span>
-    </span>
-  );
-};
 
 const Interactive3DCard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -661,9 +600,10 @@ export default function PresentationPage() {
             <span style={{ fontSize: 11, fontWeight: 700, color: '#00E5FF', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Digital A.I. Garage · DAIG.jp</span>
           </div>
 
-          {/* Title with Morphing Neon and SplitText */}
-          <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(50px,8vw,96px)', fontWeight: 900, lineHeight: 1.0, letterSpacing: -3, marginBottom: 24, maxWidth: 1100 }}>
-            Redefinindo a <MorphingNeonText /> da compra de peças automotivas.
+          {/* Title with SplitText and Logo */}
+          <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 900, lineHeight: 1.1, letterSpacing: -2, marginBottom: 24, maxWidth: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.25em' }}>
+            <span>Sua garagem digital está aqui</span>
+            <img src="/logo.png" alt="DAIG" style={{ height: '0.9em', filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.4))' }} />
           </h1>
 
           {/* Subtitle */}
