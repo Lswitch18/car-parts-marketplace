@@ -4,14 +4,25 @@ import Footer from './Footer'
 
 export default function Layout() {
   const location = useLocation()
+  const isPresentation = location.pathname === '/presentation'
   
   const showFooter = 
-    location.pathname === '/' ||
-    location.pathname === '/catalog' ||
-    location.pathname === '/parts' ||
-    location.pathname === '/cars' ||
-    location.pathname === '/auctions' ||
-    location.pathname.startsWith('/product/')
+    !isPresentation && (
+      location.pathname === '/' ||
+      location.pathname === '/catalog' ||
+      location.pathname === '/parts' ||
+      location.pathname === '/cars' ||
+      location.pathname === '/auctions' ||
+      location.pathname.startsWith('/product/')
+    )
+
+  if (isPresentation) {
+    return (
+      <div style={{ minHeight: '100vh' }}>
+        <Outlet />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
