@@ -1,12 +1,13 @@
 {
     "scenes": [
         {
-            "id": "scene1_hero",
-            "voiceover": "Bem-vindo ao DAIG, o marketplace definitivo de autope\u00e7as JDM.",
-            "overlay_text": "THE JDM MARKETPLACE",
-            "strategic_pause": 2.0,
-            "duration_frames": 429,
-            "audio_src": "/audio/scene1_hero.mp3",
+            "id": "scene1_register",
+            "voiceover": "Apresentamos o DAIG. A plataforma corporativa desenhada para revolucionar o mercado de autope\u00e7as automotivas.",
+            "overlay_text": "ENTERPRISE REGISTRATION",
+            "strategic_pause": 2.5,
+            "duration_frames": 327,
+            "phonetic_voiceover": "Apresentamos o Daigui. A plataforma corporativa desenhada para revolucionar o mercado de autope\u00e7as automotivas.",
+            "audio_src": "/audio/scene1_register.mp3",
             "effects": {
                 "animation_type": "cinematic_pan",
                 "scale_start": 1.0,
@@ -15,41 +16,44 @@
             }
         },
         {
-            "id": "scene2_dash",
-            "voiceover": "Acompanhe suas vendas e liquida\u00e7\u00e3o de forma instant\u00e2nea e totalmente integrada ao Stripe.",
-            "overlay_text": "SELLER ANALYTICS",
-            "strategic_pause": 1.5,
-            "duration_frames": 439,
-            "audio_src": "/audio/scene2_dash.mp3",
+            "id": "scene2_catalog",
+            "voiceover": "Navegue por um cat\u00e1logo global de alta performance. Encontre motores e pe\u00e7as verificadas com rastreabilidade total.",
+            "overlay_text": "GLOBAL CATALOG",
+            "strategic_pause": 2.0,
+            "duration_frames": 316,
+            "phonetic_voiceover": "Navegue por um cat\u00e1logo global de alta performance. Encontre motores e pe\u00e7as verificadas com rastreabilidade total.",
+            "audio_src": "/audio/scene2_catalog.mp3",
             "effects": {
                 "animation_type": "3d_tilt",
-                "rotate_y": -15,
-                "scale_start": 1.2,
-                "scale_end": 1.2,
+                "rotate_y": -10,
+                "scale_start": 1.1,
+                "scale_end": 1.1,
                 "text_animation": "glitch"
             }
         },
         {
-            "id": "scene3_catalog",
-            "voiceover": "Busque milhares de motores originais testados e com garantia diretamente do Jap\u00e3o.",
-            "overlay_text": "",
-            "strategic_pause": 0.5,
-            "duration_frames": 364,
-            "audio_src": "/audio/scene3_catalog.mp3",
+            "id": "scene3_ai_upload",
+            "voiceover": "Reduza custos operacionais com a nossa IA. Basta fazer o upload de uma foto da pe\u00e7a, e o DAIG extrai todos os dados t\u00e9cnicos instantaneamente.",
+            "overlay_text": "AI LISTING CREATOR",
+            "strategic_pause": 3.5,
+            "duration_frames": 442,
+            "phonetic_voiceover": "Reduza custos operacionais com a nossa IA. Basta fazer o upload de uma foto da pe\u00e7a, e o Daigui extrai todos os dados t\u00e9cnicos instantaneamente.",
+            "audio_src": "/audio/scene3_ai_upload.mp3",
             "effects": {
                 "animation_type": "static_zoom",
-                "scale_start": 1.1,
+                "scale_start": 1.0,
                 "scale_end": 1.1,
-                "text_animation": "none"
+                "text_animation": "neon_pulse"
             }
         },
         {
-            "id": "scene4_ai",
-            "voiceover": "Crie an\u00fancios irresist\u00edveis em segundos usando a intelig\u00eancia artificial do DAIG, que analisa a foto da pe\u00e7a e extrai todos os dados.",
-            "overlay_text": "AI LISTING CREATOR",
-            "strategic_pause": 3.0,
-            "duration_frames": 685,
-            "audio_src": "/audio/scene4_ai.mp3",
+            "id": "scene4_chat",
+            "voiceover": "Negocie diretamente atrav\u00e9s de um chat integrado e seguro, mantendo a comunica\u00e7\u00e3o centralizada e audit\u00e1vel.",
+            "overlay_text": "SECURE MESSAGING",
+            "strategic_pause": 2.0,
+            "duration_frames": 276,
+            "phonetic_voiceover": "Negocie diretamente atrav\u00e9s de um chat integrado e seguro, mantendo a comunica\u00e7\u00e3o centralizada e audit\u00e1vel.",
+            "audio_src": "/audio/scene4_chat.mp3",
             "effects": {
                 "animation_type": "dynamic_focus",
                 "scale_start": 1.1,
@@ -59,10 +63,11 @@
         },
         {
             "id": "scene5_checkout",
-            "voiceover": "Tudo isso com um fechamento de neg\u00f3cio ultrasseguro em ienes via Escrow. DAIG, the final gear.",
-            "overlay_text": "SECURE CHECKOUT",
-            "strategic_pause": 2.0,
-            "duration_frames": 547,
+            "voiceover": "Finalize a transa\u00e7\u00e3o com liquida\u00e7\u00e3o automatizada via Stripe e prote\u00e7\u00e3o Escrow. DAIG, a infraestrutura definitiva.",
+            "overlay_text": "INSTANT SETTLEMENT",
+            "strategic_pause": 3.0,
+            "duration_frames": 357,
+            "phonetic_voiceover": "Finalize a transa\u00e7\u00e3o com liquida\u00e7\u00e3o automatizada via Straipe e prote\u00e7\u00e3o \u00c9scrou. Daigui, a infraestrutura definitiva.",
             "audio_src": "/audio/scene5_checkout.mp3",
             "effects": {
                 "animation_type": "3d_tilt",

@@ -1,0 +1,19 @@
+===== PITCH DAIG (ALINHADO COM O VÍDEO DEMO DE 55 SEGUNDOS) =====
+
+[CENA 1: 00:00 - 00:07] (Abertura e Scroll)
+"Bem-vindo à DAIG. O marketplace definitivo que conecta o mundo ao mercado doméstico de autopeças do Japão. Nosso ecossistema premium oferece acesso direto a componentes JDM autênticos."
+
+[CENA 1b: 00:07 - 00:13] (Login Bypass)
+"Junte-se a milhares de compradores globais e vendedores japoneses verificados. Nossa integração sem atritos elimina intermediários e conecta você diretamente à fonte."
+
+[CENA 2: 00:13 - 00:25] (Catálogo e Busca do SR20DET)
+"Encontrar peças raras nunca foi tão fácil. Busque em nosso catálogo global para descobrir motores de alta performance, como este SR20DET impecável, fornecido por desmanches certificados."
+
+[CENA 3: 00:25 - 00:37] (Upload e Inteligência Artificial)
+"Para os vendedores, a criação de anúncios é revolucionada por nossa IA proprietária. Basta enviar uma foto e nosso motor extrai especificações técnicas instantaneamente, gerando um anúncio em segundos."
+
+[CENA 4: 00:37 - 00:47] (Chat e Aceite de Proposta)
+"As negociações acontecem em tempo real. Comunique-se com fornecedores japoneses usando nosso chat com tradução automática. Fechou negócio? Basta um clique para ir ao pagamento."
+
+[CENA 5: 00:47 - 00:55] (Checkout e Stripe)
+"O checkout é totalmente seguro. Lidamos com conformidade internacional, impostos JCT e custódia segura via Stripe Connect, garantindo total tranquilidade até a peça chegar na sua porta."

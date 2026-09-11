@@ -6,7 +6,7 @@ from pydub import AudioSegment
 
 PROPS_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "remotion_studio", "public", "props.json"))
 AUDIO_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "remotion_studio", "public", "audio"))
-FPS = 60
+FPS = 30
 
 async def generate_audio(text, output_file):
     # Usando uma voz brasileira premium
@@ -25,7 +25,8 @@ def run():
         audio_path = os.path.join(AUDIO_DIR, f"{scene['id']}.mp3")
         
         # Gerar TTS
-        asyncio.run(generate_audio(scene['voiceover'], audio_path))
+        text_to_speak = scene.get('phonetic_voiceover', scene['voiceover'])
+        asyncio.run(generate_audio(text_to_speak, audio_path))
         
         # Medir duração com pydub
         audio = AudioSegment.from_mp3(audio_path)

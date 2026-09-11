@@ -6,29 +6,29 @@ PROPS_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "remo
 class EffectAgent:
     def __init__(self):
         self.effect_map = {
-            "scene1_hero": {
+            "scene1_register": {
                 "animation_type": "cinematic_pan",
                 "scale_start": 1.0,
                 "scale_end": 1.15,
                 "text_animation": "spring_up"
             },
-            "scene2_dash": {
+            "scene2_catalog": {
                 "animation_type": "3d_tilt",
-                "rotate_y": -15, # Simula um monitor visto de lado
-                "scale_start": 1.2,
-                "scale_end": 1.2,
-                "text_animation": "glitch"
-            },
-            "scene3_catalog": {
-                "animation_type": "static_zoom",
+                "rotate_y": -10, 
                 "scale_start": 1.1,
                 "scale_end": 1.1,
-                "text_animation": "none"
+                "text_animation": "glitch"
             },
-            "scene4_ai": {
+            "scene3_ai_upload": {
+                "animation_type": "static_zoom",
+                "scale_start": 1.0,
+                "scale_end": 1.1,
+                "text_animation": "neon_pulse"
+            },
+            "scene4_chat": {
                 "animation_type": "dynamic_focus",
                 "scale_start": 1.1,
-                "scale_end": 1.3, # Focus agressivo para mostrar a IA lendo os dados
+                "scale_end": 1.3, 
                 "text_animation": "neon_pulse"
             },
             "scene5_checkout": {

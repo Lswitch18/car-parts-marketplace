@@ -1,4 +1,4 @@
-import { CalculateMetadataFunction, Composition, Series, Video, Audio, spring, useCurrentFrame, useVideoConfig, AbsoluteFill, interpolate, staticFile } from "remotion";
+import { CalculateMetadataFunction, Composition, Series, OffthreadVideo, Audio, spring, useCurrentFrame, useVideoConfig, AbsoluteFill, interpolate, staticFile } from "remotion";
 import React from "react";
 import propsData from "../public/props.json";
 
@@ -38,49 +38,40 @@ export const MyComposition = () => {
       id="Main"
       component={VideoOrchestrator}
       durationInFrames={60} 
-      fps={60}
-      width={1920}
-      height={1080}
+      fps={30}
+      width={1280}
+      height={720}
       calculateMetadata={calculateMetadata}
+      defaultProps={{ scenes: [] }}
     />
   );
 };
 
-const AnimatedText: React.FC<{ text: string, type: string }> = ({ text, type }) => {
+const AnimatedBadge: React.FC<{ text: string }> = ({ text }) => {
     const frame = useCurrentFrame();
-    const { fps } = useVideoConfig();
     
     if(!text) return null;
 
-    let yOffset = 0;
-    let opacity = 1;
-    let skew = 0;
-
-    if (type === "spring_up") {
-        yOffset = interpolate(spring({ frame, fps, config: { damping: 12 } }), [0, 1], [100, 0]);
-        opacity = interpolate(frame, [0, 15], [0, 1]);
-    } else if (type === "glitch") {
-        skew = frame % 10 === 0 ? 15 : frame % 7 === 0 ? -15 : 0;
-        opacity = frame % 5 === 0 ? 0.8 : 1;
-    } else if (type === "neon_pulse") {
-        opacity = interpolate(Math.sin(frame / 5), [-1, 1], [0.5, 1]);
-    }
+    // Fade in gracefully
+    const opacity = interpolate(frame, [0, 15], [0, 1], { extrapolateRight: 'clamp' });
+    const yOffset = interpolate(spring({ frame, fps: 30, config: { damping: 14 } }), [0, 1], [30, 0]);
 
     return (
-        <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', zIndex: 50 }}>
+        <AbsoluteFill style={{ justifyContent: 'flex-end', alignItems: 'flex-start', padding: '50px', zIndex: 50 }}>
             <div style={{
-                transform: `translateY(${yOffset}px) skewX(${skew}deg)`,
+                transform: `translateY(${yOffset}px)`,
                 opacity: opacity,
-                fontSize: '100px',
-                fontWeight: 'bold',
-                fontFamily: 'sans-serif',
-                color: 'white',
-                textShadow: '0 0 20px #00E5FF, 0 0 40px #00E5FF',
-                textAlign: 'center',
-                padding: '20px',
-                background: 'rgba(0,0,0,0.5)',
-                borderRadius: '16px',
-                backdropFilter: 'blur(10px)'
+                fontSize: '24px',
+                fontWeight: 500,
+                fontFamily: '"Inter", "Roboto", sans-serif',
+                color: 'rgba(255, 255, 255, 0.9)',
+                letterSpacing: '1px',
+                padding: '12px 24px',
+                background: 'rgba(2, 6, 23, 0.65)',
+                border: '1px solid rgba(0, 229, 255, 0.3)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0, 229, 255, 0.1)',
+                borderRadius: '100px',
+                backdropFilter: 'blur(16px)'
             }}>
                 {text}
             </div>
@@ -92,30 +83,45 @@ const SceneRenderer: React.FC<{ scene: Scene }> = ({ scene }) => {
     const frame = useCurrentFrame();
     const { fps, durationInFrames } = useVideoConfig();
     
-    const scale = interpolate(frame, [0, durationInFrames], [scene.effects.scale_start, scene.effects.scale_end]);
+    // Very subtle zoom in the entire frame
+    const bgScale = interpolate(frame, [0, durationInFrames], [1, 1.05]);
     
+    // Smooth 3D tilt
     let rotateY = 0;
     if (scene.effects.animation_type === '3d_tilt' && scene.effects.rotate_y) {
-        rotateY = interpolate(spring({ frame, fps, config: { mass: 2 } }), [0, 1], [0, scene.effects.rotate_y]);
+        rotateY = interpolate(spring({ frame, fps, config: { mass: 2, damping: 200 } }), [0, 1], [0, scene.effects.rotate_y]);
+    } else {
+        // Default subtle motion if no tilt
+        rotateY = interpolate(frame, [0, durationInFrames], [0, 2]);
     }
 
     return (
-        <AbsoluteFill style={{ backgroundColor: 'black' }}>
+        <AbsoluteFill style={{ 
+            background: 'radial-gradient(circle at 50% 30%, #061838 0%, #020617 100%)',
+            overflow: 'hidden' 
+        }}>
+            {/* Animated subtle grid or background texture could go here */}
+            
             <div style={{
                 width: '100%', height: '100%',
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
-                perspective: '1000px'
+                perspective: '1500px',
+                transform: `scale(${bgScale})`
             }}>
                 <div style={{
-                    width: '100%', height: '100%',
-                    transform: `scale(${scale}) rotateY(${rotateY}deg)`,
+                    width: '85%', height: '85%',
+                    transform: `rotateY(${rotateY}deg) rotateX(1deg)`,
+                    borderRadius: '24px',
+                    overflow: 'hidden',
+                    boxShadow: '0 30px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1), 0 0 40px rgba(0,229,255,0.1)',
+                    background: '#000',
                     transition: 'transform 0.1s'
                 }}>
-                    <Video src={staticFile(`videos/${scene.id}.webm`)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <OffthreadVideo src={staticFile(`videos/${scene.id}.webm`)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             </div>
             <Audio src={staticFile(`audio/${scene.id}.mp3`)} />
-            <AnimatedText text={scene.overlay_text} type={scene.effects.text_animation} />
+            <AnimatedBadge text={scene.overlay_text} />
         </AbsoluteFill>
     );
 };

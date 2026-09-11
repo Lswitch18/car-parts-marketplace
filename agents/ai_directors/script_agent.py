@@ -8,48 +8,51 @@ class ScriptAgent:
     def __init__(self):
         self.scenes = [
             {
-                "id": "scene1_hero",
-                "voiceover": "Bem-vindo ao DAIG, o marketplace definitivo de autopeças JDM.",
-                "overlay_text": "THE JDM MARKETPLACE",
-                "strategic_pause": 2.0, # Pausa ao final da fala para o usuário ler o texto
-                "duration_frames": 0, # Calculado dinamicamente pelo Audio Agent
-            },
-            {
-                "id": "scene2_dash",
-                "voiceover": "Acompanhe suas vendas e liquidação de forma instantânea e totalmente integrada ao Stripe.",
-                "overlay_text": "SELLER ANALYTICS",
-                "strategic_pause": 1.5,
+                "id": "scene1_register",
+                "voiceover": "Apresentamos o DAIG. A plataforma corporativa desenhada para revolucionar o mercado de autopeças automotivas.",
+                "overlay_text": "ENTERPRISE REGISTRATION",
+                "strategic_pause": 2.5,
                 "duration_frames": 0,
             },
             {
-                "id": "scene3_catalog",
-                "voiceover": "Busque milhares de motores originais testados e com garantia diretamente do Japão.",
-                "overlay_text": "",
-                "strategic_pause": 0.5,
+                "id": "scene2_catalog",
+                "voiceover": "Navegue por um catálogo global de alta performance. Encontre motores e peças verificadas com rastreabilidade total.",
+                "overlay_text": "GLOBAL CATALOG",
+                "strategic_pause": 2.0,
                 "duration_frames": 0,
             },
             {
-                "id": "scene4_ai",
-                "voiceover": "Crie anúncios irresistíveis em segundos usando a inteligência artificial do DAIG, que analisa a foto da peça e extrai todos os dados.",
+                "id": "scene3_ai_upload",
+                "voiceover": "Reduza custos operacionais com a nossa IA. Basta fazer o upload de uma foto da peça, e o DAIG extrai todos os dados técnicos instantaneamente.",
                 "overlay_text": "AI LISTING CREATOR",
-                "strategic_pause": 3.0, # Muito importante dar pausa no final pra mostrar a mágica da IA
+                "strategic_pause": 3.5,
+                "duration_frames": 0,
+            },
+            {
+                "id": "scene4_chat",
+                "voiceover": "Negocie diretamente através de um chat integrado e seguro, mantendo a comunicação centralizada e auditável.",
+                "overlay_text": "SECURE MESSAGING",
+                "strategic_pause": 2.0, 
                 "duration_frames": 0,
             },
             {
                 "id": "scene5_checkout",
-                "voiceover": "Tudo isso com um fechamento de negócio ultrasseguro em ienes via Escrow. DAIG, the final gear.",
-                "overlay_text": "SECURE CHECKOUT",
-                "strategic_pause": 2.0,
+                "voiceover": "Finalize a transação com liquidação automatizada via Stripe e proteção Escrow. DAIG, a infraestrutura definitiva.",
+                "overlay_text": "INSTANT SETTLEMENT",
+                "strategic_pause": 3.0,
                 "duration_frames": 0,
             }
         ]
 
-    def run(self):
+    def generate_script(self):
         print("✍️ [Script Agent] Analisando fluxos e gerando roteiro base com pausas estratégicas...")
         # Apenas salva o arquivo inicial, que depois será enriquecido pelos outros agentes.
         os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
         with open(OUTPUT_PATH, "w") as f:
             json.dump({"scenes": self.scenes}, f, indent=4)
+
+    def run(self):
+        self.generate_script()
         print(f"✅ [Script Agent] Roteiro salvo em {OUTPUT_PATH}")
 
 if __name__ == "__main__":
