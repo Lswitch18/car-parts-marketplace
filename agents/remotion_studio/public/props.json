@@ -1,0 +1,76 @@
+{
+    "scenes": [
+        {
+            "id": "scene1_hero",
+            "voiceover": "Bem-vindo ao DAIG, o marketplace definitivo de autope\u00e7as JDM.",
+            "overlay_text": "THE JDM MARKETPLACE",
+            "strategic_pause": 2.0,
+            "duration_frames": 429,
+            "audio_src": "/audio/scene1_hero.mp3",
+            "effects": {
+                "animation_type": "cinematic_pan",
+                "scale_start": 1.0,
+                "scale_end": 1.15,
+                "text_animation": "spring_up"
+            }
+        },
+        {
+            "id": "scene2_dash",
+            "voiceover": "Acompanhe suas vendas e liquida\u00e7\u00e3o de forma instant\u00e2nea e totalmente integrada ao Stripe.",
+            "overlay_text": "SELLER ANALYTICS",
+            "strategic_pause": 1.5,
+            "duration_frames": 439,
+            "audio_src": "/audio/scene2_dash.mp3",
+            "effects": {
+                "animation_type": "3d_tilt",
+                "rotate_y": -15,
+                "scale_start": 1.2,
+                "scale_end": 1.2,
+                "text_animation": "glitch"
+            }
+        },
+        {
+            "id": "scene3_catalog",
+            "voiceover": "Busque milhares de motores originais testados e com garantia diretamente do Jap\u00e3o.",
+            "overlay_text": "",
+            "strategic_pause": 0.5,
+            "duration_frames": 364,
+            "audio_src": "/audio/scene3_catalog.mp3",
+            "effects": {
+                "animation_type": "static_zoom",
+                "scale_start": 1.1,
+                "scale_end": 1.1,
+                "text_animation": "none"
+            }
+        },
+        {
+            "id": "scene4_ai",
+            "voiceover": "Crie an\u00fancios irresist\u00edveis em segundos usando a intelig\u00eancia artificial do DAIG, que analisa a foto da pe\u00e7a e extrai todos os dados.",
+            "overlay_text": "AI LISTING CREATOR",
+            "strategic_pause": 3.0,
+            "duration_frames": 685,
+            "audio_src": "/audio/scene4_ai.mp3",
+            "effects": {
+                "animation_type": "dynamic_focus",
+                "scale_start": 1.1,
+                "scale_end": 1.3,
+                "text_animation": "neon_pulse"
+            }
+        },
+        {
+            "id": "scene5_checkout",
+            "voiceover": "Tudo isso com um fechamento de neg\u00f3cio ultrasseguro em ienes via Escrow. DAIG, the final gear.",
+            "overlay_text": "SECURE CHECKOUT",
+            "strategic_pause": 2.0,
+            "duration_frames": 547,
+            "audio_src": "/audio/scene5_checkout.mp3",
+            "effects": {
+                "animation_type": "3d_tilt",
+                "rotate_y": 10,
+                "scale_start": 1.1,
+                "scale_end": 1.1,
+                "text_animation": "spring_up"
+            }
+        }
+    ]
+}
