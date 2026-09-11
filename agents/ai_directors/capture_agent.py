@@ -24,7 +24,7 @@ class CaptureAgent:
             # Auth bypass from authStore.ts (mock_auth_for_video)
             page.goto(self.base_url)
             page.evaluate("window.localStorage.setItem('mock_auth_for_video', 'true')")
-            page.evaluate("window.localStorage.setItem('auth-storage', JSON.stringify({state: {isAuthenticated: true, user: {id: '123', name: 'Demo User', role: 'buyer', isVerified: true, email: 'demo@daig.jp', currency: 'JPY'}}, version: 0}))")
+            page.evaluate("window.localStorage.setItem('auth-storage', JSON.stringify({state: {isAuthenticated: true, user: {id: '123', name: 'Demo User', role: 'buyer', isVerified: true, email: 'demo@daig.jp', currency: 'JPY', onboarding_completed: true}}, version: 0}))")
             page.reload()
             
             try:
@@ -47,6 +47,25 @@ class CaptureAgent:
                     print(f"✅ Vídeo salvo em: {final_path}")
 
     def capture_all_scenes(self):
+        print("🔥 Aquecendo o servidor (Warmup)...")
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(self.base_url)
+            page.evaluate("window.localStorage.setItem('mock_auth_for_video', 'true')")
+            page.evaluate("window.localStorage.setItem('auth-storage', JSON.stringify({state: {isAuthenticated: true, user: {id: '123', name: 'Demo User', role: 'buyer', isVerified: true, email: 'demo@daig.jp', currency: 'JPY', onboarding_completed: true}}, version: 0}))")
+            
+            routes = ["/", "/dashboard", "/catalog", "/sell", "/inbox", "/auctions"]
+            for route in routes:
+                print(f"  -> Carregando {route}")
+                page.goto(f"{self.base_url}{route}")
+                page.wait_for_selector(".animate-spin", state="hidden", timeout=30000)
+                page.wait_for_timeout(1000)
+            
+            browser.close()
+            
+        print("✅ Warmup concluído. Iniciando gravações...")
+        
         self._record_flow("scene1_register", self._flow_register)
         self._record_flow("scene2_catalog", self._flow_catalog)
         self._record_flow("scene3_ai_upload", self._flow_ai_upload)
@@ -59,43 +78,49 @@ class CaptureAgent:
     def _flow_register(self, page):
         # Go to home and simulate reading/registering, then jump to dashboard
         page.goto(f"{self.base_url}/")
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=15000)
         page.wait_for_timeout(1000)
         page.mouse.wheel(0, 700)
         page.wait_for_timeout(2000)
         page.goto(f"{self.base_url}/dashboard")
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=15000)
         page.wait_for_timeout(3000)
         
     def _flow_catalog(self, page):
         page.goto(f"{self.base_url}/catalog")
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=15000)
         page.wait_for_timeout(1500)
         # Scroll to show parts
         page.mouse.wheel(0, 500)
         page.wait_for_timeout(1500)
         page.mouse.wheel(0, -200)
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(3000)
 
     def _flow_ai_upload(self, page):
         # Simulate AI Scan page
         page.goto(f"{self.base_url}/sell")
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=15000)
         page.wait_for_timeout(1500)
         # We just hover or show the scanner area
         page.mouse.move(500, 500)
-        page.wait_for_timeout(3000)
+        page.wait_for_timeout(4000)
 
     def _flow_chat(self, page):
         # Open inbox
         page.goto(f"{self.base_url}/inbox")
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=15000)
         page.wait_for_timeout(2000)
         # Click on a message if it exists, or just show inbox layout
         page.mouse.wheel(0, 300)
-        page.wait_for_timeout(2000)
+        page.wait_for_timeout(3000)
 
     def _flow_checkout(self, page):
         # Go to auctions or checkout
         page.goto(f"{self.base_url}/auctions")
+        page.wait_for_selector(".animate-spin", state="hidden", timeout=15000)
         page.wait_for_timeout(1500)
         page.mouse.wheel(0, 800)
-        page.wait_for_timeout(3000)
+        page.wait_for_timeout(4000)
 
 if __name__ == "__main__":
     agent = CaptureAgent()
