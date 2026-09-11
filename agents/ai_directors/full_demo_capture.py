@@ -100,7 +100,7 @@ def flow_landing_hero(page):
     page.goto(BASE_URL)
     _wait_loaded(page)
     
-    page.wait_for_timeout(2000)
+    page.wait_for_timeout(4500)
 
 def flow_register(page):
     """Cena 0: Cadastro do Usuário."""
@@ -190,24 +190,23 @@ def flow_create_listing(page):
     page.mouse.wheel(0, 300)
     page.wait_for_timeout(1500)
     try:
-        upload_area = page.query_selector("input[type='file']")
-        if upload_area:
-            bbox = upload_area.bounding_box()
-            if bbox:
-                cx = bbox["x"] + bbox["width"] / 2
-                cy = bbox["y"] + bbox["height"] / 2
-                page.mouse.move(cx, cy)
-                page.wait_for_timeout(1500)
-    except: pass
+        page.set_input_files("input[type='file']", "public/mock_engine.jpg")
+        page.wait_for_timeout(1500)
+        
+        # Click the AI button
+        try:
+            page.click("button:has-text('Preencha')", timeout=3000)
+        except:
+            page.click("button:has-text('formulário')", timeout=3000)
+            
+        # Esperar que a IA preencha os campos (a animação leva cerca de 4 segundos)
+        page.wait_for_timeout(6000)
+    except Exception as e:
+        print(f"Upload error: {e}")
+        pass
+        
     page.mouse.wheel(0, 400)
-    page.wait_for_timeout(1500)
-    try:
-        title_input = page.query_selector("input[name='title'], input[placeholder*='título'], input[placeholder*='title']")
-        if title_input:
-            title_input.click()
-            title_input.type("GReddy T88-34D Turbocharger SR20DET", delay=50)
-            page.wait_for_timeout(1500)
-    except: pass
+    page.wait_for_timeout(2000)
     page.mouse.wheel(0, 500)
     page.wait_for_timeout(2000)
     page.mouse.wheel(0, -800)
@@ -256,18 +255,14 @@ def flow_messages(page):
     page.route("**/rest/v1/messages*", route_messages)
     page.route("**/rest/v1/profiles*", route_profiles)
 
-    page.goto(f"{BASE_URL}/messages")
+    page.goto(f"{BASE_URL}/messages?user=other-user")
     _wait_loaded(page)
     page.wait_for_timeout(2500)
     
     # Interage e escreve uma mensagem de negociação no chat
     try:
-        # Clica num contato no sidebar (fallback pra área seletora)
-        page.mouse.click(150, 250)
-        page.wait_for_timeout(1500)
-        
         # Foca no input do chat
-        chat_input = page.query_selector("input[placeholder*='mensagem'], input[placeholder*='message'], textarea")
+        chat_input = page.query_selector("input[type='text']")
         if chat_input:
             chat_input.click()
             page.wait_for_timeout(500)
@@ -301,8 +296,8 @@ def flow_checkout(page):
         const btn = document.querySelector("button[type='submit']");
         if (btn && btn.parentElement) {
             const badge = document.createElement("div");
-            badge.innerHTML = "🔒 <b>Transação Segura Escrow:</b> Repasse JCT após entrega (Liquidação T+4)";
-            badge.style.cssText = "background: rgba(0, 229, 255, 0.15); color: #00E5FF; padding: 12px 16px; border-radius: 8px; border: 1px solid #00E5FF; margin-bottom: 16px; font-size: 14px; text-align: center; animation: pulse 2s infinite;";
+            badge.innerHTML = "🔒 <b>Pagamento Seguro Escrow (Liquidação T+4)</b>";
+            badge.style.cssText = "background: rgba(0, 229, 255, 0.15); color: #00E5FF; padding: 12px 16px; border-radius: 8px; border: 1px solid #00E5FF; margin-bottom: 16px; font-size: 14px; text-align: center; font-family: sans-serif;";
             
             const keyframes = document.createElement('style');
             keyframes.innerHTML = "@keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; box-shadow: 0 0 15px rgba(0,229,255,0.4); } 100% { opacity: 0.8; } }";
@@ -365,10 +360,10 @@ if __name__ == "__main__":
             captured.append(path)
     
     if captured:
-        final_output = os.path.join(OUT_DIR, "daig-full-demo.webm")
+        final_output = os.path.join(OUT_DIR, "daig-full-demo-v2.webm")
         merge_videos(captured, final_output)
         
-        mp4_output = os.path.join(OUT_DIR, "daig-full-demo.mp4")
+        mp4_output = os.path.join(OUT_DIR, "daig-full-demo-v2.mp4")
         subprocess.run(["ffmpeg", "-y", "-i", final_output, "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-c:a", "copy", mp4_output], capture_output=True)
         if os.path.exists(mp4_output):
             print(f"  ✅ MP4: {mp4_output} ({os.path.getsize(mp4_output)/(1024*1024):.1f}MB)")

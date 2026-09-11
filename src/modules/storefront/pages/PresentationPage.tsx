@@ -320,13 +320,13 @@ const DemoVideoPlayer: React.FC = () => {
   };
 
   const chapters = [
-    { label: 'Cadastro', pct: 0 },
-    { label: 'Dashboard', pct: 21 },
-    { label: 'Catálogo', pct: 31 },
-    { label: 'Produto', pct: 50 },
-    { label: 'Upload IA', pct: 63 },
-    { label: 'Chat', pct: 74 },
-    { label: 'Stripe T+4', pct: 85 },
+    { label: 'Revolução 360°', pct: 0 },
+    { label: 'Cadastro Express', pct: 19.5 },
+    { label: 'Plataforma Unificada', pct: 27.4 },
+    { label: 'Catálogo JDM', pct: 40.9 },
+    { label: 'Gestão de Peças', pct: 52.8 },
+    { label: 'IA para Vendedores', pct: 71.4 },
+    { label: 'Chat & Negociação', pct: 87.5 },
   ];
 
   return (
@@ -366,8 +366,8 @@ const DemoVideoPlayer: React.FC = () => {
             poster="/screenshots/home.jpg"
             muted={muted}
           >
-            <source src="/videos/daig-full-demo.webm" type="video/webm" />
-            <source src="/videos/daig-full-demo.mp4" type="video/mp4" />
+            <source src="/videos/daig-full-demo-v2.webm" type="video/webm" />
+            <source src="/videos/daig-full-demo-v2.mp4" type="video/mp4" />
             <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt" label="Português" default={voiceLang === 'pt-BR'} />
             <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt" label="日本語" default={voiceLang === 'ja-JP'} />
           </video>
