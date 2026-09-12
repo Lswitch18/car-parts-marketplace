@@ -18,10 +18,7 @@ import React, { useRef, useEffect, Suspense } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, PerspectiveCamera, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import { gsap, ScrollTrigger } from '@/modules/shared/lib/gsap'
 
 // G Gear 3D — 12 dentes, cian→roxo
 const Gear: React.FC<{ progress: { current: number } }> = ({ progress }) => {

@@ -1,10 +1,7 @@
 import React, { useRef } from 'react'
-import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap, ScrollTrigger } from '@/modules/shared/lib/gsap'
 import { useAnimatedCounter } from '@/modules/storefront/hooks/useAnimatedCounter'
-
-if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const ZenginSteps = [
   { day: 'T+0', label: 'Checkout', sub: 'Stripe Connect\n¥90 transfer', color: '#00E5FF' },

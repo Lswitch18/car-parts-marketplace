@@ -176,40 +176,26 @@ export const signOut = async () => {
 export const getAdminStats = async () => {
   try {
     // Queries diretas (sem RPC) para evitar 404 em produção — RPCs get_total_* não existem no Supabase
-    const getUsers = async () => {
-      const { count } = await supabase.from('profiles').select('id', { count: 'exact', head: true })
-      if (count !== null) return count
-      const { count: c2 } = await supabase.from('admin_profiles').select('id', { count: 'exact', head: true })
-      return c2 || 0
-    }
-    const getGmv = async () => {
-      const { data } = await supabase.from('transactions').select('amount, payment_status, fulfillment_status')
-      if (!data) return 0
-      return (data as Array<{amount:number;payment_status:string;fulfillment_status:string}>).reduce((s, t) => {
-        if (t.payment_status === 'paid' || ['delivered','completed'].includes(t.fulfillment_status)) return s + Number(t.amount || 0)
-        return s
-      }, 0)
-    }
-    const getRevenue = async (gmv: number) => Math.round(gmv * 0.1)
-
-    // Busca GMV primeiro para derivar receita sem segunda query
-    const gmvData = await supabase.from('transactions').select('amount, payment_status, fulfillment_status')
-    const totalGMV = gmvData.data ? (gmvData.data as Array<{amount:number;payment_status:string;fulfillment_status:string}>).reduce((s, t) => {
-      if (t.payment_status === 'paid' || ['delivered','completed'].includes(t.fulfillment_status)) return s + Number(t.amount || 0)
-      return s
-    }, 0) : 0
-
-    const [totalUsers, totalRevenue, transactionsResult, partsCountRes] = await Promise.all([
-      getUsers(),
-      Promise.resolve(getRevenue(totalGMV)),
-      supabase.from('transactions').select('id, payment_status', { count: 'exact' }),
+    const [usersRes, txRes, partsRes] = await Promise.all([
+      (async () => {
+        const { count } = await supabase.from('profiles').select('id', { count: 'exact', head: true })
+        if (count !== null) return count
+        const { count: c2 } = await supabase.from('admin_profiles').select('id', { count: 'exact', head: true })
+        return c2 || 0
+      })(),
+      supabase.from('transactions').select('amount, payment_status, fulfillment_status', { count: 'exact' }),
       supabase.from('parts').select('id', { count: 'exact', head: true }),
     ])
-    
-    const totalTransactions = transactionsResult.count || 0
-    const completedTransactions = (transactionsResult.data as Array<{payment_status:string}> | null)?.filter(t => t.payment_status === 'paid').length || 0
-    // partsCount não é usado aqui, mas disponível para PresentationPage se precisar
-    void partsCountRes
+    const totalUsers = usersRes as number
+    const txData = (txRes.data as Array<{amount:number;payment_status:string;fulfillment_status:string}> | null) || []
+    const totalTransactions = txRes.count || 0
+    const totalGMV = txData.reduce((s, t) => {
+      if (t.payment_status === 'paid' || ['delivered','completed'].includes(t.fulfillment_status)) return s + Number(t.amount || 0)
+      return s
+    }, 0)
+    const totalRevenue = Math.round(totalGMV * 0.1)
+    const completedTransactions = txData.filter(t => t.payment_status === 'paid').length
+    void partsRes
     return {
       totalUsers,
       totalGMV,

@@ -1,20 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
-import { supabase, getAdminStats } from '@/modules/shared/lib/supabase';
+import { gsap, ScrollTrigger, SplitText } from '@/modules/shared/lib/gsap';
+import { supabase } from '@/modules/shared/lib/supabase';
+import { useAdminStats } from '@/modules/shared/hooks/useAdminStats';
 import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoatSection';
 import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
 import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
 import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
 import { GarageScene } from '@/modules/storefront/components/GarageScene';
-
-// Register GSAP plugins
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
-}
 
 // ── DAIG Cinematic Presentation Page (GSAP V2) ────────────────────────────────
 // Landing page de apresentação completa: hero, vídeo de demo embutido,
@@ -608,43 +602,38 @@ const FeatureCard: React.FC<{ feature: typeof FEATURES[0]; className?: string }>
 export default function PresentationPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroTitleRef = useRef<HTMLHeadingElement>(null);
-
-  const [stats, setStats] = useState([
-    { value: '...', label: 'Valor Negociado' },
-    { value: '...', label: 'Lojas & Clientes' },
-    { value: '...', label: 'Peças Disponíveis' },
-    { value: '...', label: 'Vendas Concluídas' },
-  ]);
-
+  const { data: adminStats } = useAdminStats()
+  const [partsCount, setPartsCount] = useState<number | null>(null)
   useEffect(() => {
-    async function loadStats() {
-      try {
-        const adminStats = await getAdminStats();
-        const { count: partsCount } = await supabase.from('parts').select('id', { count: 'exact', head: true });
-        
-        setStats([
-          { value: `¥${(adminStats.totalGMV).toLocaleString()}`, label: 'Valor Negociado' },
-          { value: `${adminStats.totalUsers}`, label: 'Lojas & Clientes' },
-          { value: `${partsCount || 0}`, label: 'Peças Disponíveis' },
-          { value: `${adminStats.totalTransactions}`, label: 'Vendas Concluídas' },
-        ]);
-      } catch (err) {
-        console.error('Failed to load stats', err);
-      }
-    }
-    loadStats();
-  }, []);
+    supabase.from('parts').select('id', { count: 'exact', head: true }).then(({ count }) => setPartsCount(count || 0))
+  }, [])
+  const stats = React.useMemo(() => {
+    if (!adminStats) return [
+      { value: '...', label: 'Valor Negociado' },
+      { value: '...', label: 'Lojas & Clientes' },
+      { value: '...', label: 'Peças Disponíveis' },
+      { value: '...', label: 'Vendas Concluídas' },
+    ]
+    return [
+      { value: `¥${(adminStats.totalGMV).toLocaleString()}`, label: 'Valor Negociado' },
+      { value: `${adminStats.totalUsers}`, label: 'Lojas & Clientes' },
+      { value: `${partsCount ?? 0}`, label: 'Peças Disponíveis' },
+      { value: `${adminStats.totalTransactions}`, label: 'Vendas Concluídas' },
+    ]
+  }, [adminStats, partsCount])
   
-  // Lenis Smooth Scroll (premium buttery)
+  // Lenis Smooth Scroll — singleton global (evita duplicar com SmoothScrollProvider)
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) return
+    if ((window as unknown as { __lenis?: unknown }).__lenis) return
     const lenis = new Lenis({ duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true })
+    ;(window as unknown as { __lenis: unknown }).__lenis = lenis
     lenis.on('scroll', ScrollTrigger.update)
     const raf = (time: number) => lenis.raf(time * 1000)
     gsap.ticker.add(raf)
     gsap.ticker.lagSmoothing(0)
-    return () => { gsap.ticker.remove(raf); lenis.destroy() }
+    return () => { gsap.ticker.remove(raf); lenis.destroy(); delete (window as unknown as { __lenis?: unknown }).__lenis }
   }, [])
 
   // GSAP Premium — performático, visível no load (sem depender de scroll)
@@ -700,13 +689,7 @@ export default function PresentationPage() {
       y: 50, opacity: 0, stagger: 0.1, ease: 'back.out(1.2)', duration: 0.8
     });
 
-    // 5. Investor Moat Reveal
-    gsap.from('.moat-card', {
-      scrollTrigger: { trigger: '.moat-grid', start: 'top 82%' },
-      y: 40, opacity: 0, stagger: 0.1, ease: 'power3.out', duration: 0.7
-    })
-
-    // 6. Final CTA
+    // 5. Final CTA (moat já animado em InvestorMoatSection — evita duplicata)
     gsap.from('.cta-section > div', {
       scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
       y: 40, opacity: 0, ease: 'power3.out', duration: 1
