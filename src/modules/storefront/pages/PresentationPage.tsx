@@ -8,6 +8,7 @@ import { supabase, getAdminStats } from '@/modules/shared/lib/supabase';
 import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoatSection';
 import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
 import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
+import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -731,25 +732,30 @@ export default function PresentationPage() {
             <div style={{ position: 'absolute', bottom: '5%', right: '5%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle,rgba(124,58,237,0.07) 0%,transparent 70%)', animation: 'glow 7s ease-in-out infinite reverse' }} />
           </div>
 
+          {/* G Fragment — Astra inspired (cian→roxo, dispersão até sumir) */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1, opacity: 0.9 }}>
+            <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100%', minHeight: '100vh' }} />
+          </div>
+
           {/* Logo badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 18px', borderRadius: 100, background: 'rgba(0,229,255,0.07)', border: '1px solid rgba(0,229,255,0.2)', marginBottom: 28 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 18px', borderRadius: 100, background: 'rgba(0,229,255,0.07)', border: '1px solid rgba(0,229,255,0.2)', marginBottom: 28, position: 'relative', zIndex: 2 }}>
             <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 10px #00E5FF', animation: 'glow 2s infinite' }} />
             <span style={{ fontSize: 11, fontWeight: 700, color: '#00E5FF', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Digital A.I. Garage · DAIG.jp</span>
           </div>
 
           {/* Title with SplitText and Logo — PNG otimizado para LCP */}
-          <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 900, lineHeight: 1.1, letterSpacing: -2, marginBottom: 24, maxWidth: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.25em' }}>
+          <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 900, lineHeight: 1.1, letterSpacing: -2, marginBottom: 24, maxWidth: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.25em', position: 'relative', zIndex: 2 }}>
             <span>Sua garagem digital está aqui</span>
             <img src="/presentation/logo-256.png" srcSet="/presentation/logo-256.png 1x, /presentation/logo.png 2x" alt="DAIG" width={84} height={84} loading="eager" fetchPriority="high" style={{ height: '0.9em', width: 'auto', filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.4))' }} />
           </h1>
 
           {/* Subtitle */}
-          <p style={{ fontSize: 'clamp(15px,1.8vw,20px)', color: 'rgba(255,255,255,0.5)', maxWidth: 620, lineHeight: 1.65, marginBottom: 44 }}>
+          <p style={{ fontSize: 'clamp(15px,1.8vw,20px)', color: 'rgba(255,255,255,0.5)', maxWidth: 620, lineHeight: 1.65, marginBottom: 44, position: 'relative', zIndex: 2 }}>
             Conectamos desmanches, oficinas e importadoras do Japão diretamente a compradores — com gestão por IA, pagamentos em JPY via Stripe Connect e repasses automáticos.
           </p>
 
           {/* CTAs */}
-          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', zIndex: 10 }}>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center', zIndex: 10, position: 'relative' }}>
             <MagneticButton href="#demo-video" primary>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#020617"><path d="M5 3l14 9-14 9V3z"/></svg>
               Ver Demo Completa
