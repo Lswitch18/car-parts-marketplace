@@ -291,22 +291,18 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       // Refresh para pin-spacer medir correto (visível sem precisar scrollar)
       requestAnimationFrame(() => ScrollTrigger.refresh())
       setTimeout(() => ScrollTrigger.refresh(), 120)
-      const heroEl = document.querySelector('.hero-section') as HTMLElement | null
-      const heroEl = document.querySelector('.hero-section') as HTMLElement | null
+      const heroEl2 = document.querySelector('.hero-section') as HTMLElement | null
       const st = ScrollTrigger.create({
-        trigger: heroEl || container,
+        trigger: heroEl2 || container,
         start: 'top top',
         end: '+=130%',
         scrub: 1,
-        pin: heroEl || container,
+        pin: heroEl2 || container,
         pinSpacing: true,
         anticipatePin: 1,
         onUpdate: self => { progressRef.current = self.progress },
         onRefresh: self => { progressRef.current = self.progress },
       })
-      progressRef.current = 0
-      ScrollTrigger.refresh()
-      // Força progresso inicial 0 e visível sem scroll
       progressRef.current = 0
       ScrollTrigger.refresh()
       // Mouse nudge (no accumulate)
