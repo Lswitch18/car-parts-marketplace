@@ -446,18 +446,19 @@ const DemoVideoPlayer: React.FC = () => {
             </div>
           </div>
 
-          {/* Video — Optimized with Kinetic Caption & Poster Blur-Up (trimmed 2.5s spinner) */}
-          <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer', background: 'url(/presentation/posters/hero_blur.jpg) center/cover no-repeat, #020617' }} onClick={toggle}>
+          {/* Video — sem spinner, PT-BR/JP com troca correta */}
+          <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer', background: '#020617' }} onClick={toggle}>
             <video
               key={uiLang}
               ref={videoRef}
               src={uiLang === 'pt' ? '/presentation/pt_noaudio.mp4' : '/presentation/ja_noaudio.mp4'}
-              style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
+              style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover', background: '#020617' }}
               onTimeUpdate={onTimeUpdate}
               onLoadedMetadata={onLoaded}
+              onCanPlay={() => { if (videoRef.current) videoRef.current.style.opacity = '1' }}
+              onWaiting={() => { /* sem spinner — mantém poster */ }}
               onEnded={() => { setPlaying(false); try { audioRef.current?.pause() } catch {} }}
               onError={() => {
-                // Fallback to legacy if trimmed missing
                 const v = videoRef.current
                 if (v && !v.src.includes('daig-full-demo')) {
                   v.src = uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.mp4' : '/videos/daig-full-demo-v2-ja.mp4'
@@ -465,9 +466,13 @@ const DemoVideoPlayer: React.FC = () => {
                 }
               }}
               playsInline
-              preload="metadata"
+              preload="auto"
               poster="/presentation/posters/hero_hd.jpg"
               muted={muted}
+              controls={false}
+              crossOrigin="anonymous"
+              disablePictureInPicture
+              controlsList="nodownload nofullscreen noremoteplayback"
             >
               <track kind="subtitles" srcLang="pt" src="/presentation/subs/pt.vtt" label="Português" default={uiLang === 'pt'} />
               <track kind="subtitles" srcLang="ja" src="/presentation/subs/ja.vtt" label="日本語" default={uiLang === 'ja'} />
