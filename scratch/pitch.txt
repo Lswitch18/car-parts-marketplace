@@ -1,19 +1,6 @@
-===== PITCH DAIG (ALINHADO COM O VÍDEO DEMO DE 55 SEGUNDOS) =====
-
-[CENA 1: 00:00 - 00:07] (Abertura e Scroll)
-"Bem-vindo à DAIG. O marketplace definitivo que conecta o mundo ao mercado doméstico de autopeças do Japão. Nosso ecossistema premium oferece acesso direto a componentes JDM autênticos."
-
-[CENA 1b: 00:07 - 00:13] (Login Bypass)
-"Junte-se a milhares de compradores globais e vendedores japoneses verificados. Nossa integração sem atritos elimina intermediários e conecta você diretamente à fonte."
-
-[CENA 2: 00:13 - 00:25] (Catálogo e Busca do SR20DET)
-"Encontrar peças raras nunca foi tão fácil. Busque em nosso catálogo global para descobrir motores de alta performance, como este SR20DET impecável, fornecido por desmanches certificados."
-
-[CENA 3: 00:25 - 00:37] (Upload e Inteligência Artificial)
-"Para os vendedores, a criação de anúncios é revolucionada por nossa IA proprietária. Basta enviar uma foto e nosso motor extrai especificações técnicas instantaneamente, gerando um anúncio em segundos."
-
-[CENA 4: 00:37 - 00:47] (Chat e Aceite de Proposta)
-"As negociações acontecem em tempo real. Comunique-se com fornecedores japoneses usando nosso chat com tradução automática. Fechou negócio? Basta um clique para ir ao pagamento."
-
-[CENA 5: 00:47 - 00:55] (Checkout e Stripe)
-"O checkout é totalmente seguro. Lidamos com conformidade internacional, impostos JCT e custódia segura via Stripe Connect, garantindo total tranquilidade até a peça chegar na sua porta."
+Bem-vindo ao DAIG. A garagem digital revolucionária do Japão. O mercado de autopeças usadas movimentou bilhões no último ano, mas a eficiência logística e o alcance digital sempre foram um gargalo. A DAIG não é apenas um marketplace, é um ecossistema ponta a ponta projetado para escalabilidade massiva.
+Começar é instantâneo. Esqueça formulários burocráticos. Nosso onboarding inteligente oferece login com apenas um clique através do Google, categorizando automaticamente se você é um comprador casual, uma oficina parceira ou um desmanche Kaitai-gyo.
+Uma vez logado, você tem o poder do maior inventário unificado. Navegar pelo catálogo é uma experiência premium. Filtros contextuais permitem segmentar chassis, condição, códigos OEM e marcas JDM icônicas. O motor de busca em tempo real garante resultados na velocidade do pensamento.
+Ao selecionar uma peça, a interface exibe fotografias geradas e otimizadas em alta resolução. A transparência é total: especificações técnicas, histórico do desmanche vendedor e compatibilidade do modelo. Se você precisa dessa peça, a negociação começa exatamente aqui.
+E não para por aí. Nosso chat de negociação integrado permite comunicação direta. Ao invés de trocar e-mails longos, faça uma proposta oficial em tempo real através da nossa interface. O vendedor analisa a oferta e pode aceitá-la imediatamente, criando um ciclo de venda ultrarrápido.
+Negócio aceito? Chegou a hora do pagamento seguro. Com a integração nativa ao Stripe Connect, a DAIG atua em custódia. O valor do comprador é garantido. A peça é despachada e, ao confirmar a entrega, o lojista recebe a liquidação no modelo Zengin T mais 4 no Japão. Simples, seguro, rápido. DAIG. Elevando o padrão global.
