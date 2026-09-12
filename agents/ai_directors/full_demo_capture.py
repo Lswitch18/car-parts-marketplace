@@ -186,6 +186,13 @@ def flow_checkout(page):
 
 def merge_videos(inputs: list, output: str):
     print(f"\n🎞️  Mesclando {len(inputs)} cenas em {output}...")
+    
+    # Trim the first 2.5 seconds of the first scene to remove the loading spinner
+    if inputs and os.path.exists(inputs[0]):
+        trimmed_first = inputs[0].replace(".webm", "_trimmed.webm")
+        subprocess.run(["ffmpeg", "-y", "-ss", "00:00:02.500", "-i", inputs[0], "-c", "copy", trimmed_first], capture_output=True)
+        inputs[0] = trimmed_first
+
     list_file = "/tmp/daig_concat.txt"
     with open(list_file, "w") as f:
         for inp in inputs:
