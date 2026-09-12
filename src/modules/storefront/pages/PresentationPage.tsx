@@ -391,6 +391,7 @@ const DemoVideoPlayer: React.FC = () => {
           <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer' }} onClick={toggle}>
             <video
               ref={videoRef}
+              src={uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.webm' : '/videos/daig-full-demo-v2-ja.webm'}
               style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
               onTimeUpdate={onTimeUpdate}
               onLoadedMetadata={onLoaded}
