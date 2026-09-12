@@ -8,7 +8,6 @@ import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoa
 import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
 import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
 import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
-import { CurvedTubeVivi } from '@/modules/storefront/components/CurvedTubeVivi';
 
 // ── DAIG Cinematic Presentation Page (GSAP V2) ────────────────────────────────
 // Landing page de apresentação completa: hero, vídeo de demo embutido,
@@ -761,9 +760,6 @@ export default function PresentationPage() {
             </svg>
           </div>
         </section>
-
-        {/* ── TUBO CURVO — após engrenagem sumir, vivis em curva acompanham o site (GSAP+Motion, cian/branco) ── */}
-        <CurvedTubeVivi />
 
         {/* ── STATS BAR ────────────────────────────────────────────── */}
         <div className="stats-container" style={{ maxWidth: 1200, margin: '0 auto 80px', padding: '0 24px' }}>
