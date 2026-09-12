@@ -208,27 +208,30 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
 
       for (const pt of particles) {
         let x: number, y: number, a: number, scale: number
+        // Ondulação inicial (antes do scroll) — wave radial por ângulo
+        const waveAmp = 7 * idleAmp
+        const wave = Math.sin(pt.baseAng*3 + t*1.7) * waveAmp * (pt.gearPart === 'g' ? 0.6 : 1)
+        const waveX = Math.cos(pt.baseAng) * wave
+        const waveY = Math.sin(pt.baseAng) * wave
         if (pt.gearPart === 'g') {
-          x = lerp(pt.ox, pt.tx, epDisp)
-          y = lerp(pt.oy, pt.ty, epDisp)
+          x = lerp(pt.ox, pt.tx, epDisp) + waveX * (1 - epDisp)
+          y = lerp(pt.oy, pt.ty, epDisp) + waveY * (1 - epDisp)
           a = 1 - epDisp * 0.96
           scale = 1 - epDisp*0.35
         } else {
           // Rotate around center then disperse
           const rotAng = pt.baseAng + rotProgress * Math.PI * 2
           const cx = w/2, cy = h/2
-          const rotX = cx + Math.cos(rotAng) * pt.rad
-          const rotY = cy + Math.sin(rotAng) * pt.rad
+          const rotX = cx + Math.cos(rotAng) * pt.rad + waveX * (1 - epDisp)
+          const rotY = cy + Math.sin(rotAng) * pt.rad + waveY * (1 - epDisp)
           // After rotation, continue outward
           const d = epDisp
-          // For teeth/ring, dispersal is radial outward from center, keep rotation
-          const outX = cx + Math.cos(rotAng) * (pt.rad + d*600)
-          const outY = cy + Math.sin(rotAng) * (pt.rad + d*520)
-          // Blend: before 55% stay rotated, after blend to out
+          const outX = cx + Math.cos(rotAng) * (pt.rad + d*600) + waveX * (1 - d)
+          const outY = cy + Math.sin(rotAng) * (pt.rad + d*520) + waveY * (1 - d)
           if (p < 0.55) { x = rotX; y = rotY; a = 1; scale = 1 }
           else {
-            const t = (p - 0.55)/0.45
-            const et = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2
+            const tt = (p - 0.55)/0.45
+            const et = tt < 0.5 ? 2*tt*tt : 1 - Math.pow(-2*tt+2,2)/2
             x = lerp(rotX, outX, et)
             y = lerp(rotY, outY, et)
             a = 1 - et*0.97
