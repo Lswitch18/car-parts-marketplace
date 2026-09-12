@@ -737,10 +737,10 @@ export default function PresentationPage() {
             <span style={{ fontSize: 11, fontWeight: 700, color: '#00E5FF', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Digital A.I. Garage · DAIG.jp</span>
           </div>
 
-          {/* Title with SplitText and Logo */}
+          {/* Title with SplitText and Logo — PNG otimizado para LCP */}
           <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 900, lineHeight: 1.1, letterSpacing: -2, marginBottom: 24, maxWidth: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.25em' }}>
             <span>Sua garagem digital está aqui</span>
-            <img src="/logo.png" alt="DAIG" style={{ height: '0.9em', filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.4))' }} />
+            <img src="/presentation/logo-256.png" srcSet="/presentation/logo-256.png 1x, /presentation/logo.png 2x" alt="DAIG" width={84} height={84} loading="eager" fetchPriority="high" style={{ height: '0.9em', width: 'auto', filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.4))' }} />
           </h1>
 
           {/* Subtitle */}
