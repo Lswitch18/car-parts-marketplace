@@ -192,15 +192,26 @@ const CameraWalk: React.FC<{ progress: React.MutableRefObject<number> }> = ({ pr
 
 export const GarageScene: React.FC = () => {
   const progress = useRef(0)
+  const [ready, setReady] = React.useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), 300)
+    return () => clearTimeout(t)
+  }, [])
 
   return (
-    <div className="garage-walk-section" style={{ height: '100vh', position: 'relative', background: '#020617' }}>
+    <div className="garage-walk-section" style={{ minHeight: '100vh', height: '100vh', position: 'relative', background: '#020617', display: 'block' }}>
+      {!ready && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#020617', zIndex: 1 }}>
+          <div style={{ width: 32, height: 32, border: '3px solid rgba(0,229,255,0.2)', borderTopColor: '#00E5FF', borderRadius: '50%', animation: 'spin 0.9s linear infinite' }} />
+        </div>
+      )}
       <Canvas
         shadows
         dpr={[1, 1.5]}
         camera={{ position: [0, 1.7, 8], fov: 60 }}
-        style={{ position: 'absolute', inset: 0 }}
+        style={{ position: 'absolute', inset: 0, display: 'block', opacity: ready ? 1 : 0, transition: 'opacity 0.6s' }}
         gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+        onCreated={() => setReady(true)}
       >
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow shadow-mapSize={[2048, 2048]} />

@@ -647,25 +647,34 @@ export default function PresentationPage() {
     return () => { gsap.ticker.remove(raf); lenis.destroy() }
   }, [])
 
-  // GSAP Premium — performático (só transform/opacity, sem filter)
+  // GSAP Premium — performático, visível no load (sem depender de scroll)
   useGSAP(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) return
-    // 1. Hero Title — inovador, gigante, split com 3D leve
+    if (reduce) {
+      // Fallback imediato: mostra título sem animação
+      if (heroTitleRef.current) gsap.set(heroTitleRef.current, { opacity: 1, yPercent: 0 })
+      return
+    }
+    // 1. Hero Title — aparece já no load, não só ao scrollar
     if (heroTitleRef.current) {
+        // Garante visível antes da animação (evita flash branco)
+        gsap.set(heroTitleRef.current, { opacity: 1 })
         const split = new SplitText(heroTitleRef.current, { type: 'words,chars' });
-        gsap.from(split.chars, {
+        // Usa fromTo para garantir estado final visível mesmo se ScrollTrigger falhar
+        gsap.fromTo(split.chars,
+          { yPercent: 100, opacity: 0, rotationX: -80 },
+          {
+            yPercent: 0, opacity: 1, rotationX: 0,
             duration: 0.9,
-            yPercent: 100,
-            opacity: 0,
-            rotationX: -80,
             transformOrigin: '50% 50% -20',
             stagger: { each: 0.015, from: 'center' },
             ease: 'power4.out',
-            delay: 0.15,
+            delay: 0.12,
             force3D: true,
-        });
-        // parallax bg leve
+            overwrite: 'auto',
+          }
+        );
+        // parallax bg leve — só após load para não esconder hero
         gsap.to('.hero-bg-grid', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 1 } })
     }
 
