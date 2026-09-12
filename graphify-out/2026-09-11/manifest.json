@@ -3900,9 +3900,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PresentationPage.tsx": {
-    "mtime": 1789166584.4039674,
-    "seen": 1789171550.0896595,
-    "ast_hash": "46feeac4ab951df88509c649193c65dc",
+    "mtime": 1789166313.02796,
+    "seen": 1789166512.5405781,
+    "ast_hash": "7bc11094553e6776956dfbcc50c7d52d",
     "semantic_hash": ""
   },
   ".agents/skills/gsap-immersive-venue/SKILL.md": {
@@ -3984,9 +3984,9 @@
     "semantic_hash": ""
   },
   "agents/ai_directors/full_demo_capture.py": {
-    "mtime": 1789167926.4719603,
-    "seen": 1789171550.0885837,
-    "ast_hash": "e712624e916c286009da65917a4fab42",
+    "mtime": 1789165308.3719676,
+    "seen": 1789166512.5400085,
+    "ast_hash": "7118793776134f332da43a745ba8ee48",
     "semantic_hash": ""
   },
   "agents/ai_directors/pronunciation_agent.py": {
@@ -4092,9 +4092,9 @@
     "semantic_hash": ""
   },
   "scratch/rewrite_capture.py": {
-    "mtime": 1789167924.3919604,
-    "seen": 1789171550.088793,
-    "ast_hash": "9ad0536be0970640db7b86ce21c1c686",
+    "mtime": 1789144775.6399655,
+    "seen": 1789166512.5401127,
+    "ast_hash": "96e17f4e9f48f0d3c1c414edd1c31e55",
     "semantic_hash": ""
   },
   "scratch/shift_vtt.py": {
@@ -4152,9 +4152,9 @@
     "semantic_hash": ""
   },
   "scratch/pitch.txt": {
-    "mtime": 1789168428.4359627,
-    "seen": 1789171550.0904021,
-    "ast_hash": "f71fe8110b32322d04f4d7ea538641b2",
+    "mtime": 1789074813.0524714,
+    "seen": 1789166512.5410762,
+    "ast_hash": "55b24ee4bda567a4e636f7d6649c5276",
     "semantic_hash": ""
   },
   "public/images/jdm_engine.jpg": {
@@ -4458,27 +4458,15 @@
     "semantic_hash": ""
   },
   "public/videos/demo-ja.mp3": {
-    "mtime": 1789168737.9119587,
-    "seen": 1789171550.091594,
-    "ast_hash": "eeec10371bd0cae3a908a58a5a356df2",
+    "mtime": 1789158466.4679568,
+    "seen": 1789166512.5415447,
+    "ast_hash": "83d422c5e46a39becd449df047e6d702",
     "semantic_hash": ""
   },
   "public/videos/demo-pt.mp3": {
-    "mtime": 1789168715.4439588,
-    "seen": 1789171550.0915987,
-    "ast_hash": "2a901b129690b489be4981a3a5236797",
-    "semantic_hash": ""
-  },
-  "scratch/generate_audio_v3.py": {
-    "mtime": 1789168497.7039614,
-    "seen": 1789171550.0887764,
-    "ast_hash": "9798832b140fac93a58b3606187a9f72",
-    "semantic_hash": ""
-  },
-  "scratch/pitch_ja.txt": {
-    "mtime": 1789168429.5399628,
-    "seen": 1789171550.0904076,
-    "ast_hash": "2fa769ba6a77521a556fa322147ac78d",
+    "mtime": 1789158432.9119565,
+    "seen": 1789166512.5415459,
+    "ast_hash": "34a77af93f29353741b8bed7860fcc3e",
     "semantic_hash": ""
   }
 }
