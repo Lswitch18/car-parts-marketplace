@@ -4,10 +4,16 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+type GearPart = 'tooth' | 'ring' | 'g'
+
 type Particle = {
   ox: number; oy: number
   x: number; y: number
   tx: number; ty: number
+  baseAng: number
+  rad: number
+  dist: number
+  gearPart: GearPart
   r: number
   color: string
   alpha: number
@@ -21,6 +27,9 @@ function hexToRgb(hex: string) {
 }
 const C1 = hexToRgb('#00E5FF')
 const C2 = hexToRgb('#7000FF')
+const METAL_TOP = hexToRgb('#FFFFFF')
+const METAL_MID1 = hexToRgb('#C8D4E8')
+const METAL_MID2 = hexToRgb('#90A0B8')
 
 export const LogoGParticle: React.FC<{ src?: string; className?: string; style?: React.CSSProperties }> = ({
   src = '/presentation/logo-g.png',
@@ -32,10 +41,11 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
   const particlesRef = useRef<Particle[]>([])
   const rafRef = useRef<number>(0)
   const progressRef = useRef(0)
+  const baseTxRef = useRef<Map<Particle, {x:number,y:number}>>(new Map())
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) return // fallback to static img handled via CSS
+    if (reduce) return
 
     const canvas = canvasRef.current
     const container = containerRef.current
@@ -67,71 +77,143 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     let killed = false
 
     const initParticles = () => {
-      // Offscreen canvas to sample alpha
       const off = document.createElement('canvas')
       const s = 512
       off.width = s
       off.height = s
       const octx = off.getContext('2d', { willReadFrequently: true })!
       octx.clearRect(0,0,s,s)
-      // Draw image centered
-      const iw = s, ih = s
-      octx.drawImage(img, 0, 0, iw, ih)
+      octx.drawImage(img, 0, 0, s, s)
       const data = octx.getImageData(0,0,s,s).data
-      const step = 4 // sampling step
+      const step = 3 // gear teeth need finer 12x13 rect
+      const cx = s/2, cy = s/2
       const newParticles: Particle[] = []
       for (let y = 0; y < s; y += step) {
         for (let x = 0; x < s; x += step) {
           const idx = (y * s + x) * 4
           const a = data[idx + 3]
-          if (a > 20) {
-            // Map from 512x512 offscreen to container size
-            // Keep aspect, center in container
-            const scale = Math.min(w, h) * 0.85 / s
-            const ox = w/2 + (x - s/2) * scale
-            const oy = h/2 + (y - s/2) * scale
-            // Random dispersed target
-            const ang = Math.random() * Math.PI * 2
-            const dist = 300 + Math.random() * 600
-            const tx = ox + Math.cos(ang) * dist
-            const ty = oy + Math.sin(ang) * dist
-            // Color gradient by y (top cyan, bottom purple)
-            const t = y / s
-            const r = Math.round(lerp(C1.r, C2.r, t))
-            const g = Math.round(lerp(C1.g, C2.g, t))
-            const b = Math.round(lerp(C1.b, C2.b, t))
-            const color = `rgb(${r},${g},${b})`
-            newParticles.push({
+          if (a > 18) {
+            const scale = Math.min(w, h) * 0.82 / s
+            const ox = w/2 + (x - cx) * scale
+            const oy = h/2 + (y - cy) * scale
+            const dx = x - cx, dy = y - cy
+            const dist = Math.sqrt(dx*dx + dy*dy)
+            let ang = Math.atan2(dy, dx) * 180 / Math.PI
+            if (ang < 0) ang += 360
+            // Classify gear part
+            let gearPart: GearPart = 'g'
+            // Teeth: ring 245-295 and near 0/45/90... ±14°
+            let isTooth = false
+            if (dist >= 180 && dist <= 265) {
+              // Check angular proximity to 8 teeth
+              for (let k=0;k<8;k++) {
+                const center = k*45
+                let diff = Math.abs(ang - center)
+                if (diff > 180) diff = 360 - diff
+                if (diff < 15) { isTooth = true; break }
+              }
+            }
+            if (isTooth && dist >= 210) gearPart = 'tooth'
+            else if (dist >= 130 && dist < 210) gearPart = 'ring'
+            else gearPart = 'g'
+
+            const baseAng = Math.atan2(dy, dx)
+            // Dispersed target: radial outward by angle for teeth/ring, random for G
+            let tx: number, ty: number
+            if (gearPart === 'g') {
+              const randAng = Math.random() * Math.PI * 2
+              const d = 350 + Math.random()*550
+              tx = ox + Math.cos(randAng)*d
+              ty = oy + Math.sin(randAng)*d
+            } else {
+              const out = 520 + Math.random()*380
+              tx = w/2 + Math.cos(baseAng)* (dist*scale + out)
+              ty = h/2 + Math.sin(baseAng)* (dist*scale + out)
+            }
+
+            // Color by type + y
+            let color: string
+            if (gearPart === 'g') {
+              const t = y / s
+              const r = Math.round(lerp(C1.r, C2.r, t))
+              const g = Math.round(lerp(C1.g, C2.g, t))
+              const b = Math.round(lerp(C1.b, C2.b, t))
+              color = `rgb(${r},${g},${b})`
+            } else {
+              // Metallic for gear
+              const t = (dist - 130) / (265-130)
+              let rr, gg, bb
+              if (t < 0.33) { rr = lerp(METAL_TOP.r, METAL_MID1.r, t/0.33); gg = lerp(METAL_TOP.g, METAL_MID1.g, t/0.33); bb = lerp(METAL_TOP.b, METAL_MID1.b, t/0.33) }
+              else if (t < 0.66) { rr = lerp(METAL_MID1.r, METAL_MID2.r, (t-0.33)/0.33); gg = lerp(METAL_MID1.g, METAL_MID2.g, (t-0.33)/0.33); bb = lerp(METAL_MID1.b, METAL_MID2.b, (t-0.33)/0.33) }
+              else { rr = lerp(METAL_MID2.r, METAL_TOP.r, (t-0.66)/0.34); gg = lerp(METAL_MID2.g, METAL_TOP.g, (t-0.66)/0.34); bb = lerp(METAL_MID2.b, METAL_TOP.b, (t-0.66)/0.34) }
+              color = `rgb(${Math.round(rr)},${Math.round(gg)},${Math.round(bb)})`
+            }
+
+            const p: Particle = {
               ox, oy, x: ox, y: oy, tx, ty,
-              r: step * 0.7 + Math.random()*0.6,
+              baseAng, rad: dist*scale, dist,
+              gearPart,
+              r: step * 0.65 + Math.random()*0.5,
               color,
-              alpha: 0.85 + Math.random()*0.15,
-            })
+              alpha: gearPart === 'tooth' ? 0.95 : 0.88 + Math.random()*0.12,
+            }
+            newParticles.push(p)
           }
         }
       }
       particles = newParticles
       particlesRef.current = particles
+      // Store base targets for mouse nudge (avoid accumulate)
+      const m = new Map<Particle, {x:number,y:number}>()
+      for (const p of particles) m.set(p, {x: p.tx, y: p.ty})
+      baseTxRef.current = m
     }
 
     const render = () => {
       if (killed || !ctx) return
       ctx.clearRect(0,0,w,h)
       const p = progressRef.current
-      // eased progress for more dramatic at end
-      const ep = p < 0.5 ? 2*p*p : 1 - Math.pow(-2*p+2,2)/2
+      // Gear rotation 0-55% = 360deg, then dispersion
+      const rotProgress = Math.min(p / 0.55, 1)
+      const dispProgress = p < 0.32 ? 0 : (p - 0.32) / 0.68
+      const epDisp = dispProgress < 0.5 ? 2*dispProgress*dispProgress : 1 - Math.pow(-2*dispProgress+2,2)/2
+
       for (const pt of particles) {
-        // lerp position
-        const x = lerp(pt.ox, pt.tx, ep)
-        const y = lerp(pt.oy, pt.ty, ep)
-        const a = 1 - ep * 0.95 // fade to 0.05
-        const r = pt.r * (1 - ep*0.3)
-        ctx.globalAlpha = a * pt.alpha
+        let x: number, y: number, a: number, scale: number
+        if (pt.gearPart === 'g') {
+          x = lerp(pt.ox, pt.tx, epDisp)
+          y = lerp(pt.oy, pt.ty, epDisp)
+          a = 1 - epDisp * 0.96
+          scale = 1 - epDisp*0.35
+        } else {
+          // Rotate around center then disperse
+          const rotAng = pt.baseAng + rotProgress * Math.PI * 2
+          const cx = w/2, cy = h/2
+          const rotX = cx + Math.cos(rotAng) * pt.rad
+          const rotY = cy + Math.sin(rotAng) * pt.rad
+          // After rotation, continue outward
+          const d = epDisp
+          // For teeth/ring, dispersal is radial outward from center, keep rotation
+          const outX = cx + Math.cos(rotAng) * (pt.rad + d*600)
+          const outY = cy + Math.sin(rotAng) * (pt.rad + d*520)
+          // Blend: before 55% stay rotated, after blend to out
+          if (p < 0.55) { x = rotX; y = rotY; a = 1; scale = 1 }
+          else {
+            const t = (p - 0.55)/0.45
+            const et = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2
+            x = lerp(rotX, outX, et)
+            y = lerp(rotY, outY, et)
+            a = 1 - et*0.97
+            scale = 1 - et*0.4
+          }
+        }
+        const r = pt.r * scale
+        ctx.globalAlpha = Math.max(0, a) * pt.alpha
         ctx.fillStyle = pt.color
         ctx.shadowColor = pt.color
-        ctx.shadowBlur = 8 * (1 - ep*0.5)
+        ctx.shadowBlur = pt.gearPart === 'tooth' ? 10 * (1 - epDisp*0.6) : 8 * (1 - epDisp*0.5)
         ctx.beginPath()
-        ctx.arc(x, y, r, 0, Math.PI*2)
+        ctx.arc(x, y, Math.max(0.3, r), 0, Math.PI*2)
         ctx.fill()
       }
       ctx.shadowBlur = 0
@@ -142,44 +224,37 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     const onLoad = () => {
       initParticles()
       render()
-      // ScrollTrigger drives progress
       const st = ScrollTrigger.create({
         trigger: container,
         start: 'top top',
-        end: '+=140%',
-        scrub: 1.2,
+        end: '+=200%',
+        scrub: 1.1,
         pin: true,
         pinSpacing: true,
         anticipatePin: 1,
-        onUpdate: self => {
-          progressRef.current = self.progress
-        },
+        onUpdate: self => { progressRef.current = self.progress },
       })
-      // Mouse subtle deviation
-      let mx = 0, my = 0
+      // Mouse nudge (no accumulate)
       const onMove = (e: MouseEvent) => {
         const rect = container.getBoundingClientRect()
-        mx = ((e.clientX - rect.left) / rect.width - 0.5) * 2
-        my = ((e.clientY - rect.top) / rect.height - 0.5) * 2
-        // Nudge dispersed particles slightly
+        const mx = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+        const my = ((e.clientY - rect.top) / rect.height - 0.5) * 2
         const p = progressRef.current
-        if (p > 0.15 && p < 0.85) {
+        if (p > 0.18 && p < 0.88) {
           for (const pt of particles) {
-            // only affect particles that are already dispersed a bit
-            pt.tx += mx * 0.4
-            pt.ty += my * 0.4
+            const base = baseTxRef.current.get(pt)
+            if (!base) continue
+            pt.tx = base.x + mx * 14
+            pt.ty = base.y + my * 14
           }
         }
       }
       window.addEventListener('mousemove', onMove)
-
       const onResize = () => {
         resize()
-        // re-init to keep centered (simple)
         initParticles()
       }
       window.addEventListener('resize', onResize)
-
       return () => {
         st.kill()
         window.removeEventListener('mousemove', onMove)
@@ -191,7 +266,6 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     else img.onload = onLoad
 
     img.onerror = () => {
-      // fallback: draw G as text
       const off = document.createElement('canvas')
       off.width = 512; off.height = 512
       const octx = off.getContext('2d')!
@@ -201,16 +275,13 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       octx.textBaseline = 'middle'
       octx.fillText('G', 256, 256)
       img.src = off.toDataURL()
-      // retry
       setTimeout(onLoad, 100)
     }
 
     return () => {
       killed = true
       cancelAnimationFrame(rafRef.current)
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.trigger === container) st.kill()
-      })
+      ScrollTrigger.getAll().forEach(st => { if (st.trigger === container) st.kill() })
     }
   }, [src])
 
@@ -231,14 +302,13 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
         position: 'relative',
         width: '100%',
         height: '100%',
-        minHeight: 420,
+        minHeight: 520,
         overflow: 'hidden',
-        background: 'radial-gradient(ellipse at 50% 30%, rgba(112,0,255,0.08), transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,229,255,0.06), transparent 55%)',
+        background: 'radial-gradient(ellipse at 50% 30%, rgba(112,0,255,0.09), transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,229,255,0.07), transparent 55%)',
         ...style,
       }}
     >
       <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
-      {/* Subtle vignette */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(2,6,23,0.55) 100%)' }} />
     </div>
   )
