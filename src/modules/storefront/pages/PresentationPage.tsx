@@ -9,6 +9,7 @@ import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoa
 import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
 import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
 import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
+import { GarageScene } from '@/modules/storefront/components/GarageScene';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -768,6 +769,9 @@ export default function PresentationPage() {
             </svg>
           </div>
         </section>
+
+        {/* ── GARAGE WALK — 3D Three.js + GSAP (passear pela garagem) ── */}
+        <GarageScene />
 
         {/* ── STATS BAR ────────────────────────────────────────────── */}
         <div className="stats-container" style={{ maxWidth: 1200, margin: '0 auto 80px', padding: '0 24px' }}>
