@@ -90,7 +90,10 @@ def _wait_loaded(page):
 def flow_landing_hero(page):
     page.goto(BASE_URL)
     _wait_loaded(page)
-    page.wait_for_timeout(1000)
+    # Wait ~3.5 seconds before scrolling so the user can see the 3D model.
+    # (Since we trim the first 2.5s of the video in concat to remove the spinner,
+    # the 3D model will be visible for at least 2 to 3 seconds in the final output).
+    page.wait_for_timeout(3500)
     page.mouse.wheel(0, 700)
     page.wait_for_timeout(1000)
     page.mouse.wheel(0, 1000)

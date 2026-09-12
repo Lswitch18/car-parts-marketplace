@@ -3,7 +3,11 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import Lenis from 'lenis';
 import { supabase, getAdminStats } from '@/modules/shared/lib/supabase';
+import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoatSection';
+import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
+import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
@@ -209,19 +213,20 @@ const MagneticButton: React.FC<{ children: React.ReactNode, href: string, primar
   );
 };
 
-// ── Video Player ───────────────────────────────────────────────────────────────
+// ── Video Player — Muse Spark Cinematic (Web Audio + Kinetic Caption) ─────────
 const DemoVideoPlayer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   
   const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false); // Video audio
+  const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const [hovered, setHovered] = useState(false);
-  
   const [uiLang, setUiLang] = useState<'pt' | 'ja'>('pt');
+  const { duckBed, resumeOnGesture } = usePresentationAudio(videoRef, uiLang);
   
   // Efeito Stagger Reveal com GSAP SplitText
   useGSAP(() => {
@@ -239,66 +244,92 @@ const DemoVideoPlayer: React.FC = () => {
     }
   }, []);
 
-  // Sync High-Quality Neural Audio with Video
+  // Sync High-Quality Neural Audio with Video (sub-frame when possible)
   useEffect(() => {
     const video = videoRef.current;
     const audio = audioRef.current;
     if (!video || !audio) return;
     
     const syncAudio = () => {
-      // Keep audio time in sync with video time
-      if (Math.abs(audio.currentTime - video.currentTime) > 0.2) {
+      if (Math.abs(audio.currentTime - video.currentTime) > 0.15) {
         audio.currentTime = video.currentTime;
       }
-      
-      if (!playing && !audio.paused) {
-        audio.pause();
-      }
+      if (!playing && !audio.paused) audio.pause();
     };
     
-    video.addEventListener('timeupdate', syncAudio);
-    video.addEventListener('seeked', syncAudio);
+    let rafId = 0 as unknown as number
+    const useRVFC = 'requestVideoFrameCallback' in HTMLVideoElement.prototype
+    if (useRVFC) {
+      const loop = () => {
+        syncAudio()
+        // @ts-ignore
+        rafId = video.requestVideoFrameCallback(loop)
+      }
+      // @ts-ignore
+      rafId = video.requestVideoFrameCallback(loop)
+    } else {
+      video.addEventListener('timeupdate', syncAudio);
+      video.addEventListener('seeked', syncAudio);
+    }
     
     return () => {
-      video.removeEventListener('timeupdate', syncAudio);
-      video.removeEventListener('seeked', syncAudio);
+      if (useRVFC) {
+        try { // @ts-ignore
+          video.cancelVideoFrameCallback(rafId)
+        } catch {}
+      } else {
+        video.removeEventListener('timeupdate', syncAudio);
+        video.removeEventListener('seeked', syncAudio);
+      }
     };
   }, [playing]);
-  // Update Audio and Video source when language changes
+
+  // Update Audio and Video source when language changes (crossfade)
   useEffect(() => {
     if (audioRef.current && videoRef.current) {
       const wasPlaying = !videoRef.current.paused;
       const cTime = videoRef.current.currentTime;
-      
-      videoRef.current.src = uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.webm' : '/videos/daig-full-demo-v2-ja.webm';
-      audioRef.current.src = uiLang === 'pt' ? '/videos/demo-pt.mp3?v=3' : '/videos/demo-ja.mp3?v=3';
-      
+      // Prefer optimized no-audio presentation assets, fallback to legacy
+      const ptVideo = '/presentation/pt_noaudio.mp4'
+      const jaVideo = '/presentation/ja_noaudio.mp4'
+      const ptAudio = '/presentation/audio/narration_pt.mp3'
+      const jaAudio = '/presentation/audio/narration_ja.mp3'
+      const nextVideo = uiLang === 'pt' ? ptVideo : jaVideo
+      const nextAudio = uiLang === 'pt' ? ptAudio : jaAudio
+      // fade out bed during switch
+      duckBed(true)
+      videoRef.current.src = nextVideo;
+      // fallback to legacy if optimized missing (onerror will handle)
+      videoRef.current.onerror = () => {
+        if (videoRef.current) videoRef.current.src = uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.mp4' : '/videos/daig-full-demo-v2-ja.mp4'
+      }
+      audioRef.current.src = nextAudio;
+      audioRef.current.onerror = () => {
+        if (audioRef.current) audioRef.current.src = uiLang === 'pt' ? '/videos/demo-pt.mp3?v=3' : '/videos/demo-ja.mp3?v=3'
+      }
       videoRef.current.load();
       videoRef.current.currentTime = cTime;
       audioRef.current.currentTime = cTime;
-      
       if (wasPlaying || playing) {
-          videoRef.current.play().catch(e => console.error(e));
-          audioRef.current.play().catch(e => console.error(e));
+          videoRef.current.play().catch(()=>{})
+          audioRef.current.play().catch(()=>{})
       }
+      setTimeout(()=> duckBed(false), 420)
     }
-  }, [uiLang]);
+  }, [uiLang, duckBed, playing]);
 
-  const toggle = () => {
+  const toggle = async () => {
     const v = videoRef.current;
     const a = audioRef.current;
     if (!v) return;
-    
+    await resumeOnGesture()
     if (v.paused) { 
         v.play(); 
-        if (a) {
-            a.play().catch(e => console.error("Audio manual play exception:", e));
-        }
+        a?.play().catch(()=>{});
         setPlaying(true); 
-    }
-    else { 
+    } else { 
         v.pause(); 
-        if (a) a.pause();
+        a?.pause();
         setPlaying(false); 
     }
   };
@@ -307,6 +338,7 @@ const DemoVideoPlayer: React.FC = () => {
     const v = videoRef.current;
     if (!v || !v.duration) return;
     setProgress((v.currentTime / v.duration) * 100);
+    setCurrentTime(v.currentTime);
   };
 
   const onLoaded = () => {
@@ -319,6 +351,8 @@ const DemoVideoPlayer: React.FC = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
     v.currentTime = pct * v.duration;
+    if (audioRef.current) audioRef.current.currentTime = v.currentTime;
+    setCurrentTime(v.currentTime);
   };
 
   const fmt = (s: number) => {
@@ -387,23 +421,25 @@ const DemoVideoPlayer: React.FC = () => {
             </div>
           </div>
 
-          {/* Video */}
-          <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer' }} onClick={toggle}>
+          {/* Video — Optimized with Kinetic Caption & Poster Blur-Up */}
+          <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer', background: 'url(/presentation/posters/hero_blur.jpg) center/cover no-repeat, #020617' }} onClick={toggle}>
             <video
               ref={videoRef}
-              src={uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.webm' : '/videos/daig-full-demo-v2-ja.webm'}
               style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
               onTimeUpdate={onTimeUpdate}
               onLoadedMetadata={onLoaded}
               onEnded={() => setPlaying(false)}
               playsInline
               preload="metadata"
-              poster="/screenshots/home.jpg"
+              poster="/presentation/posters/hero_hd.jpg"
               muted={muted}
             >
-              <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt?v=3" label="Português" default={uiLang === 'pt'} />
-              <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt?v=3" label="日本語" default={uiLang === 'ja'} />
+              <source src={uiLang === 'pt' ? '/presentation/pt_noaudio.mp4' : '/presentation/ja_noaudio.mp4'} type="video/mp4" />
+              <source src={uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.webm' : '/videos/daig-full-demo-v2-ja.webm'} type="video/webm" />
+              <track kind="subtitles" srcLang="pt" src="/presentation/subs/pt.vtt" label="Português" default={uiLang === 'pt'} />
+              <track kind="subtitles" srcLang="ja" src="/presentation/subs/ja.vtt" label="日本語" default={uiLang === 'ja'} />
             </video>
+            <KineticCaption lang={uiLang} currentTime={currentTime} onDuck={duckBed} />
 
           {/* Play overlay */}
           {!playing && (
@@ -499,21 +535,22 @@ const DemoVideoPlayer: React.FC = () => {
   );
 };
 
-// ── Feature Card ──────────────────────────────────────────────────────────────
+// ── Feature Card — Premium Glass + Neon (valuation skill) ───────────────────
 const FeatureCard: React.FC<{ feature: typeof FEATURES[0]; className?: string }> = ({ feature, className }) => (
-  <div className={className} style={{
+  <div className={`${className ?? ''} glass-ultra`} style={{
     padding: '28px 24px',
-    background: 'rgba(255,255,255,0.025)',
-    border: `1px solid ${feature.accent}18`,
     borderRadius: 18,
-    willChange: 'transform, opacity'
+    willChange: 'transform, opacity',
+    position: 'relative',
+    overflow: 'hidden',
   }}>
     <div style={{
       width: 48, height: 48, borderRadius: 14,
-      background: `${feature.accent}12`,
-      border: `1px solid ${feature.accent}25`,
+      background: `${feature.accent}18`,
+      border: `1px solid ${feature.accent}35`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontSize: 22, marginBottom: 16,
+      boxShadow: `0 0 20px ${feature.accent}22`,
     }}>
       {feature.icon}
     </div>
@@ -523,6 +560,7 @@ const FeatureCard: React.FC<{ feature: typeof FEATURES[0]; className?: string }>
     <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, lineHeight: 1.65 }}>
       {feature.desc}
     </p>
+    <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(600px circle at 0% 0%, ${feature.accent}08, transparent 60%)`, pointerEvents: 'none', opacity: 0.6 }} />
   </div>
 );
 
@@ -557,8 +595,22 @@ export default function PresentationPage() {
     loadStats();
   }, []);
   
-  // GSAP Animations
+  // Lenis Smooth Scroll (premium buttery)
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) return
+    const lenis = new Lenis({ duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true })
+    lenis.on('scroll', ScrollTrigger.update)
+    const raf = (time: number) => lenis.raf(time * 1000)
+    gsap.ticker.add(raf)
+    gsap.ticker.lagSmoothing(0)
+    return () => { gsap.ticker.remove(raf); lenis.destroy() }
+  }, [])
+
+  // GSAP Premium Animations (Awwwards-level)
   useGSAP(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduce) return
     // 1. Hero Title SplitText Animation
     if (heroTitleRef.current) {
         const split = new SplitText(heroTitleRef.current, { type: 'words,chars' });
@@ -571,56 +623,42 @@ export default function PresentationPage() {
             ease: 'back.out(1.4)',
             delay: 0.1
         });
+        // parallax bg
+        gsap.to('.hero-bg-grid', { yPercent: -12, ease: 'none', scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 1.2 } })
     }
 
-    // 2. Stats Bar Stagger
+    // 2. Stats Bar Stagger with shimmer guard
     gsap.from('.stat-box', {
-      scrollTrigger: {
-        trigger: '.stats-container',
-        start: 'top 85%',
-      },
-      y: 30,
-      opacity: 0,
-      stagger: 0.08,
-      ease: 'power3.out',
-      duration: 0.8
+      scrollTrigger: { trigger: '.stats-container', start: 'top 85%' },
+      y: 30, opacity: 0, stagger: 0.08, ease: 'power3.out', duration: 0.8
     });
 
-    // 3. Demo Video Reveal
+    // 3. Demo Video Reveal + scale breathe
     gsap.from('.video-section', {
-      scrollTrigger: {
-        trigger: '.video-section',
-        start: 'top 80%',
-      },
-      y: 60,
-      opacity: 0,
-      ease: 'expo.out',
-      duration: 1.2
+      scrollTrigger: { trigger: '.video-section', start: 'top 78%' },
+      y: 60, opacity: 0, ease: 'expo.out', duration: 1.2
     });
+    gsap.to('.video-section', {
+      scale: 1.015, ease: 'none',
+      scrollTrigger: { trigger: '.video-section', start: 'top 80%', end: 'bottom 20%', scrub: 1 }
+    })
 
-    // 4. Features Grid Stagger Parallax
+    // 4. Features Grid Stagger Parallax (premium)
     gsap.from('.feature-card', {
-      scrollTrigger: {
-        trigger: '.features-grid',
-        start: 'top 75%',
-      },
-      y: 50,
-      opacity: 0,
-      stagger: 0.1,
-      ease: 'back.out(1.2)',
-      duration: 0.8
+      scrollTrigger: { trigger: '.features-grid', start: 'top 75%' },
+      y: 50, opacity: 0, stagger: 0.1, ease: 'back.out(1.2)', duration: 0.8
     });
 
-    // 5. Final CTA
+    // 5. Investor Moat Reveal
+    gsap.from('.moat-card', {
+      scrollTrigger: { trigger: '.moat-grid', start: 'top 82%' },
+      y: 40, opacity: 0, stagger: 0.1, ease: 'power3.out', duration: 0.7
+    })
+
+    // 6. Final CTA
     gsap.from('.cta-section > div', {
-      scrollTrigger: {
-        trigger: '.cta-section',
-        start: 'top 80%',
-      },
-      y: 40,
-      opacity: 0,
-      ease: 'power3.out',
-      duration: 1
+      scrollTrigger: { trigger: '.cta-section', start: 'top 80%' },
+      y: 40, opacity: 0, ease: 'power3.out', duration: 1
     });
     
   }, { scope: containerRef });
@@ -633,16 +671,24 @@ export default function PresentationPage() {
         @keyframes gridScroll { 0%{background-position:0 0} 100%{background-position:60px 60px} }
         @keyframes glow { 0%,100%{opacity:.5} 50%{opacity:1} }
         @keyframes scrollBounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        @keyframes neonPulse { 0%,100%{box-shadow:0 0 20px rgba(13,117,255,0.15),0 0 60px rgba(13,117,255,0.05)} 50%{box-shadow:0 0 30px rgba(13,117,255,0.3),0 0 80px rgba(13,117,255,0.1)} }
+        @keyframes gradientRotate { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        .shimmer { background: linear-gradient(90deg, rgba(13,117,255,0.04) 0%, rgba(13,117,255,0.12) 50%, rgba(13,117,255,0.04) 100%); background-size:200% 100%; animation: shimmer 2s ease-in-out infinite; }
+        .neon-pulse { animation: neonPulse 3s ease-in-out infinite; }
+        .glass-ultra { background: rgba(11,14,23,0.78); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); border: 1px solid rgba(13,117,255,0.14); box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 8px 32px rgba(0,0,0,0.38), 0 0 60px rgba(13,117,255,0.06); }
+        .gradient-border { position:relative; overflow:hidden; }
+        .gradient-border::before { content:''; position:absolute; inset:0; padding:1px; border-radius:inherit; background: linear-gradient(135deg,#0D75FF,#00E5FF,#7000FF,#0D75FF); background-size:300% 300%; animation: gradientRotate 4s ease infinite; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none; }
       `}</style>
 
       <div ref={containerRef} style={{ background: '#020617', color: 'white', fontFamily: '"Inter",system-ui,sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
 
-        {/* ── HERO ─────────────────────────────────────────────────── */}
-        <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+        {/* ── HERO — Investor Pitch (GSAP Venue) ───────────────────────── */}
+        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
           
-          {/* Animated background */}
+          {/* Animated background — parallax layer */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px)', backgroundSize: '60px 60px', animation: 'gridScroll 8s linear infinite', maskImage: 'radial-gradient(ellipse at 50% 50%,black 0%,transparent 70%)' }} />
+            <div className="hero-bg-grid" style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px)', backgroundSize: '60px 60px', animation: 'gridScroll 8s linear infinite', maskImage: 'radial-gradient(ellipse at 50% 50%,black 0%,transparent 70%)' }} />
             <div style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: '80vw', height: '60vw', maxWidth: 1000, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(0,229,255,0.05) 0%,transparent 65%)', animation: 'glow 5s ease-in-out infinite' }} />
             <div style={{ position: 'absolute', bottom: '5%', right: '5%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle,rgba(124,58,237,0.07) 0%,transparent 70%)', animation: 'glow 7s ease-in-out infinite reverse' }} />
           </div>
@@ -724,7 +770,10 @@ export default function PresentationPage() {
 
         </section>
 
-        {/* ── FEATURES GRID ────────────────────────────────────────── */}
+        {/* ── INVESTOR MOAT — Unit Economics Zengin (Investor Pitch) ── */}
+        <InvestorMoatSection />
+
+        {/* ── FEATURES GRID — Premium Glass ────────────────────────── */}
         <section className="features-grid" style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, color: 'white', letterSpacing: -1.5 }}>
