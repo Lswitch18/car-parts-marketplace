@@ -400,8 +400,6 @@ const DemoVideoPlayer: React.FC = () => {
               poster="/screenshots/home.jpg"
               muted={muted}
             >
-              <source src="/videos/daig-full-demo-v2-pt.webm" type="video/webm" />
-              <source src="/videos/daig-full-demo-v2-pt.mp4" type="video/mp4" />
               <track kind="subtitles" srcLang="pt" src="/videos/demo-pt.vtt?v=3" label="Português" default={uiLang === 'pt'} />
               <track kind="subtitles" srcLang="ja" src="/videos/demo-ja.vtt?v=3" label="日本語" default={uiLang === 'ja'} />
             </video>
