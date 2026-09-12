@@ -714,21 +714,21 @@ export default function PresentationPage() {
         .gradient-border::before { content:''; position:absolute; inset:0; padding:1px; border-radius:inherit; background: linear-gradient(135deg,#0D75FF,#00E5FF,#7000FF,#0D75FF); background-size:300% 300%; animation: gradientRotate 4s ease infinite; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none; }
       `}</style>
 
-      <div ref={containerRef} style={{ background: '#020617', color: 'white', fontFamily: '"Inter",system-ui,sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
+      <div ref={containerRef} style={{ background: '#020617', color: 'white', fontFamily: '"Inter",system-ui,sans-serif', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
 
-        {/* ── HERO — Investor Pitch (GSAP Venue) — G 70% central, 20% maior, visível no load ── */}
-        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'visible' }}>
+        {/* G Fragment — PÁGINA INTEIRA (sem div limitadora) — cian→roxo */}
+        <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.9 }}>
+          <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100vh', minHeight: '100vh', width: '100vw' }} />
+        </div>
+
+        {/* ── HERO — Investor Pitch (GSAP Venue) — G agora é background full-page ── */}
+        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'visible', zIndex: 1 }}>
           
           {/* Animated background — parallax layer */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
             <div className="hero-bg-grid" style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px)', backgroundSize: '60px 60px', animation: 'gridScroll 8s linear infinite', maskImage: 'radial-gradient(ellipse at 50% 50%,black 0%,transparent 70%)' }} />
             <div style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: '80vw', height: '60vw', maxWidth: 1000, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(0,229,255,0.05) 0%,transparent 65%)', animation: 'glow 5s ease-in-out infinite' }} />
             <div style={{ position: 'absolute', bottom: '5%', right: '5%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle,rgba(124,58,237,0.07) 0%,transparent 70%)', animation: 'glow 7s ease-in-out infinite reverse' }} />
-          </div>
-
-          {/* G Fragment — 20% maior, alta qualidade 1024, visível no load, 70% central */}
-          <div style={{ position: 'absolute', left: '15%', top: '12%', width: '70%', height: '70%', pointerEvents: 'none', zIndex: 1, opacity: 0.95 }}>
-            <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100%', minHeight: 520 }} />
           </div>
 
           {/* Title — inovador, gigante, sem badge (performático) */}
