@@ -226,6 +226,7 @@ const DemoVideoPlayer: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [hovered, setHovered] = useState(false);
   const [uiLang, setUiLang] = useState<'pt' | 'ja'>('pt');
+  const hasMountedLangRef = useRef(false);
   const { duckBed, resumeOnGesture } = usePresentationAudio(videoRef, uiLang);
   
   // Efeito Stagger Reveal com GSAP SplitText
@@ -244,7 +245,7 @@ const DemoVideoPlayer: React.FC = () => {
     }
   }, []);
 
-  // Sync High-Quality Neural Audio with Video (sub-frame when possible)
+  // Sync High-Quality Neural Audio with Video (sub-frame when possible) + progress
   useEffect(() => {
     const video = videoRef.current;
     const audio = audioRef.current;
@@ -252,9 +253,12 @@ const DemoVideoPlayer: React.FC = () => {
     
     const syncAudio = () => {
       if (Math.abs(audio.currentTime - video.currentTime) > 0.15) {
-        audio.currentTime = video.currentTime;
+        try { audio.currentTime = video.currentTime } catch {}
       }
-      if (!playing && !audio.paused) audio.pause();
+      if (!playing && !audio.paused) try { audio.pause() } catch {}
+      // Keep progress & caption in sync at frame rate
+      setCurrentTime(video.currentTime)
+      if (video.duration) setProgress((video.currentTime / video.duration) * 100)
     };
     
     let rafId = 0 as unknown as number
@@ -284,53 +288,79 @@ const DemoVideoPlayer: React.FC = () => {
     };
   }, [playing]);
 
-  // Update Audio and Video source when language changes (crossfade)
+  // Suppress AbortError from play() interrupted by load (browser quirk)
   useEffect(() => {
-    if (audioRef.current && videoRef.current) {
-      const wasPlaying = !videoRef.current.paused;
-      const cTime = videoRef.current.currentTime;
-      // Prefer optimized no-audio presentation assets, fallback to legacy
-      const ptVideo = '/presentation/pt_noaudio.mp4'
-      const jaVideo = '/presentation/ja_noaudio.mp4'
-      const ptAudio = '/presentation/audio/narration_pt.mp3'
-      const jaAudio = '/presentation/audio/narration_ja.mp3'
-      const nextVideo = uiLang === 'pt' ? ptVideo : jaVideo
-      const nextAudio = uiLang === 'pt' ? ptAudio : jaAudio
-      // fade out bed during switch
-      duckBed(true)
-      videoRef.current.src = nextVideo;
-      // fallback to legacy if optimized missing (onerror will handle)
-      videoRef.current.onerror = () => {
-        if (videoRef.current) videoRef.current.src = uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.mp4' : '/videos/daig-full-demo-v2-ja.mp4'
+    const h = (e: PromiseRejectionEvent) => {
+      const msg = String(e.reason?.message || e.reason || '')
+      if (e.reason?.name === 'AbortError' && msg.includes('interrupted by a new load')) {
+        e.preventDefault()
       }
-      audioRef.current.src = nextAudio;
-      audioRef.current.onerror = () => {
-        if (audioRef.current) audioRef.current.src = uiLang === 'pt' ? '/videos/demo-pt.mp3?v=3' : '/videos/demo-ja.mp3?v=3'
-      }
-      videoRef.current.load();
-      videoRef.current.currentTime = cTime;
-      audioRef.current.currentTime = cTime;
-      if (wasPlaying || playing) {
-          videoRef.current.play().catch(()=>{})
-          audioRef.current.play().catch(()=>{})
-      }
-      setTimeout(()=> duckBed(false), 420)
     }
-  }, [uiLang, duckBed, playing]);
+    window.addEventListener('unhandledrejection', h)
+    return () => window.removeEventListener('unhandledrejection', h)
+  }, [])
+
+  // Update Audio source when language changes (video uses React key, no imperative src)
+  useEffect(() => {
+    if (!hasMountedLangRef.current) { hasMountedLangRef.current = true; return }
+    const video = videoRef.current
+    const audio = audioRef.current
+    if (!video || !audio) return
+    const wasPlaying = !video.paused
+    const pct = video.duration ? (video.currentTime / video.duration) : 0
+    duckBed(true)
+    // Pause before src change to avoid AbortError: play interrupted by load
+    try { video.pause() } catch {}
+    try { audio.pause() } catch {}
+    const nextAudio = uiLang === 'pt' ? '/presentation/audio/narration_pt.mp3' : '/presentation/audio/narration_ja.mp3'
+    audio.src = nextAudio
+    audio.load()
+    audio.onerror = () => {
+      audio.src = uiLang === 'pt' ? '/videos/demo-pt.mp3?v=3' : '/videos/demo-ja.mp3?v=3'
+      audio.load()
+    }
+    const onAudioCanPlay = () => {
+      try {
+        // Keep proportion for slightly different durations (47.84 vs 48.56)
+        const target = pct * (audio.duration || video.duration || 0)
+        if (!Number.isNaN(target)) audio.currentTime = target
+      } catch {}
+      if (wasPlaying) {
+        // Video will remount via key; play it after a tick
+        setTimeout(() => {
+          const v = videoRef.current
+          if (v) {
+            const pp = v.play()
+            pp?.catch(e => { if (e?.name !== 'AbortError') console.error('video play', e) })
+          }
+          const ap = audio.play()
+          ap?.catch(e => { if (e?.name !== 'AbortError') console.error('audio play', e) })
+        }, 80)
+      }
+      setTimeout(()=> duckBed(false), 380)
+      audio.removeEventListener('canplay', onAudioCanPlay)
+    }
+    audio.addEventListener('canplay', onAudioCanPlay)
+    if (audio.readyState >= 3) onAudioCanPlay()
+    return () => audio.removeEventListener('canplay', onAudioCanPlay)
+  }, [uiLang, duckBed]);
 
   const toggle = async () => {
     const v = videoRef.current;
     const a = audioRef.current;
     if (!v) return;
     await resumeOnGesture()
-    if (v.paused) { 
-        v.play(); 
-        a?.play().catch(()=>{});
-        setPlaying(true); 
-    } else { 
-        v.pause(); 
-        a?.pause();
-        setPlaying(false); 
+    if (v.paused) {
+        const vp = v.play()
+        vp?.catch(e => { if (e?.name !== 'AbortError') console.error('video play', e) })
+        // Only play audio if video play was not aborted immediately
+        const ap = a?.play()
+        ap?.catch(e => { if (e?.name !== 'AbortError') console.error('audio play', e) })
+        setPlaying(true);
+    } else {
+        try { v.pause() } catch {}
+        try { a?.pause() } catch {}
+        setPlaying(false);
     }
   };
 
@@ -421,21 +451,29 @@ const DemoVideoPlayer: React.FC = () => {
             </div>
           </div>
 
-          {/* Video — Optimized with Kinetic Caption & Poster Blur-Up */}
+          {/* Video — Optimized with Kinetic Caption & Poster Blur-Up (trimmed 2.5s spinner) */}
           <div style={{ position: 'relative', aspectRatio: '16/9', cursor: 'pointer', background: 'url(/presentation/posters/hero_blur.jpg) center/cover no-repeat, #020617' }} onClick={toggle}>
             <video
+              key={uiLang}
               ref={videoRef}
+              src={uiLang === 'pt' ? '/presentation/pt_noaudio.mp4' : '/presentation/ja_noaudio.mp4'}
               style={{ width: '100%', height: '100%', display: 'block', objectFit: 'cover' }}
               onTimeUpdate={onTimeUpdate}
               onLoadedMetadata={onLoaded}
-              onEnded={() => setPlaying(false)}
+              onEnded={() => { setPlaying(false); try { audioRef.current?.pause() } catch {} }}
+              onError={() => {
+                // Fallback to legacy if trimmed missing
+                const v = videoRef.current
+                if (v && !v.src.includes('daig-full-demo')) {
+                  v.src = uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.mp4' : '/videos/daig-full-demo-v2-ja.mp4'
+                  v.load()
+                }
+              }}
               playsInline
               preload="metadata"
               poster="/presentation/posters/hero_hd.jpg"
               muted={muted}
             >
-              <source src={uiLang === 'pt' ? '/presentation/pt_noaudio.mp4' : '/presentation/ja_noaudio.mp4'} type="video/mp4" />
-              <source src={uiLang === 'pt' ? '/videos/daig-full-demo-v2-pt.webm' : '/videos/daig-full-demo-v2-ja.webm'} type="video/webm" />
               <track kind="subtitles" srcLang="pt" src="/presentation/subs/pt.vtt" label="Português" default={uiLang === 'pt'} />
               <track kind="subtitles" srcLang="ja" src="/presentation/subs/ja.vtt" label="日本語" default={uiLang === 'ja'} />
             </video>

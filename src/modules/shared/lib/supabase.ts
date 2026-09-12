@@ -175,21 +175,47 @@ export const signOut = async () => {
 
 export const getAdminStats = async () => {
   try {
-    const [usersResult, gmvResult, revenueResult, transactionsResult] = await Promise.all([
-      supabase.rpc('get_total_users'),
-      supabase.rpc('get_total_gmv'),
-      supabase.rpc('get_total_revenue'),
-      supabase
-        .from('transactions')
-        .select('id, payment_status', { count: 'exact' })
+    // Tenta RPC se existir; senão cai para queries diretas (evita 404)
+    const rpcWithFallback = async (fn: string, fallback: () => Promise<number>) => {
+      try {
+        const { data, error } = await supabase.rpc(fn as unknown as string)
+        if (!error && data !== null && data !== undefined) return Number(data)
+      } catch {}
+      return fallback()
+    }
+    const getUsersFallback = async () => {
+      const { count } = await supabase.from('profiles').select('id', { count: 'exact', head: true })
+      if (count !== null) return count
+      const { count: c2 } = await supabase.from('admin_profiles').select('id', { count: 'exact', head: true })
+      return c2 || 0
+    }
+    const getGmvFallback = async () => {
+      const { data } = await supabase.from('transactions').select('amount, payment_status, fulfillment_status')
+      if (!data) return 0
+      // GMV = soma de paid + delivered/completed (mesma lógica do AdminDashboard)
+      return (data as Array<{amount:number;payment_status:string;fulfillment_status:string}>).reduce((s, t) => {
+        if (t.payment_status === 'paid' || ['delivered','completed'].includes(t.fulfillment_status)) return s + Number(t.amount || 0)
+        return s
+      }, 0)
+    }
+    const getRevenueFallback = async () => {
+      // Receita = 10% do GMV (take rate) - Stripe 3.6% já descontado no lucro, mas para stats usa GMV *0.1
+      const gmv = await getGmvFallback()
+      return Math.round(gmv * 0.1)
+    }
+
+    const [totalUsers, totalGMV, totalRevenue, transactionsResult, partsCountRes] = await Promise.all([
+      rpcWithFallback('get_total_users', getUsersFallback),
+      rpcWithFallback('get_total_gmv', getGmvFallback),
+      rpcWithFallback('get_total_revenue', getRevenueFallback),
+      supabase.from('transactions').select('id, payment_status', { count: 'exact' }),
+      supabase.from('parts').select('id', { count: 'exact', head: true }),
     ])
     
-    const totalUsers = usersResult.data || 0
-    const totalGMV = parseFloat(gmvResult.data?.toString() || '0')
-    const totalRevenue = parseFloat(revenueResult.data?.toString() || '0')
     const totalTransactions = transactionsResult.count || 0
-    const completedTransactions = transactionsResult.data?.filter(t => t.payment_status === 'paid').length || 0
-    
+    const completedTransactions = (transactionsResult.data as Array<{payment_status:string}> | null)?.filter(t => t.payment_status === 'paid').length || 0
+    // partsCount não é usado aqui, mas disponível para PresentationPage se precisar
+    void partsCountRes
     return {
       totalUsers,
       totalGMV,

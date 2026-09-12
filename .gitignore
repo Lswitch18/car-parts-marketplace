@@ -41,6 +41,10 @@ __pycache__
 *.mp4
 *.mov
 *.webm
+# Presentation optimized — must be versioned (trimmed, no spinner, synced)
+!public/presentation/*.mp4
+!public/presentation/**/*.mp4
+!public/presentation/**/*.webm
 
 # Reports and Documentation
 project-reports/
