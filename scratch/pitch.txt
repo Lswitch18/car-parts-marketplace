@@ -1,6 +1,7 @@
-Bem-vindo ao DAIG. A garagem digital revolucionária do Japão. O mercado de autopeças usadas movimentou bilhões no último ano, mas a eficiência logística e o alcance digital sempre foram um gargalo. A DAIG não é apenas um marketplace, é um ecossistema ponta a ponta projetado para escalabilidade massiva.
-Começar é instantâneo. Esqueça formulários burocráticos. Nosso onboarding inteligente oferece login com apenas um clique através do Google, categorizando automaticamente se você é um comprador casual, uma oficina parceira ou um desmanche Kaitai-gyo.
-Uma vez logado, você tem o poder do maior inventário unificado. Navegar pelo catálogo é uma experiência premium. Filtros contextuais permitem segmentar chassis, condição, códigos OEM e marcas JDM icônicas. O motor de busca em tempo real garante resultados na velocidade do pensamento.
-Ao selecionar uma peça, a interface exibe fotografias geradas e otimizadas em alta resolução. A transparência é total: especificações técnicas, histórico do desmanche vendedor e compatibilidade do modelo. Se você precisa dessa peça, a negociação começa exatamente aqui.
-E não para por aí. Nosso chat de negociação integrado permite comunicação direta. Ao invés de trocar e-mails longos, faça uma proposta oficial em tempo real através da nossa interface. O vendedor analisa a oferta e pode aceitá-la imediatamente, criando um ciclo de venda ultrarrápido.
-Negócio aceito? Chegou a hora do pagamento seguro. Com a integração nativa ao Stripe Connect, a DAIG atua em custódia. O valor do comprador é garantido. A peça é despachada e, ao confirmar a entrega, o lojista recebe a liquidação no modelo Zengin T mais 4 no Japão. Simples, seguro, rápido. DAIG. Elevando o padrão global.
+Bem-vindo à DAIG. O portal de autopeças JDM definitivo.
+Na página inicial, você acompanha dados reais do mercado global.
+O cadastro é instantâneo. Entre com o Google e acesse como Comprador ou Lojista.
+No catálogo, milhares de peças originais inspecionadas no Japão. Filtre por marca, como Honda, e acesse os detalhes completos com total transparência.
+Negocie direto com o vendedor em nosso chat integrado. Envie sua proposta.
+Tudo certo? O checkout é processado pelo Stripe Connect com liquidação T+4 em Escrow, garantindo segurança total para quem compra e para quem vende.
+DAIG. Elevando o padrão global.
