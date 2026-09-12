@@ -157,8 +157,8 @@ const CameraWalk: React.FC<{ progress: React.MutableRefObject<number> }> = ({ pr
     const st = ScrollTrigger.create({
       trigger,
       start: 'top top',
-      end: '+=300%',
-      scrub: 1.2,
+      end: '+=180%',
+      scrub: 1,
       pin: true,
       anticipatePin: 1,
       onUpdate: self => {

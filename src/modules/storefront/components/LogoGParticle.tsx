@@ -292,18 +292,20 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       requestAnimationFrame(() => ScrollTrigger.refresh())
       setTimeout(() => ScrollTrigger.refresh(), 120)
       const heroEl = document.querySelector('.hero-section') as HTMLElement | null
+      const heroEl = document.querySelector('.hero-section') as HTMLElement | null
       const st = ScrollTrigger.create({
         trigger: heroEl || container,
         start: 'top top',
-        end: '+=200%',
-        scrub: 1.1,
+        end: '+=130%',
+        scrub: 1,
         pin: heroEl || container,
         pinSpacing: true,
         anticipatePin: 1,
         onUpdate: self => { progressRef.current = self.progress },
-        // Garante que p=0 seja intacto e p=1 disperso, visível já no load
         onRefresh: self => { progressRef.current = self.progress },
       })
+      progressRef.current = 0
+      ScrollTrigger.refresh()
       // Força progresso inicial 0 e visível sem scroll
       progressRef.current = 0
       ScrollTrigger.refresh()
