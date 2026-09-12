@@ -722,19 +722,19 @@ export default function PresentationPage() {
 
       <div ref={containerRef} style={{ background: '#020617', color: 'white', fontFamily: '"Inter",system-ui,sans-serif', minHeight: '100vh', overflowX: 'hidden' }}>
 
-        {/* ── HERO — Investor Pitch (GSAP Venue) ───────────────────────── */}
-        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+        {/* ── HERO — Investor Pitch (GSAP Venue) — G 70% central, 20% maior, visível no load ── */}
+        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'visible' }}>
           
           {/* Animated background — parallax layer */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
             <div className="hero-bg-grid" style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px)', backgroundSize: '60px 60px', animation: 'gridScroll 8s linear infinite', maskImage: 'radial-gradient(ellipse at 50% 50%,black 0%,transparent 70%)' }} />
             <div style={{ position: 'absolute', top: '10%', left: '50%', transform: 'translateX(-50%)', width: '80vw', height: '60vw', maxWidth: 1000, borderRadius: '50%', background: 'radial-gradient(ellipse,rgba(0,229,255,0.05) 0%,transparent 65%)', animation: 'glow 5s ease-in-out infinite' }} />
             <div style={{ position: 'absolute', bottom: '5%', right: '5%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle,rgba(124,58,237,0.07) 0%,transparent 70%)', animation: 'glow 7s ease-in-out infinite reverse' }} />
           </div>
 
-          {/* G Fragment — Astra inspired (cian→roxo, dispersão até sumir) */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1, opacity: 0.9 }}>
-            <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100%', minHeight: '100vh' }} />
+          {/* G Fragment — 20% maior, alta qualidade 1024, visível no load, 70% central */}
+          <div style={{ position: 'absolute', left: '15%', top: '12%', width: '70%', height: '70%', pointerEvents: 'none', zIndex: 1, opacity: 0.95 }}>
+            <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100%', minHeight: 520 }} />
           </div>
 
           {/* Logo badge */}

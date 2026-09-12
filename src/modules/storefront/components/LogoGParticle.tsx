@@ -53,14 +53,22 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    let w = container.clientWidth
-    let h = container.clientHeight
+    let w = container.clientWidth || window.innerWidth
+    let h = container.clientHeight || window.innerHeight * 0.7
+    // Fallback if still 0 (flex not yet laid out)
+    if (w === 0 || h === 0) {
+      const rect = container.getBoundingClientRect()
+      w = rect.width || window.innerWidth * 0.7
+      h = rect.height || window.innerHeight * 0.7
+    }
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
     const resize = () => {
       if (!container || !canvas) return
-      w = container.clientWidth
-      h = container.clientHeight
+      const cw = container.clientWidth || container.getBoundingClientRect().width
+      const ch = container.clientHeight || container.getBoundingClientRect().height
+      if (cw === 0 || ch === 0) return
+      w = cw; h = ch
       canvas.width = w * dpr
       canvas.height = h * dpr
       canvas.style.width = `${w}px`
@@ -68,6 +76,16 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
     resize()
+    // Observe container size (hero flex + pin spacer)
+    const ro = new ResizeObserver(() => {
+      resize()
+      initParticles()
+      ScrollTrigger.refresh()
+    })
+    ro.observe(container)
+    // Also observe hero section for pin spacer changes
+    const hero = document.querySelector('.hero-section')
+    if (hero) ro.observe(hero)
 
     const img = new Image()
     img.crossOrigin = 'anonymous'
@@ -77,23 +95,24 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     let killed = false
 
     const initParticles = () => {
+      if (w === 0 || h === 0) { resize(); if (w===0||h===0) return }
       const off = document.createElement('canvas')
-      const s = 512
+      const s = 1024 // alta qualidade: usa logo-g.png 1024 nativo
       off.width = s
       off.height = s
       const octx = off.getContext('2d', { willReadFrequently: true })!
       octx.clearRect(0,0,s,s)
       octx.drawImage(img, 0, 0, s, s)
       const data = octx.getImageData(0,0,s,s).data
-      const step = 3 // gear teeth need finer 12x13 rect
+      const step = 3 // 1024/3≈341 → ~12K partículas nítidas (20% maior)
       const cx = s/2, cy = s/2
       const newParticles: Particle[] = []
       for (let y = 0; y < s; y += step) {
         for (let x = 0; x < s; x += step) {
           const idx = (y * s + x) * 4
           const a = data[idx + 3]
-          if (a > 18) {
-            const scale = Math.min(w, h) * 0.82 / s
+          if (a > 16) {
+            const scale = Math.min(w, h) * 0.984 / s // 20% maior (0.82*1.2)
             const ox = w/2 + (x - cx) * scale
             const oy = h/2 + (y - cy) * scale
             const dx = x - cx, dy = y - cy
@@ -255,8 +274,17 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     }
 
     const onLoad = () => {
+      // Garante medida correta antes de amostrar (visível no load)
+      resize()
       initParticles()
+      // Se ainda 0 partículas (w/h 0), tenta novamente no próximo frame
+      if (particles.length === 0) {
+        requestAnimationFrame(() => { resize(); initParticles(); ScrollTrigger.refresh() })
+      }
       render()
+      // Refresh para pin-spacer medir correto (visível sem precisar scrollar)
+      requestAnimationFrame(() => ScrollTrigger.refresh())
+      setTimeout(() => ScrollTrigger.refresh(), 120)
       const st = ScrollTrigger.create({
         trigger: container,
         start: 'top top',
@@ -314,6 +342,7 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     return () => {
       killed = true
       cancelAnimationFrame(rafRef.current)
+      try { ro.disconnect() } catch {}
       ScrollTrigger.getAll().forEach(st => { if (st.trigger === container) st.kill() })
     }
   }, [src])
