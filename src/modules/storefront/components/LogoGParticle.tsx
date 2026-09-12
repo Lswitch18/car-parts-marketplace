@@ -105,13 +105,14 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
             let toothIdx = -1
             let isTooth = false
             const distNorm = dist // 0-~256 for 512
-            // Gear com 12 dentes a cada 30°, half width 11° para dente largo (não lâmina)
+            // Gear 12 dentes, half 9° tip / 10° base — espaçamento maior (gap 12° na ponta)
             if (distNorm >= 165 && distNorm <= 265) {
+              const half = distNorm >= 210 ? 7 : 9
               for (let k=0;k<12;k++) {
                 const center = k*30
                 let diff = Math.abs(ang - center)
                 if (diff > 180) diff = 360 - diff
-                if (diff < 11) { isTooth = true; toothIdx = k; break }
+                if (diff < half) { isTooth = true; toothIdx = k; break }
               }
             }
             if (isTooth && distNorm >= 195) gearPart = 'tooth'
