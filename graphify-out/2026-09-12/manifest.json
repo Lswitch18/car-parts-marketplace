@@ -3827,6 +3827,18 @@
     "ast_hash": "63ebb0b7cbd51c6acb1df3c262f76ae8",
     "semantic_hash": ""
   },
+  "public/presentation_video.mp4": {
+    "mtime": 1788906483.7576578,
+    "seen": 1788987079.5762944,
+    "ast_hash": "71d8b1a75d1246ce4c24d47cb828aca8",
+    "semantic_hash": ""
+  },
+  "public/presentation_video_ja.mp4": {
+    "mtime": 1788906483.821658,
+    "seen": 1788987079.5762959,
+    "ast_hash": "3f80f57d5c9af196550f1f49478f600a",
+    "semantic_hash": ""
+  },
   "video_localized/audio_original.wav": {
     "mtime": 1788793392.61763,
     "seen": 1788987079.576298,
@@ -3888,9 +3900,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PresentationPage.tsx": {
-    "mtime": 1789183943.8799694,
-    "seen": 1789184401.566397,
-    "ast_hash": "d80b12ae2f30efd667a9e0277340ac6d",
+    "mtime": 1789166584.4039674,
+    "seen": 1789171550.0896595,
+    "ast_hash": "46feeac4ab951df88509c649193c65dc",
     "semantic_hash": ""
   },
   ".agents/skills/gsap-immersive-venue/SKILL.md": {
@@ -3972,9 +3984,9 @@
     "semantic_hash": ""
   },
   "agents/ai_directors/full_demo_capture.py": {
-    "mtime": 1789179863.4839704,
-    "seen": 1789184401.5634267,
-    "ast_hash": "f75d031b0402e901db43e1a97480830b",
+    "mtime": 1789167926.4719603,
+    "seen": 1789171550.0885837,
+    "ast_hash": "e712624e916c286009da65917a4fab42",
     "semantic_hash": ""
   },
   "agents/ai_directors/pronunciation_agent.py": {
@@ -4140,9 +4152,9 @@
     "semantic_hash": ""
   },
   "scratch/pitch.txt": {
-    "mtime": 1789173396.2519748,
-    "seen": 1789184401.5670896,
-    "ast_hash": "ab0002fbfd81cd3df0bde05e7c85d08e",
+    "mtime": 1789168428.4359627,
+    "seen": 1789171550.0904021,
+    "ast_hash": "f71fe8110b32322d04f4d7ea538641b2",
     "semantic_hash": ""
   },
   "public/images/jdm_engine.jpg": {
@@ -4446,15 +4458,15 @@
     "semantic_hash": ""
   },
   "public/videos/demo-ja.mp3": {
-    "mtime": 1789173530.7159739,
-    "seen": 1789184401.5720763,
-    "ast_hash": "c28354b029c4f2bf38e3da2e82a54ec9",
+    "mtime": 1789168737.9119587,
+    "seen": 1789171550.091594,
+    "ast_hash": "eeec10371bd0cae3a908a58a5a356df2",
     "semantic_hash": ""
   },
   "public/videos/demo-pt.mp3": {
-    "mtime": 1789173526.411974,
-    "seen": 1789184401.5720792,
-    "ast_hash": "14536069e5b815fbd657f290b9fac8be",
+    "mtime": 1789168715.4439588,
+    "seen": 1789171550.0915987,
+    "ast_hash": "2a901b129690b489be4981a3a5236797",
     "semantic_hash": ""
   },
   "scratch/generate_audio_v3.py": {
@@ -4464,93 +4476,9 @@
     "semantic_hash": ""
   },
   "scratch/pitch_ja.txt": {
-    "mtime": 1789173398.3199747,
-    "seen": 1789184401.5670936,
-    "ast_hash": "df97ea609f1ebeb8a32fb819f01ec415",
-    "semantic_hash": ""
-  },
-  "src/modules/shared/providers/SmoothScrollProvider.tsx": {
-    "mtime": 1789183837.363969,
-    "seen": 1789184401.5663652,
-    "ast_hash": "4dd8f547b011f1f3cff249a3d8c45cd6",
-    "semantic_hash": ""
-  },
-  "src/modules/storefront/components/InvestorMoatSection.tsx": {
-    "mtime": 1789183868.4759693,
-    "seen": 1789184401.5663757,
-    "ast_hash": "707a6cd9b090d76bb51792a14f14edae",
-    "semantic_hash": ""
-  },
-  "src/modules/storefront/components/KineticCaption.tsx": {
-    "mtime": 1789183857.2839692,
-    "seen": 1789184401.5663784,
-    "ast_hash": "9d2e69759e954f93b5081360197bf5b9",
-    "semantic_hash": ""
-  },
-  "src/modules/storefront/hooks/useAnimatedCounter.ts": {
-    "mtime": 1789183841.3959692,
-    "seen": 1789184401.56638,
-    "ast_hash": "78be6e04af25ea37588cfce84b4a4e74",
-    "semantic_hash": ""
-  },
-  "src/modules/storefront/hooks/usePresentationAudio.ts": {
-    "mtime": 1789183851.199969,
-    "seen": 1789184401.566382,
-    "ast_hash": "20b9a6976da8f54cf5492fd57b6db04f",
-    "semantic_hash": ""
-  },
-  "src/modules/storefront/lib/vttParser.ts": {
-    "mtime": 1789183845.8919692,
-    "seen": 1789184401.5663836,
-    "ast_hash": "779b74793297e383766cc8367bda3953",
-    "semantic_hash": ""
-  },
-  "supabase/migrations/20260911_add_admin_stats_rpc.sql": {
-    "mtime": 1789172889.0959551,
-    "seen": 1789184401.5667746,
-    "ast_hash": "6da21ab1db607b25a0515c05a98adb6d",
-    "semantic_hash": ""
-  },
-  ".agents/rules/video_capture.md": {
-    "mtime": 1789179283.3039694,
-    "seen": 1789184401.5668952,
-    "ast_hash": "01fdb1a2fa7254309205b99bac064883",
-    "semantic_hash": ""
-  },
-  "public/presentation/posters/hero_blur.jpg": {
-    "mtime": 1789183673.0279715,
-    "seen": 1789184401.5673928,
-    "ast_hash": "7cb80f07d48ea9bf32cc0bd3420fa10f",
-    "semantic_hash": ""
-  },
-  "public/presentation/posters/hero_hd.jpg": {
-    "mtime": 1789183673.2879715,
-    "seen": 1789184401.5673966,
-    "ast_hash": "6d1ac1f275a35bdf8a093c739f2cab0a",
-    "semantic_hash": ""
-  },
-  "public/presentation/audio/bed_ambient.mp3": {
-    "mtime": 1789183821.5959692,
-    "seen": 1789184401.5719664,
-    "ast_hash": "1052e2e176476be519f4395c24a1fd04",
-    "semantic_hash": ""
-  },
-  "public/presentation/audio/narration_ja.mp3": {
-    "mtime": 1789183686.7919714,
-    "seen": 1789184401.5719702,
-    "ast_hash": "c28354b029c4f2bf38e3da2e82a54ec9",
-    "semantic_hash": ""
-  },
-  "public/presentation/audio/narration_pt.mp3": {
-    "mtime": 1789183686.4799714,
-    "seen": 1789184401.5719721,
-    "ast_hash": "14536069e5b815fbd657f290b9fac8be",
-    "semantic_hash": ""
-  },
-  "public/presentation/audio/narration_pt_loud.mp3": {
-    "mtime": 1789183690.9919715,
-    "seen": 1789184401.5719738,
-    "ast_hash": "e477387b1ac5a100b9d50430ef554495",
+    "mtime": 1789168429.5399628,
+    "seen": 1789171550.0904076,
+    "ast_hash": "2fa769ba6a77521a556fa322147ac78d",
     "semantic_hash": ""
   }
 }
