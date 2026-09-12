@@ -15,6 +15,9 @@ OUT_DIR = "public/videos"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 def get_init_script(lang='pt-BR', inject_auth=True):
+    # i18n.tsx expects 'pt' or 'ja'
+    ui_lang = "ja" if "ja" in lang else "pt"
+
     auth_part = f"""
       const mockUser = {{
         id: "demo-user-123",
@@ -39,7 +42,7 @@ def get_init_script(lang='pt-BR', inject_auth=True):
     return f"""
     (() => {{
       {auth_part}
-      window.localStorage.setItem("daig-language", "{lang}");
+      window.localStorage.setItem("daig-language", "{ui_lang}");
       window.__SUPPRESS_LOGS = true;
     }})();
     """
@@ -56,7 +59,14 @@ def capture_demo(name: str, flow_fn, viewport_w=1440, viewport_h=900, inject_aut
         page.on("console", lambda _: None)
         
         try:
-            flow_fn(page)
+            is_ja = "ja" in lang
+            # Only pass is_ja to functions that accept it.
+            import inspect
+            sig = inspect.signature(flow_fn)
+            if "is_ja" in sig.parameters:
+                flow_fn(page, is_ja=is_ja)
+            else:
+                flow_fn(page)
             page.wait_for_timeout(1000)
         except Exception as e:
             print(f"  ⚠️  Erro no fluxo: {e}")
@@ -86,20 +96,35 @@ def flow_landing_hero(page):
     page.mouse.wheel(0, 1000)
     page.wait_for_timeout(1000)
 
-def flow_register(page):
+def flow_register(page, is_ja):
     page.goto(f"{BASE_URL}/register")
     _wait_loaded(page)
     page.wait_for_timeout(800)
-    page.fill("input[placeholder='Seu nome']", "Tanaka Hiroshi")
+    
+    name_ph = "お名前" if is_ja else "Seu nome"
+    email_ph = "seu@email.com" # usually not translated or it's type='email'
+    
+    try:
+        page.fill(f"input[placeholder='{name_ph}']", "Tanaka Hiroshi", timeout=2000)
+    except:
+        # Fallback to the first text input
+        page.fill("input[type='text']", "Tanaka Hiroshi")
+
     page.wait_for_timeout(400)
-    page.fill("input[placeholder='seu@email.com']", "tanaka@daig.jp")
+    
+    try:
+        page.fill("input[type='email']", "tanaka@daig.jp", timeout=2000)
+    except:
+        page.fill("input[placeholder='seu@email.com']", "tanaka@daig.jp")
+
     page.wait_for_timeout(400)
     page.fill("input[type='password']", "daig2026")
     page.wait_for_timeout(600)
     page.mouse.wheel(0, 300)
     page.wait_for_timeout(500)
     try:
-        page.click("text=Comprador", timeout=1000)
+        buyer_txt = "購入者" if is_ja else "Comprador"
+        page.click(f"text={buyer_txt}", timeout=1000)
         page.wait_for_timeout(500)
         btn = page.query_selector("button:has-text('Google')")
         if btn:
@@ -109,14 +134,15 @@ def flow_register(page):
     except: pass
     page.wait_for_timeout(1000)
 
-def flow_catalog(page):
+def flow_catalog(page, is_ja):
     page.goto(f"{BASE_URL}/catalog")
     _wait_loaded(page)
     page.wait_for_timeout(800)
     page.mouse.wheel(0, 400)
     page.wait_for_timeout(800)
     try:
-        page.click("text=Honda", timeout=1000)
+        honda_txt = "ホンダ" if is_ja else "Honda"
+        page.click(f"text={honda_txt}", timeout=1000)
         page.wait_for_timeout(800)
     except: pass
     page.mouse.wheel(0, 600)
