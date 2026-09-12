@@ -388,13 +388,15 @@ const DemoVideoPlayer: React.FC = () => {
 
   const chapters = [
     { label: 'Revolução 360°', pct: 0 },
-    { label: 'Cadastro & Google', pct: 8.1 },
-    { label: 'Plataforma Unificada', pct: 19.5 },
-    { label: 'Catálogo JDM', pct: 27.4 },
-    { label: 'Especificações 3D', pct: 40.9 },
-    { label: 'IA para Vendedores', pct: 52.8 },
-    { label: 'Chat com Tradução', pct: 71.4 },
-    { label: 'Pagamento Escrow', pct: 87.5 },
+    { label: 'Cadastro & Google', pct: 7.5 },
+    { label: 'Plataforma Unificada', pct: 18.2 },
+    { label: 'Catálogo JDM', pct: 26.1 },
+    { label: 'Especificações 3D', pct: 38.8 },
+    { label: 'IA para Vendedores', pct: 50.2 },
+    { label: 'Chat com Tradução', pct: 67.8 },
+    { label: 'Negociação Vendedor', pct: 74.5 },
+    { label: 'Pagamento Escrow', pct: 83.2 },
+    { label: 'Compra Finalizada', pct: 92.1 },
   ];
 
   return (

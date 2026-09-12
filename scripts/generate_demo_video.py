@@ -273,17 +273,67 @@ def record_full_ecosystem_demo():
             time.sleep(0.5)
             
             print("🛍️ Clicando em Ir para Pagamento...")
-            pay_btn = page.locator('a[href*="/checkout/"], button.bg-primary').last
+            pay_btn = page.locator('a[href*="/checkout/"], button:has-text("Ir para Pagamento"), button:has-text("Pagamento")').last
             if pay_btn.is_visible():
                 page.evaluate("document.body.classList.add('zoom-in')")
                 time.sleep(1)
                 smooth_click(page, pay_btn)
+                print("✅ Navegando para checkout via botão...")
             else:
-                print("⚠️ Botão de pagamento não encontrado, redirecionando via JS...")
-                page.evaluate("window.location.href = '/checkout/part-001?price=420000'")
+                print("⚠️ Botão de pagamento não encontrado, tentando via chat...")
+                # Tenta encontrar o botão dentro do chat
+                chat_pay = page.locator('button.bg-gradient-to-r, a[href*="checkout"]').first
+                if chat_pay.is_visible():
+                    smooth_click(page, chat_pay)
+                else:
+                    print("⚠️ Redirecionando via JS para checkout...")
+                    page.evaluate("window.location.href = '/checkout/part-001?price=420000'")
                 
-            time.sleep(1)
+            time.sleep(2)
             page.evaluate("document.body.classList.remove('zoom-in')")
+
+            # --- CENA 4B: Perspectiva do Vendedor (Negociação) ---
+            print("🎥 CENA 4B: Vendedor recebendo e aceitando proposta")
+            # Simula troca para visão do vendedor via localStorage
+            seller_user = """
+            {
+                "state": {
+                    "user": {
+                        "id": "seller-123",
+                        "email": "seller@daig.jp",
+                        "role": "seller",
+                        "onboarding_completed": true,
+                        "shop_name": "TDK JDM Parts"
+                    },
+                    "isAdmin": false,
+                    "initialized": true,
+                    "loading": false
+                },
+                "version": 0
+            }
+            """
+            # Mostra notificação de nova proposta para o vendedor
+            page.evaluate("""
+                const notif = document.createElement('div');
+                notif.style.cssText = 'position:fixed;top:20px;right:20px;background:#0f172a;border:1px solid #00E5FF;color:white;padding:16px 20px;border-radius:12px;z-index:99999;box-shadow:0 8px 32px rgba(0,229,255,0.3);font-family:system-ui;';
+                notif.innerHTML = '<div style=\"font-size:12px;color:#00E5FF;font-weight:700;margin-bottom:4px;\">NOVA PROPOSTA</div><div style=\"font-size:14px;font-weight:600\">SR20DET • ¥420.000</div><div style=\"font-size:11px;color:#94a3b8;margin-top:4px\">de demo@daig.jp</div>';
+                document.body.appendChild(notif);
+                setTimeout(()=>notif.remove(), 2800);
+            """)
+            time.sleep(3)
+            # Simula vendedor digitando resposta
+            page.evaluate("""
+                const chatInput = document.querySelector('textarea, input[placeholder*=\"mensagem\"], input[placeholder*=\"Digite\"]');
+                if (chatInput) {
+                    chatInput.focus();
+                    chatInput.value = 'Aceito ¥420.000! Pode prosseguir para o pagamento. Envio em 24h.';
+                    chatInput.dispatchEvent(new Event('input', {bubbles:true}));
+                }
+            """)
+            time.sleep(1)
+            # Volta para visão do comprador
+            page.evaluate(f"window.localStorage.setItem('auth-storage', JSON.stringify({mock_user}));")
+            time.sleep(0.5)
 
             # ========================================================
             # CENA 5: Fluxo de Pagamento e Direcionamento Stripe
@@ -291,36 +341,51 @@ def record_full_ecosystem_demo():
             print("🎥 CENA 5: Fluxo de Checkout e Stripe")
             time.sleep(1)
             
-            print("🖱️ Visualizando Checkout Seguro...")
-            page.mouse.wheel(0, 300)
-            time.sleep(1)
+            print("🖱️ Visualizando Checkout Seguro (resumo, frete, JCT)...")
+            # Mostra detalhes do checkout com scroll lento para dar tempo de leitura
+            for _ in range(2):
+                page.mouse.wheel(0, 250)
+                time.sleep(0.9)
+            # Destaca o resumo do pedido
+            page.evaluate("""
+                const summary = document.querySelector('[class*=\"order-summary\"], [class*=\"Resumo\"], main');
+                if (summary) summary.style.boxShadow = '0 0 0 2px rgba(0,229,255,0.35)';
+            """)
+            time.sleep(1.2)
                 
             print("💳 Clicando no botão de Pagar via Stripe...")
             try:
-                # Usa JavaScript para encontrar o botão de gradiente
                 page.evaluate("""
-                    const btn = Array.from(document.querySelectorAll('button')).find(b => b.className.includes('bg-gradient-to-r'));
+                    const btn = Array.from(document.querySelectorAll('button')).find(b => b.className.includes('bg-gradient-to-r') || b.textContent.includes('Pagar') || b.textContent.includes('Stripe'));
                     if (btn) { 
                         btn.disabled = false;
                         const rect = btn.getBoundingClientRect();
                         const x = rect.left + rect.width / 2;
                         const y = rect.top + rect.height / 2;
-                        document.querySelector('.daig-cursor').style.left = x + 'px';
-                        document.querySelector('.daig-cursor').style.top = y + 'px';
+                        const cur = document.querySelector('.daig-cursor');
+                        if (cur) { cur.style.left = x + 'px'; cur.style.top = y + 'px'; }
                     }
                 """)
-                time.sleep(0.5)
-                # Zoom final antes do click
+                time.sleep(0.6)
                 page.evaluate("document.body.classList.add('zoom-in')")
-                time.sleep(0.5)
+                time.sleep(0.6)
                 
                 page.evaluate("""
-                    const btn = Array.from(document.querySelectorAll('button')).find(b => b.className.includes('bg-gradient-to-r'));
+                    const btn = Array.from(document.querySelectorAll('button')).find(b => b.className.includes('bg-gradient-to-r') || b.textContent.includes('Pagar'));
                     if (btn) { btn.click(); }
                 """)
                 
-                print("✅ Botão Pagar clicado via JavaScript!")
-                time.sleep(4) # Espera mostrar o redirecionamento
+                print("✅ Botão Pagar clicado — aguardando Stripe...")
+                time.sleep(2)
+                # Simula tela de redirecionamento Stripe / sucesso
+                page.evaluate("""
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(2,6,23,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;font-family:system-ui;color:white;text-align:center;padding:24px;';
+                    overlay.innerHTML = '<div style=\"width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#00E5FF,#7000FF);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:20px;box-shadow:0 0 40px rgba(0,229,255,0.5)\">✓</div><div style=\"font-size:28px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em\">Pagamento Confirmado!</div><div style=\"font-size:14px;color:rgba(255,255,255,0.6);max-width:420px;line-height:1.6\">¥420.000 em custódia segura via Stripe Connect. O vendedor foi notificado e o envio será em 24h. Acompanhe em <b style=\"color:#00E5FF\">Minhas Compras</b>.</div><div style=\"margin-top:20px;display:flex;gap:10px\"><span style=\"padding:8px 16px;border-radius:100px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.3);font-size:11px;color:#00E5FF;font-weight:700\">T+4 LIQUIDAÇÃO ZENGIN</span><span style=\"padding:8px 16px;border-radius:100px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);font-size:11px;color:#10B981;font-weight:700\">ESCROW ATIVO</span></div>';
+                    document.body.appendChild(overlay);
+                """)
+                time.sleep(3.5)
+                print("✅ Compra finalizada com sucesso visível!")
             except Exception as e:
                 print("⚠️ Erro ao clicar no botão pagar:", e)
                 
