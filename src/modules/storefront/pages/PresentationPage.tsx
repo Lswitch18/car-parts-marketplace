@@ -340,11 +340,11 @@ const DemoVideoPlayer: React.FC = () => {
     return () => audio.removeEventListener('canplay', onAudioCanPlay)
   }, [uiLang, duckBed]);
 
-  const toggle = async () => {
+  const toggle = () => {
     const v = videoRef.current;
     const a = audioRef.current;
     if (!v) return;
-    await resumeOnGesture()
+    resumeOnGesture().catch(() => {});
     if (v.paused) {
         const vp = v.play()
         vp?.catch(e => { if (e?.name !== 'AbortError') console.error('video play', e) })
