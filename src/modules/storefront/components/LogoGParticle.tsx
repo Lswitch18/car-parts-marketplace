@@ -184,10 +184,23 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       baseTxRef.current = m
     }
 
+    let startTime = performance.now()
     const render = () => {
       if (killed || !ctx) return
       ctx.clearRect(0,0,w,h)
       const p = progressRef.current
+      // Idle antes do scroll: rotação lenta + respiração + float
+      const t = (performance.now() - startTime) * 0.001
+      const idleAmp = (1 - Math.min(p*8, 1)) // some rápido quando começa a scrollar
+      const idleRot = Math.sin(t*0.35) * 0.035 * idleAmp // ±2deg
+      const idleScale = 1 + Math.sin(t*0.45) * 0.012 * idleAmp
+      const idleFloatY = Math.sin(t*0.6) * 4 * idleAmp
+      // Aplica idle global antes de desenhar partículas
+      ctx.save()
+      ctx.translate(w/2, h/2 + idleFloatY)
+      ctx.rotate(idleRot)
+      ctx.scale(idleScale, idleScale)
+      ctx.translate(-w/2, -h/2)
       // Gear rotation 0-55% = 360deg, then dispersion
       const rotProgress = Math.min(p / 0.55, 1)
       const dispProgress = p < 0.32 ? 0 : (p - 0.32) / 0.68
@@ -231,8 +244,9 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
         ctx.arc(x, y, Math.max(0.3, r), 0, Math.PI*2)
         ctx.fill()
       }
-      ctx.shadowBlur = 0
+        ctx.shadowBlur = 0
       ctx.globalAlpha = 1
+      ctx.restore()
       rafRef.current = requestAnimationFrame(render)
     }
 
