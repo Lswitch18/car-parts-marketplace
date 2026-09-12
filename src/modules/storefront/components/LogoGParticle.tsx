@@ -59,7 +59,7 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
     }
     // Performático: cap dpr 1.5 e desativa em low-power
     const isLowPower = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : false
-    const dpr = Math.min(window.devicePixelRatio || 1, isLowPower ? 1 : 1.5)
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
     const resize = () => {
       if (!container || !canvas) return
@@ -102,7 +102,7 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       octx.clearRect(0,0,s,s)
       octx.drawImage(img, 0, 0, s, s)
       const data = octx.getImageData(0,0,s,s).data
-      const step = 4 // performático: 1024/4=256 → ~6.5K partículas (era 12K em step3), 60fps garantido
+      const step = 2 // alta qualidade: 1024/2=512 → ~18K partículas nítidas, gear dente perfeito
       const cx = s/2, cy = s/2
       const newParticles: Particle[] = []
       for (let y = 0; y < s; y += step) {
@@ -258,14 +258,9 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
         const r = pt.r * scale
         ctx.globalAlpha = Math.max(0, a) * pt.alpha
         ctx.fillStyle = pt.color
-        // Performático: shadow só em desktop com dpr>1, reduzido
-        const useShadow = !isLowPower && epDisp < 0.7
-        if (useShadow) {
-          ctx.shadowColor = pt.color
-          ctx.shadowBlur = pt.gearPart === 'tooth' ? 6 * (1 - epDisp*0.6) : 4 * (1 - epDisp*0.5)
-        } else {
-          ctx.shadowBlur = 0
-        }
+        // Alta qualidade: glow mais intenso, sem guard low-power
+        ctx.shadowColor = pt.color
+        ctx.shadowBlur = pt.gearPart === 'tooth' ? 12 * (1 - epDisp*0.5) : 8 * (1 - epDisp*0.4)
         ctx.beginPath()
         ctx.arc(x, y, Math.max(0.3, r), 0, Math.PI*2)
         ctx.fill()
