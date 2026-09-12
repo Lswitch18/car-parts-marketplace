@@ -646,24 +646,26 @@ export default function PresentationPage() {
     return () => { gsap.ticker.remove(raf); lenis.destroy() }
   }, [])
 
-  // GSAP Premium Animations (Awwwards-level)
+  // GSAP Premium — performático (só transform/opacity, sem filter)
   useGSAP(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) return
-    // 1. Hero Title SplitText Animation
+    // 1. Hero Title — inovador, gigante, split com 3D leve
     if (heroTitleRef.current) {
         const split = new SplitText(heroTitleRef.current, { type: 'words,chars' });
         gsap.from(split.chars, {
-            duration: 0.8,
-            y: 40,
+            duration: 0.9,
+            yPercent: 100,
             opacity: 0,
-            scale: 0.9,
-            stagger: 0.02,
-            ease: 'back.out(1.4)',
-            delay: 0.1
+            rotationX: -80,
+            transformOrigin: '50% 50% -20',
+            stagger: { each: 0.015, from: 'center' },
+            ease: 'power4.out',
+            delay: 0.15,
+            force3D: true,
         });
-        // parallax bg
-        gsap.to('.hero-bg-grid', { yPercent: -12, ease: 'none', scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 1.2 } })
+        // parallax bg leve
+        gsap.to('.hero-bg-grid', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: 1 } })
     }
 
     // 2. Stats Bar Stagger with shimmer guard
@@ -737,14 +739,8 @@ export default function PresentationPage() {
             <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100%', minHeight: 520 }} />
           </div>
 
-          {/* Logo badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '8px 18px', borderRadius: 100, background: 'rgba(0,229,255,0.07)', border: '1px solid rgba(0,229,255,0.2)', marginBottom: 28, position: 'relative', zIndex: 2 }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 10px #00E5FF', animation: 'glow 2s infinite' }} />
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#00E5FF', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Digital A.I. Garage · DAIG.jp</span>
-          </div>
-
-          {/* Title — G gear agora é só partícula (logo fixo removido) */}
-          <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(40px,7vw,84px)', fontWeight: 900, lineHeight: 1.1, letterSpacing: -2, marginBottom: 24, maxWidth: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.25em', position: 'relative', zIndex: 2 }}>
+          {/* Title — inovador, gigante, sem badge (performático) */}
+          <h1 ref={heroTitleRef} style={{ fontSize: 'clamp(56px,9.5vw,132px)', fontWeight: 900, lineHeight: 0.9, letterSpacing: '-0.04em', marginBottom: 28, maxWidth: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.12em', position: 'relative', zIndex: 2, perspective: 1000, willChange: 'transform, opacity' }}>
             <span>Sua garagem digital está aqui</span>
           </h1>
 

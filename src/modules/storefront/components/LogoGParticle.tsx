@@ -55,13 +55,14 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
 
     let w = container.clientWidth || window.innerWidth
     let h = container.clientHeight || window.innerHeight * 0.7
-    // Fallback if still 0 (flex not yet laid out)
     if (w === 0 || h === 0) {
       const rect = container.getBoundingClientRect()
       w = rect.width || window.innerWidth * 0.7
       h = rect.height || window.innerHeight * 0.7
     }
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    // Performático: cap dpr 1.5 e desativa em low-power
+    const isLowPower = navigator.hardwareConcurrency ? navigator.hardwareConcurrency <= 4 : false
+    const dpr = Math.min(window.devicePixelRatio || 1, isLowPower ? 1 : 1.5)
 
     const resize = () => {
       if (!container || !canvas) return
@@ -104,7 +105,7 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       octx.clearRect(0,0,s,s)
       octx.drawImage(img, 0, 0, s, s)
       const data = octx.getImageData(0,0,s,s).data
-      const step = 3 // 1024/3≈341 → ~12K partículas nítidas (20% maior)
+      const step = 4 // performático: 1024/4=256 → ~6.5K partículas (era 12K em step3), 60fps garantido
       const cx = s/2, cy = s/2
       const newParticles: Particle[] = []
       for (let y = 0; y < s; y += step) {
@@ -239,12 +240,11 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
           a = 1 - epDisp * 0.96
           scale = 1 - epDisp*0.35
         } else {
-          // Rotate around center then disperse
-          const rotAng = pt.baseAng + rotProgress * Math.PI * 2
+          // Gira 720° (2 voltas) antes de desfragmentar — mais teatral e visível
+          const rotAng = pt.baseAng + rotProgress * Math.PI * 4
           const cx = w/2, cy = h/2
           const rotX = cx + Math.cos(rotAng) * pt.rad + waveX * (1 - epDisp)
           const rotY = cy + Math.sin(rotAng) * pt.rad + waveY * (1 - epDisp)
-          // After rotation, continue outward
           const d = epDisp
           const outX = cx + Math.cos(rotAng) * (pt.rad + d*600) + waveX * (1 - d)
           const outY = cy + Math.sin(rotAng) * (pt.rad + d*520) + waveY * (1 - d)
@@ -261,8 +261,14 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
         const r = pt.r * scale
         ctx.globalAlpha = Math.max(0, a) * pt.alpha
         ctx.fillStyle = pt.color
-        ctx.shadowColor = pt.color
-        ctx.shadowBlur = pt.gearPart === 'tooth' ? 10 * (1 - epDisp*0.6) : 8 * (1 - epDisp*0.5)
+        // Performático: shadow só em desktop com dpr>1, reduzido
+        const useShadow = !isLowPower && epDisp < 0.7
+        if (useShadow) {
+          ctx.shadowColor = pt.color
+          ctx.shadowBlur = pt.gearPart === 'tooth' ? 6 * (1 - epDisp*0.6) : 4 * (1 - epDisp*0.5)
+        } else {
+          ctx.shadowBlur = 0
+        }
         ctx.beginPath()
         ctx.arc(x, y, Math.max(0.3, r), 0, Math.PI*2)
         ctx.fill()
