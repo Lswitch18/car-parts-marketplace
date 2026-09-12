@@ -213,17 +213,16 @@ def flow_checkout(page):
 def merge_videos(inputs: list, output: str):
     print(f"\n🎞️  Mesclando {len(inputs)} cenas em {output}...")
     
-    # Trim the first 2.5 seconds of the first scene to remove the loading spinner
-    if inputs and os.path.exists(inputs[0]):
-        trimmed_first = inputs[0].replace(".webm", "_trimmed.webm")
-        subprocess.run(["ffmpeg", "-y", "-ss", "00:00:02.500", "-i", inputs[0], "-c", "copy", trimmed_first], capture_output=True)
-        inputs[0] = trimmed_first
-
     list_file = "/tmp/daig_concat.txt"
     with open(list_file, "w") as f:
-        for inp in inputs:
-            if inp and os.path.exists(inp): f.write(f"file '{os.path.abspath(inp)}'\n")
-    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_file, "-c:v", "vp8", "-b:v", "1500k", "-c:a", "copy", output], capture_output=True)
+        for i, inp in enumerate(inputs):
+            if inp and os.path.exists(inp):
+                f.write(f"file '{os.path.abspath(inp)}'\n")
+                if i == 0:
+                    # Trim 2.5s from the first scene accurately during concat
+                    f.write("inpoint 00:00:02.500\n")
+                    
+    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_file, "-c:v", "libvpx-vp9", "-crf", "32", "-b:v", "0", "-c:a", "copy", output], capture_output=True)
     return output
 
 if __name__ == "__main__":
@@ -250,5 +249,5 @@ if __name__ == "__main__":
         merge_videos(captured, final_output)
         
         mp4_output = os.path.join(OUT_DIR, f"daig-full-demo-v2-{lang_suffix}.mp4")
-        subprocess.run(["ffmpeg", "-y", "-i", final_output, "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-c:a", "copy", mp4_output], capture_output=True)
+        subprocess.run(["ffmpeg", "-y", "-i", final_output, "-c:v", "libx264", "-preset", "fast", "-crf", "22", "-movflags", "+faststart", "-c:a", "copy", mp4_output], capture_output=True)
         print(f"  ✅ Concluído: {mp4_output}")
