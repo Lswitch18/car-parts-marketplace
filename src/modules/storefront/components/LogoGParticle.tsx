@@ -39,8 +39,30 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
   const rafRef = useRef<number>(0)
   const progressRef = useRef(0)
   const baseTxRef = useRef<Map<Particle, {x:number,y:number}>>(new Map())
+  const [isInView, setIsInView] = React.useState(false)
+  const [isHighQuality, setIsHighQuality] = React.useState(false)
+
+  // Lazy loading: só inicia canvas quando entra na viewport
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true)
+          // Pré-carrega HQ após entrar na viewport
+          setTimeout(() => setIsHighQuality(true), 300)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '200px', threshold: 0.01 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   useEffect(() => {
+    if (!isInView) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) return
 
@@ -347,13 +369,45 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
       try { ro.disconnect() } catch {}
       ScrollTrigger.getAll().forEach(st => { if (st.trigger === container) st.kill() })
     }
-  }, [src])
+  }, [src, isInView])
 
   const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (reduce) {
     return (
       <div ref={containerRef} className={className} style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <img src={src} alt="G" style={{ width: '70%', height: '70%', objectFit: 'contain', filter: 'drop-shadow(0 0 24px rgba(0,229,255,0.5))' }} />
+      </div>
+    )
+  }
+
+  // Pré-render: mostra imagem estática até entrar na viewport (lazy)
+  if (!isInView) {
+    return (
+      <div
+        ref={containerRef}
+        className={className}
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          minHeight: 520,
+          overflow: 'hidden',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(112,0,255,0.09), transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(0,229,255,0.07), transparent 55%)',
+          ...style,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <img
+          src="/presentation/logo-g-pre.png"
+          alt="G"
+          width={512}
+          height={512}
+          loading="lazy"
+          decoding="async"
+          style={{ width: '78%', height: '78%', objectFit: 'contain', filter: 'drop-shadow(0 0 22px rgba(0,229,255,0.45)) blur(0px)', opacity: 0.92 }}
+        />
       </div>
     )
   }
@@ -372,7 +426,7 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
         ...style,
       }}
     >
-      <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
+      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} />
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(2,6,23,0.55) 100%)' }} />
     </div>
   )
