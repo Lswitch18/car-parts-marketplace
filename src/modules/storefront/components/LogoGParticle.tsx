@@ -100,35 +100,50 @@ export const LogoGParticle: React.FC<{ src?: string; className?: string; style?:
             const dist = Math.sqrt(dx*dx + dy*dy)
             let ang = Math.atan2(dy, dx) * 180 / Math.PI
             if (ang < 0) ang += 360
-            // Classify gear part
+            // Classify gear part — 12 dentes involute, eficiente
             let gearPart: GearPart = 'g'
-            // Teeth: ring 245-295 and near 0/45/90... ±14°
+            let toothIdx = -1
             let isTooth = false
-            if (dist >= 180 && dist <= 265) {
-              // Check angular proximity to 8 teeth
-              for (let k=0;k<8;k++) {
-                const center = k*45
+            const distNorm = dist // 0-~256 for 512
+            // Gear com 12 dentes a cada 30°, half width 11° para dente largo (não lâmina)
+            if (distNorm >= 165 && distNorm <= 265) {
+              for (let k=0;k<12;k++) {
+                const center = k*30
                 let diff = Math.abs(ang - center)
                 if (diff > 180) diff = 360 - diff
-                if (diff < 15) { isTooth = true; break }
+                if (diff < 11) { isTooth = true; toothIdx = k; break }
               }
             }
-            if (isTooth && dist >= 210) gearPart = 'tooth'
-            else if (dist >= 130 && dist < 210) gearPart = 'ring'
+            if (isTooth && distNorm >= 195) gearPart = 'tooth'
+            else if (distNorm >= 125 && distNorm < 205) gearPart = 'ring'
             else gearPart = 'g'
 
             const baseAng = Math.atan2(dy, dx)
-            // Dispersed target: radial outward by angle for teeth/ring, random for G
+            // Dispersed target: dente como cluster sólido (mesmo vetor por dente)
             let tx: number, ty: number
             if (gearPart === 'g') {
               const randAng = Math.random() * Math.PI * 2
-              const d = 350 + Math.random()*550
+              const d = 360 + Math.random()*520
               tx = ox + Math.cos(randAng)*d
               ty = oy + Math.sin(randAng)*d
+            } else if (gearPart === 'tooth' && toothIdx >=0) {
+              // Dente como cluster sólido: mantém forma do dente ao dispersar
+              const PITCH_R = 195
+              const toothCenterAng = toothIdx*30 * Math.PI/180
+              const toothOut = 560 + (toothIdx%3)*40 // variação por dente
+              const toothCx = 256 + Math.cos(toothCenterAng)*PITCH_R
+              const toothCy = 256 + Math.sin(toothCenterAng)*PITCH_R
+              const relX = (x - toothCx) * scale
+              const relY = (y - toothCy) * scale
+              const cxDisp = w/2 + Math.cos(toothCenterAng) * (PITCH_R*scale + toothOut)
+              const cyDisp = h/2 + Math.sin(toothCenterAng) * (PITCH_R*scale + toothOut)
+              tx = cxDisp + relX
+              ty = cyDisp + relY
             } else {
-              const out = 520 + Math.random()*380
-              tx = w/2 + Math.cos(baseAng)* (dist*scale + out)
-              ty = h/2 + Math.sin(baseAng)* (dist*scale + out)
+              // Anel: dispersão radial simples, mantém ângulo original
+              const out = 520 + Math.random()*120
+              tx = w/2 + Math.cos(baseAng) * (dist*scale + out)
+              ty = h/2 + Math.sin(baseAng) * (dist*scale + out)
             }
 
             // Color by type + y
