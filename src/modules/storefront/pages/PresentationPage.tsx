@@ -7,7 +7,7 @@ import { useAdminStats } from '@/modules/shared/hooks/useAdminStats';
 import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoatSection';
 import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
 import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
-import { ParticleField } from '@/modules/storefront/components/ParticleField';
+import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
 
 // ── DAIG Cinematic Presentation Page (GSAP V2) ────────────────────────────────
 // Landing page de apresentação completa: hero, vídeo de demo embutido,
@@ -721,11 +721,13 @@ export default function PresentationPage() {
 
       <div ref={containerRef} style={{ background: '#020617', color: 'white', fontFamily: '"Inter",system-ui,sans-serif', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
 
-        {/* ── HERO — Premium ParticleField (5 camadas, glow, depth, logo integrado) ── */}
-        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-            <ParticleField logoSrc="/presentation/logo-g.png" />
-          </div>
+        {/* G Fragment — PÁGINA INTEIRA (sem div limitadora) — cian→roxo */}
+        <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.9 }}>
+          <LogoGParticle src="/presentation/logo-g.png" style={{ height: '100vh', minHeight: '100vh', width: '100vw' }} />
+        </div>
+
+        {/* ── HERO — Investor Pitch (GSAP Venue) — G agora é background full-page ── */}
+        <section className="hero-section" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px 24px', position: 'relative', overflow: 'visible', zIndex: 1 }}>
           
           {/* Animated background — parallax layer */}
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
