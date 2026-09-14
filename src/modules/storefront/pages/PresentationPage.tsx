@@ -22,42 +22,42 @@ const FEATURES = [
     icon: 'Store' as const,
     badge: 'Search' as const,
     title: 'Catálogo JDM',
-    desc: 'Motor de busca em tempo real com filtros por marca, modelo, condição e preço. 16+ marcas JDM disponíveis.',
+    desc: 'Busca avançada em tempo real com filtros por veículo, modelo e condição técnica para mais de 16 marcas japonesas.',
     accent: '#00E5FF',
   },
   {
     icon: 'Bot' as const,
     badge: 'Sparkles' as const,
     title: 'IA Generativa de Anúncios',
-    desc: 'Foto → Anúncio completo em 3 segundos. A IA identifica a peça, gera título e descrição em PT e JA.',
+    desc: 'Envie uma foto e a Inteligência Artificial cria o anúncio em segundos, com especificações e tradução simultânea em PT e JA.',
     accent: '#7C3AED',
   },
   {
     icon: 'MessageCircle' as const,
     badge: 'Languages' as const,
     title: 'Chat em Tempo Real',
-    desc: 'Negociação direta entre comprador e vendedor. Supabase Realtime. Histórico preservado.',
+    desc: 'Negociação direta entre comprador e vendedor com mensagens instantâneas e tradução em tempo real.',
     accent: '#00D97E',
   },
   {
     icon: 'CreditCard' as const,
     badge: 'ShieldCheck' as const,
-    title: 'Stripe Connect + Escrow',
-    desc: 'Pagamento em custódia JPY. Repasse automático (90%) ao vendedor após confirmação de entrega via Zengin.',
+    title: 'Stripe Connect + Custódia Escrow',
+    desc: 'Pagamentos retidos com segurança em JPY e liberados automaticamente ao vendedor após a confirmação da entrega.',
     accent: '#FF6B35',
   },
   {
     icon: 'Building2' as const,
     badge: 'Boxes' as const,
-    title: 'SaaS Multi-Tenant ERP',
-    desc: 'ERP de Desmanche com WMS, Kanban, QR Code, Ordens de Serviço, estoque e publicação 1-clique.',
+    title: 'SaaS ERP para Desmanches',
+    desc: 'Gestão operacional com controle de inventário, ordens de serviço, emissão de etiquetas com QR Code e WMS integrado.',
     accent: '#0D75FF',
   },
   {
     icon: 'Landmark' as const,
     badge: 'FileCheck' as const,
-    title: 'Compliance JCT + Invoice',
-    desc: 'Emissão de notas fiscais japonesas (Tekikaku Seikyusho), retenção JCT 10% e liquidação Zengin T+4.',
+    title: 'Compliance Fiscal Japonês (JCT)',
+    desc: 'Emissão de faturas oficiais (Tekikaku Seikyusho), retenção do imposto de consumo e liquidação bancária via Zengin (T+4).',
     accent: '#F59E0B',
   },
 ] as const;
@@ -270,10 +270,14 @@ const DemoVideoPlayer: React.FC = () => {
     if (!video || !audio) return;
     
     const syncAudio = () => {
-      if (Math.abs(audio.currentTime - video.currentTime) > 0.15) {
+      if (Math.abs(audio.currentTime - video.currentTime) > 0.18) {
         try { audio.currentTime = video.currentTime } catch {}
       }
-      if (!playing && !audio.paused) try { audio.pause() } catch {}
+      if (video.paused && !audio.paused) {
+        try { audio.pause() } catch {}
+      } else if (!video.paused && audio.paused && playing) {
+        audio.play().catch(() => {})
+      }
       // Keep progress & caption in sync at frame rate
       setCurrentTime(video.currentTime)
       if (video.duration) setProgress((video.currentTime / video.duration) * 100)
@@ -318,50 +322,47 @@ const DemoVideoPlayer: React.FC = () => {
     return () => window.removeEventListener('unhandledrejection', h)
   }, [])
 
-  // Update Audio source when language changes (video uses React key, no imperative src)
+  // Update Audio source when language changes
   useEffect(() => {
-    if (!hasMountedLangRef.current) { hasMountedLangRef.current = true; return }
     const video = videoRef.current
     const audio = audioRef.current
-    if (!video || !audio) return
-    const wasPlaying = !video.paused
-    const pct = video.duration ? (video.currentTime / video.duration) : 0
-    duckBed(true)
-    // Pause before src change to avoid AbortError: play interrupted by load
-    try { video.pause() } catch {}
-    try { audio.pause() } catch {}
+    if (!audio) return
     const nextAudio = uiLang === 'pt' ? '/presentation/audio/narration_pt.mp3' : '/presentation/audio/narration_ja.mp3'
+    audio.muted = muted
+    if (audio.src && audio.src.endsWith(nextAudio)) return
+
+    const wasPlaying = video ? !video.paused : false
+    const currentPos = video ? video.currentTime : 0
+    duckBed(true)
+
+    try { video?.pause() } catch {}
+    try { audio.pause() } catch {}
+
     audio.src = nextAudio
     audio.load()
     audio.onerror = () => {
-      audio.src = uiLang === 'pt' ? '/videos/demo-pt.mp3?v=3' : '/videos/demo-ja.mp3?v=3'
+      audio.src = uiLang === 'pt' ? '/videos/demo-pt.mp3' : '/videos/demo-ja.mp3'
       audio.load()
     }
+
     const onAudioCanPlay = () => {
       try {
-        // Keep proportion for slightly different durations (47.84 vs 48.56)
-        const target = pct * (audio.duration || video.duration || 0)
-        if (!Number.isNaN(target)) audio.currentTime = target
+        if (currentPos > 0) audio.currentTime = currentPos
       } catch {}
       if (wasPlaying) {
-        // Video will remount via key; play it after a tick
         setTimeout(() => {
-          const v = videoRef.current
-          if (v) {
-            const pp = v.play()
-            pp?.catch(e => { if (e?.name !== 'AbortError') console.error('video play', e) })
-          }
-          const ap = audio.play()
-          ap?.catch(e => { if (e?.name !== 'AbortError') console.error('audio play', e) })
+          video?.play().catch(e => { if (e?.name !== 'AbortError') console.error('video play', e) })
+          audio.play().catch(e => { if (e?.name !== 'AbortError') console.error('audio play', e) })
         }, 80)
       }
-      setTimeout(()=> duckBed(false), 380)
+      setTimeout(() => duckBed(false), 350)
       audio.removeEventListener('canplay', onAudioCanPlay)
     }
+
     audio.addEventListener('canplay', onAudioCanPlay)
-    if (audio.readyState >= 3) onAudioCanPlay()
+    if (audio.readyState >= 2) onAudioCanPlay()
     return () => audio.removeEventListener('canplay', onAudioCanPlay)
-  }, [uiLang, duckBed]);
+  }, [uiLang, duckBed, muted]);
 
   const toggle = () => {
     const v = videoRef.current;
@@ -369,11 +370,25 @@ const DemoVideoPlayer: React.FC = () => {
     if (!v) return;
     resumeOnGesture().catch(() => {});
     if (v.paused) {
+        if (a) {
+          if (!a.src || a.src === '') {
+            a.src = uiLang === 'pt' ? '/presentation/audio/narration_pt.mp3' : '/presentation/audio/narration_ja.mp3';
+            a.load();
+          }
+          try {
+            if (Math.abs(a.currentTime - v.currentTime) > 0.15) {
+              a.currentTime = v.currentTime;
+            }
+          } catch {}
+          a.muted = muted;
+          a.volume = 1.0;
+        }
         const vp = v.play()
         vp?.catch(e => { if (e?.name !== 'AbortError') console.error('video play', e) })
-        // Only play audio if video play was not aborted immediately
-        const ap = a?.play()
-        ap?.catch(e => { if (e?.name !== 'AbortError') console.error('audio play', e) })
+        if (a) {
+          const ap = a.play()
+          ap?.catch(e => { if (e?.name !== 'AbortError') console.error('audio play', e) })
+        }
         setPlaying(true);
     } else {
         try { v.pause() } catch {}
@@ -395,12 +410,16 @@ const DemoVideoPlayer: React.FC = () => {
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
     const v = videoRef.current;
-    if (!v) return;
+    const a = audioRef.current;
+    if (!v || !v.duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    const pct = (e.clientX - rect.left) / rect.width;
-    v.currentTime = pct * v.duration;
-    if (audioRef.current) audioRef.current.currentTime = v.currentTime;
-    setCurrentTime(v.currentTime);
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const target = pct * v.duration;
+    v.currentTime = target;
+    if (a) {
+      try { a.currentTime = target; } catch {}
+    }
+    setCurrentTime(target);
   };
 
   const fmt = (s: number) => {
@@ -430,7 +449,7 @@ const DemoVideoPlayer: React.FC = () => {
           <h2 ref={titleRef} style={{ margin: 0, fontSize: 32, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em', perspective: 1000 }}>
             Live Platform <span style={{ color: '#00E5FF', textShadow: '0 0 15px rgba(0,229,255,0.5)' }}>Demo</span>
           </h2>
-          <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.5)' }}>Versão {uiLang === 'pt' ? 'Português' : 'Japonês'} (V2) • Audio Neural Sync</p>
+          <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.5)' }}>Narração em {uiLang === 'pt' ? 'Português' : 'Japonês'} • Sincronização em tempo real</p>
         </div>
         
         {/* Toggle de Idioma Minimalista (Estilo Apple) */}
@@ -455,7 +474,13 @@ const DemoVideoPlayer: React.FC = () => {
           onMouseLeave={() => setHovered(false)}
         >
           {/* ÁUDIO FIX INSERIDO NO DOM */}
-          <audio ref={audioRef} preload="auto" style={{ display: 'none' }} />
+          <audio
+            ref={audioRef}
+            src={uiLang === 'pt' ? '/presentation/audio/narration_pt.mp3' : '/presentation/audio/narration_ja.mp3'}
+            preload="auto"
+            muted={muted}
+            style={{ display: 'none' }}
+          />
 
           {/* Browser chrome bar */}
           <div style={{ background: '#111', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -561,7 +586,15 @@ const DemoVideoPlayer: React.FC = () => {
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M5 3l14 9-14 9V3z"/></svg>
                   )}
                 </button>
-                <button onClick={e => { e.stopPropagation(); setMuted(m => { if (videoRef.current) videoRef.current.muted = !m; return !m; }); }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
+                <button onClick={e => {
+                  e.stopPropagation();
+                  setMuted(m => {
+                    const next = !m;
+                    if (videoRef.current) videoRef.current.muted = next;
+                    if (audioRef.current) audioRef.current.muted = next;
+                    return next;
+                  });
+                }} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 4, display: 'flex' }}>
                   {muted
                     ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="white" strokeWidth="2"/><line x1="23" y1="9" x2="17" y2="15" stroke="white" strokeWidth="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="white" strokeWidth="2"/></svg>
                     : <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5z" stroke="white" strokeWidth="2"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" stroke="white" strokeWidth="2" strokeLinecap="round"/></svg>
@@ -577,7 +610,23 @@ const DemoVideoPlayer: React.FC = () => {
                 {chapters.map((ch, i) => (
                   <button
                     key={ch.label}
-                    onClick={e => { e.stopPropagation(); if (videoRef.current) { videoRef.current.currentTime = (ch.pct / 100) * videoRef.current.duration; if (videoRef.current.paused) { videoRef.current.play(); setPlaying(true); } } }}
+                    onClick={e => {
+                      e.stopPropagation();
+                      const v = videoRef.current;
+                      const a = audioRef.current;
+                      if (!v || !v.duration) return;
+                      const target = (ch.pct / 100) * v.duration;
+                      v.currentTime = target;
+                      if (a) {
+                        try { a.currentTime = target; } catch {}
+                      }
+                      setCurrentTime(target);
+                      if (v.paused) {
+                        v.play().catch(() => {});
+                        a?.play().catch(() => {});
+                        setPlaying(true);
+                      }
+                    }}
                     style={{
                       padding: '3px 10px', borderRadius: 100, fontSize: 10, fontWeight: 600,
                       background: progress >= ch.pct && progress < (chapters[i + 1]?.pct ?? 101) ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.08)',
@@ -815,15 +864,11 @@ export default function PresentationPage() {
         {/* ── DEMO VIDEO ───────────────────────────────────────────── */}
         <section id="demo-video" className="video-section" style={{ maxWidth: 1100, margin: '0 auto 120px', padding: '0 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', borderRadius: 100, background: 'rgba(0,229,255,0.08)', border: '1px solid rgba(0,229,255,0.2)', marginBottom: 16 }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#00E5FF', boxShadow: '0 0 8px #00E5FF', animation: 'glow 2s infinite' }} />
-              <span style={{ fontSize: 11, fontWeight: 700, color: '#00E5FF', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Demo da Plataforma</span>
-            </div>
             <h2 style={{ fontSize: 'clamp(28px,4vw,48px)', fontWeight: 800, color: 'white', letterSpacing: -1.5, lineHeight: 1.15, marginBottom: 12 }}>
-              Veja tudo funcionando
+              Demonstração da Plataforma
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 15, maxWidth: 500, margin: '0 auto' }}>
-              Dashboard → Catálogo → Produto → Upload com IA → Chat → Checkout Stripe
+            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 15, maxWidth: 580, margin: '0 auto', lineHeight: 1.6 }}>
+              Acompanhe o fluxo completo: da catalogação automática com Inteligência Artificial até a negociação e pagamento seguro.
             </p>
           </div>
           
@@ -838,10 +883,10 @@ export default function PresentationPage() {
         <section className="features-grid" style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px', position: 'relative', zIndex: 2 }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, color: DAIG_TOKENS.colors.textMain, letterSpacing: -1.5, fontFamily: DAIG_TOKENS.typography.display }}>
-              Tudo que você precisa, <span style={{ color: DAIG_TOKENS.colors.cyan }}>integrado</span>
+              Tudo o que você precisa, <span style={{ color: DAIG_TOKENS.colors.cyan }}>integrado</span>
             </h2>
-            <p style={{ color: DAIG_TOKENS.colors.textMuted, fontSize: 15, marginTop: 12, fontFamily: DAIG_TOKENS.typography.body }}>
-              Um ecossistema completo, do desmanche ao depósito bancário — módulos Hi-Tech integrados
+            <p style={{ color: DAIG_TOKENS.colors.textMuted, fontSize: 15, marginTop: 12, fontFamily: DAIG_TOKENS.typography.body, lineHeight: 1.6 }}>
+              Conectamos todas as etapas da operação: da catalogação à liquidação bancária em uma plataforma unificada.
             </p>
           </div>
           <div className="features-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20 }}>

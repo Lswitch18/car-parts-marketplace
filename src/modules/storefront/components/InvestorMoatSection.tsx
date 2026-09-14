@@ -40,15 +40,11 @@ export const InvestorMoatSection: React.FC = () => {
   return (
     <section ref={ref} style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px' }}>
       <div style={{ textAlign: 'center', marginBottom: 36 }}>
-        <div style={{ display: 'inline-flex', gap: 8, padding: '6px 14px', borderRadius: 100, background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.22)', marginBottom: 16 }}>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#7C3AED', boxShadow: '0 0 8px #7C3AED' }} />
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#A78BFA', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Moat Financeiro & Técnico</span>
-        </div>
         <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, color: 'white', letterSpacing: -1.2, lineHeight: 1.1 }}>
-          Unit economics <span style={{ color: '#00E5FF' }}>comprovado</span> no Zengin
+          Unit economics e liquidação <span style={{ color: '#00E5FF' }}>bancária</span> no Japão
         </h2>
-        <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 14, maxWidth: 640, margin: '12px auto 0' }}>
-          Take rate 10% · Stripe 3.6% · <b style={{ color: 'rgba(255,255,255,0.85)' }}>Lucro líquido ¥6 a cada ¥100</b> · Liquidação T+4 auditada em conta bancária japonesa
+        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, maxWidth: 680, margin: '12px auto 0', lineHeight: 1.6 }}>
+          Taxa de serviço de 10%, processamento Stripe e repasse seguro aos vendedores com liquidação auditada em conta bancária japonesa (T+4 via Zengin).
         </p>
       </div>
 
