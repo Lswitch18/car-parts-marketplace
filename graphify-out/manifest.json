@@ -1056,9 +1056,9 @@
     "semantic_hash": ""
   },
   "src/modules/shared/lib/supabase.ts": {
-    "mtime": 1786032082.2461996,
-    "seen": 1788987079.5755515,
-    "ast_hash": "a9707312fb4152dc1abb8808715484c8",
+    "mtime": 1789235908.2618759,
+    "seen": 1789243476.4533076,
+    "ast_hash": "119647475991ad711fba4d31ce08a8b5",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/supabaseErrorHandler.ts": {
@@ -1956,9 +1956,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1789073192.3444736,
-    "seen": 1789166512.541068,
-    "ast_hash": "84c757ef764a8e95fb5179da858a45fa",
+    "mtime": 1789234716.3018734,
+    "seen": 1789243476.4537039,
+    "ast_hash": "9bf51b14a1e45c9aa70154b065029507",
     "semantic_hash": ""
   },
   "public/test-labels.html": {
@@ -2184,9 +2184,9 @@
     "semantic_hash": ""
   },
   "public/logo.png": {
-    "mtime": 1781784949.3156455,
-    "seen": 1788987079.5759845,
-    "ast_hash": "c6710a20397a98be214c10db97f81bdf",
+    "mtime": 1789187007.0338786,
+    "seen": 1789243476.45382,
+    "ast_hash": "ca19329c9c6eadf65b41ed45f2cf409d",
     "semantic_hash": ""
   },
   "public/onboarding_marketing_hero.png": {
@@ -3864,9 +3864,9 @@
     "semantic_hash": ""
   },
   "scripts/generate_demo_video.py": {
-    "mtime": 1789081411.9137506,
-    "seen": 1789166512.5401769,
-    "ast_hash": "6733e9744826d657ecf96737be1fd95b",
+    "mtime": 1789240986.5738745,
+    "seen": 1789243476.452862,
+    "ast_hash": "66bdcb97ed4b1bffe275041da6f5986f",
     "semantic_hash": ""
   },
   "scripts/generate_saas_video.py": {
@@ -3888,9 +3888,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PresentationPage.tsx": {
-    "mtime": 1789183943.8799694,
-    "seen": 1789184401.566397,
-    "ast_hash": "d80b12ae2f30efd667a9e0277340ac6d",
+    "mtime": 1789243017.6498768,
+    "seen": 1789243476.4533453,
+    "ast_hash": "4e642ff97f9d68031e082bacf9a9d46b",
     "semantic_hash": ""
   },
   ".agents/skills/gsap-immersive-venue/SKILL.md": {
@@ -4476,9 +4476,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/components/InvestorMoatSection.tsx": {
-    "mtime": 1789183868.4759693,
-    "seen": 1789184401.5663757,
-    "ast_hash": "707a6cd9b090d76bb51792a14f14edae",
+    "mtime": 1789236006.7538826,
+    "seen": 1789243476.453321,
+    "ast_hash": "457e1835cc6a9a396d5a788328887bea",
     "semantic_hash": ""
   },
   "src/modules/storefront/components/KineticCaption.tsx": {
@@ -4488,9 +4488,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/hooks/useAnimatedCounter.ts": {
-    "mtime": 1789183841.3959692,
-    "seen": 1789184401.56638,
-    "ast_hash": "78be6e04af25ea37588cfce84b4a4e74",
+    "mtime": 1789236013.6098833,
+    "seen": 1789243476.4533272,
+    "ast_hash": "ad7af181bce7502f063b3270df66e019",
     "semantic_hash": ""
   },
   "src/modules/storefront/hooks/usePresentationAudio.ts": {
@@ -4518,15 +4518,15 @@
     "semantic_hash": ""
   },
   "public/presentation/posters/hero_blur.jpg": {
-    "mtime": 1789183673.0279715,
-    "seen": 1789184401.5673928,
-    "ast_hash": "7cb80f07d48ea9bf32cc0bd3420fa10f",
+    "mtime": 1789186067.741877,
+    "seen": 1789243476.4538987,
+    "ast_hash": "b363110f4e00e2fd573f36e05c682a24",
     "semantic_hash": ""
   },
   "public/presentation/posters/hero_hd.jpg": {
-    "mtime": 1789183673.2879715,
-    "seen": 1789184401.5673966,
-    "ast_hash": "6d1ac1f275a35bdf8a093c739f2cab0a",
+    "mtime": 1789186068.325877,
+    "seen": 1789243476.4539008,
+    "ast_hash": "014f96a4e80caa4401b2a1e8a02b4e46",
     "semantic_hash": ""
   },
   "public/presentation/audio/bed_ambient.mp3": {
@@ -4551,6 +4551,78 @@
     "mtime": 1789183690.9919715,
     "seen": 1789184401.5719738,
     "ast_hash": "e477387b1ac5a100b9d50430ef554495",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/hooks/useAdminStats.ts": {
+    "mtime": 1789235889.053876,
+    "seen": 1789243476.4532664,
+    "ast_hash": "c4e7e9d7cdde053a93b0e2ca689b0af5",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/lib/gsap.ts": {
+    "mtime": 1789235881.6698751,
+    "seen": 1789243476.453292,
+    "ast_hash": "67655f6acbe8d9ea83bc2d9265309859",
+    "semantic_hash": ""
+  },
+  "src/modules/storefront/components/GarageScene.tsx": {
+    "mtime": 1789235986.993871,
+    "seen": 1789243476.4533186,
+    "ast_hash": "2aba7cbdcffbb83277171fba07b411d2",
+    "semantic_hash": ""
+  },
+  "src/modules/storefront/components/LogoGParticle.tsx": {
+    "mtime": 1789241940.205875,
+    "seen": 1789243476.4533248,
+    "ast_hash": "37be559f610a3fdd579eaec4b753ab49",
+    "semantic_hash": ""
+  },
+  "public/presentation/logo-256.png": {
+    "mtime": 1789186979.941876,
+    "seen": 1789243476.4538884,
+    "ast_hash": "339402806c2e853135ff8512c9db6f4e",
+    "semantic_hash": ""
+  },
+  "public/presentation/logo-g-1024.png": {
+    "mtime": 1789240635.3138793,
+    "seen": 1789243476.4538906,
+    "ast_hash": "b113636813911fc28a5720900f89b6ab",
+    "semantic_hash": ""
+  },
+  "public/presentation/logo-g-512.png": {
+    "mtime": 1789240635.5018792,
+    "seen": 1789243476.453892,
+    "ast_hash": "6a7959989adefee16dd3bde245de9734",
+    "semantic_hash": ""
+  },
+  "public/presentation/logo-g-pre.png": {
+    "mtime": 1789241694.9618728,
+    "seen": 1789243476.453894,
+    "ast_hash": "0b134cf8fd72ef8f0fa4357e7e8c007d",
+    "semantic_hash": ""
+  },
+  "public/presentation/logo-g.png": {
+    "mtime": 1789240634.9538794,
+    "seen": 1789243476.453895,
+    "ast_hash": "c80f3dbce6866b6adfc1fab1d0abc32a",
+    "semantic_hash": ""
+  },
+  "public/presentation/logo.png": {
+    "mtime": 1789186979.605876,
+    "seen": 1789243476.453897,
+    "ast_hash": "ca19329c9c6eadf65b41ed45f2cf409d",
+    "semantic_hash": ""
+  },
+  "public/presentation/ja_noaudio.mp4": {
+    "mtime": 1789185957.7138748,
+    "seen": 1789243476.4541888,
+    "ast_hash": "cfbfe6269b38ebb848e6092aeb6e03ff",
+    "semantic_hash": ""
+  },
+  "public/presentation/pt_noaudio.mp4": {
+    "mtime": 1789185946.7338731,
+    "seen": 1789243476.4541903,
+    "ast_hash": "f64ff948fd47d3ba4f430671b5ba89c8",
     "semantic_hash": ""
   }
 }

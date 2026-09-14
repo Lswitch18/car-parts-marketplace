@@ -66,12 +66,26 @@ const FEATURES = [
 
 
 
-const Interactive3DCard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Interactive3DCard: React.FC<{ children: React.ReactNode; disabled?: boolean }> = ({ children, disabled }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (disabled && cardRef.current) {
+      gsap.to(cardRef.current, {
+        rotateX: 0,
+        rotateY: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+      if (glowRef.current) {
+        gsap.to(glowRef.current, { opacity: 0, duration: 0.2 });
+      }
+    }
+  }, [disabled]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (disabled || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -434,7 +448,7 @@ const DemoVideoPlayer: React.FC = () => {
         </div>
       </div>
 
-      <Interactive3DCard>
+      <Interactive3DCard disabled={playing}>
         <div
           style={{ position: 'relative' }}
           onMouseEnter={() => setHovered(true)}
@@ -488,7 +502,7 @@ const DemoVideoPlayer: React.FC = () => {
               <track kind="subtitles" srcLang="pt" src="/presentation/subs/pt.vtt" label="Português" default={uiLang === 'pt'} />
               <track kind="subtitles" srcLang="ja" src="/presentation/subs/ja.vtt" label="日本語" default={uiLang === 'ja'} />
             </video>
-            <KineticCaption lang={uiLang} currentTime={currentTime} onDuck={duckBed} />
+            <KineticCaption lang={uiLang} currentTime={currentTime} onDuck={duckBed} controlsVisible={hovered || !playing} />
 
           {/* Play overlay */}
           {!playing && (
@@ -694,24 +708,15 @@ export default function PresentationPage() {
       scrollTrigger: { trigger: '.video-section', start: 'top 80%', end: 'bottom 20%', scrub: 1 }
     })
 
-    // 4. Features Grid — Hi-Tech Venue (DesignAuthority decision 2026-09-14)
-     // Horizontal pinned on desktop via matchMedia, stagger fallback mobile
-     const mm = gsap.matchMedia()
-     mm.add('(min-width: 1024px)', () => {
-       const track = containerRef.current?.querySelector('.features-track') as HTMLElement | null
-       const venue = containerRef.current?.querySelector('.features-venue') as HTMLElement | null
-       if (track && venue) {
-         gsap.to(track, {
-           xPercent: -25,
-           ease: 'none',
-           scrollTrigger: { trigger: venue, pin: true, scrub: 1, snap: 1, start: 'top top', end: '+=90%', anticipatePin: 1 },
-         })
-       }
-     })
-     gsap.from('.feature-card', {
-       scrollTrigger: { trigger: '.features-grid, .features-track', start: 'top 78%' },
-       y: 50, opacity: 0, stagger: DAIG_TOKENS.motion.staggerEach, ease: DAIG_TOKENS.motion.easeElastic, duration: 0.8
-     });
+    // 4. Features Grid — Hi-Tech Bento Grid (Stagger Reveal)
+    gsap.from('.feature-card', {
+      scrollTrigger: { trigger: '.features-grid', start: 'top 80%' },
+      y: 40,
+      opacity: 0,
+      stagger: DAIG_TOKENS.motion.staggerEach,
+      ease: DAIG_TOKENS.motion.easeElastic,
+      duration: 0.8
+    });
 
     // 5. Final CTA (moat já animado em InvestorMoatSection — evita duplicata)
     gsap.from('.cta-section > div', {
@@ -829,23 +834,20 @@ export default function PresentationPage() {
         {/* ── INVESTOR MOAT — Unit Economics Zengin (Investor Pitch) ── */}
         <InvestorMoatSection />
 
-        {/* ── FEATURES — Hi-Tech Venue (Innovation Lab: icon-forge + horizontal) ── */}
-        <section className="features-grid features-venue" style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px' }}>
+        {/* ── FEATURES — Hi-Tech Cyber Neon Bento Grid ── */}
+        <section className="features-grid" style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px', position: 'relative', zIndex: 2 }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, color: DAIG_TOKENS.colors.textMain, letterSpacing: -1.5, fontFamily: DAIG_TOKENS.typography.display }}>
               Tudo que você precisa, <span style={{ color: DAIG_TOKENS.colors.cyan }}>integrado</span>
             </h2>
             <p style={{ color: DAIG_TOKENS.colors.textMuted, fontSize: 15, marginTop: 12, fontFamily: DAIG_TOKENS.typography.body }}>
-              Um ecossistema completo, do desmanche ao depósito bancário — agora com ícones Hi-Tech e venue horizontal
+              Um ecossistema completo, do desmanche ao depósito bancário — módulos Hi-Tech integrados
             </p>
           </div>
-          <div className="features-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 16 }}>
+          <div className="features-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20 }}>
             {FEATURES.map((f) => (
               <FeatureCard key={f.title} feature={f} className="feature-card" />
             ))}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: 18, fontSize: 11, color: DAIG_TOKENS.colors.textFaint, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-            ↕ scroll → venue horizontal (desktop) · stagger reveal · design-authority 2026-09-14
           </div>
         </section>
 

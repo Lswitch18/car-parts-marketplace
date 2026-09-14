@@ -6,10 +6,11 @@ type Props = {
   lang: 'pt' | 'ja'
   currentTime: number
   onDuck?: (isActive: boolean) => void
+  controlsVisible?: boolean
   className?: string
 }
 
-export const KineticCaption: React.FC<Props> = ({ lang, currentTime, onDuck, className }) => {
+export const KineticCaption: React.FC<Props> = ({ lang, currentTime, onDuck, controlsVisible, className }) => {
   const [cues, setCues] = useState<VttCue[]>([])
   const [active, setActive] = useState<VttCue | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -58,19 +59,21 @@ export const KineticCaption: React.FC<Props> = ({ lang, currentTime, onDuck, cla
       className={className}
       style={{
         position: 'absolute',
-        bottom: '9%',
+        bottom: controlsVisible ? 104 : 26,
         left: '50%',
         transform: 'translateX(-50%)',
         maxWidth: '86%',
         padding: '10px 18px',
         borderRadius: 14,
-        background: 'rgba(6, 8, 15, 0.72)',
-        backdropFilter: 'blur(14px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(14px) saturate(160%)',
-        border: '1px solid rgba(0, 229, 255, 0.18)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 0 28px rgba(0,229,255,0.12)',
+        background: 'rgba(6, 8, 15, 0.85)',
+        backdropFilter: 'blur(16px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(160%)',
+        border: '1px solid rgba(0, 229, 255, 0.25)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.55), 0 0 28px rgba(0,229,255,0.12)',
         textAlign: 'center',
         pointerEvents: 'none',
+        zIndex: 15,
+        transition: 'bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
     >
       <p style={{ margin: 0, color: 'rgba(255,255,255,0.92)', fontSize: 14, lineHeight: 1.5, fontWeight: 500, letterSpacing: 0.1 }}>
