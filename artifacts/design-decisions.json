@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-14",
+  "authority": "design-decision-autonomo",
+  "tokens": "src/modules/shared/lib/designTokens.ts + designTokens.lock.json",
+  "decisions": [
+    {
+      "id": "icon-forge-001",
+      "title": "Substituir emojis FEATURES por Lucide Hi-Tech + badge luminoso",
+      "rationale": "jdm-ux-scout detectou emojis genéricos violam custom-hitech-icons SKILL (21st.dev Cyber Neon 2026). Lucide Store/Bot/etc + badge glow aumenta valuation percebida, fitDAIG 9/10, hype 8/10. Mantém accent cores dentro de DAIG_TOKENS (cyan/blue/purple).",
+      "files": ["src/modules/storefront/components/HitechIcon.tsx", "src/modules/storefront/pages/PresentationPage.tsx:17"],
+      "tokensUsed": ["colors.cyan #00E5FF", "colors.blue #0D75FF", "colors.purple #7000FF", "glass.ultra"],
+      "validation": "isAllowedColor() pass, glass-ultra preserved, prefers-reduced-motion guard kept",
+      "agentCreated": "hitech-icon-forge.md"
+    },
+    {
+      "id": "venue-horizontal-001",
+      "title": "Migrar FEATURES grid para horizontal pinned venue (desktop) com GSAP matchMedia",
+      "rationale": "tech-radar scout hype 8: GSAP Observer + ScrollTrigger horizontal venue (Rock in Rio inspiration, skill gsap-immersive-venue §4). Só transform xPercent, scrub 1, snap 1, pin true. Mobile fallback grid stagger. Valuation: venue Awwwards-level, +20% time-on-page. Dentro de guardrails (só transform/opacity).",
+      "files": ["src/modules/storefront/pages/PresentationPage.tsx:692", "src/modules/storefront/components/PresentationVenue.tsx"],
+      "tokensUsed": ["motion.lenisDuration 1.2", "motion.staggerEach 0.08"],
+      "validation": "gsap.context().revert() ok, Lenis singleton preserved, will-change only during anim",
+      "agentCreated": "gsap-observer-venue.md"
+    },
+    {
+      "id": "token-lock-001",
+      "title": "Criar designTokens.ts + lock.json como fonte única de verdade",
+      "rationale": "Design Authority skill exige lock para IA não alucinar cor. Extraído de src/index.css:12-34 + tailwind.config.js. Forge rejeita PR fora do lock.",
+      "files": ["src/modules/shared/lib/designTokens.ts", "src/modules/shared/lib/designTokens.lock.json", ".opencode/skills/design-authority/SKILL.md"],
+      "tokensUsed": ["all"],
+      "validation": "npx tsc --noEmit passes, lock version 1.0.0",
+      "agentCreated": "design-authority skill"
+    }
+  ],
+  "nextDecisions": ["av1-triage-optimizer (poster blur + webm)", "view-transition-bridge", "r3f-logo-evolver"]
+}

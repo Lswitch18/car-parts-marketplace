@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-14",
+  "scout": "perf-scout",
+  "checks": [
+    { "file": "public/presentation/pt_noaudio.mp4", "size": "765KB", "status": "ok but no webm", "action": "av1-triage-optimizer", "hypeScore": 8, "fitDAIG": 9 },
+    { "file": "public/presentation/ja_noaudio.mp4", "size": "636KB", "status": "ok but no webm", "action": "av1-triage-optimizer", "hypeScore": 8, "fitDAIG": 9 },
+    { "file": "public/presentation/posters/hero_hd.jpg", "size": "exists", "status": "ok", "action": "none", "hypeScore": 0, "fitDAIG": 10 },
+    { "file": "public/presentation/posters/hero_blur.jpg", "size": "missing or >1KB", "status": "debt", "action": "av1-triage-optimizer", "hypeScore": 7, "fitDAIG": 9 },
+    { "file": "PresentationPage.tsx:637 Lenis singleton", "status": "ok", "action": "none", "hypeScore": 0, "fitDAIG": 10 },
+    { "file": "public/presentation_video.mp4 legacy", "size": "7.7M x2 legacy", "status": "debt - should be archived", "action": "legacy-cleaner", "hypeScore": 9, "fitDAIG": 9 }
+  ],
+  "metrics": {
+    "totalPresentationBytes": "1.4M + 7.7M legacy (debt)",
+    "target": "<2M without legacy, <1M with AV1",
+    "lcpEstimate": "1.4s with poster blur, 2.3s without"
+  },
+  "forgeQueue": ["av1-triage-optimizer", "legacy-cleaner"]
+}

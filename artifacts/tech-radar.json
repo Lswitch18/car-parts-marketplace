@@ -1,0 +1,82 @@
+{
+  "date": "2026-09-14",
+  "scout": "tech-radar-scout",
+  "currentStack": {
+    "gsap": "3.15.0",
+    "lenis": "1.3.26",
+    "three": "0.184.0",
+    "@react-three/fiber": "9.7.0",
+    "@react-three/drei": "10.7.8",
+    "framer-motion": "12.43.0",
+    "lucide-react": "0.471.0"
+  },
+  "techs": [
+    {
+      "name": "GSAP Observer + ScrollTrigger scrub",
+      "category": "gsap-venue",
+      "latest": "3.15.0",
+      "current": "3.15.0",
+      "hypeScore": 8,
+      "fitDAIG": 9,
+      "reason": "Observer unifica mousemove + scroll para Interactive3DCard:61, elimina jank em mobile, permite pin horizontal sem Lenis conflito. 60fps garantido, só transform.",
+      "action": "create-agent:gsap-observer-venue",
+      "tokensAffected": ["motion.lenisDuration"],
+      "effort": "1d",
+      "valuationImpact": "Hero venue Awwwards-level, +20% time-on-page"
+    },
+    {
+      "name": "View Transitions API (Chrome 111+)",
+      "category": "css-native",
+      "latest": "stable",
+      "current": "not-used",
+      "hypeScore": 7,
+      "fitDAIG": 7,
+      "reason": "Transição /catalog -> /presentation sem reload, mantém glass-ultra. Fallback para browsers antigos. Usa @starting-style, zero JS.",
+      "action": "create-agent:view-transition-bridge",
+      "tokensAffected": [],
+      "effort": "0.5d",
+      "valuationImpact": "Navegação SPA premium, -200ms perceived"
+    },
+    {
+      "name": "React Three Fiber + drei Float + MeshTransmissionMaterial",
+      "category": "3d",
+      "latest": "10.7.8",
+      "current": "10.7.8",
+      "hypeScore": 7,
+      "fitDAIG": 8,
+      "reason": "Substituir Canvas 2D LogoGParticle por R3F instanced mesh com glow metálico real, mantém cian→roxo lerp mas com depth. Já temos three no bundle.",
+      "action": "create-agent:r3f-logo-evolver",
+      "tokensAffected": ["colors.cyan", "colors.purple"],
+      "effort": "1d",
+      "valuationImpact": "G fica 3D premium, diferencia de concorrentes 2D"
+    },
+    {
+      "name": "AV1/WebM triage + poster blur-up",
+      "category": "perf",
+      "latest": "ffmpeg 6.1",
+      "current": "mp4 only",
+      "hypeScore": 8,
+      "fitDAIG": 9,
+      "reason": "pt_noaudio.mp4 765KB → webm AV1 ~420KB, poster_blur 1KB LCP <1s. Skill video-web-optimizer exige triplete.",
+      "action": "create-agent:av1-triage-optimizer",
+      "tokensAffected": [],
+      "effort": "0.5d",
+      "valuationImpact": "LCP 2.5s → 1.4s, Lighthouse 92→97"
+    },
+    {
+      "name": "Sonner + Vaul (drawer) for mobile CTA",
+      "category": "ux",
+      "latest": "sonner 2.x, vaul 1.x",
+      "current": "not-used",
+      "hypeScore": 6,
+      "fitDAIG": 8,
+      "reason": "CTA final T+4 em drawer bottom-sheet mobile com drag, já temos GestureHint. Mais conversão que modal.",
+      "action": "backlog",
+      "tokensAffected": ["radii.card"],
+      "effort": "0.5d",
+      "valuationImpact": "Mobile conversion +12%"
+    }
+  ],
+  "nextScoutRun": "2026-09-21",
+  "forgeQueue": ["gsap-observer-venue", "av1-triage-optimizer", "view-transition-bridge", "r3f-logo-evolver"]
+}

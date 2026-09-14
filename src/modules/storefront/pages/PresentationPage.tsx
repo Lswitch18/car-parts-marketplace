@@ -8,6 +8,9 @@ import { InvestorMoatSection } from '@/modules/storefront/components/InvestorMoa
 import { KineticCaption } from '@/modules/storefront/components/KineticCaption';
 import { usePresentationAudio } from '@/modules/storefront/hooks/usePresentationAudio';
 import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
+import { HitechIcon } from '@/modules/storefront/components/HitechIcon';
+import { DAIG_TOKENS } from '@/modules/shared/lib/designTokens';
+import { supportsViewTransition } from '@/modules/shared/lib/viewTransition';
 
 // ── DAIG Cinematic Presentation Page (GSAP V2) ────────────────────────────────
 // Landing page de apresentação completa: hero, vídeo de demo embutido,
@@ -16,42 +19,48 @@ import { LogoGParticle } from '@/modules/storefront/components/LogoGParticle';
 
 const FEATURES = [
   {
-    icon: '🏪',
+    icon: 'Store' as const,
+    badge: 'Search' as const,
     title: 'Catálogo JDM',
     desc: 'Motor de busca em tempo real com filtros por marca, modelo, condição e preço. 16+ marcas JDM disponíveis.',
     accent: '#00E5FF',
   },
   {
-    icon: '🤖',
+    icon: 'Bot' as const,
+    badge: 'Sparkles' as const,
     title: 'IA Generativa de Anúncios',
     desc: 'Foto → Anúncio completo em 3 segundos. A IA identifica a peça, gera título e descrição em PT e JA.',
     accent: '#7C3AED',
   },
   {
-    icon: '💬',
+    icon: 'MessageCircle' as const,
+    badge: 'Languages' as const,
     title: 'Chat em Tempo Real',
     desc: 'Negociação direta entre comprador e vendedor. Supabase Realtime. Histórico preservado.',
     accent: '#00D97E',
   },
   {
-    icon: '💳',
+    icon: 'CreditCard' as const,
+    badge: 'ShieldCheck' as const,
     title: 'Stripe Connect + Escrow',
     desc: 'Pagamento em custódia JPY. Repasse automático (90%) ao vendedor após confirmação de entrega via Zengin.',
     accent: '#FF6B35',
   },
   {
-    icon: '🏢',
+    icon: 'Building2' as const,
+    badge: 'Boxes' as const,
     title: 'SaaS Multi-Tenant ERP',
     desc: 'ERP de Desmanche com WMS, Kanban, QR Code, Ordens de Serviço, estoque e publicação 1-clique.',
     accent: '#0D75FF',
   },
   {
-    icon: '🇯🇵',
+    icon: 'Landmark' as const,
+    badge: 'FileCheck' as const,
     title: 'Compliance JCT + Invoice',
     desc: 'Emissão de notas fiscais japonesas (Tekikaku Seikyusho), retenção JCT 10% e liquidação Zengin T+4.',
     accent: '#F59E0B',
   },
-];
+] as const;
 
 // ── GSAP Interactive Components ───────────────────────────────────────────────
 
@@ -575,29 +584,20 @@ const DemoVideoPlayer: React.FC = () => {
   );
 };
 
-// ── Feature Card — Premium Glass + Neon (valuation skill) ───────────────────
-const FeatureCard: React.FC<{ feature: typeof FEATURES[0]; className?: string }> = ({ feature, className }) => (
+// ── Feature Card — Hi-Tech Cyber Neon (Design Authority: Lucide + badge) ──
+const FeatureCard: React.FC<{ feature: typeof FEATURES[number]; className?: string }> = ({ feature, className }) => (
   <div className={`${className ?? ''} glass-ultra`} style={{
     padding: '28px 24px',
-    borderRadius: 18,
+    borderRadius: DAIG_TOKENS.radii.card,
     willChange: 'transform, opacity',
     position: 'relative',
     overflow: 'hidden',
   }}>
-    <div style={{
-      width: 48, height: 48, borderRadius: 14,
-      background: `${feature.accent}18`,
-      border: `1px solid ${feature.accent}35`,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 22, marginBottom: 16,
-      boxShadow: `0 0 20px ${feature.accent}22`,
-    }}>
-      {feature.icon}
-    </div>
-    <h3 style={{ color: 'white', fontWeight: 700, fontSize: 16, marginBottom: 8, lineHeight: 1.3 }}>
+    <HitechIcon name={feature.icon} />
+    <h3 style={{ color: DAIG_TOKENS.colors.textMain, fontWeight: 700, fontSize: 16, marginBottom: 8, lineHeight: 1.3, marginTop: 16, fontFamily: DAIG_TOKENS.typography.display }}>
       {feature.title}
     </h3>
-    <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, lineHeight: 1.65 }}>
+    <p style={{ color: DAIG_TOKENS.colors.textMuted, fontSize: 13, lineHeight: 1.65, fontFamily: DAIG_TOKENS.typography.body }}>
       {feature.desc}
     </p>
     <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(600px circle at 0% 0%, ${feature.accent}08, transparent 60%)`, pointerEvents: 'none', opacity: 0.6 }} />
@@ -628,12 +628,17 @@ export default function PresentationPage() {
     ]
   }, [adminStats, partsCount])
   
+  // ViewTransition API hint (forge: view-transition-bridge)
+  useEffect(() => {
+    if (supportsViewTransition()) document.documentElement.style.setProperty('view-transition-name', 'presentation-root')
+  }, [])
+
   // Lenis Smooth Scroll — singleton global (evita duplicar com SmoothScrollProvider)
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) return
     if ((window as unknown as { __lenis?: unknown }).__lenis) return
-    const lenis = new Lenis({ duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true })
+    const lenis = new Lenis({ duration: DAIG_TOKENS.motion.lenisDuration, easing: DAIG_TOKENS.motion.lenisEasing, smoothWheel: true })
     ;(window as unknown as { __lenis: unknown }).__lenis = lenis
     lenis.on('scroll', ScrollTrigger.update)
     const raf = (time: number) => lenis.raf(time * 1000)
@@ -689,11 +694,24 @@ export default function PresentationPage() {
       scrollTrigger: { trigger: '.video-section', start: 'top 80%', end: 'bottom 20%', scrub: 1 }
     })
 
-    // 4. Features Grid Stagger Parallax (premium)
-    gsap.from('.feature-card', {
-      scrollTrigger: { trigger: '.features-grid', start: 'top 75%' },
-      y: 50, opacity: 0, stagger: 0.1, ease: 'back.out(1.2)', duration: 0.8
-    });
+    // 4. Features Grid — Hi-Tech Venue (DesignAuthority decision 2026-09-14)
+     // Horizontal pinned on desktop via matchMedia, stagger fallback mobile
+     const mm = gsap.matchMedia()
+     mm.add('(min-width: 1024px)', () => {
+       const track = containerRef.current?.querySelector('.features-track') as HTMLElement | null
+       const venue = containerRef.current?.querySelector('.features-venue') as HTMLElement | null
+       if (track && venue) {
+         gsap.to(track, {
+           xPercent: -25,
+           ease: 'none',
+           scrollTrigger: { trigger: venue, pin: true, scrub: 1, snap: 1, start: 'top top', end: '+=90%', anticipatePin: 1 },
+         })
+       }
+     })
+     gsap.from('.feature-card', {
+       scrollTrigger: { trigger: '.features-grid, .features-track', start: 'top 78%' },
+       y: 50, opacity: 0, stagger: DAIG_TOKENS.motion.staggerEach, ease: DAIG_TOKENS.motion.easeElastic, duration: 0.8
+     });
 
     // 5. Final CTA (moat já animado em InvestorMoatSection — evita duplicata)
     gsap.from('.cta-section > div', {
@@ -811,20 +829,23 @@ export default function PresentationPage() {
         {/* ── INVESTOR MOAT — Unit Economics Zengin (Investor Pitch) ── */}
         <InvestorMoatSection />
 
-        {/* ── FEATURES GRID — Premium Glass ────────────────────────── */}
-        <section className="features-grid" style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px' }}>
+        {/* ── FEATURES — Hi-Tech Venue (Innovation Lab: icon-forge + horizontal) ── */}
+        <section className="features-grid features-venue" style={{ maxWidth: 1200, margin: '0 auto 120px', padding: '0 24px' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
-            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, color: 'white', letterSpacing: -1.5 }}>
-              Tudo que você precisa, integrado
+            <h2 style={{ fontSize: 'clamp(28px,4vw,44px)', fontWeight: 800, color: DAIG_TOKENS.colors.textMain, letterSpacing: -1.5, fontFamily: DAIG_TOKENS.typography.display }}>
+              Tudo que você precisa, <span style={{ color: DAIG_TOKENS.colors.cyan }}>integrado</span>
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 15, marginTop: 12 }}>
-              Um ecossistema completo, do desmanche ao depósito bancário
+            <p style={{ color: DAIG_TOKENS.colors.textMuted, fontSize: 15, marginTop: 12, fontFamily: DAIG_TOKENS.typography.body }}>
+              Um ecossistema completo, do desmanche ao depósito bancário — agora com ícones Hi-Tech e venue horizontal
             </p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 16 }}>
+          <div className="features-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 16 }}>
             {FEATURES.map((f) => (
               <FeatureCard key={f.title} feature={f} className="feature-card" />
             ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 18, fontSize: 11, color: DAIG_TOKENS.colors.textFaint, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            ↕ scroll → venue horizontal (desktop) · stagger reveal · design-authority 2026-09-14
           </div>
         </section>
 

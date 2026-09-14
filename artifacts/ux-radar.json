@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-14",
+  "scout": "jdm-ux-scout",
+  "audit": {
+    "file": "src/modules/storefront/pages/PresentationPage.tsx:17",
+    "current": "emojis 🏪🤖💬💳🏢🇯🇵",
+    "debt": "Emojis genéricos violam custom-hitech-icons SKILL, sem glow badge, sem 21st.dev Cyber Neon"
+  },
+  "proposals": [
+    {
+      "feature": "Catálogo JDM",
+      "current": "🏪",
+      "proposed": { "icon": "Store", "badge": "Search", "color": "#00E5FF", "glow": "0 0 20px rgba(0,229,255,0.22)" },
+      "fitDAIG": 9,
+      "hypeScore": 8,
+      "action": "create-agent:hitech-icon-forge"
+    },
+    {
+      "feature": "IA Generativa",
+      "current": "🤖",
+      "proposed": { "icon": "Bot", "badge": "Sparkles", "color": "#7C3AED", "glow": "0 0 20px rgba(124,58,237,0.22)" },
+      "fitDAIG": 9,
+      "hypeScore": 8,
+      "action": "create-agent:hitech-icon-forge"
+    },
+    {
+      "feature": "Chat Realtime",
+      "current": "💬",
+      "proposed": { "icon": "MessageCircle", "badge": "Languages", "color": "#00D97E", "glow": "0 0 20px rgba(0,217,126,0.18)" },
+      "fitDAIG": 9,
+      "hypeScore": 7,
+      "action": "create-agent:hitech-icon-forge"
+    },
+    {
+      "feature": "Stripe Escrow",
+      "current": "💳",
+      "proposed": { "icon": "CreditCard", "badge": "ShieldCheck", "color": "#FF6B35", "glow": "0 0 20px rgba(255,107,53,0.18)" },
+      "fitDAIG": 9,
+      "hypeScore": 7,
+      "action": "create-agent:hitech-icon-forge"
+    },
+    {
+      "feature": "SaaS ERP",
+      "current": "🏢",
+      "proposed": { "icon": "Building2", "badge": "Boxes", "color": "#0D75FF", "glow": "0 0 20px rgba(13,117,255,0.18)" },
+      "fitDAIG": 9,
+      "hypeScore": 7,
+      "action": "create-agent:hitech-icon-forge"
+    },
+    {
+      "feature": "JCT Compliance",
+      "current": "🇯🇵",
+      "proposed": { "icon": "Landmark", "badge": "FileCheck", "color": "#F59E0B", "glow": "0 0 20px rgba(245,158,11,0.18)" },
+      "fitDAIG": 9,
+      "hypeScore": 8,
+      "action": "create-agent:hitech-icon-forge"
+    }
+  ],
+  "globalUx": {
+    "grid": "migrar FEATURES grid para horizontal pinned venue (gsap-immersive-venue §4) com snap 1/(n-1)",
+    "cta": "MagneticButton scale 1.03 elastic.out + neon-pulse quando progress>87.5%",
+    "mobile": "Interactive3DCard desativa tilt <768px, usa GestureHint + vaul drawer"
+  },
+  "forgeQueue": ["hitech-icon-forge"]
+}
