@@ -24,15 +24,15 @@ resource "aws_ec2_host" "mac_host" {
   }
 }
 
-# 2. Security Group efêmero — só SSH (22) restrito ao seu IP (efêmero: liga só pro build)
+# 2. Security Group efemero — so SSH (22) restrito ao seu IP (efemero: liga so pro build)
 # Para atualizar seu IP antes do build: terraform apply -var="allowed_ssh_cidr=SEU.IP/32"
 resource "aws_security_group" "mac_sg" {
   name        = "mac-ios-builder-sg"
-  description = "Acesso SSH efêmero para build iOS (sem VNC)"
+  description = "Acesso SSH efemero para build iOS (sem VNC)"
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "SSH efêmero"
+    description = "SSH ephemeral"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
