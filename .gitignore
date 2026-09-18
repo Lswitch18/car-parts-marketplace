@@ -67,15 +67,17 @@ docs/
 *.md
 !.agents/**/*.md
 
-# Terraform — mac-ios versionado; ignora state/tfvars/tf.lock
-terraform/mac-ios/.terraform/
-terraform/mac-ios/terraform.tfstate*
-terraform/mac-ios/.terraform.lock.hcl
+# Terraform — EKS root ignorado, mac-ios versionado
+terraform/*.tf
+terraform/*.tfvars
 !terraform/mac-ios/main.tf
 !terraform/mac-ios/variables.tf
 !terraform/mac-ios/outputs.tf
 !terraform/mac-ios/terraform.tfvars.example
 !terraform/mac-ios/ExportOptions.plist.template
+terraform/mac-ios/.terraform/
+terraform/mac-ios/terraform.tfstate*
+terraform/mac-ios/.terraform.lock.hcl
 relatorio-aws-eks.md
 
 # JDK
