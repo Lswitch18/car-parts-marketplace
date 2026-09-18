@@ -8,7 +8,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const buildConfig: UserConfig['build'] = {
-  // iOS marketplace puro: three é lazy-only (não bloqueia LCP)
   rollupOptions: {
     output: {
       manualChunks: {
@@ -16,12 +15,9 @@ const buildConfig: UserConfig['build'] = {
         'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
         'vendor-supabase': ['@supabase/supabase-js'],
         'vendor-query': ['@tanstack/react-query'],
-        'vendor-gsap': ['gsap', '@gsap/react', 'lenis'],
       }
     }
-  },
-  // iOS WKWebView cache agressivo — hash nos assets
-  assetsInlineLimit: 4096,
+  }
 }
 
 export default defineConfig({
