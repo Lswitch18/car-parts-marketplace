@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router'
 import { I18nProvider } from '@/modules/shared/lib/i18n'
-import MobileLayout from '@/modules/shared/components/layout/MobileLayout'
+import IosMarketplaceLayout from '@/modules/shared/components/layout/IosMarketplaceLayout'
 import ProtectedRoute from '@/modules/identity/components/ProtectedRoute'
 import ScrollToTop from '@/modules/shared/components/ScrollToTop'
 import PWARegister from '@/modules/shared/components/PWARegister'
@@ -10,22 +10,18 @@ import { useNavigate, useLocation } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { lazyWithRetry } from '@/modules/shared/lib/lazyWithRetry'
 
-// Lazy Loading com auto-retry
+// Marketplace puro — sem Logistix/WMS/SaaS/Driver
 const MobileStoreHome = lazyWithRetry(() => import('@/modules/storefront/pages/MobileStoreHome'))
 const Catalog = lazyWithRetry(() => import('@/modules/parts-catalog/pages/Catalog'))
 const ProductDetail = lazyWithRetry(() => import('@/modules/parts-catalog/pages/ProductDetail'))
-const CarList = lazyWithRetry(() => import('@/modules/vehicles/pages/CarList'))
 const Login = lazyWithRetry(() => import('@/modules/identity/pages/Login'))
 const Register = lazyWithRetry(() => import('@/modules/identity/pages/Register'))
-const Dashboard = lazyWithRetry(() => import('@/modules/backoffice/pages/Dashboard'))
-const CreateListing = lazyWithRetry(() => import('@/modules/parts-catalog/pages/CreateListing'))
-const Profile = lazyWithRetry(() => import('@/modules/identity/pages/Profile'))
-const Favorites = lazyWithRetry(() => import('@/modules/parts-catalog/pages/Favorites'))
+const ProfileMarketplace = lazyWithRetry(() => import('@/modules/identity/pages/ProfileMarketplace'))
 const Messages = lazyWithRetry(() => import('@/modules/chat/pages/Messages'))
 const PaymentCheckout = lazyWithRetry(() => import('@/modules/transactions/pages/PaymentCheckout'))
-const Auctions = lazyWithRetry(() => import('@/modules/auctions/pages/Auctions'))
-const PartsLookup = lazyWithRetry(() => import('@/modules/parts-catalog/pages/PartsLookup'))
-const PresentationPage = lazyWithRetry(() => import('@/modules/storefront/pages/PresentationPage'))
+const PrivacyPolicy = lazyWithRetry(() => import('@/modules/storefront/pages/PrivacyPolicy'))
+const TermsOfService = lazyWithRetry(() => import('@/modules/storefront/pages/TermsOfService'))
+const LegalNotice = lazyWithRetry(() => import('@/modules/storefront/pages/LegalNotice'))
 
 function StoreApp() {
   const { user, initialized, loading, initialize } = useAuthStore()
@@ -49,35 +45,21 @@ function StoreApp() {
       <ScrollToTop />
       <Suspense fallback={<GlobalLoader />}>
         <Routes>
-          <Route path="/" element={<MobileLayout />}>
-            {/* Rota inicial protegida: se não logado vai pro /login, se logado abre a MobileStoreHome */}
-            <Route element={<ProtectedRoute />}>
-              <Route index element={<MobileStoreHome />} />
-            </Route>
-            
+          <Route path="/" element={<IosMarketplaceLayout />}>
+            <Route index element={<MobileStoreHome />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
-            
-            {/* Páginas do Catálogo */}
             <Route path="catalog" element={<Catalog />} />
-            <Route path="parts" element={<PartsLookup />} />
             <Route path="product/:id" element={<ProductDetail />} />
-            <Route path="cars" element={<CarList />} />
-            <Route path="auctions" element={<Auctions />} />
-            <Route path="presentation" element={<PresentationPage />} />
-            
-            {/* Rotas Protegidas */}
+            <Route path="terms" element={<TermsOfService />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="legal" element={<LegalNotice />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="create-listing" element={<CreateListing />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="favorites" element={<Favorites />} />
+              <Route path="profile" element={<ProfileMarketplace />} />
               <Route path="messages" element={<Messages />} />
               <Route path="checkout/:id" element={<PaymentCheckout />} />
             </Route>
           </Route>
-
-          {/* Redirecionamento para rotas inexistentes */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

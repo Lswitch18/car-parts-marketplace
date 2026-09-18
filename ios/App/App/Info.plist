@@ -3,9 +3,35 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>pt</string>
 	<key>CFBundleDisplayName</key>
-        <string>DAIG Logistix Express</string>
+        <string>DAIG Marketplace</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Use a câmera para escanear peças JDM e fotografar itens à venda ( marketplace ).</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Selecione fotos da galeria para anunciar peças no marketplace.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Salvar fotos de peças do marketplace.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+	</dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.daig.marketplace</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.daig.marketplace</string>
+				<string>capacitor</string>
+			</array>
+		</dict>
+	</array>
+	<!-- Google OAuth — REVERSED_CLIENT_ID será injetado via GoogleService-Info.plist (gitignored) -->
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { handleSupabaseError } from '@/modules/shared/lib/supabaseErrorHandler'
 import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 export default function Login() {
   const { t } = useI18n()
@@ -34,8 +36,19 @@ export default function Login() {
     }
   }
 
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(() => {
+    if (!cardRef.current) return
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
+    gsap.from(cardRef.current, { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out', clearProps: 'transform' })
+    gsap.from(cardRef.current.querySelectorAll('.login-field'), { y: 12, opacity: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out', delay: 0.15, clearProps: 'transform' })
+  }, { scope: cardRef })
+
   const handleGoogleLogin = async () => {
     try {
+      try { (navigator as any).vibrate?.(10) } catch {}
       await signInGoogle()
     } catch (err: any) {
       setError(handleSupabaseError(err))
@@ -43,12 +56,15 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
-      {/* Dynamic Background Glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 30%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.05) 50%, transparent 80%)' }} />
+    <div className="min-h-screen bg-[#060B14] flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Premium ambient — mantém tokens void/blue */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full blur-[120px] opacity-[0.12]" style={{ background: '#0D75FF' }} />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full blur-[100px] opacity-[0.07]" style={{ background: '#7000FF' }} />
+      </div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-zinc-900/90 border border-zinc-800/80 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl shadow-2xl">
+        <div ref={cardRef} className="glass-ultra rounded-[24px] p-8 sm:p-10 shadow-2xl">
           <div className="flex justify-center mb-6">
             <GaidLogo size={52} variant="horizontal" />
           </div>
@@ -65,7 +81,7 @@ export default function Login() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full bg-zinc-800 hover:bg-zinc-700/90 text-white border border-zinc-700/70 py-3.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 disabled:opacity-50 mb-6 shadow-md hover:scale-[1.01]"
+            className="login-field w-full bg-white hover:bg-zinc-50 text-zinc-900 border border-zinc-200 py-3.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 disabled:opacity-50 mb-6 shadow-md active:scale-[0.98]"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -87,55 +103,55 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm flex items-start space-x-2">
+              <div className="login-field bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-sm flex items-start space-x-2">
                 <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <p>{error}</p>
               </div>
             )}
 
-            <div>
-              <label className="block text-zinc-300 text-sm font-medium mb-1.5">{t('Email')}</label>
+            <div className="login-field">
+              <label className="block text-white/70 text-sm font-medium mb-1.5">{t('Email')}</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3.5 bg-zinc-950/80 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
+                  className="w-full pl-12 pr-4 py-3.5 bg-[#06080F] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/30 transition-all text-sm"
                   placeholder="seu@email.com"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-zinc-300 text-sm font-medium mb-1.5">{t('Senha')}</label>
+            <div className="login-field">
+              <label className="block text-white/70 text-sm font-medium mb-1.5">{t('Senha')}</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3.5 bg-zinc-950/80 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm"
+                  className="w-full pl-12 pr-12 py-3.5 bg-[#06080F] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#00E5FF] focus:ring-1 focus:ring-[#00E5FF]/30 transition-all text-sm"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/80"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
+            <div className="login-field flex items-center justify-between pt-1">
               <label className="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-zinc-700 bg-zinc-950 text-blue-600 focus:ring-0" />
-                <span className="text-zinc-400 text-sm">{t('Lembrar-me')}</span>
+                <input type="checkbox" className="w-4 h-4 rounded border-white/20 bg-[#06080F] text-[#0D75FF] focus:ring-0" />
+                <span className="text-white/50 text-sm">{t('Lembrar-me')}</span>
               </label>
-              <a href="#" className="text-blue-400 text-sm hover:underline">
+              <a href="#" className="text-[#00E5FF] text-sm hover:underline">
                 {t('Esqueceu a senha?')}
               </a>
             </div>
@@ -143,7 +159,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3.5 rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 disabled:opacity-50"
+              className="login-field w-full bg-gradient-to-r from-[#0D75FF] to-[#00E5FF] hover:opacity-90 text-white py-3.5 rounded-xl font-semibold transition-all shadow-[0_0_20px_rgba(13,117,255,0.35)] active:scale-[0.98] disabled:opacity-50"
             >
               {loading ? t('Entrando...') : t('Entrar')}
             </button>

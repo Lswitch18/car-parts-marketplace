@@ -51,8 +51,8 @@ export default {
       },
       fontFamily: {
         display: ['Sora', 'sans-serif'],
-        sans: ['Raleway', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        sans: ['Instrument Sans', 'Raleway', 'Noto Sans JP', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Geist Mono', 'monospace'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

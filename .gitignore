@@ -12,12 +12,22 @@ dist
 dist-ssr
 *.local
 
-# Environment variables
+# Environment variables & Secrets — marketplace iOS exige isolamento total
 .env
 .env.local
 .env.*.local
 .supabase-token
 token_gdrive.json
+*.pem
+*.key
+GoogleService-Info.plist
+ios/App/App/GoogleService-Info.plist
+terraform/mac-ios/terraform.tfvars
+terraform/mac-ios/*.auto.tfvars
+build/
+*.ipa
+*.xcarchive
+DerivedData/
 
 # Editor directories and files
 .vscode/*
@@ -57,8 +67,15 @@ docs/
 *.md
 !.agents/**/*.md
 
-# Terraform
-terraform/
+# Terraform — mac-ios versionado; ignora state/tfvars/tf.lock
+terraform/mac-ios/.terraform/
+terraform/mac-ios/terraform.tfstate*
+terraform/mac-ios/.terraform.lock.hcl
+!terraform/mac-ios/main.tf
+!terraform/mac-ios/variables.tf
+!terraform/mac-ios/outputs.tf
+!terraform/mac-ios/terraform.tfvars.example
+!terraform/mac-ios/ExportOptions.plist.template
 relatorio-aws-eks.md
 
 # JDK

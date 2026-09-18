@@ -286,15 +286,16 @@ export default function Messages() {
   const checkoutPartId = conversation?.part.id || selectedMessages?.find(m => m.part_id)?.part_id || ''
 
   return (
-    <div className="min-h-screen bg-background py-8">
+    <div className="min-h-screen bg-[#060B14] py-6 pb-28">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="font-display text-3xl font-bold text-white">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="font-display text-2xl font-bold text-white tracking-tight">
             {t('Mensagens')}
           </h1>
+          <span className="text-[11px] font-mono text-cyan-300 bg-[#00E5FF]/10 px-2 py-1 rounded border border-[#00E5FF]/20">iMessage • ¥ Propostas</span>
         </div>
 
-        <div className="card overflow-hidden" style={{ height: '600px' }}>
+        <div className="glass-ultra overflow-hidden rounded-[20px]" style={{ height: 'min(72vh, 640px)' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
             <div className={`border-r border-border overflow-y-auto ${selectedConversation ? 'hidden md:block' : 'block'}`}>
               {conversations && conversations.length > 0 ? (
@@ -411,14 +412,7 @@ export default function Messages() {
                                   ✓ {t('Confirmado')}
                                 </span>
                               )}
-                              {msg.transaction_id && (
-                                <a
-                                  href={`/admin/logistix`}
-                                  className="text-daig-cyan text-xs ml-2 hover:underline"
-                                >
-                                  🚚 {t('Rastrear Pedido')}
-                                </a>
-                              )}
+
                             </div>
                           </div>
                         </div>

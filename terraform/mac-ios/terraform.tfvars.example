@@ -1,0 +1,11 @@
+# Copie para terraform.tfvars (gitignored) e preencha com seus valores reais.
+# Nunca commite terraform.tfvars com secrets.
+
+aws_region        = "ap-southeast-2"
+availability_zone = "ap-southeast-2a"
+vpc_id            = "vpc-0ce0d8a1ecadfba86"
+subnet_id         = "subnet-06f962e4e5fe39e86"
+key_name          = "Ios-key"
+ami_id            = "ami-01cb46e8cbea6e71e"
+mac_password      = "DaigIos2026!MacBuild" # troque antes do primeiro build efêmero
+allowed_ssh_cidr  = "SEU.IP.AQUI/32"        # ex: 201.46.120.192/32 — restrinja antes do apply

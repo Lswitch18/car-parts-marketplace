@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Raleway:wght@300;400;500;600;700&display=swap');
+/* Fonts carregadas via index.html (Sora + Instrument Sans + JetBrains Mono + Noto JP) — evita @import bloqueante */
 
 @tailwind base;
 @tailwind components;
@@ -61,10 +61,14 @@ body {
   background-color: var(--bg-void);
   background-image: radial-gradient(circle at 50% 0%, rgba(13, 117, 255, 0.06) 0%, transparent 60%);
   color: var(--text-main);
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Instrument Sans', 'Raleway', 'Noto Sans JP', sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* iOS safe-area + overscroll */
+  padding-top: env(safe-area-inset-top);
+  overscroll-behavior-y: contain;
+  -webkit-tap-highlight-color: transparent;
 }
 
 h1, h2, h3, h4, h5, h6, .font-display {
@@ -496,9 +500,23 @@ select option {
   border-color: rgba(13, 117, 255, 0.35);
 }
 
+/* === iOS Marketplace Dock — safe-area fix === */
+.ios-dock {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+.ios-content {
+  padding-bottom: calc(112px + env(safe-area-inset-bottom));
+}
+
+/* === Reduced motion guard (design-authority) === */
+@media (prefers-reduced-motion: reduce) {
+  .neon-pulse, .neon-pulse-cyan, .float, .animate-float, .shimmer,
+  .animate-marquee, .animate-cyber-scan, .animate-cyber-pulse { animation: none !important; }
+}
+
 /* ============================================
-   Print Styles for PDF Export
-   ============================================ */
+    Print Styles for PDF Export
+    ============================================ */
 @media print {
   aside, 
   header, 

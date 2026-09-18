@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Copie para GoogleService-Info.plist (gitignored) e preencha com o download do Firebase Console / Google Cloud Console -->
+  <key>CLIENT_ID</key><string>618628258891-0k11mbjiuv3lrg8gsjlldv6p4qg1p06b.apps.googleusercontent.com</string>
+  <key>REVERSED_CLIENT_ID</key><string>com.googleusercontent.apps.618628258891-0k11mbjiuv3lrg8gsjlldv6p4qg1p06b</string>
+  <key>PLIST_VERSION</key><string>1</string>
+  <key>BUNDLE_ID</key><string>com.daig.marketplace</string>
+</dict>
+</plist>

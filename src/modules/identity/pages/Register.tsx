@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { handleSupabaseError, isRateLimitError } from '@/modules/shared/lib/supabaseErrorHandler'
 import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
+import { useGSAP } from '@gsap/react'
+import gsap from 'gsap'
 
 export default function Register() {
   const { t } = useI18n()
@@ -21,6 +23,12 @@ export default function Register() {
   const [error, setError] = useState('')
   const [retryCount, setRetryCount] = useState(0)
   const [success, setSuccess] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+  useGSAP(() => {
+    if (!cardRef.current) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    gsap.from(cardRef.current, { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out', clearProps: 'transform' })
+  }, { scope: cardRef })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -58,8 +66,10 @@ export default function Register() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 py-12 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 30%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.05) 50%, transparent 80%)' }} />
+      <div className="min-h-screen bg-[#060B14] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full blur-[120px] opacity-[0.12]" style={{ background: '#0D75FF' }} />
+        </div>
 
         <div className="w-full max-w-md relative z-10 text-center">
           <div className="bg-zinc-900/90 border border-zinc-800/80 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl shadow-2xl space-y-6">
@@ -95,12 +105,14 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
-      {/* Dynamic Background Glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 30%, rgba(13,117,255,0.15) 0%, rgba(112,0,255,0.05) 50%, transparent 80%)' }} />
+    <div className="min-h-screen bg-[#060B14] flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full blur-[120px] opacity-[0.12]" style={{ background: '#0D75FF' }} />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full blur-[100px] opacity-[0.07]" style={{ background: '#7000FF' }} />
+      </div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-zinc-900/90 border border-zinc-800/80 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl shadow-2xl">
+        <div ref={cardRef} className="glass-ultra rounded-[24px] p-8 sm:p-10 shadow-2xl">
           <div className="flex justify-center mb-6">
             <GaidLogo size={52} variant="horizontal" />
           </div>
@@ -109,7 +121,7 @@ export default function Register() {
             <h1 className="font-display text-3xl font-bold text-white mb-1.5">
               {t('Criar Conta')}
             </h1>
-            <p className="text-zinc-400 text-sm">
+            <p className="text-white/50 text-sm">
               {t('Junte-se ao maior marketplace JDM do Japão')}
             </p>
           </div>
