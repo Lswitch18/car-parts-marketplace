@@ -1,25 +1,25 @@
 variable "aws_region" {
   type        = string
-  default     = "ap-southeast-2"
-  description = "Regiao da AWS (Sydney - permitida pela Organization)"
+  default     = "us-east-1"
+  description = "Regiao da AWS (Virginia - us-east-1)"
 }
 
 variable "availability_zone" {
   type        = string
-  default     = "ap-southeast-2a"
+  default     = "us-east-1d"
   description = "Zona de Disponibilidade com suporte a mac2-m2"
 }
 
 variable "vpc_id" {
   type        = string
-  default     = "vpc-0ce0d8a1ecadfba86"
-  description = "VPC padrao"
+  default     = "vpc-0f25a75191041dce3"
+  description = "VPC padrao da conta em us-east-1"
 }
 
 variable "subnet_id" {
   type        = string
-  default     = "subnet-06f962e4e5fe39e86"
-  description = "Subnet publica em ap-southeast-2a"
+  default     = "subnet-0a5fd1551353616c5"
+  description = "Subnet publica em us-east-1d"
 }
 
 variable "key_name" {
@@ -30,8 +30,8 @@ variable "key_name" {
 
 variable "ami_id" {
   type        = string
-  default     = "ami-01cb46e8cbea6e71e"
-  description = "macOS Sonoma arm64 oficial da AWS"
+  default     = "ami-06529a1068d5c3720"
+  description = "macOS Sonoma arm64 oficial da AWS em us-east-1"
 }
 
 variable "mac_password" {
