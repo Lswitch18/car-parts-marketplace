@@ -61,7 +61,8 @@ export default function LegalFinanceCenter() {
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              <span>🇧🇷 Agente Wellynton (10%)</span>
+              <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-cyan-300 border border-blue-500/30">BR</span>
+              <span>Agente Wellynton (10%)</span>
             </button>
 
             <button
@@ -72,7 +73,8 @@ export default function LegalFinanceCenter() {
                   : 'text-zinc-400 hover:text-white'
               }`}
             >
-              <span>🇯🇵 Agente Patrick (90%)</span>
+              <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">JP</span>
+              <span>Agente Patrick (90%)</span>
             </button>
           </div>
         </div>

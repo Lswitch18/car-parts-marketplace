@@ -47,11 +47,16 @@ export default function Login() {
   }, { scope: cardRef })
 
   const handleGoogleLogin = async () => {
+    setLoading(true)
+    setError('')
     try {
       try { (navigator as any).vibrate?.(10) } catch {}
       await signInGoogle()
     } catch (err: any) {
+      console.error('Google login error:', err)
       setError(handleSupabaseError(err))
+    } finally {
+      setLoading(false)
     }
   }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { 
   Users, UserPlus, ShieldCheck, Key, CheckCircle2, XCircle, 
-  Trash2, Mail, Lock, Sliders, AlertCircle, Sparkles, ShieldAlert
+  Trash2, Mail, Lock, Sliders, AlertCircle, Sparkles, ShieldAlert, X
 } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import { TenantRole, TenantPermission } from '@/modules/shared/types'
@@ -250,8 +250,8 @@ export default function TenantTeamManager() {
                 <UserPlus className="w-5 h-5 text-blue-400" />
                 Convidar Membro para a Equipe
               </h3>
-              <button onClick={() => setShowInviteModal(false)} className="text-zinc-400 hover:text-white">
-                ✕
+              <button onClick={() => setShowInviteModal(false)} className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-white/5 transition">
+                <X className="w-5 h-5" />
               </button>
             </div>
 

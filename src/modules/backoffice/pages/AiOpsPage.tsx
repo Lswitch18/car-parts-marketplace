@@ -6,7 +6,7 @@ import { ollamaProxy, ollamaProxyJson } from '@/modules/shared/lib/ollamaProxy';
 import {
   Brain, Upload, Zap, Trash2, RefreshCw, CheckCircle2, XCircle,
   Clock, Activity, Server, Cpu, ImageIcon, ChevronDown, ChevronUp,
-  AlertTriangle, Copy, Check, HardDrive, Download, Database
+  AlertTriangle, Copy, Check, HardDrive, Download, Database, Settings, Battery, Search
 } from 'lucide-react';
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -991,7 +991,7 @@ export default function AiOpsPage() {
                 onClick={() => setShowPromptEditor(!showPromptEditor)}
                 className="w-full flex items-center justify-between text-[11px] text-white uppercase tracking-wider font-semibold hover:text-violet-400 transition-colors"
               >
-                <span>⚙️ {t('System Prompt Editor (Prompt Playground)')}</span>
+                <span className="flex items-center gap-1.5"><Settings className="w-3.5 h-3.5 text-violet-400" /> {t('System Prompt Editor (Prompt Playground)')}</span>
                 <span className="text-[10px] text-violet-400 font-mono">
                   {showPromptEditor ? t('[ Hide ]') : t('[ Edit ]')}
                 </span>
@@ -1591,8 +1591,8 @@ export default function AiOpsPage() {
                     }}
                     className="w-full text-left text-[11px] text-[#BBB] hover:text-white bg-[#1a1d30]/50 border border-[#2c324e] rounded p-2 hover:bg-[#1a1d30] transition-colors"
                   >
-                    🔋 <strong>{t('Battery Analyzer Add-on')}</strong>
-                    <span className="block text-[10px] text-[#666] mt-0.5">{t('Instructs AI to fetch capacity specs')}</span>
+                    <div className="flex items-center gap-1.5"><Battery className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> <strong>{t('Battery Analyzer Add-on')}</strong></div>
+                    <span className="block text-[10px] text-[#666] mt-0.5 ml-5">{t('Instructs AI to fetch capacity specs')}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -1601,8 +1601,8 @@ export default function AiOpsPage() {
                     }}
                     className="w-full text-left text-[11px] text-[#BBB] hover:text-white bg-[#1a1d30]/50 border border-[#2c324e] rounded p-2 hover:bg-[#1a1d30] transition-colors"
                   >
-                    🔍 <strong>{t('Part Number Specialist')}</strong>
-                    <span className="block text-[10px] text-[#666] mt-0.5">{t('Prioritize identification sticker scan')}</span>
+                    <div className="flex items-center gap-1.5"><Search className="w-3.5 h-3.5 text-cyan-400 shrink-0" /> <strong>{t('Part Number Specialist')}</strong></div>
+                    <span className="block text-[10px] text-[#666] mt-0.5 ml-5">{t('Prioritize identification sticker scan')}</span>
                   </button>
                 </div>
               </div>

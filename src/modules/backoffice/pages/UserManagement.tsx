@@ -1312,9 +1312,9 @@ export default function UserManagement() {
               </div>
               <button 
                 onClick={() => setSelectedUser(null)} 
-                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold p-1"
+                className="text-slate-500 hover:text-[#EDEDED] p-1 rounded-lg hover:bg-white/5 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -1766,9 +1766,9 @@ export default function UserManagement() {
               <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{editingCargo ? t('Editar Cargo') : t('Cadastrar Novo Cargo')}</h2>
               <button 
                 onClick={() => setShowCargoModal(false)} 
-                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold"
+                className="text-slate-500 hover:text-[#EDEDED] p-1 rounded-lg hover:bg-white/5 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -1869,9 +1869,9 @@ export default function UserManagement() {
               <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{editingSetor ? t('Editar Setor') : t('Cadastrar Setor')}</h2>
               <button 
                 onClick={() => setShowSetorModal(false)} 
-                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold"
+                className="text-slate-500 hover:text-[#EDEDED] p-1 rounded-lg hover:bg-white/5 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -1919,9 +1919,9 @@ export default function UserManagement() {
               <h2 className="text-md font-black text-[#EDEDED] uppercase tracking-wider">{t('Cadastrar Novo Usuário')}</h2>
               <button 
                 onClick={() => setShowCreateUserModal(false)} 
-                className="text-slate-500 hover:text-[#EDEDED] text-xl font-bold"
+                className="text-slate-500 hover:text-[#EDEDED] p-1 rounded-lg hover:bg-white/5 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -2037,9 +2037,9 @@ export default function UserManagement() {
                   setDeletingUser(null);
                   setDeleteConfirmationText('');
                 }} 
-                className="text-red-600 hover:text-[#EDEDED] text-xl font-bold"
+                className="text-red-600 hover:text-[#EDEDED] p-1 rounded-lg hover:bg-red-500/10 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -2190,9 +2190,9 @@ export default function UserManagement() {
               </div>
               <button 
                 onClick={() => setActiveModUser(null)}
-                className="text-slate-500 hover:text-[#EDEDED] font-bold p-1 text-lg"
+                className="text-slate-500 hover:text-[#EDEDED] p-1 rounded-lg hover:bg-white/5 transition"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 

@@ -588,8 +588,8 @@ export default function DeliveriesManagement() {
                   disabled={updatingId === dispatchModalTx.id}
                   className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-xl font-bold transition flex items-center gap-1.5 disabled:opacity-50"
                 >
-                  {updatingId === dispatchModalTx.id && <Loader2 size={14} className="animate-spin" />}
-                  <span>Confirmar Despacho 🚚</span>
+                  {updatingId === dispatchModalTx.id ? <Loader2 size={14} className="animate-spin" /> : <Truck size={15} />}
+                  <span>Confirmar Despacho</span>
                 </button>
               </div>
             </form>

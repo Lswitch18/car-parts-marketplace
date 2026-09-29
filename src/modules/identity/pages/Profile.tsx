@@ -718,7 +718,7 @@ export default function Profile() {
                     ) : (
                       <Sparkles className="w-3 h-3 text-[#00E5FF]" />
                     )}
-                    <span>{t('Buscar 🇯🇵')}</span>
+                    <span>{t('Buscar')}</span>
                   </button>
                 </div>
 

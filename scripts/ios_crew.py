@@ -53,12 +53,13 @@ security_engineer = Agent(
 # Definição das Tarefas
 debug_appetize_task = Task(
     description=dedent("""
-        Temos um erro de log não documentado no Appetize.io que ocorreu na sessão anterior. 
-        1. Crie um arquivo de estado físico do erro.
-        2. Revise o workflow do GitHub Actions (.github/workflows/ios-build.yml).
-        3. Proponha a correção para as variáveis .env que falharam no build.
+        O fluxo de login com o Google (Entrar com Google) está falhando silenciosamente no iOS Simulator (Appetize).
+        Apesar do iosClientId estar no capacitor.config.ts e a REVERSED_CLIENT_ID no Info.plist, o botão não reage.
+        1. Analise o que pode estar bloqueando a abertura do popup do Google Auth no Capacitor iOS (como AppDelegate.swift ou falta de config).
+        2. Proponha a solução arquitetural necessária.
+        3. Além disso, verifique e analise os requisitos para o funcionamento de todo o fluxo (conversa, compra, checkout).
     """),
-    expected_output="Um relatório documentado e o código corrigido para o fluxo do GitHub Actions.",
+    expected_output="Um plano de ação detalhado resolvendo a falha silenciosa do Google Auth no Capacitor iOS e orientações para testar o fluxo de checkout e conversas.",
     agent=ios_builder
 )
 

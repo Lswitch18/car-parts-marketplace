@@ -62,7 +62,7 @@ export default function HitechShowcase21st() {
             className="self-start sm:self-center px-5 py-3 rounded-2xl bg-gradient-to-r from-[#0D75FF] via-blue-600 to-[#00E5FF] hover:opacity-95 text-white font-black text-xs uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(13,117,255,0.4)] border border-[#00E5FF]/40 cursor-pointer active:scale-95 flex items-center space-x-2 shrink-0"
           >
             <Award className="w-4 h-4 text-white" />
-            <span>{t('Celebrar Meta 🚀')}</span>
+            <span>{t('Celebrar Meta')}</span>
           </button>
         </div>
 

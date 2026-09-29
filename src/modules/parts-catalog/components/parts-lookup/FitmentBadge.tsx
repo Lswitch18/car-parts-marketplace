@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Car } from 'lucide-react'
 
 interface Props {
   count: number
@@ -12,9 +12,10 @@ export default function FitmentBadge({ count, expanded, onToggle }: Props) {
   return (
     <button
       onClick={onToggle}
-      className="flex items-center gap-1 text-xs text-[#00E5FF] hover:text-[#00E5FF]/80 transition-colors"
+      className="flex items-center gap-1.5 text-xs text-[#00E5FF] hover:text-[#00E5FF]/80 transition-colors font-medium"
     >
-      🚗 Compatível com {count} veículo{count !== 1 ? 's' : ''}
+      <Car className="w-3.5 h-3.5 text-[#00E5FF]" />
+      <span>Compatível com {count} veículo{count !== 1 ? 's' : ''}</span>
       <ChevronDown
         className={`w-3 h-3 transition-transform ${expanded ? 'rotate-180' : ''}`}
       />

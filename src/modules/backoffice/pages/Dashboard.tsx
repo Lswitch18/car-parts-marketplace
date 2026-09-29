@@ -1077,8 +1077,9 @@ export default function Dashboard() {
               <button onClick={() => setShowNovoPedidoModal(false)} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl font-bold">
                 Cancelar
               </button>
-              <button onClick={() => setShowNovoPedidoModal(false)} className="px-5 py-2 bg-sky-600 text-white rounded-xl font-bold shadow-sm">
-                Concluir Pedido 🚀
+              <button onClick={() => setShowNovoPedidoModal(false)} className="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-bold shadow-sm flex items-center gap-1.5 transition">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Concluir Pedido</span>
               </button>
             </div>
           </div>

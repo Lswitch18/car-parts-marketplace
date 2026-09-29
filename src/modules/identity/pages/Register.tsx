@@ -64,6 +64,21 @@ export default function Register() {
     }
   }
 
+  const handleGoogleRegister = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      try { (navigator as any).vibrate?.(10) } catch {}
+      await signInGoogle()
+    } catch (err: any) {
+      console.error('Google register error:', err)
+      setError(handleSupabaseError(err))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
   if (success) {
     return (
       <div className="min-h-screen bg-[#060B14] flex items-center justify-center px-4 py-12 relative overflow-hidden">
@@ -247,7 +262,7 @@ export default function Register() {
 
             <button
               type="button"
-              onClick={() => signInGoogle()}
+              onClick={handleGoogleRegister}
               disabled={loading}
               className="w-full bg-zinc-800 hover:bg-zinc-700/90 text-white border border-zinc-700/70 py-3.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-md hover:scale-[1.01]"
             >

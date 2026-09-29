@@ -155,7 +155,7 @@ export default function ProfileMarketplace() {
               <button type="button" disabled={postalLoading} onClick={()=>handlePostalLookup()}
                 className="absolute right-1.5 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-[#0D75FF]/20 border border-[#00E5FF]/30 text-cyan-300 rounded-lg text-xs font-bold flex items-center gap-1">
                 {postalLoading ? <Loader2 className="w-3 h-3 animate-spin"/> : <Sparkles className="w-3 h-3"/>}
-                {t('Buscar 🇯🇵')}
+                {t('Buscar')}
               </button>
             </div>
             {postalMsg && <p className="text-xs text-emerald-400 flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/>{postalMsg}</p>}

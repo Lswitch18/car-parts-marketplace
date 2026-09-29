@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/modules/shared/lib/supabase';
 import { useFavoriteStore } from '@/modules/parts-catalog/store/favoriteStore';
+import { Wrench, CreditCard, Heart, Check } from 'lucide-react';
 
 interface PurchaseFlowProps {
   partId: string;
@@ -113,7 +114,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
             </h2>
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-[#2a2a2a] rounded-lg flex items-center justify-center">
-                <span className="text-2xl">🔧</span>
+                <Wrench className="w-8 h-8 text-sky-400" />
               </div>
               <div>
                 <h3 className="font-medium text-white">{partTitle}</h3>
@@ -178,7 +179,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
                 </>
               ) : (
                 <>
-                  <span>💳</span>
+                  <CreditCard className="w-5 h-5 shrink-0" />
                   <span>Confirmar e Pagar</span>
                 </>
               )}
@@ -188,9 +189,9 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
           <div className="mt-4 text-center">
             <button
               onClick={() => toggleFavorite(partId)}
-              className={`text-gray-400 hover:text-white flex items-center space-x-1 ${isFavorite(partId) ? 'text-[#ff3d00]' : ''}`}
+              className={`text-gray-400 hover:text-white flex items-center justify-center mx-auto space-x-1.5 ${isFavorite(partId) ? 'text-[#ff3d00]' : ''}`}
             >
-              <span>{isFavorite(partId) ? '♥' : '♡'}</span>
+              <Heart className={`w-4 h-4 ${isFavorite(partId) ? 'fill-[#ff3d00] text-[#ff3d00]' : 'text-gray-400'}`} />
               <span>Adicionar aos favoritos</span>
             </button>
           </div>
@@ -210,7 +211,7 @@ export default function PurchaseFlow({ partId, sellerId, partTitle, partPrice }:
           Compra Confirmada!
         </h1>
         <div className="w-20 h-20 mx-auto mb-6 bg-green-500 text-white rounded-full flex items-center justify-center">
-          <span className="text-4xl">✓</span>
+          <Check className="w-10 h-10 text-white" />
         </div>
         <p className="text-lg font-medium text-white mb-4">
           Sua compra foi processada com sucesso!

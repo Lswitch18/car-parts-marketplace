@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useAuthStore } from '@/modules/identity/store/authStore'
-import { MessageCircle, X, Send, User, Minimize2, Maximize2, Package, DollarSign, Check, ShoppingCart, ArrowRight } from 'lucide-react'
+import { MessageCircle, X, Send, User, Minimize2, Maximize2, Package, DollarSign, Check, ShoppingCart, ArrowRight, Sparkles } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
 import { useI18n } from '@/modules/shared/lib/i18n'
 
@@ -539,9 +539,9 @@ export default function ChatPopup({ initialProductId, initialSellerId, onClose }
                 <button
                   onClick={suggestAiResponse}
                   disabled={aiLoading}
-                  className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all"
+                  className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all font-medium"
                 >
-                  <span>✨</span>
+                  <Sparkles className="w-4 h-4 text-[#00e5ff]" />
                   <span>{aiLoading ? 'Pensando...' : 'IA Sugerir'}</span>
                 </button>
               </div>

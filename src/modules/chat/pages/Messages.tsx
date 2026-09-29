@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { supabase } from '@/modules/shared/lib/supabase'
-import { MessageCircle, Send, User, ArrowRight, DollarSign, Check, ShoppingCart } from 'lucide-react'
+import { MessageCircle, Send, User, ArrowRight, DollarSign, Check, ShoppingCart, Sparkles } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
 import { useI18n } from '@/modules/shared/lib/i18n'
 import AutoTranslateText from '@/modules/shared/components/AutoTranslateText'
@@ -469,9 +469,9 @@ export default function Messages() {
                         <button
                           onClick={suggestAiResponse}
                           disabled={aiLoading}
-                          className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all"
+                          className="flex-1 bg-[#00e5ff]/20 text-[#00e5ff] py-2 rounded-lg text-sm flex items-center justify-center space-x-2 hover:bg-[#00e5ff]/30 disabled:opacity-50 transition-all font-medium"
                         >
-                          <span>✨</span>
+                          <Sparkles className="w-4 h-4 text-[#00e5ff]" />
                           <span>{aiLoading ? t('Pensando...') : t('IA Sugerir')}</span>
                         </button>
                       </div>

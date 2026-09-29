@@ -442,9 +442,10 @@ export default function Onboarding() {
                 type="button"
                 onClick={() => handleFinish(false)}
                 disabled={saving || (isEmpresa && (!storeName || !storeDocument))}
-                className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-black rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                <span>{saving ? 'Salvando...' : isEmpresa ? 'Concluir & Criar Loja B2B 🚀' : 'Concluir Onboarding 🚀'}</span>
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span className="truncate">{saving ? 'Salvando...' : isEmpresa ? 'Concluir & Criar Loja B2B' : 'Concluir Onboarding'}</span>
               </button>
             </div>
 

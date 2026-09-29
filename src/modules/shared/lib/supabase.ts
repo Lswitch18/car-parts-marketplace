@@ -30,12 +30,19 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 })
 
 // Inicializa o GoogleAuth para a web nativa se aplicável
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
+
 if (Capacitor.isNativePlatform()) {
-  GoogleAuth.initialize({
-    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com',
-    scopes: ['profile', 'email'],
-    grantOfflineAccess: true,
-  });
+  try {
+    GoogleAuth.initialize({
+      clientId: GOOGLE_CLIENT_ID,
+      serverClientId: GOOGLE_CLIENT_ID,
+      scopes: ['profile', 'email'],
+      grantOfflineAccess: true,
+    } as any);
+  } catch (err) {
+    console.warn('[GoogleAuth] Native initialize warning:', err)
+  }
 }
 
 export const getCurrentUser = async () => {
@@ -78,11 +85,33 @@ const loadGsiScript = (): Promise<void> => {
 }
 
 export const signInWithGoogle = async () => {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
+
   if (Capacitor.isNativePlatform()) {
     try {
-      const googleUser = await GoogleAuth.signIn({ scopes: ['profile', 'email'] })
-      const idToken = googleUser.authentication.idToken
-      
+      // Re-garante a inicialização com clientId e serverClientId para o SDK Swift
+      try {
+        await GoogleAuth.initialize({
+          clientId: googleClientId,
+          serverClientId: googleClientId,
+          scopes: ['profile', 'email'],
+          grantOfflineAccess: true,
+        } as any)
+      } catch (initErr) {
+        console.warn('[GoogleAuth] Re-init warn:', initErr)
+      }
+
+      // CRÍTICO PARA IOS: serverClientId é obrigatório no parâmetro de chamada do plugin Swift
+      const googleUser = await GoogleAuth.signIn({
+        scopes: ['profile', 'email'],
+        serverClientId: googleClientId,
+      } as any)
+
+      const idToken = googleUser?.authentication?.idToken
+      if (!idToken) {
+        throw new Error('Nenhum token ID retornado pelo Google Sign-In nativo.')
+      }
+
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: idToken,
@@ -90,80 +119,115 @@ export const signInWithGoogle = async () => {
       if (error) throw error
       return data
     } catch (error) {
-      console.error('Error during native Google sign in', error)
-      throw error
+      console.error('Error during native Google sign in, attempting fallback:', error)
+      // Fallback para ambientes emulados/simuladores sem Google Play Services ou contas configuradas
+      try {
+        const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin,
+            skipBrowserRedirect: false,
+          },
+        })
+        if (oauthError) throw oauthError
+        return data
+      } catch (fallbackErr) {
+        throw error
+      }
     }
   } else {
-    await loadGsiScript()
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
-
-    // Reseta o cookie de bloqueio temporário do Google One-Tap/GSI
     try {
-      document.cookie = 'g_state=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-    } catch {}
+      await loadGsiScript()
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
 
-    return new Promise((resolve, reject) => {
-      if (!window.google?.accounts?.id) {
-        return reject(new Error('Google Identity Services não está disponível.'))
-      }
+      // Reseta o cookie de bloqueio temporário do Google One-Tap/GSI
+      try {
+        document.cookie = 'g_state=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+      } catch {}
 
-      // Prepara um container oculto para renderizar e acionar o botão nativo do GSI (que abre o popup sem redirecionar a página)
-      let container = document.getElementById('gsi-hidden-button-container')
-      if (!container) {
-        container = document.createElement('div')
-        container.id = 'gsi-hidden-button-container'
-        container.style.position = 'absolute'
-        container.style.top = '-9999px'
-        container.style.left = '-9999px'
-        container.style.opacity = '0'
-        container.style.pointerEvents = 'none'
-        document.body.appendChild(container)
-      } else {
-        container.innerHTML = ''
-      }
-
-      window.google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: async (response: any) => {
-          try {
-            if (!response.credential) {
-              return reject(new Error('Nenhum token retornado pelo Google.'))
-            }
-            const { data, error } = await supabase.auth.signInWithIdToken({
-              provider: 'google',
-              token: response.credential,
-            })
-            if (error) throw error
-            resolve(data)
-          } catch (err) {
-            reject(err)
-          }
-        },
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      })
-
-      // Renderiza o botão oficial do GSI no container oculto
-      window.google.accounts.id.renderButton(container, {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large',
-      })
-
-      // Simula o clique no botão nativo do GSI para abrir o Popup do Google mantendo a origem do aplicativo
-      setTimeout(() => {
-        const btn = container?.querySelector('div[role="button"]') as HTMLElement | HTMLDivElement | null
-        if (btn) {
-          btn.click()
-        } else {
-          window.google.accounts.id.prompt((notification: any) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-              reject(new Error('Login com Google foi cancelado ou a origem não está autorizada.'))
-            }
-          })
+      return await new Promise((resolve, reject) => {
+        if (!window.google?.accounts?.id) {
+          return reject(new Error('Google Identity Services não está disponível.'))
         }
-      }, 100)
-    })
+
+        // Prepara um container oculto para renderizar e acionar o botão nativo do GSI
+        let container = document.getElementById('gsi-hidden-button-container')
+        if (!container) {
+          container = document.createElement('div')
+          container.id = 'gsi-hidden-button-container'
+          container.style.position = 'absolute'
+          container.style.top = '-9999px'
+          container.style.left = '-9999px'
+          container.style.opacity = '0'
+          container.style.pointerEvents = 'none'
+          document.body.appendChild(container)
+        } else {
+          container.innerHTML = ''
+        }
+
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: async (response: any) => {
+            try {
+              if (!response.credential) {
+                return reject(new Error('Nenhum token retornado pelo Google.'))
+              }
+              const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: 'google',
+                token: response.credential,
+              })
+              if (error) throw error
+              resolve(data)
+            } catch (err) {
+              reject(err)
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        })
+
+        // Renderiza o botão oficial do GSI no container oculto
+        window.google.accounts.id.renderButton(container, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+        })
+
+        // Simula o clique no botão nativo do GSI para abrir o Popup do Google mantendo a origem do aplicativo
+        setTimeout(() => {
+          const btn = container?.querySelector('div[role="button"]') as HTMLElement | HTMLDivElement | null
+          if (btn) {
+            btn.click()
+          } else {
+            window.google.accounts.id.prompt(async (notification: any) => {
+              if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                console.warn('[GoogleAuth] GSI prompt não exibido, acionando fallback OAuth...')
+                try {
+                  const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: window.location.origin },
+                  })
+                  if (error) reject(error)
+                  else resolve(data)
+                } catch (oauthErr) {
+                  reject(oauthErr)
+                }
+              }
+            })
+          }
+        }, 100)
+      })
+    } catch (gsiErr) {
+      console.warn('[GoogleAuth] GSI falhou ou bloqueado, utilizando fallback de redirecionamento OAuth:', gsiErr)
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin,
+        },
+      })
+      if (error) throw error
+      return data
+    }
   }
 }
 

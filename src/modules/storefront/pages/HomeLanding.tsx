@@ -3,10 +3,21 @@ import { Link } from 'react-router';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sparkles } from '@react-three/drei';
 import { 
-  ArrowRight, Cpu, Award, Zap, Layers
+  ArrowRight, Cpu, Award, Zap, Layers, ChevronDown, Wrench, Car, Gauge, Disc, Bike, AlertTriangle, CheckCircle2
 } from 'lucide-react';
 import ExplodedCarScene, { MODEL_CATALOG } from '@/modules/parts-catalog/components/ExplodedCarScene';
-import { ChevronDown } from 'lucide-react';
+
+const renderModelIcon = (modelId: string, className = "w-5 h-5") => {
+  switch (modelId) {
+    case 'engine_scan': return <Wrench className={`${className} text-[#00E5FF]`} />;
+    case 'toy_car': return <Car className={`${className} text-sky-400`} />;
+    case 'lamborghini': return <Gauge className={`${className} text-amber-400`} />;
+    case 'car_generic': return <Car className={`${className} text-blue-400`} />;
+    case 'wheel_hydraulics': return <Disc className={`${className} text-indigo-400`} />;
+    case 'carbon_bike': return <Bike className={`${className} text-emerald-400`} />;
+    default: return <Cpu className={`${className} text-[#00E5FF]`} />;
+  }
+};
 
 
 // Highlight hotspots on the exploded model
@@ -256,7 +267,9 @@ export default function HomeLanding() {
                 onClick={() => setShowModelPicker(!showModelPicker)}
                 className="bg-[#07070f]/85 backdrop-blur-md border border-white/10 hover:border-[#00E5FF]/40 px-4 py-2.5 rounded-xl flex items-center gap-3 transition-all group cursor-pointer"
               >
-                <span className="text-lg">{selectedModel.icon}</span>
+                <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                  {renderModelIcon(selectedModel.id, "w-4 h-4")}
+                </div>
                 <div className="text-left">
                   <span className="text-[9px] text-gray-500 font-mono uppercase block">Modelo 3D Ativo</span>
                   <span className="text-xs font-bold text-white block">{selectedModel.name}</span>
@@ -281,7 +294,9 @@ export default function HomeLanding() {
                           selectedModel.id === model.id ? 'bg-[#00E5FF]/10 border-l-2 border-l-[#00E5FF]' : ''
                         }`}
                       >
-                        <span className="text-2xl flex-shrink-0">{model.icon}</span>
+                        <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                          {renderModelIcon(model.id, "w-4 h-4")}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <span className="text-xs font-bold text-white block truncate">{model.name}</span>
                           <span className="text-[10px] text-gray-500 block truncate">{model.description}</span>
@@ -463,8 +478,8 @@ export default function HomeLanding() {
         </div>
 
         {activeTab === 'details' ? (
-          <div className="bg-[#07070f] border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
-            <table className="w-full text-left border-collapse text-xs md:text-sm">
+          <div className="bg-[#07070f] border border-white/5 rounded-3xl overflow-x-auto shadow-2xl">
+            <table className="w-full text-left border-collapse text-xs md:text-sm min-w-[640px]">
               <thead>
                 <tr className="border-b border-white/5 bg-white/5 font-mono text-gray-400 text-[10px] uppercase">
                   <th className="p-5 font-semibold">Peça</th>
@@ -496,9 +511,15 @@ export default function HomeLanding() {
                     </td>
                     <td className="p-5 font-mono">
                       {part.stock > 3 ? (
-                        <span className="text-green-400">✓ Em Estoque ({part.stock})</span>
+                        <span className="text-green-400 font-medium flex items-center gap-1.5 whitespace-nowrap">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
+                          <span>Em Estoque ({part.stock})</span>
+                        </span>
                       ) : (
-                        <span className="text-yellow-500 font-bold">⚠️ Baixo Estoque ({part.stock})</span>
+                        <span className="text-yellow-500 font-bold flex items-center gap-1.5 whitespace-nowrap">
+                          <AlertTriangle className="w-3.5 h-3.5 text-yellow-500" />
+                          <span>Baixo Estoque ({part.stock})</span>
+                        </span>
                       )}
                     </td>
                     <td className="p-5 text-right font-bold text-white font-mono">{part.price}</td>

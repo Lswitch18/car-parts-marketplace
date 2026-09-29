@@ -6,7 +6,7 @@ import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { 
   Building2, CheckCircle2, ShieldCheck, Sparkles, Zap, ArrowRight, 
   Store, Wrench, Car, Package, Globe, Check, Star, Lock, HelpCircle, 
-  ChevronRight, Phone, Mail, Loader2, Award, CreditCard, RefreshCw
+  ChevronRight, Phone, Mail, Loader2, Award, CreditCard, RefreshCw, X
 } from 'lucide-react'
 
 export interface PartnerPlan {
@@ -315,8 +315,8 @@ export default function PartnerPortalPage() {
                   Plano {selectedPlan.name} ({formatMoney(selectedPlan.price)}/mês)
                 </h3>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-zinc-500 hover:text-white p-1">
-                ✕
+              <button onClick={() => setIsModalOpen(false)} className="text-zinc-500 hover:text-white p-1 rounded-lg hover:bg-white/5 transition">
+                <X className="w-5 h-5" />
               </button>
             </div>
 

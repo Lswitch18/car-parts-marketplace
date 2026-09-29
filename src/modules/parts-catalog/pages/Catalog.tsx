@@ -360,8 +360,8 @@ export default function Catalog() {
                             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors hover:bg-white/5"
                             style={{ color: '#6B7280' }}
                           >
-                            <span className="text-base">{flag}</span>
-                            <span className="uppercase tracking-wider">{getCountryDisplayName(country, t)}</span>
+                            <span className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300 font-bold uppercase shrink-0">{country}</span>
+                            <span className="uppercase tracking-wider truncate">{getCountryDisplayName(country, t)}</span>
                             <span className="ml-auto text-[10px] opacity-50">{brands.length}</span>
                             <ChevronRight
                               className="w-3 h-3 transition-transform duration-200"

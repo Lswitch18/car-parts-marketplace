@@ -227,7 +227,10 @@ export default function ReviewManagement() {
             <ThumbsUp size={16} className="text-black" />
           </div>
           <p className="text-3xl font-black text-black">{complimentCount}</p>
-          <p className="text-[10px] font-bold text-slate-500 uppercase mt-1.5">★ 4 e 5 {t('estrelas')}</p>
+          <p className="text-[10px] font-bold text-slate-500 uppercase mt-1.5 flex items-center gap-1">
+            <Star size={10} className="text-amber-500 fill-amber-500" />
+            <span>4 e 5 {t('estrelas')}</span>
+          </p>
         </button>
 
         {/* Reclamações Card */}
@@ -240,7 +243,10 @@ export default function ReviewManagement() {
             <ThumbsDown size={16} className="text-black" />
           </div>
           <p className="text-3xl font-black text-black">{complaintCount}</p>
-          <p className="text-[10px] font-bold text-slate-500 uppercase mt-1.5">★ 1 e 2 {t('estrelas')}</p>
+          <p className="text-[10px] font-bold text-slate-500 uppercase mt-1.5 flex items-center gap-1">
+            <Star size={10} className="text-rose-500 fill-rose-500" />
+            <span>1 e 2 {t('estrelas')}</span>
+          </p>
         </button>
 
       </div>

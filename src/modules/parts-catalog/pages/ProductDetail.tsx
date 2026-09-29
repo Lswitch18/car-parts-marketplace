@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, Heart, Share2, MessageCircle, Eye, Shield, Truck, Package } from 'lucide-react'
+import { ArrowLeft, Heart, Share2, MessageCircle, Eye, Shield, Truck, Package, CreditCard } from 'lucide-react'
 import SafeImage from '@/modules/parts-catalog/components/SafeImage'
 import { supabase } from '@/modules/shared/lib/supabase'
 import { useAuthStore } from '@/modules/identity/store/authStore'
@@ -125,29 +125,29 @@ export default function ProductDetail() {
               ¥ {product.price.toLocaleString('ja-JP')}
             </p>
 
-<div className="flex gap-4 mb-8">
-               {user?.id !== product.seller_id && (
-                 <>
-                   <Link
-                      to={`/messages?user=${product.seller_id}&product=${product.id}`}
-                     className="flex-1 bg-daig-blue hover:bg-daig-blue/80 text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
-                   >
-                     <MessageCircle className="w-5 h-5" />
-                     <span>{t('Enviar Mensagem')}</span>
-                   </Link>
-<Link
-                      to={`/checkout/${product.id}`}
-                      className="flex-1 bg-primary hover:bg-primary-dark text-white py-3 rounded-lg font-semibold text-center flex items-center justify-center space-x-2"
-                    >
-                      <span className="w-5 h-5">💳</span>
-                      <span>{t('Comprar Agora')}</span>
-                    </Link>
-                 </>
-               )}
-               <button className="flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-lg text-white hover:border-daig-blue">
-                 <Share2 className="w-5 h-5" />
-               </button>
-             </div>
+            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              {user?.id !== product.seller_id && (
+                <>
+                  <Link
+                    to={`/messages?user=${product.seller_id}&product=${product.id}`}
+                    className="flex-1 min-w-0 bg-daig-blue hover:bg-daig-blue/80 text-white py-3 px-4 rounded-xl font-semibold text-center flex items-center justify-center space-x-2 transition shadow-md active:scale-98"
+                  >
+                    <MessageCircle className="w-5 h-5 shrink-0" />
+                    <span className="truncate">{t('Enviar Mensagem')}</span>
+                  </Link>
+                  <Link
+                    to={`/checkout/${product.id}`}
+                    className="flex-1 min-w-0 bg-primary hover:bg-primary-dark text-white py-3 px-4 rounded-xl font-semibold text-center flex items-center justify-center space-x-2 transition shadow-md active:scale-98"
+                  >
+                    <CreditCard className="w-5 h-5 shrink-0" />
+                    <span className="truncate">{t('Comprar Agora')}</span>
+                  </Link>
+                </>
+              )}
+              <button className="flex items-center justify-center space-x-2 bg-surface border border-border px-4 py-3 rounded-xl text-white hover:border-daig-blue transition shrink-0">
+                <Share2 className="w-5 h-5" />
+              </button>
+            </div>
 
              <div className="card p-6 mb-6">
                <div className="flex items-center space-x-4 mb-4">
