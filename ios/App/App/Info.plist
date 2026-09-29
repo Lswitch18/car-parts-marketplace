@@ -28,10 +28,11 @@
 			<array>
 				<string>com.daig.marketplace</string>
 				<string>capacitor</string>
+				<string>com.googleusercontent.apps.606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9</string>
 			</array>
 		</dict>
 	</array>
-	<!-- Google OAuth — REVERSED_CLIENT_ID será injetado via GoogleService-Info.plist (gitignored) -->
+	<!-- Google OAuth — REVERSED_CLIENT_ID adicionado acima. Não depende mais do GoogleService-Info.plist no CI -->
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
