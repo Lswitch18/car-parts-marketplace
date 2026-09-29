@@ -84,9 +84,9 @@
     "semantic_hash": "56035b3dcf10b40d5a1541b19791b999"
   },
   "capacitor.config.ts": {
-    "mtime": 1789700281.1192122,
-    "seen": 1789701417.063458,
-    "ast_hash": "22d62b5e45652932d806907d8c558778",
+    "mtime": 1790716881.6054263,
+    "seen": 1790719337.4193707,
+    "ast_hash": "1044fc195562ba854382475d70ac5577",
     "semantic_hash": ""
   },
   "check_db.mjs": {
@@ -426,15 +426,15 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/AiOpsPage.tsx": {
-    "mtime": 1786027617.3461974,
-    "seen": 1788987079.575305,
-    "ast_hash": "25fd4f33fa9b013845d4441962f57489",
+    "mtime": 1790717201.0734289,
+    "seen": 1790719337.4196136,
+    "ast_hash": "961b42b327eca53404e696950fd27200",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/Dashboard.tsx": {
-    "mtime": 1786028374.7222004,
-    "seen": 1788987079.575307,
-    "ast_hash": "75fe59e54f8c37b5d7537fe182dd5a57",
+    "mtime": 1790717124.8494294,
+    "seen": 1790719337.4196153,
+    "ast_hash": "3d87d23aa5da8746a1b56d6d63215d62",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/TransactionManagement.tsx": {
@@ -444,9 +444,9 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/UserManagement.tsx": {
-    "mtime": 1786028374.7422004,
-    "seen": 1788987079.5753157,
-    "ast_hash": "c08323cdad8ae0e73f342da7b7662b13",
+    "mtime": 1790717370.2454307,
+    "seen": 1790719337.419624,
+    "ast_hash": "5e01802f725ec3ee9f54f847da960af8",
     "semantic_hash": ""
   },
   "src/modules/chat/__tests__/chatLogic.test.ts": {
@@ -456,15 +456,15 @@
     "semantic_hash": "a5a5819c55b57a7202a59dc0161c7a5a"
   },
   "src/modules/chat/components/ChatPopup.tsx": {
-    "mtime": 1786028374.7022004,
-    "seen": 1788987079.5753212,
-    "ast_hash": "68ad799a6c9c125dea4f001a4f006d4b",
+    "mtime": 1790716942.653427,
+    "seen": 1790719337.4196298,
+    "ast_hash": "92047ea56a665503375a5e830d378312",
     "semantic_hash": ""
   },
   "src/modules/chat/pages/Messages.tsx": {
-    "mtime": 1789700342.8952124,
-    "seen": 1789701417.0885353,
-    "ast_hash": "67eca02bacb7339b4ee64f6a39cdd5f0",
+    "mtime": 1790716923.0254261,
+    "seen": 1790719337.4196317,
+    "ast_hash": "158eb98b1ca183d5c29f61a1e364ce00",
     "semantic_hash": ""
   },
   "src/modules/crm/__tests__/crmApi.test.ts": {
@@ -516,27 +516,27 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Login.tsx": {
-    "mtime": 1789700309.8992124,
-    "seen": 1789701417.0908298,
-    "ast_hash": "bf1bbf84b08980ae8f841e51ebdfe9cd",
+    "mtime": 1790719054.5808911,
+    "seen": 1790719337.4196584,
+    "ast_hash": "01a5bf37af85db6ac43a7e2e2d99bde7",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Onboarding.tsx": {
-    "mtime": 1786745791.8961105,
-    "seen": 1788987079.5753524,
-    "ast_hash": "ae932cce6113edfe5b9ac315c41beb23",
+    "mtime": 1790717062.5654285,
+    "seen": 1790719337.41966,
+    "ast_hash": "36c23bdedba2054b6f57a483f9d56546",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Profile.tsx": {
-    "mtime": 1786742649.512112,
-    "seen": 1788987079.575354,
-    "ast_hash": "b49b395976737ba8a8f31c0a48c6b767",
+    "mtime": 1790717028.9334278,
+    "seen": 1790719337.4196615,
+    "ast_hash": "ce896c1a677499f6f82e181bc47db0b5",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Register.tsx": {
-    "mtime": 1789700332.307212,
-    "seen": 1789701417.0911393,
-    "ast_hash": "7d900448a16c202b5368db73da3f359e",
+    "mtime": 1790717446.605431,
+    "seen": 1790719337.419665,
+    "ast_hash": "6a2d4e62f88b00247077313e77128a8f",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Subscription.tsx": {
@@ -828,10 +828,10 @@
     "semantic_hash": "6d69b5dc6d445b09227a610d7e4742c3"
   },
   "src/modules/parts-catalog/components/parts-lookup/FitmentBadge.tsx": {
-    "mtime": 1781833814.4956164,
-    "seen": 1788987079.5754566,
-    "ast_hash": "7f7c155f404dadd2434dd1c26461360e",
-    "semantic_hash": "7f7c155f404dadd2434dd1c26461360e"
+    "mtime": 1790716903.2134266,
+    "seen": 1790719337.4197648,
+    "ast_hash": "67759537537e898d659e9399657b143b",
+    "semantic_hash": ""
   },
   "src/modules/parts-catalog/components/parts-lookup/PartCard.tsx": {
     "mtime": 1781833814.4876163,
@@ -864,9 +864,9 @@
     "semantic_hash": "9ae111fa32a92e380e178c2d49a9eeb9"
   },
   "src/modules/parts-catalog/pages/Catalog.tsx": {
-    "mtime": 1786744279.1761143,
-    "seen": 1788987079.5754683,
-    "ast_hash": "947ba7f81f4eed70405e105baef2ed88",
+    "mtime": 1790717397.9214308,
+    "seen": 1790719337.4197774,
+    "ast_hash": "16d328f302e318e445a15d1d6a9d50ac",
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/CreateListing.tsx": {
@@ -888,9 +888,9 @@
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/pages/ProductDetail.tsx": {
-    "mtime": 1786028374.6902003,
-    "seen": 1788987079.5754757,
-    "ast_hash": "0019b76aafd2216fbf702bd3f2647df3",
+    "mtime": 1790716969.2054276,
+    "seen": 1790719337.4197838,
+    "ast_hash": "0a498cddddd778e37102b46b2a64a1b2",
     "semantic_hash": ""
   },
   "src/modules/parts-catalog/store/favoriteStore.ts": {
@@ -906,9 +906,9 @@
     "semantic_hash": "50d07ced92eaa03e3cce3a8eeef6d671"
   },
   "src/modules/reputation/pages/ReviewManagement.tsx": {
-    "mtime": 1786028374.7022004,
-    "seen": 1788987079.5754824,
-    "ast_hash": "ef6048c7cbb3b91ffc903257f0287823",
+    "mtime": 1790717384.3534307,
+    "seen": 1790719337.4197915,
+    "ast_hash": "f7651ac6d95440661af50bb29e12e146",
     "semantic_hash": ""
   },
   "src/modules/shared/__tests__/api-crud.spec.ts": {
@@ -1056,9 +1056,9 @@
     "semantic_hash": ""
   },
   "src/modules/shared/lib/supabase.ts": {
-    "mtime": 1789235908.2618759,
-    "seen": 1789243476.4533076,
-    "ast_hash": "119647475991ad711fba4d31ce08a8b5",
+    "mtime": 1790719101.444891,
+    "seen": 1790719337.4198706,
+    "ast_hash": "5f7c784f312735054ee73e8be3e60456",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/supabaseErrorHandler.ts": {
@@ -1086,9 +1086,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/HomeLanding.tsx": {
-    "mtime": 1786028374.7102003,
-    "seen": 1788987079.5755627,
-    "ast_hash": "5cea4746ea8d023c195643f87ee27702",
+    "mtime": 1790717264.52143,
+    "seen": 1790719337.4199038,
+    "ast_hash": "830dce7ba87100e61b4cf5031df6d474",
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/MobileStoreHome.tsx": {
@@ -1134,9 +1134,9 @@
     "semantic_hash": "701865191612baabd62c2cf7c04dbd1d"
   },
   "src/modules/transactions/components/PurchaseFlow.tsx": {
-    "mtime": 1785890206.2498481,
-    "seen": 1788987079.5755863,
-    "ast_hash": "be8ef011ebb6b6f1854d6601e0f24cd2",
+    "mtime": 1790717018.2054276,
+    "seen": 1790719337.4199286,
+    "ast_hash": "97aa483a1d4e4471db14e5612b5fa96f",
     "semantic_hash": ""
   },
   "src/modules/transactions/components/analytics/CategoryChart.tsx": {
@@ -2496,15 +2496,15 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PartnerPortalPage.tsx": {
-    "mtime": 1786028374.7102003,
-    "seen": 1788987079.5755684,
-    "ast_hash": "2e5f455563b8d2d74b97eb2f6a0f9ef9",
+    "mtime": 1790717294.2414303,
+    "seen": 1790719337.4199092,
+    "ast_hash": "7ad7622ce4e98081e17ae99d54c695a3",
     "semantic_hash": ""
   },
   "src/modules/backoffice/pages/DeliveriesManagement.tsx": {
-    "mtime": 1786028374.7502005,
-    "seen": 1788987079.5753088,
-    "ast_hash": "53e416fef02cd02c8dd5e77877063e52",
+    "mtime": 1790717144.8134294,
+    "seen": 1790719337.419617,
+    "ast_hash": "19351dc6b6bb17cb968844ec99a40ff9",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/securitySanitizer.ts": {
@@ -2640,10 +2640,10 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/HitechShowcase21st.tsx": {
-    "mtime": 1785784329.2686203,
-    "seen": 1788987079.5755029,
-    "ast_hash": "1a9f5f049a911e16be83e638785365f7",
-    "semantic_hash": "1a9f5f049a911e16be83e638785365f7"
+    "mtime": 1790717163.8894289,
+    "seen": 1790719337.4198127,
+    "ast_hash": "85905b8dc1bf62671a59aed622086e99",
+    "semantic_hash": ""
   },
   "src/modules/identity/pages/SaasGatewayPage.tsx": {
     "mtime": 1786028374.8422005,
@@ -2832,9 +2832,9 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/LegalFinanceCenter.tsx": {
-    "mtime": 1785956625.1067767,
-    "seen": 1788987079.5752864,
-    "ast_hash": "d70b6332aa98f84b5bbe69308f04778c",
+    "mtime": 1790717084.1614287,
+    "seen": 1790719337.4195592,
+    "ast_hash": "f3a500ac18cd54ef4cff30b6d0c74962",
     "semantic_hash": ""
   },
   ".agents/skills/fullstack-innovation-valuation/SKILL.md": {
@@ -2850,9 +2850,9 @@
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/TenantTeamManager.tsx": {
-    "mtime": 1786030660.5381968,
-    "seen": 1788987079.5752957,
-    "ast_hash": "95bee79b39d04c19ddf0f595515ed299",
+    "mtime": 1790717319.5734303,
+    "seen": 1790719337.4196038,
+    "ast_hash": "806d7899a2131d8f82ed24ae598a04b6",
     "semantic_hash": ""
   },
   "src/modules/backoffice/components/__tests__/SecurityAuditCenter.test.tsx": {
@@ -4686,9 +4686,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/ProfileMarketplace.tsx": {
-    "mtime": 1789700260.779212,
-    "seen": 1789701417.0911338,
-    "ast_hash": "e231a475f4d9ed1c94469ced05ac0ccf",
+    "mtime": 1790717040.2654285,
+    "seen": 1790719337.4196637,
+    "ast_hash": "9bb4ddd4befaf8142869f8264ed0f2d0",
     "semantic_hash": ""
   },
   "src/modules/shared/components/layout/IosMarketplaceLayout.tsx": {
@@ -4824,9 +4824,27 @@
     "semantic_hash": ""
   },
   ".github/workflows/ios-build.yml": {
-    "mtime": 1790008787.1290977,
-    "seen": 1790008876.453795,
-    "ast_hash": "0b3191d99b0b3bb6366f54ae0db31147",
+    "mtime": 1790716892.7054265,
+    "seen": 1790719337.420227,
+    "ast_hash": "e4a044472dcc95b8c6b484e1ff6b846c",
+    "semantic_hash": ""
+  },
+  "scripts/ios_crew.py": {
+    "mtime": 1790711515.0814302,
+    "seen": 1790719337.419472,
+    "ast_hash": "30c6042173603eeb3cd5d8b57c4ee17e",
+    "semantic_hash": ""
+  },
+  ".agents/rules/ios-development-protocol.md": {
+    "mtime": 1790701469.3334608,
+    "seen": 1790719337.4201896,
+    "ast_hash": "383c5264b2785d584991cfb175ef1ee5",
+    "semantic_hash": ""
+  },
+  "docs/SECRET_MANAGEMENT_ARCHITECTURE.md": {
+    "mtime": 1790697310.8073435,
+    "seen": 1790719337.420256,
+    "ast_hash": "88e39022feef9267f7c81cf1d65122c9",
     "semantic_hash": ""
   }
 }

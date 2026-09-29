@@ -1,7 +1,7 @@
 # Graph Report - car-parts-marketplce  (2026-09-29)
 
 ## Corpus Check
-- 518 files · ~1,584,304 words
+- 518 files · ~1,584,326 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ac32ba32`
+- Built from commit: `4c9a80fa`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -302,7 +302,7 @@
 - perf-scout.md
 - Design Authority — DAIG Cyber Neon
 - scout-tech-radar.mjs
-- @capacitor/android
+- canvas-confetti
 - av1-triage-optimizer.md
 - gsap-observer-venue.md
 - r3f-logo-evolver.md
@@ -492,7 +492,7 @@ Nodes (17): 1. Fim da Trava do 1º Repasse (Agora será mais rápido!), 📌 1. 
 
 ### Community 36 - "dependencies"
 Cohesion: 0.18
-Nodes (11): axios, @base-ui/react, canvas-confetti, dependencies, axios, @base-ui/react, canvas-confetti, react (+3 more)
+Nodes (11): axios, @base-ui/react, @capacitor/android, dependencies, axios, @base-ui/react, @capacitor/android, react (+3 more)
 
 ### Community 37 - "vps-proxy.js"
 Cohesion: 0.24
@@ -970,7 +970,7 @@ Nodes (3): Missão, Output, Regras
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `zustand`, `@capacitor/android`, `@capacitor/ios`, `fetch-car-images.py`, `clsx`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `react-dom`, `@types/leaflet`, `react-router`, `@southdevs/capacitor-google-auth`, `package.json`, `@react-three/fiber`, `dompurify`, `@fontsource-variable/geist`, `framer-motion`, `react-is`, `qrcode`, `@capacitor/core`, `recharts`, `react-leaflet`, `html5-qrcode`, `jsbarcode`, `leaflet`, `lucide-react`, `ws`, `tailwindcss`, `@react-three/drei`, `shadcn`, `@supabase/supabase-js`, `tw-animate-css`, `@tanstack/react-query`, `three`, `driver.js`?**
+- **Why does `dependencies` connect `dependencies` to `zustand`, `canvas-confetti`, `@capacitor/ios`, `fetch-car-images.py`, `clsx`, `class-variance-authority`, `gsap`, `@gsap/react`, `lenis`, `react-dom`, `@types/leaflet`, `react-router`, `@southdevs/capacitor-google-auth`, `package.json`, `@react-three/fiber`, `dompurify`, `@fontsource-variable/geist`, `framer-motion`, `react-is`, `qrcode`, `@capacitor/core`, `recharts`, `react-leaflet`, `html5-qrcode`, `jsbarcode`, `leaflet`, `lucide-react`, `ws`, `tailwindcss`, `@react-three/drei`, `shadcn`, `@supabase/supabase-js`, `tw-animate-css`, `@tanstack/react-query`, `three`, `driver.js`?**
   _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **Why does `useI18n()` connect `useI18n` to `types/index.ts`, `SaasControlCenter.tsx`, `App.tsx`, `useAuthStore`, `LogistixDashboard.tsx`, `TenantDashboard.tsx`, `Auctions.tsx`, `WMSPage.tsx`, `useTranslation`, `supabase.ts`, `logisticsApi.ts`, `CreateListing.tsx`, `Login.tsx`, `EtiquetasPage.tsx`, `Profile.tsx`, `Home.tsx`, `api.ts`, `useCreateListing.ts`, `CarPartScannerAnimation.tsx`, `Catalog.tsx`, `supabase`?**
   _High betweenness centrality (0.042) - this node is a cross-community bridge._

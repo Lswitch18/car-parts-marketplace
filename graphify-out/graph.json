@@ -6860,7 +6860,7 @@
       "file_type": "code",
       "norm_label": "getcurrentuser()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L48"
+      "source_location": "L49"
     },
     {
       "id": "src_modules_shared_lib_supabase_getcurrentuserprofile",
@@ -6872,7 +6872,7 @@
       "file_type": "code",
       "norm_label": "getcurrentuserprofile()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L53"
+      "source_location": "L54"
     },
     {
       "id": "src_modules_shared_lib_supabase_gettransactions",
@@ -6884,7 +6884,7 @@
       "file_type": "code",
       "norm_label": "gettransactions()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L327"
+      "source_location": "L329"
     },
     {
       "id": "src_modules_shared_lib_supabase_getusers",
@@ -6896,7 +6896,7 @@
       "file_type": "code",
       "norm_label": "getusers()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L282"
+      "source_location": "L284"
     },
     {
       "id": "src_modules_shared_lib_supabase_loadgsiscript",
@@ -6908,7 +6908,7 @@
       "file_type": "code",
       "norm_label": "loadgsiscript()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L65"
+      "source_location": "L66"
     },
     {
       "id": "src_modules_shared_lib_supabase_signinwithgoogle",
@@ -6920,7 +6920,7 @@
       "file_type": "code",
       "norm_label": "signinwithgoogle()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L87"
+      "source_location": "L88"
     },
     {
       "id": "src_modules_shared_lib_supabase_toggleuserverification",
@@ -6932,7 +6932,7 @@
       "file_type": "code",
       "norm_label": "toggleuserverification()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L312"
+      "source_location": "L314"
     },
     {
       "id": "src_modules_shared_lib_supabase_updatetransactionstatus",
@@ -6944,7 +6944,7 @@
       "file_type": "code",
       "norm_label": "updatetransactionstatus()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L351"
+      "source_location": "L353"
     },
     {
       "id": "src_modules_shared_lib_supabase_updateuserrole",
@@ -6956,7 +6956,7 @@
       "file_type": "code",
       "norm_label": "updateuserrole()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L297"
+      "source_location": "L299"
     },
     {
       "id": "src_modules_transportation_pages_agenciapage_agenciapage",
@@ -7400,7 +7400,7 @@
       "file_type": "code",
       "norm_label": "getadminstats()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L240"
+      "source_location": "L242"
     },
     {
       "id": "src_modules_shared_lib_viewtransition_navigatewithviewtransition",
@@ -10832,7 +10832,7 @@
       "file_type": "code",
       "norm_label": "signout()",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L235"
+      "source_location": "L237"
     },
     {
       "id": "src_modules_transportation_components_mobilelayout_mobilelayout",
@@ -23051,15 +23051,15 @@
       "source_location": "L26"
     },
     {
-      "id": "package_dependencies_canvas_confetti",
-      "label": "canvas-confetti",
+      "id": "package_dependencies_capacitor_android",
+      "label": "@capacitor/android",
       "_origin": "ast",
       "community": 36,
       "community_name": "dependencies",
       "file_type": "code",
-      "norm_label": "canvas-confetti",
+      "norm_label": "@capacitor/android",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L27"
     },
     {
       "id": "package_dependencies_react",
@@ -23106,15 +23106,15 @@
       "source_location": "L26"
     },
     {
-      "id": "canvas_confetti",
-      "label": "canvas-confetti",
+      "id": "capacitor_android",
+      "label": "@capacitor/android",
       "_origin": "ast",
       "community": 36,
       "community_name": "dependencies",
       "file_type": "concept",
-      "norm_label": "canvas-confetti",
+      "norm_label": "@capacitor/android",
       "source_file": "package.json",
-      "source_location": "L39"
+      "source_location": "L27"
     },
     {
       "id": "package_json_react",
@@ -24559,26 +24559,26 @@
       "source_location": "L22"
     },
     {
-      "id": "package_dependencies_capacitor_android",
-      "label": "@capacitor/android",
+      "id": "package_dependencies_canvas_confetti",
+      "label": "canvas-confetti",
       "_origin": "ast",
       "community": 387,
-      "community_name": "@capacitor/android",
+      "community_name": "canvas-confetti",
       "file_type": "code",
-      "norm_label": "@capacitor/android",
+      "norm_label": "canvas-confetti",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L39"
     },
     {
-      "id": "capacitor_android",
-      "label": "@capacitor/android",
+      "id": "canvas_confetti",
+      "label": "canvas-confetti",
       "_origin": "ast",
       "community": 387,
-      "community_name": "@capacitor/android",
+      "community_name": "canvas-confetti",
       "file_type": "concept",
-      "norm_label": "@capacitor/android",
+      "norm_label": "canvas-confetti",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L39"
     },
     {
       "id": "opencode_agent_av1_triage_optimizer",
@@ -35088,7 +35088,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L140",
+      "source_location": "L142",
       "weight": 1.0
     },
     {
@@ -67686,7 +67686,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L235",
+      "source_location": "L237",
       "weight": 1.0
     },
     {
@@ -67697,7 +67697,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L240",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -67708,7 +67708,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L282",
+      "source_location": "L284",
       "weight": 1.0
     },
     {
@@ -67719,7 +67719,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L297",
+      "source_location": "L299",
       "weight": 1.0
     },
     {
@@ -67730,7 +67730,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L312",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -67741,7 +67741,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L327",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -67752,7 +67752,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L351",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -67763,7 +67763,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -67774,7 +67774,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L53",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -67785,7 +67785,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L65",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -67796,7 +67796,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/modules/shared/lib/supabase.ts",
-      "source_location": "L87",
+      "source_location": "L88",
       "weight": 1.0
     },
     {
@@ -76354,5 +76354,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ac32ba328b0d4fa0920a0e0e87be4a87492cac87"
+  "built_at_commit": "4c9a80fa71a26ce0594c8e5b2606fbfa1adf28f6"
 }

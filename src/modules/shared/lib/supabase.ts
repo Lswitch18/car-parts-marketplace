@@ -31,11 +31,12 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Inicializa o GoogleAuth para a web nativa se aplicável
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
+const GOOGLE_IOS_CLIENT_ID = import.meta.env.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com'
 
 if (Capacitor.isNativePlatform()) {
   try {
     GoogleAuth.initialize({
-      clientId: GOOGLE_CLIENT_ID,
+      clientId: GOOGLE_IOS_CLIENT_ID,
       serverClientId: GOOGLE_CLIENT_ID,
       scopes: ['profile', 'email'],
       grantOfflineAccess: true,
@@ -86,13 +87,14 @@ const loadGsiScript = (): Promise<void> => {
 
 export const signInWithGoogle = async () => {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
+  const googleIosClientId = import.meta.env.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com'
 
   if (Capacitor.isNativePlatform()) {
     try {
-      // Re-garante a inicialização com clientId e serverClientId para o SDK Swift
+      // Re-garante a inicialização com iOS clientId e Web serverClientId para o SDK Swift
       try {
         await GoogleAuth.initialize({
-          clientId: googleClientId,
+          clientId: googleIosClientId,
           serverClientId: googleClientId,
           scopes: ['profile', 'email'],
           grantOfflineAccess: true,
