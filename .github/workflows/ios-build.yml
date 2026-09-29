@@ -56,6 +56,8 @@ jobs:
       - name: Build Web Frontend (Marketplace Store)
         env:
           VITE_APP_MODE: ${{ github.event.inputs.app_mode || 'store' }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           echo "▸ Compilando Web Frontend com VITE_APP_MODE=$VITE_APP_MODE ..."
           npm run build
