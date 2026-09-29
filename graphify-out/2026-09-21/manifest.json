@@ -4122,9 +4122,9 @@
     "semantic_hash": ""
   },
   "src/modules/shared/components/BrandLoader.tsx": {
-    "mtime": 1790009266.661101,
-    "seen": 1790009398.2839715,
-    "ast_hash": "007d03bcb4257bdb2a7a6b213fd2b1ec",
+    "mtime": 1789701240.667199,
+    "seen": 1789701417.1275892,
+    "ast_hash": "d920148eeb3dff5a1eca76d0b2c7961d",
     "semantic_hash": ""
   },
   "agents/ai_directors/requirements.txt": {

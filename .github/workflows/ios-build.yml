@@ -53,13 +53,17 @@ jobs:
       - name: Install Node Dependencies
         run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
-      - name: Build Web Frontend (Marketplace Store)
-        env:
-          VITE_APP_MODE: ${{ github.event.inputs.app_mode || 'store' }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: Inject Environment Variables (.env)
         run: |
-          echo "▸ Compilando Web Frontend com VITE_APP_MODE=$VITE_APP_MODE ..."
+          echo "▸ Criando arquivo .env para o build do Vite..."
+          echo "VITE_APP_MODE=${{ github.event.inputs.app_mode || 'store' }}" >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}" >> .env
+          
+      - name: Build Web Frontend (Marketplace Store)
+        run: |
+          echo "▸ Compilando Web Frontend..."
           npm run build
 
       - name: Sync Capacitor iOS

@@ -104,3 +104,11 @@ vite.config.d.ts
 vite.config.tsbuildinfo
 *.tsbuildinfo
 
+
+# Backups seguros
+*.do_not_commit
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
