@@ -71,7 +71,7 @@ jobs:
         run: |
           curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz -o /tmp/supabase.tar.gz
           tar -xzf /tmp/supabase.tar.gz -C /tmp
-          echo "/tmp/supabase" >> $GITHUB_PATH
+          sudo mv /tmp/supabase /usr/local/bin/supabase
 
       - name: Deploy Edge Functions
         env:

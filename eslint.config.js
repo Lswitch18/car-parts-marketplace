@@ -22,6 +22,8 @@ export default tseslint.config(
       'jdk-17.0.10+7/',
       'agents/',
       '.agents/',
+      '**/__tests__/',
+      '**/*.test.ts',
     ],
   },
 
