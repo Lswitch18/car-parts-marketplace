@@ -74,6 +74,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Inject Public Environment Variables
+        run: |
+          cat << 'EOF' > .env
+          VITE_SUPABASE_URL=https://clqubcryhbrjlupkgeva.supabase.co
+          VITE_SUPABASE_ANON_KEY=sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt
+          EOF
+
       - name: Build web assets
         run: npm run build
 
