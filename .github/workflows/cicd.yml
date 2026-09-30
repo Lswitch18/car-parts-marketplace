@@ -101,7 +101,7 @@ jobs:
       - name: Package .app into .zip for Appetize.io
         run: |
           cd ios/App/derivedData/Build/Products/Debug-iphonesimulator
-          zip -r ../../../../../ios-simulator-app.zip App.app
+          zip -r $GITHUB_WORKSPACE/ios-simulator-app.zip App.app
 
       - name: Upload iOS Simulator Artifact
         uses: actions/upload-artifact@v4
