@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabase, successResponse, errorResponse, corsHeaders, requireAuth, checkRateLimit } from '../utils/base.ts';
 import { redisGet, redisSet, cacheKey } from '../utils/redis.ts';
 

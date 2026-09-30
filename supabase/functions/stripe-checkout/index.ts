@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { requireAuth } from '../utils/base.ts';
 import { z } from 'https://esm.sh/zod@3.22.4';

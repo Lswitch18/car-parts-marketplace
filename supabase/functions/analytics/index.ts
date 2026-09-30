@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabase, successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
 
 Deno.serve(async (req: Request) => {

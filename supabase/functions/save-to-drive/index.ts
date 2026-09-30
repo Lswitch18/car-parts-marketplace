@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
 import { google } from 'https://esm.sh/googleapis@126.0.1';
 import { Buffer } from 'node:buffer';

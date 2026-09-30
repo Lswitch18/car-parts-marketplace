@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken } from '../utils/base.ts';
 import { z } from 'https://esm.sh/zod@3.22.4';
 

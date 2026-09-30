@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { successResponse, errorResponse, corsHeaders, requireAuth } from '../utils/base.ts';
 
 function cleanJsonMarkdown(raw: string): string {

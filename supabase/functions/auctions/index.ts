@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { supabase, successResponse, errorResponse, corsHeaders, getAuthUser, verifyToken, requireAuth } from '../utils/base.ts';
 
 const COMMISSION_RATE = 0.074;

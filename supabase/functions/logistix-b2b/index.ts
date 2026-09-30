@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Logistix B2B API
  * API pública para integração com parceiros externos

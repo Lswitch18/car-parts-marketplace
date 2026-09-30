@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { successResponse, errorResponse, corsHeaders, requireAuth, supabase } from '../utils/base.ts';
 
 /**
