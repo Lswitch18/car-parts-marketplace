@@ -76,7 +76,6 @@ export const LogoGParticleR3F: React.FC<{ style?: React.CSSProperties; fallbackS
   if (!webGL) {
     return (
       <div style={{ ...style, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={fallbackSrc} alt="G" style={{ width: '70%', height: '70%', objectFit: 'contain', filter: 'drop-shadow(0 0 22px rgba(0,229,255,0.45))' }} />
       </div>
     )

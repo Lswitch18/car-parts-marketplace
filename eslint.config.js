@@ -20,6 +20,8 @@ export default tseslint.config(
       '*.d.ts',
       'graphify-out/',
       'jdk-17.0.10+7/',
+      'agents/',
+      '.agents/',
     ],
   },
 
