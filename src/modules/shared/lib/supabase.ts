@@ -124,14 +124,22 @@ export const signInWithGoogle = async () => {
       console.error('Error during native Google sign in, attempting fallback:', error)
       // Fallback para ambientes emulados/simuladores sem Google Play Services ou contas configuradas
       try {
+        const { Browser } = await import('@capacitor/browser')
         const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
             redirectTo: window.location.origin,
-            skipBrowserRedirect: false,
+            skipBrowserRedirect: true,
           },
         })
         if (oauthError) throw oauthError
+        
+        if (data?.url) {
+          console.log('[GoogleAuth] Abrindo fallback OAuth no In-App Browser...')
+          await Browser.open({ url: data.url, presentationStyle: 'popover' })
+          
+          // O usuário precisará fechar manualmente se não houver deep linking configurado (simulador)
+        }
         return data
       } catch (fallbackErr) {
         throw error
