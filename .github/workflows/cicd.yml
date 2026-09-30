@@ -58,6 +58,58 @@ jobs:
           path: dist/
           retention-days: 7
 
+  build-ios-simulator:
+    name: Build iOS Simulator
+    runs-on: macos-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/App/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/App/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Build iOS Simulator App
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace \
+                     -scheme App \
+                     -configuration Debug \
+                     -sdk iphonesimulator \
+                     -derivedDataPath derivedData \
+                     build
+
+      - name: Package .app into .zip for Appetize.io
+        run: |
+          cd ios/App/derivedData/Build/Products/Debug-iphonesimulator
+          zip -r ../../../../../ios-simulator-app.zip App.app
+
+      - name: Upload iOS Simulator Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-app
+          path: ios-simulator-app.zip
+          retention-days: 7
+
   deploy-supabase:
     name: Deploy Supabase Functions
     runs-on: ubuntu-latest
