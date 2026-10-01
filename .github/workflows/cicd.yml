@@ -32,6 +32,45 @@ jobs:
       - name: Run TypeScript check
         run: npm run typecheck
 
+  sec_scan_sast:
+    name: SAST Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: auto
+          generateSarif: "1"
+
+  sec_scan_dast:
+    name: DAST Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Inject Public Environment Variables
+        run: |
+          cat << 'EOF' > .env
+          VITE_SUPABASE_URL=https://clqubcryhbrjlupkgeva.supabase.co
+          VITE_SUPABASE_ANON_KEY=sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt
+          EOF
+      - name: Build and Start Application
+        run: |
+          npm run build
+          npm run preview -- --host &
+          sleep 10
+      - name: Run OWASP ZAP Baseline DAST
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'http://172.17.0.1:4173'
+          fail_action: false
+
   build:
     name: Build
     runs-on: ubuntu-latest
