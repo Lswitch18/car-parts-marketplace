@@ -199,13 +199,10 @@ jobs:
           path: dist/
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: team_vGsuKJoz23dvYBv9w3Suwz5T
-          vercel-project-id: prj_bzImAckASS02KBx5vBirTr2hseIs
-          vercel-args: '--prod'
-          working-directory: ./
+        env:
+          VERCEL_ORG_ID: team_vGsuKJoz23dvYBv9w3Suwz5T
+          VERCEL_PROJECT_ID: prj_bzImAckASS02KBx5vBirTr2hseIs
+        run: npx vercel@latest deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
 
   update-database:
     name: Update Database Schema
