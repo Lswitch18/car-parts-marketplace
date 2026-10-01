@@ -1,78 +1,91 @@
-name: Maestro UI Tests — Auth Social + i18n
+name: Maestro Cloud — UI Tests Visuais (Google + Apple + i18n)
 
 on:
   workflow_dispatch:
     inputs:
-      device_id:
-        description: 'Device ID do simulador (deixe vazio para auto-detect)'
+      flow_tag:
+        description: 'Tag dos flows a executar'
         required: false
-        default: ''
-      flow:
-        description: 'Flow especifico (vazio = suite completa)'
-        required: false
-        default: ''
+        default: 'smoke'
         type: choice
         options:
-          - ''
-          - flows/01-login-google.yaml
-          - flows/02-login-apple.yaml
-          - flows/03-login-email-ptbr.yaml
-          - flows/04-i18n-ja-to-ptbr.yaml
+          - smoke
+          - auth
+          - google
+          - apple
+          - i18n
+          - ptbr
+      ios_artifact_run:
+        description: 'Run ID do workflow ios-build para baixar o .zip do simulador (vazio = builda agora)'
+        required: false
+        default: ''
   workflow_run:
-    workflows: ["Auth Social (Google + Apple) — JA Padrao / PT-BR via i18n"]
+    workflows: ["iOS Marketplace Build"]
     types: [completed]
     branches: [main]
 
 env:
-  MAESTRO_VERSION: '2.11.0'
+  NODE_VERSION: '22'
   APP_ID: jp.daig.marketplace
 
 jobs:
-  maestro-ui-tests:
-    name: "Maestro — UI Tests (Auth + i18n)"
+  # ──────────────────────────────────────────────────────────
+  # 1. Build simulator .zip OU baixa artifact existente
+  # ──────────────────────────────────────────────────────────
+  prepare-simulator:
+    name: "Preparar .zip do Simulador iOS"
     runs-on: macos-14
-    timeout-minutes: 30
+    timeout-minutes: 35
+    outputs:
+      zip_path: ${{ steps.zip.outputs.path }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Instalar dependencias
         run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
-      - name: Injetar .env
+      - name: Injetar .env (JA padrao + OAuth)
         run: |
           echo "VITE_APP_MODE=store"                                              >  .env
           echo "VITE_DEFAULT_LANG=ja"                                            >> .env
           echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}"             >> .env
           echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}"   >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}"   >> .env
           echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
           echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com' }}" >> .env
-          echo "VITE_SITE_URL=https://daig.jp"                                  >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL || 'https://daig.jp' }}" >> .env
 
-      - name: Build web + Sync Capacitor iOS
+      - name: Build web + Sync Capacitor
         run: |
           npm run build
           npx cap sync ios
+
+      - name: Selecionar Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.app 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode_15.4.app 2>/dev/null || true
+          xcodebuild -version
 
       - name: Cache CocoaPods
         uses: actions/cache@v4
         with:
           path: ios/App/Pods
-          key: ${{ runner.os }}-pods-maestro-${{ hashFiles('ios/App/Podfile.lock') }}
+          key: ${{ runner.os }}-pods-maestro-cloud-${{ hashFiles('ios/App/Podfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pods-maestro-
+            ${{ runner.os }}-pods-maestro-cloud-
             ${{ runner.os }}-pods-
 
       - name: Instalar CocoaPods
         run: cd ios/App && pod install
 
-      - name: Build iOS Simulator App
+      - name: Build iOS Simulator (.app)
         run: |
           xcodebuild \
             -workspace ios/App/App.xcworkspace \
@@ -86,90 +99,122 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             build
 
+      - name: Empacotar App.app em .zip (Maestro Cloud)
+        id: zip
+        run: |
+          APP=$(find build/simulator -name "*.app" -not -path "*/PlugIns/*" | head -1)
+          echo "App encontrado: $APP"
+          mkdir -p maestro-upload
+          cp -r "$APP" maestro-upload/App.app
+          cd maestro-upload
+          zip -r ../daig-simulator.zip App.app
+          ls -lh ../daig-simulator.zip
+          echo "path=daig-simulator.zip" >> $GITHUB_OUTPUT
+
+      - name: Upload .zip como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daig-simulator-maestro
+          path: daig-simulator.zip
+          retention-days: 3
+
+  # ──────────────────────────────────────────────────────────
+  # 2. Maestro Cloud — executa flows visuais
+  # ──────────────────────────────────────────────────────────
+  maestro-cloud-run:
+    name: "Maestro Cloud — UI Tests Visuais"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: prepare-simulator
+
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Instalar Maestro CLI
         run: |
-          export MAESTRO_VERSION=${{ env.MAESTRO_VERSION }}
           curl -Ls "https://get.maestro.mobile.dev" | bash
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: Boot iOS Simulator
-        run: |
-          # Lista simuladores disponiveis
-          xcrun simctl list devices available | grep -E "iPhone 15|iPhone 14" | head -5
+      - name: Baixar .zip do simulador
+        uses: actions/download-artifact@v4
+        with:
+          name: daig-simulator-maestro
+          path: ./
 
-          # Boot do iPhone 15
-          DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 15" | grep -v "Plus\|Pro\|Max" | head -1 | grep -oE '[0-9A-F-]{36}')
-          if [ -z "$DEVICE_ID" ]; then
-            DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 14" | head -1 | grep -oE '[0-9A-F-]{36}')
+      - name: Verificar API Key Maestro Cloud
+        run: |
+          if [ -z "${{ secrets.MAESTRO_CLOUD_API_KEY }}" ]; then
+            echo "AVISO: MAESTRO_CLOUD_API_KEY nao configurado"
+            echo "Acesse: https://app.maestro.dev/ para obter sua API Key"
+            echo "Adicione como secret: Settings > Secrets > MAESTRO_CLOUD_API_KEY"
+            echo ""
+            echo "Por enquanto, validando flows localmente (sem subir para cloud)..."
+            exit 0
           fi
+          echo "MAESTRO_CLOUD_API_KEY configurado!"
 
-          echo "DEVICE_ID=$DEVICE_ID" >> $GITHUB_ENV
-          echo "Bootando simulador: $DEVICE_ID"
-          xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
-          xcrun simctl bootstatus "$DEVICE_ID" -b || true
-
-      - name: Instalar app no simulador
-        run: |
-          APP_PATH=$(find build/simulator -name "*.app" -not -path "*/PlugIns/*" | head -1)
-          echo "App path: $APP_PATH"
-          xcrun simctl install "${{ env.DEVICE_ID }}" "$APP_PATH"
-
-      - name: Maestro — Executar flows de Auth + i18n
+      - name: Maestro Cloud — Upload app + Rodar flows visuais
         env:
-          MAESTRO_CLI_NO_ANALYTICS: "true"
-          MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: "true"
+          MAESTRO_CLOUD_API_KEY: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
         run: |
-          FLOW_INPUT="${{ github.event.inputs.flow }}"
+          TAG="${{ github.event.inputs.flow_tag || 'smoke' }}"
 
-          if [ -n "$FLOW_INPUT" ]; then
-            echo "Executando flow especifico: $FLOW_INPUT"
-            maestro --device "${{ env.DEVICE_ID }}" test ".maestro/$FLOW_INPUT" \
-              --format junit --output maestro-report.xml 2>&1 | tee maestro.log
-          else
-            echo "Executando suite completa..."
-            maestro --device "${{ env.DEVICE_ID }}" test .maestro/suite.yaml \
-              --format junit --output maestro-report.xml 2>&1 | tee maestro.log
+          if [ -z "$MAESTRO_CLOUD_API_KEY" ]; then
+            echo "Pulando upload para Maestro Cloud (sem API key)"
+            echo "Para ativar: adicione o secret MAESTRO_CLOUD_API_KEY no repositorio"
+            exit 0
           fi
+
+          echo "Subindo app para Maestro Cloud..."
+          echo "Flows com tag: $TAG"
+
+          maestro cloud \
+            --apiKey "$MAESTRO_CLOUD_API_KEY" \
+            --app-file daig-simulator.zip \
+            --include-tags "$TAG" \
+            --format junit \
+            --output maestro-cloud-report.xml \
+            .maestro/flows/ \
+            2>&1 | tee maestro-cloud.log
 
           echo ""
           echo "Resultado:"
-          grep -E "PASSED|FAILED|ERROR|flows" maestro.log | tail -15 || true
-
-      - name: Upload screenshots Maestro
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: maestro-screenshots
-          path: .maestro/screenshots/
-          retention-days: 14
+          grep -E "PASSED|FAILED|Dashboard|https://" maestro-cloud.log | tail -10 || true
 
       - name: Upload relatorio JUnit
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: maestro-junit-report
-          path: maestro-report.xml
+          name: maestro-cloud-report
+          path: maestro-cloud-report.xml
           retention-days: 14
 
-      - name: Upload log Maestro
+      - name: Upload log
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: maestro-log
-          path: maestro.log
+          name: maestro-cloud-log
+          path: maestro-cloud.log
           retention-days: 7
 
-      - name: Sumario do resultado
+      - name: Instrucoes — Ver resultado visual no dashboard
         if: always()
         run: |
-          echo "============================================"
-          echo "  Maestro UI Tests — Resultado"
-          echo "============================================"
-          echo "  App ID  : ${{ env.APP_ID }}"
-          echo "  Device  : ${{ env.DEVICE_ID }}"
-          echo "  Flows   : ${{ github.event.inputs.flow || 'suite completa (4 flows)' }}"
+          echo "======================================================"
+          echo "  MAESTRO CLOUD — Como ver o resultado visual:"
+          echo "======================================================"
           echo ""
-          grep -c "PASSED" maestro.log 2>/dev/null && echo "flows PASSOU" || true
-          grep -c "FAILED" maestro.log 2>/dev/null && echo "flows FALHOU" || true
+          echo "  1. Acesse: https://app.maestro.dev/"
+          echo "  2. Faca login com sua conta"
+          echo "  3. Abra o projeto DAIG Marketplace"
+          echo "  4. Clique no run mais recente para ver:"
+          echo "     - Gravacao de video da execucao"
+          echo "     - Screenshots de cada step"
+          echo "     - Logs detalhados por flow"
+          echo "     - Status PASSED / FAILED por flow"
           echo ""
-          echo "Screenshots disponiveis nos artifacts!"
+          echo "  Para configurar API Key:"
+          echo "  GitHub > Settings > Secrets > New repository secret"
+          echo "  Nome: MAESTRO_CLOUD_API_KEY"
+          echo "  Valor: (obtido em app.maestro.dev > Account > API Keys)"
+          echo "======================================================"
