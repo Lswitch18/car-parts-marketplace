@@ -9,18 +9,13 @@ tags:
 - launchApp:
     clearState: true
 
-- assertVisible:
-    text: "Entrar"
-    timeout: 8000
+- assertVisible: "Entrar"
 
-- assertVisible:
-    text: "Apple"
-    timeout: 5000
+- assertVisible: "Apple"
 
 - takeScreenshot: screenshots/login-screen-apple
 
-- tapOn:
-    text: "Apple"
+- tapOn: "Apple"
 
 - waitForAnimationToEnd:
     timeout: 5000

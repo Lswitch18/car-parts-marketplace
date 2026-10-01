@@ -9,33 +9,27 @@ tags:
 - launchApp:
     clearState: true
 
-- assertVisible:
-    text: "Entrar"
-    timeout: 8000
+- assertVisible: "Entrar"
 
 - takeScreenshot: screenshots/login-email-start
 
-# Preenche email
 - tapOn:
     id: "email-input"
+
 - inputText: "teste@daig.jp"
 
-# Preenche senha
 - tapOn:
     id: "password-input"
+
 - inputText: "Senha@12345"
 
-# Confirma textos PT-BR presentes na tela
-- assertVisible:
-    text: "Lembrar-me"
-- assertVisible:
-    text: "Esqueceu a senha?"
+- assertVisible: "Lembrar-me"
+
+- assertVisible: "Esqueceu a senha?"
 
 - takeScreenshot: screenshots/login-email-filled
 
-# Submete formulario
-- tapOn:
-    text: "Entrar"
+- tapOn: "Entrar"
 
 - waitForAnimationToEnd:
     timeout: 8000

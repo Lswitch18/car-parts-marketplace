@@ -9,15 +9,8 @@ tags:
 - launchApp:
     clearState: true
 
-# Tela inicia em japones (padrao)
-- assertVisible:
-    text: "ログイン"
-    timeout: 8000
-    optional: true
-
 - takeScreenshot: screenshots/language-ja-default
 
-# Clica no seletor de idioma (LanguageDetector)
 - tapOn:
     id: "language-selector"
 
@@ -26,24 +19,15 @@ tags:
 
 - takeScreenshot: screenshots/language-dropdown-open
 
-# Seleciona PT-BR
-- tapOn:
-    text: "PT-BR"
+- tapOn: "PT-BR"
 
 - waitForAnimationToEnd:
     timeout: 2000
 
-# Agora verifica strings PT-BR
-- assertVisible:
-    text: "Entrar"
-    timeout: 5000
+- assertVisible: "Entrar"
 
-- assertVisible:
-    text: "Continuar com Google"
-    timeout: 3000
+- assertVisible: "Continuar com Google"
 
-- assertVisible:
-    text: "Continuar com Apple"
-    timeout: 3000
+- assertVisible: "Continuar com Apple"
 
 - takeScreenshot: screenshots/language-ptbr-active

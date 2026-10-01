@@ -1,12 +1,31 @@
-appId: jp.daig.marketplace
-name: "Smoke Suite — Auth + i18n Completo"
-tags:
-  - suite
-  - smoke
-  - ci
+# Maestro — DAIG Marketplace Suite Master
+#
+# NAO use este arquivo com `maestro test suite.yaml`
+# Para rodar TODOS os flows, use o comando abaixo:
+#
+#   maestro test .maestro/flows/
+#
+# Para um flow especifico:
+#   maestro test .maestro/flows/01-login-google.yaml
+#
+# Por tag (ex: smoke):
+#   maestro test .maestro/flows/ --include-tags smoke
+#
+# Visual (Maestro Studio):
+#   maestro studio
+#
+# Tags disponiveis:
+#   smoke   → flows rapidos de verificacao
+#   auth    → fluxos de autenticacao (Google, Apple, Email)
+#   i18n    → troca de idioma JA<->PT-BR
+#   google  → Login com Google
+#   apple   → Sign in with Apple
+#   email   → Login com email/senha
+#   ptbr    → strings PT-BR
+#   ja      → strings Japones
 
 flows:
-  - flows/01-login-google.yaml
-  - flows/02-login-apple.yaml
-  - flows/03-login-email-ptbr.yaml
-  - flows/04-i18n-ja-to-ptbr.yaml
+  - "01-login-google.yaml"
+  - "02-login-apple.yaml"
+  - "03-login-email-ptbr.yaml"
+  - "04-i18n-ja-to-ptbr.yaml"
