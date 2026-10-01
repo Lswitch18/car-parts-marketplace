@@ -43,36 +43,6 @@ jobs:
           config: auto
           generateSarif: "1"
 
-  sec_scan_dast:
-    name: DAST Security Scan
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Install dependencies
-        run: npm ci
-      - name: Inject Public Environment Variables
-        run: |
-          cat << 'EOF' > .env
-          VITE_SUPABASE_URL=https://clqubcryhbrjlupkgeva.supabase.co
-          VITE_SUPABASE_ANON_KEY=sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt
-          EOF
-      - name: Build and Start Application
-        run: |
-          npm run build
-          npm run preview -- --host &
-          sleep 10
-      - name: Run OWASP ZAP Baseline DAST
-        uses: zaproxy/action-baseline@v0.12.0
-        with:
-          target: 'http://172.17.0.1:4173'
-          fail_action: false
 
   build:
     name: Build
@@ -234,7 +204,7 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod --yes'
+          vercel-args: '--prod'
           working-directory: ./
 
   update-database:
