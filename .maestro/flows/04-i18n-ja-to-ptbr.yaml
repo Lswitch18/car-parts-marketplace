@@ -1,0 +1,49 @@
+appId: jp.daig.marketplace
+name: "Language Switch JA -> PT-BR (LanguageDetector)"
+tags:
+  - i18n
+  - ptbr
+  - ja
+
+---
+- launchApp:
+    clearState: true
+
+# Tela inicia em japones (padrao)
+- assertVisible:
+    text: "ログイン"
+    timeout: 8000
+    optional: true
+
+- takeScreenshot: screenshots/language-ja-default
+
+# Clica no seletor de idioma (LanguageDetector)
+- tapOn:
+    id: "language-selector"
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- takeScreenshot: screenshots/language-dropdown-open
+
+# Seleciona PT-BR
+- tapOn:
+    text: "PT-BR"
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Agora verifica strings PT-BR
+- assertVisible:
+    text: "Entrar"
+    timeout: 5000
+
+- assertVisible:
+    text: "Continuar com Google"
+    timeout: 3000
+
+- assertVisible:
+    text: "Continuar com Apple"
+    timeout: 3000
+
+- takeScreenshot: screenshots/language-ptbr-active

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "maestro": {
+      "command": "/home/lswitch/.maestro/bin/maestro",
+      "args": ["mcp"],
+      "env": {
+        "MAESTRO_CLI_NO_ANALYTICS": "true",
+        "MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED": "true"
+      }
+    }
+  }
+}

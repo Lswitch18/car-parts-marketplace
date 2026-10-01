@@ -1,0 +1,28 @@
+appId: jp.daig.marketplace
+name: "Login com Apple (Sign in with Apple)"
+tags:
+  - auth
+  - apple
+  - smoke
+
+---
+- launchApp:
+    clearState: true
+
+- assertVisible:
+    text: "Entrar"
+    timeout: 8000
+
+- assertVisible:
+    text: "Apple"
+    timeout: 5000
+
+- takeScreenshot: screenshots/login-screen-apple
+
+- tapOn:
+    text: "Apple"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- takeScreenshot: screenshots/apple-signin-redirect

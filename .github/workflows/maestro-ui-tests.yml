@@ -1,0 +1,175 @@
+name: Maestro UI Tests — Auth Social + i18n
+
+on:
+  workflow_dispatch:
+    inputs:
+      device_id:
+        description: 'Device ID do simulador (deixe vazio para auto-detect)'
+        required: false
+        default: ''
+      flow:
+        description: 'Flow especifico (vazio = suite completa)'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - flows/01-login-google.yaml
+          - flows/02-login-apple.yaml
+          - flows/03-login-email-ptbr.yaml
+          - flows/04-i18n-ja-to-ptbr.yaml
+  workflow_run:
+    workflows: ["Auth Social (Google + Apple) — JA Padrao / PT-BR via i18n"]
+    types: [completed]
+    branches: [main]
+
+env:
+  MAESTRO_VERSION: '2.11.0'
+  APP_ID: jp.daig.marketplace
+
+jobs:
+  maestro-ui-tests:
+    name: "Maestro — UI Tests (Auth + i18n)"
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Injetar .env
+        run: |
+          echo "VITE_APP_MODE=store"                                              >  .env
+          echo "VITE_DEFAULT_LANG=ja"                                            >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}"             >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}"   >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_SITE_URL=https://daig.jp"                                  >> .env
+
+      - name: Build web + Sync Capacitor iOS
+        run: |
+          npm run build
+          npx cap sync ios
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/App/Pods
+          key: ${{ runner.os }}-pods-maestro-${{ hashFiles('ios/App/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-maestro-
+            ${{ runner.os }}-pods-
+
+      - name: Instalar CocoaPods
+        run: cd ios/App && pod install
+
+      - name: Build iOS Simulator App
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -derivedDataPath build/simulator \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Instalar Maestro CLI
+        run: |
+          export MAESTRO_VERSION=${{ env.MAESTRO_VERSION }}
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Boot iOS Simulator
+        run: |
+          # Lista simuladores disponiveis
+          xcrun simctl list devices available | grep -E "iPhone 15|iPhone 14" | head -5
+
+          # Boot do iPhone 15
+          DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 15" | grep -v "Plus\|Pro\|Max" | head -1 | grep -oE '[0-9A-F-]{36}')
+          if [ -z "$DEVICE_ID" ]; then
+            DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone 14" | head -1 | grep -oE '[0-9A-F-]{36}')
+          fi
+
+          echo "DEVICE_ID=$DEVICE_ID" >> $GITHUB_ENV
+          echo "Bootando simulador: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" 2>/dev/null || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b || true
+
+      - name: Instalar app no simulador
+        run: |
+          APP_PATH=$(find build/simulator -name "*.app" -not -path "*/PlugIns/*" | head -1)
+          echo "App path: $APP_PATH"
+          xcrun simctl install "${{ env.DEVICE_ID }}" "$APP_PATH"
+
+      - name: Maestro — Executar flows de Auth + i18n
+        env:
+          MAESTRO_CLI_NO_ANALYTICS: "true"
+          MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: "true"
+        run: |
+          FLOW_INPUT="${{ github.event.inputs.flow }}"
+
+          if [ -n "$FLOW_INPUT" ]; then
+            echo "Executando flow especifico: $FLOW_INPUT"
+            maestro --device "${{ env.DEVICE_ID }}" test ".maestro/$FLOW_INPUT" \
+              --format junit --output maestro-report.xml 2>&1 | tee maestro.log
+          else
+            echo "Executando suite completa..."
+            maestro --device "${{ env.DEVICE_ID }}" test .maestro/suite.yaml \
+              --format junit --output maestro-report.xml 2>&1 | tee maestro.log
+          fi
+
+          echo ""
+          echo "Resultado:"
+          grep -E "PASSED|FAILED|ERROR|flows" maestro.log | tail -15 || true
+
+      - name: Upload screenshots Maestro
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-screenshots
+          path: .maestro/screenshots/
+          retention-days: 14
+
+      - name: Upload relatorio JUnit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-junit-report
+          path: maestro-report.xml
+          retention-days: 14
+
+      - name: Upload log Maestro
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: maestro-log
+          path: maestro.log
+          retention-days: 7
+
+      - name: Sumario do resultado
+        if: always()
+        run: |
+          echo "============================================"
+          echo "  Maestro UI Tests — Resultado"
+          echo "============================================"
+          echo "  App ID  : ${{ env.APP_ID }}"
+          echo "  Device  : ${{ env.DEVICE_ID }}"
+          echo "  Flows   : ${{ github.event.inputs.flow || 'suite completa (4 flows)' }}"
+          echo ""
+          grep -c "PASSED" maestro.log 2>/dev/null && echo "flows PASSOU" || true
+          grep -c "FAILED" maestro.log 2>/dev/null && echo "flows FALHOU" || true
+          echo ""
+          echo "Screenshots disponiveis nos artifacts!"

@@ -1,0 +1,12 @@
+appId: jp.daig.marketplace
+name: "Smoke Suite — Auth + i18n Completo"
+tags:
+  - suite
+  - smoke
+  - ci
+
+flows:
+  - flows/01-login-google.yaml
+  - flows/02-login-apple.yaml
+  - flows/03-login-email-ptbr.yaml
+  - flows/04-i18n-ja-to-ptbr.yaml

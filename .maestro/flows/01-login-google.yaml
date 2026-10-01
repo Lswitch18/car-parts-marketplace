@@ -1,0 +1,39 @@
+appId: jp.daig.marketplace
+name: "Login com Google (OAuth)"
+tags:
+  - auth
+  - google
+  - smoke
+
+---
+- launchApp:
+    clearState: true
+
+# Aguarda tela de login carregar
+- assertVisible:
+    text: "Entrar"
+    timeout: 8000
+
+# Confirma botao Google presente (PT-BR ou JA)
+- assertVisible:
+    text: "Google"
+    timeout: 5000
+
+# Confirma botao Apple presente
+- assertVisible:
+    text: "Apple"
+    timeout: 5000
+
+# Tira screenshot da tela de login
+- takeScreenshot: screenshots/login-screen
+
+# Toca no botao Google
+- tapOn:
+    text: "Google"
+
+# Aguarda redirect OAuth (popup Google ou webview)
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Screenshot apos tap Google
+- takeScreenshot: screenshots/google-oauth-redirect

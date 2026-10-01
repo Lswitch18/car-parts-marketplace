@@ -1,0 +1,43 @@
+appId: jp.daig.marketplace
+name: "Login Email + Senha (PT-BR)"
+tags:
+  - auth
+  - email
+  - smoke
+
+---
+- launchApp:
+    clearState: true
+
+- assertVisible:
+    text: "Entrar"
+    timeout: 8000
+
+- takeScreenshot: screenshots/login-email-start
+
+# Preenche email
+- tapOn:
+    id: "email-input"
+- inputText: "teste@daig.jp"
+
+# Preenche senha
+- tapOn:
+    id: "password-input"
+- inputText: "Senha@12345"
+
+# Confirma textos PT-BR presentes na tela
+- assertVisible:
+    text: "Lembrar-me"
+- assertVisible:
+    text: "Esqueceu a senha?"
+
+- takeScreenshot: screenshots/login-email-filled
+
+# Submete formulario
+- tapOn:
+    text: "Entrar"
+
+- waitForAnimationToEnd:
+    timeout: 8000
+
+- takeScreenshot: screenshots/login-email-result
