@@ -31,5 +31,17 @@ export default defineConfig({
     port: 1688,
     host: true
   },
+  preview: {
+    headers: {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "X-XSS-Protection": "1; mode=block",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=(), browsing-topics=()",
+      "Content-Security-Policy": "default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; block-all-mixed-content;",
+      "Cross-Origin-Opener-Policy": "same-origin"
+    }
+  },
   build: buildConfig
 })
