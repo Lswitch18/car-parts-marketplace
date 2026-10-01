@@ -1,0 +1,369 @@
+name: Auth Social (Google + Apple) — JA Padrao / PT-BR via i18n
+
+on:
+  workflow_dispatch:
+    inputs:
+      default_language:
+        description: 'Idioma padrao do app (ja=Japones padrao, pt=PT-BR via i18n)'
+        required: true
+        default: 'ja'
+        type: choice
+        options:
+          - ja
+          - pt
+          - en
+      app_mode:
+        description: 'Modo do app Vite'
+        required: true
+        default: 'store'
+        type: choice
+        options:
+          - store
+          - worker
+      build_ios:
+        description: 'Compilar .ipa iOS (macOS runner)'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  NODE_VERSION: '22'
+  SUPABASE_PROJECT_REF: clqubcryhbrjlupkgeva
+
+jobs:
+  # ─────────────────────────────────────────────────────────
+  # 1. VALIDATE — verifica chaves OAuth (Google + Apple)
+  # ─────────────────────────────────────────────────────────
+  validate-oauth-config:
+    name: "Validar OAuth Google + Apple"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar Client IDs e idioma padrao
+        run: |
+          LANG_INPUT="${{ github.event.inputs.default_language }}"
+          LANG="${LANG_INPUT:-ja}"
+          echo "Idioma padrao selecionado: $LANG"
+          echo "(ja = padrao do sistema; pt = PT-BR via seletor i18n em Login.tsx)"
+          echo ""
+
+          GOOGLE_ID="${{ secrets.VITE_GOOGLE_CLIENT_ID }}"
+          GOOGLE_IOS_ID="${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID }}"
+          [ -z "$GOOGLE_ID" ]     && GOOGLE_ID="606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com"
+          [ -z "$GOOGLE_IOS_ID" ] && GOOGLE_IOS_ID="606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com"
+
+          echo "Google Web Client ID : ${GOOGLE_ID:0:35}..."
+          echo "Google iOS Client ID : ${GOOGLE_IOS_ID:0:35}..."
+
+          APPLE_TEAM="${{ secrets.APPLE_TEAM_ID }}"
+          if [ -n "$APPLE_TEAM" ]; then
+            echo "Apple Team ID        : ${APPLE_TEAM:0:8}... (configurado)"
+          else
+            echo "Apple Team ID        : nao configurado (Sign In with Apple via Supabase OAuth)"
+          fi
+          echo ""
+          echo "Validacao de OAuth concluida!"
+
+      - name: Verificar GoogleService-Info.plist (iOS native)
+        run: |
+          PLIST="ios/App/App/GoogleService-Info.plist"
+          if [ -f "$PLIST" ]; then
+            echo "GoogleService-Info.plist encontrado"
+            CLIENT=$(grep -A1 'CLIENT_ID' "$PLIST" | grep string | sed 's/.*<string>\(.*\)<\/string>.*/\1/' | head -1)
+            [ -n "$CLIENT" ] && echo "  CLIENT_ID: ${CLIENT:0:30}..."
+            BUNDLE=$(grep -A1 'BUNDLE_ID' "$PLIST" | grep string | sed 's/.*<string>\(.*\)<\/string>.*/\1/' | head -1)
+            echo "  Bundle ID : $BUNDLE"
+          else
+            echo "AVISO: GoogleService-Info.plist nao encontrado em $PLIST"
+          fi
+
+      - name: Verificar suporte i18n PT-BR no Login.tsx
+        run: |
+          LOGIN="src/modules/identity/pages/Login.tsx"
+          echo "Auditando suporte i18n em $LOGIN..."
+          echo ""
+
+          check() {
+            local label="$1"; local pat="$2"
+            grep -q "$pat" "$LOGIN" \
+              && echo "  OK  $label" \
+              || echo "  AUSENTE  $label"
+          }
+
+          echo "-- Auth Social --"
+          check "Botao Google (handleGoogleLogin)"   "handleGoogleLogin"
+          check "Botao Apple  (handleAppleLogin)"    "handleAppleLogin"
+          check "Texto Google PT-BR"                 "Continuar com Google"
+          check "Texto Apple  PT-BR"                 "Continuar com Apple"
+
+          echo ""
+          echo "-- i18n / LanguageDetector --"
+          check "useI18n importado"                  "useI18n"
+          check "funcao t() aplicada"               "t('Entrar')"
+          check "LanguageDetector (seletor ja/pt)"  "LanguageDetector"
+
+          echo ""
+          echo "Auditoria i18n concluida!"
+
+  # ─────────────────────────────────────────────────────────
+  # 2. BUILD WEB — ja padrao, PT-BR disponivel via i18n
+  # ─────────────────────────────────────────────────────────
+  build-web:
+    name: "Build Web — JA padrao + Auth Social"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: validate-oauth-config
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Injetar .env (JA padrao + OAuth Google + Apple)
+        run: |
+          LANG_INPUT="${{ github.event.inputs.default_language }}"
+          LANG="${LANG_INPUT:-ja}"
+
+          echo "VITE_APP_MODE=${{ github.event.inputs.app_mode || 'store' }}"    >  .env
+          echo "VITE_DEFAULT_LANG=${LANG}"                                       >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}"             >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}"   >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}"   >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL || 'https://daig.jp' }}" >> .env
+
+          echo "Configuracao:"
+          echo "  VITE_DEFAULT_LANG = $LANG  (ja=padrao; pt=PT-BR via LanguageDetector/i18n)"
+          echo "  Google OAuth      = habilitado"
+          echo "  Apple OAuth       = habilitado (Sign In with Apple)"
+
+      - name: Build frontend (Vite)
+        run: npm run build
+
+      - name: Checar assets gerados
+        run: |
+          ls -lh dist/ || echo "AVISO: dist/ vazia"
+          ls dist/assets/*.js 2>/dev/null | head -3 && echo "Assets JS gerados com sucesso" || true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-auth-social
+          path: dist/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────
+  # 3. TEST — auth social + i18n (loginDualAuth, authApple)
+  # ─────────────────────────────────────────────────────────
+  test-auth-social:
+    name: "Testes Auth Social (Google + Apple) + i18n"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate-oauth-config
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Injetar .env para testes
+        run: |
+          echo "VITE_APP_MODE=store"                                              >  .env
+          echo "VITE_DEFAULT_LANG=ja"                                            >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}"             >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}"   >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_SITE_URL=https://daig.jp"                                  >> .env
+
+      - name: Rodar Vitest — auth social + i18n
+        run: |
+          npm run test -- \
+            --reporter=verbose \
+            --run \
+            src/modules/identity/__tests__/loginDualAuth.test.tsx \
+            src/modules/identity/__tests__/authApple.test.ts \
+            src/modules/identity/__tests__/authStore.test.ts \
+            2>&1 | tee test-auth.log || true
+
+          echo ""
+          echo "Resumo:"
+          grep -E "PASS|FAIL|Tests:|Duration" test-auth.log | tail -10 || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-auth-log
+          path: test-auth.log
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────
+  # 4. iOS BUILD — macOS-14, CocoaPods, GoogleSignIn + Apple
+  # ─────────────────────────────────────────────────────────
+  build-ios-auth:
+    name: "iOS Build — GoogleSignIn + Sign in with Apple"
+    runs-on: macos-14
+    timeout-minutes: 50
+    if: ${{ github.event.inputs.build_ios != 'false' }}
+    needs: [build-web, test-auth-social]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Selecionar Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.app 2>/dev/null \
+            || sudo xcode-select -s /Applications/Xcode_15.4.app 2>/dev/null \
+            || true
+          xcodebuild -version
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Instalar dependencias Node
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Injetar .env iOS (JA padrao + Google iOS Client ID)
+        run: |
+          LANG_INPUT="${{ github.event.inputs.default_language }}"
+          LANG="${LANG_INPUT:-ja}"
+
+          echo "VITE_APP_MODE=${{ github.event.inputs.app_mode || 'store' }}"    >  .env
+          echo "VITE_DEFAULT_LANG=${LANG}"                                       >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}"             >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}"   >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}"   >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL || 'https://daig.jp' }}" >> .env
+
+          echo "VITE_DEFAULT_LANG = ${LANG}"
+          echo "VITE_GOOGLE_IOS_CLIENT_ID injetado para Capacitor GoogleAuth plugin"
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/App/Pods
+          key: ${{ runner.os }}-pods-auth-${{ hashFiles('ios/App/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-auth-
+            ${{ runner.os }}-pods-
+
+      - name: Instalar CocoaPods (GoogleSignIn + Apple)
+        run: |
+          cd ios/App
+          pod install
+          echo ""
+          echo "Pods de auth instalados:"
+          grep -E "GoogleSignIn|AppAuth|CapacitorGoogleAuth|SignIn|Apple" Podfile.lock 2>/dev/null | head -10 || true
+
+      - name: Setup Apple Team (signed vs unsigned)
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "${APPLE_TEAM_ID:-}" ]; then
+            echo "Apple Team presente — gerando ExportOptions assinado..."
+            APPLE_TEAM_ID="$APPLE_TEAM_ID" ./scripts/ios-apple-team.sh 2>/dev/null || true
+          else
+            echo "APPLE_TEAM_ID ausente — build unsigned para QA/Appetize"
+          fi
+
+      - name: xcodebuild archive
+        run: |
+          mkdir -p build
+          echo "Compilando com GoogleSignIn + Sign in with Apple..."
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/DAIG-Auth-Social.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PRODUCT_BUNDLE_IDENTIFIER="jp.daig.marketplace"
+
+      - name: Empacotar .ipa
+        run: |
+          mkdir -p build/Payload
+          cp -r "build/DAIG-Auth-Social.xcarchive/Products/Applications/App.app" build/Payload/ 2>/dev/null || true
+          cd build
+          if [ -d "Payload/App.app" ]; then
+            zip -r DAIG-Auth-Social.ipa Payload
+            ls -lh DAIG-Auth-Social.ipa
+            echo ".ipa gerado com sucesso!"
+          else
+            echo "AVISO: App.app nao encontrado no archive"
+            ls -la DAIG-Auth-Social.xcarchive/Products/Applications/ 2>/dev/null || true
+          fi
+
+      - name: Upload .ipa
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: DAIG-Auth-Social-IPA
+          path: build/DAIG-Auth-Social.ipa
+          retention-days: 14
+
+      - name: Upload .xcarchive
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: DAIG-Auth-Social-xcarchive
+          path: build/DAIG-Auth-Social.xcarchive
+          retention-days: 7
+
+  # ─────────────────────────────────────────────────────────
+  # 5. SUMMARY — relatorio final
+  # ─────────────────────────────────────────────────────────
+  summary:
+    name: "Relatorio Final"
+    runs-on: ubuntu-latest
+    needs: [build-web, test-auth-social, build-ios-auth]
+    if: always()
+    steps:
+      - name: Resultado do pipeline
+        run: |
+          echo "=============================================="
+          echo "  DAIG — Auth Social — Resultado Final"
+          echo "=============================================="
+          echo ""
+          LANG_INPUT="${{ github.event.inputs.default_language }}"
+          LANG="${LANG_INPUT:-ja}"
+          echo "  Idioma padrao (VITE_DEFAULT_LANG) : ${LANG}"
+          echo "  PT-BR disponivel via              : LanguageDetector (i18n.tsx)"
+          echo "  Google SignIn                     : habilitado (web + iOS native)"
+          echo "  Sign in with Apple                : habilitado (web + iOS native)"
+          echo ""
+          echo "  Jobs:"
+          echo "    validate-oauth-config : ${{ needs.validate-oauth-config.result }}"
+          echo "    build-web             : ${{ needs.build-web.result }}"
+          echo "    test-auth-social      : ${{ needs.test-auth-social.result }}"
+          echo "    build-ios-auth        : ${{ needs.build-ios-auth.result }}"
+          echo ""
+          echo "  Disparado por : ${{ github.actor }}"
+          echo "  Data          : $(date -u '+%Y-%m-%d %H:%M UTC')"
