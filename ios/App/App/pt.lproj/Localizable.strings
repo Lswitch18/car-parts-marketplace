@@ -1,0 +1,5 @@
+/* Localizable.strings (pt) — DAIG Marketplace / CrewAI i18n-qa (opção PT-BR) */
+"CFBundleDisplayName" = "DAIG Marketplace";
+"NSCameraUsageDescription" = "Use a câmera para escanear peças JDM e fotografar itens à venda (marketplace).";
+"NSPhotoLibraryUsageDescription" = "Selecione fotos da galeria para anunciar peças no marketplace.";
+"NSPhotoLibraryAddUsageDescription" = "Salvar fotos de peças do marketplace.";

@@ -1,0 +1,33 @@
+appId: jp.daig.marketplace
+name: "Login Screen — Google + Apple (Web/Chromium)"
+tags:
+  - auth
+  - google
+  - apple
+  - smoke
+  - web
+
+---
+# Abre o app web em https://daig.jp/login
+- openLink: "https://daig.jp/login"
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- takeScreenshot: screenshots/web-login-screen
+
+# Verifica botao Google
+- assertVisible: "Google"
+
+# Verifica botao Apple
+- assertVisible: "Apple"
+
+- takeScreenshot: screenshots/web-login-buttons
+
+# Toca Google
+- tapOn: "Google"
+
+- waitForAnimationToEnd:
+    timeout: 4000
+
+- takeScreenshot: screenshots/web-google-tap

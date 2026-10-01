@@ -401,13 +401,39 @@ const translations: { [lang: string]: Translation } = {
     'Criando conta...': 'アカウント作成中...',
     'Já tem conta?': 'すでにアカウントをお持ちですか？',
     'Acesse sua conta Gaid': 'Gaidアカウントにアクセス',
+    'Acesse sua conta DAIG': 'DAIGアカウントにアクセス',
     'Continuar com Google': 'Googleで続行',
+    'Continuar com Apple': 'Appleで続行',
+    'Entrar com Apple': 'Appleでログイン',
+    'Erro ao entrar com Apple': 'Appleログインエラー',
+    'Ocultar meu e-mail': 'メールアドレスを非表示にする',
+    'Home': 'ホーム',
+    'Shop': 'ショップ',
+    'Pagamentos': 'お支払い',
+    'Serviços Rápidos': 'クイックサービス',
+    'Visitante': 'ゲスト',
+    'Encontre a peça ideal': '最適なパーツを見つける',
+    'para o seu projeto': 'プロジェクトに最適な',
+    'Marketplace JDM': 'JDMマーケットプレイス',
+    'Verifique seu e-mail': 'メールを確認してください',
+    'Enviamos um link de confirmação para': '確認リンクを送信しました：',
+    'Por favor, verifique sua caixa de entrada para confirmar o cadastro e começar a utilizar a plataforma.': '登録を確定するため、受信箱を確認してプラットフォームの利用を開始してください。',
+    'Ir para o Login': 'ログインへ進む',
+    'Concluindo login...': 'ログインを完了しています...',
+    'Não foi possível concluir o login. Tente novamente.': 'ログインを完了できませんでした。もう一度お試しください。',
+    'Ou continue com': 'または以下で続行',
+    'Política de Privacidade': 'プライバシーポリシー',
     'ou': 'または',
     'Lembrar-me': 'ログイン状態を保存',
     'Esqueceu a senha?': 'パスワードをお忘れですか？',
     'Entrando...': 'ログイン中...',
     'Não tem conta?': 'アカウントをお持ちでないですか？',
+    'Bem-vindo': 'ようこそ',
     'Bem-vindo de volta': 'おかえりなさい',
+    'Acesse sua conta': 'アカウントにログイン',
+    'Entre para salvar favoritos e comprar': 'ログインしてお気に入り保存や商品購入をスムーズに',
+    'Fazer login com Google': 'Googleでログイン',
+    'Fazer login com Apple': 'Appleでログイン',
     'Nova Listagem': '新しい出品',
     'Total de Visualizações': '総閲覧数',
     'Vendas Totais': '総売上',
@@ -588,6 +614,17 @@ const translations: { [lang: string]: Translation } = {
     'catalog.yearFrom': '開始年',
     'catalog.yearTo': '終了年',
     'Reformado': 'リビルド',
+    'Seminovo': '準新品',
+    'Marcas de Uso': '使用感あり',
+    // PrivacyPolicy (ja) — crew i18n-qa: 100% t(), zero hard-coded PT
+    'Política de Privacidade (Privacy Policy)': 'プライバシーポリシー (Privacy Policy)',
+    'Como a Digital AI Garage (DAIG) protege, utiliza e armazena os dados dos usuários e compradores em conformidade com as leis de proteção de dados no Japão.': 'Digital AI Garage（DAIG）が日本の個人情報保護法に準拠し、ユーザー・購入者のデータをどのように保護・利用・保管するかを説明します。',
+    '1. Coleta e Uso de Informações': '1. 情報の収集と利用',
+    'Coletamos informações estritamente necessárias para a prestação dos serviços de marketplace, emissão de comprovantes Konbini, cálculo de fretes e garantia de segurança nos pagamentos.': 'マーケットプレイス運営、コンビニ払込票発行、送料計算、決済安全確保に厳密に必要な情報のみを収集します。',
+    '2. Proteção e Segurança de Dados': '2. データの保護とセキュリティ',
+    'Todos os dados trafegados utilizam criptografia SSL/TLS de ponta a ponta. Dados bancários e cartões são processados de forma 100% segura e tokenizada através da infraestrutura PCI-DSS Compliance da Stripe.': 'すべての通信はSSL/TLSでエンドツーエンド暗号化されます。銀行・カード情報はStripeのPCI-DSS準拠基盤で100%安全にトークン化処理されます。',
+    '3. Compartilhamento Restrito': '3. 共有の制限',
+    'Não vendemos nem compartilhamos dados pessoais com terceiros para fins de marketing. Dados de envio (endereço e telefone) são compartilhados exclusivamente com os operadores logísticos parceiros para a entrega física das peças.': '個人情報をマーケティング目的で第三者に販売・共有することはありません。配送情報（住所・電話番号）は部品配送のため提携物流事業者とのみ共有されます。',
     'Parceiros B2B': 'B2Bパートナー',
     'Painel do Vendedor & SaaS': '出品者パネル＆SaaS',
     'Dados Bancários (Japão JPY)': '日本国内銀行口座情報',
@@ -917,13 +954,39 @@ const translations: { [lang: string]: Translation } = {
     'Criando conta...': 'Creating account...',
     'Já tem conta?': 'Already have an account?',
     'Acesse sua conta Gaid': 'Access your Gaid account',
+    'Acesse sua conta DAIG': 'Access your DAIG account',
     'Continuar com Google': 'Continue with Google',
+    'Continuar com Apple': 'Continue with Apple',
+    'Entrar com Apple': 'Sign in with Apple',
+    'Erro ao entrar com Apple': 'Apple sign-in error',
+    'Ocultar meu e-mail': 'Hide my email',
+    'Home': 'Home',
+    'Shop': 'Shop',
+    'Pagamentos': 'Payments',
+    'Serviços Rápidos': 'Quick services',
+    'Visitante': 'Guest',
+    'Encontre a peça ideal': 'Find the ideal part',
+    'para o seu projeto': 'for your project',
+    'Marketplace JDM': 'JDM Marketplace',
+    'Verifique seu e-mail': 'Check your email',
+    'Enviamos um link de confirmação para': 'We sent a confirmation link to',
+    'Por favor, verifique sua caixa de entrada para confirmar o cadastro e começar a utilizar a plataforma.': 'Please check your inbox to confirm registration and start using the platform.',
+    'Ir para o Login': 'Go to Login',
+    'Concluindo login...': 'Finishing login...',
+    'Não foi possível concluir o login. Tente novamente.': 'Could not finish login. Please try again.',
+    'Ou continue com': 'Or continue with',
+    'Política de Privacidade': 'Privacy Policy',
     'ou': 'or',
     'Lembrar-me': 'Remember me',
     'Esqueceu a senha?': 'Forgot password?',
     'Entrando...': 'Logging in...',
     'Não tem conta?': 'Don\'t have an account?',
+    'Bem-vindo': 'Welcome',
     'Bem-vindo de volta': 'Welcome back',
+    'Acesse sua conta': 'Access your account',
+    'Entre para salvar favoritos e comprar': 'Sign in to save favorites and buy parts',
+    'Fazer login com Google': 'Sign in with Google',
+    'Fazer login com Apple': 'Sign in with Apple',
     'Nova Listagem': 'New Listing',
     'Anúncios Ativos': 'Active Listings',
     'Total de Visualizações': 'Total Views',
@@ -1136,6 +1199,8 @@ const translations: { [lang: string]: Translation } = {
     'catalog.yearFrom': 'Year from',
     'catalog.yearTo': 'Year to',
     'Reformado': 'Refurbished',
+    'Seminovo': 'Like new',
+    'Marcas de Uso': 'Signs of use',
     // Categories
     'Body Kits': 'Body Kits',
     'Wings & Spoilers': 'Wings & Spoilers',
@@ -1360,13 +1425,37 @@ const translations: { [lang: string]: Translation } = {
     'Criando conta...': 'Criando conta...',
     'Já tem conta?': 'Já tem conta?',
     'Acesse sua conta Gaid': 'Acesse sua conta Gaid',
+    'Acesse sua conta DAIG': 'Acesse sua conta DAIG',
     'Continuar com Google': 'Continuar com Google',
+    'Continuar com Apple': 'Continuar com Apple',
+    'Entrar com Apple': 'Entrar com Apple',
+    'Erro ao entrar com Apple': 'Erro ao entrar com Apple',
+    'Ocultar meu e-mail': 'Ocultar meu e-mail',
+    'Home': 'Início',
+    'Shop': 'Loja',
+    'Pagamentos': 'Pagamentos',
+    'Serviços Rápidos': 'Serviços Rápidos',
+    'Visitante': 'Visitante',
+    'Encontre a peça ideal': 'Encontre a peça ideal',
+    'para o seu projeto': 'para o seu projeto',
+    'Marketplace JDM': 'Marketplace JDM',
+    'Verifique seu e-mail': 'Verifique seu e-mail',
+    'Enviamos um link de confirmação para': 'Enviamos um link de confirmação para',
+    'Por favor, verifique sua caixa de entrada para confirmar o cadastro e começar a utilizar a plataforma.': 'Por favor, verifique sua caixa de entrada para confirmar o cadastro e começar a utilizar a plataforma.',
+    'Ir para o Login': 'Ir para o Login',
+    'Ou continue com': 'Ou continue com',
+    'Política de Privacidade': 'Política de Privacidade',
     'ou': 'ou',
     'Lembrar-me': 'Lembrar-me',
     'Esqueceu a senha?': 'Esqueceu a senha?',
     'Entrando...': 'Entrando...',
     'Não tem conta?': 'Não tem conta?',
+    'Bem-vindo': 'Bem-vindo',
     'Bem-vindo de volta': 'Bem-vindo de volta',
+    'Acesse sua conta': 'Acesse sua conta',
+    'Entre para salvar favoritos e comprar': 'Entre para salvar favoritos e comprar peças',
+    'Fazer login com Google': 'Fazer login com Google',
+    'Fazer login com Apple': 'Fazer login com Apple',
     'Nova Listagem': 'Nova Listagem',
     'Anúncios Ativos': 'Anúncios Ativos',
     'Total de Visualizações': 'Total de Visualizações',
@@ -1553,6 +1642,8 @@ const translations: { [lang: string]: Translation } = {
     'catalog.yearFrom': 'Ano de',
     'catalog.yearTo': 'Ano até',
     'Reformado': 'Reformado',
+    'Seminovo': 'Seminovo',
+    'Marcas de Uso': 'Marcas de Uso',
     // Categories
     'Body Kits': 'Body Kits',
     'Wings & Spoilers': 'Aerofólios e Spoilers',
@@ -1673,21 +1764,18 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('daig-language');
-    if (saved === 'pt' || saved === 'ja') {
-      return saved as Language;
-    }
-    
-    // Tenta usar o idioma do navegador
-    if (typeof navigator !== 'undefined' && navigator.language) {
-      const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'pt' || browserLang === 'ja') {
-        return browserLang as Language;
-      }
+    // 1. Respeita seleção manual prévia do usuário se existir no localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('daig-language');
+        if (saved === 'pt' || saved === 'ja') {
+          return saved as Language;
+        }
+      } catch {}
     }
 
-    // Default para Português (PT-BR)
-    return 'pt'
+    // 2. Default estrito e mandatório é Japonês (JP) para o marketplace iOS
+    return 'ja'
   })
 
   const setLanguage = (lang: Language) => {

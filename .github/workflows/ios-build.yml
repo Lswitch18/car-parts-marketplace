@@ -50,6 +50,16 @@ jobs:
           node-version: 22
           cache: 'npm'
 
+      - name: Setup Python (crew monitor)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: CrewAI gate — 4 frentes (ios-dev + i18n-qa + security + banco)
+        run: |
+          echo "▸ CrewAI iOS Apple Team ativa em conjunto (check-only, sem LLM)..."
+          python3 scripts/ios_apple_team_crew.py --check-only
+
       - name: Install Node Dependencies
         run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
@@ -62,6 +72,7 @@ jobs:
           echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}" >> .env
           echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
           echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID || '606997989793-6dqib92de1r1v3jsdr0cvs2p9c1md0gm.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL || 'https://daig.jp' }}" >> .env
           
       - name: Build Web Frontend (Marketplace Store)
         run: |
@@ -79,6 +90,18 @@ jobs:
           echo "▸ Instalando CocoaPods ..."
           pod install
 
+      - name: Setup Apple Team (signed release vs unsigned QA)
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "${APPLE_TEAM_ID:-}" ]; then
+            echo "▸ Apple Team presente — gerando ExportOptions assinado..."
+            APPLE_TEAM_ID="$APPLE_TEAM_ID" ./scripts/ios-apple-team.sh
+            ls -lh ios/ExportOptions.generated.plist
+          else
+            echo "ℹ️ secrets.APPLE_TEAM_ID ausente — archive unsigned p/ QA/Appetize (TestFlight pula esta etapa)."
+          fi
+
       - name: Build & Archive iOS App
         run: |
           mkdir -p build
@@ -92,6 +115,18 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
+
+      - name: Export signed .ipa (quando APPLE_TEAM_ID existe)
+        if: env.APPLE_TEAM_ID != ''
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -f ios/ExportOptions.generated.plist ]; then
+            xcodebuild -exportArchive \
+              -archivePath build/DAIG-Marketplace.xcarchive \
+              -exportPath build/signed \
+              -exportOptionsPlist ios/ExportOptions.generated.plist && ls -lh build/signed || echo "⚠️ export assinado falhou — usando .ipa unsigned p/ QA"
+          fi
 
       - name: Package .ipa File
         run: |

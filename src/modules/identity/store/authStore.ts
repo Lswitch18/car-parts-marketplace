@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { User } from '@/modules/shared/types'
 import { supabase } from '@/modules/shared/lib/supabase'
-import { signInWithGoogle, signOut as supabaseSignOut } from '@/modules/shared/lib/supabase'
+import { signInWithGoogle, signInWithApple, signOut as supabaseSignOut } from '@/modules/shared/lib/supabase'
 import { AuthChangeEvent, Session } from '@supabase/supabase-js'
 
 // Module-level vars — survive React re-renders
@@ -33,6 +33,7 @@ interface AuthState {
   signIn: (email: string, password: string) => Promise<User | null>
   signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<User | null>
   signInGoogle: () => Promise<void>
+  signInApple: () => Promise<void>
   signOut: () => Promise<void>
   refreshSession: () => Promise<boolean>
   updateProfile: (updates: Partial<User>) => Promise<void>
@@ -295,11 +296,39 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     console.debug('[authStore] signInGoogle')
     set({ loading: true })
     try {
-      await signInWithGoogle()
+      const result: any = await signInWithGoogle()
+      const sessionUser = result?.user || result?.data?.user || result?.session?.user || (await supabase.auth.getUser()).data?.user
+      if (sessionUser) {
+        const mapped = await fetchAndMapProfile(sessionUser.id, sessionUser)
+        if (mapped) get().setUser(mapped)
+      } else {
+        await get().ensureSession()
+      }
     } catch (error) {
       console.error('[authStore] signInGoogle error:', error)
-      set({ loading: false })
       throw error
+    } finally {
+      set({ loading: false })
+    }
+  },
+
+  signInApple: async (): Promise<void> => {
+    console.debug('[authStore] signInApple')
+    set({ loading: true })
+    try {
+      const result: any = await signInWithApple()
+      const sessionUser = result?.user || result?.data?.user || result?.session?.user || (await supabase.auth.getUser()).data?.user
+      if (sessionUser) {
+        const mapped = await fetchAndMapProfile(sessionUser.id, sessionUser)
+        if (mapped) get().setUser(mapped)
+      } else {
+        await get().ensureSession()
+      }
+    } catch (error) {
+      console.error('[authStore] signInApple error:', error)
+      throw error
+    } finally {
+      set({ loading: false })
     }
   },
 

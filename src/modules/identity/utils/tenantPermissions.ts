@@ -19,11 +19,19 @@ export function hasTenantPermission(
 }
 
 /**
- * Helper to check if a user is an active SaaS user (has explicit tenant_id or tenant_role).
+ * Helper to check if a user is an active SaaS user (has explicit tenant_id or tenant_role,
+ * or a non-buyer operational role such as partner/seller/admin).
+ * Pure marketplace buyers (role=buyer sem tenant) não são SaaS.
  */
 export function isSaaSUser(user: User | null | undefined): boolean {
   if (!user) return false
-  return true
+  const anyUser = user as any
+  if (anyUser.tenant_id || anyUser.tenant_role) return true
+  const role = anyUser.role as string | undefined
+  if (!role) return false
+  // buyer pessoa_fisica puro -> false; demais papéis operacionais -> true
+  if (role === 'buyer') return false
+  return ['partner', 'seller', 'tenant_admin', 'tenant_operator', 'tenant_mechanic', 'tenant_manager', 'admin'].includes(role)
 }
 
 /**

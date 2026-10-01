@@ -19,6 +19,7 @@ const ProductDetail = lazyWithRetry(() => import('@/modules/parts-catalog/pages/
 const CarList = lazyWithRetry(() => import('@/modules/vehicles/pages/CarList'))
 const Login = lazyWithRetry(() => import('@/modules/identity/pages/Login'))
 const Register = lazyWithRetry(() => import('@/modules/identity/pages/Register'))
+const AuthCallback = lazyWithRetry(() => import('@/modules/identity/pages/AuthCallback'))
 // const Dashboard = lazyWithRetry(() => import('@/modules/backoffice/pages/Dashboard'))
 const TenantDashboard = lazyWithRetry(() => import('@/modules/backoffice/pages/TenantDashboard'))
 const CreateListing = lazyWithRetry(() => import('@/modules/parts-catalog/pages/CreateListing'))
@@ -63,7 +64,22 @@ function App() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  useEffect(() => { initialize() }, [initialize])
+  useEffect(() => {
+    initialize()
+    if (typeof window !== 'undefined') {
+      import('@capacitor/core').then(({ Capacitor }) => {
+        if (Capacitor.isNativePlatform()) {
+          import('@/modules/shared/lib/supabase').then(({ supabase }) => {
+            import('@/modules/shared/lib/nativeAuth').then(({ installNativeAuthListener }) => {
+              installNativeAuthListener(supabase, async () => {
+                await useAuthStore.getState().ensureSession()
+              })
+            })
+          })
+        }
+      })
+    }
+  }, [initialize])
 
   // Redirecionar baseado na role após login
   useEffect(() => {
@@ -103,6 +119,8 @@ function App() {
             <Route index element={isPartnerDomain ? <PartnerPortalPage /> : <Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            {/* Callback canônico OAuth web — público, troca ?code= pela sessão */}
+            <Route path="auth/callback" element={<AuthCallback />} />
 
             {/* Páginas Públicas (sem login) */}
             <Route path="catalog" element={<Catalog />} />

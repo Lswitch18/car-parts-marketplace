@@ -92,6 +92,7 @@ supabase/backups/
 # Mobile Builds
 apks/
 *.apk
+ios/ExportOptions.generated.plist
 
 # Scratch and export files
 *.mjs
@@ -112,3 +113,4 @@ vite.config.tsbuildinfo
 .flaskenv*
 !.env.project
 !.env.vault
+.vercel

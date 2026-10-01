@@ -123,22 +123,27 @@ export const signInWithGoogle = async () => {
     } catch (error) {
       console.error('Error during native Google sign in, attempting fallback:', error)
       // Fallback para ambientes emulados/simuladores sem Google Play Services ou contas configuradas
+      // CrewAI ios-dev+banco: deep-link unificado (== Apple) + listener fecha o Browser ao voltar.
       try {
         const { Browser } = await import('@capacitor/browser')
+        const { NATIVE_LOGIN_CALLBACK, installNativeAuthListener, waitForNativeOAuthCallback, exchangeCallbackForSession, closeNativeBrowser } = await import('./nativeAuth')
+        await installNativeAuthListener()
         const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin,
+            redirectTo: NATIVE_LOGIN_CALLBACK,
             skipBrowserRedirect: true,
           },
         })
         if (oauthError) throw oauthError
-        
+
         if (data?.url) {
           console.log('[GoogleAuth] Abrindo fallback OAuth no In-App Browser...')
           await Browser.open({ url: data.url, presentationStyle: 'popover' })
-          
-          // O usuário precisará fechar manualmente se não houver deep linking configurado (simulador)
+          // Aguarda o deep-link voltar ao app e troca ?code= pela sessão (não retorna antes).
+          const callbackUrl = await waitForNativeOAuthCallback(90000)
+          await closeNativeBrowser()
+          return await exchangeCallbackForSession(callbackUrl, supabase)
         }
         return data
       } catch (fallbackErr) {
@@ -146,6 +151,21 @@ export const signInWithGoogle = async () => {
       }
     }
   } else {
+    // WEB (Chrome/desktop): One Tap quando exibível, senão redirect OAuth
+    // de primeira classe para o callback canônico — nunca o endereço-base.
+    // (O clique sintético no botão oculto gerava evento não-confiável e o
+    //  Chrome bloqueava o popup; removido.)
+    const { getWebAuthCallbackUrl, rememberPostLoginPath } = await import('./webAuth')
+    const redirectTo = getWebAuthCallbackUrl()
+    const startOAuthRedirect = async () => {
+      rememberPostLoginPath()
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo },
+      })
+      if (error) throw error
+      return data
+    }
     try {
       await loadGsiScript()
       const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com'
@@ -155,32 +175,30 @@ export const signInWithGoogle = async () => {
         document.cookie = 'g_state=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
       } catch {}
 
-      return await new Promise((resolve, reject) => {
-        if (!window.google?.accounts?.id) {
-          return reject(new Error('Google Identity Services não está disponível.'))
-        }
+      if (!window.google?.accounts?.id) {
+        return await startOAuthRedirect()
+      }
 
-        // Prepara um container oculto para renderizar e acionar o botão nativo do GSI
-        let container = document.getElementById('gsi-hidden-button-container')
-        if (!container) {
-          container = document.createElement('div')
-          container.id = 'gsi-hidden-button-container'
-          container.style.position = 'absolute'
-          container.style.top = '-9999px'
-          container.style.left = '-9999px'
-          container.style.opacity = '0'
-          container.style.pointerEvents = 'none'
-          document.body.appendChild(container)
-        } else {
-          container.innerHTML = ''
+      return await new Promise((resolve, reject) => {
+        let settled = false
+        const finishRedirect = async () => {
+          if (settled) return
+          settled = true
+          try {
+            resolve(await startOAuthRedirect())
+          } catch (oauthErr) {
+            reject(oauthErr)
+          }
         }
 
         window.google.accounts.id.initialize({
           client_id: googleClientId,
           callback: async (response: any) => {
+            if (settled) return
+            settled = true
             try {
               if (!response.credential) {
-                return reject(new Error('Nenhum token retornado pelo Google.'))
+                throw new Error('Nenhum token retornado pelo Google.')
               }
               const { data, error } = await supabase.auth.signInWithIdToken({
                 provider: 'google',
@@ -196,51 +214,85 @@ export const signInWithGoogle = async () => {
           cancel_on_tap_outside: true,
         })
 
-        // Renderiza o botão oficial do GSI no container oculto
-        window.google.accounts.id.renderButton(container, {
-          type: 'standard',
-          theme: 'outline',
-          size: 'large',
+        // One Tap não exige gesto confiável (ao contrário do popup).
+        window.google.accounts.id.prompt(async (notification: any) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            console.warn('[GoogleAuth] One Tap não exibido, indo ao OAuth canônico:', redirectTo)
+            await finishRedirect()
+          }
+          // Se exibido, aguarda a escolha da conta (callback acima resolve).
         })
 
-        // Simula o clique no botão nativo do GSI para abrir o Popup do Google mantendo a origem do aplicativo
+        // Rede de segurança: se o One Tap não responder em 5s, redireciona.
         setTimeout(() => {
-          const btn = container?.querySelector('div[role="button"]') as HTMLElement | HTMLDivElement | null
-          if (btn) {
-            btn.click()
-          } else {
-            window.google.accounts.id.prompt(async (notification: any) => {
-              if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                console.warn('[GoogleAuth] GSI prompt não exibido, acionando fallback OAuth...')
-                try {
-                  const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: { redirectTo: window.location.origin },
-                  })
-                  if (error) reject(error)
-                  else resolve(data)
-                } catch (oauthErr) {
-                  reject(oauthErr)
-                }
-              }
-            })
+          if (!settled) {
+            console.warn('[GoogleAuth] One Tap sem resposta, indo ao OAuth canônico.')
+            void finishRedirect()
           }
-        }, 100)
+        }, 5000)
       })
     } catch (gsiErr) {
-      console.warn('[GoogleAuth] GSI falhou ou bloqueado, utilizando fallback de redirecionamento OAuth:', gsiErr)
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
-      })
-      if (error) throw error
-      return data
+      console.warn('[GoogleAuth] GSI falhou ou bloqueado, utilizando OAuth canônico:', gsiErr)
+      return await startOAuthRedirect()
     }
   }
 }
 
+/** Pré-carrega o script GSI (chamar no mount do Login/Register p/ One Tap imediato). */
+export const preloadGsiScript = async (): Promise<void> => {
+  try {
+    await loadGsiScript()
+  } catch (err) {
+    console.warn('[GoogleAuth] preload GSI falhou (OAuth direto continua valendo):', err)
+  }
+}
+
+
+export const signInWithApple = async () => {
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const { Browser } = await import('@capacitor/browser')
+      const { NATIVE_LOGIN_CALLBACK, installNativeAuthListener, waitForNativeOAuthCallback, exchangeCallbackForSession, closeNativeBrowser } = await import('./nativeAuth')
+      await installNativeAuthListener()
+      // Deep-link registrado no Info.plist (CFBundleURLSchemes) + Supabase Redirect URLs.
+      // Site URL / Vercel + com.daig.marketplace://login-callback devem estar
+      // cadastrados em Supabase Dashboard > Authentication > URL Configuration.
+      const redirectTo = 'com.daig.marketplace://login-callback'
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo,
+          skipBrowserRedirect: true,
+          scopes: 'name email',
+        },
+      })
+      if (error) throw error
+      if (data?.url) {
+        console.log('[AppleAuth] Abrindo OAuth Apple no In-App Browser...')
+        await Browser.open({ url: data.url, presentationStyle: 'popover' })
+        const callbackUrl = await waitForNativeOAuthCallback(90000)
+        await closeNativeBrowser()
+        return await exchangeCallbackForSession(callbackUrl, supabase)
+      }
+      return data
+    } catch (error) {
+      console.error('[AppleAuth] Erro no login Apple nativo:', error)
+      throw error
+    }
+  } else {
+    const { getWebAuthCallbackUrl, rememberPostLoginPath } = await import('./webAuth')
+    rememberPostLoginPath()
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'apple',
+      options: {
+        redirectTo: getWebAuthCallbackUrl(),
+        scopes: 'name email',
+      },
+    })
+    if (error) throw error
+    return data
+  }
+}
 
 export const signOut = async () => {
   const { error } = await supabase.auth.signOut()

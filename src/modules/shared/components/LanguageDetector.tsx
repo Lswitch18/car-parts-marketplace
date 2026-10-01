@@ -19,8 +19,8 @@ export default function LanguageDetector({ mobileCompact = false }: { mobileComp
   }, [])
 
   const languages = [
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'pt', name: 'Português', flag: '🇧🇷' },
   ]
 
   const langCode = language.split('-')[0]

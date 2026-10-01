@@ -1,0 +1,109 @@
+name: iOS Crew (4 frentes autônomas + manager)
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'ios/**'
+      - 'capacitor.config.ts'
+      - 'scripts/ios_apple_team_crew.py'
+      - '.agents/crews/ios-apple-team.yaml'
+      - '.github/workflows/ios-crew.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ios-dev:
+    name: "Crew ios-dev (login Chrome+iPhone)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frente ios-dev
+        run: |
+          python3 scripts/ios_apple_team_crew.py --check-only 2>&1 | tee crew-ios-dev.log
+          grep -q "ios-dev" crew-ios-dev.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crew-ios-dev
+          path: crew-ios-dev.log
+          retention-days: 7
+
+  i18n-qa:
+    name: "Crew i18n-qa (JA padrão + PT)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frente i18n-qa
+        run: |
+          python3 scripts/ios_apple_team_crew.py --check-only 2>&1 | tee crew-i18n-qa.log
+          grep -q "i18n-qa" crew-i18n-qa.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crew-i18n-qa
+          path: crew-i18n-qa.log
+          retention-days: 7
+
+  security:
+    name: "Crew security (SAST + secrets)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frente security
+        run: |
+          python3 scripts/ios_apple_team_crew.py --check-only 2>&1 | tee crew-security.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crew-security
+          path: crew-security.log
+          retention-days: 7
+
+  banco:
+    name: "Crew banco (redirects + Stripe JPY)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Frente banco
+        run: |
+          python3 scripts/ios_apple_team_crew.py --check-only 2>&1 | tee crew-banco.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: crew-banco
+          path: crew-banco.log
+          retention-days: 7
+
+  ci-monitor:
+    name: "Manager ci-monitor (dono do verde)"
+    runs-on: ubuntu-latest
+    needs: [ios-dev, i18n-qa, security, banco]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Join das 4 frentes — verde só se todas passarem
+        run: |
+          python3 scripts/ios_apple_team_crew.py --check-only
+          echo "✅ Manager: 4 frentes reportaram; veredito acima."

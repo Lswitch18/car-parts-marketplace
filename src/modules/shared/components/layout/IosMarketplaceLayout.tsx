@@ -2,6 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router'
 import { Home, Search, MessageCircle, User, LogOut, ShoppingBag } from 'lucide-react'
 import { useAuthStore } from '@/modules/identity/store/authStore'
 import { useI18n } from '@/modules/shared/lib/i18n'
+import LanguageDetector from '@/modules/shared/components/LanguageDetector'
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -73,6 +74,14 @@ export default function IosMarketplaceLayout() {
       </div>
 
       <main className={`flex-1 relative z-10 ios-content ${isAuthPage ? '!pb-0' : ''}`}>
+        {!isAuthPage && (
+          <div
+            className="sticky top-0 z-40 flex justify-end px-5"
+            style={{ paddingTop: 'calc(10px + env(safe-area-inset-top))' }}
+          >
+            <LanguageDetector mobileCompact={true} />
+          </div>
+        )}
         <Outlet />
       </main>
 
@@ -118,7 +127,7 @@ export default function IosMarketplaceLayout() {
               aria-label={t('Catálogo')}
             >
               <ShoppingBag className="w-[20px] h-[20px]" />
-              <span className="text-[10px] font-semibold mt-1">Shop</span>
+              <span className="text-[10px] font-semibold mt-1">{t('Shop')}</span>
             </Link>
 
             {user ? (

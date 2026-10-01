@@ -9,6 +9,7 @@ import { useAuthStore } from '@/modules/identity/store/authStore'
 
 // Lazy Loading das páginas permitidas no DriverApp
 const Login = lazy(() => import('@/modules/identity/pages/Login'))
+const AuthCallback = lazy(() => import('@/modules/identity/pages/AuthCallback'))
 const MobileApp = lazy(() => import('@/modules/transportation/pages/MobileApp'))
 const WorkerApp = lazy(() => import('@/modules/transportation/pages/WorkerApp'))
 const QRInstallPage = lazy(() => import('@/modules/transportation/pages/QRInstallPage'))
@@ -25,8 +26,8 @@ export default function DriverApp() {
   useEffect(() => {
     if (!initialized || loading) return
 
-    // Se não estiver logado e não estiver na tela de login, forçar login
-    if (!user && location.pathname !== '/login') {
+    // Se não estiver logado e não estiver na tela de login/callback, forçar login
+    if (!user && location.pathname !== '/login' && location.pathname !== '/auth/callback') {
       navigate('/login', { replace: true })
       return
     }
@@ -43,6 +44,8 @@ export default function DriverApp() {
       <Suspense fallback={<GlobalLoader />}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          {/* Callback canônico OAuth web — público, troca ?code= pela sessão */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
 
           {/* App Mobile Logistix */}
           <Route path="/app" element={<ProtectedRoute />}>

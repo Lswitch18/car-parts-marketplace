@@ -1,0 +1,5 @@
+/* InfoPlist.strings (pt) — diálogos de permissão em PT-BR (opção) */
+"NSCameraUsageDescription" = "Use a câmera para escanear peças JDM e fotografar itens à venda (marketplace).";
+"NSPhotoLibraryUsageDescription" = "Selecione fotos da galeria para anunciar peças no marketplace.";
+"NSPhotoLibraryAddUsageDescription" = "Salvar fotos de peças do marketplace.";
+"CFBundleDisplayName" = "DAIG Marketplace";

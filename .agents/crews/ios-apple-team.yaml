@@ -1,0 +1,104 @@
+# CrewAI — iOS Apple Team (marketplace puro, sem Logistix)
+# 4 agentes autônomos + 1 manager, todos ativos em todas as etapas.
+# Execução: python3 scripts/ios_apple_team_crew.py [--check-only] [--with-llm]
+# CI: .github/workflows/ios-crew.yml dispara os 4 em paralelo + join do manager.
+name: ios-apple-team
+process: hierarchical
+manager: ci-monitor
+language: pt-BR
+ios_scope:
+  appId: com.daig.marketplace
+  appName: DAIG Marketplace
+  app_mode: store
+  default_language: ja
+  optional_language: pt
+  auth:
+    - google-nativo (GIDSignIn via @southdevs/capacitor-google-auth)
+    - google-fallback (SFSafariViewController via @capacitor/browser + deep-link)
+    - chrome-desktop (GSI web)
+    - iphone-device (nativo) + iphone-simulator (fallback deep-link)
+  signing:
+    unsigned_qa: CODE_SIGNING_ALLOWED=NO (Appetize/Simulator)
+    signed_release: APPLE_TEAM_ID via secrets.APPLE_TEAM_ID + ExportOptions.generated.plist
+
+agents:
+  - id: ios-dev
+    role: iOS Dev (Capacitor + Xcode)
+    goal: Login Google funcionando no Chrome e no iPhone; archive/export íntegros.
+    owns:
+      - src/modules/shared/lib/supabase.ts
+      - src/modules/shared/lib/nativeAuth.ts
+      - capacitor.config.ts
+      - ios/App/App/AppDelegate.swift
+      - ios/App/Podfile
+    done_when:
+      - "cap sync gera capacitor.config.json com clientId/iosClientId/serverClientId corretos"
+      - "fallback OAuth usa com.daig.marketplace://login-callback + App urlOpen listener"
+      - "xcodebuild archive + simulator build passam"
+
+  - id: web-auth
+    role: Web Auth (Chrome/desktop OAuth)
+    goal: Após autenticar no Chrome, cair logado no destino — nunca na tela de senha; endereço-base de runtime jamais aparece no redirectTo.
+    owns:
+      - src/modules/shared/lib/supabase.ts (ramo web)
+      - src/modules/shared/lib/webAuth.ts
+      - src/modules/identity/pages/AuthCallback.tsx
+    done_when:
+      - "nenhum `redirectTo: window.location.origin` no código"
+      - "sem botão oculto + clique sintético (popup bloqueado)"
+      - "rota auth/callback nos 3 apps; DriverApp isenta o callback do force-login"
+
+  - id: i18n-qa
+    role: i18n QA (JA-first, PT opcional)
+    goal: JA padrão em todo o bundle iOS; toggle PT-BR funcional.
+    owns:
+      - src/modules/shared/lib/i18n.tsx
+      - src/modules/shared/components/LanguageDetector.tsx
+      - ios/App/App/ja.lproj/*
+      - ios/App/App/pt.lproj/*
+    done_when:
+      - "nenhum t() com fallback fantasma nas 7 telas marketplace"
+      - "PrivacyPolicy/Terms 100% t()"
+      - "dist/ hash == ios/App/App/public/ hash (cap sync fresco)"
+
+  - id: security
+    role: Security (SAST + secrets + OAuth)
+    goal: Nenhum secret commitado; OAuth/ATS/deep-links seguros; Semgrep verde.
+    owns:
+      - ios/App/App/Info.plist
+      - ios/App/App/GoogleService-Info.plist.example
+      - .github/workflows/*
+    done_when:
+      - "semgrep auto passa"
+      - "nenhum .env/GoogleService-Info.plist/ExportOptions.generated.plist no git"
+      - "CFBundleURLSchemes + REVERSED_CLIENT_ID conferem com Google Cloud"
+
+  - id: banco
+    role: Banco de dados (Supabase + Stripe JPY)
+    goal: Auth callback + redirect URLs + RLS consistentes; checkout JPY íntegro.
+    owns:
+      - supabase/migrations/*
+      - supabase/functions/stripe-checkout/*
+    done_when:
+      - "Supabase URL Configuration contém Site URL + com.daig.marketplace://login-callback"
+      - "stripe checkout success_url usa capacitor://checkout/success"
+
+  - id: ci-monitor
+    role: CI Monitor (dono do verde)
+    goal: Esteira 100% verde; artefatos .ipa/.xcarchive/Simulator publicados.
+    owns:
+      - .github/workflows/ios-build.yml
+      - .github/workflows/ios-crew.yml
+      - scripts/ios_apple_team_crew.py
+    done_when:
+      - "lint + typecheck + test + semgrep + xcodebuild verdes"
+      - "3 artefatos com retention publicados"
+
+collaboration:
+  # Todas as etapas rodam as 4 frentes; o manager junta e bloqueia merge se qualquer uma falhar.
+  every_stage_runs: [ios-dev, web-auth, i18n-qa, security, banco]
+  handoffs:
+    ios-dev_to_security: "toda mudança de URL scheme / clientId / ATS exige review security antes do archive"
+    i18n-qa_to_ios-dev: "toda chave nova no dict exige cap sync + rebuild do public/ antes do archive"
+    banco_to_ios-dev: "toda mudança de redirect URL exige espelho em capacitor.config + Info.plist"
+    all_to_ci-monitor: "manager só declara verde com logs dos 4 anexados ao run"

@@ -20,11 +20,16 @@
     "cap:sync": "vite build && cap sync",
     "cap:sync:driver": "npm run build:driver && cap sync",
     "cap:sync:store": "npm run build:store && cap sync",
-    "cap:open": "cap open android"
+    "cap:open": "cap open android",
+    "crew:ios": "python3 scripts/ios_apple_team_crew.py --check-only",
+    "crew:ios:llm": "python3 scripts/ios_apple_team_crew.py --with-llm",
+    "ios:team": "./scripts/ios-apple-team.sh",
+    "ios:verify": "npm run crew:ios"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@capacitor/android": "^7.6.8",
+    "@capacitor/app": "^7.1.2",
     "@capacitor/browser": "^7.0.5",
     "@capacitor/core": "^7.6.8",
     "@capacitor/ios": "^7.6.8",

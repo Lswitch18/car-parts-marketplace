@@ -1,16 +1,18 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
 import { useAuthStore } from '@/modules/identity/store/authStore'
+import { preloadGsiScript } from '@/modules/shared/lib/supabase'
 import { handleSupabaseError, isRateLimitError } from '@/modules/shared/lib/supabaseErrorHandler'
 import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle } from 'lucide-react'
 import { useI18n } from '@/modules/shared/lib/i18n'
+import LanguageDetector from '@/modules/shared/components/LanguageDetector'
 import GaidLogo from '@/modules/shared/components/GaidLogo'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
 export default function Register() {
   const { t } = useI18n()
-  const { signUp, signInGoogle } = useAuthStore()
+  const { signUp, signInGoogle, signInApple } = useAuthStore()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,6 +26,8 @@ export default function Register() {
   const [retryCount, setRetryCount] = useState(0)
   const [success, setSuccess] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+  // Pré-carrega o GSI p/ One Tap imediato no clique (ver Login.tsx).
+  useEffect(() => { void preloadGsiScript() }, [])
   useGSAP(() => {
     if (!cardRef.current) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -72,6 +76,20 @@ export default function Register() {
       await signInGoogle()
     } catch (err: any) {
       console.error('Google register error:', err)
+      setError(handleSupabaseError(err))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAppleRegister = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      try { (navigator as any).vibrate?.(10) } catch {}
+      await signInApple()
+    } catch (err: any) {
+      console.error('Apple register error:', err)
       setError(handleSupabaseError(err))
     } finally {
       setLoading(false)
@@ -127,6 +145,9 @@ export default function Register() {
       </div>
 
       <div className="w-full max-w-md relative z-10">
+        <div className="flex justify-end mb-3">
+          <LanguageDetector mobileCompact={false} />
+        </div>
         <div ref={cardRef} className="glass-ultra rounded-[24px] p-8 sm:p-10 shadow-2xl">
           <div className="flex justify-center mb-6">
             <GaidLogo size={52} variant="horizontal" />
@@ -273,6 +294,19 @@ export default function Register() {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
               <span>Google</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleAppleRegister}
+              disabled={loading}
+              aria-label="Sign in with Apple"
+              className="w-full bg-black hover:bg-zinc-900 text-white border border-white/15 py-3.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-md hover:scale-[1.01]"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M16.36 12.76c0-2.3 1.88-3.4 1.97-3.45-1.08-1.57-2.75-1.79-3.34-1.81-1.42-.14-2.77.83-3.49.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.97.9-3.77 2.28-1.61 2.79-.41 6.93 1.16 9.2.76 1.1 1.67 2.34 2.86 2.29 1.15-.04 1.58-.74 2.97-.74s1.78.74 3 .72c1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.39-3.72zM14.16 4.06c.64-.77 1.07-1.85.95-2.92-.92.04-2.03.61-2.69 1.38-.59.68-1.11 1.77-.97 2.82 1.02.08 2.07-.52 2.71-1.28z"/>
+              </svg>
+              <span>{t('Continuar com Apple')}</span>
             </button>
           </form>
 

@@ -1,85 +1,55 @@
 import os
-from crewai import Agent, Task, Crew, Process
+from crewai import Agent, Task, Crew, Process, LLM
 from textwrap import dedent
-from langchain_google_genai import ChatGoogleGenerativeAI
 
-# Configurando o Gemini como o LLM (Cérebro) dos Agentes
-# Certifique-se de que a variável de ambiente GEMINI_API_KEY está configurada
-gemini_llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-pro",
-    verbose=True,
-    temperature=0.7,
-    google_api_key=os.environ.get("GEMINI_API_KEY")
+gemini_llm = LLM(
+    model="gemini/gemini-3.5-flash-lite",
+    api_key=os.environ.get("GEMINI_API_KEY")
 )
 
-# Definição dos Agentes do Time iOS
-ios_builder = Agent(
-    role='Engenheiro Chefe iOS e DevOps',
-    goal='Garantir que a compilação do App iOS passe no GitHub Actions e funcione no Appetize.io sem erros.',
-    backstory=dedent("""
-        Você é um engenheiro mobile experiente. Você parou de usar AWS e agora foca em 
-        compilações automatizadas usando macos-14 no GitHub Actions. Você odeia perder 
-        logs de erro e sempre documenta falhas em arquivos locais antes de consertar.
-    """),
+supabase_db_dba = Agent(
+    role='Administrador de Banco de Dados e Edge Functions (Root)',
+    goal='Corrigir todas as falhas de dependência no Deno e restaurar o pipeline de deploy do Supabase.',
+    backstory='Você é o Sysadmin/DBA Sênior do Supabase com acesso root. Você domina Deno, Deno.json, dependências npm dentro do Deno e o CLI do Supabase. O deploy do backend está falhando porque uma dependência (npm:googleapis) não está sendo resolvida no Edge Function `save-to-drive`.',
     verbose=True,
     allow_delegation=True,
+    allow_code_execution=True,
     llm=gemini_llm
 )
 
-ui_designer = Agent(
-    role='Especialista UX/UI & GSAP',
-    goal='Garantir animações em 60/120fps e padrão Cyber Neon no React/Capacitor.',
-    backstory=dedent("""
-        Você é obcecado por performance visual. Trabalha lado a lado com o Engenheiro iOS 
-        para garantir que componentes como o BrandLoader.tsx fiquem perfeitos no simulador.
-    """),
-    verbose=True,
-    allow_delegation=False,
-    llm=gemini_llm
-)
-
-security_engineer = Agent(
-    role='Engenheiro de Segurança (Shift-Left)',
-    goal='Validar vazamentos de env vars e proteção de chaves Stripe/Supabase no build.',
-    backstory=dedent("""
-        Você verifica os logs do GitHub Actions e o payload do .ipa para garantir 
-        que nenhuma VITE_SUPABASE_ANON_KEY exponha dados sensíveis além do necessário.
-    """),
-    verbose=True,
-    allow_delegation=False,
-    llm=gemini_llm
-)
-
-# Definição das Tarefas
-debug_appetize_task = Task(
+backend_task = Task(
     description=dedent("""
-        O fluxo de login com o Google (Entrar com Google) está falhando silenciosamente no iOS Simulator (Appetize).
-        Apesar do iosClientId estar no capacitor.config.ts e a REVERSED_CLIENT_ID no Info.plist, o botão não reage.
-        1. Analise o que pode estar bloqueando a abertura do popup do Google Auth no Capacitor iOS (como AppDelegate.swift ou falta de config).
-        2. Proponha a solução arquitetural necessária.
-        3. Além disso, verifique e analise os requisitos para o funcionamento de todo o fluxo (conversa, compra, checkout).
+        URGENTE: A esteira CI/CD quebrou no passo "Deploy Supabase Functions" porque o Deno (Edge Functions) não está encontrando os pacotes NPM.
+        Erro do log: "Could not find a matching package for 'npm:googleapis@126.0.1' in the node_modules directory. Ensure you have all your JSR and npm dependencies listed in your deno.json or package.json..."
+        
+        Passos que VOCÊ DEVE EXECUTAR com sua habilidade de execução de código python/bash:
+        1. Verificar a pasta `supabase/functions/save-to-drive/`.
+        2. Criar ou editar um arquivo `deno.json` dentro da raiz do supabase (ou da function) caso seja necessário ou usar `import_map.json`. Se o projeto usar Deno no Supabase, veja como as deps estão (ex: imports no index.ts).
+        3. A documentação mais recente do Supabase Functions com npm recomenda usar um arquivo `supabase/functions/deno.json` para definir `"nodeModulesDir": "auto"` ou rodar um setup de dependência caso precise. Mas o Supabase deploy empacota automaticamente se estiver no padrão.
+        4. Outra alternativa rápida é usar esm.sh: trocar `import { google } from "npm:googleapis@126.0.1";` por `import { google } from "https://esm.sh/googleapis@126.0.1";` dentro de `supabase/functions/save-to-drive/index.ts`.
+        5. Execute `cat supabase/functions/save-to-drive/index.ts` usando código Python para ler o arquivo e faça o replace da linha do import para usar o esm.sh que o Deno ama nativamente e não precisa de node_modules locais.
+        6. Execute o comando local `deno check supabase/functions/save-to-drive/index.ts` para confirmar que compilou.
     """),
-    expected_output="Um plano de ação detalhado resolvendo a falha silenciosa do Google Auth no Capacitor iOS e orientações para testar o fluxo de checkout e conversas.",
-    agent=ios_builder
+    expected_output="As dependências do arquivo index.ts foram corrigidas para rodar perfeitamente no Supabase Edge Functions sem quebrar a pipeline, e o `deno check` passou sem erros.",
+    agent=supabase_db_dba
 )
 
-# Montando a Crew (Equipe)
-ios_crew = Crew(
-    agents=[ios_builder, ui_designer, security_engineer],
-    tasks=[debug_appetize_task],
-    process=Process.sequential, # As tarefas são executadas em ordem
+backend_crew = Crew(
+    agents=[supabase_db_dba],
+    tasks=[backend_task],
+    process=Process.sequential,
     verbose=True
 )
 
 if __name__ == "__main__":
-    print("🚀 Iniciando a Crew de Desenvolvimento iOS DAIG (Powered by Gemini)...")
     if not os.environ.get("GEMINI_API_KEY"):
-        print("⚠️ ERRO: A variável de ambiente GEMINI_API_KEY não está configurada.")
-        print("Exporte sua chave antes de rodar: export GEMINI_API_KEY='sua-chave-aqui'")
+        print("⚠️ ERRO: GEMINI_API_KEY não definida.")
         exit(1)
         
-    result = ios_crew.kickoff()
-    print("\n######################")
-    print("RESULTADO DA CREW:")
-    print("######################")
+    print("🚀 Iniciando a Crew DBA para resolver as Edge Functions...")
+    result = backend_crew.kickoff()
+    
+    print("\n" + "="*40)
+    print("RESULTADO FINAL DA CREW:")
+    print("="*40)
     print(result)

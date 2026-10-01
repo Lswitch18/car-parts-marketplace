@@ -16,6 +16,7 @@ const Catalog = lazyWithRetry(() => import('@/modules/parts-catalog/pages/Catalo
 const ProductDetail = lazyWithRetry(() => import('@/modules/parts-catalog/pages/ProductDetail'))
 const Login = lazyWithRetry(() => import('@/modules/identity/pages/Login'))
 const Register = lazyWithRetry(() => import('@/modules/identity/pages/Register'))
+const AuthCallback = lazyWithRetry(() => import('@/modules/identity/pages/AuthCallback'))
 const ProfileMarketplace = lazyWithRetry(() => import('@/modules/identity/pages/ProfileMarketplace'))
 const Messages = lazyWithRetry(() => import('@/modules/chat/pages/Messages'))
 const PaymentCheckout = lazyWithRetry(() => import('@/modules/transactions/pages/PaymentCheckout'))
@@ -28,7 +29,22 @@ function StoreApp() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  useEffect(() => { initialize() }, [initialize])
+  useEffect(() => {
+    initialize()
+    if (typeof window !== 'undefined') {
+      import('@capacitor/core').then(({ Capacitor }) => {
+        if (Capacitor.isNativePlatform()) {
+          import('@/modules/shared/lib/supabase').then(({ supabase }) => {
+            import('@/modules/shared/lib/nativeAuth').then(({ installNativeAuthListener }) => {
+              installNativeAuthListener(supabase, async () => {
+                await useAuthStore.getState().ensureSession()
+              })
+            })
+          })
+        }
+      })
+    }
+  }, [initialize])
 
   // Redirecionamento após login (apenas nas telas de login/register)
   useEffect(() => {
@@ -49,6 +65,8 @@ function StoreApp() {
             <Route index element={<MobileStoreHome />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            {/* Callback canônico OAuth web — público, troca ?code= pela sessão */}
+            <Route path="auth/callback" element={<AuthCallback />} />
             <Route path="catalog" element={<Catalog />} />
             <Route path="product/:id" element={<ProductDetail />} />
             <Route path="terms" element={<TermsOfService />} />

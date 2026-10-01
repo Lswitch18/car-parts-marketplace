@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import DriverApp from './DriverApp'
 import StoreApp from './StoreApp'
+import { Capacitor } from '@capacitor/core'
 import './index.css'
 
 // TODO(security): diagnostic logs restricted to dev mode only — never expose DB URLs or key status in production
@@ -31,7 +32,8 @@ if ('scrollRestoration' in window.history) {
 }
 
 const appMode = import.meta.env.VITE_APP_MODE;
-const RootComponent = appMode === 'driver' ? DriverApp : appMode === 'store' ? StoreApp : App;
+const isNative = typeof window !== 'undefined' && Capacitor.isNativePlatform();
+const RootComponent = appMode === 'driver' ? DriverApp : (appMode === 'store' || isNative) ? StoreApp : App;
 
 const root = document.getElementById('root');
 if (!root) {

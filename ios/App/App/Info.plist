@@ -3,7 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>pt</string>
+	<string>ja</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ja</string>
+		<string>pt</string>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>DAIG Marketplace</string>
 	<key>CFBundleAllowMixedLocalizations</key>

@@ -32,6 +32,24 @@ jobs:
       - name: Run TypeScript check
         run: npm run typecheck
 
+  test:
+    name: Unit Tests (Monitoramento QA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Vitest
+        run: npm run test -- --reporter=verbose
+
   sec_scan_sast:
     name: SAST Security Scan
     runs-on: ubuntu-latest
@@ -47,7 +65,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: lint-and-typecheck
+    needs: [lint-and-typecheck, test]
     steps:
       - uses: actions/checkout@v4
 
@@ -59,6 +77,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Inject VITE_* Environment Variables (paridade GitHub → build)
+        run: |
+          echo "VITE_APP_MODE=store" > .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}" >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env
+          echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID }}" >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}" >> .env
 
       - name: Build application
         run: npm run build
@@ -88,10 +116,13 @@ jobs:
 
       - name: Inject Public Environment Variables
         run: |
-          cat << 'EOF' > .env
-          VITE_SUPABASE_URL=https://clqubcryhbrjlupkgeva.supabase.co
-          VITE_SUPABASE_ANON_KEY=sb_publishable_qmK1AvvoZuK_Vgc5ZE26uw_KeLoNOFt
-          EOF
+          echo "VITE_APP_MODE=store" > .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}" >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env
+          echo "VITE_GOOGLE_IOS_CLIENT_ID=${{ secrets.VITE_GOOGLE_IOS_CLIENT_ID }}" >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL }}" >> .env
 
       - name: Build web assets
         run: npm run build
