@@ -46,6 +46,9 @@ jobs:
   sec_scan_dast:
     name: DAST Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
