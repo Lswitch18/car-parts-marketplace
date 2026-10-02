@@ -21,8 +21,12 @@
     "cap:sync:driver": "npm run build:driver && cap sync",
     "cap:sync:store": "npm run build:store && cap sync",
     "cap:open": "cap open android",
+    "crew": "python3 scripts/crew_master.py",
+    "crew:all": "python3 scripts/crew_master.py --all",
     "crew:ios": "python3 scripts/ios_apple_team_crew.py --check-only",
     "crew:ios:llm": "python3 scripts/ios_apple_team_crew.py --with-llm",
+    "crew:design": "python3 scripts/mobile_phone_design_crew.py --audit",
+    "crew:design:check": "python3 scripts/mobile_phone_design_crew.py --check-only",
     "ios:team": "./scripts/ios-apple-team.sh",
     "ios:verify": "npm run crew:ios"
   },

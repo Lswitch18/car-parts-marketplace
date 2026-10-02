@@ -156,9 +156,9 @@
     "semantic_hash": "1162e1cddd7ea769bcacdd1aa7b4ac72"
   },
   "package.json": {
-    "mtime": 1790788166.1950681,
-    "seen": 1790829216.3832788,
-    "ast_hash": "4390b829fc8e1e1160e6aa6563bf96fd",
+    "mtime": 1790876467.749693,
+    "seen": 1790896661.002505,
+    "ast_hash": "4857f2591c7c1b0aa9e92634f18e7f10",
     "semantic_hash": ""
   },
   "postcss.config.js": {
@@ -324,21 +324,21 @@
     "semantic_hash": "f802dae5e0536f33144c16601c33f35a"
   },
   "src/App.tsx": {
-    "mtime": 1790788791.5310717,
-    "seen": 1790829216.3834445,
-    "ast_hash": "69e5f3933544d9ae4a78cab3bbf20662",
+    "mtime": 1790896489.6040788,
+    "seen": 1790896661.0026765,
+    "ast_hash": "b8618f4d6a613159d787335a0b19e98f",
     "semantic_hash": ""
   },
   "src/DriverApp.tsx": {
-    "mtime": 1786028374.6622005,
-    "seen": 1788987079.575224,
-    "ast_hash": "94510b92909e737ef8103c290a926fef",
+    "mtime": 1790878823.5696938,
+    "seen": 1790896661.0026782,
+    "ast_hash": "71ab102d98a7e0e8ee8c57cde213dd1b",
     "semantic_hash": ""
   },
   "src/StoreApp.tsx": {
-    "mtime": 1789700274.0832121,
-    "seen": 1789701417.0824213,
-    "ast_hash": "77bda6da0487db82907b1dabbbef9d99",
+    "mtime": 1790890688.2936516,
+    "seen": 1790896661.0026798,
+    "ast_hash": "7824214fc93dfa453a90235538cc9b5a",
     "semantic_hash": ""
   },
   "src/components/ui/badge.tsx": {
@@ -384,9 +384,9 @@
     "semantic_hash": "5a6fd53fdcf2be529e9cc0b718fde352"
   },
   "src/main.tsx": {
-    "mtime": 1786028374.8942003,
-    "seen": 1788987079.575238,
-    "ast_hash": "79ee9ac8b42e7e12fa0ebc5da0ad8989",
+    "mtime": 1790896476.2080777,
+    "seen": 1790896661.0027003,
+    "ast_hash": "b1b0ba929f122bf2f814a720a729e234",
     "semantic_hash": ""
   },
   "src/modules/auctions/__tests__/auctions-integration.test.ts": {
@@ -516,9 +516,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Login.tsx": {
-    "mtime": 1790826814.8505828,
-    "seen": 1790829216.383552,
-    "ast_hash": "ba71222604ff27257b20d8e5eec3e123",
+    "mtime": 1790878799.5776937,
+    "seen": 1790896661.0027921,
+    "ast_hash": "b3c0b6ef0a2cda9387ddc4c22d1e4ada",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Onboarding.tsx": {
@@ -534,9 +534,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Register.tsx": {
-    "mtime": 1790826836.930583,
-    "seen": 1790829216.383559,
-    "ast_hash": "98fa58413bcc19b8bfcef14eb921344e",
+    "mtime": 1790878806.0856938,
+    "seen": 1790896661.0027995,
+    "ast_hash": "96bf30ae2ef5cd107d623112f0bb2386",
     "semantic_hash": ""
   },
   "src/modules/identity/pages/Subscription.tsx": {
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "src/modules/identity/store/authStore.ts": {
-    "mtime": 1790826753.426582,
-    "seen": 1790829216.3835642,
-    "ast_hash": "a8abbf6af5e39ea7b8059eebca571d5c",
+    "mtime": 1790890673.529647,
+    "seen": 1790896661.002805,
+    "ast_hash": "5c98e2edddf97209c23ce406bf5b7417",
     "semantic_hash": ""
   },
   "src/modules/logistics/__tests__/b2b-contracts-flow.spec.ts": {
@@ -1038,9 +1038,9 @@
     "semantic_hash": "4c77c373c23a0f2d4942bc8e5ca8dd73"
   },
   "src/modules/shared/lib/i18n.tsx": {
-    "mtime": 1790827102.7585802,
-    "seen": 1790829216.383818,
-    "ast_hash": "f48bb5a45d42172d0eab08be84a7730e",
+    "mtime": 1790890620.5456913,
+    "seen": 1790896661.0030174,
+    "ast_hash": "6a444400fdcf325701abcf350b734994",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/postal.ts": {
@@ -1056,9 +1056,9 @@
     "semantic_hash": ""
   },
   "src/modules/shared/lib/supabase.ts": {
-    "mtime": 1790826736.2785823,
-    "seen": 1790829216.3838317,
-    "ast_hash": "2ad9bcb9d8a5ec918664bea9ccd9dc81",
+    "mtime": 1790890655.3856916,
+    "seen": 1790896661.0030332,
+    "ast_hash": "5ddf7b9ed5233efc2325bd4df18c299a",
     "semantic_hash": ""
   },
   "src/modules/shared/lib/supabaseErrorHandler.ts": {
@@ -1092,9 +1092,9 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/MobileStoreHome.tsx": {
-    "mtime": 1790827308.178584,
-    "seen": 1790829216.3838718,
-    "ast_hash": "9f54f16e8dea6be02ca20f410bb16e79",
+    "mtime": 1790890718.221719,
+    "seen": 1790896661.0030763,
+    "ast_hash": "a26cbd9cdf10e22603b44a1a775df50a",
     "semantic_hash": ""
   },
   "src/modules/transactions/__tests__/adminApi.test.ts": {
@@ -1344,10 +1344,10 @@
     "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
-    "mtime": 1784827802.700031,
-    "seen": 1788987079.5756485,
-    "ast_hash": "48835241b702970d0ae532d9a3190e03",
-    "semantic_hash": "48835241b702970d0ae532d9a3190e03"
+    "mtime": 1790878829.6856937,
+    "seen": 1790896661.003167,
+    "ast_hash": "efb91952f803c91c01760dcdb5a8c24a",
+    "semantic_hash": ""
   },
   "supabase/create-storage-bucket.sql": {
     "mtime": 1779926207.3903813,
@@ -1944,9 +1944,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/cicd.yml": {
-    "mtime": 1790826904.9745836,
-    "seen": 1790829216.3842294,
-    "ast_hash": "c96987ac36ac9c5e11d517196699cb85",
+    "mtime": 1790880824.6016943,
+    "seen": 1790896661.003472,
+    "ast_hash": "c7859a3a15e4e43c7f4353d9e52bf5a0",
     "semantic_hash": ""
   },
   "docker-compose.jenkins.yml": {
@@ -2412,10 +2412,10 @@
     "semantic_hash": ""
   },
   "src/modules/storefront/pages/PrivacyPolicy.tsx": {
-    "mtime": 1784831059.3613577,
-    "seen": 1788987079.57557,
-    "ast_hash": "ac2e5c7c3220a8e441169741334a1cd0",
-    "semantic_hash": "ac2e5c7c3220a8e441169741334a1cd0"
+    "mtime": 1790876296.4776926,
+    "seen": 1790896661.0030816,
+    "ast_hash": "b5861b69b056744a4591c85354248aa9",
+    "semantic_hash": ""
   },
   "src/modules/storefront/pages/TermsOfService.tsx": {
     "mtime": 1785778247.6726246,
@@ -4824,9 +4824,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/ios-build.yml": {
-    "mtime": 1790785652.6030617,
-    "seen": 1790829216.384233,
-    "ast_hash": "caec652a19417faf4b476ad1b19c08db",
+    "mtime": 1790879249.08569,
+    "seen": 1790896661.003476,
+    "ast_hash": "de94da953f80fad0ff67a9287dea54af",
     "semantic_hash": ""
   },
   "scripts/ios_crew.py": {
@@ -4971,6 +4971,102 @@
     "mtime": 1790796042.411072,
     "seen": 1790829216.3843064,
     "ast_hash": "d422bcc48c48e1633f78431aa5e3108f",
+    "semantic_hash": ""
+  },
+  ".agents/mcp_config.json": {
+    "mtime": 1790887045.5776916,
+    "seen": 1790896661.0023665,
+    "ast_hash": "7eb2915c9446f30f9ad85f41d77acd8a",
+    "semantic_hash": ""
+  },
+  "scripts/ios-apple-team.sh": {
+    "mtime": 1790876189.3536923,
+    "seen": 1790896661.002603,
+    "ast_hash": "33559fdd6e1b1695f0e5a31a0476cbf9",
+    "semantic_hash": ""
+  },
+  "scripts/ios_apple_team_crew.py": {
+    "mtime": 1790878839.9856937,
+    "seen": 1790896661.0026073,
+    "ast_hash": "f345efdf87a49818354d72cc9bf2d7e6",
+    "semantic_hash": ""
+  },
+  "src/modules/identity/pages/AuthCallback.tsx": {
+    "mtime": 1790878751.5096939,
+    "seen": 1790896661.0027905,
+    "ast_hash": "548ca8a2ea3e15f1e0fcd4c2c43ce946",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/lib/nativeAuth.ts": {
+    "mtime": 1790890639.0016916,
+    "seen": 1790896661.0030234,
+    "ast_hash": "6b27cfbc8c7fe3ca0f3d155fdd1cda01",
+    "semantic_hash": ""
+  },
+  "src/modules/shared/lib/webAuth.ts": {
+    "mtime": 1790878746.057694,
+    "seen": 1790896661.0030406,
+    "ast_hash": "056e9513a6913fa215a9f843f485586b",
+    "semantic_hash": ""
+  },
+  ".agents/crews/ios-apple-team.yaml": {
+    "mtime": 1790878857.8056939,
+    "seen": 1790896661.0034256,
+    "ast_hash": "34e6caad414425686313191d05ebd91f",
+    "semantic_hash": ""
+  },
+  ".github/workflows/auth-social-ptbr.yml": {
+    "mtime": 1790886108.4416935,
+    "seen": 1790896661.0034704,
+    "ast_hash": "2d8190ab1bd2f4af0db8ea7b2f82eec9",
+    "semantic_hash": ""
+  },
+  ".github/workflows/ios-crew.yml": {
+    "mtime": 1790876336.3616924,
+    "seen": 1790896661.0034776,
+    "ast_hash": "3833c517d6de24754daf55625ba3da62",
+    "semantic_hash": ""
+  },
+  ".github/workflows/maestro-ui-tests.yml": {
+    "mtime": 1790887506.657688,
+    "seen": 1790896661.0034792,
+    "ast_hash": "221a63b0c11f4efc62f2abbc13fc9dde",
+    "semantic_hash": ""
+  },
+  ".maestro/flows/01-login-google.yaml": {
+    "mtime": 1790887231.1536903,
+    "seen": 1790896661.003481,
+    "ast_hash": "dcfc05e01f8f7e2156653151189974a3",
+    "semantic_hash": ""
+  },
+  ".maestro/flows/02-login-apple.yaml": {
+    "mtime": 1790887245.525691,
+    "seen": 1790896661.0034826,
+    "ast_hash": "3e73c60478d69f834fe8e46218da879b",
+    "semantic_hash": ""
+  },
+  ".maestro/flows/03-login-email-ptbr.yaml": {
+    "mtime": 1790887254.541691,
+    "seen": 1790896661.0034842,
+    "ast_hash": "129be14b547ed64bd38be79552ef246f",
+    "semantic_hash": ""
+  },
+  ".maestro/flows/04-i18n-ja-to-ptbr.yaml": {
+    "mtime": 1790887263.3296912,
+    "seen": 1790896661.0034857,
+    "ast_hash": "6a0cb14f592e9c4c63dafc0c3b88cf54",
+    "semantic_hash": ""
+  },
+  ".maestro/flows/05-web-login-chromium.yaml": {
+    "mtime": 1790887777.433689,
+    "seen": 1790896661.0034873,
+    "ast_hash": "11087222781d25e7be0bd0c34307fb7a",
+    "semantic_hash": ""
+  },
+  ".maestro/suite.yaml": {
+    "mtime": 1790887275.7576911,
+    "seen": 1790896661.0034888,
+    "ast_hash": "70d1caf2cfaa57193acf3c97ae1f4f53",
     "semantic_hash": ""
   }
 }

@@ -1,0 +1,73 @@
+# CrewAI — Mobile Phone Premium Design & Valuation Crew
+# Equipe especializada em modernização, UI/UX de luxo para iPhone/Mobile,
+# micro-interações fluidas MadeWithGSAP, ergonomia Apple HIG e elevação de Valuation.
+#
+# Execução: python3 scripts/mobile_phone_design_crew.py [--check-only] [--audit]
+name: mobile-phone-design-crew
+process: hierarchical
+manager: design-director
+language: pt-BR
+phone_scope:
+  target_os: iOS 17+ (iPhone SE, 13, 14, 15, 16 Pro / Pro Max)
+  display_standards:
+    framerate: ProMotion 120Hz / 60Hz fluid
+    safe_areas: viewport-fit=cover, Dynamic Island padding, Home Indicator offset
+    touch_target_min: 44px x 44px (ergonomia de polegar / thumb-zone)
+    visual_depth: Glassmorphism ultra-refinado (blur 24-32px), bordas luminosas sub-pixel
+    aesthetic: Cyber JDM High-Tech Luxury (Dark Space Void #060B14 + Electric Blue #0D75FF + Cyan #00E5FF + Tokyo Purple #7000FF)
+    typography: Sora (Display/Headings), Inter (Body), JetBrains Mono (Preços JPY, Chassi, Códigos OEM)
+
+agents:
+  - id: hig-mobile-architect
+    role: Lead Mobile UI/UX Architect (Apple HIG & JDM Cyber Aesthetics)
+    goal: "Criar uma interface mobile-first deslumbrante, ergonômica e de alto impacto visual, desenhada especificamente para uso com uma só mão (thumb-zone) no iPhone."
+    owns:
+      - src/modules/shared/components/layout/IosMarketplaceLayout.tsx
+      - src/modules/storefront/pages/MobileStoreHome.tsx
+      - src/modules/identity/pages/Login.tsx
+      - src/modules/shared/components/LanguageDetector.tsx
+    done_when:
+      - "Layout possui navegação flutuante inferior ergonômica com safe-area adaptativa"
+      - "Nenhum elemento crítico fora da thumb-zone ou cortado em telas compactas (iPhone SE)"
+      - "Estética Cyber Neon Luxury consistente com paleta DAIG e sem cores genéricas"
+
+  - id: motion-haptics-engineer
+    role: Motion & Haptics Engineer (GSAP 3 + Fluid Physics + Micro-interações)
+    goal: "Proporcionar sensação de app nativo ultra-fluido a 120fps com GSAP, transições sem jank e feedback tátil sutil em cada toque relevante."
+    owns:
+      - Transições de tela e entrada escalonada (GSAP stagger)
+      - Micro-interações de botões (active:scale, magnetic touch)
+      - Feedback de vibração tátil (navigator.vibrate) nos botões de ação e tabs do Dock
+    done_when:
+      - "Animações usam aceleração por GPU (transform e opacity exclusivamente)"
+      - "Todas as tabs e CTAs principais disparam haptic feedback nos dispositivos compatíveis"
+      - "Dock flutuante possui comportamento inteligente de ocultar no scroll e reaparecer suavemente"
+
+  - id: valuation-growth-strategist
+    role: Product Valuation & Conversion Strategist (Fintech JPY / Trust & Valuation Multiplier)
+    goal: "Transformar a experiência visual do app em uma alavanca de Valuation, transmitindo autoridade, sofisticação e segurança financeira para compradores e vendedores japoneses e internacionais."
+    owns:
+      - Badges de Autenticidade JDM e Licença Kobutsu-sho
+      - Selos de Garantia Escrow Stripe JPY (custódia segura de fundos)
+      - Cards de Peças em formato JDM Tech Spec / Trading Card (chassi, ano, raridade)
+      - Destaques de liquidez financeira e rastreabilidade expressa no Japão
+    done_when:
+      - "Home e catálogo exibem selos de garantia e inspeção oficial japonesa"
+      - "Peças apresentam identificadores técnicos (código OEM, chassi compatível)"
+      - "Valuation percebido do produto é elevado de 'feira de peças' para 'bolsa de autopeças JDM premium'"
+
+  - id: mobile-polish-qa
+    role: Mobile QA & Responsive Polish Gatekeeper
+    goal: "Garantir zero imperfeições visuais, contraste certificado, ausência de rolagem horizontal acidental e harmonia perfeita entre os idiomas Japonês e Português."
+    owns:
+      - Testes de integridade de componentes móveis
+      - Validação de safe-areas (top & bottom insets)
+      - Verificação de cobertura i18n sem textos cortados
+    done_when:
+      - "100% dos textos envoltos em t() com dicionário em Japonês (padrão) e Português"
+      - "Nenhum overflow horizontal em nenhuma resolução (375px a 430px de largura)"
+      - "Auditoria visual da crew passa com 100% de conformidade"
+
+collaboration:
+  every_stage_runs: [hig-mobile-architect, motion-haptics-engineer, valuation-growth-strategist, mobile-polish-qa]
+  manager_role: "Orquestrar a esteira de design, realizar auditoria visual automatizada dos componentes e liberar o selo de qualidade 'DAIG Mobile Premium Standard'."
