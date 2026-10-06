@@ -1,4 +1,4 @@
-appId: jp.daig.marketplace
+appId: com.daig.marketplace
 name: "Login Screen — Google + Apple (Web/Chromium)"
 tags:
   - auth

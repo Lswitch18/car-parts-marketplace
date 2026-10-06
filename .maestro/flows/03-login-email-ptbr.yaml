@@ -1,4 +1,4 @@
-appId: jp.daig.marketplace
+appId: com.daig.marketplace
 name: "Login Email + Senha (PT-BR)"
 tags:
   - auth

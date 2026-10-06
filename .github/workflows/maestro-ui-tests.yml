@@ -27,7 +27,7 @@ on:
 
 env:
   NODE_VERSION: '22'
-  APP_ID: jp.daig.marketplace
+  APP_ID: com.daig.marketplace
 
 jobs:
   maestro-opensource-e2e:
@@ -125,7 +125,6 @@ jobs:
             -sdk iphonesimulator \
             -destination "id=$SIMULATOR_DEVICE_ID" \
             -derivedDataPath "$GITHUB_WORKSPACE/build/simulator" \
-            PRODUCT_BUNDLE_IDENTIFIER="jp.daig.marketplace" \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_ALLOWED=YES \
             CODE_SIGN_STYLE="Manual" \
@@ -228,7 +227,7 @@ jobs:
           echo "| **Resultado** | **$STATUS** |" >> $GITHUB_STEP_SUMMARY
           echo "| **Filtro de Tags** | \`$TAG\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Plataforma** | iOS Simulator (Apple Silicon macos-14) |" >> $GITHUB_STEP_SUMMARY
-          echo "| **App ID** | \`jp.daig.marketplace\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **App ID** | \`com.daig.marketplace\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Modo** | 100% Open-Source (Sem dependência de serviços pagos) |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📦 Evidências Disponíveis para Download" >> $GITHUB_STEP_SUMMARY

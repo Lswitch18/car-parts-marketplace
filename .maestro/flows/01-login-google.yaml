@@ -1,4 +1,4 @@
-appId: jp.daig.marketplace
+appId: com.daig.marketplace
 name: "Login com Google (OAuth)"
 tags:
   - auth

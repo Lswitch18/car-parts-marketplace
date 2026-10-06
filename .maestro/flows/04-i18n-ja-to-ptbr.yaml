@@ -1,4 +1,4 @@
-appId: jp.daig.marketplace
+appId: com.daig.marketplace
 name: "Language Switch JA -> PT-BR (LanguageDetector)"
 tags:
   - i18n
