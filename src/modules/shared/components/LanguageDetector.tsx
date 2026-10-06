@@ -20,7 +20,7 @@ export default function LanguageDetector({ mobileCompact = false }: { mobileComp
 
   const languages = [
     { code: 'ja', name: '日本語', flag: '🇯🇵' },
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
+    { code: 'pt', name: 'Português (PT-BR)', flag: '🇧🇷' },
   ]
 
   const langCode = language.split('-')[0]
@@ -29,6 +29,7 @@ export default function LanguageDetector({ mobileCompact = false }: { mobileComp
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        id="language-selector"
         onClick={() => setShowDropdown(!showDropdown)}
         className="flex items-center space-x-2 p-2 md:px-3 rounded-lg transition-all"
         style={{ color: '#B0B5C0', background: 'rgba(255,255,255,0.04)' }}
