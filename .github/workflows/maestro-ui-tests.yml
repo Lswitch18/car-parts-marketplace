@@ -97,17 +97,23 @@ jobs:
 
       - name: 📱 Inicializar Simulador iOS (Nuvem do GitHub)
         run: |
-          # Procura iPhone disponível na lista do Xcode
-          DEVICE_ID=$(xcrun simctl list devices available | grep -E "iPhone (15|16|14)" | head -1 | sed -E 's/.* \(([A-F0-9-]+)\).*/\1/')
-          if [ -z "$DEVICE_ID" ]; then
-            DEVICE_ID=$(xcrun simctl list devices available | grep "iPhone" | head -1 | sed -E 's/.* \(([A-F0-9-]+)\).*/\1/')
+          # Extrai o UUID exato de um iPhone disponível
+          DEVICE_UUID=$(xcrun simctl list devices available | grep -i "iPhone 15" | head -1 | grep -oE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}' || true)
+          if [ -z "$DEVICE_UUID" ]; then
+            DEVICE_UUID=$(xcrun simctl list devices available | grep -i "iPhone" | head -1 | grep -oE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}' || true)
           fi
-          echo "Dispositivo selecionado: $DEVICE_ID"
-          echo "SIMULATOR_DEVICE_ID=$DEVICE_ID" >> $GITHUB_ENV
+          echo "UUID do Dispositivo selecionado: $DEVICE_UUID"
+          echo "SIMULATOR_DEVICE_ID=$DEVICE_UUID" >> $GITHUB_ENV
           
-          # Inicializa o simulador e aguarda boot completo
-          xcrun simctl boot "$DEVICE_ID" || true
-          xcrun simctl bootstatus "$DEVICE_ID" -b
+          # Desliga eventuais instancias e inicializa o simulador
+          xcrun simctl shutdown all 2>/dev/null || true
+          xcrun simctl boot "$DEVICE_UUID"
+          
+          # Abre o app Simulator em background para ativar servicos de instalacao e UI
+          open -a Simulator --args -CurrentDeviceUDID "$DEVICE_UUID" 2>/dev/null || true
+          
+          # Aguarda boot completo do sistema
+          xcrun simctl bootstatus "$DEVICE_UUID" -b
           echo "Simulador iOS inicializado com sucesso!"
 
       - name: 🏗️ Compilar App iOS para Simulador (.app)
@@ -118,18 +124,29 @@ jobs:
             -configuration Debug \
             -sdk iphonesimulator \
             -destination "id=$SIMULATOR_DEVICE_ID" \
-            -derivedDataPath build/simulator \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/simulator" \
             PRODUCT_BUNDLE_IDENTIFIER="jp.daig.marketplace" \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_STYLE="Manual" \
             build
 
       - name: 📲 Instalar App no Simulador
         run: |
-          APP_PATH=$(find build/simulator -name "*.app" -not -path "*/PlugIns/*" | head -1)
+          APP_PATH=$(find "$GITHUB_WORKSPACE/build/simulator" -name "App.app" -not -path "*/PlugIns/*" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            APP_PATH=$(find "$GITHUB_WORKSPACE/build/simulator" -name "*.app" -not -path "*/PlugIns/*" | head -1)
+          fi
           echo "App encontrado: $APP_PATH"
-          xcrun simctl install "$SIMULATOR_DEVICE_ID" "$APP_PATH"
+          
+          # Garante caminho absoluto canonico
+          APP_DIR=$(dirname "$APP_PATH")
+          APP_NAME=$(basename "$APP_PATH")
+          APP_ABS_PATH="$(cd "$APP_DIR" && pwd)/$APP_NAME"
+          echo "Caminho absoluto: $APP_ABS_PATH"
+          
+          xcrun simctl install "$SIMULATOR_DEVICE_ID" "$APP_ABS_PATH"
+          echo "App instalado com sucesso no simulador!"
 
       - name: 🎥 Iniciar Gravação de Vídeo Nativa (Zero Custo)
         run: |
@@ -145,14 +162,14 @@ jobs:
         run: |
           export PATH="$PATH:$HOME/.maestro/bin"
           TAG="${{ github.event.inputs.flow_tag || 'smoke' }}"
-          echo "Iniciando testes com tag: $TAG"
+          echo "Iniciando testes com tag: $TAG no dispositivo $SIMULATOR_DEVICE_ID"
 
           if [ "$TAG" = "all" ]; then
-            maestro test .maestro/flows/ \
+            maestro --device "$SIMULATOR_DEVICE_ID" test .maestro/flows/ \
               --format junit \
               --output maestro-report.xml
           else
-            maestro test .maestro/flows/ \
+            maestro --device "$SIMULATOR_DEVICE_ID" test .maestro/flows/ \
               --include-tags "$TAG" \
               --format junit \
               --output maestro-report.xml
@@ -175,6 +192,7 @@ jobs:
         with:
           name: maestro-video-ios
           path: artifacts/videos/*.mp4
+          if-no-files-found: ignore
           retention-days: 7
 
       - name: 📸 Upload de Screenshots Capturados
@@ -185,6 +203,7 @@ jobs:
           path: |
             screenshots/**/*.png
             .maestro/screenshots/**/*.png
+          if-no-files-found: ignore
           retention-days: 7
 
       - name: 📄 Upload do Relatório JUnit XML
@@ -193,6 +212,7 @@ jobs:
         with:
           name: maestro-junit-report
           path: maestro-report.xml
+          if-no-files-found: ignore
           retention-days: 14
 
       - name: 📊 Publicar Resumo dos Testes no GitHub Actions
