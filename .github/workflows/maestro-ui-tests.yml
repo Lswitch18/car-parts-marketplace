@@ -1,6 +1,15 @@
 name: Maestro E2E — Open-Source UI Tests & Gravação de Vídeo (iOS Simulator)
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'ios/**'
+      - '.maestro/**'
+      - '.github/workflows/maestro-ui-tests.yml'
+      - 'package.json'
+      - 'capacitor.config.ts'
   workflow_dispatch:
     inputs:
       flow_tag:
