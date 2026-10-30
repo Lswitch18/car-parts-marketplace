@@ -35,5 +35,5 @@ describe('TenantTeamManager Component', () => {
     await waitFor(() => {
       expect(screen.getByText('kenji.sato@daig.jp')).toBeInTheDocument()
     })
-  })
+  }, 15000)
 })

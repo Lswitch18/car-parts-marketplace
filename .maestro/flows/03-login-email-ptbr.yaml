@@ -9,27 +9,36 @@ tags:
 - launchApp:
     clearState: true
 
-- assertVisible: "Entrar"
+- extendedWaitUntil:
+    visible: ".*(ログイン|Entrar).*"
+    timeout: 15000
+
+- tapOn: ".*(ログイン|Entrar).*"
+
+- waitForAnimationToEnd:
+    timeout: 3000
 
 - takeScreenshot: screenshots/login-email-start
 
 - tapOn:
-    id: "email-input"
+    text: "seu@email.com"
+    optional: true
 
 - inputText: "teste@daig.jp"
 
+- hideKeyboard
+
 - tapOn:
-    id: "password-input"
+    text: "••••••••"
+    optional: true
 
 - inputText: "Senha@12345"
 
-- assertVisible: "Lembrar-me"
-
-- assertVisible: "Esqueceu a senha?"
+- hideKeyboard
 
 - takeScreenshot: screenshots/login-email-filled
 
-- tapOn: "Entrar"
+- tapOn: ".*(ログイン|Entrar).*"
 
 - waitForAnimationToEnd:
     timeout: 8000

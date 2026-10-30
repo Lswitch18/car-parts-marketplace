@@ -19,7 +19,7 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://clqubcryhbrjlupkge
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const isServiceRoleJwt = serviceRoleKey.startsWith('eyJ');
 
-const supabaseAdmin = createClient(supabaseUrl, isServiceRoleJwt ? serviceRoleKey : (process.env.VITE_SUPABASE_ANON_KEY || ''), {
+const supabaseAdmin = createClient(supabaseUrl, isServiceRoleJwt ? serviceRoleKey : (process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test'), {
   auth: {
     persistSession: false
   }

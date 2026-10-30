@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
 import { GoogleAuth } from '@southdevs/capacitor-google-auth'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || (import.meta.env.MODE === 'test' ? 'https://clqubcryhbrjlupkgeva.supabase.co' : '')
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || (import.meta.env.MODE === 'test' ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test' : '')
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Supabase credentials not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')

@@ -240,6 +240,7 @@ def agent_ci_monitor() -> bool:
     start = len(FAILURES)
     wf = read(".github/workflows/ios-build.yml") if exists(".github/workflows/ios-build.yml") else ""
     for needle, label in [
+        ("runs-on: macos-15", "Runner macos-15 (sem brownout do macos-14)"),
         ("APPLE_TEAM_ID", "Apple Team wiring (signed release via secrets)"),
         ("upload-artifact@v4", "upload-artifact v4"),
         ("DAIG-Marketplace-iOS-IPA", "artefato .ipa"),
@@ -249,6 +250,8 @@ def agent_ci_monitor() -> bool:
             ok(f"ios-build.yml: {label}")
         else:
             fail(f"ios-build.yml sem {label}")
+    if "macos-14" in wf:
+        fail("ios-build.yml ainda referencia macos-14 (aposentado pelo GitHub Actions)")
     if exists(".github/workflows/ios-crew.yml"):
         ok("ios-crew.yml (4 frentes em paralelo + join do manager)")
     else:

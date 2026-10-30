@@ -230,16 +230,18 @@ def agent_android_assets_bundle() -> bool:
     )
 
     if needs_sync and AUTO_FIX:
-        heal("Descompasso de bundle detectado — compilando Store e sincronizando Android + iOS...")
-        b_res = subprocess.run(["npm", "run", "build:store"], cwd=ROOT, capture_output=True, text=True)
-        if b_res.returncode == 0:
-            heal("npm run build:store concluído com sucesso")
-            subprocess.run(["npx", "cap", "copy", "android"], cwd=ROOT, capture_output=True, text=True)
-            subprocess.run(["npx", "cap", "copy", "ios"], cwd=ROOT, capture_output=True, text=True)
-            heal("npx cap copy android & ios concluídos")
-            dist_js = sorted(dist_dir.glob("index-*.js")) if dist_dir.exists() else []
-            android_js = sorted(android_pub_dir.glob("index-*.js")) if android_pub_dir.exists() else []
-            ios_js = sorted(ios_pub_dir.glob("index-*.js")) if ios_pub_dir.exists() else []
+        if needs_build:
+            heal("dist/assets ausente — compilando Store (npm run build:store)...")
+            b_res = subprocess.run(["npm", "run", "build:store"], cwd=ROOT, capture_output=True, text=True)
+            if b_res.returncode == 0:
+                heal("npm run build:store concluído com sucesso")
+        heal("Sincronizando bundles web com Android e iOS (npx cap copy)...")
+        subprocess.run(["npx", "cap", "copy", "android"], cwd=ROOT, capture_output=True, text=True)
+        subprocess.run(["npx", "cap", "copy", "ios"], cwd=ROOT, capture_output=True, text=True)
+        heal("npx cap copy android & ios concluídos")
+        dist_js = sorted(dist_dir.glob("index-*.js")) if dist_dir.exists() else []
+        android_js = sorted(android_pub_dir.glob("index-*.js")) if android_pub_dir.exists() else []
+        ios_js = sorted(ios_pub_dir.glob("index-*.js")) if ios_pub_dir.exists() else []
 
     if not dist_js:
         fail("dist/assets sem bundle compilado — execute `npm run build:store`")
@@ -291,6 +293,11 @@ def agent_android_ci_pipeline() -> bool:
             ok(f"android-build.yml: {label}")
         else:
             fail(f"android-build.yml sem {label}")
+
+    if "android-actions/setup-android" in wf:
+        fail("android-build.yml usa android-actions/setup-android@v3 (incompatível com ubuntu-latest 24.04)")
+    else:
+        ok("android-build.yml usa ANDROID_HOME nativo do runner ubuntu-latest")
 
     return len(FAILURES) == start
 

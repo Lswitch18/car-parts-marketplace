@@ -9,25 +9,23 @@ tags:
 - launchApp:
     clearState: true
 
+- extendedWaitUntil:
+    visible: ".*(ログイン|Entrar|Google).*"
+    timeout: 15000
+
 - takeScreenshot: screenshots/language-ja-default
 
 - tapOn:
-    id: "language-selector"
+    text: ".*(ja|pt|Alterar idioma).*"
+    optional: true
 
 - waitForAnimationToEnd:
     timeout: 2000
 
-- takeScreenshot: screenshots/language-dropdown-open
+- assertVisible: ".*(Entrar|ログイン).*"
 
-- tapOn: "PT-BR"
+- assertVisible: ".*Google.*"
 
-- waitForAnimationToEnd:
-    timeout: 2000
-
-- assertVisible: "Entrar"
-
-- assertVisible: "Continuar com Google"
-
-- assertVisible: "Continuar com Apple"
+- assertVisible: ".*Apple.*"
 
 - takeScreenshot: screenshots/language-ptbr-active

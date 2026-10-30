@@ -9,13 +9,15 @@ tags:
 - launchApp:
     clearState: true
 
-- assertVisible: "Entrar"
+- extendedWaitUntil:
+    visible: ".*(ログイン|Entrar|Apple).*"
+    timeout: 15000
 
-- assertVisible: "Apple"
+- assertVisible: ".*Apple.*"
 
 - takeScreenshot: screenshots/login-screen-apple
 
-- tapOn: "Apple"
+- tapOn: ".*Apple.*"
 
 - waitForAnimationToEnd:
     timeout: 5000

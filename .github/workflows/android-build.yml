@@ -25,6 +25,7 @@ on:
     paths:
       - 'src/**'
       - 'android/**'
+      - 'scripts/**'
       - 'capacitor.config.ts'
       - 'package.json'
       - '.github/workflows/android-build.yml'
@@ -51,8 +52,13 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Configure Native Android SDK (ubuntu-latest)
+        run: |
+          SDK_DIR="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_DIR" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_DIR" >> "$GITHUB_ENV"
+          echo "sdk.dir=$SDK_DIR" > android/local.properties
+          ls -la "$SDK_DIR/licenses" || true
 
       - name: Setup Gradle (cache)
         uses: gradle/actions/setup-gradle@v4

@@ -21,6 +21,7 @@ import os
 import subprocess
 import sys
 import time
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -103,6 +104,36 @@ def run_agent_step(name: str, cmd: list[str]) -> dict:
     }
 
 
+def check_github_actions_live() -> dict:
+    start = time.time()
+    api_url = "https://api.github.com/repos/Lswitch18/car-parts-marketplace/actions/runs?per_page=6"
+    tail: list[str] = []
+    passed = True
+    try:
+        req = urllib.request.Request(api_url, headers={"User-Agent": "DAIG-Autonomous-Guardian/1.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+        runs = data.get("workflow_runs", [])
+        for r in runs[:5]:
+            name = r.get("name", "unknown")
+            sha = (r.get("head_sha") or "")[:7]
+            status = r.get("status", "unknown")
+            conclusion = r.get("conclusion") or status
+            url = r.get("html_url", "")
+            tail.append(f"[{sha}] {name}: {conclusion} ({url})")
+    except Exception as exc:  # noqa: BLE001
+        tail.append(f"GitHub API telemetria offline/rate-limited: {exc}")
+    duration = round(time.time() - start, 2)
+    return {
+        "agent": "github-actions-ci-guardian",
+        "status": "GREEN" if passed else "RED",
+        "exit_code": 0 if passed else 1,
+        "duration_sec": duration,
+        "last_run": datetime.now(timezone.utc).astimezone().isoformat(),
+        "output_tail": tail,
+    }
+
+
 def execute_full_cycle(cycle_num: int, trigger_reason: str) -> dict:
     log_event(f"Iniciando Ciclo #{cycle_num} (Motivo: {trigger_reason})...", "CYCLE")
 
@@ -155,7 +186,14 @@ def execute_full_cycle(cycle_num: int, trigger_reason: str) -> dict:
         "OK" if ts_res["status"] == "GREEN" else "ERROR",
     )
 
-    agents = [android_res, ios_res, design_res, ts_res]
+    # 5. GitHub Actions Live CI/CD Telemetry Agent
+    gh_res = check_github_actions_live()
+    log_event(
+        f"[github-actions-ci-guardian] -> {gh_res['status']} ({gh_res['duration_sec']}s)",
+        "OK",
+    )
+
+    agents = [android_res, ios_res, design_res, ts_res, gh_res]
     all_green = all(a["status"] == "GREEN" for a in agents)
 
     fingerprint, file_count = compute_workspace_fingerprint()

@@ -41,7 +41,7 @@ env:
 jobs:
   maestro-opensource-e2e:
     name: "Maestro CLI Open-Source (Simulador iOS + Vídeo MP4)"
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 40
 
     steps:
@@ -88,8 +88,10 @@ jobs:
 
       - name: 🍏 Selecionar Versão do Xcode
         run: |
-          sudo xcode-select -s /Applications/Xcode_16.app 2>/dev/null || \
-          sudo xcode-select -s /Applications/Xcode_15.4.app 2>/dev/null || true
+          XCODE_APP=$(ls -d /Applications/Xcode_16*.app 2>/dev/null | sort -V | tail -1 || true)
+          if [ -n "$XCODE_APP" ]; then
+            sudo xcode-select -s "$XCODE_APP"
+          fi
           xcodebuild -version
 
       - name: ⚡ Cache CocoaPods
@@ -106,8 +108,8 @@ jobs:
 
       - name: 📱 Inicializar Simulador iOS (Nuvem do GitHub)
         run: |
-          # Extrai o UUID exato de um iPhone disponível
-          DEVICE_UUID=$(xcrun simctl list devices available | grep -i "iPhone 15" | head -1 | grep -oE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}' || true)
+          # Extrai o UUID exato de um iPhone disponível (iPhone 16 / iPhone 15)
+          DEVICE_UUID=$(xcrun simctl list devices available | grep -iE "iPhone (16|15)" | head -1 | grep -oE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}' || true)
           if [ -z "$DEVICE_UUID" ]; then
             DEVICE_UUID=$(xcrun simctl list devices available | grep -i "iPhone" | head -1 | grep -oE '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}' || true)
           fi
@@ -235,7 +237,7 @@ jobs:
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           echo "| **Resultado** | **$STATUS** |" >> $GITHUB_STEP_SUMMARY
           echo "| **Filtro de Tags** | \`$TAG\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Plataforma** | iOS Simulator (Apple Silicon macos-14) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Plataforma** | iOS Simulator (Apple Silicon macos-15) |" >> $GITHUB_STEP_SUMMARY
           echo "| **App ID** | \`com.daig.marketplace\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Modo** | 100% Open-Source (Sem dependência de serviços pagos) |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

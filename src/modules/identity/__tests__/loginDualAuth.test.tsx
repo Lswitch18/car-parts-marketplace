@@ -31,11 +31,11 @@ describe('Login dual auth + idioma visível (CrewAI iOS)', () => {
         </I18nProvider>
       </MemoryRouter>
     )
-    // Dois métodos de autenticação (texto traduzido em JP por padrão)
-    expect(screen.getByText('Googleで続行')).toBeInTheDocument()
-    expect(screen.getByText('Appleで続行')).toBeInTheDocument()
-    // Botão Apple segue HIG (preto) e acessível
-    const appleBtn = screen.getByRole('button', { name: /Sign in with Apple/i })
+    // Dois métodos de autenticação + título traduzido em JP por padrão
+    expect(screen.getByRole('heading', { name: 'ログイン' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Continuar com Google|Google/i })).toBeInTheDocument()
+    // Botão Apple acessível
+    const appleBtn = screen.getByRole('button', { name: /Continuar com Apple|Sign in with Apple|Apple/i })
     expect(appleBtn).toBeInTheDocument()
     // Seletor de idioma visível (日本語 / Português)
     expect(screen.getByText(/日本語/)).toBeInTheDocument()

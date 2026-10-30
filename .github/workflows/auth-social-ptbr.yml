@@ -213,11 +213,11 @@ jobs:
           retention-days: 7
 
   # ─────────────────────────────────────────────────────────
-  # 4. iOS BUILD — macOS-14, CocoaPods, GoogleSignIn + Apple
+  # 4. iOS BUILD — macOS-15, CocoaPods, GoogleSignIn + Apple
   # ─────────────────────────────────────────────────────────
   build-ios-auth:
     name: "iOS Build — GoogleSignIn + Sign in with Apple"
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 50
     if: ${{ github.event.inputs.build_ios != 'false' }}
     needs: [build-web, test-auth-social]
@@ -226,9 +226,10 @@ jobs:
 
       - name: Selecionar Xcode
         run: |
-          sudo xcode-select -s /Applications/Xcode_16.app 2>/dev/null \
-            || sudo xcode-select -s /Applications/Xcode_15.4.app 2>/dev/null \
-            || true
+          XCODE_APP=$(ls -d /Applications/Xcode_16*.app 2>/dev/null | sort -V | tail -1 || true)
+          if [ -n "$XCODE_APP" ]; then
+            sudo xcode-select -s "$XCODE_APP"
+          fi
           xcodebuild -version
 
       - name: Setup Node.js

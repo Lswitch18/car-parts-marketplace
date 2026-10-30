@@ -50,6 +50,9 @@ jobs:
       - name: Run Vitest
         run: npm run test -- --reporter=verbose
 
+      - name: Run Autonomous CrewAI Master (20 Agentes + Auto-Healing)
+        run: python3 scripts/crew_master.py --all
+
   sec_scan_sast:
     name: SAST Security Scan
     runs-on: ubuntu-latest
@@ -100,7 +103,7 @@ jobs:
 
   build-ios-simulator:
     name: Build iOS Simulator
-    runs-on: macos-latest
+    runs-on: macos-15
     needs: build
     steps:
       - uses: actions/checkout@v4
