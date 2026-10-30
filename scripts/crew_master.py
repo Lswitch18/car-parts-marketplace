@@ -3,12 +3,14 @@
 
 Orquestra todos os agentes especialistas via linha de comando (CLI):
 - [design-crew]     Mobile Phone Luxury Design, Apple HIG, Haptics & Valuation
+- [android-team]    Android SDK 35, Gradle 8.11, Google Sign-In, Deep Links & Auto-Healing
 - [ios-apple-team]  iOS Dev, Google/Apple Auth, i18n JA/PT, Secrets & Build
 - [security-crew]   SAST, RLS, Security Invoker & OWASP Gates
-- [build-sync]      Compilação Store e sincronização com Capacitor iOS
+- [build-sync]      Compilação Store e sincronização com Capacitor Android & iOS
 
 Uso:
   python3 scripts/crew_master.py --all
+  python3 scripts/crew_master.py --android
   python3 scripts/crew_master.py --design
   python3 scripts/crew_master.py --ios
   python3 scripts/crew_master.py --sync
@@ -62,18 +64,26 @@ def run_design_crew() -> bool:
     return run_cmd([sys.executable, str(script), "--audit"], "Mobile Design Crew")
 
 
+def run_android_crew() -> bool:
+    print(f"{PURPLE}{BOLD}=== [CREW 2: Android Google Team & Auto-Healing] ==={RESET}")
+    script = ROOT / "scripts" / "android_team_crew.py"
+    return run_cmd([sys.executable, str(script), "--fix"], "Android Google Team Crew")
+
+
 def run_ios_crew() -> bool:
-    print(f"{PURPLE}{BOLD}=== [CREW 2: iOS Apple Team & Capacitor Core] ==={RESET}")
+    print(f"{PURPLE}{BOLD}=== [CREW 3: iOS Apple Team & Capacitor Core] ==={RESET}")
     script = ROOT / "scripts" / "ios_apple_team_crew.py"
     return run_cmd([sys.executable, str(script), "--check-only"], "iOS Apple Team Crew")
 
 
 def run_sync() -> bool:
-    print(f"{PURPLE}{BOLD}=== [Sincronização de Assets: Vite Store → Capacitor iOS] ==={RESET}")
+    print(f"{PURPLE}{BOLD}=== [Sincronização de Assets: Vite Store → Capacitor Android & iOS] ==={RESET}")
     ok_build = run_cmd(["npm", "run", "build:store"], "Vite Build Store")
     if not ok_build:
         return False
-    return run_cmd(["npx", "cap", "copy", "ios"], "Capacitor Copy iOS")
+    ok_android = run_cmd(["npx", "cap", "copy", "android"], "Capacitor Copy Android")
+    ok_ios = run_cmd(["npx", "cap", "copy", "ios"], "Capacitor Copy iOS")
+    return ok_android and ok_ios
 
 
 def run_typecheck() -> bool:
@@ -95,6 +105,7 @@ def print_status():
 def main():
     parser = argparse.ArgumentParser(description="Master CrewAI CLI Orchestrator")
     parser.add_argument("--all", action="store_true", help="Executa todas as crews e validações em conjunto")
+    parser.add_argument("--android", action="store_true", help="Executa a Crew Android Google Team com Auto-Healing")
     parser.add_argument("--design", action="store_true", help="Executa a Crew de Design Mobile & Valuation")
     parser.add_argument("--ios", action="store_true", help="Executa a Crew iOS Apple Team")
     parser.add_argument("--sync", action="store_true", help="Compila o frontend e sincroniza com o Capacitor")
@@ -104,7 +115,7 @@ def main():
     args = parser.parse_args()
 
     # Se nenhum argumento passado, roda --all por padrão
-    if not any([args.all, args.design, args.ios, args.sync, args.typecheck, args.status]):
+    if not any([args.all, args.android, args.design, args.ios, args.sync, args.typecheck, args.status]):
         args.all = True
 
     header()
@@ -117,6 +128,9 @@ def main():
 
     if args.all or args.design:
         results["Mobile Design Crew"] = run_design_crew()
+
+    if args.all or args.android:
+        results["Android Google Team Crew"] = run_android_crew()
 
     if args.all or args.ios:
         results["iOS Apple Team Crew"] = run_ios_crew()

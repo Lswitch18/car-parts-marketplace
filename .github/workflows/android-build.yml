@@ -1,0 +1,114 @@
+name: Android Marketplace Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_mode:
+        description: 'Vite App Mode (store = Marketplace Puro)'
+        required: true
+        default: 'store'
+        type: choice
+        options:
+          - store
+          - worker
+      build_type:
+        description: 'Gradle build type'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'android/**'
+      - 'capacitor.config.ts'
+      - 'package.json'
+      - '.github/workflows/android-build.yml'
+
+jobs:
+  build-android:
+    name: Build Android App (.apk)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Setup Java 21 (Capacitor 7 / AGP 8.7)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle (cache)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Node Dependencies
+        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+
+      - name: Inject Environment Variables (.env)
+        run: |
+          echo "VITE_APP_MODE=${{ github.event.inputs.app_mode || 'store' }}" >> .env
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+          echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}" >> .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID || '606997989793-k2cuig6n7v5iiddc2sqfp6acm7st62t9.apps.googleusercontent.com' }}" >> .env
+          echo "VITE_SITE_URL=${{ secrets.VITE_SITE_URL || 'https://daig.jp' }}" >> .env
+
+      - name: Build Web Frontend
+        run: npm run build
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: CrewAI Gate — Android Google Team (5 frentes + Auto-Healing)
+        run: python3 scripts/android_team_crew.py --fix
+
+      - name: Decode google-services.json (opcional)
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "${GOOGLE_SERVICES_JSON:-}" ]; then
+            echo "$GOOGLE_SERVICES_JSON" | base64 -d > android/app/google-services.json
+          else
+            echo "ℹ️ secrets.GOOGLE_SERVICES_JSON ausente — plugin google-services não será aplicado."
+          fi
+
+      - name: Build APK & AAB (Google Play Bundle)
+        working-directory: android
+        run: |
+          chmod +x ./gradlew
+          if [ "${{ github.event.inputs.build_type || 'debug' }}" = "release" ]; then
+            ./gradlew assembleRelease bundleRelease --no-daemon
+          else
+            ./gradlew assembleDebug bundleRelease --no-daemon
+          fi
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DAIG-Marketplace-Android-APK
+          path: android/app/build/outputs/apk/**/*.apk
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Upload AAB Artifact (Google Play Store)
+        uses: actions/upload-artifact@v4
+        with:
+          name: DAIG-Marketplace-Android-AAB
+          path: android/app/build/outputs/bundle/release/*.aab
+          retention-days: 14

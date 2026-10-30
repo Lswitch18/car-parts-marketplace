@@ -35,8 +35,9 @@ const GOOGLE_IOS_CLIENT_ID = import.meta.env.VITE_GOOGLE_IOS_CLIENT_ID || '60699
 
 if (Capacitor.isNativePlatform()) {
   try {
+    const nativeClientId = Capacitor.getPlatform() === 'ios' ? GOOGLE_IOS_CLIENT_ID : GOOGLE_CLIENT_ID
     GoogleAuth.initialize({
-      clientId: GOOGLE_IOS_CLIENT_ID,
+      clientId: nativeClientId,
       serverClientId: GOOGLE_CLIENT_ID,
       scopes: ['profile', 'email'],
       grantOfflineAccess: true,
@@ -91,10 +92,11 @@ export const signInWithGoogle = async () => {
 
   if (Capacitor.isNativePlatform()) {
     try {
-      // Re-garante a inicialização com iOS clientId e Web serverClientId para o SDK Swift
+      // Re-garante a inicialização com clientId correto por plataforma (iOS vs Android Web Client ID)
       try {
+        const nativeClientId = Capacitor.getPlatform() === 'ios' ? googleIosClientId : googleClientId
         await GoogleAuth.initialize({
-          clientId: googleIosClientId,
+          clientId: nativeClientId,
           serverClientId: googleClientId,
           scopes: ['profile', 'email'],
           grantOfflineAccess: true,

@@ -215,6 +215,16 @@ export default function PaymentCheckout() {
       })
 
       if (result.url) {
+        try {
+          const { Capacitor } = await import('@capacitor/core')
+          if (Capacitor.isNativePlatform()) {
+            const { Browser } = await import('@capacitor/browser')
+            await Browser.open({ url: result.url, windowName: '_system' })
+            return
+          }
+        } catch {
+          // Fallback para navegação web padrão
+        }
         window.location.href = result.url
         return
       } else {

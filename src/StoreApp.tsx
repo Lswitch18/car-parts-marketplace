@@ -74,6 +74,7 @@ function StoreApp() {
             <Route path="legal" element={<LegalNotice />} />
             <Route element={<ProtectedRoute />}>
               <Route path="profile" element={<ProfileMarketplace />} />
+              <Route path="dashboard" element={<Navigate to="/profile" replace />} />
               <Route path="messages" element={<Messages />} />
               <Route path="checkout/:id" element={<PaymentCheckout />} />
             </Route>

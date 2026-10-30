@@ -120,14 +120,25 @@ export async function installNativeAuthListener(supabase?: any, onSessionReady?:
     const { App } = await import('@capacitor/app')
     await App.addListener('appUrlOpen', async (event) => {
       try {
-        if (event.url && (event.url.startsWith('com.daig.marketplace://') || event.url.includes('login-callback'))) {
-          console.log('[nativeAuth] appUrlOpen detectado com sucesso:', event.url)
-          resolvePending(event.url)
+        const url = event.url || ''
+        const isCustomScheme =
+          url.startsWith('com.daig.marketplace://') ||
+          url.startsWith('com.daig.logistix.express://')
+        if (url && (isCustomScheme || url.includes('login-callback'))) {
+          console.log('[nativeAuth] appUrlOpen detectado com sucesso:', url)
+          resolvePending(url)
           await closeNativeBrowser()
+
+          if (url.includes('payment=success') || url.includes('checkout/success')) {
+            window.location.hash = ''
+            window.history.replaceState({}, '', '/profile?payment=success')
+            window.dispatchEvent(new PopStateEvent('popstate'))
+            return
+          }
 
           if (supabase) {
             try {
-              const sessionData = await exchangeCallbackForSession(event.url, supabase)
+              const sessionData = await exchangeCallbackForSession(url, supabase)
               if (sessionData?.session && globalSessionCallback) {
                 globalSessionCallback(sessionData)
               }
